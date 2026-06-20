@@ -49,19 +49,19 @@ extends CycleEvent {
             int n3 = this.reward.getAmount();
             int n4 = this.definition.getRequiredLevel();
             player = this.player;
-            if (GameUtil.g(25) == 0 && player.getSkillManager().getCurrentLevels()[17] > n4 + 30 && player.getSkillManager().getCurrentLevels()[16] > n4 + 20) {
+            if (GameUtil.randomInclusive(25) == 0 && player.getSkillManager().getCurrentLevels()[17] > n4 + 30 && player.getSkillManager().getCurrentLevels()[16] > n4 + 20) {
                 player.packetSender.sendGameMessage("You recieve a quadruple loot!");
                 n = 4;
-            } else if (GameUtil.g(20) == 0 && player.getSkillManager().getCurrentLevels()[17] > n4 + 20 && player.getSkillManager().getCurrentLevels()[16] > n4 + 10) {
+            } else if (GameUtil.randomInclusive(20) == 0 && player.getSkillManager().getCurrentLevels()[17] > n4 + 20 && player.getSkillManager().getCurrentLevels()[16] > n4 + 10) {
                 player.packetSender.sendGameMessage("You recieve a triple loot!");
                 n = 3;
-            } else if (GameUtil.g(15) == 0 && player.getSkillManager().getCurrentLevels()[17] > n4 + 10 && player.getSkillManager().getCurrentLevels()[16] > n4) {
+            } else if (GameUtil.randomInclusive(15) == 0 && player.getSkillManager().getCurrentLevels()[17] > n4 + 10 && player.getSkillManager().getCurrentLevels()[16] > n4) {
                 player.packetSender.sendGameMessage("You recieve a double loot!");
                 n = 2;
             } else {
                 n = 1;
             }
-            inventoryManager.b(new ItemStack(n2, n3 * n));
+            inventoryManager.addOrDropItem(new ItemStack(n2, n3 * n));
             this.player.getSkillManager().addExperience(17, this.definition.getExperience());
         } else {
             this.npc.getUpdateState().setForcedTextAndMarkUpdated("What do you think you're doing?");
@@ -82,7 +82,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        this.player.n(false);
+        this.player.setActionLocked(false);
     }
 }
 

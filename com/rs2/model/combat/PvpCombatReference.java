@@ -9,23 +9,23 @@ import com.rs2.model.task.DelayTimer;
 
 public final class PvpCombatReference
 extends EntityReference {
-    private DelayTimer a;
+    private DelayTimer timer;
 
     public PvpCombatReference(Entity entity, int n) {
         super(entity);
-        this.a = new DelayTimer(n);
+        this.timer = new DelayTimer(n);
     }
 
-    public final boolean b() {
-        return this.a.hasElapsed();
+    public final boolean hasExpired() {
+        return this.timer.hasElapsed();
     }
 
-    public final void c() {
-        this.a.reset();
+    public final void resetTimer() {
+        this.timer.reset();
     }
 
-    public final int d() {
-        return this.a.getRemainingTicks();
+    public final int getRemainingTicks() {
+        return this.timer.getRemainingTicks();
     }
 }
 

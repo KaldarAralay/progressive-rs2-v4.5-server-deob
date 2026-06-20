@@ -37,7 +37,7 @@ extends CycleEvent {
             Player player = this.player;
             player.packetSender.sendGameMessage("But fail to disarm it, and get hit by the traps.");
             int n = ThievingObjectHandler.getRandom().nextInt(1);
-            this.player.applyDirectHit(GameUtil.g(10), n == 1 ? HitType.POISON : HitType.NORMAL);
+            this.player.applyDirectHit(GameUtil.randomInclusive(10), n == 1 ? HitType.POISON : HitType.NORMAL);
             if (n == 1) {
                 this.player.getUpdateState().setGraphic(184);
             }
@@ -54,7 +54,7 @@ extends CycleEvent {
         int n2 = 0;
         while (n2 < n) {
             object = itemStackArray[n2];
-            this.player.getInventoryManager().b((ItemStack)object);
+            this.player.getInventoryManager().addOrDropItem((ItemStack)object);
             ++n2;
         }
         new DynamicObject(2588, this.objectX, this.objectY, this.player.getPosition().getPlane(), SkillActionHelper.getObjectOrientation(this.objectId, this.objectX, this.objectY, this.player.getPosition().getPlane()), 10, this.objectId, 10);
@@ -63,8 +63,8 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        this.player.n(false);
-        this.player.aN();
+        this.player.setActionLocked(false);
+        this.player.resetAnimation();
     }
 }
 

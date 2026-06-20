@@ -9,10 +9,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum TreePatch {
-    a(0, new Position[]{new Position(3228, 3458), new Position(3230, 3460)}, 2341),
-    b(1, new Position[]{new Position(3192, 3230), new Position(3194, 3232)}, 2342),
-    c(2, new Position[]{new Position(2935, 3437), new Position(2937, 3439)}, 2339),
-    d(3, new Position[]{new Position(3003, 3372), new Position(3005, 3374)}, 2340);
+    VARROCK(0, new Position[]{new Position(3228, 3458), new Position(3230, 3460)}, 2341),
+    LUMBRIDGE(1, new Position[]{new Position(3192, 3230), new Position(3194, 3232)}, 2342),
+    TAVERLEY(2, new Position[]{new Position(2935, 3437), new Position(2937, 3439)}, 2339),
+    FALADOR(3, new Position[]{new Position(3003, 3372), new Position(3005, 3374)}, 2340);
 
     private int index;
     private Position[] bounds;
@@ -55,7 +55,7 @@ public enum TreePatch {
             TreePatch treePatch;
             TreePatch treePatch2 = treePatch = treePatchArray[n2];
             treePatch2 = treePatch;
-            if (FarmingPatchUtils.a(treePatch.bounds[0], treePatch2.bounds[1], position)) {
+            if (FarmingPatchUtils.containsPosition(treePatch.bounds[0], treePatch2.bounds[1], position)) {
                 return treePatch;
             }
             ++n2;

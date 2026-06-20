@@ -43,7 +43,7 @@ extends CycleEvent {
             return;
         }
         cycleEventContainer.setTickDelay(3);
-        this.a.getUpdateState().setAnimation(this.f.d());
+        this.a.getUpdateState().setAnimation(this.f.getGatherAnimationId());
         object = this.a;
         ((Player)object).packetSender.sendSoundEffect(432, 1, 0);
         if (this.a.N == 1) {

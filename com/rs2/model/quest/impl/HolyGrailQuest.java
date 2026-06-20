@@ -24,11 +24,11 @@ extends QuestScript {
 
     public HolyGrailQuest(int n) {
         super(51);
-        super.a(2);
+        super.setQuestPointReward(2);
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player stringArray, int n) {
         if (n == 0) {
             if (stringArray.getQuestState(61) == 1) {
                 stringArray = new String[]{"I can start this quest by speaking to King Arthur at", "Camelot Castle, just North West of Catherby", "To complete this quest I must be able to defeat a Level", "120 Black Knight Titan."};
@@ -77,9 +77,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("2 Quest Points", 12150);
         player2 = player;
@@ -103,7 +103,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
+    public final boolean handleContextDialogue(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
         if (player.getQuestState(61) != 1) {
             return false;
         }
@@ -128,10 +128,10 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean c(Player player, int n, int n2, int n3) {
+    public final boolean handleInventoryItemFirstOption(Player player, int n, int n2, int n3) {
         if (n == 3214) {
             if (n2 == 16 && n3 >= 4) {
-                n = GameUtil.a(player.getPosition().getX(), player.getPosition().getY());
+                n = GameUtil.getRegionId(player.getPosition().getX(), player.getPosition().getY());
                 if (this.a.contains(player.getPosition())) {
                     if (n3 < 8 && n3 != 1) {
                         player.moveTo(new Position(2805, 4715, 0));
@@ -167,7 +167,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player object, int n, int n2, int n3, int n4) {
+    public final boolean handleFirstObjectAction(Player object, int n, int n2, int n3, int n4) {
         if (n == 24 && n2 == 2764 && n3 == 3503) {
             if (((Player)object).getQuestState(61) == 1) {
                 Player player = object;
@@ -185,7 +185,7 @@ extends QuestScript {
             player.packetSender.openSingleDoor(n, n2, n3, 2);
             player = object;
             player.packetSender.queueRelativeMovementStep(0, ((Entity)object).getPosition().getY() < 3362 ? 1 : -1, true);
-            if (((Player)object).getQuestState(61) == 1 && ((Player)object).getInventoryManager().containsItem(15) && !((Player)object).i(16, 2) && n4 >= 4) {
+            if (((Player)object).getQuestState(61) == 1 && ((Player)object).getInventoryManager().containsItem(15) && !((Player)object).ownsItemAmount(16, 2) && n4 >= 4) {
                 object = new GroundItem(new ItemStack(16, 1), (Entity)object, new Position(3107, 3359, 2));
                 GroundItemManager.getInstance().spawn((GroundItem)object);
                 if (n4 < 8) {
@@ -206,7 +206,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Entity entity, Entity entity2, int n) {
+    public final boolean handleCombatDeath(Entity entity, Entity entity2, int n) {
         if (entity2.isNpc() && entity.isPlayer()) {
             entity = (Player)entity;
             if (((Npc)(entity2 = (Npc)entity2)).getNpcId() == 221) {
@@ -219,7 +219,7 @@ extends QuestScript {
                     ((Player)entity2).packetSender.queueRelativeMovementStep(-2, 0, true);
                     entity2 = entity;
                     ((Player)entity2).packetSender.sendGameMessage("Well done! You have defeated the Black Knight Titan!");
-                    ((Player)entity).setQuestState(this.b(), 5);
+                    ((Player)entity).setQuestState(this.getQuestId(), 5);
                 }
                 return true;
             }
@@ -228,12 +228,12 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2) {
+    public final boolean canAttackNpc(Player player, int n, int n2) {
         return n != 221 || n2 == 4;
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         if (player.getQuestState(61) != 1) {
             return false;
         }
@@ -301,7 +301,7 @@ extends QuestScript {
                 }
             }
             if (n4 >= 6 && n4 < 8) {
-                if (player.aq(18)) {
+                if (player.ownsItem(18)) {
                     return false;
                 }
                 if (n2 == 1) {
@@ -338,8 +338,8 @@ extends QuestScript {
                 }
                 if (n2 == 9) {
                     player.getDialogueManager().showOneLineStatement("King Arthur gives you a feather.");
-                    player.getInventoryManager().b(new ItemStack(18, 1));
-                    player.setQuestState(this.b(), 7);
+                    player.getInventoryManager().addOrDropItem(new ItemStack(18, 1));
+                    player.setQuestState(this.getQuestId(), 7);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -363,7 +363,7 @@ extends QuestScript {
                 if (n2 == 4) {
                     player.getInventoryManager().removeItem(new ItemStack(19, 1));
                     player.getDialogueManager().finishDialogue();
-                    this.c(player);
+                    this.awardCompletionRewards(player);
                     return true;
                 }
             }
@@ -400,7 +400,7 @@ extends QuestScript {
                 }
                 if (n2 == 8) {
                     player.getDialogueManager().showNpcFourLineDialogue("He returned from the quest many years after", "everyone else. He seems to know something about it,", "but he can only speak about those experiences", "cryptically.", 591);
-                    player.setQuestState(this.b(), 3);
+                    player.setQuestState(this.getQuestId(), 3);
                     return true;
                 }
             }
@@ -466,7 +466,7 @@ extends QuestScript {
                 if (n2 == 102) {
                     player.pendingGameMode = 0;
                     player.getDialogueManager().showNpcTwoLineDialogue("Go to where the six heads face, blow the whistle and", "away you go!", 591);
-                    player.setQuestState(this.b(), 4);
+                    player.setQuestState(this.getQuestId(), 4);
                     return true;
                 }
             }
@@ -568,7 +568,7 @@ extends QuestScript {
                 }
             }
         }
-        if (n == 218 && n4 >= 3 && !player.aq(15)) {
+        if (n == 218 && n4 >= 3 && !player.ownsItem(15)) {
             if (n2 == 1) {
                 player.getDialogueManager().showNpcTwoLineDialogue("Welcome to my home. It's rare for me to have quests!", "Would you like a cup of tea? I'll just put the kettle on.", 591);
                 return true;
@@ -616,7 +616,7 @@ extends QuestScript {
                 return true;
             }
             if (n2 == 8) {
-                player.getInventoryManager().b(new ItemStack(1978, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(1978, 1));
                 player.getDialogueManager().finishDialogue();
                 return false;
             }
@@ -656,13 +656,13 @@ extends QuestScript {
                 return true;
             }
             if (n2 == 17) {
-                player.getInventoryManager().b(new ItemStack(15, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(15, 1));
                 player.getDialogueManager().finishDialogue();
                 return false;
             }
         }
         if (n == 219) {
-            if (player.aq(17)) {
+            if (player.ownsItem(17)) {
                 return false;
             }
             if (n2 == 1) {
@@ -776,7 +776,7 @@ extends QuestScript {
             }
             if (n2 == 10) {
                 player.getDialogueManager().showPlayerOneLineDialogue("I shall go and see if I can find him.", 591);
-                player.setQuestState(this.b(), 6);
+                player.setQuestState(this.getQuestId(), 6);
                 player.getDialogueManager().finishDialogue();
                 return true;
             }
@@ -875,7 +875,7 @@ extends QuestScript {
             }
             if (n2 == 115 && player.getInventoryManager().containsItem(16)) {
                 player.getInventoryManager().removeItem(new ItemStack(16, 1));
-                player.setQuestState(this.b(), 8);
+                player.setQuestState(this.getQuestId(), 8);
                 player.getDialogueManager().finishDialogue();
                 return false;
             }
@@ -891,7 +891,7 @@ extends QuestScript {
             }
             if (n2 == 3) {
                 player.getDialogueManager().showNpcOneLineDialogue("Thank you very much for showing me the way home.", 591);
-                player.setQuestState(this.b(), 9);
+                player.setQuestState(this.getQuestId(), 9);
                 player.getDialogueManager().finishDialogue();
                 return true;
             }

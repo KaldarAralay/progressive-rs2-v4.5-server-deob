@@ -27,11 +27,11 @@ public final class PiratesTreasureQuest
 extends QuestScript {
     public PiratesTreasureQuest(int n) {
         super(10);
-        super.a(2);
+        super.setQuestPointReward(2);
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player stringArray, int n) {
         if (n == 0) {
             stringArray = new String[]{"I can start this quest by speaking to Redbeard Frank who", "is at Port Sarim.", "", "There aren't any requirements for this quest."};
             return stringArray;
@@ -76,9 +76,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("2 Quest Points", 12150);
         player2 = player;
@@ -91,9 +91,9 @@ extends QuestScript {
         player2.packetSender.sendInterfaceText("", 12154);
         player2 = player;
         player2.packetSender.sendInterfaceText("", 12155);
-        player.getInventoryManager().b(new ItemStack(995, 450));
-        player.getInventoryManager().b(new ItemStack(1635, 1));
-        player.getInventoryManager().b(new ItemStack(1605, 1));
+        player.getInventoryManager().addOrDropItem(new ItemStack(995, 450));
+        player.getInventoryManager().addOrDropItem(new ItemStack(1635, 1));
+        player.getInventoryManager().addOrDropItem(new ItemStack(1605, 1));
         player2 = player;
         player2.packetSender.sendInterfaceModel(InterfaceDefinition.interfaceCount <= 12140 ? 6161 : 12145, 250, 1605);
         player2 = player;
@@ -103,7 +103,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean c(Player player, int n, int n2, int n3) {
+    public final boolean handleInventoryItemFirstOption(Player player, int n, int n2, int n3) {
         if (n == 3214) {
             if (n2 == 433) {
                 n = 0;
@@ -129,7 +129,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n3 == 9) {
-                    player.setQuestState(this.b(), 10);
+                    player.setQuestState(this.getQuestId(), 10);
                     n = 0;
                     if (NpcDefinition.isDefined(1217)) {
                         Npc npc = new Npc(1217);
@@ -141,7 +141,7 @@ extends QuestScript {
                     if (npc.getInteractionTarget() != null && npc.getInteractionTarget() != player) {
                         n = 1;
                     }
-                    if (!GameUtil.b(player, npc)) {
+                    if (!GameUtil.isNpcWaypointFacingPlayer(player, npc)) {
                         n = 1;
                     }
                     if (n != 0) {
@@ -170,17 +170,17 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
+    public final boolean handleContextDialogue(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
         if (n2 == 2071 && n5 == 3009 && n6 == 3207) {
-            if (n7 == 6 && player.aq(431)) {
-                player.setQuestState(this.b(), 7);
+            if (n7 == 6 && player.ownsItem(431)) {
+                player.setQuestState(this.getQuestId(), 7);
             }
             if (n7 >= 6 && n4 == 0) {
                 RumBananaCrateSearchTask rumBananaCrateSearchTask = new RumBananaCrateSearchTask(this, 3, player);
                 BananaCratePromptTask bananaCratePromptTask = new BananaCratePromptTask(this, 2, player);
                 Player player2 = player;
                 player2.packetSender.sendGameMessage("There are a lot of bananas in the crate.");
-                if (!player.aq(431) && n3 == 1) {
+                if (!player.ownsItem(431) && n3 == 1) {
                     World.getTaskScheduler().schedule(rumBananaCrateSearchTask);
                 } else if (n3 == 1) {
                     World.getTaskScheduler().schedule(bananaCratePromptTask);
@@ -191,7 +191,7 @@ extends QuestScript {
                 player3.packetSender.sendGameMessage("There are a lot of bananas in the crate.");
                 World.getTaskScheduler().schedule(initialBananaCratePromptTask);
             } else if (n4 == 1) {
-                player.getInventoryManager().b(new ItemStack(1963, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(1963, 1));
                 player.getUpdateState().setAnimation(832);
                 Player player4 = player;
                 player4.packetSender.sendGameMessage("You take a banana.");
@@ -209,7 +209,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleFirstObjectAction(Player player, int n, int n2, int n3, int n4) {
         if (n == 2072 && n2 == 2943 && n3 == 3151) {
             if (player.bO == 0) {
                 Player player2 = player;
@@ -256,7 +256,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3) {
+    public final boolean handleItemOnObject(Player player, int n, int n2, int n3) {
         if (n == 432 && n2 == 2079 && player.getInventoryManager().containsItem(432)) {
             HectorsChestMessageTask hectorsChestMessageTask = new HectorsChestMessageTask(this, 4, player);
             ObjectManager.getInstance().addDynamicObject(new DynamicObject(2080, 3218, 3396, 1, 1, 10, 2079, 4), true);
@@ -264,7 +264,7 @@ extends QuestScript {
             player2.packetSender.sendGameMessage("You unlock the chest.");
             player2 = player;
             player2.packetSender.sendGameMessage("All that's in the chest is a message...");
-            player.setQuestState(this.b(), 9);
+            player.setQuestState(this.getQuestId(), 9);
             World.getTaskScheduler().schedule(hectorsChestMessageTask);
             return true;
         }
@@ -290,7 +290,7 @@ extends QuestScript {
             if (n3 == 2) {
                 player.getInventoryManager().removeItem(new ItemStack(431, 1));
                 player.getDialogueManager().showOneLineStatement("You stash the rum in the crate.");
-                player.setQuestState(this.b(), 3);
+                player.setQuestState(this.getQuestId(), 3);
                 player.er();
                 player.getDialogueManager().finishDialogue();
                 return true;
@@ -309,7 +309,7 @@ extends QuestScript {
      * Enabled aggressive block sorting
      */
     @Override
-    public final boolean a(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         if (n == 375) {
             if (n4 == 0) {
                 if (n2 == 1) {
@@ -383,13 +383,13 @@ extends QuestScript {
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
-                if (n2 == 1 && player.getQuestState(this.b()) >= 8 && !player.aq(432) && !player.aq(433)) {
-                    player.getInventoryManager().b(new ItemStack(432, 1));
+                if (n2 == 1 && player.getQuestState(this.getQuestId()) >= 8 && !player.ownsItem(432) && !player.ownsItem(433)) {
+                    player.getInventoryManager().addOrDropItem(new ItemStack(432, 1));
                     player.getDialogueManager().showItemMessage("Frank hands you a key", new ItemStack(432, 1));
                     player.getDialogueManager().setNextDialogueStep(8);
                     return true;
                 }
-                if (n2 == 1 && player.getQuestState(this.b()) < 8) {
+                if (n2 == 1 && player.getQuestState(this.getQuestId()) < 8) {
                     player.getDialogueManager().showNpcOneLineDialogue("Arr, Matey!", 591);
                     return true;
                 }
@@ -420,8 +420,8 @@ extends QuestScript {
                 }
                 if (n2 == 7 && player.getInventoryManager().containsItem(431)) {
                     player.getInventoryManager().removeItem(new ItemStack(431, 1));
-                    player.getInventoryManager().b(new ItemStack(432, 1));
-                    player.setQuestState(this.b(), 8);
+                    player.getInventoryManager().addOrDropItem(new ItemStack(432, 1));
+                    player.setQuestState(this.getQuestId(), 8);
                     player.getDialogueManager().showItemMessage("Frank happily takes the rum... ... and hands you a key", new ItemStack(432, 1));
                     return true;
                 }
@@ -497,7 +497,7 @@ extends QuestScript {
         }
         if (n2 == 105) {
             player.getDialogueManager().showNpcTwoLineDialogue("Wow - you are well prepared! You're hired. Go through", "to the back and tidy up for me, please.", 591);
-            player.setQuestState(this.b(), 6);
+            player.setQuestState(this.getQuestId(), 6);
             player.getDialogueManager().finishDialogue();
             return true;
         }
@@ -507,7 +507,7 @@ extends QuestScript {
         }
         if (n2 == 107) {
             player.getDialogueManager().showNpcOneLineDialogue("Well, if you find one come back.", 591);
-            player.setQuestState(this.b(), 5);
+            player.setQuestState(this.getQuestId(), 5);
             player.getDialogueManager().finishDialogue();
             return true;
         }
@@ -537,7 +537,7 @@ extends QuestScript {
         }
         if (n2 == 111) {
             player.getDialogueManager().showNpcTwoLineDialogue("Ok, You're hired. Go through to the back and", "tidy up for me, please.", 591);
-            player.setQuestState(this.b(), 6);
+            player.setQuestState(this.getQuestId(), 6);
             player.getDialogueManager().finishDialogue();
             return true;
         }

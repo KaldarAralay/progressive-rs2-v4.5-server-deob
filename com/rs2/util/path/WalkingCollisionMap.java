@@ -230,7 +230,7 @@ public final class WalkingCollisionMap {
 
     public static void addObjectCollision(int n, int n2, int n3, int n4, int n5, int n6, boolean bl) {
         LoadedWorldObject loadedWorldObject = new LoadedWorldObject(ObjectDefinition.forId(n), new Position(n2, n3, n4), n6, n5);
-        World.j().k();
+        World.getInstance().getObjectRegionIndex();
         WorldObjectRegionIndex.getOrCreateRegionBucket(loadedWorldObject.getPosition()).getLoadedObjects().add(loadedWorldObject);
         if (n < 0) {
             if (!bl) {
@@ -639,7 +639,7 @@ public final class WalkingCollisionMap {
         }
     }
 
-    public static boolean a(int n) {
+    public static boolean hasDungeonCoordinateShiftRegion(int n) {
         int[] nArray = regionIds;
         int n2 = regionIds.length;
         int n3 = 0;

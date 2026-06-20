@@ -10,17 +10,17 @@ import com.rs2.model.item.ItemStack;
 
 final class RestlessGhostCompletionStep
 extends CutsceneStep {
-    private /* synthetic */ RestlessGhostCutscene a;
+    private /* synthetic */ RestlessGhostCutscene cutscene;
 
     RestlessGhostCompletionStep(RestlessGhostCutscene restlessGhostCutscene, Cutscene cutscene, int n) {
-        this.a = restlessGhostCutscene;
+        this.cutscene = restlessGhostCutscene;
         super(cutscene, 5);
     }
 
     @Override
-    public final void a() {
-        this.a.b.getInventoryManager().removeItem(new ItemStack(553));
-        RestlessGhostCutscene.a.c(this.a.b);
+    public final void executeStep() {
+        this.cutscene.player.getInventoryManager().removeItem(new ItemStack(553));
+        RestlessGhostCutscene.questScript.awardCompletionRewards(this.cutscene.player);
     }
 }
 

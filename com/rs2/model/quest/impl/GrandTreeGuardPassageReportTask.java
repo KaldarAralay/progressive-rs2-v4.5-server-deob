@@ -19,7 +19,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        this.a.n(false);
+        this.a.setActionLocked(false);
         Player player = this.a;
         player.packetSender.closeInterfaces();
         DialogueManager.continueDialogue(this.a, 2781, 100, 0);

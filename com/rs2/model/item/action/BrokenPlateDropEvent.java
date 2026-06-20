@@ -14,15 +14,15 @@ import com.rs2.model.task.CycleEventContainer;
 
 final class BrokenPlateDropEvent
 extends CycleEvent {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
     BrokenPlateDropEvent(SpinningPlateResultEvent spinningPlateResultEvent, Player player) {
-        this.a = player;
+        this.player = player;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        GroundItemManager.getInstance().spawn(new GroundItem(new ItemStack(SpinningPlateHandler.c(), 1), this.a));
+        GroundItemManager.getInstance().spawn(new GroundItem(new ItemStack(SpinningPlateHandler.getBrokenPlateItemId(), 1), this.player));
         cycleEventContainer.stop();
     }
 

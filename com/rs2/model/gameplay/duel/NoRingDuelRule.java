@@ -13,20 +13,20 @@ extends DuelRule {
     }
 
     @Override
-    public final void a(Player player, boolean bl) {
+    public final void toggleForPlayer(Player player, boolean bl) {
         NoRingDuelRule noRingDuelRule = this;
         Player player2 = player;
-        if (!noRingDuelRule.a(player2)) {
-            player2.getDuelSession().j().add(new ItemStack(player2.getEquipmentManager().getItemIdAtSlot(12)));
+        if (!noRingDuelRule.isEnabledFor(player2)) {
+            player2.getDuelSession().getEquipmentToRemove().add(new ItemStack(player2.getEquipmentManager().getItemIdAtSlot(12)));
         } else {
-            player2.getDuelSession().j().remove(new ItemStack(player2.getEquipmentManager().getItemIdAtSlot(12)));
+            player2.getDuelSession().getEquipmentToRemove().remove(new ItemStack(player2.getEquipmentManager().getItemIdAtSlot(12)));
         }
-        player.getDuelInterfaceManager().a(this.w, null);
+        player.getDuelInterfaceManager().toggleRule(this.ruleIndex, null);
     }
 
     @Override
-    public final boolean a(Player player) {
-        return player.getDuelSession().k()[this.w];
+    public final boolean isEnabledFor(Player player) {
+        return player.getDuelSession().getEnabledRules()[this.ruleIndex];
     }
 }
 

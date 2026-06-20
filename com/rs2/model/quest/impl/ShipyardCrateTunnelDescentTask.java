@@ -24,8 +24,8 @@ extends TickTask {
         this.a.moveTo(new Position(2802, 9169, 0));
         Player player = this.a;
         player.packetSender.closeInterfaces();
-        this.a.applyDirectHit(1 + GameUtil.g(9), HitType.NORMAL);
-        this.a.n(false);
+        this.a.applyDirectHit(1 + GameUtil.randomInclusive(9), HitType.NORMAL);
+        this.a.setActionLocked(false);
         this.stop();
     }
 }

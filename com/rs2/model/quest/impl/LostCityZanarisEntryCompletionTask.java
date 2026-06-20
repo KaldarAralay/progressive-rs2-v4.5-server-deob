@@ -20,7 +20,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        this.a.c(this.b);
+        this.a.awardCompletionRewards(this.b);
         this.stop();
     }
 }

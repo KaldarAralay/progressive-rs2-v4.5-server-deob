@@ -16,11 +16,11 @@ public final class WitchsPotionQuest
 extends QuestScript {
     public WitchsPotionQuest(int n) {
         super(18);
-        super.a(1);
+        super.setQuestPointReward(1);
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player stringArray, int n) {
         if (n == 0) {
             stringArray = new String[]{"I can start this quest by speaking to Hetty in her house in", "Rimmington, West of Port Sarim"};
             return stringArray;
@@ -41,9 +41,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("1 Quest Point", 12150);
         player2 = player;
@@ -66,7 +66,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player object, int n, Position position, int n2) {
+    public final boolean handleNpcDeathDrop(Player object, int n, Position position, int n2) {
         if (n == 47 && n2 == 2) {
             object = new GroundItem(new ItemStack(300, 1), (Entity)object, position);
             GroundItemManager.getInstance().spawn((GroundItem)object);
@@ -84,14 +84,14 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
+    public final boolean handleContextDialogue(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
         if (n2 == 2024 && n5 == 2967 && n6 == 3205 && n == 1 && n7 == 3) {
             if (n3 == 1) {
                 player.getDialogueManager().showTwoLineStatement("You drink from the cauldron, it tastes horrible! You feel yourself", "imbued with power.");
                 return true;
             }
             if (n3 == 2) {
-                this.c(player);
+                this.awardCompletionRewards(player);
                 player.getDialogueManager().markDialogueInactive();
                 player.getDialogueManager().finishDialogue();
                 return true;
@@ -101,7 +101,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         if (n == 307) {
             if (n4 == 0) {
                 if (n2 == 1) {
@@ -243,7 +243,7 @@ extends QuestScript {
                     player.getInventoryManager().removeItem(new ItemStack(1957, 1));
                     player.getInventoryManager().removeItem(new ItemStack(2146, 1));
                     player.getDialogueManager().showNpcOneLineDialogue("Ok, now drink from the cauldron.", 591);
-                    player.setQuestState(this.b(), 3);
+                    player.setQuestState(this.getQuestId(), 3);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }

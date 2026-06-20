@@ -82,7 +82,7 @@ public final class PlantPotHandler {
             return false;
         }
         if (this.player.getInventoryManager().removeItemFromSlot(new ItemStack(saplingDefinition.getSeedId()), n == 5354 ? n3 : n4)) {
-            this.player.getInventoryManager().a(new ItemStack(saplingDefinition.getSeedlingId()), n == 5354 ? n3 : n4);
+            this.player.getInventoryManager().setItemInSlot(new ItemStack(saplingDefinition.getSeedlingId()), n == 5354 ? n3 : n4);
         } else if (this.player.getInventoryManager().removeItem(new ItemStack(saplingDefinition.getSeedId()))) {
             this.player.getInventoryManager().addItem(new ItemStack(saplingDefinition.getSeedlingId()));
         }

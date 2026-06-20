@@ -58,26 +58,26 @@ extends CycleEvent {
             player = this.player;
             player.packetSender.sendSoundEffect(469, 1, 0);
             this.player.getUpdateState().setAnimation(899);
-            this.player.n(true);
+            this.player.setActionLocked(true);
             player = this.player;
             player.packetSender.sendGameMessage("You smelt the " + this.primaryOre.getDefinition().getName().toLowerCase() + " " + (this.hasSecondaryOre ? "and " + this.secondaryOre.getDefinition().getName().toLowerCase() + " together " : "") + "in the furnace.");
             this.ticksUntilSmelt = 4;
         }
         if (this.ticksUntilSmelt == 0) {
             --this.remainingActions;
-            this.player.n(false);
+            this.player.setActionLocked(false);
             this.player.getInventoryManager().removeItem(this.primaryOre);
             if (this.hasSecondaryOre) {
                 this.player.getInventoryManager().removeItem(this.secondaryOre);
             }
-            if (this.barItemId == 2351 && GameUtil.g(100) > 50 && this.player.getEquipmentManager().getItemIdAtSlot(12) != 2568) {
+            if (this.barItemId == 2351 && GameUtil.randomInclusive(100) > 50 && this.player.getEquipmentManager().getItemIdAtSlot(12) != 2568) {
                 player = this.player;
                 player.packetSender.sendGameMessage("You unsuccessfuly smelt the iron ore.");
             } else {
                 if (this.barItemId == 2351 && this.player.getEquipmentManager().getItemIdAtSlot(12) == 2568) {
                     this.player.setRingOfForgingLife(this.player.getRingOfForgingLife() - 1);
                     if (this.player.getRingOfForgingLife() <= 0) {
-                        this.player.getEquipmentManager().c(12, 1);
+                        this.player.getEquipmentManager().consumeSlotItemAmount(12, 1);
                         player = this.player;
                         player.packetSender.sendGameMessage("Your ring of forging shatters!");
                         this.player.setRingOfForgingLife(140);
@@ -132,7 +132,7 @@ extends CycleEvent {
     @Override
     public final void onStop() {
         this.player.nextActionSequence();
-        this.player.aN();
+        this.player.resetAnimation();
     }
 }
 

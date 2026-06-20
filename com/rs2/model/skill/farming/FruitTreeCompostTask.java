@@ -30,8 +30,8 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        FruitTreePatchManager.getPlayer(this.manager).n(false);
-        FruitTreePatchManager.getPlayer(this.manager).aN();
+        FruitTreePatchManager.getPlayer(this.manager).setActionLocked(false);
+        FruitTreePatchManager.getPlayer(this.manager).resetAnimation();
     }
 }
 

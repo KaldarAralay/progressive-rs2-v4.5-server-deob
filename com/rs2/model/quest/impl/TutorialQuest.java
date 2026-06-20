@@ -20,7 +20,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean c(Player player, int n) {
+    public final boolean refreshQuestJournalStatus(Player player, int n) {
         if (n == 1) {
             return false;
         }
@@ -29,7 +29,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleFirstObjectAction(Player player, int n, int n2, int n3, int n4) {
         if (n == 3014 && n2 == 3098 && n3 == 3107) {
             if (n4 == 5) {
                 Player player2 = player;
@@ -93,7 +93,7 @@ extends QuestScript {
         }
         if (n == 3029 && n2 == 3088 && n3 == 3119) {
             if (n4 == 28) {
-                AttackStyleDefinition.a(player, new Position(3088, 9520, 0));
+                AttackStyleDefinition.startDelayedObjectMove(player, new Position(3088, 9520, 0));
                 player.ea();
                 return true;
             }
@@ -127,7 +127,7 @@ extends QuestScript {
         }
         if (n == 3030 && n2 == 3111 && n3 == 9526) {
             if (n4 == 50) {
-                AttackStyleDefinition.a(player, new Position(3111, 3125, 0));
+                AttackStyleDefinition.startDelayedObjectMove(player, new Position(3111, 3125, 0));
                 player.ea();
                 return true;
             }
@@ -170,7 +170,7 @@ extends QuestScript {
     }
 
     @Override
-    public final void d(Player itemStackArray, int n) {
+    public final void refreshQuestJournal(Player itemStackArray, int n) {
         Object object = itemStackArray;
         itemStackArray.packetSender.setSidebarInterface(QuestNpcIds.j[0], QuestNpcIds.j[1]);
         if (n < 6) {
@@ -313,7 +313,7 @@ extends QuestScript {
         if (n == 0) {
             object = itemStackArray;
             itemStackArray.packetSender.showInterface(3559);
-            if (!itemStackArray.aq(995)) {
+            if (!itemStackArray.ownsItem(995)) {
                 itemStackArray.getBankContainer().addToTab(new ItemStack(995, 25), 0);
             }
         }
@@ -645,7 +645,7 @@ extends QuestScript {
             object2.getBankContainer().clear();
             object2.getInventoryManager().refresh();
             object2.getEquipmentManager().refresh();
-            object2.f(true);
+            object2.setAppearanceUpdateRequired(true);
             object2.getBankContainer().addToTab(new ItemStack(995, 25), 0);
             object = new ItemStack[]{new ItemStack(1351), new ItemStack(590), new ItemStack(303), new ItemStack(315), new ItemStack(1925), new ItemStack(1931), new ItemStack(2309), new ItemStack(1265), new ItemStack(1205), new ItemStack(1277), new ItemStack(1171), new ItemStack(841), new ItemStack(882, 25), new ItemStack(556, 25), new ItemStack(558, 15), new ItemStack(555, 6), new ItemStack(557, 4), new ItemStack(559, 2)};
             ItemStack[] itemStackArray2 = object;
@@ -656,10 +656,10 @@ extends QuestScript {
                 ++n2;
             }
             itemStackArray.setQuestState(0, 1);
-            if (itemStackArray.ef) {
+            if (itemStackArray.loginRestrictionExempt) {
                 object2 = new ItemStack(7956, 1);
                 itemStackArray.getInventoryManager().addItem((ItemStack)object2);
-                GameUtil.a((ItemStack)object2);
+                GameUtil.addTrackedRareItemAmount((ItemStack)object2);
                 object = itemStackArray;
                 itemStackArray.packetSender.sendGameMessage("You received a reward for participating the test week.");
             }
@@ -667,7 +667,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         if (n == 945) {
             if (n4 == 2) {
                 if (!ServerSettings.tutorialSkipPromptEnabled && n2 < 3) {
@@ -794,8 +794,8 @@ extends QuestScript {
                 if (n2 == 2) {
                     player.getDialogueManager().showTwoItemMessage("The Survival Guide gives you a @dbl@tinderbox @bla@and a @dbl@bronze", "@dbl@axe@bla@!", new ItemStack(590, 1), new ItemStack(1351, 1));
                     player.setInteractionTargetId(0);
-                    player.getInventoryManager().b(new ItemStack(1351, 1));
-                    player.getInventoryManager().b(new ItemStack(590, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(1351, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(590, 1));
                     player.ea();
                     Player player4 = player;
                     player4.packetSender.sendEntityHintIcon(1, -1);
@@ -804,11 +804,11 @@ extends QuestScript {
                     return true;
                 }
             }
-            if (!(n4 < 7 || n2 != 1 || player.aq(1351) && player.aq(590))) {
+            if (!(n4 < 7 || n2 != 1 || player.ownsItem(1351) && player.ownsItem(590))) {
                 player.getDialogueManager().showTwoItemMessage("The Survival Guide gives you a @dbl@tinderbox @bla@and a @dbl@bronze", "@dbl@axe@bla@!", new ItemStack(590, 1), new ItemStack(1351, 1));
                 player.setInteractionTargetId(0);
-                player.getInventoryManager().b(new ItemStack(1351, 1));
-                player.getInventoryManager().b(new ItemStack(590, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(1351, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(590, 1));
                 player.getDialogueManager().resetDialogueState();
                 player.getDialogueManager().finishDialogue();
                 return true;
@@ -823,17 +823,17 @@ extends QuestScript {
                 if (n2 == 2) {
                     player.getDialogueManager().showItemMessage("The Survival Guide gives you a @dbl@net@bla@!", new ItemStack(303, 1));
                     player.setInteractionTargetId(0);
-                    player.getInventoryManager().b(new ItemStack(303, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(303, 1));
                     player.ea();
                     player.getDialogueManager().resetDialogueState();
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
             }
-            if (n4 >= 12 && n2 == 1 && !player.aq(303)) {
+            if (n4 >= 12 && n2 == 1 && !player.ownsItem(303)) {
                 player.getDialogueManager().showItemMessage("The Survival Guide gives you a @dbl@net@bla@!", new ItemStack(303, 1));
                 player.setInteractionTargetId(0);
-                player.getInventoryManager().b(new ItemStack(303, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(303, 1));
                 player.getDialogueManager().resetDialogueState();
                 player.getDialogueManager().finishDialogue();
                 return true;
@@ -862,19 +862,19 @@ extends QuestScript {
                     player.setInteractionTargetId(0);
                     Player player6 = player;
                     player6.packetSender.sendEntityHintIcon(1, -1);
-                    player.getInventoryManager().b(new ItemStack(1933, 1));
-                    player.getInventoryManager().b(new ItemStack(1929, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(1933, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(1929, 1));
                     player.ea();
                     player.getDialogueManager().resetDialogueState();
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
             }
-            if (!(n4 < 18 || n4 >= 20 || n2 != 1 || player.aq(2307) || player.aq(1933) && player.aq(1929))) {
+            if (!(n4 < 18 || n4 >= 20 || n2 != 1 || player.ownsItem(2307) || player.ownsItem(1933) && player.ownsItem(1929))) {
                 player.getDialogueManager().showTwoItemMessage("The Cooking Guide gives you a @dbl@bucket of water @bla@and a", "@dbl@pot of flour@bla@!", new ItemStack(1929, 1), new ItemStack(1933, 1));
                 player.setInteractionTargetId(0);
-                player.getInventoryManager().b(new ItemStack(1933, 1));
-                player.getInventoryManager().b(new ItemStack(1929, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(1933, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(1929, 1));
                 player.getDialogueManager().resetDialogueState();
                 player.getDialogueManager().finishDialogue();
                 return true;
@@ -967,17 +967,17 @@ extends QuestScript {
                 if (n2 == 4) {
                     player.getDialogueManager().showItemMessage("Dezzick gives you a @dbl@bronze pickaxe@bla@!", new ItemStack(1265, 1));
                     player.setInteractionTargetId(0);
-                    player.getInventoryManager().b(new ItemStack(1265, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(1265, 1));
                     player.ea();
                     player.getDialogueManager().resetDialogueState();
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
             }
-            if (n4 >= 33 && n2 == 1 && !player.aq(1265)) {
+            if (n4 >= 33 && n2 == 1 && !player.ownsItem(1265)) {
                 player.getDialogueManager().showItemMessage("Dezzick gives you a @dbl@bronze pickaxe@bla@!", new ItemStack(1265, 1));
                 player.setInteractionTargetId(0);
-                player.getInventoryManager().b(new ItemStack(1265, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(1265, 1));
                 player.getDialogueManager().resetDialogueState();
                 player.getDialogueManager().finishDialogue();
                 return true;
@@ -994,17 +994,17 @@ extends QuestScript {
                 if (n2 == 3) {
                     player.getDialogueManager().showItemMessage("Dezzick gives you a @dbl@hammer@bla@!", new ItemStack(2347, 1));
                     player.setInteractionTargetId(0);
-                    player.getInventoryManager().b(new ItemStack(2347, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(2347, 1));
                     player.ea();
                     player.getDialogueManager().resetDialogueState();
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
             }
-            if (n4 >= 37 && n2 == 1 && !player.aq(2347)) {
+            if (n4 >= 37 && n2 == 1 && !player.ownsItem(2347)) {
                 player.getDialogueManager().showItemMessage("Dezzick gives you a @dbl@hammer@bla@!", new ItemStack(2347, 1));
                 player.setInteractionTargetId(0);
-                player.getInventoryManager().b(new ItemStack(2347, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(2347, 1));
                 player.getDialogueManager().resetDialogueState();
                 player.getDialogueManager().finishDialogue();
                 return true;
@@ -1049,21 +1049,21 @@ extends QuestScript {
                     player.setInteractionTargetId(0);
                     Player player11 = player;
                     player11.packetSender.sendEntityHintIcon(1, -1);
-                    player.getInventoryManager().b(new ItemStack(1171, 1));
-                    player.getInventoryManager().b(new ItemStack(1277, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(1171, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(1277, 1));
                     player.ea();
                     player.getDialogueManager().resetDialogueState();
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
             }
-            if (!(n4 < 44 || n2 != 1 || player.aq(1171) && player.aq(1277))) {
+            if (!(n4 < 44 || n2 != 1 || player.ownsItem(1171) && player.ownsItem(1277))) {
                 player.getDialogueManager().showTwoItemMessage("The Combat Instructor gives you a @dbl@bronze sword @bla@and a", "@dbl@wooden shield@bla@!", new ItemStack(1277, 1), new ItemStack(1171, 1));
                 player.setInteractionTargetId(0);
                 Player player12 = player;
                 player12.packetSender.sendEntityHintIcon(1, -1);
-                player.getInventoryManager().b(new ItemStack(1171, 1));
-                player.getInventoryManager().b(new ItemStack(1277, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(1171, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(1277, 1));
                 player.getDialogueManager().resetDialogueState();
                 player.getDialogueManager().finishDialogue();
                 return true;
@@ -1084,8 +1084,8 @@ extends QuestScript {
                 if (n2 == 4) {
                     player.getDialogueManager().showTwoItemMessage("The Combat Instructor gives you some @dbl@bronze arrows @bla@and", "a @dbl@shortbow@bla@!", new ItemStack(882, 50), new ItemStack(841, 1));
                     player.setInteractionTargetId(0);
-                    player.getInventoryManager().b(new ItemStack(841, 1));
-                    player.getInventoryManager().b(new ItemStack(882, 50));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(841, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(882, 50));
                     player.ea();
                     player.getDialogueManager().resetDialogueState();
                     player.getDialogueManager().finishDialogue();
@@ -1093,27 +1093,27 @@ extends QuestScript {
                 }
             }
             if (n4 >= 49) {
-                if (n2 == 1 && !player.aq(841) && !player.aq(882)) {
+                if (n2 == 1 && !player.ownsItem(841) && !player.ownsItem(882)) {
                     player.getDialogueManager().showTwoItemMessage("The Combat Instructor gives you some @dbl@bronze arrows @bla@and", "a @dbl@shortbow@bla@!", new ItemStack(882, 50), new ItemStack(841, 1));
                     player.setInteractionTargetId(0);
-                    player.getInventoryManager().b(new ItemStack(841, 1));
-                    player.getInventoryManager().b(new ItemStack(882, 50));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(841, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(882, 50));
                     player.getDialogueManager().resetDialogueState();
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
-                if (n2 == 1 && player.aq(841) && !player.aq(882)) {
+                if (n2 == 1 && player.ownsItem(841) && !player.ownsItem(882)) {
                     player.getDialogueManager().showItemMessage("The Combat Instructor gives you some @dbl@bronze arrows@bla@!", new ItemStack(882, 50));
                     player.setInteractionTargetId(0);
-                    player.getInventoryManager().b(new ItemStack(882, 50));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(882, 50));
                     player.getDialogueManager().resetDialogueState();
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
-                if (n2 == 1 && !player.aq(841) && player.aq(882)) {
+                if (n2 == 1 && !player.ownsItem(841) && player.ownsItem(882)) {
                     player.getDialogueManager().showItemMessage("The Combat Instructor gives you a @dbl@shortbow@bla@!", new ItemStack(841, 1));
                     player.setInteractionTargetId(0);
-                    player.getInventoryManager().b(new ItemStack(841, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(841, 1));
                     player.getDialogueManager().resetDialogueState();
                     player.getDialogueManager().finishDialogue();
                     return true;
@@ -1287,19 +1287,19 @@ extends QuestScript {
                 if (n2 == 2) {
                     player.getDialogueManager().showTwoItemMessage("Terrova gives you five @dbl@air runes @bla@and five @dbl@mind runes@bla@!", "", new ItemStack(556, 5), new ItemStack(558, 5));
                     player.setInteractionTargetId(0);
-                    player.getInventoryManager().b(new ItemStack(556, 5));
-                    player.getInventoryManager().b(new ItemStack(558, 5));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(556, 5));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(558, 5));
                     player.ea();
                     player.getDialogueManager().resetDialogueState();
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
             }
-            if (!(n4 < 65 || n4 >= 67 || n2 != 1 || player.aq(556) && player.aq(558))) {
+            if (!(n4 < 65 || n4 >= 67 || n2 != 1 || player.ownsItem(556) && player.ownsItem(558))) {
                 player.getDialogueManager().showTwoItemMessage("Terrova gives you five @dbl@air runes @bla@and five @dbl@mind runes@bla@!", "", new ItemStack(556, 5), new ItemStack(558, 5));
                 player.setInteractionTargetId(0);
-                player.getInventoryManager().b(new ItemStack(556, 5));
-                player.getInventoryManager().b(new ItemStack(558, 5));
+                player.getInventoryManager().addOrDropItem(new ItemStack(556, 5));
+                player.getInventoryManager().addOrDropItem(new ItemStack(558, 5));
                 player.getDialogueManager().resetDialogueState();
                 player.getDialogueManager().finishDialogue();
                 return true;

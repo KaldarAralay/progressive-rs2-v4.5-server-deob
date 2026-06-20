@@ -140,7 +140,7 @@ implements ActionListener {
         this.c = ControlPanel.b.mapScale;
         this.ao = new JFrame();
         try {
-            Server.a();
+            Server.loadConfig();
         }
         catch (IOException iOException) {
             serializable = iOException;
@@ -726,24 +726,24 @@ implements ActionListener {
     }
 
     public static void a() {
-        if (Server.b == 2) {
+        if (Server.serverStatus == 2) {
             ar = "<font color=green>Online";
             l.setEnabled(false);
             a.setEnabled(true);
         }
-        if (Server.b == 1) {
+        if (Server.serverStatus == 1) {
             ar = "<font color=black>Starting up...";
             l.setEnabled(false);
             a.setEnabled(true);
             n.setEnabled(false);
         }
-        if (Server.b == 3) {
+        if (Server.serverStatus == 3) {
             ar = "<font color=black>Shutting down...";
             l.setEnabled(false);
             m.setEnabled(false);
             a.setEnabled(false);
         }
-        if (Server.b == 0) {
+        if (Server.serverStatus == 0) {
             ar = "<font color=red>Offline";
             l.setEnabled(true);
             m.setEnabled(false);
@@ -751,15 +751,15 @@ implements ActionListener {
             n.setEnabled(false);
         }
         p.setText("<html>Server Status: <b>" + ar);
-        ax = Server.d;
+        ax = Server.runtimeMinutes;
         aw = ServerSettings.serverName;
         r.setText("<html>Server Name: <font color=#1589FF>" + aw);
         String string = ax / 60 > 0 ? String.valueOf(ax / 60) + " hours " + ax % 60 + " mins" : String.valueOf(ax) + " mins";
         s.setText("<html>Runtime: <font color=#1589FF>" + string);
-        at = Server.l;
+        at = Server.onlinePlayerCount;
         as = ServerSettings.maxPlayers;
-        au = Server.n;
-        av = Server.m;
+        au = Server.moderatorPlayerCount;
+        av = Server.adminPlayerCount;
         q.setText("<html>Users Online: " + at + "/" + as + " <font color=blue>(" + au + " Mods, <font color=orange>" + av + " Admins)");
         b.repaint();
     }
@@ -773,16 +773,16 @@ implements ActionListener {
             ControlPanel.a();
         }
         if (actionEvent.getActionCommand() == "Shutdown Server") {
-            if (World.b() > 0 && World.c() == 0) {
-                World.a(true);
+            if (World.getPlayerCount() > 0 && World.getNonBotPlayerCount() == 0) {
+                World.logoutBotsAndScheduleShutdown(true);
             } else {
-                Server.a(false);
+                Server.scheduleShutdown(false);
             }
             ControlPanel.a();
         }
         if (actionEvent.getActionCommand() == "Send") {
             object = t.getText();
-            Server.a((String)object);
+            Server.broadcastServerMessage((String)object);
         }
         if (actionEvent.getActionCommand() == "Map") {
             this.ao.setVisible(true);

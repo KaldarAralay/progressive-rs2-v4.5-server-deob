@@ -44,7 +44,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        this.player.aN();
+        this.player.resetAnimation();
     }
 }
 

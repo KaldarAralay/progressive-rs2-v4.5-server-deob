@@ -26,18 +26,18 @@ public final class RestlessGhostQuest
 extends QuestScript {
     public RestlessGhostQuest(int n) {
         super(12);
-        super.a(1);
+        super.setQuestPointReward(1);
     }
 
     @Override
-    public final boolean c(Player player, int n, int n2) {
+    public final boolean handleGroundItemInteraction(Player player, int n, int n2) {
         if (n == 553) {
-            if (player.getQuestState(this.b()) < 4 || player.getQuestState(this.b()) >= 4 && player.aq(553)) {
+            if (player.getQuestState(this.getQuestId()) < 4 || player.getQuestState(this.getQuestId()) >= 4 && player.ownsItem(553)) {
                 return true;
             }
-            if (player.getQuestState(this.b()) == 4) {
+            if (player.getQuestState(this.getQuestId()) == 4) {
                 GameplayHelper.a(player, new Npc(459), true, false);
-                player.setQuestState(this.b(), 5);
+                player.setQuestState(this.getQuestId(), 5);
             }
             return false;
         }
@@ -45,8 +45,8 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player object, int n, int n2, int n3) {
-        if (((Player)object).getQuestState(this.b()) >= 5 && n == 553 && n2 == 2146 && Npc.findByDefinitionId(457) != null) {
+    public final boolean handleItemOnObject(Player object, int n, int n2, int n3) {
+        if (((Player)object).getQuestState(this.getQuestId()) >= 5 && n == 553 && n2 == 2146 && Npc.findByDefinitionId(457) != null) {
             Object object2 = object;
             ((Player)object2).packetSender.sendGameMessage("You put the skull in the coffin.");
             ObjectManager.getInstance().removeDynamicObjectAt(3249, 3192, 0, 0);
@@ -54,14 +54,14 @@ extends QuestScript {
             object2 = new ArrayList<Npc>();
             ((ArrayList)object2).add(Npc.findByDefinitionId(457));
             object = new RestlessGhostCutscene((Player)object, (ArrayList)object2);
-            ((Cutscene)object).f();
+            ((Cutscene)object).startCutscene();
             return true;
         }
         return false;
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player stringArray, int n) {
         if (n == 0) {
             stringArray = new String[]{"I can start this quest by speaking to Father Aereck in the", "church next to Lumbridge Castle", "I must be unafraid of a Level 13 Skeleton"};
             return stringArray;
@@ -90,9 +90,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("1 Quest Point", 12150);
         player2 = player;
@@ -115,7 +115,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleFirstObjectAction(Player player, int n, int n2, int n3, int n4) {
         if (n == 2145 && n2 == 3249 && n3 == 3192) {
             if (n4 >= 2) {
                 ObjectManager.getInstance().removeDynamicObjectAt(3249, 3192, 0, 0);
@@ -128,7 +128,7 @@ extends QuestScript {
                     Position position2 = new Position(3250, 3192, 0);
                     player2 = player;
                     Object object = this;
-                    n4 = RestlessGhostQuest.a(position2, position);
+                    n4 = RestlessGhostQuest.a((Position)position2, (Position)position);
                     new WoodcuttingHandler(position2, 0, position, 0, new ProjectileDefinition(605, ProjectileTiming.d)).a();
                     object = new RestlessGhostCoffinGhostSpawnTask((RestlessGhostQuest)object, n4, player2);
                     World.getTaskScheduler().schedule((TickTask)object);
@@ -151,7 +151,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         if (n == 456) {
             if (n4 == 0) {
                 if (n2 == 1) {
@@ -304,8 +304,8 @@ extends QuestScript {
                 }
                 if (n2 == 12) {
                     player.getDialogueManager().showItemMessage("Father Urhney hands you an amulet.", new ItemStack(552, 1));
-                    player.getInventoryManager().b(new ItemStack(552, 1));
-                    player.setQuestState(this.b(), 3);
+                    player.getInventoryManager().addOrDropItem(new ItemStack(552, 1));
+                    player.setQuestState(this.getQuestId(), 3);
                     return true;
                 }
             }
@@ -332,7 +332,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 2) {
-                    if (!player.aq(552)) {
+                    if (!player.ownsItem(552)) {
                         player.getDialogueManager().showThreeOptions("Well, that's friendly.", "I've come to repossess your house.", "I've lost the Amulet of Ghostspeak.");
                     } else {
                         player.getDialogueManager().showTwoOptions("Well, that's friendly.", "I've come to repossess your house.");
@@ -359,7 +359,7 @@ extends QuestScript {
                 }
                 if (n2 == 6) {
                     player.getDialogueManager().showItemMessage("Father Urhney hands you an amulet.", new ItemStack(552, 1));
-                    player.getInventoryManager().b(new ItemStack(552, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(552, 1));
                     return true;
                 }
                 if (n2 == 7) {
@@ -464,7 +464,7 @@ extends QuestScript {
                 if (n2 == 17) {
                     player.getDialogueManager().showNpcOneLineDialogue("It is so dull being a ghost...", 591);
                     player.getDialogueManager().finishDialogue();
-                    player.setQuestState(this.b(), 4);
+                    player.setQuestState(this.getQuestId(), 4);
                     return true;
                 }
                 if (n2 == 18) {
@@ -500,7 +500,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 3) {
-                    if (player.aq(553)) {
+                    if (player.ownsItem(553)) {
                         player.getDialogueManager().showPlayerOneLineDialogue("I have found it!", 591);
                     } else {
                         player.getDialogueManager().showPlayerOneLineDialogue("I haven't found it yet.", 591);

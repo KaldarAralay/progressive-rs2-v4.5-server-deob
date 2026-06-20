@@ -38,7 +38,7 @@ public enum MineableRockDefinition {
      */
     private MineableRockDefinition(int n, int n2, int n3, double d, int n4, int n5) {
         void var11_8;
-        void cfr_renamed_5;
+        void cfr_renamed_4;
         void var7_5;
         this.objectIds = (int[])n;
         this.oreItemId = n2;
@@ -46,7 +46,7 @@ public enum MineableRockDefinition {
         this.baseExperience = (int)d;
         this.respawnTicks = var7_5;
         this.depletionChance = n4;
-        this.mineChanceLow = cfr_renamed_5;
+        this.mineChanceLow = cfr_renamed_4;
         this.mineChanceHigh = var11_8;
     }
 
@@ -61,7 +61,7 @@ public enum MineableRockDefinition {
             int n5 = 0;
             while (n5 < n4) {
                 int n6 = nArray[n5];
-                if (n == n6 || MiningManager.e(n) == n6) {
+                if (n == n6 || MiningManager.getRestoredRockObjectId(n) == n6) {
                     return mineableRockDefinition;
                 }
                 ++n5;

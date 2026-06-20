@@ -47,9 +47,9 @@ public enum FarmedTreeDefinition {
     private FarmedTreeDefinition(int n3, int[] nArray, int n4, double d, double d2, double n2222, int n2222, int n5, int n2222, int n6, int n7) {
         void var18_13;
         void var17_12;
+        void cfr_renamed_10;
         void cfr_renamed_11;
-        void cfr_renamed_12;
-        void cfr_renamed_5;
+        void cfr_renamed_4;
         void var7_5;
         this.saplingId = n3;
         this.rootItemId = (int)nArray;
@@ -57,9 +57,9 @@ public enum FarmedTreeDefinition {
         this.protectionPayment = (int[])d;
         this.totalGrowthTicks = var7_5;
         this.diseaseChance = d2;
-        this.plantingExperience = cfr_renamed_5;
-        this.healthCheckExperience = cfr_renamed_12;
-        this.configStartStage = cfr_renamed_11;
+        this.plantingExperience = cfr_renamed_4;
+        this.healthCheckExperience = cfr_renamed_11;
+        this.configStartStage = cfr_renamed_10;
         this.configEndStage = n6;
         this.checkedTreeConfigStage = n7;
         this.stumpConfigStage = var17_12;

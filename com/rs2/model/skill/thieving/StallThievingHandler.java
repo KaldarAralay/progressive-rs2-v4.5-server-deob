@@ -84,17 +84,17 @@ public final class StallThievingHandler {
             return true;
         }
         object = stallDefinition.getRewards()[random.nextInt(stallDefinition.getRewards().length)];
-        if (!player.getInventoryManager().e((ItemStack)object)) {
+        if (!player.getInventoryManager().canAddItem((ItemStack)object)) {
             return true;
         }
         Entity entity = player;
         ((Player)entity).packetSender.sendGameMessage("You attempt to steal from the stall..");
-        Npc[] npcArray = World.g();
+        Npc[] npcArray = World.getNpcs();
         int n10 = npcArray.length;
         n4 = 0;
         while (n4 < n10) {
             entity = npcArray[n4];
-            if (entity != null && !entity.isDead() && ((Npc)entity).getMaxHitpoints() > 0 && !entity.hasCombatTarget() && GameUtil.a(entity.getPosition().getX(), entity.getPosition().getY(), player.getPosition().getX(), player.getPosition().getY(), 4)) {
+            if (entity != null && !entity.isDead() && ((Npc)entity).getMaxHitpoints() > 0 && !entity.hasCombatTarget() && GameUtil.isWithinDistance(entity.getPosition().getX(), entity.getPosition().getY(), player.getPosition().getX(), player.getPosition().getY(), 4)) {
                 entity.getUpdateState().setForcedTextAndMarkUpdated("Hey! Get away from there!");
                 if (((Npc)entity).getDefinition().isAttackable()) {
                     CombatManager.startCombat(entity, player);
@@ -104,7 +104,7 @@ public final class StallThievingHandler {
             ++n4;
         }
         int n11 = player.nextActionSequence();
-        player.n(false);
+        player.setActionLocked(false);
         player.x(true);
         player.getUpdateState().setAnimation(832);
         player.setActiveCycleEvent(new StallThievingTask(player, n11, n, n2, n3, (ItemStack)object, stallDefinition));

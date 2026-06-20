@@ -16,7 +16,7 @@ implements SandwichLadyRewardSet {
 
     public SandwichLadyFoodOffer(boolean bl) {
         if (bl) {
-            this.offerIndex = GameUtil.g(6);
+            this.offerIndex = GameUtil.randomInclusive(6);
         }
     }
 
@@ -76,7 +76,7 @@ implements SandwichLadyRewardSet {
 
     @Override
     public final void punishWrongChoice(Player player) {
-        int n = GameUtil.g(6);
+        int n = GameUtil.randomInclusive(6);
         Player player2 = player;
         player2.H.startNpcRelocation(player, 402, 2304, RandomEventTeleportLocations.a[n].getX(), RandomEventTeleportLocations.a[n].getY(), RandomEventTeleportLocations.a[n].getPlane(), this.getMessages()[2], true);
     }

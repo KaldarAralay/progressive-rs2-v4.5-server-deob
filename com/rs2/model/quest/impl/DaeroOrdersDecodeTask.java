@@ -19,7 +19,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        this.a.n(false);
+        this.a.setActionLocked(false);
         DialogueManager.continueDialogue(this.a, 1407, 3, 0);
         this.stop();
     }

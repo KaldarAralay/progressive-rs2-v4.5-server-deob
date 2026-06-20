@@ -19,8 +19,8 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        Server.a(Server.e() + 1L);
-        Player[] playerArray = World.f();
+        Server.setElapsedMinutes(Server.getElapsedMinutes() + 1L);
+        Player[] playerArray = World.getPlayers();
         int n = playerArray.length;
         int n2 = 0;
         while (n2 < n) {
@@ -45,7 +45,7 @@ extends TickTask {
                     if (itemStack != null && itemStack.getMetadata() >= 0 && itemStack.getDefinition().getEquipmentSlot() == -1 && !ItemService.isEssencePouch(itemStack.getId())) {
                         itemStack.setMetadata(itemStack.getMetadata() - 1);
                         if (itemStack.getMetadata() == 0) {
-                            int[] nArray = FarmingPatchUtils.a;
+                            int[] nArray = FarmingPatchUtils.wateredSeedlingItemIds;
                             n3 = 0;
                             while (n3 < 14) {
                                 int n5 = nArray[n3];
@@ -55,7 +55,7 @@ extends TickTask {
                                 ++n3;
                             }
                             if (itemStack.getId() == 1995) {
-                                player.getWineFermentationHandler().a(n4);
+                                player.getWineFermentationHandler().finishInventoryWineFermentation(n4);
                             }
                         }
                     }
@@ -69,7 +69,7 @@ extends TickTask {
                         if (itemStack != null && itemStack.getMetadata() >= 0 && itemStack.getDefinition().getEquipmentSlot() == -1 && !ItemService.isEssencePouch(itemStack.getId())) {
                             itemStack.setMetadata(itemStack.getMetadata() - 1);
                             if (itemStack.getMetadata() == 0) {
-                                int[] nArray = FarmingPatchUtils.a;
+                                int[] nArray = FarmingPatchUtils.wateredSeedlingItemIds;
                                 int n7 = 0;
                                 while (n7 < 14) {
                                     n3 = nArray[n7];
@@ -79,7 +79,7 @@ extends TickTask {
                                     ++n7;
                                 }
                                 if (itemStack.getId() == 1995) {
-                                    player.getWineFermentationHandler().b(n6);
+                                    player.getWineFermentationHandler().finishBankWineFermentation(n6);
                                 }
                             }
                         }

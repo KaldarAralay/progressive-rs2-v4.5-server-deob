@@ -37,7 +37,7 @@ extends TickTask {
         GroundItemManager.getInstance().spawn(new GroundItem(new ItemStack(n3, 1), this.a, new Position(n, n2, 0)));
         Player player = this.a;
         player.packetSender.sendStillGraphicToNearbyPlayers(86, n, n2, 0, 0);
-        this.a.n(false);
+        this.a.setActionLocked(false);
         DialogueManager.continueContextDialogue(1, this.a, this.b, 10, 0, this.a.getPosition().getX(), this.a.getPosition().getY());
         this.stop();
     }

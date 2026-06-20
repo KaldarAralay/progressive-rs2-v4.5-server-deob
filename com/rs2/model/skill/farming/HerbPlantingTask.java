@@ -29,7 +29,7 @@ extends CycleEvent {
         this.manager.patchStates[this.patch.getIndex()] = 0;
         this.manager.growthStages[this.patch.getIndex()] = 4;
         this.manager.cropIds[this.patch.getIndex()] = this.seedId;
-        this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.e();
+        this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.getElapsedMinutes();
         HerbPatchManager.getPlayer(this.manager).getSkillManager().addExperience(19, this.definition.getPlantingExperience());
         cycleEventContainer.stop();
     }
@@ -37,8 +37,8 @@ extends CycleEvent {
     @Override
     public final void onStop() {
         this.manager.refreshConfig();
-        HerbPatchManager.getPlayer(this.manager).n(false);
-        HerbPatchManager.getPlayer(this.manager).aN();
+        HerbPatchManager.getPlayer(this.manager).setActionLocked(false);
+        HerbPatchManager.getPlayer(this.manager).resetAnimation();
     }
 }
 

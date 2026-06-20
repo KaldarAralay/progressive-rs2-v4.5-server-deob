@@ -23,11 +23,11 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        if (this.b.isDead() || !this.b.bW() || !this.b.currentBotTask.usesCustomTaskAction || !this.b.botTaskState.equals("do task")) {
+        if (this.b.isDead() || !this.b.isRegistered() || !this.b.currentBotTask.usesCustomTaskAction || !this.b.botTaskState.equals("do task")) {
             this.stop();
             return;
         }
-        if (this.b.getInventoryManager().getContainer().getFreeSlots() <= 0 || this.b.aq(983)) {
+        if (this.b.getInventoryManager().getContainer().getFreeSlots() <= 0 || this.b.ownsItem(983)) {
             this.b.botTaskReturnToBankRequested = true;
             this.b.currentBotTask.startWalkToBank(this.b);
             this.stop();

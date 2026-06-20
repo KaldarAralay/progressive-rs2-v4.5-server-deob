@@ -18,19 +18,19 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        Player[] playerArray = World.f();
+        Player[] playerArray = World.getPlayers();
         int n = playerArray.length;
         int n2 = 0;
         while (n2 < n) {
             Player player = playerArray[n2];
-            if (player != null && player.getCreatureGraveyardController().a()) {
+            if (player != null && player.getCreatureGraveyardController().isInsideGraveyard()) {
                 int n3 = 0;
                 while (n3 < 20) {
                     Player player2 = player;
-                    player2.packetSender.sendStillGraphic(520, new Position(3350 + GameUtil.g(40), 9610 + GameUtil.g(50)), 0);
+                    player2.packetSender.sendStillGraphic(520, new Position(3350 + GameUtil.randomInclusive(40), 9610 + GameUtil.randomInclusive(50)), 0);
                     ++n3;
                 }
-                if (GameUtil.g(2) == 0) {
+                if (GameUtil.randomInclusive(2) == 0) {
                     player.applyDirectHit(2, HitType.NORMAL);
                 }
             }

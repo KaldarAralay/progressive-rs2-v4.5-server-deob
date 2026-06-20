@@ -133,7 +133,7 @@ public final class PrayerManager {
             player.packetSender.sendSoundEffect(447, 1, 0);
             return;
         }
-        if (DuelRule.i.a(this.player)) {
+        if (DuelRule.NO_PRAYER.isEnabledFor(this.player)) {
             Player player = this.player;
             player.packetSender.sendGameMessage("Usage of prayers have been disabled during this fight!");
             player = this.player;
@@ -150,7 +150,7 @@ public final class PrayerManager {
         }
         int n6 = -1;
         n5 = 0;
-        if ((n == 12 || n == 13 || n == 14) && this.player.dR() > System.currentTimeMillis()) {
+        if ((n == 12 || n == 13 || n == 14) && this.player.getProtectionPrayerDisabledUntil() > System.currentTimeMillis()) {
             Player player = this.player;
             player.packetSender.sendGameMessage("Your protection prayers are temporarily disabled.");
             player = this.player;
@@ -189,37 +189,37 @@ public final class PrayerManager {
             }
         }
         if (n5 != 0) {
-            this.player.R(!this.player.cfr_renamed_0()[n] ? n6 : -1);
+            this.player.setPrayerHeadIcon(!this.player.getActivePrayers()[n] ? n6 : -1);
         }
-        if (!this.player.cfr_renamed_0()[n] && n4 != -1) {
+        if (!this.player.getActivePrayers()[n] && n4 != -1) {
             Player player = this.player;
             player.packetSender.sendSoundEffect(n4, 1, 0);
         }
-        if (this.player.cfr_renamed_0()[n]) {
+        if (this.player.getActivePrayers()[n]) {
             Player player = this.player;
             player.packetSender.sendSoundEffect(435, 1, 0);
         }
-        this.player.cfr_renamed_0()[n.intValue()] = !this.player.cfr_renamed_0()[n];
+        this.player.getActivePrayers()[n.intValue()] = !this.player.getActivePrayers()[n];
         Player player = this.player;
-        player.packetSender.sendConfig(n2, this.player.cfr_renamed_0()[n] ? 1 : 0);
+        player.packetSender.sendConfig(n2, this.player.getActivePrayers()[n] ? 1 : 0);
         this.deactivateConflictingPrayers(n);
         this.updatePrayerDrain();
-        n2 = this.player.cfr_renamed_0()[n] ? 0 : 1;
+        n2 = this.player.getActivePrayers()[n] ? 0 : 1;
         Player player2 = this.player;
-        this.player.f(true);
+        this.player.setAppearanceUpdateRequired(true);
         if (n == 6) {
             this.updateRapidRestoreTask();
         }
         if (n == 7) {
-            this.player.getSkillManager().setRapidHealRestoreDelay(this.player.cfr_renamed_0()[n]);
+            this.player.getSkillManager().setRapidHealRestoreDelay(this.player.getActivePrayers()[n]);
         }
     }
 
     private void updatePrayerDrain() {
         this.player.eB = 0;
         int n = 0;
-        while (n < this.player.cfr_renamed_0().length) {
-            if (this.player.cfr_renamed_0()[n]) {
+        while (n < this.player.getActivePrayers().length) {
+            if (this.player.getActivePrayers()[n]) {
                 Object[] objectArray = PRAYER_DEFINITIONS[n];
                 int n2 = (Integer)objectArray[4];
                 this.player.eB += n2;
@@ -301,7 +301,7 @@ public final class PrayerManager {
         while (n3 < n2) {
             int n4 = nArray4[n3];
             if (n4 != n) {
-                this.player.cfr_renamed_0()[n4] = false;
+                this.player.getActivePrayers()[n4] = false;
                 Player player = this.player;
                 player.packetSender.sendConfig(PrayerManager.getPrayerConfigId(n4, 1), 0);
             }
@@ -310,13 +310,13 @@ public final class PrayerManager {
     }
 
     public final void deactivatePrayer(int n) {
-        if (this.player.cfr_renamed_0()[n]) {
-            this.player.cfr_renamed_0()[n] = false;
+        if (this.player.getActivePrayers()[n]) {
+            this.player.getActivePrayers()[n] = false;
             Player player = this.player;
             player.packetSender.sendConfig(PrayerManager.getPrayerConfigId(n, 1), 0);
             if (n == 12 || n == 13 || n == 14 || n == 15 || n == 16 || n == 17) {
-                this.player.R(-1);
-                this.player.f(true);
+                this.player.setPrayerHeadIcon(-1);
+                this.player.setAppearanceUpdateRequired(true);
             }
         }
         this.updatePrayerDrain();
@@ -326,25 +326,25 @@ public final class PrayerManager {
      * Enabled aggressive block sorting
      */
     public final void deactivateAll() {
-        if (this.player.cfr_renamed_0()[7]) {
+        if (this.player.getActivePrayers()[7]) {
             this.player.getSkillManager().setRapidHealRestoreDelay(false);
         }
         int n = 0;
         while (n < 18) {
-            this.player.cfr_renamed_0()[n] = false;
+            this.player.getActivePrayers()[n] = false;
             Player player = this.player;
             player.packetSender.sendConfig(PrayerManager.getPrayerConfigId(n, 1), 0);
             ++n;
         }
         this.updateRapidRestoreTask();
-        this.player.R(-1);
-        this.player.f(true);
+        this.player.setPrayerHeadIcon(-1);
+        this.player.setAppearanceUpdateRequired(true);
         this.updatePrayerDrain();
     }
 
     private void updateRapidRestoreTask() {
         Object object = this.rapidRestoreTask;
-        if (this.player.cfr_renamed_0()[6]) {
+        if (this.player.getActivePrayers()[6]) {
             object = this;
             if (((PrayerManager)object).rapidRestoreTask == null || !((PrayerManager)object).rapidRestoreTask.isActive()) {
                 ((PrayerManager)object).rapidRestoreTask = new RapidRestoreTask((PrayerManager)object, 100);
@@ -360,7 +360,7 @@ public final class PrayerManager {
     }
 
     public final boolean isRapidRestoreActive() {
-        return this.player.getSkillManager().getCurrentLevels()[5] > 0 && this.player.cfr_renamed_0()[6];
+        return this.player.getSkillManager().getCurrentLevels()[5] > 0 && this.player.getActivePrayers()[6];
     }
 
     public final boolean handleButtonClick(int n) {

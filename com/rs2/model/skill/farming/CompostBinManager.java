@@ -142,7 +142,7 @@ public final class CompostBinManager {
             long l;
             int n2 = n;
             CompostBinManager compostBinManager = this;
-            if ((compostBinManager.itemIds[n2] == 6032 && compostBinManager.states[n2] >= 65 && compostBinManager.states[n2] <= 126 ? true : (compostBinManager.itemIds[n2] == 6034 && compostBinManager.states[n2] == 32 ? true : compostBinManager.itemIds[n2] == 2518 && compostBinManager.states[n2] >= 65 && compostBinManager.states[n2] <= 126)) && (l = Server.e() - this.lastUpdateTicks[n]) > 0L) {
+            if ((compostBinManager.itemIds[n2] == 6032 && compostBinManager.states[n2] >= 65 && compostBinManager.states[n2] <= 126 ? true : (compostBinManager.itemIds[n2] == 6034 && compostBinManager.states[n2] == 32 ? true : compostBinManager.itemIds[n2] == 2518 && compostBinManager.states[n2] >= 65 && compostBinManager.states[n2] <= 126)) && (l = Server.getElapsedMinutes() - this.lastUpdateTicks[n]) > 0L) {
                 if (this.itemIds[n] == 6034) {
                     if (l >= 90L) {
                         this.states[n] = 31;
@@ -153,7 +153,7 @@ public final class CompostBinManager {
                     if (this.states[n] <= 64) {
                         this.states[n] = 64;
                     }
-                    this.lastUpdateTicks[n] = Server.e();
+                    this.lastUpdateTicks[n] = Server.getElapsedMinutes();
                 }
             }
             ++n;
@@ -179,17 +179,17 @@ public final class CompostBinManager {
                 bl = true;
             } else {
                 if (compostBinManager.itemIds[n4] == 6032) {
-                    compostBinManager.states[n4] = 99 + GameUtil.h(16);
+                    compostBinManager.states[n4] = 99 + GameUtil.randomInt(16);
                 }
                 if (compostBinManager.itemIds[n4] == 6034) {
                     compostBinManager.states[n4] = 32;
                 }
                 if (compostBinManager.itemIds[n4] == 2518) {
-                    compostBinManager.states[n4] = 99 + GameUtil.h(16);
+                    compostBinManager.states[n4] = 99 + GameUtil.randomInt(16);
                 }
-                compostBinManager.lastUpdateTicks[n4] = Server.e();
+                compostBinManager.lastUpdateTicks[n4] = Server.getElapsedMinutes();
                 compostBinManager.player.getUpdateState().setAnimation(835, 0);
-                compostBinManager.player.n(true);
+                compostBinManager.player.setActionLocked(true);
                 CycleEventHandler.getInstance().schedule(compostBinManager.player, new CompostBinCloseTask(compostBinManager), 2);
                 bl = true;
             }

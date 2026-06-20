@@ -18,11 +18,11 @@ public final class KnightsSwordQuest
 extends QuestScript {
     public KnightsSwordQuest(int n) {
         super(9);
-        super.a(1);
+        super.setQuestPointReward(1);
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player stringArray, int n) {
         if (n == 0) {
             stringArray = new String[]{"I can start this quest by speaking to the Squire in the", "courtyard of the White Knights' Castle in southern Falador", "To complete this quest I need:", "Level 10 Mining", "and to be unafraid of Level 57 Ice Warriors."};
             return stringArray;
@@ -67,9 +67,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("1 Quest Point", 12150);
         player2 = player;
@@ -92,7 +92,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleFirstObjectAction(Player player, int n, int n2, int n3, int n4) {
         if (n == 2271 && n2 == 2984 && n3 == 3336) {
             ObjectManager.getInstance().removeDynamicObjectAt(2984, 3336, 2, 0);
             ObjectManager.getInstance().addDynamicObject(new DynamicObject(2272, 2984, 3336, 2, 1, 10, 2271, 999999999), true);
@@ -102,14 +102,14 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
-        if (n2 == 2272 && n5 == 2984 && n6 == 3336 && n == 1 && n7 >= 6 && n7 < 8 && !player.aq(666)) {
+    public final boolean handleContextDialogue(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
+        if (n2 == 2272 && n5 == 2984 && n6 == 3336 && n == 1 && n7 >= 6 && n7 < 8 && !player.ownsItem(666)) {
             Entity entity = Npc.findByDefinitionId(605);
             n2 = 0;
             if (entity.getInteractionTarget() != null && entity.getInteractionTarget() != player) {
                 n2 = 1;
             }
-            if (!GameUtil.a(player.getPosition(), entity.getPosition(), false)) {
+            if (!GameUtil.hasClearPath(player.getPosition(), entity.getPosition(), false)) {
                 n2 = 1;
             }
             if (n3 == 1) {
@@ -122,8 +122,8 @@ extends QuestScript {
                 player.getDialogueManager().finishDialogue();
             }
             if (n3 == 2) {
-                player.getInventoryManager().b(new ItemStack(666, 1));
-                player.setQuestState(this.b(), 7);
+                player.getInventoryManager().addOrDropItem(new ItemStack(666, 1));
+                player.setQuestState(this.getQuestId(), 7);
                 entity = player;
                 ((Player)entity).packetSender.closeInterfaces();
                 player.getDialogueManager().finishDialogue();
@@ -138,7 +138,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         if (n == 606) {
             if (n4 == 0) {
                 if (n2 == 1) {
@@ -275,7 +275,7 @@ extends QuestScript {
                 }
                 if (n2 == 5) {
                     player.getDialogueManager().showNpcTwoLineDialogue("Please don't let him catch you! He MUSTN'T know", "what happened!", 591);
-                    player.setQuestState(this.b(), 6);
+                    player.setQuestState(this.getQuestId(), 6);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -295,7 +295,7 @@ extends QuestScript {
                 }
                 if (n2 == 4) {
                     player.getInventoryManager().removeItem(new ItemStack(667, 1));
-                    this.c(player);
+                    this.awardCompletionRewards(player);
                     player.getDialogueManager().markDialogueInactive();
                     return true;
                 }
@@ -340,7 +340,7 @@ extends QuestScript {
             }
             if (n2 == 108) {
                 player.getDialogueManager().showNpcOneLineDialogue("redberry pie. They REALLY like redberry pie.", 591);
-                player.setQuestState(this.b(), 3);
+                player.setQuestState(this.getQuestId(), 3);
                 player.getDialogueManager().finishDialogue();
                 return true;
             }
@@ -396,7 +396,7 @@ extends QuestScript {
                 if (n2 == 9 && player.getInventoryManager().containsItemAmount(2325, 1)) {
                     player.getInventoryManager().removeItem(new ItemStack(2325, 1));
                     player.getDialogueManager().showNpcTwoLineDialogue("By Guthix! THAT was good pie! Anyone who makes pie", "like THAT has got to be alright!", 591);
-                    player.setQuestState(this.b(), 4);
+                    player.setQuestState(this.getQuestId(), 4);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -424,7 +424,7 @@ extends QuestScript {
                 }
                 if (n2 == 6) {
                     player.getDialogueManager().showPlayerOneLineDialogue("I'll go and ask his squire and see if I can find one.", 591);
-                    player.setQuestState(this.b(), 5);
+                    player.setQuestState(this.getQuestId(), 5);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -472,14 +472,14 @@ extends QuestScript {
                 }
                 if (n2 == 11) {
                     player.getInventoryManager().removeItem(new ItemStack(666, 1));
-                    player.setQuestState(this.b(), 8);
+                    player.setQuestState(this.getQuestId(), 8);
                     player.getDialogueManager().finishDialogue();
                     player.packetSender.closeInterfaces();
                     return true;
                 }
             }
             if (n4 >= 8) {
-                if (n4 == 9 && player.aq(667) && n2 != 7) {
+                if (n4 == 9 && player.ownsItem(667) && n2 != 7) {
                     return false;
                 }
                 if (n2 == 1) {
@@ -511,9 +511,9 @@ extends QuestScript {
                 if (n2 == 6 && KnightsSwordQuest.e(player)) {
                     player.getInventoryManager().removeItem(new ItemStack(668, 1));
                     player.getInventoryManager().removeItem(new ItemStack(2351, 2));
-                    player.getInventoryManager().b(new ItemStack(667, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(667, 1));
                     player.getDialogueManager().showPlayerOneLineDialogue("Thank you very much!", 591);
-                    player.setQuestState(this.b(), 9);
+                    player.setQuestState(this.getQuestId(), 9);
                     return true;
                 }
                 if (n2 == 7) {

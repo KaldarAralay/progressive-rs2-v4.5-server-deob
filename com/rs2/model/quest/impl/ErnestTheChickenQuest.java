@@ -25,11 +25,11 @@ public final class ErnestTheChickenQuest
 extends QuestScript {
     public ErnestTheChickenQuest(int n) {
         super(6);
-        super.a(4);
+        super.setQuestPointReward(4);
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player stringArray, int n) {
         if (n == 0) {
             stringArray = new String[]{"I can start this quest by speaking to Veronica who is", "outside Draynor Manor", "", "There aren't any requirements for this quest"};
             return stringArray;
@@ -54,9 +54,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("4 Quest Points", 12150);
         player2 = player;
@@ -69,7 +69,7 @@ extends QuestScript {
         player2.packetSender.sendInterfaceText("", 12154);
         player2 = player;
         player2.packetSender.sendInterfaceText("", 12155);
-        player.getInventoryManager().b(new ItemStack(995, 300));
+        player.getInventoryManager().addOrDropItem(new ItemStack(995, 300));
         player2 = player;
         player2.packetSender.sendInterfaceModel(InterfaceDefinition.interfaceCount <= 12140 ? 6161 : 12145, 250, 314);
         player2 = player;
@@ -136,14 +136,14 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3) {
-        if (player.getQuestState(this.b()) >= 3 && n == 274 && n2 == 153 && player.getInventoryManager().containsItem(274)) {
+    public final boolean handleItemOnObject(Player player, int n, int n2, int n3) {
+        if (player.getQuestState(this.getQuestId()) >= 3 && n == 274 && n2 == 153 && player.getInventoryManager().containsItem(274)) {
             PoisonedFishFoodPiranhaTask poisonedFishFoodPiranhaTask = new PoisonedFishFoodPiranhaTask(this, 1, player);
             Player player2 = player;
             player2.packetSender.sendGameMessage("You pour the poisoned fish food into the fountain.");
             player.getInventoryManager().removeItem(new ItemStack(274, 1));
-            if (player.getQuestState(this.b()) == 3) {
-                player.setQuestState(this.b(), 4);
+            if (player.getQuestState(this.getQuestId()) == 3) {
+                player.setQuestState(this.getQuestId(), 4);
                 World.getTaskScheduler().schedule(poisonedFishFoodPiranhaTask);
             }
             return true;
@@ -152,8 +152,8 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
-        if (n2 == 153 && n5 == 3087 && n6 == 3334 && n == 1 && n7 == 4 && !player.aq(271)) {
+    public final boolean handleContextDialogue(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
+        if (n2 == 153 && n5 == 3087 && n6 == 3334 && n == 1 && n7 == 4 && !player.ownsItem(271)) {
             if (n3 == 1) {
                 player.getDialogueManager().showPlayerOneLineDialogue("There seems to be a pressure gauge in here...", 591);
                 return true;
@@ -164,7 +164,7 @@ extends QuestScript {
             }
             if (n3 == 3) {
                 player.getDialogueManager().showPlayerOneLineDialogue("You get the pressure gauge from the fountain.", 591);
-                player.getInventoryManager().b(new ItemStack(271, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(271, 1));
                 Player player2 = player;
                 player2.packetSender.closeInterfaces();
                 player.getDialogueManager().finishDialogue();
@@ -175,7 +175,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleFirstObjectAction(Player player, int n, int n2, int n3, int n4) {
         int n5 = 1;
         if (ServerSettings.cacheVersion >= 362) {
             n5 = 2;
@@ -245,7 +245,7 @@ extends QuestScript {
             player9.packetSender.sendGameMessage("It is locked.");
             return true;
         }
-        if (n == 152 && n2 == 3084 && n3 == 3360 && n4 >= 3 && !player.aq(275)) {
+        if (n == 152 && n2 == 3084 && n3 == 3360 && n4 >= 3 && !player.ownsItem(275)) {
             if (player.getInventoryManager().containsItem(952)) {
                 CompostHeapKeyFindTask compostHeapKeyFindTask = new CompostHeapKeyFindTask(this, 2, player);
                 player.getUpdateState().setAnimation(830);
@@ -261,7 +261,7 @@ extends QuestScript {
             return true;
         }
         if (n == 133 && n2 == 3092 && n3 == 3362) {
-            AttackStyleDefinition.a(player, new Position(3117, 9753, 0));
+            AttackStyleDefinition.startDelayedObjectMove(player, new Position(3117, 9753, 0));
             player.ep[33] = 0;
             Player player12 = player;
             player12.packetSender.sendConfig(33, 0);
@@ -269,7 +269,7 @@ extends QuestScript {
             return true;
         }
         if (n == 132 && n2 == 3117 && n3 == 9754) {
-            AttackStyleDefinition.a(player, new Position(3092, 3361, 0));
+            AttackStyleDefinition.startDelayedObjectMove(player, new Position(3092, 3361, 0));
             return true;
         }
         if (n == 146 && n2 == 3108 && n3 == 9745) {
@@ -647,7 +647,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         if (n == 285) {
             if (n4 == 0) {
                 if (n2 == 1) {
@@ -786,7 +786,7 @@ extends QuestScript {
                 }
                 if (n2 == 20) {
                     player.getDialogueManager().showNpcThreeLineDialogue("I'm missing the pressure gauge and a rubber tube.", "They've also taken my oil can, which I'm going to need", "to get this thing started again.", 591);
-                    player.setQuestState(this.b(), 3);
+                    player.setQuestState(this.getQuestId(), 3);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -828,7 +828,7 @@ extends QuestScript {
                     Position position = object2;
                     object2 = object;
                     object = position;
-                    int n5 = GameUtil.b(position, (Position)object2);
+                    int n5 = GameUtil.getDistance(position, (Position)object2);
                     double d = 100.0 + (double)n5 * 45.0;
                     d = Math.ceil(d * 12.0 / 600.0);
                     if (n5 > 1) {
@@ -842,12 +842,12 @@ extends QuestScript {
                 }
             }
             if (n4 == 5) {
-                this.c(player);
+                this.awardCompletionRewards(player);
             }
         }
         if (n == 287) {
             if (n2 == 100 && ErnestTheChickenQuest.f(player)) {
-                player.setQuestState(this.b(), 5);
+                player.setQuestState(this.getQuestId(), 5);
                 player.getInventoryManager().removeItem(new ItemStack(271, 1));
                 player.getInventoryManager().removeItem(new ItemStack(276, 1));
                 player.getInventoryManager().removeItem(new ItemStack(277, 1));
@@ -866,7 +866,7 @@ extends QuestScript {
                 if (n2 == 103) {
                     Player player2 = player;
                     player2.packetSender.sendGameMessage("Ernest hands you 300 coins.");
-                    this.c(player);
+                    this.awardCompletionRewards(player);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }

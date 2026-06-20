@@ -31,19 +31,19 @@ extends CombatEffect {
         object2 = ((CombatAction)object).getAttacker();
         object = ((CombatAction)object).getTarget();
         if (((Entity)object2).isNpc()) {
-            n2 = ((Npc)object2).getSpawnPosition().getX() - 10 + GameUtil.g(20);
-            n = ((Npc)object2).getSpawnPosition().getY() - 10 + GameUtil.g(20);
+            n2 = ((Npc)object2).getSpawnPosition().getX() - 10 + GameUtil.randomInclusive(20);
+            n = ((Npc)object2).getSpawnPosition().getY() - 10 + GameUtil.randomInclusive(20);
         } else {
-            n2 = ((Entity)object2).getPosition().getX() - 10 + GameUtil.g(20);
-            n = ((Entity)object2).getPosition().getY() - 10 + GameUtil.g(20);
+            n2 = ((Entity)object2).getPosition().getX() - 10 + GameUtil.randomInclusive(20);
+            n = ((Entity)object2).getPosition().getY() - 10 + GameUtil.randomInclusive(20);
         }
         boolean bl = false;
         if (WalkingCollisionMap.getTileFlags(n2, n, ((Entity)object).getPosition().getPlane()) != 0) {
             bl = true;
         }
         while (bl) {
-            n2 = ((Entity)object2).getPosition().getX() - 10 + GameUtil.g(20);
-            bl = WalkingCollisionMap.getTileFlags(n2, n = ((Entity)object2).getPosition().getY() - 10 + GameUtil.g(20), ((Entity)object).getPosition().getPlane()) != 0;
+            n2 = ((Entity)object2).getPosition().getX() - 10 + GameUtil.randomInclusive(20);
+            bl = WalkingCollisionMap.getTileFlags(n2, n = ((Entity)object2).getPosition().getY() - 10 + GameUtil.randomInclusive(20), ((Entity)object).getPosition().getPlane()) != 0;
         }
         if (n2 > 0) {
             ((Entity)object).moveTo(new Position(n2, n));

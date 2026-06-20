@@ -101,7 +101,7 @@ public final class FruitTreePatchManager {
             block11: {
                 long l;
                 block12: {
-                    l = Server.e() - this.lastUpdateTicks[n];
+                    l = Server.getElapsedMinutes() - this.lastUpdateTicks[n];
                     if (l < 5L) break block11;
                     if (this.growthStages[n] <= 0 || this.growthStages[n] > 3) break block12;
                     int n2 = (int)(l / 5L);
@@ -110,7 +110,7 @@ public final class FruitTreePatchManager {
                         if (this.growthStages[n] != 0) {
                             int n4 = n;
                             this.growthStages[n4] = this.growthStages[n4] - 1;
-                            this.lastUpdateTicks[n] = Server.e();
+                            this.lastUpdateTicks[n] = Server.getElapsedMinutes();
                             ++n3;
                             continue;
                         }
@@ -149,7 +149,7 @@ public final class FruitTreePatchManager {
                                     fruitTreePatchManager.lastUpdateTicks[n9] = fruitTreePatchManager.lastUpdateTicks[n9] + (long)fruitTreeDefinition2.getGrowthCycleTicks();
                                     break block15;
                                 }
-                                if (GameUtil.h(2) == 0) {
+                                if (GameUtil.randomInt(2) == 0) {
                                     fruitTreePatchManager.patchStates[n7] = 2;
                                 }
                             }
@@ -161,7 +161,7 @@ public final class FruitTreePatchManager {
                                     double d = fruitTreePatchManager.diseaseChanceMultipliers[n7] * fruitTreeDefinition2.getDiseaseChance();
                                     double d2 = d * 100.0;
                                     int n10 = (int)d2;
-                                    if (GameUtil.g(100) <= n10 && ServerSettings.diseasingEnabled) {
+                                    if (GameUtil.randomInclusive(100) <= n10 && ServerSettings.diseasingEnabled) {
                                         fruitTreePatchManager.patchStates[n7] = 1;
                                     }
                                 }
@@ -196,7 +196,7 @@ public final class FruitTreePatchManager {
         if (fruitTreeDefinition == null) {
             return;
         }
-        long l = Server.e() - this.lastUpdateTicks[n];
+        long l = Server.getElapsedMinutes() - this.lastUpdateTicks[n];
         int n2 = (int)(l / (long)fruitTreeDefinition.getGrowthCycleTicks());
         this.growthStages[n] = n2 + 4;
         this.refreshConfig();
@@ -241,7 +241,7 @@ public final class FruitTreePatchManager {
             n2 = 232;
             n4 = 3;
         }
-        this.player.n(true);
+        this.player.setActionLocked(true);
         Player player = this.player;
         player.packetSender.sendSoundEffect(n2, 1, 0);
         this.player.getUpdateState().setAnimation(n3);
@@ -276,7 +276,7 @@ public final class FruitTreePatchManager {
         this.player.getUpdateState().setAnimation(2272);
         this.growthStages[((FruitTreePatch)((Object)object)).getIndex()] = 4;
         this.player.getInventoryManager().removeItem(new ItemStack(n3));
-        this.player.n(true);
+        this.player.setActionLocked(true);
         CycleEventHandler.getInstance().schedule(this.player, new FruitTreePlantingTask(this, (FruitTreePatch)((Object)object), n3, fruitTreeDefinition), 3);
         return true;
     }
@@ -311,14 +311,14 @@ public final class FruitTreePatchManager {
                     object = fruitTreePatchManager.player;
                     ((Player)object).packetSender.sendGameMessage("Not enough space in your inventory.");
                     bl = true;
-                } else if (ItemCombinationHandler.a(fruitTreePatchManager.player, 8) == null) {
+                } else if (ItemCombinationHandler.findUsableGatheringTool(fruitTreePatchManager.player, 8) == null) {
                     object = fruitTreePatchManager.player;
                     ((Player)object).packetSender.sendGameMessage("You do not have an axe which you have the woodcutting level to use.");
                     bl = true;
                 } else {
                     object = fruitTreePatchManager.player;
                     ((Player)object).packetSender.sendGameMessage("You swing your axe at the tree.");
-                    int n4 = ItemCombinationHandler.a(fruitTreePatchManager.player, 8).d();
+                    int n4 = ItemCombinationHandler.findUsableGatheringTool(fruitTreePatchManager.player, 8).getGatherAnimationId();
                     fruitTreePatchManager.player.getUpdateState().setAnimation(n4);
                     fruitTreePatchManager.player.ah = new Position(n2, n3);
                     n2 = fruitTreePatchManager.player.nextActionSequence();
@@ -365,7 +365,7 @@ public final class FruitTreePatchManager {
         player.packetSender.sendGameMessage("You pour some " + (n3 == 6034 ? "super" : "") + "compost on the patch.");
         this.player.getUpdateState().setAnimation(2283);
         this.player.getSkillManager().addExperience(19, n3 == 6034 ? 26.0 : 18.0);
-        this.player.n(true);
+        this.player.setActionLocked(true);
         CycleEventHandler.getInstance().schedule(this.player, new FruitTreeCompostTask(this, fruitTreePatch, n3), 7);
         return true;
     }
@@ -414,7 +414,7 @@ public final class FruitTreePatchManager {
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("You bend down and start to inspect the patch...");
             this.player.getUpdateState().setAnimation(1331);
-            this.player.n(true);
+            this.player.setActionLocked(true);
             CycleEventHandler.getInstance().schedule(this.player, new FruitTreeInspectTask(this, fruitTreePatch, fruitTreeGrowthDefinition), 5);
         }
         return true;
@@ -454,22 +454,22 @@ public final class FruitTreePatchManager {
             ((Player)object).packetSender.sendGameMessage("This plant doesn't need to be resurrected.");
             return true;
         }
-        this.player.a("fruittree", object.getIndex());
+        this.player.setPendingCropResurrectionTarget("fruittree", object.getIndex());
         return true;
     }
 
     public final boolean finishResurrection(boolean bl) {
         if (bl) {
-            Object object = FruitTreeDefinition.forSaplingId(this.treeIds[this.player.ds]);
-            this.patchStates[this.player.ds] = 0;
-            int n = this.growthStages[this.player.ds] - 4;
-            this.lastUpdateTicks[this.player.ds] = Server.e() - (long)(object.getGrowthCycleTicks() * n);
+            Object object = FruitTreeDefinition.forSaplingId(this.treeIds[this.player.pendingCropResurrectionPatchIndex]);
+            this.patchStates[this.player.pendingCropResurrectionPatchIndex] = 0;
+            int n = this.growthStages[this.player.pendingCropResurrectionPatchIndex] - 4;
+            this.lastUpdateTicks[this.player.pendingCropResurrectionPatchIndex] = Server.getElapsedMinutes() - (long)(object.getGrowthCycleTicks() * n);
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("You succesfully resurrected the crop.");
         } else {
-            this.resetPatch(this.player.ds);
-            this.growthStages[this.player.ds] = 3;
-            this.lastUpdateTicks[this.player.ds] = Server.e();
+            this.resetPatch(this.player.pendingCropResurrectionPatchIndex);
+            this.growthStages[this.player.pendingCropResurrectionPatchIndex] = 3;
+            this.lastUpdateTicks[this.player.pendingCropResurrectionPatchIndex] = Server.getElapsedMinutes();
             Player player = this.player;
             player.packetSender.sendGameMessage("You failed to resurrect the crop.");
         }
@@ -497,7 +497,7 @@ public final class FruitTreePatchManager {
             return true;
         }
         this.player.getUpdateState().setAnimation(2275);
-        this.player.n(true);
+        this.player.setActionLocked(true);
         this.patchStates[object.getIndex()] = 0;
         CycleEventHandler.getInstance().schedule(this.player, new FruitTreePruneTask(this), 15);
         return true;

@@ -17,7 +17,7 @@ extends CycleEvent {
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        this.a.n(false);
+        this.a.setActionLocked(false);
         Player player = this.a;
         player.packetSender.closeInterfaces();
         player = this.a;

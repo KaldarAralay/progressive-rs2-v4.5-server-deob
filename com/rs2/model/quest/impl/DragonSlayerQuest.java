@@ -28,13 +28,13 @@ extends QuestScript {
 
     public DragonSlayerQuest(int n) {
         super(5);
-        super.a(2);
+        super.setQuestPointReward(2);
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player stringArray, int n) {
         if (n == 0) {
-            stringArray = new String[]{"I can start this quest by speaking to the Guild master in", "the Champions' Guild, south-west of Varrock.", "I will need to be able to defeat a level 83 dragon.", String.valueOf(stringArray.dA() >= 32 ? "@str@" : "") + "To enter the Champions' Guild I need 32 Quest Points."};
+            stringArray = new String[]{"I can start this quest by speaking to the Guild master in", "the Champions' Guild, south-west of Varrock.", "I will need to be able to defeat a level 83 dragon.", String.valueOf(stringArray.getQuestPoints() >= 32 ? "@str@" : "") + "To enter the Champions' Guild I need 32 Quest Points."};
             return stringArray;
         }
         if (n == 2) {
@@ -65,9 +65,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("2 Quest Points", 12150);
         player2 = player;
@@ -91,7 +91,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3) {
+    public final boolean handleItemOnObject(Player player, int n, int n2, int n3) {
         int n4 = n3 - 4;
         if (n3 < 4) {
             return false;
@@ -102,11 +102,11 @@ extends QuestScript {
                 player2.packetSender.sendGameMessage("You already have Wizard's Mind Bomb there.");
                 return true;
             }
-            player.getInventoryManager().a(new ItemStack(1907, 1), new ItemStack(1919, 1));
+            player.getInventoryManager().replaceItem(new ItemStack(1907, 1), new ItemStack(1919, 1));
             Player player3 = player;
             player3.packetSender.sendGameMessage("You pour the Wizard's Mind Bomb into the opening in the door.");
-            player.addQuestState(this.b(), 16);
-            DragonSlayerQuest.e(player, player.getQuestState(this.b()));
+            player.addQuestState(this.getQuestId(), 16);
+            DragonSlayerQuest.e(player, player.getQuestState(this.getQuestId()));
             return true;
         }
         if (n == 1791 && n2 == 2586) {
@@ -118,8 +118,8 @@ extends QuestScript {
             player.getInventoryManager().removeItem(new ItemStack(1791, 1));
             Player player5 = player;
             player5.packetSender.sendGameMessage("You put the unfired bowl into the opening in the door.");
-            player.addQuestState(this.b(), 32);
-            DragonSlayerQuest.e(player, player.getQuestState(this.b()));
+            player.addQuestState(this.getQuestId(), 32);
+            DragonSlayerQuest.e(player, player.getQuestState(this.getQuestId()));
             return true;
         }
         if (n == 950 && n2 == 2586) {
@@ -131,8 +131,8 @@ extends QuestScript {
             player.getInventoryManager().removeItem(new ItemStack(950, 1));
             Player player7 = player;
             player7.packetSender.sendGameMessage("You put the silk into the opening in the door.");
-            player.addQuestState(this.b(), 64);
-            DragonSlayerQuest.e(player, player.getQuestState(this.b()));
+            player.addQuestState(this.getQuestId(), 64);
+            DragonSlayerQuest.e(player, player.getQuestState(this.getQuestId()));
             return true;
         }
         if (n == 301 && n2 == 2586) {
@@ -144,8 +144,8 @@ extends QuestScript {
             player.getInventoryManager().removeItem(new ItemStack(301, 1));
             Player player9 = player;
             player9.packetSender.sendGameMessage("You put the lobster pot into the opening in the door.");
-            player.addQuestState(this.b(), 128);
-            DragonSlayerQuest.e(player, player.getQuestState(this.b()));
+            player.addQuestState(this.getQuestId(), 128);
+            DragonSlayerQuest.e(player, player.getQuestState(this.getQuestId()));
             return true;
         }
         return false;
@@ -158,20 +158,20 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
-        if (n2 == 2604 && n5 == 2935 && n6 == 9657 && n == 1 && !player.aq(1535) && !player.aq(1538)) {
+    public final boolean handleContextDialogue(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
+        if (n2 == 2604 && n5 == 2935 && n6 == 9657 && n == 1 && !player.ownsItem(1535) && !player.ownsItem(1538)) {
             if (n3 == 1) {
                 player.getDialogueManager().showItemMessage("You find a map piece in the chest.", new ItemStack(1535, 1));
                 return true;
             }
             if (n3 == 2) {
-                player.getInventoryManager().b(new ItemStack(1535, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(1535, 1));
                 ObjectManager.getInstance().removeDynamicObjectAt(2935, 9657, 0, 0);
                 ObjectManager.getInstance().addDynamicObject(new DynamicObject(2603, 2935, 9657, 0, 2, 10, 2603, 999999999), true);
                 return false;
             }
         }
-        if (n2 == 2587 && n5 == 3057 && n6 == 9841 && n == 1 && !player.aq(1537) && !player.aq(1538)) {
+        if (n2 == 2587 && n5 == 3057 && n6 == 9841 && n == 1 && !player.ownsItem(1537) && !player.ownsItem(1538)) {
             if (n3 == 1) {
                 player.getDialogueManager().showOneLineStatement("As you open the chest, you notice an inscription on the lid:");
                 return true;
@@ -194,13 +194,13 @@ extends QuestScript {
                 return false;
             }
         }
-        if (n2 == 2588 && n5 == 3057 && n6 == 9841 && n == 1 && !player.aq(1537) && !player.aq(1538)) {
+        if (n2 == 2588 && n5 == 3057 && n6 == 9841 && n == 1 && !player.ownsItem(1537) && !player.ownsItem(1538)) {
             if (n3 == 1) {
                 player.getDialogueManager().showItemMessage("You find a map piece in the chest.", new ItemStack(1537, 1));
                 return true;
             }
             if (n3 == 2) {
-                player.getInventoryManager().b(new ItemStack(1537, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(1537, 1));
                 ObjectManager.getInstance().removeDynamicObjectAt(3057, 9841, 0, 0);
                 ObjectManager.getInstance().addDynamicObject(new DynamicObject(2587, 3057, 9841, 0, 3, 10, 2587, 999999999), true);
                 return false;
@@ -210,11 +210,11 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleFirstObjectAction(Player player, int n, int n2, int n3, int n4) {
         int n5 = n4 - 4;
-        int n6 = this.b();
+        int n6 = this.getQuestId();
         if (n == 2589 && n2 == 3047 && n3 == 9639 && player.getInventoryManager().containsItem(2347) && player.getInventoryManager().containsItem(960) && player.getInventoryManager().containsItemAmount(1539, 30)) {
-            player.n(true);
+            player.setActionLocked(true);
             player.getUpdateState().setAnimation(898);
             DragonSlayerShipHoleRepairTask dragonSlayerShipHoleRepairTask = new DragonSlayerShipHoleRepairTask(this, 2, n5, player, n6);
             World.getTaskScheduler().schedule(dragonSlayerShipHoleRepairTask);
@@ -261,11 +261,11 @@ extends QuestScript {
             if (n4 == 260) {
                 n = 3;
             }
-            AttackStyleDefinition.a(player, new Position(3048, 9640, n));
+            AttackStyleDefinition.startDelayedObjectMove(player, new Position(3048, 9640, n));
             return true;
         }
         if (n == 2592 && (n2 == 3049 || n2 == 3048) && n3 == 9640) {
-            AttackStyleDefinition.a(player, new Position(3048, 3208, 1));
+            AttackStyleDefinition.startDelayedObjectMove(player, new Position(3048, 3208, 1));
             return true;
         }
         if (n == 9563 && n2 == 3012 && n3 == 3189) {
@@ -472,14 +472,14 @@ extends QuestScript {
             return true;
         }
         if (n == 2605 && n2 == 2932 && n3 == 3240) {
-            AttackStyleDefinition.a(player, new Position(2933, 9640, 0));
+            AttackStyleDefinition.startDelayedObjectMove(player, new Position(2933, 9640, 0));
             return true;
         }
         return false;
     }
 
     @Override
-    public final boolean c(Player player, int n, int n2, int n3) {
+    public final boolean handleInventoryItemFirstOption(Player player, int n, int n2, int n3) {
         if (n == 3214) {
             if (n2 == 1535) {
                 player.getDialogueManager().showItemMessage("This is Melzar's piece of the map.", new ItemStack(1535, 1));
@@ -498,7 +498,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2, int n3) {
+    public final boolean handleItemOnItem(Player player, int n, int n2, int n3) {
         Player player2 = player;
         if (player2.getInventoryManager().containsItem(1535) && player2.getInventoryManager().containsItem(1536) && player2.getInventoryManager().containsItem(1537) && DragonSlayerQuest.b(n) && DragonSlayerQuest.b(n2)) {
             player.getInventoryManager().removeItem(new ItemStack(1535, 1));
@@ -517,17 +517,17 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2) {
+    public final boolean handleNpcKill(Player player, int n, int n2) {
         if (n == 742 && n2 == 261) {
             player.moveTo(new Position(2846, 9636, 0));
-            this.c(player);
+            this.awardCompletionRewards(player);
             return true;
         }
         return false;
     }
 
     @Override
-    public final boolean a(Entity object, Entity entity, int n) {
+    public final boolean handleCombatDeath(Entity object, Entity entity, int n) {
         if (entity.isNpc() && ((Entity)object).isPlayer()) {
             object = (Player)object;
             if (((Npc)(entity = (Npc)entity)).getNpcId() == 745) {
@@ -545,27 +545,27 @@ extends QuestScript {
     }
 
     @Override
-    public final int b(Entity entity, Entity entity2, int n) {
+    public final int getQuestDamageOverride(Entity entity, Entity entity2, int n) {
         if (entity.isNpc() && ((Npc)(entity = (Npc)entity)).getNpcId() == 753) {
-            entity.getUpdateState().setForcedText(this.a[GameUtil.g(this.a.length - 1)]);
+            entity.getUpdateState().setForcedText(this.a[GameUtil.randomInclusive(this.a.length - 1)]);
         }
         return -1;
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2) {
+    public final boolean canAttackNpc(Player player, int n, int n2) {
         if (n == 745) {
             if (n2 >= 4 && n2 < 260) {
                 n = 0;
-                while (n < player.eN().size()) {
-                    GroundItem groundItem = (GroundItem)player.eN().get(n);
+                while (n < player.getVisibleGroundItems().size()) {
+                    GroundItem groundItem = (GroundItem)player.getVisibleGroundItems().get(n);
                     if (groundItem.getItem().getId() == 1536) {
                         player.packetSender.sendGameMessage("You have just beaten Wormbrain up. Give the poor goblin a break.");
                         return false;
                     }
                     ++n;
                 }
-                if (player.aq(1536) || player.aq(1538)) {
+                if (player.ownsItem(1536) || player.ownsItem(1538)) {
                     player.packetSender.sendGameMessage("You already have the map piece from Wormbrain.");
                     return false;
                 }
@@ -579,7 +579,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         int n5 = n4 - 4;
         if (n == 198 && (n4 == 0 || n4 == 2 || n4 == 3 || n4 == 4 || n4 > 4 && n4 < 260)) {
             if (n2 == 1) {
@@ -753,7 +753,7 @@ extends QuestScript {
             }
             if (n2 == 31) {
                 if (n3 > 0 && n3 < 5 && n4 == 3) {
-                    player.setQuestState(this.b(), 4);
+                    player.setQuestState(this.getQuestId(), 4);
                 }
                 if (n3 == 1) {
                     if (player.pendingGameMode == 0 || player.pendingGameMode == 4 || player.pendingGameMode == 8) {
@@ -859,7 +859,7 @@ extends QuestScript {
                 return true;
             }
             if (n2 == 38) {
-                player.getInventoryManager().b(new ItemStack(1542, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(1542, 1));
                 player.getDialogueManager().showItemMessage("The Guild master hands you a key.", new ItemStack(1542, 1));
                 player.getDialogueManager().setNextDialogueStep(30);
                 return true;
@@ -1028,7 +1028,7 @@ extends QuestScript {
             }
             if (n2 == 19) {
                 player.getDialogueManager().showNpcThreeLineDialogue("Go talk to the Guild master in the Champions' Guild. He'll", "help ye out if yer so keen on doing a quest. I'm not", "going to be handholding any adventurers.", 591);
-                player.setQuestState(this.b(), 3);
+                player.setQuestState(this.getQuestId(), 3);
                 player.getDialogueManager().finishDialogue();
                 return true;
             }
@@ -1140,13 +1140,13 @@ extends QuestScript {
             }
             if (n2 == 9 && player.getInventoryManager().containsItemAmount(995, 2000)) {
                 player.getInventoryManager().removeItem(new ItemStack(995, 2000));
-                player.addQuestState(this.b(), 1);
+                player.addQuestState(this.getQuestId(), 1);
                 player.getDialogueManager().showNpcOneLineDialogue("Okey dokey, she's all yours!", 591);
                 player.getDialogueManager().finishDialogue();
                 return true;
             }
         }
-        if (n == 741 && n4 >= 4 && !player.aq(1540)) {
+        if (n == 741 && n4 >= 4 && !player.ownsItem(1540)) {
             if (n2 == 1) {
                 player.getDialogueManager().showNpcOneLineDialogue("Greetings. Welcome to my castle.", 591);
                 return true;
@@ -1238,7 +1238,7 @@ extends QuestScript {
                 return true;
             }
             if (n2 == 18) {
-                player.getInventoryManager().b(new ItemStack(1540, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(1540, 1));
                 player.getDialogueManager().showItemMessage("The Duke hands you a heavy orange shield.", new ItemStack(1540, 1));
                 player.getDialogueManager().setNextDialogueStep(19);
                 return true;
@@ -1331,7 +1331,7 @@ extends QuestScript {
                 }
                 if (n2 == 18 && player.getInventoryManager().containsItem(1538)) {
                     player.getInventoryManager().removeItem(new ItemStack(1538, 1));
-                    player.setQuestState(this.b(), 260);
+                    player.setQuestState(this.getQuestId(), 260);
                     player.getDialogueManager().showItemMessage("You hand the map to Ned.", new ItemStack(1538, 1));
                     return true;
                 }
@@ -1394,7 +1394,7 @@ extends QuestScript {
                 return true;
             }
         }
-        if (n == 745 && n4 >= 4 && (!player.aq(1536) && !player.aq(1538) && n2 < 11 || n2 == 11)) {
+        if (n == 745 && n4 >= 4 && (!player.ownsItem(1536) && !player.ownsItem(1538) && n2 < 11 || n2 == 11)) {
             if (n2 == 1) {
                 player.getDialogueManager().showNpcOneLineDialogue("Whut you want?", 591);
                 return true;
@@ -1450,7 +1450,7 @@ extends QuestScript {
             }
             if (n2 == 10 && player.getInventoryManager().containsItemAmount(995, 10000)) {
                 player.getInventoryManager().removeItem(new ItemStack(995, 10000));
-                player.getInventoryManager().b(new ItemStack(1536, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(1536, 1));
                 player.getDialogueManager().showItemMessage("You buy the map piece from Wormbrain.", new ItemStack(1536, 1));
                 return true;
             }
@@ -1481,7 +1481,7 @@ extends QuestScript {
                 }
                 if (n2 == 4) {
                     TravelManager.handleShipRoute(player, ShipRoute.PORT_SARIM_TO_CRANDOR);
-                    player.setQuestState(this.b(), 261);
+                    player.setQuestState(this.getQuestId(), 261);
                     Player player2 = player;
                     player2.packetSender.sendGameMessage("You feel the ship begin to move...");
                     player2 = player;

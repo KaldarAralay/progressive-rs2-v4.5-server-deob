@@ -19,11 +19,11 @@ extends QuestScript {
 
     public ShieldOfArravQuest(int n) {
         super(16);
-        super.a(1);
+        super.setQuestPointReward(1);
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player stringArray, int n) {
         if (n == 0) {
             stringArray = new String[]{"I can start this quest by speaking to Reldo in Varrock's", "Palace library, or by speaking to Charlie the Tramp near", "the Blue Moon Inn in Varrock.", "I will need a friend to help me and some combat experience", "may be an advantage."};
             return stringArray;
@@ -57,7 +57,7 @@ extends QuestScript {
             return stringArray;
         }
         if (n == 6 && stringArray.dv == 2) {
-            if (!stringArray.aq(761)) {
+            if (!stringArray.ownsItem(761)) {
                 stringArray = new String[]{"I was told to kill Jonny the Beard in Blue Moon Inn", "and bring back intelligence report to Phoenix Gang HQ", "from him."};
                 return stringArray;
             }
@@ -69,7 +69,7 @@ extends QuestScript {
             return stringArray;
         }
         if (n == 8) {
-            if (!stringArray.aq(769)) {
+            if (!stringArray.ownsItem(769)) {
                 stringArray = new String[]{"Either you or your friend should now go talk to", "curator of Varrock museum with both of the shield", "halves with him."};
                 return stringArray;
             }
@@ -84,9 +84,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("1 Quest Point", 12150);
         player2 = player;
@@ -99,7 +99,7 @@ extends QuestScript {
         player2.packetSender.sendInterfaceText("", 12154);
         player2 = player;
         player2.packetSender.sendInterfaceText("", 12155);
-        player.getInventoryManager().b(new ItemStack(995, 600));
+        player.getInventoryManager().addOrDropItem(new ItemStack(995, 600));
         player2 = player;
         player2.packetSender.sendInterfaceModel(InterfaceDefinition.interfaceCount <= 12140 ? 6161 : 12145, 250, 767);
         player2 = player;
@@ -109,7 +109,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean c(Player player, int n, int n2) {
+    public final boolean handleGroundItemInteraction(Player player, int n, int n2) {
         if (n == 767) {
             Npc npc = Npc.findByDefinitionId(643);
             if (!(player.isWithinReach(npc, 10) && player.isOverlapping(npc) || player.getPosition().getPlane() == npc.getPosition().getPlane())) {
@@ -134,7 +134,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleFirstObjectAction(Player player, int n, int n2, int n3, int n4) {
         if (n == 2398 && n2 == 3251 && n3 == 3385) {
             if (player.getInventoryManager().containsItem(759)) {
                 Player player2 = player;
@@ -150,7 +150,7 @@ extends QuestScript {
             return true;
         }
         if (n == 2397 && n2 == 3247 && n3 == 9779) {
-            if (player.dv == 2 && (player.getQuestState(this.b()) == 1 || player.getQuestState(this.b()) >= 7)) {
+            if (player.dv == 2 && (player.getQuestState(this.getQuestId()) == 1 || player.getQuestState(this.getQuestId()) >= 7)) {
                 Player player4 = player;
                 player4.packetSender.queueRelativeMovementStep(0, player.getPosition().getY() < 9780 ? 1 : -1, true);
                 player4 = player;
@@ -165,7 +165,7 @@ extends QuestScript {
             return true;
         }
         if (n == 2399 && n2 == 3185 && n3 == 3388) {
-            if (player.dv == 1 && (player.getQuestState(this.b()) == 1 || player.getQuestState(this.b()) >= 7)) {
+            if (player.dv == 1 && (player.getQuestState(this.getQuestId()) == 1 || player.getQuestState(this.getQuestId()) >= 7)) {
                 Player player5 = player;
                 player5.packetSender.queueRelativeMovementStep(0, player.getPosition().getY() < 3388 ? 1 : -1, true);
                 player5 = player;
@@ -197,7 +197,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean c(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleSecondObjectAction(Player player, int n, int n2, int n3, int n4) {
         if (n == 2404 && n2 == 3235 && n3 == 9761) {
             ObjectManager.getInstance().removeDynamicObjectAt(3235, 9761, 0, 0);
             ObjectManager.getInstance().addDynamicObject(new DynamicObject(2403, 3235, 9761, 0, 0, 10, 2403, 999999999), true);
@@ -207,8 +207,8 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
-        if (n2 == 2402 && n5 == 3212 && n6 == 3493 && n == 2 && n7 >= 2 && !player.aq(757)) {
+    public final boolean handleContextDialogue(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
+        if (n2 == 2402 && n5 == 3212 && n6 == 3493 && n == 2 && n7 >= 2 && !player.ownsItem(757)) {
             if (n3 == 1) {
                 player.getDialogueManager().showPlayerTwoLineDialogue("Aha! 'The Shield Of Arrav'! Exactly what I was looking", "for.", 591);
             }
@@ -216,15 +216,15 @@ extends QuestScript {
                 player.getDialogueManager().showOneLineStatement("You take the book from the bookcase.");
             }
             if (n3 == 3) {
-                player.getInventoryManager().b(new ItemStack(757, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(757, 1));
                 player.getDialogueManager().finishDialogue();
                 Player player2 = player;
                 player2.packetSender.closeInterfaces();
-                player.setQuestState(this.b(), 3);
+                player.setQuestState(this.getQuestId(), 3);
             }
             return true;
         }
-        if (n2 == 2404 && n5 == 3235 && n6 == 9761 && n == 1 && !player.aq(763) && n7 != 1) {
+        if (n2 == 2404 && n5 == 3235 && n6 == 9761 && n == 1 && !player.ownsItem(763) && n7 != 1) {
             if (n3 == 1) {
                 player.getDialogueManager().showOneLineStatement("You search the chest.");
             }
@@ -232,21 +232,21 @@ extends QuestScript {
                 player.getDialogueManager().showItemMessage("You find half of a shield, which you take.", new ItemStack(763, 1));
             }
             if (n3 == 3) {
-                player.getInventoryManager().b(new ItemStack(763, 1));
-                player.setQuestState(this.b(), 8);
+                player.getInventoryManager().addOrDropItem(new ItemStack(763, 1));
+                player.setQuestState(this.getQuestId(), 8);
                 player.getDialogueManager().finishDialogue();
                 Player player3 = player;
                 player3.packetSender.closeInterfaces();
             }
             return true;
         }
-        if (!(n2 != 2401 || n5 != 3188 && n5 != 3189 || n6 != 3385 || n != 2 || player.aq(765) || n7 == 1)) {
+        if (!(n2 != 2401 || n5 != 3188 && n5 != 3189 || n6 != 3385 || n != 2 || player.ownsItem(765) || n7 == 1)) {
             if (n3 == 1) {
                 player.getDialogueManager().showItemMessage("You find half of a shield, which you take.", new ItemStack(765, 1));
             }
             if (n3 == 2) {
-                player.getInventoryManager().b(new ItemStack(765, 1));
-                player.setQuestState(this.b(), 8);
+                player.getInventoryManager().addOrDropItem(new ItemStack(765, 1));
+                player.setQuestState(this.getQuestId(), 8);
                 player.getDialogueManager().finishDialogue();
                 Player player4 = player;
                 player4.packetSender.closeInterfaces();
@@ -300,7 +300,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean e(Player player, int n, int n2) {
+    public final boolean handleButtonClick(Player player, int n, int n2) {
         if (player.W == 757) {
             if (n == 841 && player.X < this.a) {
                 ++player.X;
@@ -317,7 +317,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean c(Player player, int n, int n2, int n3) {
+    public final boolean handleInventoryItemFirstOption(Player player, int n, int n2, int n3) {
         if (n == 3214 && n2 == 757) {
             this.e(player, 0);
             player.W = n2;
@@ -329,7 +329,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         if (n == QuestNpcIds.n) {
             if (n4 == 0) {
                 if (n2 == 1) {
@@ -389,7 +389,7 @@ extends QuestScript {
                 if (n2 == 4) {
                     player.getDialogueManager().showPlayerOneLineDialogue("Thanks, I'll try that!", 591);
                     player.getDialogueManager().finishDialogue();
-                    player.setQuestState(this.b(), 4);
+                    player.setQuestState(this.getQuestId(), 4);
                     return true;
                 }
             }
@@ -451,7 +451,7 @@ extends QuestScript {
                     }
                     player.getDialogueManager().showNpcFourLineDialogue("Ok, to get to the gang hideout, enter Varrock through", "the south gate. Then, if you take the first turning east,", "somewhere along there is an alleyway to the south. The", "door at the end of there is the entrance to the Phoenix", 591);
                     player.getInventoryManager().removeItem(new ItemStack(995, 20));
-                    player.setQuestState(this.b(), 5);
+                    player.setQuestState(this.getQuestId(), 5);
                     return true;
                 }
             }
@@ -515,9 +515,9 @@ extends QuestScript {
             if (n2 == 9) {
                 player.getDialogueManager().showNpcOneLineDialogue("But don't upset her, she's pretty dangerous.", 591);
                 player.getDialogueManager().finishDialogue();
-                if (player.getQuestState(this.b()) == 0) {
+                if (player.getQuestState(this.getQuestId()) == 0) {
                     this.d(player);
-                    player.setQuestState(this.b(), 99);
+                    player.setQuestState(this.getQuestId(), 99);
                 }
                 return true;
             }
@@ -623,7 +623,7 @@ extends QuestScript {
                 if (n2 == 22) {
                     player.getDialogueManager().showPlayerOneLineDialogue("Ok, I'll get right on it.", 591);
                     player.getDialogueManager().finishDialogue();
-                    player.setQuestState(this.b(), 6);
+                    player.setQuestState(this.getQuestId(), 6);
                     player.dv = 2;
                     return true;
                 }
@@ -674,9 +674,9 @@ extends QuestScript {
                 if (n2 == 10) {
                     if (player.getInventoryManager().containsItem(761)) {
                         player.getInventoryManager().removeItem(new ItemStack(761, 1));
-                        player.getInventoryManager().b(new ItemStack(759, 1));
+                        player.getInventoryManager().addOrDropItem(new ItemStack(759, 1));
                         player.getDialogueManager().showItemMessage("Straven hands you a key.", new ItemStack(759, 1));
-                        player.setQuestState(this.b(), 7);
+                        player.setQuestState(this.getQuestId(), 7);
                         player.getDialogueManager().setNextDialogueStep(2);
                     } else {
                         player.getDialogueManager().finishDialogue();
@@ -685,8 +685,8 @@ extends QuestScript {
                 }
             }
             if (n4 >= 7 && player.dv == 2) {
-                if (n2 == 1 && !player.aq(759)) {
-                    player.getInventoryManager().b(new ItemStack(759, 1));
+                if (n2 == 1 && !player.ownsItem(759)) {
+                    player.getInventoryManager().addOrDropItem(new ItemStack(759, 1));
                     player.getDialogueManager().showItemMessage("Straven hands you a key.", new ItemStack(759, 1));
                     return true;
                 }
@@ -856,7 +856,7 @@ extends QuestScript {
                 if (n2 == 32) {
                     player.getDialogueManager().showNpcTwoLineDialogue("Great! You'll find the Phoenix gang's weapon stash just", "next to a temple, due east of here.", 591);
                     player.getDialogueManager().finishDialogue();
-                    player.setQuestState(this.b(), 6);
+                    player.setQuestState(this.getQuestId(), 6);
                     player.dv = 1;
                     return true;
                 }
@@ -889,7 +889,7 @@ extends QuestScript {
                         player.getInventoryManager().removeItem(new ItemStack(767, 2));
                         player.getDialogueManager().showNpcTwoLineDialogue("Ok. You can join our gang now. Feel free to enter", "any of the rooms of the ganghouse.", 591);
                         player.getDialogueManager().finishDialogue();
-                        player.setQuestState(this.b(), 7);
+                        player.setQuestState(this.getQuestId(), 7);
                     } else {
                         player.getDialogueManager().finishDialogue();
                     }
@@ -956,7 +956,7 @@ extends QuestScript {
                 if (player.getInventoryManager().containsItemAmount(763, 1) && player.getInventoryManager().containsItemAmount(765, 1)) {
                     player.getInventoryManager().removeItem(new ItemStack(763, 1));
                     player.getInventoryManager().removeItem(new ItemStack(765, 1));
-                    player.getInventoryManager().b(new ItemStack(769, 2));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(769, 2));
                     player.getDialogueManager().showItemMessage("The curator writes out two certificates.", new ItemStack(769, 1));
                 } else {
                     player.getDialogueManager().finishDialogue();
@@ -1007,7 +1007,7 @@ extends QuestScript {
             if (n2 == 8) {
                 if (player.getInventoryManager().containsItemAmount(769, 1)) {
                     player.getInventoryManager().removeItem(new ItemStack(769, 1));
-                    this.c(player);
+                    this.awardCompletionRewards(player);
                     player.getDialogueManager().markDialogueInactive();
                 } else {
                     player.getDialogueManager().finishDialogue();

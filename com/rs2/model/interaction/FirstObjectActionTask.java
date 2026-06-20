@@ -88,7 +88,7 @@ extends TickTask {
             return;
         }
         Object object = ObjectDefinition.forId(this.player.getInteractionTargetId());
-        Position position = GameUtil.a(worldObject.getPosition().getX(), worldObject.getPosition().getY(), this.player.getPosition().getX(), this.player.getPosition().getY(), ((ObjectDefinition)object).getWidthForOrientation(worldObject.getOrientation()), ((ObjectDefinition)object).getLengthForOrientation(worldObject.getOrientation()), this.objectPlane);
+        Position position = GameUtil.findReachableInteractionPosition(worldObject.getPosition().getX(), worldObject.getPosition().getY(), this.player.getPosition().getX(), this.player.getPosition().getY(), ((ObjectDefinition)object).getWidthForOrientation(worldObject.getOrientation()), ((ObjectDefinition)object).getLengthForOrientation(worldObject.getOrientation()), this.objectPlane);
         if (position == null) {
             return;
         }
@@ -125,11 +125,11 @@ extends TickTask {
         if (object != null) {
             this.player.getUpdateState().setFacePosition(position.centerForSize(((ObjectDefinition)object).getMaxDimension()));
         }
-        if (BarrowsManager.a(this.player, this.objectId)) {
+        if (BarrowsManager.handleFirstObjectAction(this.player, this.objectId)) {
             this.stop();
             return;
         }
-        if (!GameUtil.a(this.player.getPosition().getX(), this.player.getPosition().getY(), this.objectX, this.objectY, 7)) {
+        if (!GameUtil.isWithinDistance(this.player.getPosition().getX(), this.player.getPosition().getY(), this.objectX, this.objectY, 7)) {
             return;
         }
         if (this.objectId == 12045 || this.objectId == 12047) {
@@ -148,7 +148,7 @@ extends TickTask {
         if (this.objectId == 2411) {
             int n = 0;
             int n2 = 0;
-            if (CacheCoordinateTranslator.a) {
+            if (CacheCoordinateTranslator.dungeonCoordinateShiftActive) {
                 n = 768;
                 n2 = 5120;
             }
@@ -164,15 +164,15 @@ extends TickTask {
             this.stop();
             return;
         }
-        if (this.player.getQuestManager().a(this.objectId, this.objectX, this.objectY)) {
+        if (this.player.getQuestManager().handleFirstObjectAction(this.objectId, this.objectX, this.objectY)) {
             this.stop();
             return;
         }
-        if (BarrowsManager.a(this.player, this.objectId, this.objectX, this.objectY)) {
+        if (BarrowsManager.handleTunnelDoorObject(this.player, this.objectId, this.objectX, this.objectY)) {
             this.stop();
             return;
         }
-        if (ServerSettings.content2007Enabled && GodWarsDungeonManager.a(this.player, this.objectId, this.objectX, this.objectY)) {
+        if (ServerSettings.content2007Enabled && GodWarsDungeonManager.handleFirstObjectAction(this.player, this.objectId, this.objectX, this.objectY)) {
             this.stop();
             return;
         }
@@ -192,11 +192,11 @@ extends TickTask {
             this.stop();
             return;
         }
-        if (PartyRoomManager.a(this.player, this.objectId, this.objectX, this.objectY)) {
+        if (PartyRoomManager.handleBalloonObjectAction(this.player, this.objectId, this.objectX, this.objectY)) {
             this.stop();
             return;
         }
-        if (AbyssManager.a(this.player, this.objectId, this.objectX, this.objectY)) {
+        if (AbyssManager.handleAbyssObjectAction(this.player, this.objectId, this.objectX, this.objectY)) {
             this.stop();
             return;
         }
@@ -209,19 +209,19 @@ extends TickTask {
             this.stop();
             return;
         }
-        if (this.player.getAlchemistPlaygroundController().a(this.objectId, this.objectX, this.objectY)) {
+        if (this.player.getAlchemistPlaygroundController().handleObjectAction(this.objectId, this.objectX, this.objectY)) {
             this.stop();
             return;
         }
-        if (this.player.getEnchantmentChamberController().a(this.objectId)) {
+        if (this.player.getEnchantmentChamberController().handleObjectAction(this.objectId)) {
             this.stop();
             return;
         }
-        if (this.player.getCreatureGraveyardController().a(this.objectId, this.objectX, this.objectY, this.objectPlane)) {
+        if (this.player.getCreatureGraveyardController().handleObjectAction(this.objectId, this.objectX, this.objectY, this.objectPlane)) {
             this.stop();
             return;
         }
-        if (this.player.getTelekineticTheatreController().b(this.objectId)) {
+        if (this.player.getTelekineticTheatreController().handleObjectAction(this.objectId)) {
             this.stop();
             return;
         }
@@ -311,8 +311,8 @@ extends TickTask {
                 this.player.getPacketSender().queueRelativeMovementStep(this.player.getPosition().getX() < 2902 ? 1 : -1, 0, true);
                 this.player.getPacketSender().openDoubleDoorPair(2624, 2625, 2902, 3510, 2902, 3511, 0);
             } else {
-                object = QuestDefinition.b(50);
-                String string = ((QuestDefinition)object).c();
+                object = QuestDefinition.forId(50);
+                String string = ((QuestDefinition)object).getName();
                 this.player.getDialogueManager().showOneLineStatement("You need to complete " + string + " to enter the guild.");
             }
             this.stop();
@@ -323,8 +323,8 @@ extends TickTask {
                 this.player.getPacketSender().queueRelativeMovementStep(0, this.player.getPosition().getY() < 3350 ? 1 : -1, true);
                 this.player.getPacketSender().openDoubleDoorPair(2391, 2392, 2728, 3349, 2729, 3349, 0);
             } else {
-                object = QuestDefinition.b(57);
-                String string = ((QuestDefinition)object).c();
+                object = QuestDefinition.forId(57);
+                String string = ((QuestDefinition)object).getName();
                 this.player.getDialogueManager().showOneLineStatement("You need to start " + string + " to go through.");
             }
             this.stop();
@@ -683,9 +683,9 @@ extends TickTask {
             this.stop();
             return;
         }
-        if (MiningManager.c(this.objectId)) {
-            if (this.player.getMiningManager().a(this.objectId)) {
-                this.player.getMiningManager().a(this.objectId, this.objectX, this.objectY);
+        if (MiningManager.isMineableRockObjectId(this.objectId)) {
+            if (this.player.getMiningManager().canMineRock(this.objectId)) {
+                this.player.getMiningManager().startMining(this.objectId, this.objectX, this.objectY);
             }
             this.stop();
             return;
@@ -711,7 +711,7 @@ extends TickTask {
         if (this.objectName.contains("hay")) {
             this.player.getPacketSender().sendGameMessage("You search the hay bales...");
             this.player.getUpdateState().setAnimation(832);
-            this.player.n(true);
+            this.player.setActionLocked(true);
             CycleEventHandler.getInstance().schedule(this.player, new SearchHayTask(this, this.player), 2);
             this.stop();
             return;
@@ -719,14 +719,14 @@ extends TickTask {
         if (this.objectName.contains("crate")) {
             this.player.getPacketSender().sendGameMessage("You search the crate...");
             this.player.getUpdateState().setAnimation(832);
-            this.player.n(true);
+            this.player.setActionLocked(true);
             CycleEventHandler.getInstance().schedule(this.player, new SearchCrateTask(this, this.player), 2);
             this.stop();
             return;
         }
         if (this.objectName.contains("bookcase")) {
             this.player.getPacketSender().sendGameMessage("You search the books...");
-            this.player.n(true);
+            this.player.setActionLocked(true);
             CycleEventHandler.getInstance().schedule(this.player, new SearchBookcaseTask(this, this.player), 2);
             this.stop();
             return;
@@ -752,7 +752,7 @@ extends TickTask {
             case 2076: 
             case 2077: {
                 this.player.getPacketSender().sendGameMessage("You pick a banana.");
-                this.player.getInventoryManager().b(new ItemStack(1963, 1));
+                this.player.getInventoryManager().addOrDropItem(new ItemStack(1963, 1));
                 ObjectManager.getInstance().removeDynamicObjectAt(this.objectX, this.objectY, this.objectPlane, 0);
                 new DynamicObject(worldObject.getObjectId() + 1, this.objectX, this.objectY, this.objectPlane, worldObject.getOrientation(), worldObject.getType(), worldObject.getObjectId(), 10);
                 break;
@@ -773,7 +773,7 @@ extends TickTask {
                         this.player.getPacketSender().sendGameMessage("You fill your waterskin with a dose of water.");
                         this.player.getSkillManager().addExperience(8, 10.0);
                         this.player.getInventoryManager().removeItem(new ItemStack(n, 1));
-                        this.player.getInventoryManager().b(new ItemStack(n - 2, 1));
+                        this.player.getInventoryManager().addOrDropItem(new ItemStack(n - 2, 1));
                         ObjectManager.getInstance().removeDynamicObjectAt(this.objectX, this.objectY, this.objectPlane, 0);
                         new DynamicObject(worldObject.getObjectId() + 1, this.objectX, this.objectY, this.objectPlane, worldObject.getOrientation(), worldObject.getType(), worldObject.getObjectId(), 100);
                         break;
@@ -794,7 +794,7 @@ extends TickTask {
             case 1411: 
             case 1412: {
                 this.player.getPacketSender().sendGameMessage("You pick a pineapple.");
-                this.player.getInventoryManager().b(new ItemStack(2114, 1));
+                this.player.getInventoryManager().addOrDropItem(new ItemStack(2114, 1));
                 ObjectManager.getInstance().removeDynamicObjectAt(this.objectX, this.objectY, this.objectPlane, 0);
                 new DynamicObject(worldObject.getObjectId() + 1, this.objectX, this.objectY, this.objectPlane, worldObject.getOrientation(), worldObject.getType(), worldObject.getObjectId(), 10);
                 break;
@@ -812,8 +812,8 @@ extends TickTask {
             case 1294: 
             case 1317: {
                 if (this.player.getQuestState(95) != 1) {
-                    object = QuestDefinition.b(95);
-                    String string = ((QuestDefinition)object).c();
+                    object = QuestDefinition.forId(95);
+                    String string = ((QuestDefinition)object).getName();
                     this.player.getPacketSender().sendGameMessage("You need to complete " + string + " to do this.");
                     break;
                 }
@@ -821,7 +821,7 @@ extends TickTask {
                 break;
             }
             case 1805: {
-                if (this.player.dA() >= 32) {
+                if (this.player.getQuestPoints() >= 32) {
                     int n = this.player.getPosition().getY() > 3362 ? -1 : 1;
                     this.player.getPacketSender().queueRelativeMovementStep(0, n, true);
                     this.player.getPacketSender().openSingleDoor(this.objectId, this.objectX, this.objectY, this.objectPlane);
@@ -949,7 +949,7 @@ extends TickTask {
                 if (GroundItemManager.findVisibleItem(this.player, 3695, position2) != null) {
                     bl2 = true;
                 }
-                Player[] playerArray = World.f();
+                Player[] playerArray = World.getPlayers();
                 int n = playerArray.length;
                 int n5 = 0;
                 while (n5 < n) {
@@ -984,159 +984,159 @@ extends TickTask {
                 break;
             }
             case 10193: {
-                AttackStyleDefinition.a(this.player, new Position(2545, 10143, 0));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(2545, 10143, 0));
                 break;
             }
             case 10195: {
-                AttackStyleDefinition.a(this.player, new Position(1809, 4405, 2));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1809, 4405, 2));
                 break;
             }
             case 10196: {
-                AttackStyleDefinition.a(this.player, new Position(1807, 4405, 3));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1807, 4405, 3));
                 break;
             }
             case 10197: {
-                AttackStyleDefinition.a(this.player, new Position(1823, 4404, 2));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1823, 4404, 2));
                 break;
             }
             case 10198: {
-                AttackStyleDefinition.a(this.player, new Position(1825, 4404, 3));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1825, 4404, 3));
                 break;
             }
             case 10199: {
-                AttackStyleDefinition.a(this.player, new Position(1834, 4388, 2));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1834, 4388, 2));
                 break;
             }
             case 10200: {
-                AttackStyleDefinition.a(this.player, new Position(1834, 4390, 3));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1834, 4390, 3));
                 break;
             }
             case 10201: {
-                AttackStyleDefinition.a(this.player, new Position(1811, 4394, 1));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1811, 4394, 1));
                 break;
             }
             case 10202: {
-                AttackStyleDefinition.a(this.player, new Position(1812, 4394, 2));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1812, 4394, 2));
                 break;
             }
             case 10203: {
-                AttackStyleDefinition.a(this.player, new Position(1799, 4386, 2));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1799, 4386, 2));
                 break;
             }
             case 10204: {
-                AttackStyleDefinition.a(this.player, new Position(1799, 4388, 1));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1799, 4388, 1));
                 break;
             }
             case 10205: {
-                AttackStyleDefinition.a(this.player, new Position(1796, 4382, 1));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1796, 4382, 1));
                 break;
             }
             case 10206: {
-                AttackStyleDefinition.a(this.player, new Position(1796, 4382, 2));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1796, 4382, 2));
                 break;
             }
             case 10207: {
-                AttackStyleDefinition.a(this.player, new Position(1800, 4369, 2));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1800, 4369, 2));
                 break;
             }
             case 10208: {
-                AttackStyleDefinition.a(this.player, new Position(1802, 4370, 1));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1802, 4370, 1));
                 break;
             }
             case 10209: {
-                AttackStyleDefinition.a(this.player, new Position(1827, 4362, 1));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1827, 4362, 1));
                 break;
             }
             case 10210: {
-                AttackStyleDefinition.a(this.player, new Position(1825, 4362, 2));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1825, 4362, 2));
                 break;
             }
             case 10211: {
-                AttackStyleDefinition.a(this.player, new Position(1863, 4373, 2));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1863, 4373, 2));
                 break;
             }
             case 10212: {
-                AttackStyleDefinition.a(this.player, new Position(1863, 4371, 1));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1863, 4371, 1));
                 break;
             }
             case 10213: {
-                AttackStyleDefinition.a(this.player, new Position(1864, 4389, 1));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1864, 4389, 1));
                 break;
             }
             case 10214: {
-                AttackStyleDefinition.a(this.player, new Position(1864, 4387, 2));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1864, 4387, 2));
                 break;
             }
             case 10215: {
-                AttackStyleDefinition.a(this.player, new Position(1890, 4407, 0));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1890, 4407, 0));
                 break;
             }
             case 10216: {
-                AttackStyleDefinition.a(this.player, new Position(1890, 4406, 1));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1890, 4406, 1));
                 break;
             }
             case 10217: {
-                AttackStyleDefinition.a(this.player, new Position(1957, 4373, 1));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1957, 4373, 1));
                 break;
             }
             case 10218: {
-                AttackStyleDefinition.a(this.player, new Position(1957, 4371, 0));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1957, 4371, 0));
                 break;
             }
             case 10219: {
-                AttackStyleDefinition.a(this.player, new Position(1824, 4379, 3));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1824, 4379, 3));
                 break;
             }
             case 10220: {
-                AttackStyleDefinition.a(this.player, new Position(1824, 4381, 2));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1824, 4381, 2));
                 break;
             }
             case 10221: {
-                AttackStyleDefinition.a(this.player, new Position(1838, 4375, 2));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1838, 4375, 2));
                 break;
             }
             case 10222: {
-                AttackStyleDefinition.a(this.player, new Position(1838, 4377, 3));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1838, 4377, 3));
                 break;
             }
             case 10223: {
-                AttackStyleDefinition.a(this.player, new Position(1850, 4386, 1));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1850, 4386, 1));
                 break;
             }
             case 10224: {
-                AttackStyleDefinition.a(this.player, new Position(1850, 4387, 2));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1850, 4387, 2));
                 break;
             }
             case 10225: {
-                AttackStyleDefinition.a(this.player, new Position(1932, 4378, 1));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1932, 4378, 1));
                 break;
             }
             case 10226: {
-                AttackStyleDefinition.a(this.player, new Position(1932, 4380, 2));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1932, 4380, 2));
                 break;
             }
             case 10227: {
                 if (this.objectX == 1961 && this.objectY == 4392) {
-                    AttackStyleDefinition.a(this.player, new Position(1961, 4392, 2));
+                    AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1961, 4392, 2));
                     break;
                 }
-                AttackStyleDefinition.a(this.player, new Position(1932, 4377, 1));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1932, 4377, 1));
                 break;
             }
             case 10228: {
-                AttackStyleDefinition.a(this.player, new Position(1961, 4393, 3));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1961, 4393, 3));
                 break;
             }
             case 195: {
-                AttackStyleDefinition.a(this.player, new Position(2410, 3421, 0));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(2410, 3421, 0));
                 break;
             }
             case 10229: {
-                AttackStyleDefinition.a(this.player, new Position(1912, 4367, 0));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1912, 4367, 0));
                 break;
             }
             case 10230: {
-                AttackStyleDefinition.a(this.player, new Position(2900, 4449, 0));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(2900, 4449, 0));
                 break;
             }
             case 9398: {
@@ -1260,8 +1260,8 @@ extends TickTask {
             case 6552: {
                 boolean bl;
                 if (this.player.getQuestState(26) != 1) {
-                    object = QuestDefinition.b(14);
-                    String string = ((QuestDefinition)object).c();
+                    object = QuestDefinition.forId(14);
+                    String string = ((QuestDefinition)object).getName();
                     this.player.getPacketSender().sendGameMessage("You need to complete " + string + " to do this.");
                     break;
                 }
@@ -1441,7 +1441,7 @@ extends TickTask {
                     this.player.getDialogueManager().showOneLineStatement("You need a Prayer level of 31 to enter the Prayer guild.");
                     break;
                 }
-                AttackStyleDefinition.a(this.player, "up");
+                AttackStyleDefinition.climbOneFloorAtCurrentTile(this.player, "up");
                 break;
             }
             case 1804: {
@@ -1454,7 +1454,7 @@ extends TickTask {
                 break;
             }
             case 733: {
-                AttackStyleDefinition.a(this.player, this.objectX, this.objectY, this.player.getEquipmentManager().getItemIdAtSlot(3));
+                AttackStyleDefinition.slashWeb(this.player, this.objectX, this.objectY, this.player.getEquipmentManager().getItemIdAtSlot(3));
                 break;
             }
             case 9334: {
@@ -1462,11 +1462,11 @@ extends TickTask {
                 break;
             }
             case 6434: {
-                AttackStyleDefinition.a(this.player, this.objectId, 6435, worldObject);
+                AttackStyleDefinition.toggleObjectAfterAnimation(this.player, this.objectId, 6435, worldObject);
                 break;
             }
             case 1568: {
-                AttackStyleDefinition.a(this.player, this.objectId, 1570, worldObject);
+                AttackStyleDefinition.toggleObjectAfterAnimation(this.player, this.objectId, 1570, worldObject);
                 break;
             }
             case 882: 
@@ -1485,11 +1485,11 @@ extends TickTask {
                     this.player.packetSender.sendGameMessage("You need to be in members world to access members content.");
                     break;
                 }
-                if (this.objectId == 5947 && !this.player.eF) {
+                if (this.objectId == 5947 && !this.player.swampCaveRopeAttached) {
                     this.player.packetSender.sendGameMessage("You need to attach rope first before you can climb.");
                     break;
                 }
-                AttackStyleDefinition.a(this.player, new Position(this.player.getPosition().getX(), this.player.getPosition().getY() + 6400));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(this.player.getPosition().getX(), this.player.getPosition().getY() + 6400));
                 break;
             }
             case 1755: 
@@ -1498,30 +1498,30 @@ extends TickTask {
             case 5946: 
             case 6436: {
                 if (this.objectX == 3222 && this.objectY == 9588) {
-                    AttackStyleDefinition.a(this.player, new Position(3201, 3169, 0));
+                    AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(3201, 3169, 0));
                     break;
                 }
                 if (this.objectX == 3097 && this.objectY == 9867) {
-                    AttackStyleDefinition.a(this.player, new Position(3096, 3468, 0));
+                    AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(3096, 3468, 0));
                     break;
                 }
-                AttackStyleDefinition.a(this.player, new Position(this.player.getPosition().getX(), this.player.getPosition().getY() - 6400));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(this.player.getPosition().getX(), this.player.getPosition().getY() - 6400));
                 break;
             }
             case 5488: {
-                AttackStyleDefinition.a(this.player, new Position(3201, 3169, 0));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(3201, 3169, 0));
                 break;
             }
             case 2410: {
-                AttackStyleDefinition.a(this.player, new Position(3262, 3171, 0));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(3262, 3171, 0));
                 break;
             }
             case 3432: {
-                AttackStyleDefinition.a(this.player, this.objectId, 3433, worldObject);
+                AttackStyleDefinition.toggleObjectAfterAnimation(this.player, this.objectId, 3433, worldObject);
                 break;
             }
             case 3433: {
-                AttackStyleDefinition.a(this.player, new Position(3440, 9887, 0));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(3440, 9887, 0));
                 break;
             }
             case 2156: {
@@ -1599,15 +1599,15 @@ extends TickTask {
                 break;
             }
             case 2609: {
-                AttackStyleDefinition.a(this.player, new Position(2834, 9657, 0));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(2834, 9657, 0));
                 break;
             }
             case 2610: {
-                AttackStyleDefinition.a(this.player, new Position(2833, 3257, 0));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(2833, 3257, 0));
                 break;
             }
             case 2147: {
-                AttackStyleDefinition.a(this.player, new Position(3104, 9576, 0));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(3104, 9576, 0));
                 break;
             }
             case 4568: 
@@ -1616,7 +1616,7 @@ extends TickTask {
             case 11729: 
             case 11732: 
             case 12536: {
-                AttackStyleDefinition.b(this.player, "up");
+                AttackStyleDefinition.climbOffsetLadder(this.player, "up");
                 break;
             }
             case 4570: 
@@ -1624,7 +1624,7 @@ extends TickTask {
             case 11731: 
             case 11733: 
             case 12538: {
-                AttackStyleDefinition.b(this.player, "down");
+                AttackStyleDefinition.climbOffsetLadder(this.player, "down");
                 break;
             }
             case 1722: 
@@ -1637,7 +1637,7 @@ extends TickTask {
                     this.player.moveTo(new Position(this.player.getPosition().getX(), 3092, 1));
                     break;
                 }
-                AttackStyleDefinition.a(this.player, 4, 4, "up");
+                AttackStyleDefinition.climbDirectionalStairs(this.player, 4, 4, "up");
                 break;
             }
             case 1730: 
@@ -1648,7 +1648,7 @@ extends TickTask {
                 if (this.objectId == 1730) {
                     n = 4;
                 }
-                AttackStyleDefinition.a(this.player, n, n, "up");
+                AttackStyleDefinition.climbDirectionalStairs(this.player, n, n, "up");
                 break;
             }
             case 1723: 
@@ -1657,7 +1657,7 @@ extends TickTask {
             case 9471: 
             case 11735: 
             case 11737: {
-                AttackStyleDefinition.a(this.player, 4, 4, "down");
+                AttackStyleDefinition.climbDirectionalStairs(this.player, 4, 4, "down");
                 break;
             }
             case 1731: 
@@ -1668,15 +1668,15 @@ extends TickTask {
                 if (this.objectId == 1731) {
                     n = 4;
                 }
-                AttackStyleDefinition.a(this.player, n, n, "down");
+                AttackStyleDefinition.climbDirectionalStairs(this.player, n, n, "down");
                 break;
             }
             case 7057: {
-                AttackStyleDefinition.b(this.player, 4, 4, "up");
+                AttackStyleDefinition.climbFourTileDirectionalStairs(this.player, 4, 4, "up");
                 break;
             }
             case 7056: {
-                AttackStyleDefinition.b(this.player, 4, 4, "down");
+                AttackStyleDefinition.climbFourTileDirectionalStairs(this.player, 4, 4, "down");
                 break;
             }
             case 1747: 
@@ -1690,17 +1690,17 @@ extends TickTask {
             case 11739: 
             case 12112: 
             case 12964: {
-                AttackStyleDefinition.a(this.player, "up");
+                AttackStyleDefinition.climbOneFloorAtCurrentTile(this.player, "up");
                 break;
             }
             case 4163: 
             case 4164: {
-                AttackStyleDefinition.a(this.player, "up", 2);
+                AttackStyleDefinition.climbTwoFloorsAtCurrentTile(this.player, "up", 2);
                 break;
             }
             case 4173: 
             case 4174: {
-                AttackStyleDefinition.a(this.player, "down", 2);
+                AttackStyleDefinition.climbTwoFloorsAtCurrentTile(this.player, "down", 2);
                 break;
             }
             case 1746: 
@@ -1717,19 +1717,19 @@ extends TickTask {
             case 11742: 
             case 12113: 
             case 12966: {
-                AttackStyleDefinition.a(this.player, "down");
+                AttackStyleDefinition.climbOneFloorAtCurrentTile(this.player, "down");
                 break;
             }
             case 2148: {
-                AttackStyleDefinition.a(this.player, new Position(3105, 3162, 0));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(3105, 3162, 0));
                 break;
             }
             case 881: {
-                AttackStyleDefinition.a(this.player, this.objectId, 882, worldObject);
+                AttackStyleDefinition.toggleObjectAfterAnimation(this.player, this.objectId, 882, worldObject);
                 break;
             }
             case 883: {
-                AttackStyleDefinition.a(this.player, this.objectId, 881, worldObject);
+                AttackStyleDefinition.toggleObjectAfterAnimation(this.player, this.objectId, 881, worldObject);
                 break;
             }
             case 2112: {
@@ -1745,12 +1745,12 @@ extends TickTask {
             }
             case 2113: {
                 if (!SkillActionHelper.checkSkillRequirement(this.player, 14, 60, "enter the Mining Guild")) break;
-                AttackStyleDefinition.a(this.player, new Position(this.player.getPosition().getX(), this.player.getPosition().getY() + 6400, 0));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(this.player.getPosition().getX(), this.player.getPosition().getY() + 6400, 0));
                 break;
             }
             case 98: {
                 if (this.objectX != 2650 || this.objectY != 9804) break;
-                if (this.player.eI() > 0) {
+                if (this.player.getActiveCaveLightLevel() > 0) {
                     this.player.moveTo(new Position(this.player.getPosition().getX() - 8, this.player.getPosition().getY() - 41, 0));
                     break;
                 }
@@ -1778,19 +1778,19 @@ extends TickTask {
                 break;
             }
             case 1733: {
-                AttackStyleDefinition.c(this.player, 4, 4, "down");
+                AttackStyleDefinition.climbDungeonLadder(this.player, 4, 4, "down");
                 break;
             }
             case 1734: {
-                AttackStyleDefinition.c(this.player, 4, 4, "up");
+                AttackStyleDefinition.climbDungeonLadder(this.player, 4, 4, "up");
                 break;
             }
             case 492: {
-                AttackStyleDefinition.a(this.player, new Position(2857, 9569, 0));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(2857, 9569, 0));
                 break;
             }
             case 1764: {
-                AttackStyleDefinition.a(this.player, new Position(2856, 3167, 0));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(2856, 3167, 0));
                 break;
             }
             case 9358: {
@@ -1806,15 +1806,15 @@ extends TickTask {
                 break;
             }
             case 9356: {
-                this.player.getFightCaveController().f();
+                this.player.getFightCaveController().startFightCave();
                 break;
             }
             case 9357: {
-                this.player.getFightCaveController().c();
+                this.player.getFightCaveController().leaveFightCave();
                 break;
             }
             case 9706: {
-                if (this.player.dN < 5) break;
+                if (this.player.mageArenaProgressStage < 5) break;
                 this.player.getPacketSender().sendSoundEffect(319, 1, 0);
                 this.player.getUpdateState().setAnimation(835);
                 this.player.getPacketSender().sendGameMessage("You pull the lever...");
@@ -1829,11 +1829,11 @@ extends TickTask {
                 break;
             }
             case 1767: {
-                AttackStyleDefinition.a(this.player, new Position(3016, 10249, 0));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(3016, 10249, 0));
                 break;
             }
             case 1768: {
-                AttackStyleDefinition.a(this.player, new Position(3069, 3857, 0));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(3069, 3857, 0));
                 break;
             }
             case 1816: {
@@ -1907,16 +1907,16 @@ extends TickTask {
                 break;
             }
             case 2871: {
-                AttackStyleDefinition.a(this.player, new Position(2543, 4713, 0));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(2543, 4713, 0));
                 break;
             }
             case 2872: {
-                AttackStyleDefinition.a(this.player, new Position(3092, 3957, 0));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(3092, 3957, 0));
                 break;
             }
             case 2880: {
                 if (this.player.getPosition().getY() > 3953) {
-                    if (this.player.dN < 5) break;
+                    if (this.player.mageArenaProgressStage < 5) break;
                     this.player.getPacketSender().queueRelativeMovementStep(0, -1, true);
                     break;
                 }
@@ -1924,53 +1924,53 @@ extends TickTask {
                 break;
             }
             case 6279: {
-                AttackStyleDefinition.a(this.player, new Position(3206, 9379, 0));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(3206, 9379, 0));
                 break;
             }
             case 6439: {
-                AttackStyleDefinition.a(this.player, new Position(3311, 2963, 0));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(3311, 2963, 0));
                 break;
             }
             case 3828: {
-                AttackStyleDefinition.a(this.player, new Position(3484, 9509, 2));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(3484, 9509, 2));
                 break;
             }
             case 3829: {
-                AttackStyleDefinition.a(this.player, new Position(3229, 3108, 0));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(3229, 3108, 0));
                 break;
             }
             case 3831: {
-                AttackStyleDefinition.a(this.player, new Position(3507, 9494, 0));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(3507, 9494, 0));
                 break;
             }
             case 3832: {
-                AttackStyleDefinition.a(this.player, new Position(3509, 9499, 2));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(3509, 9499, 2));
                 break;
             }
             case 10168: {
                 int n = this.objectPlane > 1 ? 1 : 0;
-                AttackStyleDefinition.a(this.player, new Position(this.player.getPosition().getX(), this.player.getPosition().getY(), n));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(this.player.getPosition().getX(), this.player.getPosition().getY(), n));
                 break;
             }
             case 10167: {
                 int n = this.objectPlane <= 0 ? 1 : 2;
-                AttackStyleDefinition.a(this.player, new Position(this.player.getPosition().getX(), this.player.getPosition().getY(), n));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(this.player.getPosition().getX(), this.player.getPosition().getY(), n));
                 break;
             }
             case 1765: {
-                AttackStyleDefinition.a(this.player, new Position(3069, 10255, 0));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(3069, 10255, 0));
                 break;
             }
             case 1766: {
-                AttackStyleDefinition.a(this.player, new Position(3017, 3850, 0));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(3017, 3850, 0));
                 break;
             }
             case 1738: {
-                AttackStyleDefinition.b(this.player, "up");
+                AttackStyleDefinition.climbOffsetLadder(this.player, "up");
                 break;
             }
             case 1740: {
-                AttackStyleDefinition.b(this.player, "down");
+                AttackStyleDefinition.climbOffsetLadder(this.player, "down");
                 break;
             }
             case 1739: 
@@ -1996,7 +1996,7 @@ extends TickTask {
                 break;
             }
             case 3192: {
-                DuelHistory.a(this.player);
+                DuelHistory.openDuelHistoryInterface(this.player);
                 break;
             }
             case 2213: 

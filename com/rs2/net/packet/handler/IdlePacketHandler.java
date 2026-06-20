@@ -12,11 +12,11 @@ public final class IdlePacketHandler
 implements PacketHandler {
     @Override
     public final void handle(Player player, IncomingPacket object) {
-        player.aF(player.fn() + 1);
+        player.setIdlePacketCount(player.getIdlePacketCount() + 1);
         if (!ServerSettings.idleLogoutEnabled || player.botEnabled) {
             return;
         }
-        if (player.fn() > 20 && (player.getPlayerRights() < 2 && player.getSingleCombatTimer().hasElapsed() || player.cn)) {
+        if (player.getIdlePacketCount() > 20 && (player.getPlayerRights() < 2 && player.getSingleCombatTimer().hasElapsed() || player.cn)) {
             object = player;
             ((Player)object).packetSender.sendLogout();
             player.disconnect();

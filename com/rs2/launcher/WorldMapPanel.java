@@ -79,7 +79,7 @@ extends JPanel {
             graphics.drawImage(regionImages[n][0], (regionBaseXs[n] - this.mapBaseX) * this.mapScale - 1, (10432 - regionBaseYs[n]) * this.mapScale - 64 * this.mapScale + this.mapScale, null);
             ++n;
         }
-        Player[] playerArray = World.f();
+        Player[] playerArray = World.getPlayers();
         int n2 = playerArray.length;
         int n3 = 0;
         while (n3 < n2) {

@@ -56,15 +56,15 @@ public final class MusicAreaDefinition {
                 n6 = 1;
                 rectangularArea = new RectangularArea(2706, 9801, 2731, 9830, 0);
             }
-            if (CacheCoordinateTranslator.a) {
+            if (CacheCoordinateTranslator.dungeonCoordinateShiftActive) {
                 if (n7 == 181 || n7 == 118) {
                     int[] nArray2 = new int[nArray.length];
                     n3 = 0;
                     while (n3 < nArray.length) {
-                        Position position = GameUtil.a(nArray[n3]);
+                        Position position = GameUtil.getRegionBasePosition(nArray[n3]);
                         int n9 = position.getX() + 768;
                         n2 = position.getY() + 5120;
-                        nArray2[n3] = n2 = GameUtil.a(n9, n2);
+                        nArray2[n3] = n2 = GameUtil.getRegionId(n9, n2);
                         ++n3;
                     }
                     nArray = nArray2;

@@ -36,7 +36,7 @@ extends CycleEvent {
                     TeleportManager.a(this.b).getUpdateState().setAnimation(715);
                 }
                 if (TeleportManager.a(this.b).s()) {
-                    TeleportManager.a(this.b).aK();
+                    TeleportManager.a(this.b).clearTemporaryCutsceneNpcs();
                 }
                 if (TeleportManager.a(this.b).getInventoryManager().containsItem(4033)) {
                     int n = TeleportManager.a(this.b).getInventoryManager().getItemAmount(4033);
@@ -62,7 +62,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        TeleportManager.a(this.b).n(false);
+        TeleportManager.a(this.b).setActionLocked(false);
         TeleportManager.a(this.b).getAttributes().put("canTakeDamage", Boolean.TRUE);
     }
 }

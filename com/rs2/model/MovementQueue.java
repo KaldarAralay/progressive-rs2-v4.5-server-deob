@@ -140,7 +140,7 @@ public final class MovementQueue {
                             ((Player)entity).setRunEnergyPercent(100);
                         } else {
                             object = object2 = entity;
-                            int n3 = GameUtil.a(0, 64, (int)((Player)object).al);
+                            int n3 = GameUtil.clampRunWeightForEnergyDrain(0, 64, (int)((Player)object).al);
                             n3 = 67 + n3 * 67 / 64;
                             ((Player)entity).addRunEnergyRaw(-n3);
                         }
@@ -169,12 +169,12 @@ public final class MovementQueue {
                 this.clear();
             }
             GameplayHelper.g(player);
-            player.getQuestManager().a();
-            DesertHeatManager.b(player);
-            CaveLightManager.c(player);
+            player.getQuestManager().handleMovementStep();
+            DesertHeatManager.updateDesertHeatHazard(player);
+            CaveLightManager.updateCaveLightHazards(player);
             Player player2 = player;
             if (player.currentBotRoute != null && !player.dm && !player.dn) {
-                player.bk();
+                player.continueBotRoute();
             }
             BankPinManager.a(player);
             new MusicManager().updateForPlayerPosition(player);
@@ -231,7 +231,7 @@ public final class MovementQueue {
                 object = (MovementStep)movementQueue.steps.peekLast();
                 n7 = n6 - ((Position)object).getX();
                 int n8 = n5 - ((Position)object).getY();
-                if ((n7 = GameUtil.d(n7, n8)) >= 0) {
+                if ((n7 = GameUtil.getDirectionForDelta(n7, n8)) >= 0) {
                     movementQueue.steps.add(new MovementStep(movementQueue, n6, n5, n7));
                 }
             }
@@ -267,8 +267,8 @@ public final class MovementQueue {
             Player player = (Player)this.entity;
             player.getAttributes().put("isBanking", Boolean.FALSE);
             player.getAttributes().put("isShopping", Boolean.FALSE);
-            GameplayHelper.o(player);
-            PartyRoomManager.d(player);
+            GameplayHelper.declineTrade(player);
+            PartyRoomManager.returnStagedChestItems(player);
             if (player.getQuestState(0) == 1) {
                 Player player2 = player;
                 player2.packetSender.closeInterfaces();
@@ -307,12 +307,12 @@ public final class MovementQueue {
                 int n6 = n2;
                 n5 = n;
                 Npc npc2 = npc;
-                entityArray = World.f();
+                entityArray = World.getPlayers();
                 n4 = entityArray.length;
                 n3 = 0;
                 while (n3 < n4) {
                     entity = entityArray[n3];
-                    if (entity != null && !npc2.isDead() && !entity.isDead() && entity.getPosition().getPlane() == npc2.getPosition().getPlane() && GameUtil.a(npc2.getPosition().getX(), npc2.getPosition().getY(), entity.getPosition().getX(), entity.getPosition().getY(), entity.getSize() + npc2.getSize()) && Npc.wouldCollideWithPlayer(npc2, (Player)entity, n5, n6)) {
+                    if (entity != null && !npc2.isDead() && !entity.isDead() && entity.getPosition().getPlane() == npc2.getPosition().getPlane() && GameUtil.isWithinDistance(npc2.getPosition().getX(), npc2.getPosition().getY(), entity.getPosition().getX(), entity.getPosition().getY(), entity.getSize() + npc2.getSize()) && Npc.wouldCollideWithPlayer(npc2, (Player)entity, n5, n6)) {
                         bl2 = true;
                         break block14;
                     }
@@ -336,12 +336,12 @@ public final class MovementQueue {
                     int n7 = n2;
                     n5 = n;
                     Object object2 = object;
-                    entityArray = World.g();
+                    entityArray = World.getNpcs();
                     n4 = entityArray.length;
                     n3 = 0;
                     while (n3 < n4) {
                         entity = entityArray[n3];
-                        if (entity != null && !((Entity)object2).isDead() && !entity.isDead() && entity.getPosition().getPlane() == ((Entity)object2).getPosition().getPlane() && (((Npc)entity).getNpcId() == 1459 || ((Npc)entity).getNpcId() == 1461 || ((Npc)entity).getNpcId() == 1462) && GameUtil.a(((Entity)object2).getPosition().getX(), ((Entity)object2).getPosition().getY(), entity.getPosition().getX(), entity.getPosition().getY(), entity.getSize() + ((Entity)object2).getSize()) && Player.a((Player)object2, (Npc)entity, n5, n7)) {
+                        if (entity != null && !((Entity)object2).isDead() && !entity.isDead() && entity.getPosition().getPlane() == ((Entity)object2).getPosition().getPlane() && (((Npc)entity).getNpcId() == 1459 || ((Npc)entity).getNpcId() == 1461 || ((Npc)entity).getNpcId() == 1462) && GameUtil.isWithinDistance(((Entity)object2).getPosition().getX(), ((Entity)object2).getPosition().getY(), entity.getPosition().getX(), entity.getPosition().getY(), entity.getSize() + ((Entity)object2).getSize()) && Player.a((Player)object2, (Npc)entity, n5, n7)) {
                             bl3 = true;
                             break block15;
                         }

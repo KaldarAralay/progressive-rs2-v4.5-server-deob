@@ -31,7 +31,7 @@ extends CycleEvent {
     @Override
     public final void onStop() {
         TreePatchManager.getPlayer(this.manager).getUpdateState().setAnimation(1332);
-        TreePatchManager.getPlayer(this.manager).n(false);
+        TreePatchManager.getPlayer(this.manager).setActionLocked(false);
     }
 }
 

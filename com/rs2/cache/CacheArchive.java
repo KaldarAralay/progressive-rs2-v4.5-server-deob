@@ -160,7 +160,7 @@ public class CacheArchive {
         if (challengeQuestion == null) {
             return;
         }
-        player.getInventoryManager().b(new ItemStack(challengeQuestion.getAnswerItemId(), 1));
+        player.getInventoryManager().addOrDropItem(new ItemStack(challengeQuestion.getAnswerItemId(), 1));
     }
 
     public static boolean hasChallengeQuestionAnswerItem(Player player, int n) {

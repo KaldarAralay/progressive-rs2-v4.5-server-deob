@@ -20,37 +20,37 @@ import java.util.Locale;
 import java.util.Random;
 
 public final class GameUtil {
-    private static Random a;
+    private static Random random;
 
     static {
         char[] cArray = new char[]{' ', 'e', 't', 'a', 'o', 'i', 'h', 'n', 's', 'r', 'd', 'l', 'u', 'm', 'w', 'c', 'y', 'f', 'g', 'p', 'b', 'v', 'k', 'x', 'j', 'q', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ' ', '!', '?', '.', ',', ':', ';', '(', ')', '-', '&', '*', '\\', '\'', '@', '#', '+', '=', '\u00a3', '$', '%', '\"', '[', ']'};
-        a = new Random();
+        random = new Random();
     }
 
-    public static int a(int n, int n2) {
+    public static int getRegionId(int n, int n2) {
         n >>= 6;
         n = (n2 >>= 6) + (n << 8);
         return n;
     }
 
-    public static Position a(int n) {
+    public static Position getRegionBasePosition(int n) {
         int n2 = n >> 8 << 6;
         n = (n & 0xFF) << 6;
         return new Position(n2, n);
     }
 
-    public static int b(int n) {
+    public static int bitFlag(int n) {
         n = (int)Math.pow(2.0, n);
         return n;
     }
 
-    public static int b(int n, int n2) {
+    public static int randomBetweenInclusive(int n, int n2) {
         n2 -= n;
-        n2 = GameUtil.h(n2 + 1);
+        n2 = GameUtil.randomInt(n2 + 1);
         return n + n2;
     }
 
-    public static int a(int n, int n2, int n3) {
+    public static int clampRunWeightForEnergyDrain(int n, int n2, int n3) {
         if (n3 < 0) {
             return 0;
         }
@@ -60,7 +60,7 @@ public final class GameUtil {
         return n3;
     }
 
-    public static int a(int[] nArray, int[] nArray2, int[] nArray3, int n) {
+    public static int rollLevelScaledChanceIndex(int[] nArray, int[] nArray2, int[] nArray3, int n) {
         Object object;
         ArrayList<double[]> arrayList = new ArrayList<double[]>();
         ArrayList<double[]> arrayList2 = new ArrayList<double[]>();
@@ -72,42 +72,42 @@ public final class GameUtil {
             ++n2;
         }
         Collections.sort(arrayList2, new WeightedChanceEntryThresholdComparator());
-        double[] dArray = GameUtil.a(arrayList2, n);
+        double[] dArray = GameUtil.calculateLevelScaledProbabilities(arrayList2, n);
         object = new double[dArray.length];
         int n3 = 0;
         while (n3 < dArray.length) {
             object[arrayList.indexOf(arrayList2.get((int)n3))] = dArray[n3];
             ++n3;
         }
-        n3 = GameUtil.a(object);
+        n3 = GameUtil.rollProbabilityIndex(object);
         return n3;
     }
 
-    public static boolean b(int n, int n2, int n3) {
-        return GameUtil.a(n, n2, n3, 1.0);
+    public static boolean rollLevelScaledChance(int n, int n2, int n3) {
+        return GameUtil.rollLevelScaledChance(n, n2, n3, 1.0);
     }
 
-    public static boolean a(int n, int n2, int n3, double d) {
+    public static boolean rollLevelScaledChance(int n, int n2, int n3, double d) {
         double d2;
         double d3 = n;
         double d4 = n2;
         n = (int)(d3 *= d);
         n2 = (int)(d4 *= d);
-        double d5 = GameUtil.c(n, n2, n3);
+        double d5 = GameUtil.calculateLevelScaledChance(n, n2, n3);
         return d5 >= (d2 = Math.random());
     }
 
-    public static boolean a(double d) {
+    public static boolean rollChance(double d) {
         double d2 = Math.random();
         return d >= d2;
     }
 
-    private static double c(int n, int n2, int n3) {
+    private static double calculateLevelScaledChance(int n, int n2, int n3) {
         double d = Math.floor((double)(n * (99 - n3)) / 98.0) + Math.floor((double)(n2 * (n3 - 1)) / 98.0) + 1.0;
         return Math.min(Math.max(d / 256.0, 0.0), 1.0);
     }
 
-    private static double[] a(ArrayList arrayList, int n) {
+    private static double[] calculateLevelScaledProbabilities(ArrayList arrayList, int n) {
         double[] dArray = new double[arrayList.size()];
         int n2 = 0;
         while (n2 < arrayList.size()) {
@@ -116,7 +116,7 @@ public final class GameUtil {
                 int n3;
                 double[] dArray2;
                 Object object = (WeightedChanceEntry)arrayList.get(n2);
-                if (n < ((WeightedChanceEntry)object).c) {
+                if (n < ((WeightedChanceEntry)object).requiredLevel) {
                     dArray2 = dArray;
                     n3 = n2;
                     d = 0.0;
@@ -131,11 +131,11 @@ public final class GameUtil {
                     while (n6 < ((ArrayList)object).size()) {
                         WeightedChanceEntry weightedChanceEntry = (WeightedChanceEntry)((ArrayList)object).get(n6);
                         if (n6 == n4) {
-                            d = d2 = d2 * GameUtil.c(weightedChanceEntry.a, weightedChanceEntry.b, n5);
+                            d = d2 = d2 * GameUtil.calculateLevelScaledChance(weightedChanceEntry.lowChance, weightedChanceEntry.highChance, n5);
                             break block6;
                         }
-                        if (n5 >= weightedChanceEntry.c) {
-                            d2 *= 1.0 - GameUtil.c(weightedChanceEntry.a, weightedChanceEntry.b, n5);
+                        if (n5 >= weightedChanceEntry.requiredLevel) {
+                            d2 *= 1.0 - GameUtil.calculateLevelScaledChance(weightedChanceEntry.lowChance, weightedChanceEntry.highChance, n5);
                         }
                         ++n6;
                     }
@@ -148,7 +148,7 @@ public final class GameUtil {
         return dArray;
     }
 
-    public static int a(double[] dArray) {
+    public static int rollProbabilityIndex(double[] dArray) {
         double d;
         double d2 = d = Math.random();
         double d3 = 0.0;
@@ -164,7 +164,7 @@ public final class GameUtil {
         return -1;
     }
 
-    public static int a(String[] stringArray) {
+    public static int rollFractionWeightIndex(String[] stringArray) {
         int[] nArray = new int[stringArray.length];
         int[] nArray2 = new int[stringArray.length];
         int n = 0;
@@ -201,25 +201,25 @@ public final class GameUtil {
         return -1;
     }
 
-    public static void a(ItemStack itemStack) {
+    public static void addTrackedRareItemAmount(ItemStack itemStack) {
         int n = 0;
-        for (ItemStack itemStack2 : Server.a) {
+        for (ItemStack itemStack2 : Server.trackedRareItems) {
             if (itemStack.getId() == itemStack2.getId()) {
                 int n2 = itemStack2.getAmount() + itemStack.getAmount();
                 itemStack.setAmount(n2);
-                Server.a.set(n, itemStack);
+                Server.trackedRareItems.set(n, itemStack);
                 return;
             }
             ++n;
         }
     }
 
-    public static String a(long l) {
+    public static String formatNumber(long l) {
         NumberFormat numberFormat = NumberFormat.getIntegerInstance(Locale.ENGLISH);
         return numberFormat.format(l);
     }
 
-    public static String c(int n) {
+    public static String formatCompactAmountHighThreshold(int n) {
         int n2 = Math.abs(n);
         String string = "";
         if (n2 >= 100000 && n2 < 10000000) {
@@ -233,7 +233,7 @@ public final class GameUtil {
         return String.valueOf(n) + string;
     }
 
-    public static String d(int n) {
+    public static String formatCompactAmount(int n) {
         int n2 = Math.abs(n);
         String string = "";
         if (n2 >= 1000 && n2 < 10000000) {
@@ -247,7 +247,7 @@ public final class GameUtil {
         return String.valueOf(n) + string;
     }
 
-    public static String e(int n) {
+    public static String formatCompactAmountDetailed(int n) {
         int n2 = Math.abs(n);
         String string = "";
         int n3 = 1;
@@ -273,7 +273,7 @@ public final class GameUtil {
         return String.valueOf(n) + string;
     }
 
-    public static String a(String string) {
+    public static String capitalizeLowercaseFirst(String string) {
         if ((string = string.toLowerCase()).length() <= 1) {
             return string.toUpperCase();
         }
@@ -281,7 +281,7 @@ public final class GameUtil {
         return string;
     }
 
-    public static String b(String string) {
+    public static String capitalizeWords(String string) {
         int n = 0;
         while (n < string.length()) {
             if (n == 0) {
@@ -295,13 +295,13 @@ public final class GameUtil {
         return string;
     }
 
-    public static String c(String string) {
-        string = GameUtil.b(string);
+    public static String formatDisplayName(String string) {
+        string = GameUtil.capitalizeWords(string);
         string.replace("_", " ");
         return string;
     }
 
-    public static int f(int n) {
+    public static int randomExclusive(int n) {
         n = (int)(Math.random() * (double)n);
         if (n < 0) {
             return 0;
@@ -309,7 +309,7 @@ public final class GameUtil {
         return n;
     }
 
-    public static int g(int n) {
+    public static int randomInclusive(int n) {
         n = (int)(Math.random() * (double)(n + 1));
         if (n < 0) {
             return 0;
@@ -317,19 +317,19 @@ public final class GameUtil {
         return n;
     }
 
-    public static int h(int n) {
-        n = a.nextInt(n);
+    public static int randomInt(int n) {
+        n = random.nextInt(n);
         return n;
     }
 
-    public static int c(int n, int n2) {
+    public static int randomOneToInclusive(int n, int n2) {
         n = n2 - 1;
-        n = 1 + GameUtil.h(n + 1);
+        n = 1 + GameUtil.randomInt(n + 1);
         return n;
     }
 
-    public static int i(int n) {
-        n = a.nextInt(66);
+    public static int rollPriceFluctuationPercent(int n) {
+        n = random.nextInt(66);
         int n2 = 0;
         int n3 = 11;
         while (n >= 0) {
@@ -340,7 +340,7 @@ public final class GameUtil {
         return n2 - 1;
     }
 
-    public static int[] a(int[] nArray) {
+    public static int[] shuffleIntArray(int[] nArray) {
         Random random = new Random();
         int n = nArray.length - 1;
         while (n > 0) {
@@ -353,16 +353,16 @@ public final class GameUtil {
         return nArray;
     }
 
-    public static String j(int n) {
+    public static String formatNumber(int n) {
         NumberFormat numberFormat = NumberFormat.getIntegerInstance(Locale.ENGLISH);
         return numberFormat.format(n);
     }
 
-    public static boolean a(Position position, Position position2, boolean bl) {
-        return GameUtil.a(position.getX(), position.getY(), position2.getX(), position2.getY(), position.getPlane(), bl);
+    public static boolean hasClearPath(Position position, Position position2, boolean bl) {
+        return GameUtil.hasClearPath(position.getX(), position.getY(), position2.getX(), position2.getY(), position.getPlane(), bl);
     }
 
-    public static boolean a(Player player, Npc npc) {
+    public static boolean isNpcLastStepFacingPlayer(Player player, Npc npc) {
         Position position;
         if (player == null) {
             return false;
@@ -372,21 +372,21 @@ public final class GameUtil {
         }
         Position position2 = player.getPosition();
         if (position2.isWithinDistance(position = npc.getPosition(), 6) && (player.getPosition().getX() > npc.getPosition().getX() && npc.getLastStepFacingDirection() == 4 || player.getPosition().getX() <= npc.getPosition().getX() && npc.getLastStepFacingDirection() == 5 || player.getPosition().getY() > npc.getPosition().getY() && npc.getLastStepFacingDirection() == 2 || player.getPosition().getY() <= npc.getPosition().getY() && npc.getLastStepFacingDirection() == 0)) {
-            return GameUtil.a(position2.getX(), position2.getY(), position.getX(), position.getY(), position2.getPlane(), false);
+            return GameUtil.hasClearPath(position2.getX(), position2.getY(), position.getX(), position.getY(), position2.getPlane(), false);
         }
         return false;
     }
 
-    public static boolean b(Player player, Npc npc) {
+    public static boolean isNpcWaypointFacingPlayer(Player player, Npc npc) {
         Position position;
         Position position2 = player.getPosition();
         if (position2.isWithinDistance(position = npc.getPosition(), 6) && (player.getPosition().getX() > npc.getPosition().getX() && npc.getWaypointFacingDirection() == 4 || player.getPosition().getX() <= npc.getPosition().getX() && npc.getWaypointFacingDirection() == 5 || player.getPosition().getY() > npc.getPosition().getY() && npc.getWaypointFacingDirection() == 2 || player.getPosition().getY() <= npc.getPosition().getY() && npc.getWaypointFacingDirection() == 0)) {
-            return GameUtil.a(position2.getX(), position2.getY(), position.getX(), position.getY(), position2.getPlane(), false);
+            return GameUtil.hasClearPath(position2.getX(), position2.getY(), position.getX(), position.getY(), position2.getPlane(), false);
         }
         return false;
     }
 
-    private static boolean a(int n, int n2, int n3, int n4, int n5, boolean n6) {
+    private static boolean hasClearPath(int n, int n2, int n3, int n4, int n5, boolean n6) {
         if (n6) {
             return WalkingCollisionMap.canTravelBetween(n, n2, n3, n4, n5, 1, 1);
         }
@@ -427,19 +427,19 @@ public final class GameUtil {
         return true;
     }
 
-    public static final boolean a(Position position, Position position2, int n) {
+    public static final boolean isWithinDistance(Position position, Position position2, int n) {
         if (position == null || position2 == null) {
             return false;
         }
-        return GameUtil.a(position.getX(), position.getY(), position2.getX(), position2.getY(), n) && position.getPlane() == position2.getPlane();
+        return GameUtil.isWithinDistance(position.getX(), position.getY(), position2.getX(), position2.getY(), n) && position.getPlane() == position2.getPlane();
     }
 
-    public static final boolean a(int n, int n2, int n3, int n4, int n5) {
+    public static final boolean isWithinDistance(int n, int n2, int n3, int n4, int n5) {
         n -= n3;
         return (n = (int)Math.sqrt(Math.pow(n, 2.0) + Math.pow(n2 -= n4, 2.0))) <= n5;
     }
 
-    public static Position a(int n, int n2, int n3, int n4, int n5, int n6, int n7) {
+    public static Position findReachableInteractionPosition(int n, int n2, int n3, int n4, int n5, int n6, int n7) {
         if (n5 <= 0 && n6 <= 0) {
             if (n3 == n && n4 == n2) {
                 return new Position(n, n2, n7);
@@ -447,7 +447,7 @@ public final class GameUtil {
             return null;
         }
         if (n5 == 1 && n6 == 1) {
-            if (GameUtil.a(n3, n4, n, n2, 1)) {
+            if (GameUtil.isWithinDistance(n3, n4, n, n2, 1)) {
                 return new Position(n, n2, n7);
             }
             return null;
@@ -459,7 +459,7 @@ public final class GameUtil {
             n4 = n2;
             while (n4 <= n6) {
                 Position position2 = new Position(n, n4, n7);
-                if (GameUtil.a(position2, position, 1) && position2.c(position)) {
+                if (GameUtil.isWithinDistance(position2, position, 1) && position2.c(position)) {
                     return position2;
                 }
                 ++n4;
@@ -469,17 +469,17 @@ public final class GameUtil {
         return null;
     }
 
-    public static Position a(Position position, Position position2) {
+    public static Position getDelta(Position position, Position position2) {
         return new Position(position2.getX() - position.getX(), position2.getY() - position.getY());
     }
 
-    public static int b(Position position, Position position2) {
+    public static int getDistance(Position position, Position position2) {
         int n = position2.getX() - position.getX();
         int n2 = position2.getY() - position.getY();
         return (int)Math.sqrt(Math.pow(n, 2.0) + Math.pow(n2, 2.0));
     }
 
-    public static int d(int n, int n2) {
+    public static int getDirectionForDelta(int n, int n2) {
         if (n < 0) {
             if (n2 < 0) {
                 return 5;
@@ -507,16 +507,16 @@ public final class GameUtil {
         return -1;
     }
 
-    public static String b(double d) {
+    public static String formatNumber(double d) {
         NumberFormat numberFormat = NumberFormat.getIntegerInstance(Locale.ENGLISH);
         return numberFormat.format(d);
     }
 
-    public static Random a() {
-        return a;
+    public static Random getRandom() {
+        return random;
     }
 
-    public static String k(int n) {
+    public static String getOrdinalWord(int n) {
         if (n == 1) {
             return "first";
         }
@@ -532,7 +532,7 @@ public final class GameUtil {
         return "first";
     }
 
-    public static int b() {
+    public static int getDayOfYear() {
         Calendar calendar = Calendar.getInstance();
         int n = calendar.get(1);
         int n2 = calendar.get(2);
@@ -551,16 +551,16 @@ public final class GameUtil {
         return n3;
     }
 
-    public static int c() {
+    public static int getCurrentYear() {
         Calendar calendar = Calendar.getInstance();
         return calendar.get(1);
     }
 
-    public static long b(long l) {
+    public static long secondsToTicks(long l) {
         return (long)Math.ceil((double)l * 1000.0 / 600.0);
     }
 
-    public static int l(int n) {
+    public static int minutesToMillis(int n) {
         return n * 60 * 1000;
     }
 }

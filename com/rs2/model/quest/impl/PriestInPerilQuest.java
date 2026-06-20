@@ -25,11 +25,11 @@ extends QuestScript {
 
     public PriestInPerilQuest(int n) {
         super(72);
-        super.a(1);
+        super.setQuestPointReward(1);
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player stringArray, int n) {
         if (n == 0) {
             stringArray = new String[]{"I can start this quest by speaking to King Roald in Varrock", "Palace", "", "I must be able to defeat a level 30 enemy"};
             return stringArray;
@@ -91,9 +91,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("1 Quest Point", 12150);
         player2 = player;
@@ -107,7 +107,7 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.sendInterfaceText("", 12155);
         player.getSkillManager().addQuestExperience(5, 1406.0);
-        player.getInventoryManager().b(new ItemStack(2952, 1));
+        player.getInventoryManager().addOrDropItem(new ItemStack(2952, 1));
         player2 = player;
         player2.packetSender.sendInterfaceModel(InterfaceDefinition.interfaceCount <= 12140 ? 6161 : 12145, 250, 2952);
         player2 = player;
@@ -117,12 +117,12 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3) {
+    public final boolean handleItemOnObject(Player player, int n, int n2, int n3) {
         ArrayList arrayList = new ArrayList(this.a);
         Collections.shuffle(arrayList, new Random(player.bK));
         if (n2 == (Integer)arrayList.get(5) && n == 2944) {
             player.getInventoryManager().removeItem(new ItemStack(2944, 1));
-            player.getInventoryManager().b(new ItemStack(2945, 1));
+            player.getInventoryManager().addOrDropItem(new ItemStack(2945, 1));
             Player player2 = player;
             player2.packetSender.sendGameMessage("You swap the Golden key for the Iron key.");
             player.getUpdateState().setAnimation(832);
@@ -132,15 +132,15 @@ extends QuestScript {
             player.getDialogueManager().setDialogueNpcId(1048);
             player.getDialogueManager().showNpcOneLineDialogue("Oh! Thank you! You have found the key!", 591);
             player.getInventoryManager().removeItem(new ItemStack(2945, 1));
-            player.setQuestState(this.b(), 8);
+            player.setQuestState(this.getQuestId(), 8);
             return true;
         }
         if (n2 == 3485 && n == 1925) {
             player.getInventoryManager().removeItem(new ItemStack(1925, 1));
             if (n3 == 1) {
-                player.getInventoryManager().b(new ItemStack(1929, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(1929, 1));
             } else {
-                player.getInventoryManager().b(new ItemStack(2953, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(2953, 1));
             }
             Player player3 = player;
             player3.packetSender.sendGameMessage("You fill the bucket from the well.");
@@ -151,21 +151,21 @@ extends QuestScript {
         }
         if (n2 == 3480 && n3 == 10 && n == 2954) {
             player.getInventoryManager().removeItem(new ItemStack(2954, 1));
-            player.getInventoryManager().b(new ItemStack(1925, 1));
+            player.getInventoryManager().addOrDropItem(new ItemStack(1925, 1));
             Player player4 = player;
             player4.packetSender.sendGameMessage("You pour the blessed water over the coffin...");
             player.getUpdateState().setAnimation(832);
-            player.setQuestState(this.b(), 11);
+            player.setQuestState(this.getQuestId(), 11);
             return true;
         }
         return false;
     }
 
     @Override
-    public final boolean c(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleSecondObjectAction(Player player, int n, int n2, int n3, int n4) {
         if (n == 3496 && n2 == 3423 && n3 == 9884 || n == 3498 && n2 == 3427 && n3 == 9885 || n == 3495 && n2 == 3428 && n3 == 9890 || n == 3497 && n2 == 3427 && n3 == 9894 || n == 3494 && n2 == 3423 && n3 == 9895 || n == 3499 && n2 == 3418 && n3 == 9894 || n == 3493 && n2 == 3416 && n3 == 9890) {
             if (n4 != 1) {
-                player.applyDirectHit(GameUtil.g(6), HitType.NORMAL);
+                player.applyDirectHit(GameUtil.randomInclusive(6), HitType.NORMAL);
                 Player player2 = player;
                 player2.packetSender.sendGameMessage("A holy power prevents you stealing from the monument!");
                 player.getUpdateState().setAnimation(832);
@@ -179,7 +179,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleFirstObjectAction(Player player, int n, int n2, int n3, int n4) {
         ArrayList arrayList = new ArrayList(this.a);
         Collections.shuffle(arrayList, new Random(player.bK));
         if (n == 3443 && n2 == 3440 && n3 == 9886) {
@@ -302,7 +302,7 @@ extends QuestScript {
             }
             if (n == (Integer)arrayList.get(5)) {
                 Player player17 = player;
-                player17.packetSender.sendInterfaceModel(8111, 250, !player.aq(2945) && n4 < 8 ? 2945 : 2944);
+                player17.packetSender.sendInterfaceModel(8111, 250, !player.ownsItem(2945) && n4 < 8 ? 2945 : 2944);
                 player17 = player;
                 player17.packetSender.sendInterfaceText("Saradomin is the\\nkey that unlocks\\nthe mysteries\\nof life.", 8112);
                 player17 = player;
@@ -327,7 +327,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
+    public final boolean handleContextDialogue(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
         if (n == 2) {
             if (n2 == 3463 && n5 == 3415 && n6 == 3489 && n7 == 6) {
                 player.getDialogueManager().setDialogueNpcId(1048);
@@ -535,7 +535,7 @@ extends QuestScript {
                 }
                 if (n3 == 47) {
                     player.getDialogueManager().showPlayerOneLineDialogue("Okay, well first thing's first; let's get you out of here.", 591);
-                    player.setQuestState(this.b(), 7);
+                    player.setQuestState(this.getQuestId(), 7);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -600,7 +600,7 @@ extends QuestScript {
                     }
                     if (n3 == 12) {
                         player.getDialogueManager().showFourLineStatement("HAHAHAHA! Really? Thanks buddy! You see that mausoleum out", "there? There's a horrible big dog underneath it that I'd like you to", "kill for me! It's been really bugging me! Barking all the time and", "stuff! Please kill it for me buddy!");
-                        player.setQuestState(this.b(), 3);
+                        player.setQuestState(this.getQuestId(), 3);
                         return true;
                     }
                 }
@@ -628,7 +628,7 @@ extends QuestScript {
                     }
                     if (n3 == 5) {
                         player.getDialogueManager().showThreeLineStatement("@dbl@HAHAHAHA nothing buddy! We're just so grateful to you!", "@dbl@HAHAHA@bla@ Yeah, maybe you should go tell the King what a great job", "you did buddy! HAHAHA");
-                        player.setQuestState(this.b(), 5);
+                        player.setQuestState(this.getQuestId(), 5);
                         player.getDialogueManager().finishDialogue();
                         return true;
                     }
@@ -655,22 +655,22 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2) {
+    public final boolean canAttackNpc(Player player, int n, int n2) {
         return n != 1047 || n2 == 3;
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2) {
+    public final boolean handleNpcKill(Player player, int n, int n2) {
         if (n == 1047 && n2 == 3) {
-            player.setQuestState(this.b(), 4);
+            player.setQuestState(this.getQuestId(), 4);
             return true;
         }
         return false;
     }
 
     @Override
-    public final boolean a(Player object, int n, Position position, int n2) {
-        if (n == 1046 && n2 != 1 && !((Player)object).aq(2944) && !((Player)object).aq(2945) && n2 < 8) {
+    public final boolean handleNpcDeathDrop(Player object, int n, Position position, int n2) {
+        if (n == 1046 && n2 != 1 && !((Player)object).ownsItem(2944) && !((Player)object).ownsItem(2945) && n2 < 8) {
             object = new GroundItem(new ItemStack(2944, 1), (Entity)object, position);
             GroundItemManager.getInstance().spawn((GroundItem)object);
             return true;
@@ -679,7 +679,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         if (n == 648) {
             if (n4 == 0 || n4 == 5) {
                 if (n2 == 1) {
@@ -775,7 +775,7 @@ extends QuestScript {
                 }
                 if (n2 == 12) {
                     player.getDialogueManager().showPlayerOneLineDialogue("Y-yes your Highness.", 591);
-                    player.setQuestState(this.b(), 6);
+                    player.setQuestState(this.getQuestId(), 6);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -809,7 +809,7 @@ extends QuestScript {
                 }
                 if (n2 == 5) {
                     player.getDialogueManager().showNpcTwoLineDialogue("Maybe you should try and get hold of some from", "somewhere?", 591);
-                    player.setQuestState(this.b(), 10);
+                    player.setQuestState(this.getQuestId(), 10);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -822,7 +822,7 @@ extends QuestScript {
                     Player player2 = player;
                     player2.packetSender.sendGameMessage("The priest blesses the water for you.");
                     player.getInventoryManager().removeItem(new ItemStack(2953, 1));
-                    player.getInventoryManager().b(new ItemStack(2954, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(2954, 1));
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -847,7 +847,7 @@ extends QuestScript {
                 }
                 if (n2 == 3) {
                     player.getDialogueManager().showNpcThreeLineDialogue("Look for me down there, I need to assess what damage", "has been done to our holy barrier by those evil", "Zamorakians!", 591);
-                    player.setQuestState(this.b(), 12);
+                    player.setQuestState(this.getQuestId(), 12);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -921,7 +921,7 @@ extends QuestScript {
                 }
                 if (n2 == 17) {
                     player.getDialogueManager().showNpcThreeLineDialogue("Well I have no knowledge of these ores other than", "speculation and gossip, but if the things I hear are true", "around fifty should be sufficient for the task.", 591);
-                    player.setQuestState(this.b(), 13);
+                    player.setQuestState(this.getQuestId(), 13);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -947,16 +947,16 @@ extends QuestScript {
                     n = player.getInventoryManager().getItemAmount(1436);
                     n = n < (n2 = 63 - n4) ? n : n2;
                     player.getInventoryManager().removeItem(new ItemStack(1436, n));
-                    player.addQuestState(this.b(), n);
+                    player.addQuestState(this.getQuestId(), n);
                     Player player3 = player;
                     player3.packetSender.sendGameMessage("You give the priest your blank runes.");
-                    if (63 - player.getQuestState(this.b()) != 0 && player.getInventoryManager().containsItem(7936)) {
+                    if (63 - player.getQuestState(this.getQuestId()) != 0 && player.getInventoryManager().containsItem(7936)) {
                         int n5 = player.getInventoryManager().getItemAmount(7936);
-                        n5 = n5 < (n2 = 63 - player.getQuestState(this.b())) ? n5 : n2;
+                        n5 = n5 < (n2 = 63 - player.getQuestState(this.getQuestId())) ? n5 : n2;
                         player.getInventoryManager().removeItem(new ItemStack(7936, n5));
-                        player.addQuestState(this.b(), n5);
+                        player.addQuestState(this.getQuestId(), n5);
                     }
-                    if (63 - player.getQuestState(this.b()) == 0) {
+                    if (63 - player.getQuestState(this.getQuestId()) == 0) {
                         player.getDialogueManager().showNpcThreeLineDialogue("Excellent! That should do it! I will bless these stones", "and place them within the well, and Misthalin should be", "protected once more!", 591);
                         player.getDialogueManager().setNextDialogueStep(2);
                     } else {
@@ -981,7 +981,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 4) {
-                    this.c(player);
+                    this.awardCompletionRewards(player);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }

@@ -202,7 +202,7 @@ public enum AmmunitionDefinition {
             }
             if (player.botEnabled) {
                 if (player.isInWilderness()) {
-                    BotCombatEscapeHandler.a(player);
+                    BotCombatEscapeHandler.tryStartBotCombatEscape(player);
                 } else if (player.currentBotTask != null) {
                     player.botCombatState = "escape";
                 }

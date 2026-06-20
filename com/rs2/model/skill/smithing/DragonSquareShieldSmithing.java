@@ -33,7 +33,7 @@ public final class DragonSquareShieldSmithing {
             }
             player.getInventoryManager().removeItem(new ItemStack(LEFT_SHIELD_HALF_ITEM_ID, 1));
             player.getInventoryManager().removeItem(new ItemStack(RIGHT_SHIELD_HALF_ITEM_ID, 1));
-            player.getInventoryManager().b(new ItemStack(DRAGON_SQUARE_SHIELD_ITEM_ID, 1));
+            player.getInventoryManager().addOrDropItem(new ItemStack(DRAGON_SQUARE_SHIELD_ITEM_ID, 1));
             Player player3 = player;
             player3.packetSender.sendSoundEffect(468, 1, 0);
             player.getUpdateState().setAnimation(898);
@@ -41,7 +41,7 @@ public final class DragonSquareShieldSmithing {
             return;
         }
         Player player4 = player;
-        player4.packetSender.sendGameMessage("You need a " + SkillManager.a[13] + " level of 60" + " to do that.");
+        player4.packetSender.sendGameMessage("You need a " + SkillManager.SKILL_NAMES[13] + " level of 60" + " to do that.");
     }
 }
 

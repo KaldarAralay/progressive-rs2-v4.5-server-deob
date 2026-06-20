@@ -39,7 +39,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        this.b.n(false);
+        this.b.setActionLocked(false);
         this.b.getAttributes().put("canTakeDamage", Boolean.TRUE);
     }
 }

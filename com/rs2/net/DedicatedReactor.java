@@ -44,7 +44,7 @@ extends Thread {
                     }
                     SelectionKey selectionKey = iterator.next();
                     if (selectionKey.isValid() && selectionKey.isAcceptable()) {
-                        Server.a(selectionKey);
+                        Server.acceptConnection(selectionKey);
                         continue;
                     }
                     Player player = (Player)selectionKey.attachment();

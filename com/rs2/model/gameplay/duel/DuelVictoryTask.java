@@ -11,51 +11,51 @@ import com.rs2.model.task.CycleEventContainer;
 
 final class DuelVictoryTask
 extends CycleEvent {
-    private final /* synthetic */ Player a;
-    private final /* synthetic */ String b;
-    private final /* synthetic */ String c;
-    private final /* synthetic */ ItemStack[] d;
+    private final /* synthetic */ Player winner;
+    private final /* synthetic */ String loserUsername;
+    private final /* synthetic */ String loserCombatLevel;
+    private final /* synthetic */ ItemStack[] rewardItems;
 
     DuelVictoryTask(Player player, String string, String string2, ItemStack[] itemStackArray) {
-        this.a = player;
-        this.b = string;
-        this.c = string2;
-        this.d = itemStackArray;
+        this.winner = player;
+        this.loserUsername = string;
+        this.loserCombatLevel = string2;
+        this.rewardItems = itemStackArray;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        if (this.a != null) {
-            this.a.getDuelArenaLocationManager();
-            this.a.moveTo(DuelArenaLocationManager.a());
-            Object object = this.a;
-            ((Player)object).packetSender.sendInterfaceText(this.b, 6840);
-            object = this.a;
-            ((Player)object).packetSender.sendInterfaceText(this.c, 6839);
-            object = this.a;
-            ((Player)object).packetSender.sendItemContainer(6822, this.d);
-            object = this.a;
+        if (this.winner != null) {
+            this.winner.getDuelArenaLocationManager();
+            this.winner.moveTo(DuelArenaLocationManager.randomExitPosition());
+            Object object = this.winner;
+            ((Player)object).packetSender.sendInterfaceText(this.loserUsername, 6840);
+            object = this.winner;
+            ((Player)object).packetSender.sendInterfaceText(this.loserCombatLevel, 6839);
+            object = this.winner;
+            ((Player)object).packetSender.sendItemContainer(6822, this.rewardItems);
+            object = this.winner;
             ((Player)object).packetSender.sendEntityHintIcon(10, -1);
-            ItemStack[] itemStackArray = this.d;
-            int n = this.d.length;
+            ItemStack[] itemStackArray = this.rewardItems;
+            int n = this.rewardItems.length;
             int n2 = 0;
             while (n2 < n) {
                 object = itemStackArray[n2];
-                this.a.getInventoryManager().b((ItemStack)object);
+                this.winner.getInventoryManager().addOrDropItem((ItemStack)object);
                 ++n2;
             }
-            this.a.eq();
+            this.winner.eq();
         }
         cycleEventContainer.stop();
     }
 
     @Override
     public final void onStop() {
-        if (this.a != null) {
-            this.a.n(false);
-            Player player = this.a;
+        if (this.winner != null) {
+            this.winner.setActionLocked(false);
+            Player player = this.winner;
             player.packetSender.showInterface(6733);
-            player = this.a;
+            player = this.winner;
             player.packetSender.sendMusicJingle(221, 200);
         }
     }

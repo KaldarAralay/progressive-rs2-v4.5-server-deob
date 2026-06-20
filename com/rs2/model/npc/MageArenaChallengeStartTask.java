@@ -24,7 +24,7 @@ extends TickTask {
     public final void execute() {
         GameplayHelper.a(this.a, new Position(3106, 3934, 0), this.b, true, false);
         this.b.getUpdateState().setGraphic(86, 0);
-        if (this.a.dN == 0) {
+        if (this.a.mageArenaProgressStage == 0) {
             this.b.getUpdateState().setForcedText("You must prove yourself... now!");
         } else {
             this.b.getUpdateState().setForcedText("Let us continue with our battle.");

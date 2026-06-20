@@ -19,7 +19,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        this.a.n(false);
+        this.a.setActionLocked(false);
         this.a.moveTo(new Position(2802, 2707, 0));
         Player player = this.a;
         player.packetSender.closeInterfaces();

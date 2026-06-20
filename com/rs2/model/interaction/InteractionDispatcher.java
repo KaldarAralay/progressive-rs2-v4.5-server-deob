@@ -88,7 +88,7 @@ public final class InteractionDispatcher {
             }
             case FIRST_NPC: {
                 int n;
-                Npc npc = World.g()[player.getInteractionTargetIndex()];
+                Npc npc = World.getNpcs()[player.getInteractionTargetIndex()];
                 int n18 = player.nextActionSequence();
                 if (npc == null || !npc.isInteractable()) return;
                 int[][] nArray = PetManager.a;
@@ -123,21 +123,21 @@ public final class InteractionDispatcher {
                 return;
             }
             case SECOND_NPC: {
-                Npc npc = World.g()[player.getInteractionTargetIndex()];
+                Npc npc = World.getNpcs()[player.getInteractionTargetIndex()];
                 int n = player.nextActionSequence();
                 if (npc == null || !npc.isInteractable()) return;
                 World.scheduleTickTask(new SecondNpcActionTask(1, true, player, n, npc));
                 return;
             }
             case THIRD_NPC: {
-                Npc npc = World.g()[player.getInteractionTargetIndex()];
+                Npc npc = World.getNpcs()[player.getInteractionTargetIndex()];
                 int n = player.nextActionSequence();
                 if (npc == null || !npc.isInteractable()) return;
                 World.scheduleTickTask(new ThirdNpcActionTask(1, true, player, n, npc));
                 return;
             }
             case FOURTH_NPC: {
-                Npc npc = World.g()[player.getInteractionTargetIndex()];
+                Npc npc = World.getNpcs()[player.getInteractionTargetIndex()];
                 int n = player.nextActionSequence();
                 if (npc == null || !npc.isInteractable()) return;
                 World.scheduleTickTask(new FourthNpcActionTask(1, true, player, n, npc));
@@ -160,7 +160,7 @@ public final class InteractionDispatcher {
             }
             case ITEM_ON_NPC: {
                 int n = player.getSelectedItemId();
-                Npc npc = World.g()[player.getInteractionTargetIndex()];
+                Npc npc = World.getNpcs()[player.getInteractionTargetIndex()];
                 int n25 = player.nextActionSequence();
                 int n26 = player.getSelectedItemSlot();
                 if (npc == null || !npc.isInteractable()) return;
@@ -191,7 +191,7 @@ public final class InteractionDispatcher {
             return true;
         }
         ProjectileCollisionMap.removeObjectCollisionForReachability(worldObject.getObjectId(), worldObject.getPosition().getX(), worldObject.getPosition().getY(), worldObject.getPosition().getPlane(), worldObject.getOrientation(), worldObject.getType());
-        boolean bl = GameUtil.a(position, position2, false);
+        boolean bl = GameUtil.hasClearPath(position, position2, false);
         ProjectileCollisionMap.addObjectCollision(worldObject.getObjectId(), worldObject.getPosition().getX(), worldObject.getPosition().getY(), worldObject.getPosition().getPlane(), worldObject.getOrientation(), worldObject.getType(), true);
         return bl;
     }
@@ -205,7 +205,7 @@ public final class InteractionDispatcher {
             return true;
         }
         ProjectileCollisionMap.removeObjectCollisionForReachability(worldObject.getObjectId(), worldObject.getPosition().getX(), worldObject.getPosition().getY(), worldObject.getPosition().getPlane(), worldObject.getOrientation(), worldObject.getType());
-        boolean bl = GameUtil.a(player.getPosition(), position, false);
+        boolean bl = GameUtil.hasClearPath(player.getPosition(), position, false);
         ProjectileCollisionMap.addObjectCollision(worldObject.getObjectId(), worldObject.getPosition().getX(), worldObject.getPosition().getY(), worldObject.getPosition().getPlane(), worldObject.getOrientation(), worldObject.getType(), true);
         return bl;
     }

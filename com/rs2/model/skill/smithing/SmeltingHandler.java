@@ -47,7 +47,7 @@ public final class SmeltingHandler {
                 ItemStack itemStack = new ItemStack(n4, n5);
                 ItemStack itemStack2 = new ItemStack(n6, n7);
                 boolean bl2 = bl = n6 > 0;
-                if (player.i(itemStack.getId(), itemStack.getAmount()) && (!bl || player.i(itemStack2.getId(), itemStack2.getAmount()))) {
+                if (player.ownsItemAmount(itemStack.getId(), itemStack.getAmount()) && (!bl || player.ownsItemAmount(itemStack2.getId(), itemStack2.getAmount()))) {
                     n = 0;
                     n2 = 0;
                     int n8 = 0;
@@ -240,7 +240,7 @@ public final class SmeltingHandler {
                 player.getUpdateState().setAnimation(899);
                 Player player6 = player;
                 player6.packetSender.sendSoundEffect(469, 1, 0);
-                player.n(true);
+                player.setActionLocked(true);
                 player.setActiveCycleEvent(new SmeltingTask(n, player, n3, itemStack, bl, itemStack2, n2, itemStack3, n5));
                 CycleEventHandler.getInstance().schedule(player, player.getActiveCycleEvent(), 1);
                 return true;

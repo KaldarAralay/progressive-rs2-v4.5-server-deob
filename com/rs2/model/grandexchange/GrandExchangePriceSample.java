@@ -16,26 +16,26 @@ import java.util.Collections;
 import java.util.Iterator;
 
 public final class GrandExchangePriceSample {
-    long a;
-    private int b;
-    private int c;
-    private int d;
-    private static ArrayList e = new ArrayList();
-    private static ArrayList f = new ArrayList();
+    long timestampMillis;
+    private int itemId;
+    private int quantity;
+    private int unitPrice;
+    private static ArrayList allSamples = new ArrayList();
+    private static ArrayList sampledItemIds = new ArrayList();
 
     GrandExchangePriceSample(int n, int n2, int n3) {
-        this.a = System.currentTimeMillis();
-        this.b = n;
-        this.c = n2;
-        this.d = n3;
+        this.timestampMillis = System.currentTimeMillis();
+        this.itemId = n;
+        this.quantity = n2;
+        this.unitPrice = n3;
         ItemDefinition itemDefinition = ItemDefinition.forId(n);
-        if (!f.contains(n)) {
-            f.add(n);
+        if (!sampledItemIds.contains(n)) {
+            sampledItemIds.add(n);
         }
-        itemDefinition.a.add(this);
-        e.add(this);
+        itemDefinition.grandExchangePriceSamples.add(this);
+        allSamples.add(this);
         try {
-            GrandExchangePriceSample.b();
+            GrandExchangePriceSample.savePriceSamples();
             return;
         }
         catch (IOException iOException) {
@@ -46,21 +46,21 @@ public final class GrandExchangePriceSample {
     }
 
     GrandExchangePriceSample(GrandExchangeOffer object) {
-        this.a = System.currentTimeMillis();
+        this.timestampMillis = System.currentTimeMillis();
         GrandExchangeOffer grandExchangeOffer = object;
-        this.b = grandExchangeOffer.a;
+        this.itemId = grandExchangeOffer.itemId;
         grandExchangeOffer = object;
-        this.c = grandExchangeOffer.b;
+        this.quantity = grandExchangeOffer.quantity;
         grandExchangeOffer = object;
-        this.d = grandExchangeOffer.c;
-        object = ItemDefinition.forId(this.b);
-        if (!f.contains(this.b)) {
-            f.add(this.b);
+        this.unitPrice = grandExchangeOffer.unitPrice;
+        object = ItemDefinition.forId(this.itemId);
+        if (!sampledItemIds.contains(this.itemId)) {
+            sampledItemIds.add(this.itemId);
         }
-        ((ItemDefinition)object).a.add(this);
-        e.add(this);
+        ((ItemDefinition)object).grandExchangePriceSamples.add(this);
+        allSamples.add(this);
         try {
-            GrandExchangePriceSample.b();
+            GrandExchangePriceSample.savePriceSamples();
             return;
         }
         catch (IOException iOException) {
@@ -71,28 +71,28 @@ public final class GrandExchangePriceSample {
     }
 
     private GrandExchangePriceSample(long l, int n, int n2, int n3) {
-        this.a = l;
-        this.b = n;
-        this.c = n2;
-        this.d = n3;
+        this.timestampMillis = l;
+        this.itemId = n;
+        this.quantity = n2;
+        this.unitPrice = n3;
         ItemDefinition itemDefinition = ItemDefinition.forId(n);
-        if (!f.contains(n)) {
-            f.add(n);
+        if (!sampledItemIds.contains(n)) {
+            sampledItemIds.add(n);
         }
-        itemDefinition.a.add(this);
-        e.add(this);
+        itemDefinition.grandExchangePriceSamples.add(this);
+        allSamples.add(this);
     }
 
-    public static int a(int n) {
+    public static int getAveragePrice(int n) {
         long l = 0L;
         long l2 = 0L;
         Object object = ItemDefinition.forId(n);
-        Iterator iterator = ((ItemDefinition)object).a.iterator();
+        Iterator iterator = ((ItemDefinition)object).grandExchangePriceSamples.iterator();
         while (iterator.hasNext()) {
             Object object2 = object = (GrandExchangePriceSample)iterator.next();
-            long l3 = ((GrandExchangePriceSample)object).c;
+            long l3 = ((GrandExchangePriceSample)object).quantity;
             object2 = object;
-            long l4 = ((GrandExchangePriceSample)object2).d;
+            long l4 = ((GrandExchangePriceSample)object2).unitPrice;
             l += l3 * l4;
             l2 += l3;
         }
@@ -102,8 +102,8 @@ public final class GrandExchangePriceSample {
         return (int)(l / l2);
     }
 
-    public static void a() {
-        e.clear();
+    public static void loadPriceSamples() {
+        allSamples.clear();
         if (!FileUtil.exists("./data/geOfferData.dat")) {
             return;
         }
@@ -120,51 +120,51 @@ public final class GrandExchangePriceSample {
             new GrandExchangePriceSample(l, n3, n4, n5);
             ++n2;
         }
-        Iterator iterator = f.iterator();
+        Iterator iterator = sampledItemIds.iterator();
         while (iterator.hasNext()) {
             int n6 = (Integer)iterator.next();
             object = ItemDefinition.forId(n6);
-            Collections.sort(((ItemDefinition)object).a, new GrandExchangePriceSampleTimestampComparator());
+            Collections.sort(((ItemDefinition)object).grandExchangePriceSamples, new GrandExchangePriceSampleTimestampComparator());
             double d = 0.0;
-            Iterator iterator2 = ((ItemDefinition)object).a.iterator();
+            Iterator iterator2 = ((ItemDefinition)object).grandExchangePriceSamples.iterator();
             while (iterator2.hasNext()) {
                 GrandExchangePriceSample grandExchangePriceSample;
                 GrandExchangePriceSample grandExchangePriceSample2 = grandExchangePriceSample = (GrandExchangePriceSample)iterator2.next();
-                d += (double)grandExchangePriceSample2.c;
+                d += (double)grandExchangePriceSample2.quantity;
             }
             double d2 = d * 0.75;
             n2 = (int)d2;
             ArrayList<GrandExchangePriceSample> arrayList = new ArrayList<GrandExchangePriceSample>();
             int n7 = 0;
-            for (GrandExchangePriceSample grandExchangePriceSample : ((ItemDefinition)object).a) {
+            for (GrandExchangePriceSample grandExchangePriceSample : ((ItemDefinition)object).grandExchangePriceSamples) {
                 if (n7 >= n2) {
                     arrayList.add(grandExchangePriceSample);
                     continue;
                 }
                 GrandExchangePriceSample grandExchangePriceSample3 = grandExchangePriceSample;
-                n7 += grandExchangePriceSample3.c;
+                n7 += grandExchangePriceSample3.quantity;
             }
             for (GrandExchangePriceSample grandExchangePriceSample : arrayList) {
-                ((ItemDefinition)object).a.remove(grandExchangePriceSample);
-                e.remove(grandExchangePriceSample);
+                ((ItemDefinition)object).grandExchangePriceSamples.remove(grandExchangePriceSample);
+                allSamples.remove(grandExchangePriceSample);
             }
         }
     }
 
-    private static void b() {
+    private static void savePriceSamples() {
         CountingDataOutputStream countingDataOutputStream = new CountingDataOutputStream(new FileOutputStream("./data/geOfferData.dat"));
-        countingDataOutputStream.writeInt(e.size());
-        Iterator iterator = e.iterator();
+        countingDataOutputStream.writeInt(allSamples.size());
+        Iterator iterator = allSamples.iterator();
         while (iterator.hasNext()) {
             GrandExchangePriceSample grandExchangePriceSample;
             GrandExchangePriceSample grandExchangePriceSample2 = grandExchangePriceSample = (GrandExchangePriceSample)iterator.next();
-            countingDataOutputStream.writeLong(grandExchangePriceSample2.a);
+            countingDataOutputStream.writeLong(grandExchangePriceSample2.timestampMillis);
             grandExchangePriceSample2 = grandExchangePriceSample;
-            countingDataOutputStream.writeShort(grandExchangePriceSample2.b);
+            countingDataOutputStream.writeShort(grandExchangePriceSample2.itemId);
             grandExchangePriceSample2 = grandExchangePriceSample;
-            countingDataOutputStream.writeInt(grandExchangePriceSample2.c);
+            countingDataOutputStream.writeInt(grandExchangePriceSample2.quantity);
             grandExchangePriceSample2 = grandExchangePriceSample;
-            countingDataOutputStream.writeInt(grandExchangePriceSample2.d);
+            countingDataOutputStream.writeInt(grandExchangePriceSample2.unitPrice);
         }
         countingDataOutputStream.close();
     }

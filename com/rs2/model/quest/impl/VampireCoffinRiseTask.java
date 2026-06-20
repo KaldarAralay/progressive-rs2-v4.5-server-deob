@@ -32,7 +32,7 @@ extends TickTask {
             this.b.transformToNpcId(3154, 5);
         }
         GameplayHelper.c(this.c, this.b, 3077, 9775, 0, -1, false, false);
-        this.c.n(false);
+        this.c.setActionLocked(false);
         this.b.getUpdateState().setFacePositionValue(new Position(3077, 9770));
         this.b.getUpdateState().setAnimation(3114);
         World.getTaskScheduler().schedule(this.a);

@@ -118,7 +118,7 @@ public final class TreePatchManager {
             block12: {
                 long l;
                 block13: {
-                    l = Server.e() - this.lastUpdateTicks[n];
+                    l = Server.getElapsedMinutes() - this.lastUpdateTicks[n];
                     if (l < 5L) break block12;
                     if (this.growthStages[n] <= 0 || this.growthStages[n] > 3) break block13;
                     int n2 = (int)(l / 5L);
@@ -127,7 +127,7 @@ public final class TreePatchManager {
                         if (this.growthStages[n] != 0) {
                             int n4 = n;
                             this.growthStages[n4] = this.growthStages[n4] - 1;
-                            this.lastUpdateTicks[n] = Server.e();
+                            this.lastUpdateTicks[n] = Server.getElapsedMinutes();
                             ++n3;
                             continue;
                         }
@@ -165,7 +165,7 @@ public final class TreePatchManager {
                                     ((TreePatchManager)object).lastUpdateTicks[n9] = ((TreePatchManager)object).lastUpdateTicks[n9] + (long)farmedTreeDefinition.getGrowthCycleTicks();
                                     break block16;
                                 }
-                                if (GameUtil.h(2) == 0) {
+                                if (GameUtil.randomInt(2) == 0) {
                                     ((TreePatchManager)object).patchStates[n7] = 2;
                                 }
                             }
@@ -177,7 +177,7 @@ public final class TreePatchManager {
                                     double d = ((TreePatchManager)object).diseaseChanceMultipliers[n7] * farmedTreeDefinition.getDiseaseChance();
                                     double d2 = d * 100.0;
                                     int n10 = (int)d2;
-                                    if (GameUtil.g(100) <= n10 && ServerSettings.diseasingEnabled) {
+                                    if (GameUtil.randomInclusive(100) <= n10 && ServerSettings.diseasingEnabled) {
                                         ((TreePatchManager)object).patchStates[n7] = 1;
                                     }
                                 }
@@ -254,7 +254,7 @@ public final class TreePatchManager {
             n2 = 232;
             n4 = 3;
         }
-        this.player.n(true);
+        this.player.setActionLocked(true);
         Player player = this.player;
         player.packetSender.sendSoundEffect(n2, 1, 0);
         this.player.getUpdateState().setAnimation(n3);
@@ -289,7 +289,7 @@ public final class TreePatchManager {
         this.player.getUpdateState().setAnimation(2272);
         this.growthStages[((TreePatch)((Object)object)).getIndex()] = 4;
         this.player.getInventoryManager().removeItem(new ItemStack(n3));
-        this.player.n(true);
+        this.player.setActionLocked(true);
         CycleEventHandler.getInstance().schedule(this.player, new TreePlantingTask(this, (TreePatch)((Object)object), n3, farmedTreeDefinition), 3);
         return true;
     }
@@ -346,7 +346,7 @@ public final class TreePatchManager {
         player.packetSender.sendGameMessage("You pour some " + (n3 == 6034 ? "super" : "") + "compost on the patch.");
         this.player.getUpdateState().setAnimation(2283);
         this.player.getSkillManager().addExperience(19, n3 == 6034 ? 26.0 : 18.0);
-        this.player.n(true);
+        this.player.setActionLocked(true);
         CycleEventHandler.getInstance().schedule(this.player, new TreeCompostTask(this, treePatch, n3), 7);
         return true;
     }
@@ -391,7 +391,7 @@ public final class TreePatchManager {
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("You bend down and start to inspect the patch...");
             this.player.getUpdateState().setAnimation(1331);
-            this.player.n(true);
+            this.player.setActionLocked(true);
             CycleEventHandler.getInstance().schedule(this.player, new TreeInspectTask(this, treePatch, farmedTreeGrowthDefinition), 5);
         }
         return true;
@@ -431,22 +431,22 @@ public final class TreePatchManager {
             ((Player)object).packetSender.sendGameMessage("This plant doesn't need to be resurrected.");
             return true;
         }
-        this.player.a("tree", object.getIndex());
+        this.player.setPendingCropResurrectionTarget("tree", object.getIndex());
         return true;
     }
 
     public final boolean finishResurrection(boolean bl) {
         if (bl) {
-            Object object = FarmedTreeDefinition.forSaplingId(this.treeIds[this.player.ds]);
-            this.patchStates[this.player.ds] = 0;
-            int n = this.growthStages[this.player.ds] - 4;
-            this.lastUpdateTicks[this.player.ds] = Server.e() - (long)(object.getGrowthCycleTicks() * n);
+            Object object = FarmedTreeDefinition.forSaplingId(this.treeIds[this.player.pendingCropResurrectionPatchIndex]);
+            this.patchStates[this.player.pendingCropResurrectionPatchIndex] = 0;
+            int n = this.growthStages[this.player.pendingCropResurrectionPatchIndex] - 4;
+            this.lastUpdateTicks[this.player.pendingCropResurrectionPatchIndex] = Server.getElapsedMinutes() - (long)(object.getGrowthCycleTicks() * n);
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("You succesfully resurrected the crop.");
         } else {
-            this.resetPatch(this.player.ds);
-            this.growthStages[this.player.ds] = 3;
-            this.lastUpdateTicks[this.player.ds] = Server.e();
+            this.resetPatch(this.player.pendingCropResurrectionPatchIndex);
+            this.growthStages[this.player.pendingCropResurrectionPatchIndex] = 3;
+            this.lastUpdateTicks[this.player.pendingCropResurrectionPatchIndex] = Server.getElapsedMinutes();
             Player player = this.player;
             player.packetSender.sendGameMessage("You failed to resurrect the crop.");
         }
@@ -474,7 +474,7 @@ public final class TreePatchManager {
             return true;
         }
         this.player.getUpdateState().setAnimation(2275);
-        this.player.n(true);
+        this.player.setActionLocked(true);
         this.patchStates[object.getIndex()] = 0;
         CycleEventHandler.getInstance().schedule(this.player, new TreePruneTask(this), 15);
         return true;
@@ -508,7 +508,7 @@ public final class TreePatchManager {
             player.packetSender.sendGameMessage("Not enough space in your inventory.");
             return true;
         }
-        GatheringToolDefinition gatheringToolDefinition = ItemCombinationHandler.a(this.player, 8);
+        GatheringToolDefinition gatheringToolDefinition = ItemCombinationHandler.findUsableGatheringTool(this.player, 8);
         if (gatheringToolDefinition == null) {
             Player player = this.player;
             player.packetSender.sendGameMessage("You do not have an axe which you have the woodcutting level to use.");
@@ -521,8 +521,8 @@ public final class TreePatchManager {
         }
         Player player = this.player;
         player.packetSender.sendGameMessage("You swing your axe at the tree.");
-        int n4 = gatheringToolDefinition.d();
-        gatheringToolDefinition.f();
+        int n4 = gatheringToolDefinition.getGatherAnimationId();
+        gatheringToolDefinition.getToolSpeed();
         treeDefinition.getRequiredLevel();
         this.player.getUpdateState().setAnimation(n4);
         this.player.ah = new Position(n, n2);
@@ -547,12 +547,12 @@ public final class TreePatchManager {
         if (!this.i[object.getIndex()]) {
             return false;
         }
-        if (ItemCombinationHandler.a(this.player, 8) == null) {
+        if (ItemCombinationHandler.findUsableGatheringTool(this.player, 8) == null) {
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("You do not have an axe which you have the woodcutting level to use.");
             return false;
         }
-        if (!this.player.getInventoryManager().e(new ItemStack(1511))) {
+        if (!this.player.getInventoryManager().canAddItem(new ItemStack(1511))) {
             return false;
         }
         return SkillActionHelper.checkSkillRequirement(this.player, 8, TreeDefinition.forObjectId(n3).getRequiredLevel(), "chop this tree");

@@ -18,11 +18,11 @@ public final class ScorpionCatcherQuest
 extends QuestScript {
     public ScorpionCatcherQuest(int n) {
         super(80);
-        super.a(1);
+        super.setQuestPointReward(1);
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player stringArray, int n) {
         if (n == 0) {
             stringArray = new String[]{"I can start this quest by speaking to Thormac who is in the", "Sorcerer's Tower", "", "Requirements:", "You'll need level 31 Prayer"};
             return stringArray;
@@ -43,9 +43,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("1 Quest Point", 12150);
         player2 = player;
@@ -68,7 +68,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean f(Player player, int n, int n2) {
+    public final boolean handleFirstNpcAction(Player player, int n, int n2) {
         if (n2 != 1) {
             if (n == 385 && ScorpionCatcherQuest.e(player)) {
                 return false;
@@ -89,19 +89,19 @@ extends QuestScript {
     }
 
     private static boolean e(Player player) {
-        return player.aq(463) || player.aq(457) || player.aq(458) || player.aq(459);
+        return player.ownsItem(463) || player.ownsItem(457) || player.ownsItem(458) || player.ownsItem(459);
     }
 
     private static boolean f(Player player) {
-        return player.aq(463) || player.aq(460) || player.aq(458) || player.aq(461);
+        return player.ownsItem(463) || player.ownsItem(460) || player.ownsItem(458) || player.ownsItem(461);
     }
 
     private static boolean g(Player player) {
-        return player.aq(463) || player.aq(462) || player.aq(459) || player.aq(461);
+        return player.ownsItem(463) || player.ownsItem(462) || player.ownsItem(459) || player.ownsItem(461);
     }
 
     @Override
-    public final boolean d(Player player, int n, int n2, int n3) {
+    public final boolean handleItemOnNpc(Player player, int n, int n2, int n3) {
         if (n3 >= 2) {
             if (n == 385 && n2 >= 456 && n2 < 463 && !ScorpionCatcherQuest.e(player)) {
                 n3 = 457;
@@ -165,7 +165,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleFirstObjectAction(Player player, int n, int n2, int n3, int n4) {
         if (n == 2117 && n2 == 2875 && n3 == 9799 && n4 >= 2) {
             if (player.getPosition().getY() >= 9799) {
                 Player player2 = player;
@@ -181,7 +181,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         if (n == 389) {
             if (n4 == 0) {
                 if (n2 == 1) {
@@ -231,13 +231,13 @@ extends QuestScript {
                     boolean bl = false;
                     n = 456;
                     while (n < 464) {
-                        if (player.aq(n)) {
+                        if (player.ownsItem(n)) {
                             bl = true;
                         }
                         ++n;
                     }
                     if (!bl) {
-                        player.getInventoryManager().b(new ItemStack(456, 1));
+                        player.getInventoryManager().addOrDropItem(new ItemStack(456, 1));
                         Player player2 = player;
                         player2.packetSender.sendGameMessage("Thormac gives you a cage.");
                         player.getDialogueManager().setNextDialogueStep(52);
@@ -263,7 +263,7 @@ extends QuestScript {
                     return false;
                 }
                 if (n2 == 52) {
-                    player.n(true);
+                    player.setActionLocked(true);
                     Player player3 = player;
                     player3.packetSender.closeInterfaces();
                     ScorpionCatcherCageHandoffDialogueTask scorpionCatcherCageHandoffDialogueTask = new ScorpionCatcherCageHandoffDialogueTask(this, 4, player);
@@ -274,13 +274,13 @@ extends QuestScript {
             if (n4 >= 2 && !player.getInventoryManager().containsItem(463)) {
                 int n5 = 456;
                 while (n5 < 464) {
-                    if (player.aq(n5)) {
+                    if (player.ownsItem(n5)) {
                         return false;
                     }
                     ++n5;
                 }
                 if (n2 == 1) {
-                    player.getInventoryManager().b(new ItemStack(456, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(456, 1));
                     Player player4 = player;
                     player4.packetSender.sendGameMessage("Thormac gives you a cage.");
                     player.getDialogueManager().showNpcThreeLineDialogue("If you go up to the village of Seers, to the North of", "here, one of them will be able to tell you where the", "scorpions are now.", 591);
@@ -305,7 +305,7 @@ extends QuestScript {
                 }
                 if (n2 == 4 && player.getInventoryManager().containsItem(463)) {
                     player.getInventoryManager().removeItem(new ItemStack(463, 1));
-                    this.c(player);
+                    this.awardCompletionRewards(player);
                     player.getDialogueManager().markDialogueInactive();
                     return true;
                 }
@@ -358,14 +358,14 @@ extends QuestScript {
             }
             if (n2 == 10) {
                 player.getDialogueManager().showNpcTwoLineDialogue("Well see if you can find that scorpion then, and I'll try", "and get you some information on the others.", 591);
-                player.setQuestState(this.b(), 3);
+                player.setQuestState(this.getQuestId(), 3);
                 player.getDialogueManager().finishDialogue();
                 return true;
             }
             if (n2 == 52) {
                 Player player6 = player;
                 player6.packetSender.closeInterfaces();
-                player.n(true);
+                player.setActionLocked(true);
                 SeerMirrorGazeTask seerMirrorGazeTask = new SeerMirrorGazeTask(this, 4, player);
                 World.getTaskScheduler().schedule(seerMirrorGazeTask);
                 return true;

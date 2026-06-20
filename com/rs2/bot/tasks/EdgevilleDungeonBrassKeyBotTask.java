@@ -45,7 +45,7 @@ extends BotTaskDefinition {
 
     @Override
     public final void startCustomTaskAction(Player object) {
-        ((Player)object).bm();
+        ((Player)object).refreshRegionState();
         object = new BrassKeyPickupTickTask(this, 2, (Player)object);
         World.getTaskScheduler().schedule((TickTask)object);
     }
@@ -61,37 +61,37 @@ extends BotTaskDefinition {
     @Override
     public final void prepareTaskCombatLoadout(Player player) {
         GameplayHelper.b(player);
-        int n = 1 + GameUtil.h(99);
+        int n = 1 + GameUtil.randomInt(99);
         int n2 = n / 5 << 1;
         if (n2 == 0) {
             n2 = 2;
         }
-        BotCombatHelper.setBotSkillLevel(player, 0, n - n / 5 + GameUtil.h(n2));
+        BotCombatHelper.setBotSkillLevel(player, 0, n - n / 5 + GameUtil.randomInt(n2));
         n2 = n / 5 << 1;
         if (n2 == 0) {
             n2 = 2;
         }
-        BotCombatHelper.setBotSkillLevel(player, 2, n - n / 5 + GameUtil.h(n2));
+        BotCombatHelper.setBotSkillLevel(player, 2, n - n / 5 + GameUtil.randomInt(n2));
         n2 = n / 5 << 1;
         if (n2 == 0) {
             n2 = 2;
         }
-        BotCombatHelper.setBotSkillLevel(player, 1, n - n / 5 + GameUtil.h(n2));
+        BotCombatHelper.setBotSkillLevel(player, 1, n - n / 5 + GameUtil.randomInt(n2));
         n2 = n / 5 << 1;
         if (n2 == 0) {
             n2 = 2;
         }
-        BotCombatHelper.setBotSkillLevel(player, 4, n - n / 5 + GameUtil.h(n2));
+        BotCombatHelper.setBotSkillLevel(player, 4, n - n / 5 + GameUtil.randomInt(n2));
         n2 = n / 5 << 1;
         if (n2 == 0) {
             n2 = 2;
         }
-        BotCombatHelper.setBotSkillLevel(player, 5, n - (n / 5 << 1) + GameUtil.h(n2));
+        BotCombatHelper.setBotSkillLevel(player, 5, n - (n / 5 << 1) + GameUtil.randomInt(n2));
         n2 = n / 5 << 1;
         if (n2 == 0) {
             n2 = 2;
         }
-        if ((n = n - n / 5 + GameUtil.h(n2)) < 33) {
+        if ((n = n - n / 5 + GameUtil.randomInt(n2)) < 33) {
             n = 33;
         }
         BotCombatHelper.setBotSkillLevel(player, 6, n);
@@ -109,7 +109,7 @@ extends BotTaskDefinition {
         player.botPathSegmentIndex = 0;
         player.currentBotRoute = ac[player.botPathSegmentIndex];
         player.botTargetNpcId = 1558;
-        player.bk();
+        player.continueBotRoute();
     }
 
     @Override
@@ -119,25 +119,27 @@ extends BotTaskDefinition {
         player.botPathSegmentIndex = ac.length - 1;
         player.currentBotRoute = ac[player.botPathSegmentIndex].reversed();
         player.botTargetNpcId = 1558;
-        player.bk();
-    }
-
-    public final void a(Player player, int n) {
-        player.botPathWaypointIndex = n;
-        player.currentBotRoute = ac[player.botPathSegmentIndex];
-        player.botTargetNpcId = 1558;
-        this.c(player, true);
-    }
-
-    public final void b(Player player, int n) {
-        player.botPathWaypointIndex = n;
-        player.currentBotRoute = ac[player.botPathSegmentIndex].reversed();
-        player.botTargetNpcId = 1558;
-        this.c(player, true);
+        player.continueBotRoute();
     }
 
     @Override
-    public final void c(Player player, boolean n) {
+    public final void continueWalkToTask(Player player, int n) {
+        player.botPathWaypointIndex = n;
+        player.currentBotRoute = ac[player.botPathSegmentIndex];
+        player.botTargetNpcId = 1558;
+        this.advanceTaskRouteSegment(player, true);
+    }
+
+    @Override
+    public final void continueWalkToBank(Player player, int n) {
+        player.botPathWaypointIndex = n;
+        player.currentBotRoute = ac[player.botPathSegmentIndex].reversed();
+        player.botTargetNpcId = 1558;
+        this.advanceTaskRouteSegment(player, true);
+    }
+
+    @Override
+    public final void advanceTaskRouteSegment(Player player, boolean n) {
         if (player.botTaskState.equals("walk towards task") || player.botTaskState.equals("walk to task") && n != 0) {
             if (n == 0) {
                 ++player.botPathSegmentIndex;
@@ -146,7 +148,7 @@ extends BotTaskDefinition {
             if (n == 0) {
                 player.botPathWaypointIndex = 0;
             }
-            n = GameUtil.a(player.getPosition().getX(), player.getPosition().getY());
+            n = GameUtil.getRegionId(player.getPosition().getX(), player.getPosition().getY());
             if (player.botPathSegmentIndex == 1 && player.botTaskState.equals("walk towards task") && n == 12342) {
                 Object object = new ArrayList<Integer>();
                 ((ArrayList)object).add(1568);

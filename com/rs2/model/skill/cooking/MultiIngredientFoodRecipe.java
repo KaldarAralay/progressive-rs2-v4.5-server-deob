@@ -14,39 +14,39 @@ public enum MultiIngredientFoodRecipe {
     f(361, 5988, 1923, 7086, 7068, 67, 204.0, true, 0, 0),
     g(5988, 361, 1923, 7088, 7068, 67, 204.0, true, 0, 0);
 
-    private int h;
-    private int i;
-    private int j;
-    private int k;
-    private int l;
-    private int m;
-    private double n;
-    private boolean o;
-    private int p;
-    private int q;
-    private static HashMap r;
-    private static HashMap s;
+    private int firstIngredientItemId;
+    private int secondIngredientItemId;
+    private int baseItemId;
+    private int firstStageProductItemId;
+    private int finalProductItemId;
+    private int requiredLevel;
+    private double experience;
+    private boolean putIntoMessage;
+    private int firstStageReturnedItemId;
+    private int finalStageReturnedItemId;
+    private static HashMap recipesByFirstIngredientItemId;
+    private static HashMap recipesByFirstStageProductItemId;
 
     static {
-        r = new HashMap();
-        s = new HashMap();
+        recipesByFirstIngredientItemId = new HashMap();
+        recipesByFirstStageProductItemId = new HashMap();
         MultiIngredientFoodRecipe[] multiIngredientFoodRecipeArray = MultiIngredientFoodRecipe.values();
         int n = multiIngredientFoodRecipeArray.length;
         int n2 = 0;
         while (n2 < n) {
             MultiIngredientFoodRecipe multiIngredientFoodRecipe = multiIngredientFoodRecipeArray[n2];
-            r.put(multiIngredientFoodRecipe.h, multiIngredientFoodRecipe);
-            s.put(multiIngredientFoodRecipe.k, multiIngredientFoodRecipe);
+            recipesByFirstIngredientItemId.put(multiIngredientFoodRecipe.firstIngredientItemId, multiIngredientFoodRecipe);
+            recipesByFirstStageProductItemId.put(multiIngredientFoodRecipe.firstStageProductItemId, multiIngredientFoodRecipe);
             ++n2;
         }
     }
 
-    public static MultiIngredientFoodRecipe a(int n) {
-        return (MultiIngredientFoodRecipe)((Object)r.get(n));
+    public static MultiIngredientFoodRecipe forFirstIngredientItemId(int n) {
+        return (MultiIngredientFoodRecipe)((Object)recipesByFirstIngredientItemId.get(n));
     }
 
-    public static MultiIngredientFoodRecipe b(int n) {
-        return (MultiIngredientFoodRecipe)((Object)s.get(n));
+    public static MultiIngredientFoodRecipe forFirstStageProductItemId(int n) {
+        return (MultiIngredientFoodRecipe)((Object)recipesByFirstStageProductItemId.get(n));
     }
 
     /*
@@ -54,58 +54,58 @@ public enum MultiIngredientFoodRecipe {
      * WARNING - void declaration
      */
     private MultiIngredientFoodRecipe(int n3, int n4, int n5, int n6, double d, boolean n7, int n8, int n9) {
-        void cfr_renamed_6;
+        void cfr_renamed_5;
         void var8_7;
-        this.h = n3;
-        this.i = n4;
-        this.j = n5;
-        this.k = n6;
-        this.l = (int)d;
-        this.m = var8_7;
-        this.n = cfr_renamed_6;
-        this.o = true;
-        this.p = 0;
-        this.q = 0;
+        this.firstIngredientItemId = n3;
+        this.secondIngredientItemId = n4;
+        this.baseItemId = n5;
+        this.firstStageProductItemId = n6;
+        this.finalProductItemId = (int)d;
+        this.requiredLevel = var8_7;
+        this.experience = cfr_renamed_5;
+        this.putIntoMessage = true;
+        this.firstStageReturnedItemId = 0;
+        this.finalStageReturnedItemId = 0;
     }
 
-    public final int a() {
-        return this.h;
+    public final int getFirstIngredientItemId() {
+        return this.firstIngredientItemId;
     }
 
-    public final int b() {
-        return this.i;
+    public final int getSecondIngredientItemId() {
+        return this.secondIngredientItemId;
     }
 
-    public final int c() {
-        return this.k;
+    public final int getFirstStageProductItemId() {
+        return this.firstStageProductItemId;
     }
 
-    public final int d() {
-        return this.j;
+    public final int getBaseItemId() {
+        return this.baseItemId;
     }
 
-    public final int e() {
-        return this.l;
+    public final int getFinalProductItemId() {
+        return this.finalProductItemId;
     }
 
-    public final int f() {
-        return this.m;
+    public final int getRequiredLevel() {
+        return this.requiredLevel;
     }
 
-    public final double g() {
-        return this.n;
+    public final double getExperience() {
+        return this.experience;
     }
 
-    public final boolean h() {
-        return this.o;
+    public final boolean usesPutIntoMessage() {
+        return this.putIntoMessage;
     }
 
-    public final int i() {
-        return this.p;
+    public final int getFirstStageReturnedItemId() {
+        return this.firstStageReturnedItemId;
     }
 
-    public final int j() {
-        return this.q;
+    public final int getFinalStageReturnedItemId() {
+        return this.finalStageReturnedItemId;
     }
 }
 

@@ -8,13 +8,13 @@ import com.rs2.model.item.ItemStack;
 import com.rs2.model.player.Player;
 
 public final class DegradableEquipmentHandler {
-    private static String[] a = new String[]{"ahrims", "dharoks", "torags", "guthans", "karils", "veracs"};
+    private static String[] barrowsSetNameTokens = new String[]{"ahrims", "dharoks", "torags", "guthans", "karils", "veracs"};
 
     static {
         (new String[1])[0] = "crystal";
     }
 
-    public static void a(Player player) {
+    public static void degradeEquipmentAfterCombat(Player player) {
         int n = 0;
         while (n < 14) {
             Object object = player.getEquipmentManager().getContainer().getItemAt(n);
@@ -25,7 +25,7 @@ public final class DegradableEquipmentHandler {
                 ItemStack itemStack = object;
                 int n3 = n2;
                 object = player2;
-                String[] stringArray = a;
+                String[] stringArray = barrowsSetNameTokens;
                 int n4 = 0;
                 while (n4 < 6) {
                     object2 = stringArray[n4];

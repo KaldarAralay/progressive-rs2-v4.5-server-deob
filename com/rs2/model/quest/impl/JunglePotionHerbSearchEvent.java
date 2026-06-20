@@ -48,7 +48,7 @@ extends CycleEvent {
         }
         cycleEventContainer.setTickDelay(3);
         this.a.getUpdateState().setAnimation(832);
-        if (GameUtil.h(5) == 0) {
+        if (GameUtil.randomInt(5) == 0) {
             n = this.f;
             this.a.getInventoryManager().addItem(new ItemStack(n, 1));
             this.a.getDialogueManager().showItemMessage("You find a herb.", new ItemStack(n, 1));
@@ -66,7 +66,7 @@ extends CycleEvent {
             cycleEventContainer.stop();
             n = 1;
         }
-        if (n == 0 && !this.a.getInventoryManager().e(new ItemStack(this.f, 1))) {
+        if (n == 0 && !this.a.getInventoryManager().canAddItem(new ItemStack(this.f, 1))) {
             cycleEventContainer.stop();
             return;
         }

@@ -18,7 +18,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        if (this.leader.isDead() || !this.leader.bW()) {
+        if (this.leader.isDead() || !this.leader.isRegistered()) {
             this.stop();
             return;
         }

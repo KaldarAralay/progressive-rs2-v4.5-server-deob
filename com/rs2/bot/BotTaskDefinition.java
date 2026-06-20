@@ -256,8 +256,8 @@ public abstract class BotTaskDefinition {
         if (lootSellShopTasks.size() == 0) {
             for (BotTaskDefinition botTaskDefinition : shopTasks) {
                 int n = botTaskDefinition.getShopId();
-                ShopDefinition shopDefinition = (ShopDefinition)ShopManager.b().get(n);
-                if (!shopDefinition.g()) continue;
+                ShopDefinition shopDefinition = (ShopDefinition)ShopManager.getShopDefinitions().get(n);
+                if (!shopDefinition.isGeneralStore()) continue;
                 lootSellShopTasks.add(botTaskDefinition);
             }
         }
@@ -522,7 +522,7 @@ public abstract class BotTaskDefinition {
         Iterator iterator = ((ArrayList)object).iterator();
         while (iterator.hasNext()) {
             player.botTaskRequiredItems[n] = object = (ItemStack)iterator.next();
-            if (!player.i(((ItemStack)object).getId(), ((ItemStack)object).getAmount())) {
+            if (!player.ownsItemAmount(((ItemStack)object).getId(), ((ItemStack)object).getAmount())) {
                 arrayList.add(object);
             }
             ++n;
@@ -554,7 +554,7 @@ public abstract class BotTaskDefinition {
             if (((ItemStack)arrayList.get(0)).getId() == 983) {
                 return true;
             }
-            return BotTaskPlanner.a(player, ((ItemStack)arrayList.get(0)).getId(), ((ItemStack)arrayList.get(0)).getAmount()) != null;
+            return BotTaskPlanner.selectShopPurchaseTask(player, ((ItemStack)arrayList.get(0)).getId(), ((ItemStack)arrayList.get(0)).getAmount()) != null;
         }
         return true;
     }
@@ -614,7 +614,7 @@ public abstract class BotTaskDefinition {
         }
         player.botSmithingProductItemId = -1;
         player.botUseTaskItemOnTarget = false;
-        if (player.az != 4) {
+        if (player.botMode != 4) {
             this.prepareTaskCombatLoadout(player);
             this.prepareTradeAdvertState(player);
             this.prepareDropPartyState(player);
@@ -625,7 +625,7 @@ public abstract class BotTaskDefinition {
         player.botInteractionOption = 1;
         if (player.tradeAdvertMode == -1) {
             boolean bl = true;
-            if (player.az == 0 && ServerSettings.walkingBotsEnabled || player.az == 4) {
+            if (player.botMode == 0 && ServerSettings.walkingBotsEnabled || player.botMode == 4) {
                 bl = false;
             }
             if (bl && this.startPosition != null) {
@@ -647,15 +647,15 @@ public abstract class BotTaskDefinition {
     }
 
     public final Position getRandomTaskAreaPosition() {
-        int n = GameUtil.h(this.taskAreas.length);
+        int n = GameUtil.randomInt(this.taskAreas.length);
         int n2 = this.taskAreas[n].getMinX();
         int n3 = this.taskAreas[n].getMinY();
         int n4 = this.taskAreas[n].getMaxX();
         n = this.taskAreas[n].getMaxY();
         n4 -= n2;
         n -= n3;
-        n = n3 + GameUtil.h(n);
-        return new Position(n2 += GameUtil.h(n4), n);
+        n = n3 + GameUtil.randomInt(n);
+        return new Position(n2 += GameUtil.randomInt(n4), n);
     }
 
     public final void startNpcCombatTick(Player player, Npc npc) {
@@ -704,42 +704,42 @@ public abstract class BotTaskDefinition {
         player.botTaskState = "walk to task";
         player.currentBotRoute = this.taskRoute;
         player.botPathWaypointIndex = 0;
-        player.bk();
+        player.continueBotRoute();
     }
 
     public void continueWalkToTask(Player player, int n) {
         player.botTaskState = "walk to task";
         player.currentBotRoute = this.taskRoute;
         player.botPathWaypointIndex = n;
-        player.bk();
+        player.continueBotRoute();
     }
 
     public final void startPretaskPath(Player player) {
         player.botTaskState = "walk pretask path1";
         player.currentBotRoute = this.pretaskRoute;
         player.botPathWaypointIndex = 0;
-        player.bk();
+        player.continueBotRoute();
     }
 
     public final void returnPretaskPath(Player player) {
         player.botTaskState = "walk pretask path2";
         player.currentBotRoute = this.pretaskRoute.reversed();
         player.botPathWaypointIndex = 0;
-        player.bk();
+        player.continueBotRoute();
     }
 
     public void startWalkToBank(Player player) {
         player.botTaskState = "walk to bank";
         player.currentBotRoute = this.taskRoute.reversed();
         player.botPathWaypointIndex = 0;
-        player.bk();
+        player.continueBotRoute();
     }
 
     public void continueWalkToBank(Player player, int n) {
         player.botTaskState = "walk to bank";
         player.currentBotRoute = this.taskRoute.reversed();
         player.botPathWaypointIndex = n;
-        player.bk();
+        player.continueBotRoute();
     }
 
     public final Position getTaskPosition() {
@@ -749,7 +749,7 @@ public abstract class BotTaskDefinition {
         return this.taskRoute.reversed().getStartPosition();
     }
 
-    public void c(Player player, boolean bl) {
+    public void advanceTaskRouteSegment(Player player, boolean bl) {
     }
 
     static /* synthetic */ DraynorNetFishingBotTask getDraynorNetFishingTask() {

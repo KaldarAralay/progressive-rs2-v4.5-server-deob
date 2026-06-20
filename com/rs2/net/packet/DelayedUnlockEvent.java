@@ -17,7 +17,7 @@ extends CycleEvent {
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        PacketSender.a(this.a).n(false);
+        PacketSender.a(this.a).setActionLocked(false);
         cycleEventContainer.stop();
     }
 

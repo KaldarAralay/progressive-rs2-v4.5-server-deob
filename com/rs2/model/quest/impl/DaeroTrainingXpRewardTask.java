@@ -29,7 +29,7 @@ extends TickTask {
         player.packetSender.showWalkableInterface(-1);
         player = this.b;
         player.packetSender.closeInterfaces();
-        this.b.n(false);
+        this.b.setActionLocked(false);
         if (this.c == 1) {
             player = this.b;
             player.packetSender.sendGameMessage("You gain 35,000 Strength XP.");
@@ -59,7 +59,7 @@ extends TickTask {
         }
         if (!this.a.e(this.b, 17)) {
             int n = this.d;
-            this.b.bI[n] = this.b.bI[n] + GameUtil.b(17);
+            this.b.questProgressFlags[n] = this.b.questProgressFlags[n] + GameUtil.bitFlag(17);
         }
         this.stop();
     }

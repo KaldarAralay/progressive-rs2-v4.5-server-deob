@@ -12,11 +12,11 @@ public final class DoricsQuest
 extends QuestScript {
     public DoricsQuest(int n) {
         super(4);
-        super.a(1);
+        super.setQuestPointReward(1);
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player stringArray, int n) {
         if (n == 0) {
             stringArray = new String[]{"I can start this quest by speaking to Doric who is North of", "Falador", "", "There aren't any requirements but Level 15 Mining will help"};
             return stringArray;
@@ -33,9 +33,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("1 Quest Point", 12150);
         player2 = player;
@@ -49,7 +49,7 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.sendInterfaceText("", 12155);
         player.getSkillManager().addQuestExperience(14, 1300.0);
-        player.getInventoryManager().b(new ItemStack(995, 180));
+        player.getInventoryManager().addOrDropItem(new ItemStack(995, 180));
         player2 = player;
         player2.packetSender.sendInterfaceModel(InterfaceDefinition.interfaceCount <= 12140 ? 6161 : 12145, 250, 1269);
         player2 = player;
@@ -67,7 +67,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         if (n == 284) {
             if (n4 == 0) {
                 if (n2 == 1) {
@@ -113,7 +113,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 8) {
-                    player.getInventoryManager().b(new ItemStack(1265, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(1265, 1));
                     player.getDialogueManager().showTwoOptions("Where can I find those?", "Certainly, I'll be right back!");
                     return true;
                 }
@@ -178,7 +178,7 @@ extends QuestScript {
                     player.getInventoryManager().removeItem(new ItemStack(434, 6));
                     player.getInventoryManager().removeItem(new ItemStack(436, 4));
                     player.getInventoryManager().removeItem(new ItemStack(440, 2));
-                    this.c(player);
+                    this.awardCompletionRewards(player);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }

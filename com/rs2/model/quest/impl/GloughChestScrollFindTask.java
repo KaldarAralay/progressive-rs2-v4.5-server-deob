@@ -19,9 +19,9 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        this.a.n(false);
+        this.a.setActionLocked(false);
         this.a.getDialogueManager().showItemMessage("You have found a scroll!", new ItemStack(794, 1));
-        this.a.getInventoryManager().b(new ItemStack(794, 1));
+        this.a.getInventoryManager().addOrDropItem(new ItemStack(794, 1));
         this.stop();
     }
 }

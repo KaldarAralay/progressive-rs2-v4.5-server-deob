@@ -35,12 +35,12 @@ public class AgilityObstacleHandler {
     public static void startForcedMovement(Player player, int n, int n2, int n3, int n4, int n5, boolean bl, int n6, int n7) {
         void var7_8;
         int n8;
-        player.n(true);
+        player.setActionLocked(true);
         player.getMovementQueue().clear();
         if (n8 > 0) {
-            player.aj(n8);
-            player.ak(n8);
-            player.f(true);
+            player.setRunAnimationOverride(n8);
+            player.setWalkAnimationOverride(n8);
+            player.setAppearanceUpdateRequired(true);
         }
         n3 = 2;
         if (n > 0) {
@@ -75,7 +75,7 @@ public class AgilityObstacleHandler {
         if (n3 > 0) {
             player.getUpdateState().setAnimation(n3);
         }
-        player.n(true);
+        player.setActionLocked(true);
         Player player3 = player;
         player3.packetSender.sendGameMessage(string);
         CycleEventHandler.getInstance().schedule(player, new AgilityObstacleCompletionTask(player, n, n2, n4, n5, n6, d, string2), n3 > 0 ? 2 : 0);
@@ -88,7 +88,7 @@ public class AgilityObstacleHandler {
             return;
         }
         player.getUpdateState().setAnimation(828);
-        player.n(true);
+        player.setActionLocked(true);
         Player player3 = player;
         player3.packetSender.sendGameMessage(string);
         CycleEventHandler.getInstance().schedule(player, new AgilityPositionOffsetTask(player, n, n2, n3, d, string2), n5);

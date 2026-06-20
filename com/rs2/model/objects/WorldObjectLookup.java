@@ -34,7 +34,7 @@ public class WorldObjectLookup {
 
     public static LoadedWorldObject findObjectAt(int n, int n2, int n3) {
         Position position = new Position(n, n2, n3);
-        World.j().k();
+        World.getInstance().getObjectRegionIndex();
         Object object2 = WorldObjectRegionIndex.getOrCreateRegionBucket(position);
         for (Object object2 : ((AgilityObstacleHandler)object2).getLoadedObjects()) {
             if (!((LoadedWorldObject)object2).getPosition().equals(position)) continue;
@@ -47,7 +47,7 @@ public class WorldObjectLookup {
 
     public static LoadedWorldObject findObjectByIdAt(int n, int n2, int n3, int n4) {
         Position position = new Position(n2, n3, n4);
-        World.j().k();
+        World.getInstance().getObjectRegionIndex();
         Object object2 = WorldObjectRegionIndex.getOrCreateRegionBucket(position);
         for (Object object2 : ((AgilityObstacleHandler)object2).getLoadedObjects()) {
             if (((LoadedWorldObject)object2).getWorldObject().getObjectId() != n || !((LoadedWorldObject)object2).getPosition().equals(position)) continue;
@@ -58,7 +58,7 @@ public class WorldObjectLookup {
 
     public static LoadedWorldObject findObjectByNameAt(String string, int n, int n2, int n3) {
         Position position = new Position(n, n2, n3);
-        World.j().k();
+        World.getInstance().getObjectRegionIndex();
         Object object2 = WorldObjectRegionIndex.getOrCreateRegionBucket(position);
         for (Object object2 : ((AgilityObstacleHandler)object2).getLoadedObjects()) {
             Object object3;

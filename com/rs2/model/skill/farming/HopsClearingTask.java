@@ -30,14 +30,14 @@ extends CycleEvent {
         if (this.manager.growthStages[this.patch.getIndex()] <= 2) {
             int n = this.patch.getIndex();
             this.manager.growthStages[n] = this.manager.growthStages[n] + 1;
-            HopsPatchManager.getPlayer(this.manager).getInventoryManager().b(new ItemStack(6055));
+            HopsPatchManager.getPlayer(this.manager).getInventoryManager().addOrDropItem(new ItemStack(6055));
         } else {
             this.manager.growthStages[this.patch.getIndex()] = 3;
             bl = true;
             cycleEventContainer.stop();
         }
         HopsPatchManager.getPlayer(this.manager).getSkillManager().addExperience(19, 4.0);
-        this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.e();
+        this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.getElapsedMinutes();
         this.manager.refreshConfig();
         if (this.manager.growthStages[this.patch.getIndex()] == 3 && !bl) {
             cycleEventContainer.stop();
@@ -50,8 +50,8 @@ extends CycleEvent {
         HopsPatchManager.a(this.manager, this.patch.getIndex());
         Player player = HopsPatchManager.getPlayer(this.manager);
         player.packetSender.sendGameMessage("You clear the patch.");
-        HopsPatchManager.getPlayer(this.manager).n(false);
-        HopsPatchManager.getPlayer(this.manager).aN();
+        HopsPatchManager.getPlayer(this.manager).setActionLocked(false);
+        HopsPatchManager.getPlayer(this.manager).resetAnimation();
     }
 }
 

@@ -23,9 +23,9 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        this.b.getInventoryManager().a(new ItemStack(2893, 1), new ItemStack(2890, 1));
+        this.b.getInventoryManager().replaceItem(new ItemStack(2893, 1), new ItemStack(2890, 1));
         if (this.c != 1) {
-            this.a.c(this.b);
+            this.a.awardCompletionRewards(this.b);
         }
         this.stop();
     }

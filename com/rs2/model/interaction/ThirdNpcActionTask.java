@@ -41,13 +41,13 @@ extends TickTask {
             return;
         }
         if (this.npc.getNpcId() == 3103) {
-            MageTrainingArenaRewardShop.a(this.player);
+            MageTrainingArenaRewardShop.openRewardShop(this.player);
         }
-        if (!GameUtil.a(this.player.getPosition(), this.npc.getPosition(), true)) {
+        if (!GameUtil.hasClearPath(this.player.getPosition(), this.npc.getPosition(), true)) {
             return;
         }
         EntityTargetMovement.clearMovementTarget(this.player);
-        Object object = World.g()[this.player.getInteractionTargetIndex()];
+        Object object = World.getNpcs()[this.player.getInteractionTargetIndex()];
         this.player.getUpdateState().setFaceEntity(((Entity)object).getEncodedIndex());
         ((Entity)object).getUpdateState().setFaceEntity(this.player.getEncodedIndex());
         switch (this.player.getInteractionTargetId()) {
@@ -61,7 +61,7 @@ extends TickTask {
             case 1598: 
             case 1599: 
             case 3887: {
-                ShopManager.a(this.player, GameplayHelper.c(this.player.getInteractionTargetId()));
+                ShopManager.openShop(this.player, GameplayHelper.c(this.player.getInteractionTargetId()));
                 break;
             }
             case 2257: {
@@ -74,14 +74,14 @@ extends TickTask {
                     break;
                 }
                 if (this.player.getQuestState(14) != 1) {
-                    object = QuestDefinition.b(14);
-                    object = ((QuestDefinition)object).c();
+                    object = QuestDefinition.forId(14);
+                    object = ((QuestDefinition)object).getName();
                     this.player.getDialogueManager().showOneLineStatement("You need to complete " + (String)object + " to do this.");
                     this.player.getDialogueManager().finishDialogue();
                     break;
                 }
-                if (this.player.eE == 1) {
-                    AbyssManager.b(this.player, (Npc)object);
+                if (this.player.enterTheAbyssMiniquestState == 1) {
+                    AbyssManager.startAbyssMageTeleport(this.player, (Npc)object);
                     break;
                 }
                 this.player.getDialogueManager().showOneLineStatement("You need to complete Enter the Abyss miniquest to do this.");

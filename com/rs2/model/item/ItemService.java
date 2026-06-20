@@ -80,7 +80,7 @@ public final class ItemService {
             player.botLootGroundItems.clear();
             player.botLootPickupTargets.clear();
             if (player.currentBotTask != null) {
-                GameplayHelper.e(player);
+                GameplayHelper.shouldReturnToBankForBotTask(player);
                 int n3 = n = player.isInWilderness() ? 8 : 0;
                 if (player.getInventoryManager().getItemAmount(player.botFoodItemId) <= n && player.currentBotTask.getForcedCombatStyle() != 2 || player.botTaskReturnToBankRequested) {
                     player.currentBotTask.startWalkToBank(player);

@@ -19,7 +19,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        if (this.a.isDead() || !this.a.bW() || !this.a.currentBotTask.usesCustomTaskAction || !this.a.botTaskState.equals("do task")) {
+        if (this.a.isDead() || !this.a.isRegistered() || !this.a.currentBotTask.usesCustomTaskAction || !this.a.botTaskState.equals("do task")) {
             this.stop();
             return;
         }

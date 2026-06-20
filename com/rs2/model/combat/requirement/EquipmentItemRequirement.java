@@ -28,7 +28,7 @@ extends CombatCostRequirement {
             return;
         }
         entity = (Player)entity;
-        ((Player)entity).getEquipmentManager().c(this.equipmentSlot, this.amount);
+        ((Player)entity).getEquipmentManager().consumeSlotItemAmount(this.equipmentSlot, this.amount);
     }
 
     @Override

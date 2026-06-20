@@ -18,7 +18,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        BotCombatLoadoutManager.a(this.a);
+        BotCombatLoadoutManager.startCombatLoadoutBot(this.a);
         this.stop();
     }
 }

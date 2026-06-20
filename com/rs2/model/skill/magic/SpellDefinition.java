@@ -180,9 +180,9 @@ public enum SpellDefinition {
      * WARNING - void declaration
      */
     private SpellDefinition(boolean bl, int n2) {
-        this((String)cfr_renamed_1, (int)hitDefinition, 0, (int)cfr_renamed_14, bl ? 1 : 0, null, 0.0, null, (HitDefinition)n2, true, null, null);
-        void cfr_renamed_14;
-        void cfr_renamed_1;
+        this((String)cfr_renamed_0, (int)hitDefinition, 0, (int)cfr_renamed_13, bl ? 1 : 0, null, 0.0, null, (HitDefinition)n2, true, null, null);
+        void cfr_renamed_13;
+        void cfr_renamed_0;
     }
 
     /*
@@ -190,9 +190,9 @@ public enum SpellDefinition {
      * WARNING - void declaration
      */
     private SpellDefinition(boolean bl) {
-        this((String)cfr_renamed_1, (int)hitDefinition, 0, -1, bl ? 1 : 0, null, 0.0, null, (HitDefinition)var4_3, true, null, null);
+        this((String)cfr_renamed_0, (int)hitDefinition, 0, -1, bl ? 1 : 0, null, 0.0, null, (HitDefinition)var4_3, true, null, null);
         void var4_3;
-        void cfr_renamed_1;
+        void cfr_renamed_0;
     }
 
     /*
@@ -200,9 +200,9 @@ public enum SpellDefinition {
      * WARNING - void declaration
      */
     private SpellDefinition(HitDefinition hitDefinition, boolean bl) {
-        this((String)cfr_renamed_1, (int)graphicEffect, 0, -1, (int)hitDefinition, (GraphicEffect)bl, 0.0, null, (HitDefinition)var5_4, true, null, null);
+        this((String)cfr_renamed_0, (int)graphicEffect, 0, -1, (int)hitDefinition, (GraphicEffect)bl, 0.0, null, (HitDefinition)var5_4, true, null, null);
         void var5_4;
-        void cfr_renamed_1;
+        void cfr_renamed_0;
     }
 
     /*
@@ -210,9 +210,9 @@ public enum SpellDefinition {
      * WARNING - void declaration
      */
     private SpellDefinition(boolean bl, CombatEffect combatEffect) {
-        this((String)cfr_renamed_1, (int)hitDefinition, 0, -1, bl ? 1 : 0, null, 0.0, null, (HitDefinition)((Object)combatEffect), true, null, (CombatEffect)cfr_renamed_14);
-        void cfr_renamed_14;
-        void cfr_renamed_1;
+        this((String)cfr_renamed_0, (int)hitDefinition, 0, -1, bl ? 1 : 0, null, 0.0, null, (HitDefinition)((Object)combatEffect), true, null, (CombatEffect)cfr_renamed_13);
+        void cfr_renamed_13;
+        void cfr_renamed_0;
     }
 
     /*
@@ -220,9 +220,9 @@ public enum SpellDefinition {
      * WARNING - void declaration
      */
     private SpellDefinition(boolean bl, CombatEffect combatEffect, CombatEffect combatEffect2) {
-        this((String)cfr_renamed_1, (int)hitDefinition, 0, -1, 3146, null, 0.0, null, (HitDefinition)((Object)combatEffect), true, null, null, (CombatEffect)cfr_renamed_4);
-        void cfr_renamed_4;
-        void cfr_renamed_1;
+        this((String)cfr_renamed_0, (int)hitDefinition, 0, -1, 3146, null, 0.0, null, (HitDefinition)((Object)combatEffect), true, null, null, (CombatEffect)cfr_renamed_3);
+        void cfr_renamed_3;
+        void cfr_renamed_0;
     }
 
     /*
@@ -230,11 +230,11 @@ public enum SpellDefinition {
      * WARNING - void declaration
      */
     private SpellDefinition(int n3, GraphicEffect graphicEffect, double d, ItemStack[] itemStackArray) {
-        this((String)cfr_renamed_1, (int)cfr_renamed_2, n3, (int)graphicEffect, (int)d, (GraphicEffect)var6_4, (double)itemStackArray, (ItemStack[])var9_6, null, false, null, null);
+        this((String)cfr_renamed_0, (int)cfr_renamed_1, n3, (int)graphicEffect, (int)d, (GraphicEffect)var6_4, (double)itemStackArray, (ItemStack[])var9_6, null, false, null, null);
         void var9_6;
         void var6_4;
-        void cfr_renamed_2;
         void cfr_renamed_1;
+        void cfr_renamed_0;
     }
 
     /*
@@ -242,11 +242,11 @@ public enum SpellDefinition {
      * WARNING - void declaration
      */
     private SpellDefinition(int n3, GraphicEffect graphicEffect, double d, ItemStack[] itemStackArray, boolean n22) {
-        this((String)cfr_renamed_1, (int)cfr_renamed_2, n3, (int)graphicEffect, (int)d, (GraphicEffect)var6_4, (double)itemStackArray, (ItemStack[])var9_6, null, false, true);
+        this((String)cfr_renamed_0, (int)cfr_renamed_1, n3, (int)graphicEffect, (int)d, (GraphicEffect)var6_4, (double)itemStackArray, (ItemStack[])var9_6, null, false, true);
         void var9_6;
         void var6_4;
-        void cfr_renamed_2;
         void cfr_renamed_1;
+        void cfr_renamed_0;
     }
 
     /*
@@ -254,11 +254,11 @@ public enum SpellDefinition {
      * WARNING - void declaration
      */
     private SpellDefinition(int n3, GraphicEffect graphicEffect, double d, ItemStack[] itemStackArray, ItemStack[] n22, boolean bl) {
-        this((String)cfr_renamed_1, (int)cfr_renamed_2, n3, (int)graphicEffect, 726, (GraphicEffect)var6_4, (double)itemStackArray, (ItemStack[])bl, null, false, (ItemStack[])var10_7, true);
+        this((String)cfr_renamed_0, (int)cfr_renamed_1, n3, (int)graphicEffect, 726, (GraphicEffect)var6_4, (double)itemStackArray, (ItemStack[])bl, null, false, (ItemStack[])var10_7, true);
         void var10_7;
         void var6_4;
-        void cfr_renamed_2;
         void cfr_renamed_1;
+        void cfr_renamed_0;
     }
 
     /*
@@ -266,13 +266,13 @@ public enum SpellDefinition {
      * WARNING - void declaration
      */
     private SpellDefinition(int n3, GraphicEffect graphicEffect, double d, ItemStack[] itemStackArray, HitDefinition hitDefinition, boolean n22) {
-        this((String)cfr_renamed_1, (int)cfr_renamed_2, n3, (int)graphicEffect, (int)d, (GraphicEffect)var6_4, (double)itemStackArray, (ItemStack[])cfr_renamed_6, (HitDefinition)var10_7, (boolean)var11_8, null, null);
+        this((String)cfr_renamed_0, (int)cfr_renamed_1, n3, (int)graphicEffect, (int)d, (GraphicEffect)var6_4, (double)itemStackArray, (ItemStack[])cfr_renamed_5, (HitDefinition)var10_7, (boolean)var11_8, null, null);
         void var11_8;
         void var10_7;
-        void cfr_renamed_6;
+        void cfr_renamed_5;
         void var6_4;
-        void cfr_renamed_2;
         void cfr_renamed_1;
+        void cfr_renamed_0;
     }
 
     /*
@@ -280,13 +280,13 @@ public enum SpellDefinition {
      * WARNING - void declaration
      */
     private SpellDefinition(int n3, GraphicEffect graphicEffect, double d, ItemStack[] itemStackArray, HitDefinition hitDefinition, boolean n22, boolean bl) {
-        this((String)cfr_renamed_1, (int)cfr_renamed_2, n3, (int)graphicEffect, (int)d, (GraphicEffect)var6_4, (double)itemStackArray, (ItemStack[])cfr_renamed_6, (HitDefinition)bl, (boolean)var11_8, null, null, (boolean)var12_9);
+        this((String)cfr_renamed_0, (int)cfr_renamed_1, n3, (int)graphicEffect, (int)d, (GraphicEffect)var6_4, (double)itemStackArray, (ItemStack[])cfr_renamed_5, (HitDefinition)bl, (boolean)var11_8, null, null, (boolean)var12_9);
         void var12_9;
         void var11_8;
-        void cfr_renamed_6;
+        void cfr_renamed_5;
         void var6_4;
-        void cfr_renamed_2;
         void cfr_renamed_1;
+        void cfr_renamed_0;
     }
 
     /*
@@ -294,13 +294,13 @@ public enum SpellDefinition {
      * WARNING - void declaration
      */
     private SpellDefinition(int n3, GraphicEffect graphicEffect, double d, ItemStack[] itemStackArray, HitDefinition hitDefinition, boolean n22, ItemStack[] itemStackArray2, boolean bl) {
-        this((String)cfr_renamed_1, (int)cfr_renamed_2, n3, (int)graphicEffect, (int)d, (GraphicEffect)var6_4, (double)itemStackArray, (ItemStack[])cfr_renamed_6, null, false, null, null, (ItemStack[])var12_9, (boolean)var13_10);
+        this((String)cfr_renamed_0, (int)cfr_renamed_1, n3, (int)graphicEffect, (int)d, (GraphicEffect)var6_4, (double)itemStackArray, (ItemStack[])cfr_renamed_5, null, false, null, null, (ItemStack[])var12_9, (boolean)var13_10);
         void var13_10;
         void var12_9;
-        void cfr_renamed_6;
+        void cfr_renamed_5;
         void var6_4;
-        void cfr_renamed_2;
         void cfr_renamed_1;
+        void cfr_renamed_0;
     }
 
     /*
@@ -330,14 +330,14 @@ public enum SpellDefinition {
     private SpellDefinition(int n3, GraphicEffect graphicEffect, double d, ItemStack[] itemStackArray, HitDefinition hitDefinition, boolean n22, CombatEffect combatEffect, CombatEffect combatEffect2) {
         void var13_10;
         void var12_9;
-        void cfr_renamed_6;
+        void cfr_renamed_5;
         void var6_4;
         this.requiredLevel = n3;
         this.castSoundId = (int)graphicEffect;
         this.animationId = (int)d;
         this.castGraphic = var6_4;
         this.experience = (double)itemStackArray;
-        this.runeCosts = cfr_renamed_6;
+        this.runeCosts = cfr_renamed_5;
         this.hitDefinition = combatEffect;
         this.combatSpell = combatEffect2;
         this.primaryEffect = var12_9;
@@ -351,14 +351,14 @@ public enum SpellDefinition {
     private SpellDefinition(int n3, GraphicEffect graphicEffect, double d, ItemStack[] itemStackArray, HitDefinition hitDefinition, boolean n22, CombatEffect combatEffect, CombatEffect combatEffect2, boolean bl) {
         void var14_11;
         void var13_10;
-        void cfr_renamed_6;
+        void cfr_renamed_5;
         void var6_4;
         this.requiredLevel = n3;
         this.castSoundId = (int)graphicEffect;
         this.animationId = (int)d;
         this.castGraphic = var6_4;
         this.experience = (double)itemStackArray;
-        this.runeCosts = cfr_renamed_6;
+        this.runeCosts = cfr_renamed_5;
         this.hitDefinition = combatEffect;
         this.combatSpell = combatEffect2;
         this.primaryEffect = (CombatEffect)bl;
@@ -373,14 +373,14 @@ public enum SpellDefinition {
     private SpellDefinition(int n3, GraphicEffect graphicEffect, double d, ItemStack[] itemStackArray, HitDefinition hitDefinition, boolean n22, CombatEffect combatEffect, CombatEffect combatEffect2, ItemStack[] itemStackArray2, boolean bl) {
         void var15_12;
         void var14_11;
-        void cfr_renamed_6;
+        void cfr_renamed_5;
         void var6_4;
         this.requiredLevel = n3;
         this.castSoundId = (int)graphicEffect;
         this.animationId = (int)d;
         this.castGraphic = var6_4;
         this.experience = (double)itemStackArray;
-        this.runeCosts = cfr_renamed_6;
+        this.runeCosts = cfr_renamed_5;
         this.hitDefinition = combatEffect;
         this.combatSpell = combatEffect2;
         this.primaryEffect = null;

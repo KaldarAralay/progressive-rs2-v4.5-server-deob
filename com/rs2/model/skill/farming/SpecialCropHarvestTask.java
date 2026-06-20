@@ -39,7 +39,7 @@ extends CycleEvent {
             SpecialCropPatchManager.getPlayer(this.manager).getSkillManager().addExperience(19, this.definition.getHealthCheckExperience());
             this.manager.patchStates[this.patch.getIndex()] = 0;
             this.manager.f[this.patch.getIndex()] = false;
-            this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.e() - (long)this.definition.getTotalGrowthTicks();
+            this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.getElapsedMinutes() - (long)this.definition.getTotalGrowthTicks();
             this.manager.recalculateRegrowthStage(this.patch.getIndex());
             cycleEventContainer.stop();
             return;
@@ -52,7 +52,7 @@ extends CycleEvent {
             case BELLADONNA: {
                 SpecialCropPatchManager.a(this.manager, this.patch.getIndex());
                 this.manager.growthStages[this.patch.getIndex()] = 3;
-                this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.e();
+                this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.getElapsedMinutes();
                 break;
             }
             case CACTUS: {
@@ -66,7 +66,7 @@ extends CycleEvent {
                 if (this.manager.growthStages[this.patch.getIndex()] != 16) break;
                 SpecialCropPatchManager.a(this.manager, this.patch.getIndex());
                 this.manager.growthStages[this.patch.getIndex()] = 3;
-                this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.e();
+                this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.getElapsedMinutes();
             }
         }
         this.manager.refreshConfig();
@@ -75,8 +75,8 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        SpecialCropPatchManager.getPlayer(this.manager).n(false);
-        SpecialCropPatchManager.getPlayer(this.manager).aN();
+        SpecialCropPatchManager.getPlayer(this.manager).setActionLocked(false);
+        SpecialCropPatchManager.getPlayer(this.manager).resetAnimation();
     }
 }
 

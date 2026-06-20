@@ -8,20 +8,20 @@ import com.rs2.util.FileUtil;
 import com.rs2.util.RectangularArea;
 
 public final class MultiwayAreaDefinition {
-    private int b;
-    private RectangularArea c;
-    private int[] d;
-    private static int e = 0;
-    public static MultiwayAreaDefinition[] a = new MultiwayAreaDefinition[0];
+    private int regionCount;
+    private RectangularArea areaBounds;
+    private int[] regionIds;
+    private static int definitionCount = 0;
+    public static MultiwayAreaDefinition[] definitions = new MultiwayAreaDefinition[0];
 
-    public static void a() {
+    public static void loadDefinitions() {
         Object object = FileUtil.readBytes("./data/areas/Multiway.dat");
         ByteArrayReader byteArrayReader = new ByteArrayReader((byte[])object);
         object = byteArrayReader;
-        e = byteArrayReader.readUnsignedShort();
-        a = new MultiwayAreaDefinition[e];
+        definitionCount = byteArrayReader.readUnsignedShort();
+        definitions = new MultiwayAreaDefinition[definitionCount];
         int n = 0;
-        while (n < e) {
+        while (n < definitionCount) {
             int n2;
             int[] nArray = null;
             RectangularArea rectangularArea = null;
@@ -40,35 +40,35 @@ public final class MultiwayAreaDefinition {
                     ++n2;
                 }
             }
-            MultiwayAreaDefinition.a[n] = new MultiwayAreaDefinition(n, n3, rectangularArea, nArray);
+            MultiwayAreaDefinition.definitions[n] = new MultiwayAreaDefinition(n, n3, rectangularArea, nArray);
             ++n;
         }
     }
 
     private MultiwayAreaDefinition(int n, int n2, RectangularArea rectangularArea, int[] nArray) {
-        this.b = n2;
-        this.c = rectangularArea;
-        this.d = nArray;
+        this.regionCount = n2;
+        this.areaBounds = rectangularArea;
+        this.regionIds = nArray;
     }
 
-    public final RectangularArea b() {
-        return this.c;
+    public final RectangularArea getAreaBounds() {
+        return this.areaBounds;
     }
 
-    public final int c() {
-        return this.b;
+    public final int getRegionCount() {
+        return this.regionCount;
     }
 
-    public final int[] d() {
-        return this.d;
+    public final int[] getRegionIds() {
+        return this.regionIds;
     }
 
-    public static MultiwayAreaDefinition a(int n) {
+    public static MultiwayAreaDefinition forDefinitionId(int n) {
         MultiwayAreaDefinition multiwayAreaDefinition;
         if (n < 0) {
             n = 1;
         }
-        if ((multiwayAreaDefinition = a[n]) == null) {
+        if ((multiwayAreaDefinition = definitions[n]) == null) {
             multiwayAreaDefinition = new MultiwayAreaDefinition(n, 0, null, null);
         }
         return multiwayAreaDefinition;

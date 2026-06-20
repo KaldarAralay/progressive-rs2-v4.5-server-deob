@@ -8,21 +8,21 @@ import com.rs2.model.task.TickTask;
 
 final class BandosStrongholdDoorTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
     BandosStrongholdDoorTask(int n, Player player) {
-        this.a = player;
+        this.player = player;
         super(2);
     }
 
     @Override
     public final void execute() {
-        if (!this.a.bW()) {
+        if (!this.player.isRegistered()) {
             this.stop();
             return;
         }
-        Player player = this.a;
-        player.packetSender.queueRelativeMovementStep(this.a.getPosition().getX() >= 2851 ? -2 : 2, 0, true);
+        Player player = this.player;
+        player.packetSender.queueRelativeMovementStep(this.player.getPosition().getX() >= 2851 ? -2 : 2, 0, true);
         this.stop();
     }
 }

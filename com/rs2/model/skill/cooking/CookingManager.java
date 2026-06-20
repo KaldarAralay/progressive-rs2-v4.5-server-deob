@@ -45,7 +45,7 @@ public final class CookingManager {
             ((Player)object).packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
-        this.player.as(n2);
+        this.player.setCookingObjectId(n2);
         object = WorldObjectLookup.findObjectByIdAt(n2, n3, n4, this.player.getPosition().getPlane());
         Object object2 = SkillActionHelper.findWorldObjectById(n2, n3, n4, this.player.getPosition().getPlane());
         if (object != null || object2 != null) {
@@ -170,7 +170,7 @@ public final class CookingManager {
             n2 += 14;
             n3 += 31;
         }
-        boolean bl2 = GameUtil.b(n2, n3, player.getSkillManager().getCurrentLevels()[7]);
+        boolean bl2 = GameUtil.rollLevelScaledChance(n2, n3, player.getSkillManager().getCurrentLevels()[7]);
         n = bl2 ? 1 : 0;
         if (bl2 && !bl || player.getQuestState(0) == 14 || player.getQuestState(0) == 19) {
             player.getInventoryManager().addItem(new ItemStack(cookableFoodDefinition.getCookedItemId()));

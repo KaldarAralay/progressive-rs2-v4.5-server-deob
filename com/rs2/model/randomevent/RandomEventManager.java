@@ -19,7 +19,7 @@ public final class RandomEventManager {
     private static int[][] a = new int[][]{{249, 113}, {251, 2446}, {253, 2428}, {255, 2430}, {257, 3008}, {2998, 2432}, {259, 3032}, {261, 2440}, {263, 3016}, {3000, 2440}, {265, 3024}, {2481, 2442}, {267, 3040}};
 
     public static ItemStack a() {
-        return new ItemStack(a[GameUtil.f(13)][0]);
+        return new ItemStack(a[GameUtil.randomExclusive(13)][0]);
     }
 
     public static ItemStack a(int n) {
@@ -61,7 +61,7 @@ public final class RandomEventManager {
         }
         Object object2 = stringArray;
         object2 = new Npc(stringArray.d);
-        player.c((Npc)object2);
+        player.setActiveRandomEventNpc((Npc)object2);
         GameplayHelper.a(player, (Npc)object2, false, false);
         object = player;
         object.packetSender.sendStillGraphic(86, object2.getPosition(), 0x640000);
@@ -251,7 +251,7 @@ public final class RandomEventManager {
                     int n3 = player.getSkillManager().calculateExperienceGain(player.getSelectedLampSkill(), n2);
                     player.getSkillManager().addExperience(player.getSelectedLampSkill(), n2);
                     Player player24 = player;
-                    player24.packetSender.sendGameMessage("Congratulations, " + GameUtil.a((long)n3) + " xp was added to your " + SkillManager.a[player.getSelectedLampSkill()] + " skill.");
+                    player24.packetSender.sendGameMessage("Congratulations, " + GameUtil.formatNumber((long)n3) + " xp was added to your " + SkillManager.SKILL_NAMES[player.getSelectedLampSkill()] + " skill.");
                     player24 = player;
                     player24.packetSender.sendSoundEffect(430, 1, 0);
                     player.setSelectedLampSkill(-1);

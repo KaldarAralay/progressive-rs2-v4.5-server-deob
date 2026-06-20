@@ -10,33 +10,33 @@ import com.rs2.model.task.TickTask;
 
 final class DeferredTradeRequestTask
 extends TickTask {
-    private final /* synthetic */ Player a;
-    private final /* synthetic */ Player b;
-    private final /* synthetic */ int c;
+    private final /* synthetic */ Player targetPlayer;
+    private final /* synthetic */ Player requestingPlayer;
+    private final /* synthetic */ int actionSequence;
 
     DeferredTradeRequestTask(int n, Player player, Player player2, int n2) {
-        this.a = player;
-        this.b = player2;
-        this.c = n2;
+        this.targetPlayer = player;
+        this.requestingPlayer = player2;
+        this.actionSequence = n2;
         super(1);
     }
 
     @Override
     public final void execute() {
-        if (this.a == null || this.a.isDead() || !this.b.isCurrentActionSequence(this.c)) {
-            EntityTargetMovement.clearMovementTarget(this.b);
-            this.b.setInteractionTarget(null);
-            this.b.getMovementQueue().clear();
-            this.b.pendingTradeTarget = null;
+        if (this.targetPlayer == null || this.targetPlayer.isDead() || !this.requestingPlayer.isCurrentActionSequence(this.actionSequence)) {
+            EntityTargetMovement.clearMovementTarget(this.requestingPlayer);
+            this.requestingPlayer.setInteractionTarget(null);
+            this.requestingPlayer.getMovementQueue().clear();
+            this.requestingPlayer.pendingTradeTarget = null;
             this.stop();
             return;
         }
-        if (this.b.isWithinReach(this.a, 1) && !this.b.isOverlapping(this.a) && !EntityTargetMovement.isDiagonalTo(this.b.getPosition(), this.a.getPosition())) {
-            GameplayHelper.b(this.b, this.a);
-            EntityTargetMovement.clearMovementTarget(this.b);
-            this.b.getUpdateState().setFacePosition(this.a.getPosition());
-            this.b.setInteractionTarget(null);
-            this.b.getMovementQueue().clear();
+        if (this.requestingPlayer.isWithinReach(this.targetPlayer, 1) && !this.requestingPlayer.isOverlapping(this.targetPlayer) && !EntityTargetMovement.isDiagonalTo(this.requestingPlayer.getPosition(), this.targetPlayer.getPosition())) {
+            GameplayHelper.handleTradeRequest(this.requestingPlayer, this.targetPlayer);
+            EntityTargetMovement.clearMovementTarget(this.requestingPlayer);
+            this.requestingPlayer.getUpdateState().setFacePosition(this.targetPlayer.getPosition());
+            this.requestingPlayer.setInteractionTarget(null);
+            this.requestingPlayer.getMovementQueue().clear();
             this.stop();
         }
     }

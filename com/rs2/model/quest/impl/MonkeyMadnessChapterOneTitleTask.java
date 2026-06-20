@@ -21,7 +21,7 @@ extends TickTask {
     @Override
     public final void execute() {
         Player player;
-        this.b.n(false);
+        this.b.setActionLocked(false);
         Player player2 = player = this.b;
         player.packetSender.sendInterfaceText("", 3026);
         player2 = player;

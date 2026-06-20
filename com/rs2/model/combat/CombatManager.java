@@ -96,18 +96,18 @@ extends TickTask {
                     CombatManager.stopCombat(entity);
                     return;
                 }
-                if (entity.isPlayer() && entity2.isNpc() && !((Player)entity).getQuestManager().d(((Npc)entity2).getNpcId())) {
+                if (entity.isPlayer() && entity2.isNpc() && !((Player)entity).getQuestManager().canAttackNpc(((Npc)entity2).getNpcId())) {
                     player = (Player)entity;
                     player.packetSender.sendGameMessage("You cannot attack this npc.");
                     CombatManager.stopCombat(entity);
                     return;
                 }
-                if (entity.isPlayer() && entity.isInDuelArena() && !((Player)entity).getDuelSession().f()) {
+                if (entity.isPlayer() && entity.isInDuelArena() && !((Player)entity).getDuelSession().isActiveDuelStarted()) {
                     CombatManager.stopCombat(entity);
                     return;
                 }
                 object = new LinkedList();
-                int n = GameUtil.b(entity.getPosition(), entity2.getPosition());
+                int n = GameUtil.getDistance(entity.getPosition(), entity2.getPosition());
                 entity.collectCombatAttackOptions((List)object, entity2, n);
                 Object object2 = null;
                 Object object3 = object.iterator();
@@ -119,7 +119,7 @@ extends TickTask {
                 if (entity.isPlayer() && entity2.isNpc() && object2 != null) {
                     object = (Npc)entity2;
                     object3 = (Player)entity;
-                    if (((SmithingHandler)object2).getAttack().getCombatType() == CombatType.MELEE && GodWarsDungeonManager.b.contains(((Npc)object).getNpcId())) {
+                    if (((SmithingHandler)object2).getAttack().getCombatType() == CombatType.MELEE && GodWarsDungeonManager.armadylNpcIds.contains(((Npc)object).getNpcId())) {
                         object2 = object3;
                         ((Player)object2).packetSender.sendGameMessage("The Aviansie is flying too high for you to attack using melee.");
                         return;
@@ -154,7 +154,7 @@ extends TickTask {
                     ((Player)object).ak = -1;
                     object4 = object;
                     ((Player)object4).packetSender.refreshSidebarInterfaces();
-                    ((Player)object).f(true);
+                    ((Player)object).setAppearanceUpdateRequired(true);
                 }
             }
             CycleEventHandler.getInstance().schedule(entity2, entity2.getActiveCycleEvent(), 1);
@@ -171,7 +171,7 @@ extends TickTask {
                 entity2.setDead(true);
                 CombatManager.handleDeath(entity2);
                 ((Player)entity).getTeleportManager().a(2541, 4717, 0, null);
-                ((Player)entity).dN = 5;
+                ((Player)entity).mageArenaProgressStage = 5;
                 return true;
             }
         }
@@ -195,7 +195,7 @@ extends TickTask {
                     }
                     if (((CombatAction)object2).getTarget().getCurrentHitpoints() > 0 || ((CombatAction)object2).getTarget().isDead()) continue;
                     if (((CombatAction)object2).getAttacker() != null && ((CombatAction)object2).getTarget() != null && (((CombatAction)object2).getAttacker().isPlayer() && ((CombatAction)object2).getTarget().isNpc() || ((CombatAction)object2).getAttacker().isNpc() && ((CombatAction)object2).getTarget().isPlayer())) {
-                        boolean bl = ((CombatAction)object2).getAttacker().isPlayer() ? ((Player)((CombatAction)object2).getAttacker()).getQuestManager().a(((CombatAction)object2).getAttacker(), ((CombatAction)object2).getTarget()) : ((Player)((CombatAction)object2).getTarget()).getQuestManager().a(((CombatAction)object2).getAttacker(), ((CombatAction)object2).getTarget());
+                        boolean bl = ((CombatAction)object2).getAttacker().isPlayer() ? ((Player)((CombatAction)object2).getAttacker()).getQuestManager().handleCombatDeath(((CombatAction)object2).getAttacker(), ((CombatAction)object2).getTarget()) : ((Player)((CombatAction)object2).getTarget()).getQuestManager().handleCombatDeath(((CombatAction)object2).getAttacker(), ((CombatAction)object2).getTarget());
                         if (!bl) {
                             bl = CombatManager.b(((CombatAction)object2).getAttacker(), ((CombatAction)object2).getTarget());
                         }
@@ -206,14 +206,14 @@ extends TickTask {
                     if (((CombatAction)object2).getAttacker() != null && ((CombatAction)object2).getAttacker().isNpc()) {
                         boolean bl;
                         Entity entity = (Npc)((CombatAction)object2).getAttacker();
-                        if (entity.a != null && (bl = ((Player)(entity = entity.a)).getQuestManager().a(((CombatAction)object2).getAttacker(), ((CombatAction)object2).getTarget()))) {
+                        if (entity.a != null && (bl = ((Player)(entity = entity.a)).getQuestManager().handleCombatDeath(((CombatAction)object2).getAttacker(), ((CombatAction)object2).getTarget()))) {
                             return;
                         }
                     }
                     if (((CombatAction)object2).getTarget() != null && ((CombatAction)object2).getTarget().isNpc()) {
                         boolean bl;
                         Entity entity = (Npc)((CombatAction)object2).getTarget();
-                        if (entity.a != null && (bl = ((Player)(entity = entity.a)).getQuestManager().a(((CombatAction)object2).getAttacker(), ((CombatAction)object2).getTarget()))) {
+                        if (entity.a != null && (bl = ((Player)(entity = entity.a)).getQuestManager().handleCombatDeath(((CombatAction)object2).getAttacker(), ((CombatAction)object2).getTarget()))) {
                             return;
                         }
                     }
@@ -227,7 +227,7 @@ extends TickTask {
                     ((CombatAction)object2).getTarget().setDead(true);
                     CombatManager.handleDeath(((CombatAction)object2).getTarget());
                     if (!((CombatAction)object2).getTarget().isPlayer() || !((CombatAction)object2).getTarget().isInDuelArena()) continue;
-                    ((Player)((CombatAction)object2).getTarget()).getDuelSession().i().getAttributes().put("canTakeDamage", false);
+                    ((Player)((CombatAction)object2).getTarget()).getDuelSession().getOpponent().getAttributes().put("canTakeDamage", false);
                     return;
                 }
                 if (((CombatAction)object2).getTarget().isDead()) continue;
@@ -263,7 +263,7 @@ extends TickTask {
         }
         if (entity != null && entity2 != null && entity.isNpc() && entity2.isPlayer()) {
             object2 = (Npc)entity;
-            Player[] playerArray = World.f();
+            Player[] playerArray = World.getPlayers();
             int n2 = playerArray.length;
             int n3 = 0;
             while (n3 < n2) {
@@ -294,10 +294,10 @@ extends TickTask {
         }
         if (entity.isPlayer()) {
             object2 = (Player)entity;
-            ((Player)object2).n(true);
+            ((Player)object2).setActionLocked(true);
             if (((Player)object2).botEnabled && ((Player)object2).currentBotTask == null && !((Player)object2).clanWarsBot) {
                 object = new String[]{"gf", "fuck", "shit", "damn"};
-                ((Player)object2).queuePublicChatMessage(object[GameUtil.h(4)]);
+                ((Player)object2).queuePublicChatMessage(object[GameUtil.randomInt(4)]);
             }
         }
         if (entity2 != null && entity2.isPlayer()) {
@@ -306,7 +306,7 @@ extends TickTask {
                 if (((Entity)object2).getCombatTarget() == entity) {
                     ((Player)object2).botCombatState = "wait for loot";
                 }
-                if (entity.isPlayer() && ((Player)object2).q == null) {
+                if (entity.isPlayer() && ((Player)object2).currentGroup == null) {
                     if (((Player)object2).clanWarsBot) {
                         if (((Player)object2).clanWarsTeamId == 1) {
                             ((Player)object2).queuePublicChatMessage("#" + ClanWarsBotManager.clanWarsTeamOneTag);
@@ -331,7 +331,7 @@ extends TickTask {
         entity.getRecentCombatTimer().reset();
         entity.getSingleCombatTimer().setDelayTicks(entity.getDeathDelayTicks() + 2);
         entity.getSingleCombatTimer().reset();
-        if (entity2 != null && entity.isPlayer() && ((Player)entity).cfr_renamed_0()[15]) {
+        if (entity2 != null && entity.isPlayer() && ((Player)entity).getActivePrayers()[15]) {
             PrayerManager.triggerRetribution(entity, entity2);
         }
     }
@@ -353,30 +353,30 @@ extends TickTask {
                             if (var1_1 != null && var1_1.isPlayer() && var0.isNpc()) {
                                 var2_3 = (Npc)var0;
                                 var3_8 = (Player)var1_1;
-                                var4_10 = var3_8.fh();
+                                var4_10 = var3_8.getBossPetUnlockFlags();
                                 ++((Player)var1_1).dT;
                                 if (var2_3.getNpcId() == 50 && (var4_10 & 1) == 0) {
                                     var5_14 = var4_10 + 1;
-                                    var3_8.aC(var5_14);
+                                    var3_8.setBossPetUnlockFlags(var5_14);
                                 }
                                 if (var2_3.getNpcId() == 1160 && (var4_10 & 2) == 0) {
                                     var5_14 = var4_10 + 2;
-                                    var3_8.aC(var5_14);
+                                    var3_8.setBossPetUnlockFlags(var5_14);
                                 }
                                 if (var2_3.getNpcId() == 3200 && (var4_10 & 4) == 0) {
                                     var5_14 = var4_10 + 4;
-                                    var3_8.aC(var5_14);
+                                    var3_8.setBossPetUnlockFlags(var5_14);
                                 }
                                 if (var2_3.getNpcId() == 2745 && (var4_10 & 8) == 0) {
                                     var5_14 = var4_10 + 8;
-                                    var3_8.aC(var5_14);
+                                    var3_8.setBossPetUnlockFlags(var5_14);
                                 }
                                 TreasureTrailManager.recordClueWizardKill((Player)var1_1, var2_3);
                                 ((Player)var1_1).getSlayerManager().recordKill(var2_3);
                                 ((Player)var1_1).getPrayerManager().awardNpcPrayerExperience(var2_3);
-                                BarrowsManager.a((Player)var1_1, var2_3);
+                                BarrowsManager.recordNpcKill((Player)var1_1, var2_3);
                                 if (ServerSettings.content2007Enabled) {
-                                    GodWarsDungeonManager.a((Player)var1_1, var2_3.getNpcId());
+                                    GodWarsDungeonManager.recordKillCount((Player)var1_1, var2_3.getNpcId());
                                 }
                             }
                         }
@@ -386,7 +386,7 @@ extends TickTask {
                         if (var0.isDoorSupportNpc()) {
                             new DynamicObject(ServerSettings.placeholderObjectId, var0.getPosition().getX(), var0.getPosition().getY(), var0.getPosition().getPlane(), 0, 10, 8967, 60);
                         }
-                        ((Player)var1_1).getQuestManager().e(((Npc)var0).getNpcId());
+                        ((Player)var1_1).getQuestManager().handleNpcKill(((Npc)var0).getNpcId());
                         var3_8 = (Player)var1_1;
                         if (!var2_4.isInFightCave() || !var3_8.isInFightCave()) break block42;
                         var4_10 = 0;
@@ -394,21 +394,21 @@ extends TickTask {
                         if (var2_4.getNpcId() == 2745) {
                             var5_14 = 1;
                         }
-                        for (Npc var6_19 : var3_8.aT()) {
+                        for (Npc var6_19 : var3_8.getFightCaveNpcs()) {
                             if (var2_4 != var6_19) continue;
-                            var3_8.b(var2_4);
+                            var3_8.removeFightCaveNpc(var2_4);
                             var4_10 = 1;
                             break;
                         }
-                        if (var4_10 == 0 || !var3_8.aT().isEmpty()) break block43;
+                        if (var4_10 == 0 || !var3_8.getFightCaveNpcs().isEmpty()) break block43;
                         if (var5_14 == 0) {
-                            var3_8.getFightCaveController().d();
+                            var3_8.getFightCaveController().startNextWave();
                         } else {
-                            var3_8.getFightCaveController().e();
+                            var3_8.getFightCaveController().completeFightCave();
                         }
                         break block43;
                     }
-                    for (Npc var4_11 : var3_8.aT()) {
+                    for (Npc var4_11 : var3_8.getFightCaveNpcs()) {
                         if (var2_4 != var4_11) continue;
                         System.out.println("FIGHT CAVE! Not in area?");
                         break;
@@ -422,28 +422,28 @@ extends TickTask {
                     var4_12 = new Npc(908);
                     GameplayHelper.a((Player)var3_8, var5_16.getPosition(), var4_12, true, false);
                     var4_12.getUpdateState().setForcedText("This is only the beginning; you can't beat me!");
-                    var3_8.dN = 1;
+                    var3_8.mageArenaProgressStage = 1;
                     v0 = true;
                 } else if (var5_16.getNpcId() == 908) {
                     var5_16.setDead(true);
                     var4_12 = new Npc(909);
                     GameplayHelper.a((Player)var3_8, var5_16.getPosition(), var4_12, true, false);
                     var4_12.getUpdateState().setForcedText("Foolish mortal; I am unstoppable.");
-                    var3_8.dN = 2;
+                    var3_8.mageArenaProgressStage = 2;
                     v0 = true;
                 } else if (var5_16.getNpcId() == 909) {
                     var5_16.setDead(true);
                     var4_12 = new Npc(910);
                     GameplayHelper.a((Player)var3_8, var5_16.getPosition(), var4_12, true, false);
                     var4_12.getUpdateState().setForcedText("Now you feel it... The dark energy.");
-                    var3_8.dN = 3;
+                    var3_8.mageArenaProgressStage = 3;
                     v0 = true;
                 } else if (var5_16.getNpcId() == 910) {
                     var5_16.setDead(true);
                     var4_12 = new Npc(911);
                     GameplayHelper.a((Player)var3_8, var5_16.getPosition(), var4_12, true, false);
                     var4_12.getUpdateState().setForcedText("Aaaaaaaarrgghhhh! The power!");
-                    var3_8.dN = 4;
+                    var3_8.mageArenaProgressStage = 4;
                     v0 = true;
                 } else lbl-1000:
                 // 2 sources
@@ -457,7 +457,7 @@ extends TickTask {
                     CycleEventHandler.getInstance().schedule(CombatManager.kalphiteQueenFirstForm, new KalphiteQueenRespawnCombatEvent(var1_1), CombatManager.kalphiteQueenFirstForm.getRespawnDelayTicks());
                 }
                 var2_4.setActive(false);
-                World.b(var2_4);
+                World.unregisterNpc(var2_4);
             } else {
                 if (var2_4.isActive()) {
                     var2_4.setActive(false);
@@ -483,7 +483,7 @@ extends TickTask {
                     var5_17.setSpawnX(var4_13.getSpawnX());
                     var5_17.setSpawnY(var4_13.getSpawnY());
                     var5_17.setRespawnEnabled(false);
-                    World.a(var5_17);
+                    World.registerNpc(var5_17);
                     var5_17.getUpdateState().setAnimation(1181);
                     return;
                 }
@@ -512,35 +512,35 @@ extends TickTask {
                 ++var2_6.dU;
             }
             var1_1 = var2_6;
-            var1_1.packetSender.sendGameMessage("You have defeated " + GameUtil.c(var3_8.getUsername()) + ".");
+            var1_1.packetSender.sendGameMessage("You have defeated " + GameUtil.formatDisplayName(var3_8.getUsername()) + ".");
             if (var2_6.botEnabled) {
-                BotCombatHelper.k(var2_6);
+                BotCombatHelper.stopBotCombatTick(var2_6);
             }
         }
         if (var0.isPlayer()) {
             var2_7 = (Player)var0;
-            var2_7.n(false);
+            var2_7.setActionLocked(false);
             var2_7.x(false);
-            var2_7.b((SpellDefinition)null);
+            var2_7.setAutocastSpell(null);
             var2_7.eq();
             var2_7.getSkillManager().refreshAllSkills();
         }
         var0.getDamageContributions().clear();
         if (var0.isPlayer() && var0.isInDuelArena()) {
-            ((Player)var0).getDuelSession().a(false);
+            ((Player)var0).getDuelSession().finishDuelLoss(false);
             return;
         }
         if (var0.isPlayer() && var0.isInFightCave()) {
-            ((Player)var0).getFightCaveController().a();
+            ((Player)var0).getFightCaveController().handleDeath();
             return;
         }
-        if (var0.isPlayer() && ((Player)var0).getCreatureGraveyardController().a()) {
-            ((Player)var0).getCreatureGraveyardController().b();
+        if (var0.isPlayer() && ((Player)var0).getCreatureGraveyardController().isInsideGraveyard()) {
+            ((Player)var0).getCreatureGraveyardController().handleGraveyardDeath();
             return;
         }
         if (var0.isPlayer()) {
             if (((Player)var0).s()) {
-                ((Player)var0).aK();
+                ((Player)var0).clearTemporaryCutsceneNpcs();
             }
             ((Player)var0).moveTo(TeleportManager.a);
             var1_1 = (Player)var0;
@@ -648,11 +648,11 @@ extends TickTask {
             return CombatManager.calculateMeleeMaxHit((Entity)player, (WeaponCombatAttack)object);
         }
         double d = player.getSkillManager().getCurrentLevels()[2];
-        if (player.cfr_renamed_0()[1]) {
+        if (player.getActivePrayers()[1]) {
             d *= 1.05;
-        } else if (player.cfr_renamed_0()[4]) {
+        } else if (player.getActivePrayers()[4]) {
             d *= 1.1;
-        } else if (player.cfr_renamed_0()[10]) {
+        } else if (player.getActivePrayers()[10]) {
             d *= 1.15;
         }
         object = ((WeaponCombatAttack)object).getAttackStyle();
@@ -783,11 +783,11 @@ extends TickTask {
             d *= 3.0;
         }
         if (attackStyleDefinition6.getCombatType() == CombatType.MELEE && entity6.isPlayer()) {
-            if (((Player)(entity6 = (Player)entity6)).cfr_renamed_0()[0]) {
+            if (((Player)(entity6 = (Player)entity6)).getActivePrayers()[0]) {
                 d8 *= 1.05;
-            } else if (((Player)entity6).cfr_renamed_0()[3]) {
+            } else if (((Player)entity6).getActivePrayers()[3]) {
                 d8 *= 1.1;
-            } else if (((Player)entity6).cfr_renamed_0()[9]) {
+            } else if (((Player)entity6).getActivePrayers()[9]) {
                 d8 *= 1.15;
             }
         }
@@ -961,11 +961,11 @@ extends TickTask {
         }
         if (((AttackStyleDefinition)object).getCombatType() == CombatType.MELEE && entity.isPlayer()) {
             player = (Player)entity;
-            if (player.cfr_renamed_0()[2]) {
+            if (player.getActivePrayers()[2]) {
                 d20 *= 1.05;
-            } else if (player.cfr_renamed_0()[5]) {
+            } else if (player.getActivePrayers()[5]) {
                 d20 *= 1.1;
-            } else if (player.cfr_renamed_0()[11]) {
+            } else if (player.getActivePrayers()[11]) {
                 d20 *= 1.15;
             }
             if (player.ex()) {
@@ -987,9 +987,9 @@ extends TickTask {
 
     public static void stopCombat(Entity entity) {
         if (entity.isPlayer()) {
-            ((Player)entity).a((SpellDefinition)null);
+            ((Player)entity).setQueuedCombatSpell(null);
             if (((Player)entity).botEnabled) {
-                BotCombatHelper.k((Player)entity);
+                BotCombatHelper.stopBotCombatTick((Player)entity);
             }
         }
         entity.setCombatTarget(null);
@@ -1001,27 +1001,27 @@ extends TickTask {
     private static double getPrayerMultiplier(Player player, int n) {
         double d = 1.0;
         if (n == 2) {
-            if (player.cfr_renamed_0()[1]) {
+            if (player.getActivePrayers()[1]) {
                 d = 1.05;
-            } else if (player.cfr_renamed_0()[4]) {
+            } else if (player.getActivePrayers()[4]) {
                 d = 1.1;
-            } else if (player.cfr_renamed_0()[10]) {
+            } else if (player.getActivePrayers()[10]) {
                 d = 1.15;
             }
         } else if (n == 0) {
-            if (player.cfr_renamed_0()[2]) {
+            if (player.getActivePrayers()[2]) {
                 d = 1.05;
-            } else if (player.cfr_renamed_0()[5]) {
+            } else if (player.getActivePrayers()[5]) {
                 d = 1.1;
-            } else if (player.cfr_renamed_0()[11]) {
+            } else if (player.getActivePrayers()[11]) {
                 d = 1.15;
             }
         } else if (n == 1) {
-            if (player.cfr_renamed_0()[0]) {
+            if (player.getActivePrayers()[0]) {
                 d = 1.05;
-            } else if (player.cfr_renamed_0()[3]) {
+            } else if (player.getActivePrayers()[3]) {
                 d = 1.1;
-            } else if (player.cfr_renamed_0()[9]) {
+            } else if (player.getActivePrayers()[9]) {
                 d = 1.15;
             }
         }

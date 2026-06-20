@@ -69,32 +69,32 @@ public enum FoodDefinition {
     ah(11, 1923, new int[]{2003}),
     ai(19, 1923, new int[]{2011});
 
-    private static Map aj;
-    private int[] ak;
-    private int al;
-    private int am;
+    private static Map definitionsByItemId;
+    private int[] itemIds;
+    private int healAmount;
+    private int replacementItemId;
 
     static {
-        aj = new HashMap();
+        definitionsByItemId = new HashMap();
         FoodDefinition[] foodDefinitionArray = FoodDefinition.values();
         int n = foodDefinitionArray.length;
         int n2 = 0;
         while (n2 < n) {
             FoodDefinition foodDefinition = foodDefinitionArray[n2];
-            int[] nArray = foodDefinition.ak;
-            int n3 = foodDefinition.ak.length;
+            int[] nArray = foodDefinition.itemIds;
+            int n3 = foodDefinition.itemIds.length;
             int n4 = 0;
             while (n4 < n3) {
                 int n5 = nArray[n4];
-                aj.put(n5, foodDefinition);
+                definitionsByItemId.put(n5, foodDefinition);
                 ++n4;
             }
             ++n2;
         }
     }
 
-    public static FoodDefinition a(int n) {
-        return (FoodDefinition)((Object)aj.get(n));
+    public static FoodDefinition forItemId(int n) {
+        return (FoodDefinition)((Object)definitionsByItemId.get(n));
     }
 
     /*
@@ -103,9 +103,9 @@ public enum FoodDefinition {
      */
     private FoodDefinition(int[] nArray, boolean bl) {
         void var5_4;
-        this.al = (int)nArray;
-        this.am = bl ? 1 : 0;
-        this.ak = var5_4;
+        this.healAmount = (int)nArray;
+        this.replacementItemId = bl ? 1 : 0;
+        this.itemIds = var5_4;
     }
 
     /*
@@ -115,21 +115,21 @@ public enum FoodDefinition {
     private FoodDefinition(int[] nArray) {
         void var5_3;
         void var4_2;
-        this.al = (int)nArray;
-        this.am = var4_2;
-        this.ak = var5_3;
+        this.healAmount = (int)nArray;
+        this.replacementItemId = var4_2;
+        this.itemIds = var5_3;
     }
 
-    public final int a() {
-        return this.al;
+    public final int getHealAmount() {
+        return this.healAmount;
     }
 
-    public final int b() {
-        return this.am;
+    public final int getReplacementItemId() {
+        return this.replacementItemId;
     }
 
-    public final int[] c() {
-        return this.ak;
+    public final int[] getItemIds() {
+        return this.itemIds;
     }
 }
 

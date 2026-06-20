@@ -39,12 +39,12 @@ extends TickTask {
         if (!this.player.isWithinReach(this.npc, 1) || this.player.isOverlapping(this.npc)) {
             return;
         }
-        if (!GameUtil.a(this.player.getPosition(), this.npc.getPosition(), true) && this.npc.getNpcId() != 901) {
+        if (!GameUtil.hasClearPath(this.player.getPosition(), this.npc.getPosition(), true) && this.npc.getNpcId() != 901) {
             return;
         }
         this.player.getSlayerManager().useFinishingItemOnMonster(this.npc, this.itemId);
         EntityTargetMovement.clearMovementTarget(this.player);
-        if (this.player.getQuestManager().d(this.player.getInteractionTargetId(), this.itemId)) {
+        if (this.player.getQuestManager().handleItemOnNpc(this.player.getInteractionTargetId(), this.itemId)) {
             this.stop();
             return;
         }
@@ -52,7 +52,7 @@ extends TickTask {
             this.stop();
             return;
         }
-        if (BarrowsRepairHandler.a(this.player, this.player.getInteractionTargetId(), this.player.getInventoryManager().getContainer().getItemAt(this.itemSlot))) {
+        if (BarrowsRepairHandler.handleItemOnNpc(this.player, this.player.getInteractionTargetId(), this.player.getInventoryManager().getContainer().getItemAt(this.itemSlot))) {
             this.stop();
             return;
         }
@@ -76,7 +76,7 @@ extends TickTask {
         switch (this.itemId) {
             case 1735: {
                 if (this.player.getInteractionTargetId() != 43 && this.player.getInteractionTargetId() != 1765) break;
-                ProjectileDefinition.a(this.player);
+                ProjectileDefinition.startSheepShearing(this.player);
                 this.stop();
                 return;
             }

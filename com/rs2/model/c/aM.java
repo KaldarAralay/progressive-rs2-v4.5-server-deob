@@ -19,8 +19,8 @@ extends Enum {
      * WARNING - void declaration
      */
     private aM() {
-        void cfr_renamed_2;
         void cfr_renamed_1;
+        void cfr_renamed_0;
     }
 
     public static aM[] values() {
@@ -38,9 +38,9 @@ extends Enum {
      * WARNING - void declaration
      */
     /* synthetic */ aM(byte by) {
-        this((String)cfr_renamed_1, (int)var2_1);
+        this((String)cfr_renamed_0, (int)var2_1);
         void var2_1;
-        void cfr_renamed_1;
+        void cfr_renamed_0;
     }
 }
 

@@ -48,16 +48,16 @@ extends BaseCombatAttack {
             if (this.getAttacker().isPlayer()) {
                 Player player = (Player)this.getAttacker();
                 player.packetSender.sendGameMessage("You need to be in members world to access members content.");
-                ((Player)this.getAttacker()).b((SpellDefinition)null);
+                ((Player)this.getAttacker()).setAutocastSpell(null);
                 CombatManager.stopCombat(this.getAttacker());
             }
             return CombatAttackState.a;
         }
-        if (this.getAttacker().isPlayer() && DuelRule.c.a((Player)this.getAttacker())) {
+        if (this.getAttacker().isPlayer() && DuelRule.NO_MAGIC.isEnabledFor((Player)this.getAttacker())) {
             if (this.getAttacker().isPlayer()) {
                 Player player = (Player)this.getAttacker();
                 player.packetSender.sendGameMessage("Magic attacks have been disabled during this fight!");
-                ((Player)this.getAttacker()).b((SpellDefinition)null);
+                ((Player)this.getAttacker()).setAutocastSpell(null);
                 CombatManager.stopCombat(this.getAttacker());
             }
             return CombatAttackState.a;
@@ -201,7 +201,7 @@ extends BaseCombatAttack {
         }
         boolean bl = this.spell == SpellDefinition.SUMMON_ZOMBIE || this.spell == SpellDefinition.CHAOS_ELEMENTAL_DISARM || this.spell == SpellDefinition.CHAOS_ELEMENTAL_RANDOM_TELEPORT;
         CombatEffect combatEffect = this.spell.getSecondaryEffect();
-        if (this.spell.getSecondaryEffect() != null && this.spell.getSecondaryEffect() instanceof PoisonEffect && !GameUtil.a(0.125)) {
+        if (this.spell.getSecondaryEffect() != null && this.spell.getSecondaryEffect() instanceof PoisonEffect && !GameUtil.rollChance(0.125)) {
             combatEffect = null;
         }
         this.setHitDefinitions(new HitDefinition[]{((HitDefinition)object).enableRandomDamage().enableAccuracyCheck().addEffects(new CombatEffect[]{this.spell.getPrimaryEffect(), combatEffect}).setAlwaysHits(bl)});
@@ -216,11 +216,11 @@ extends BaseCombatAttack {
         Object object2;
         if (this.getAttacker().isPlayer()) {
             object2 = (Player)this.getAttacker();
-            if (!((Player)object2).ee()) {
+            if (!((Player)object2).isAutocastEnabled()) {
                 this.getAttacker().getMovementQueue().clear();
             }
-            if (((Player)object2).ec() == this.spell) {
-                ((Player)object2).a((SpellDefinition)null);
+            if (((Player)object2).getQueuedCombatSpell() == this.spell) {
+                ((Player)object2).setQueuedCombatSpell(null);
                 cycleEventContainer.stop();
             }
         }
@@ -230,12 +230,12 @@ extends BaseCombatAttack {
             AttackValidationResult attackValidationResult;
             Entity entity;
             int n = 0;
-            Entity[] entityArray = World.f();
+            Entity[] entityArray = World.getPlayers();
             int n2 = entityArray.length;
             int n3 = 0;
             while (n3 < n2) {
                 entity = entityArray[n3];
-                if (entity != null && entity != this.getAttacker() && entity != this.getTarget() && GameUtil.a(this.getTarget().getPosition(), entity.getPosition(), 1) && (attackValidationResult = CombatCycleEvent.validateAttack(this.getAttacker(), entity)) == AttackValidationResult.VALID) {
+                if (entity != null && entity != this.getAttacker() && entity != this.getTarget() && GameUtil.isWithinDistance(this.getTarget().getPosition(), entity.getPosition(), 1) && (attackValidationResult = CombatCycleEvent.validateAttack(this.getAttacker(), entity)) == AttackValidationResult.VALID) {
                     if (n > 13) break;
                     ((HitDefinition)object2).setMultiTargetSpreadEnabled(false);
                     ((HitDefinition)object2).enableAccuracyCheck(true);
@@ -246,7 +246,7 @@ extends BaseCombatAttack {
                 }
                 ++n3;
             }
-            entityArray = World.g();
+            entityArray = World.getNpcs();
             n2 = entityArray.length;
             n3 = 0;
             while (n3 < n2) {
@@ -277,17 +277,17 @@ extends BaseCombatAttack {
             Player player = (Player)this.getAttacker();
             if (player.botEnabled) {
                 if (player.isInWilderness()) {
-                    BotCombatEscapeHandler.a(player);
+                    BotCombatEscapeHandler.tryStartBotCombatEscape(player);
                 } else if (player.currentBotTask != null) {
                     player.botCombatState = "escape";
                 }
             }
-            if (player.ec() == this.spell) {
-                player.a((SpellDefinition)null);
+            if (player.getQueuedCombatSpell() == this.spell) {
+                player.setQueuedCombatSpell(null);
                 return;
             }
-            if (player.ed() == this.spell) {
-                player.b((SpellDefinition)null);
+            if (player.getAutocastSpell() == this.spell) {
+                player.setAutocastSpell(null);
             }
         }
     }

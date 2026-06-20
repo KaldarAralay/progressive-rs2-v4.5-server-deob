@@ -19,11 +19,11 @@ extends Enum {
      * WARNING - void declaration
      */
     private EntityUpdateOverrideDefinition(EntityUpdateOverrideType entityUpdateOverrideType) {
-        void cfr_renamed_16;
-        void cfr_renamed_1;
+        void cfr_renamed_15;
+        void cfr_renamed_0;
         this.b = 1080;
         this.c = 1658;
-        this.d = cfr_renamed_16;
+        this.d = cfr_renamed_15;
     }
 
     public static EntityUpdateOverrideDefinition forOriginalIdAndType(int n, EntityUpdateOverrideType entityUpdateOverrideType) {

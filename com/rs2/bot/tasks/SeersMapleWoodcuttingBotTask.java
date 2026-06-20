@@ -44,7 +44,7 @@ extends BotTaskDefinition {
     @Override
     public final ArrayList getRequiredItems(Player player) {
         ArrayList<ItemStack> arrayList = new ArrayList<ItemStack>();
-        arrayList.add(new ItemStack(ItemCombinationHandler.c(player, 8).a(), 1));
+        arrayList.add(new ItemStack(ItemCombinationHandler.getOwnedOrFallbackGatheringTool(player, 8).getToolItemId(), 1));
         return arrayList;
     }
 
@@ -76,7 +76,7 @@ extends BotTaskDefinition {
         } else if (player.getSkillManager().getCurrentLevels()[8] >= 6 && player.getSkillManager().getCurrentLevels()[0] >= 5) {
             player.getEquipmentManager().getContainer().setItem(3, new ItemStack(1353));
         } else {
-            player.getEquipmentManager().getContainer().setItem(3, new ItemStack(GameUtil.h(2) == 0 ? 1349 : 1351));
+            player.getEquipmentManager().getContainer().setItem(3, new ItemStack(GameUtil.randomInt(2) == 0 ? 1349 : 1351));
         }
         player.getInventoryManager().refresh();
         player.getEquipmentManager().refresh();
@@ -85,42 +85,42 @@ extends BotTaskDefinition {
     @Override
     public final void prepareTaskCombatLoadout(Player player) {
         GameplayHelper.b(player);
-        int n = 1 + GameUtil.h(99);
+        int n = 1 + GameUtil.randomInt(99);
         int n2 = n / 5 << 1;
         if (n2 == 0) {
             n2 = 2;
         }
-        BotCombatHelper.setBotSkillLevel(player, 0, n - n / 5 + GameUtil.h(n2));
+        BotCombatHelper.setBotSkillLevel(player, 0, n - n / 5 + GameUtil.randomInt(n2));
         n2 = n / 5 << 1;
         if (n2 == 0) {
             n2 = 2;
         }
-        BotCombatHelper.setBotSkillLevel(player, 2, n - n / 5 + GameUtil.h(n2));
+        BotCombatHelper.setBotSkillLevel(player, 2, n - n / 5 + GameUtil.randomInt(n2));
         n2 = n / 5 << 1;
         if (n2 == 0) {
             n2 = 2;
         }
-        BotCombatHelper.setBotSkillLevel(player, 1, n - n / 5 + GameUtil.h(n2));
+        BotCombatHelper.setBotSkillLevel(player, 1, n - n / 5 + GameUtil.randomInt(n2));
         n2 = n / 5 << 1;
         if (n2 == 0) {
             n2 = 2;
         }
-        BotCombatHelper.setBotSkillLevel(player, 4, n - n / 5 + GameUtil.h(n2));
+        BotCombatHelper.setBotSkillLevel(player, 4, n - n / 5 + GameUtil.randomInt(n2));
         n2 = n / 5 << 1;
         if (n2 == 0) {
             n2 = 2;
         }
-        BotCombatHelper.setBotSkillLevel(player, 6, n - n / 5 + GameUtil.h(n2));
+        BotCombatHelper.setBotSkillLevel(player, 6, n - n / 5 + GameUtil.randomInt(n2));
         n2 = n / 5 << 1;
         if (n2 == 0) {
             n2 = 2;
         }
-        BotCombatHelper.setBotSkillLevel(player, 5, n - (n / 5 << 1) + GameUtil.h(n2));
+        BotCombatHelper.setBotSkillLevel(player, 5, n - (n / 5 << 1) + GameUtil.randomInt(n2));
         n2 = n / 5 << 1;
         if (n2 == 0) {
             n2 = 2;
         }
-        if ((n = n - n / 5 + GameUtil.h(n2)) < 45) {
+        if ((n = n - n / 5 + GameUtil.randomInt(n2)) < 45) {
             n = 45;
         }
         BotCombatHelper.setBotSkillLevel(player, 8, n);

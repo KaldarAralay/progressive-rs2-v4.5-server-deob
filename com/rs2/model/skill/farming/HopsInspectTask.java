@@ -35,7 +35,7 @@ extends CycleEvent {
     @Override
     public final void onStop() {
         HopsPatchManager.getPlayer(this.manager).getUpdateState().setAnimation(1332);
-        HopsPatchManager.getPlayer(this.manager).n(false);
+        HopsPatchManager.getPlayer(this.manager).setActionLocked(false);
     }
 }
 

@@ -10,30 +10,30 @@ import com.rs2.model.task.TickTask;
 
 final class BotPvpOpponentTargetCombatTickTask
 extends TickTask {
-    private final /* synthetic */ Player a;
-    private final /* synthetic */ Player b;
+    private final /* synthetic */ Player target;
+    private final /* synthetic */ Player bot;
 
     BotPvpOpponentTargetCombatTickTask(int n, Player player, Player player2) {
-        this.a = player;
-        this.b = player2;
+        this.target = player;
+        this.bot = player2;
         super(1);
     }
 
     @Override
     public final void execute() {
-        if (this.a.isDead() || !this.a.bW()) {
-            BotCombatHelper.k(this.b);
+        if (this.target.isDead() || !this.target.isRegistered()) {
+            BotCombatHelper.stopBotCombatTick(this.bot);
             this.stop();
         }
-        if (this.b.isDead() || !this.b.bW()) {
-            BotCombatHelper.k(this.b);
+        if (this.bot.isDead() || !this.bot.isRegistered()) {
+            BotCombatHelper.stopBotCombatTick(this.bot);
             this.stop();
         }
-        if (this.a.getCombatTarget() == null) {
-            BotCombatHelper.k(this.b);
+        if (this.target.getCombatTarget() == null) {
+            BotCombatHelper.stopBotCombatTick(this.bot);
             this.stop();
         }
-        BotPvpCombatHandler.processBotPvpCombatTick(this.b, this.a);
+        BotPvpCombatHandler.processBotPvpCombatTick(this.bot, this.target);
     }
 }
 

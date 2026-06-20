@@ -29,35 +29,35 @@ public class AttackStyleDefinition {
     private int buttonId;
     private CombatType combatType;
 
-    public static void a(Player player, Position position) {
-        player.n(true);
+    public static void startDelayedObjectMove(Player player, Position position) {
+        player.setActionLocked(true);
         player.getUpdateState().setAnimation(828);
         Player player2 = player;
         player2.packetSender.closeInterfaces();
         CycleEventHandler.getInstance().schedule(player, new DelayedObjectMoveEvent(player, position), 2);
     }
 
-    public static void a(Player player, String string) {
+    public static void climbOneFloorAtCurrentTile(Player player, String string) {
         WorldObject worldObject = SkillActionHelper.findWorldObjectById(player.getInteractionTargetId(), player.getInteractionTargetX(), player.getInteractionTargetY(), player.getPosition().getPlane());
         if (worldObject == null) {
             return;
         }
         int n = player.getPosition().getPlane();
         int n2 = string.equalsIgnoreCase("up") ? n + 1 : (n - 1 <= 0 ? 0 : n - 1);
-        AttackStyleDefinition.a(player, new Position(player.getPosition().getX(), player.getPosition().getY(), n2));
+        AttackStyleDefinition.startDelayedObjectMove(player, new Position(player.getPosition().getX(), player.getPosition().getY(), n2));
     }
 
-    public static void a(Player player, String string, int n) {
+    public static void climbTwoFloorsAtCurrentTile(Player player, String string, int n) {
         WorldObject worldObject = SkillActionHelper.findWorldObjectById(player.getInteractionTargetId(), player.getInteractionTargetX(), player.getInteractionTargetY(), player.getPosition().getPlane());
         if (worldObject == null) {
             return;
         }
         int n2 = player.getPosition().getPlane();
         int n3 = string.equalsIgnoreCase("up") ? n2 + 2 : (n2 - 2 < 2 ? 0 : n2 - 2);
-        AttackStyleDefinition.a(player, new Position(player.getPosition().getX(), player.getPosition().getY(), n3));
+        AttackStyleDefinition.startDelayedObjectMove(player, new Position(player.getPosition().getX(), player.getPosition().getY(), n3));
     }
 
-    public static void a(Player player, int n, int n2, String string) {
+    public static void climbDirectionalStairs(Player player, int n, int n2, String string) {
         WorldObject worldObject = SkillActionHelper.findWorldObjectById(player.getInteractionTargetId(), player.getInteractionTargetX(), player.getInteractionTargetY(), player.getPosition().getPlane());
         if (worldObject == null) {
             return;
@@ -70,7 +70,7 @@ public class AttackStyleDefinition {
         player.moveTo(new Position(player.getPosition().getX() + n, player.getPosition().getY() + n2, n4));
     }
 
-    public static void b(Player player, int n, int n2, String string) {
+    public static void climbFourTileDirectionalStairs(Player player, int n, int n2, String string) {
         int n3;
         WorldObject worldObject = SkillActionHelper.findWorldObjectById(player.getInteractionTargetId(), player.getInteractionTargetX(), player.getInteractionTargetY(), player.getPosition().getPlane());
         if (worldObject == null) {
@@ -87,7 +87,7 @@ public class AttackStyleDefinition {
     /*
      * Unable to fully structure code
      */
-    public static void b(Player var0, String var1_1) {
+    public static void climbOffsetLadder(Player var0, String var1_1) {
         var2_2 = SkillActionHelper.findWorldObjectById(var0.getInteractionTargetId(), var0.getInteractionTargetX(), var0.getInteractionTargetY(), var0.getPosition().getPlane());
         if (var2_2 == null) {
             return;
@@ -119,7 +119,7 @@ public class AttackStyleDefinition {
         var0.moveTo(new Position(var0.getPosition().getX() + var5_5, var0.getPosition().getY() + var3_3, var4_4));
     }
 
-    public static void c(Player player, int n, int n2, String string) {
+    public static void climbDungeonLadder(Player player, int n, int n2, String string) {
         WorldObject worldObject = SkillActionHelper.findWorldObjectById(player.getInteractionTargetId(), player.getInteractionTargetX(), player.getInteractionTargetY(), player.getPosition().getPlane());
         if (worldObject == null) {
             return;
@@ -165,15 +165,15 @@ public class AttackStyleDefinition {
         return this.getAttackBonusType().getIndex() + AttackBonusType.values().length;
     }
 
-    public static void a(Player player, int n, int n2, WorldObject worldObject) {
+    public static void toggleObjectAfterAnimation(Player player, int n, int n2, WorldObject worldObject) {
         int n3 = worldObject.getOrientation();
         int n4 = worldObject.getType();
-        player.n(true);
+        player.setActionLocked(true);
         player.getUpdateState().setAnimation(827);
         CycleEventHandler.getInstance().schedule(player, new ObjectToggleEvent(n, worldObject, n4, n2, n3, player), 2);
     }
 
-    public static void a(Player player, int n, int n2, int n3) {
+    public static void slashWeb(Player player, int n, int n2, int n3) {
         ObjectManager.getInstance();
         Object object = ObjectManager.findDynamicObjectByIdAt(733, n, n2, 0);
         if (object != null && ((DynamicObject)object).getWorldObject().getObjectId() != 733) {
@@ -205,7 +205,7 @@ public class AttackStyleDefinition {
             return;
         }
         player.nextActionSequence();
-        player.n(true);
+        player.setActionLocked(true);
         player.getUpdateState().setAnimation(451);
         arrayList = WorldObjectLookup.findObjectByIdAt(733, n, n2, 0);
         int n5 = ((LoadedWorldObject)((Object)arrayList)).getOrientation();
@@ -224,7 +224,7 @@ public class AttackStyleDefinition {
             double d5 = d3 / 80.0 * d4;
             d = d2 + d5;
         }
-        Boolean bl = GameUtil.a(d);
+        Boolean bl = GameUtil.rollChance(d);
         CycleEventHandler.getInstance().schedule(player, new WebSlashEvent(bl, player, n, n2, n5), 2);
     }
 }

@@ -76,7 +76,7 @@ extends CycleEvent {
             ++FishingHandler.getPlayer((FishingHandler)this.handler).gatheringHazardCounter;
             return;
         }
-        int n = GameUtil.a(this.spotDefinition.getChanceLowValues(), this.spotDefinition.getChanceHighValues(), this.spotDefinition.getRequiredLevels(), FishingHandler.getPlayer(this.handler).getSkillManager().getCurrentLevels()[10]);
+        int n = GameUtil.rollLevelScaledChanceIndex(this.spotDefinition.getChanceLowValues(), this.spotDefinition.getChanceHighValues(), this.spotDefinition.getRequiredLevels(), FishingHandler.getPlayer(this.handler).getSkillManager().getCurrentLevels()[10]);
         ItemStack itemStack = null;
         double d = 0.0;
         if (n != -1) {
@@ -125,7 +125,7 @@ extends CycleEvent {
             cycleEventContainer.stop();
             return;
         }
-        if (FishingHandler.getPlayer(this.handler).getQuestState(0) == 1 && GameUtil.h(200) == 0) {
+        if (FishingHandler.getPlayer(this.handler).getQuestState(0) == 1 && GameUtil.randomInt(200) == 0) {
             Npc npc = (Npc)FishingSpotManager.activeSpotsByPosition.get(this.spotNpc.getPosition());
             if (npc != null) {
                 FishingSpotManager.activeSpotsByPosition.remove(npc.getPosition());
@@ -149,7 +149,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        FishingHandler.getPlayer(this.handler).aN();
+        FishingHandler.getPlayer(this.handler).resetAnimation();
     }
 }
 

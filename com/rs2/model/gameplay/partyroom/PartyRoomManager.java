@@ -34,33 +34,33 @@ import java.util.Collections;
 import java.util.Iterator;
 
 public final class PartyRoomManager {
-    public static boolean a = false;
+    public static boolean balloonDropPending = false;
     public static String b = null;
     private static String h = null;
-    private static int i = 200;
-    public static ItemContainer c = new ItemContainer(ItemContainerType.a, i);
-    public static ArrayList d = new ArrayList();
-    public static ArrayList e = new ArrayList();
-    public static int f = 0;
-    public static TickTask g;
+    private static int partyChestCapacity = 200;
+    public static ItemContainer partyChestContainer = new ItemContainer(ItemContainerType.a, partyChestCapacity);
+    public static ArrayList activeBalloonObjects = new ArrayList();
+    public static ArrayList balloonRewards = new ArrayList();
+    public static int partyChestValue = 0;
+    public static TickTask balloonDropTask;
 
-    public static boolean a() {
-        if (a) {
+    public static boolean hasActiveDropParty() {
+        if (balloonDropPending) {
             return true;
         }
-        return d.size() > 0;
+        return activeBalloonObjects.size() > 0;
     }
 
-    public static boolean a(Player object) {
+    public static boolean startBalloonBonanza(Player object) {
         ArrayList<ItemStack> arrayList;
         int n;
-        if (PartyRoomManager.a()) {
+        if (PartyRoomManager.hasActiveDropParty()) {
             return false;
         }
         if (((Player)object).getInventoryManager().containsItemAmount(995, 1000)) {
             ((Player)object).getInventoryManager().removeItem(new ItemStack(995, 1000));
-            a = true;
-            e.clear();
+            balloonDropPending = true;
+            balloonRewards.clear();
             object = new ArrayList();
             int n2 = 2730;
             while (n2 < 2745) {
@@ -76,31 +76,31 @@ public final class PartyRoomManager {
             Collections.shuffle(object);
             arrayList = new ArrayList<ItemStack>();
             n = 0;
-            while (n < c.g()) {
+            while (n < partyChestContainer.g()) {
                 ItemStack itemStack;
-                if (c.getItemAt(n) != null && (itemStack = c.getItemAt(n)) != null) {
+                if (partyChestContainer.getItemAt(n) != null && (itemStack = partyChestContainer.getItemAt(n)) != null) {
                     arrayList.add(itemStack);
                 }
                 ++n;
             }
             Collections.shuffle(arrayList);
             n = 20;
-            if (f >= 50000 && f < 150000) {
+            if (partyChestValue >= 50000 && partyChestValue < 150000) {
                 n = 100;
-            } else if (f >= 150000 && f < 1000000) {
+            } else if (partyChestValue >= 150000 && partyChestValue < 1000000) {
                 n = 500;
-            } else if (f >= 1000000) {
+            } else if (partyChestValue >= 1000000) {
                 n = 1000;
             }
         } else {
             return false;
         }
-        g = new PartyRoomBalloonSpawnTask(n, (ArrayList)object, arrayList);
-        World.getTaskScheduler().schedule(g);
+        balloonDropTask = new PartyRoomBalloonSpawnTask(n, (ArrayList)object, arrayList);
+        World.getTaskScheduler().schedule(balloonDropTask);
         return true;
     }
 
-    public static boolean b(Player player) {
+    public static boolean startNightlyDance(Player player) {
         if (Npc.findByDefinitionId(660) != null) {
             return false;
         }
@@ -118,7 +118,7 @@ public final class PartyRoomManager {
         return true;
     }
 
-    public static boolean a(Player object, int n, int n2, int n3) {
+    public static boolean handleBalloonObjectAction(Player object, int n, int n2, int n3) {
         if (n >= 115 && n <= 122) {
             if (((Player)object).gameMode != 0) {
                 Player player = object;
@@ -149,30 +149,30 @@ public final class PartyRoomManager {
             int n6 = dynamicObject.orientation;
             ObjectManager.getInstance().removeDynamicObjectAt(n2, n3, 0, 10);
             new DynamicObject(n + 8, n2, n3, 0, n6, 10, ServerSettings.placeholderObjectId, 2, false);
-            Iterator iterator = e.iterator();
+            Iterator iterator = balloonRewards.iterator();
             while (iterator.hasNext()) {
                 int n7;
                 PartyRoomBalloonReward partyRoomBalloonReward = (PartyRoomBalloonReward)iterator.next();
                 if (partyRoomBalloonReward == null) continue;
                 object2 = partyRoomBalloonReward;
-                if (((PartyRoomBalloonReward)object2).a == null) continue;
+                if (((PartyRoomBalloonReward)object2).rewardItem == null) continue;
                 object2 = partyRoomBalloonReward;
-                if (((PartyRoomBalloonReward)object2).b == null) continue;
+                if (((PartyRoomBalloonReward)object2).balloonPosition == null) continue;
                 object2 = partyRoomBalloonReward;
-                if (((PartyRoomBalloonReward)object2).b.getX() != n2) continue;
+                if (((PartyRoomBalloonReward)object2).balloonPosition.getX() != n2) continue;
                 object2 = partyRoomBalloonReward;
-                if (((PartyRoomBalloonReward)object2).b.getY() != n3) continue;
+                if (((PartyRoomBalloonReward)object2).balloonPosition.getY() != n3) continue;
                 object2 = partyRoomBalloonReward;
-                int n8 = ((PartyRoomBalloonReward)object2).a.getId();
+                int n8 = ((PartyRoomBalloonReward)object2).rewardItem.getId();
                 object2 = partyRoomBalloonReward;
-                if (((PartyRoomBalloonReward)object2).a.getAmount() <= 0) {
+                if (((PartyRoomBalloonReward)object2).rewardItem.getAmount() <= 0) {
                     n7 = 1;
                 } else {
                     object2 = partyRoomBalloonReward;
-                    n7 = ((PartyRoomBalloonReward)object2).a.getAmount();
+                    n7 = ((PartyRoomBalloonReward)object2).rewardItem.getAmount();
                 }
                 object2 = partyRoomBalloonReward;
-                object = new GroundItem(new ItemStack(n8, n7), (Entity)object, ((PartyRoomBalloonReward)object2).b);
+                object = new GroundItem(new ItemStack(n8, n7), (Entity)object, ((PartyRoomBalloonReward)object2).balloonPosition);
                 GroundItemManager.getInstance().spawn((GroundItem)object);
                 iterator.remove();
                 break;
@@ -182,26 +182,26 @@ public final class PartyRoomManager {
         return false;
     }
 
-    public static void c(Player player) {
+    public static void openPartyChest(Player player) {
         player.getPartyRoomContainer().clear();
-        PartyRoomManager.f(player);
+        PartyRoomManager.refreshPartyChestInterface(player);
         player.packetSender.showInterfaceWithInventory(2156, 2005);
     }
 
-    public static void b() {
-        Player[] playerArray = World.f();
+    public static void refreshOpenPartyChestInterfaces() {
+        Player[] playerArray = World.getPlayers();
         int n = playerArray.length;
         int n2 = 0;
         while (n2 < n) {
             Player player = playerArray[n2];
             if (player != null && player.getOpenInterfaceId() == 2156) {
-                PartyRoomManager.f(player);
+                PartyRoomManager.refreshPartyChestInterface(player);
             }
             ++n2;
         }
     }
 
-    public static void b(Player player, int n, int n2, int n3) {
+    public static void stageInventoryItemForChest(Player player, int n, int n2, int n3) {
         boolean bl;
         if (n2 == -1) {
             return;
@@ -216,7 +216,7 @@ public final class PartyRoomManager {
         }
         int n5 = player.getPartyRoomContainer().getItemAmount(n2);
         boolean bl2 = bl = n5 <= 0 || !itemStack.getDefinition().isStackable();
-        if (a) {
+        if (balloonDropPending) {
             Player player2 = player;
             player2.packetSender.sendGameMessage("Drop party is already starting, no more items are accepted!");
             return;
@@ -226,7 +226,7 @@ public final class PartyRoomManager {
             player3.packetSender.sendGameMessage("You can't deposit more items at once!");
             return;
         }
-        if (new ItemStack(n2).getDefinition().z()) {
+        if (new ItemStack(n2).getDefinition().isUntradeable()) {
             Player player4 = player;
             player4.packetSender.sendGameMessage("You cannot deposit that item.");
             return;
@@ -252,10 +252,10 @@ public final class PartyRoomManager {
             ItemContainer itemContainer = player.getPartyRoomContainer();
             itemContainer.add(itemStack2, -1);
         }
-        PartyRoomManager.f(player);
+        PartyRoomManager.refreshPartyChestInterface(player);
     }
 
-    public static void c(Player player, int n, int n2, int n3) {
+    public static void withdrawStagedChestItem(Player player, int n, int n2, int n3) {
         if (n2 == -1) {
             return;
         }
@@ -269,25 +269,25 @@ public final class PartyRoomManager {
         }
         n = player.getPartyRoomContainer().removeFromSlot(new ItemStack(n2, n4), n);
         player.getInventoryManager().addItem(new ItemStack(itemStack.getId(), n));
-        PartyRoomManager.f(player);
+        PartyRoomManager.refreshPartyChestInterface(player);
     }
 
-    private static void f(Player player) {
+    private static void refreshPartyChestInterface(Player player) {
         Player player2 = player;
         player2.packetSender.sendItemContainer(2006, player.getInventoryManager().getContainer().getRawItems());
         player2 = player;
         player2.packetSender.sendItemContainer(2274, player.getPartyRoomContainer().getRawItems());
         player2 = player;
-        player2.packetSender.sendItemContainer(2273, c.getRawItems());
+        player2.packetSender.sendItemContainer(2273, partyChestContainer.getRawItems());
         String string = "Party Drop Chest";
-        if (f >= 1000) {
-            string = String.valueOf(string) + " - Value: " + GameUtil.d(f);
+        if (partyChestValue >= 1000) {
+            string = String.valueOf(string) + " - Value: " + GameUtil.formatCompactAmount(partyChestValue);
         }
         player2 = player;
         player2.packetSender.sendInterfaceText(string, 2248);
     }
 
-    public static void d(Player player) {
+    public static void returnStagedChestItems(Player player) {
         int n = 0;
         while (n < 8) {
             ItemStack itemStack;
@@ -300,10 +300,10 @@ public final class PartyRoomManager {
         player.getPartyRoomContainer().clear();
     }
 
-    public static void e(Player player) {
+    public static void depositStagedItemsToChest(Player player) {
         int n = 8 - player.getPartyRoomContainer().getFreeSlots();
-        int n2 = c.getFreeSlots();
-        if (a) {
+        int n2 = partyChestContainer.getFreeSlots();
+        if (balloonDropPending) {
             Player player2 = player;
             player2.packetSender.sendGameMessage("Drop party is already starting, no more items are accepted!");
             return;
@@ -329,37 +329,37 @@ public final class PartyRoomManager {
             if (player.getPartyRoomContainer().getItemAt(n) != null && (itemStack = player.getPartyRoomContainer().getItemAt(n)) != null) {
                 player.getPartyRoomContainer().remove(itemStack);
                 ItemStack itemStack2 = itemStack;
-                ItemContainer itemContainer = c;
+                ItemContainer itemContainer = partyChestContainer;
                 itemContainer.add(itemStack2, -1);
                 int n3 = itemStack.getDefinition().getShopValue();
                 if (n3 > 0) {
-                    f += itemStack.getAmount() * n3;
+                    partyChestValue += itemStack.getAmount() * n3;
                 }
             }
             ++n;
         }
         player.getPartyRoomContainer().clear();
-        PartyRoomManager.d();
-        PartyRoomManager.b();
+        PartyRoomManager.savePartyChest();
+        PartyRoomManager.refreshOpenPartyChestInterfaces();
     }
 
-    public static void c() {
+    public static void loadPartyChest() {
         Object object = new File("./data/partyChest.dat");
         try {
             object = new FileInputStream((File)object);
             DataInputStream dataInputStream = new DataInputStream((InputStream)object);
             try {
                 int n = 0;
-                while (n < i) {
+                while (n < partyChestCapacity) {
                     int n2 = dataInputStream.readInt();
                     if (n2 != 65535) {
                         int n3 = dataInputStream.readInt();
                         int n4 = dataInputStream.readInt();
                         ItemStack itemStack = new ItemStack(n2, n3, n4);
-                        c.setItem(n, itemStack);
+                        partyChestContainer.setItem(n, itemStack);
                         n3 = itemStack.getDefinition().getShopValue();
                         if (n3 > 0) {
-                            f += itemStack.getAmount() * n3;
+                            partyChestValue += itemStack.getAmount() * n3;
                         }
                     }
                     ++n;
@@ -375,14 +375,14 @@ public final class PartyRoomManager {
         }
     }
 
-    public static void d() {
+    public static void savePartyChest() {
         Object object = new File("./data/partyChest.dat");
         ((File)object).delete();
         try {
             object = new CountingDataOutputStream(new FileOutputStream("./data/partyChest.dat"));
             int n = 0;
-            while (n < i) {
-                ItemStack itemStack = c.getItemAt(n);
+            while (n < partyChestCapacity) {
+                ItemStack itemStack = partyChestContainer.getItemAt(n);
                 if (itemStack == null) {
                     ((CountingDataOutputStream)object).writeInt(65535);
                 } else {

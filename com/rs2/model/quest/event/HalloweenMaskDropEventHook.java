@@ -23,7 +23,7 @@ extends QuestHook {
     }
 
     @Override
-    public final void e() {
+    public final void initialize() {
         this.a();
         HalloweenMaskDropRefreshTask halloweenMaskDropRefreshTask = new HalloweenMaskDropRefreshTask(this, ServerSettings.holidayDropRespawnTicks);
         World.getTaskScheduler().schedule(halloweenMaskDropRefreshTask);
@@ -36,24 +36,24 @@ extends QuestHook {
             int n2 = 0;
             while (n2 < 3) {
                 int n3 = 1053 + (n2 << 1);
-                int n4 = 2145 + GameUtil.h(1695);
-                int n5 = 2560 + GameUtil.h(1410);
-                boolean bl = GameUtil.h(2) == 0;
+                int n4 = 2145 + GameUtil.randomInt(1695);
+                int n5 = 2560 + GameUtil.randomInt(1410);
+                boolean bl = GameUtil.randomInt(2) == 0;
                 if (!bl) {
-                    n4 = 2300 + GameUtil.h(1390);
-                    n5 = 9085 + GameUtil.h(1280);
+                    n4 = 2300 + GameUtil.randomInt(1390);
+                    n5 = 9085 + GameUtil.randomInt(1280);
                 }
                 bl = false;
                 if (WalkingCollisionMap.getTileFlags(n4, n5, 0) != 0) {
                     bl = true;
                 }
                 while (bl) {
-                    n4 = 2145 + GameUtil.h(1695);
-                    n5 = 2560 + GameUtil.h(1410);
-                    bl = GameUtil.h(2) == 0;
+                    n4 = 2145 + GameUtil.randomInt(1695);
+                    n5 = 2560 + GameUtil.randomInt(1410);
+                    bl = GameUtil.randomInt(2) == 0;
                     if (!bl) {
-                        n4 = 2300 + GameUtil.h(1390);
-                        n5 = 9085 + GameUtil.h(1280);
+                        n4 = 2300 + GameUtil.randomInt(1390);
+                        n5 = 9085 + GameUtil.randomInt(1280);
                     }
                     bl = WalkingCollisionMap.getTileFlags(n4, n5, 0) != 0;
                 }

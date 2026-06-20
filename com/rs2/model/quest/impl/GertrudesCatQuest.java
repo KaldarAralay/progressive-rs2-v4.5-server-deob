@@ -23,11 +23,11 @@ public final class GertrudesCatQuest
 extends QuestScript {
     public GertrudesCatQuest(int n) {
         super(42);
-        super.a(1);
+        super.setQuestPointReward(1);
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player stringArray, int n) {
         if (n == 0) {
             stringArray = new String[]{"I can start this quest by speaking to Gertrude.", "She can be found to the west of Varrock."};
             return stringArray;
@@ -60,14 +60,14 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
+    public final void awardCompletionRewards(Player player) {
         Object object = player;
         ((Player)object).packetSender.sendInterfacePosition(12145, 60, 130);
-        super.a(player);
+        super.markQuestComplete(player);
         Player player2 = player;
         object = player2;
         object = this;
-        player2.packetSender.sendInterfaceText("You have completed " + QuestDefinition.b(((QuestHook)object).b()).c() + "!", 12144);
+        player2.packetSender.sendInterfaceText("You have completed " + QuestDefinition.forId(((QuestHook)object).getQuestId()).getName() + "!", 12144);
         object = player;
         ((Player)object).packetSender.sendInterfaceText("1 Quest Point", 12150);
         object = player;
@@ -84,7 +84,7 @@ extends QuestScript {
         object = player;
         ((Player)object).packetSender.sendMusicJingle(238, 320);
         object = player;
-        ((Player)object).packetSender.sendInterfaceText("" + player.dA(), 12147);
+        ((Player)object).packetSender.sendInterfaceText("" + player.getQuestPoints(), 12147);
         object = player;
         ((Player)object).packetSender.sendInterfaceModel(InterfaceDefinition.interfaceCount <= 12140 ? 6161 : 12145, 250, 1561);
         object = player;
@@ -94,7 +94,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleFirstObjectAction(Player player, int n, int n2, int n3, int n4) {
         if (n == 2618 && n2 == 3305 && n3 == 3493) {
             Player player2 = player;
             player2.packetSender.queueRelativeMovementStep(0, player.getPosition().getY() < 3493 ? 2 : -2, true);
@@ -105,23 +105,23 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean f(Player object, int n, int n2) {
+    public final boolean handleFirstNpcAction(Player object, int n, int n2) {
         Object object2;
         if (n == 759) {
             object2 = Npc.findByDefinitionId(759);
             if (n2 >= 3) {
                 ((Entity)object2).getUpdateState().setForcedText("Hisss!");
                 ((Entity)object).getUpdateState().setForcedText("Ouch!");
-                ((Player)object).n(true);
+                ((Player)object).setActionLocked(true);
                 object = new FluffsInteractionHintTask(this, 2, n2, (Player)object);
                 World.getTaskScheduler().schedule((TickTask)object);
                 return true;
             }
         }
-        if (n == 767 && n2 == 5 && !((Player)object).aq(1554)) {
+        if (n == 767 && n2 == 5 && !((Player)object).ownsItem(1554)) {
             Player player = object;
             player.packetSender.sendGameMessage("You search the crate.");
-            ((Player)object).n(true);
+            ((Player)object).setActionLocked(true);
             object2 = new KittenCrateSearchTask(this, 3, (Player)object);
             World.getTaskScheduler().schedule((TickTask)object2);
         }
@@ -129,14 +129,14 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean d(Player object, int n, int n2, int n3) {
+    public final boolean handleItemOnNpc(Player object, int n, int n2, int n3) {
         Npc npc;
         if (n2 == 1927 && n == 759) {
             npc = Npc.findByDefinitionId(759);
             if (n3 == 3) {
-                ((Player)object).getInventoryManager().a(new ItemStack(1927, 1), new ItemStack(1925, 1));
+                ((Player)object).getInventoryManager().replaceItem(new ItemStack(1927, 1), new ItemStack(1925, 1));
                 npc.getUpdateState().setForcedText("Mew!");
-                ((Player)object).setQuestState(this.b(), 4);
+                ((Player)object).setQuestState(this.getQuestId(), 4);
                 return true;
             }
         }
@@ -145,7 +145,7 @@ extends QuestScript {
             if (n3 == 4) {
                 ((Player)object).getInventoryManager().removeItem(new ItemStack(1552, 1));
                 npc.getUpdateState().setForcedText("Mew!");
-                ((Player)object).setQuestState(this.b(), 5);
+                ((Player)object).setQuestState(this.getQuestId(), 5);
                 return true;
             }
         }
@@ -158,8 +158,8 @@ extends QuestScript {
                 GameplayHelper.a((Player)object, ((Entity)object).getPosition(), npc2, false, false);
                 npc.getUpdateState().setForcedText("Purr...");
                 npc2.getUpdateState().setForcedText("Purr...");
-                ((Player)object).setQuestState(this.b(), 6);
-                ((Player)object).n(true);
+                ((Player)object).setQuestState(this.getQuestId(), 6);
+                ((Player)object).setActionLocked(true);
                 object = new FluffsKittenReunionStartTask(this, 2, npc2, npc, (Player)object);
                 World.getTaskScheduler().schedule((TickTask)object);
                 return true;
@@ -169,7 +169,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2, int n3) {
+    public final boolean handleItemOnItem(Player player, int n, int n2, int n3) {
         if (n3 != 0 && (n == 1573 && n2 == 327 || n == 327 && n2 == 1573)) {
             player.getInventoryManager().removeItem(new ItemStack(n, 1));
             player.getInventoryManager().removeItem(new ItemStack(n2, 1));
@@ -181,7 +181,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player object, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player object, int n, int n2, int n3, int n4) {
         if (n == 780) {
             if (n4 == 0) {
                 if (n2 == 1) {
@@ -288,7 +288,7 @@ extends QuestScript {
                 if (n2 == 12) {
                     ((Player)object).getDialogueManager().finishDialogue();
                     ((Player)object).getPetManager().b(1561, 768);
-                    ((Player)object).n(true);
+                    ((Player)object).setActionLocked(true);
                     object = new GertrudeRewardFoodTask(this, 5, (Player)object);
                     World.getTaskScheduler().schedule((TickTask)object);
                     return false;
@@ -370,7 +370,7 @@ extends QuestScript {
                 if (n2 == 16 && ((Player)object).getInventoryManager().containsItemAmount(995, 100)) {
                     ((Player)object).getInventoryManager().removeItem(new ItemStack(995, 100));
                     ((Player)object).getDialogueManager().showItemMessage("You give the lad 100 coins.", new ItemStack(995, 100));
-                    ((Player)object).setQuestState(this.b(), 3);
+                    ((Player)object).setQuestState(this.getQuestId(), 3);
                     return true;
                 }
             }

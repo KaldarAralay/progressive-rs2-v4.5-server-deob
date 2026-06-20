@@ -77,7 +77,7 @@ public enum BotWorldRoute {
         while (n2 < botRouteArray.length) {
             n += botRouteArray[n2].getDistance();
             if (n2 < botRouteArray.length - 1) {
-                n += GameUtil.b(botRouteArray[n2].getEndPosition(), botRouteArray[n2 + 1].getStartPosition());
+                n += GameUtil.getDistance(botRouteArray[n2].getEndPosition(), botRouteArray[n2 + 1].getStartPosition());
             }
             ++n2;
         }

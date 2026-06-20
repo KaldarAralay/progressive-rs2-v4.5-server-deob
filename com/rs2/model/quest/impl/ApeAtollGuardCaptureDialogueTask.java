@@ -22,9 +22,9 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        this.a.n(false);
+        this.a.setActionLocked(false);
         this.a.moveTo(new Position(2772, 2794, 0));
-        this.a.aN();
+        this.a.resetAnimation();
         this.a.ai = false;
         this.a.pendingGameMode = 0;
         Player player = this.a;

@@ -26,7 +26,7 @@ extends TickTask {
     @Override
     public final void execute() {
         int n;
-        if (this.player.isDead() || !this.player.bW() || !this.player.isInWilderness()) {
+        if (this.player.isDead() || !this.player.isRegistered() || !this.player.isInWilderness()) {
             this.stop();
             return;
         }
@@ -42,10 +42,10 @@ extends TickTask {
             }
         }
         if (ClanWarsBotManager.clanWarsRetreatActive && !this.player.botCombatEscapeActive) {
-            BotCombatEscapeHandler.a(this.player);
+            BotCombatEscapeHandler.tryStartBotCombatEscape(this.player);
             return;
         }
-        if (BotCombatHelper.hasExternalCombatTarget(this.player) && this.player.botCombatState == null && !this.player.botCombatEscapeActive && (n = GameUtil.b(this.player.getPosition(), ClanWarsBotManager.clanWarsRallyPosition)) > 20) {
+        if (BotCombatHelper.hasExternalCombatTarget(this.player) && this.player.botCombatState == null && !this.player.botCombatEscapeActive && (n = GameUtil.getDistance(this.player.getPosition(), ClanWarsBotManager.clanWarsRallyPosition)) > 20) {
             CombatManager.stopCombat(this.player);
             BotCombatHelper.walkBotTowardPosition(this.player, ClanWarsBotManager.clanWarsRallyPosition);
             return;
@@ -78,15 +78,15 @@ extends TickTask {
                 this.player.getMovementQueue().setRunning(true);
                 CombatManager.startCombat(this.player, this.player.getCombatTarget());
             }
-            FoodDefinition foodDefinition = FoodDefinition.a(this.player.botFoodItemId);
-            int n2 = foodDefinition.a();
+            FoodDefinition foodDefinition = FoodDefinition.forItemId(this.player.botFoodItemId);
+            int n2 = foodDefinition.getHealAmount();
             int n3 = this.player.getSkillManager().getCurrentLevels()[3] + n2;
             this.player.getSkillManager();
             int n4 = n2 = n3 <= SkillManager.getLevelForExperience(this.player.getSkillManager().getExperience()[3]) ? 1 : 0;
             if (!this.player.botFoodDepleted && n2 != 0) {
                 int n5 = n2 = this.player.isTeleblocked() ? 6 : 4;
                 if (!BotCombatHelper.eatBotFood(this.player) || this.player.getInventoryManager().getItemAmount(this.player.botFoodItemId) <= n2) {
-                    BotCombatEscapeHandler.a(this.player);
+                    BotCombatEscapeHandler.tryStartBotCombatEscape(this.player);
                 }
             }
             if (this.player.getPoisonDamage() > 0.0) {
@@ -99,7 +99,7 @@ extends TickTask {
                 if (!this.player.getMovementQueue().isRunning()) {
                     this.player.getMovementQueue().setRunning(true);
                 }
-                if (GameUtil.h(3) == 0) {
+                if (GameUtil.randomInt(3) == 0) {
                     this.player.queuePublicChatMessage("atk " + player.getUsername());
                 }
                 CombatManager.startCombat(this.player, player);

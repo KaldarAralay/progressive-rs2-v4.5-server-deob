@@ -23,13 +23,13 @@ extends CycleEvent {
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        if (this.a.fg() != null || this.a.isInTeleportRestrictedArea()) {
+        if (this.a.getActiveRandomEventNpc() != null || this.a.isInTeleportRestrictedArea()) {
             return;
         }
         if (this.a.botEnabled) {
             return;
         }
-        int n = GameUtil.g(70);
+        int n = GameUtil.randomInclusive(70);
         boolean bl = true;
         if (ServerSettings.freeToPlayWorld || !this.a.isMember()) {
             bl = false;

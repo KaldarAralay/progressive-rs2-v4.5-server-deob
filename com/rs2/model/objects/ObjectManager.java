@@ -115,10 +115,10 @@ public final class ObjectManager {
         for (DynamicObject dynamicObject : pendingRemovalObjects) {
             activeDynamicObjects.remove(dynamicObject);
             if (dynamicObject.getWorldObject().getObjectId() < 115 || dynamicObject.getWorldObject().getObjectId() > 122) continue;
-            PartyRoomManager.d.remove(dynamicObject);
+            PartyRoomManager.activeBalloonObjects.remove(dynamicObject);
         }
         for (DynamicObject dynamicObject : arrayList) {
-            if (CreatureGraveyardController.a(dynamicObject)) continue;
+            if (CreatureGraveyardController.advanceBonePileRespawnStage(dynamicObject)) continue;
             int n = dynamicObject.getWorldObject().getPosition().getX();
             int n2 = dynamicObject.getWorldObject().getPosition().getY();
             int n3 = dynamicObject.getWorldObject().getPosition().getPlane();
@@ -135,19 +135,19 @@ public final class ObjectManager {
         Object object;
         if (dynamicObject.getWorldObject().getObjectId() == 734) {
             ObjectManager.restoreObjectCollision(dynamicObject.restoreObjectId, dynamicObject.getWorldObject().getPosition().getX(), dynamicObject.getWorldObject().getPosition().getY(), dynamicObject.getWorldObject().getPosition().getPlane(), dynamicObject.getWorldObject().getOrientation(), dynamicObject.getWorldObject().getType());
-        } else if (!(!dynamicObject.updatesCollision || dynamicObject.getWorldObject().getObjectId() <= 0 || dynamicObject.getWorldObject().getObjectId() == ServerSettings.placeholderObjectId || FiremakingHandler.isFireObjectId(dynamicObject.getWorldObject().getObjectId()) || MithrilSeedFlowerHandler.a(dynamicObject.getWorldObject().getObjectId()) || DoorHandler.hasDoorAt(dynamicObject.getWorldObject().getObjectId(), dynamicObject.getWorldObject().getPosition().getX(), dynamicObject.getWorldObject().getPosition().getY(), dynamicObject.getWorldObject().getPosition().getPlane()) || DoubleDoorHandler.hasDoubleDoorAt(dynamicObject.getWorldObject().getPosition().getX(), dynamicObject.getWorldObject().getPosition().getY(), dynamicObject.getWorldObject().getPosition().getPlane()))) {
+        } else if (!(!dynamicObject.updatesCollision || dynamicObject.getWorldObject().getObjectId() <= 0 || dynamicObject.getWorldObject().getObjectId() == ServerSettings.placeholderObjectId || FiremakingHandler.isFireObjectId(dynamicObject.getWorldObject().getObjectId()) || MithrilSeedFlowerHandler.isMithrilSeedFlowerObjectId(dynamicObject.getWorldObject().getObjectId()) || DoorHandler.hasDoorAt(dynamicObject.getWorldObject().getObjectId(), dynamicObject.getWorldObject().getPosition().getX(), dynamicObject.getWorldObject().getPosition().getY(), dynamicObject.getWorldObject().getPosition().getPlane()) || DoubleDoorHandler.hasDoubleDoorAt(dynamicObject.getWorldObject().getPosition().getX(), dynamicObject.getWorldObject().getPosition().getY(), dynamicObject.getWorldObject().getPosition().getPlane()))) {
             ObjectManager.restoreObjectCollision(dynamicObject.restoreObjectId, dynamicObject.getWorldObject().getPosition().getX(), dynamicObject.getWorldObject().getPosition().getY(), dynamicObject.getWorldObject().getPosition().getPlane(), dynamicObject.getWorldObject().getOrientation(), dynamicObject.getWorldObject().getType());
         }
         if (FiremakingHandler.isFireObjectId(dynamicObject.getWorldObject().getObjectId())) {
             object = new GroundItem(new ItemStack(592), new Position(dynamicObject.getWorldObject().getPosition().getX(), dynamicObject.getWorldObject().getPosition().getY(), dynamicObject.getWorldObject().getPosition().getPlane()), false, dynamicObject.owner);
             GroundItemManager.getInstance().spawn((GroundItem)object);
         }
-        Player[] playerArray = World.f();
+        Player[] playerArray = World.getPlayers();
         int n = playerArray.length;
         int n2 = 0;
         while (n2 < n) {
             object = playerArray[n2];
-            if (object != null && ((Entity)object).getPosition().getPlane() == dynamicObject.getWorldObject().getPosition().getPlane() && GameUtil.a(dynamicObject.getWorldObject().getPosition().getX(), dynamicObject.getWorldObject().getPosition().getY(), ((Entity)object).getPosition().getX(), ((Entity)object).getPosition().getY(), 60)) {
+            if (object != null && ((Entity)object).getPosition().getPlane() == dynamicObject.getWorldObject().getPosition().getPlane() && GameUtil.isWithinDistance(dynamicObject.getWorldObject().getPosition().getX(), dynamicObject.getWorldObject().getPosition().getY(), ((Entity)object).getPosition().getX(), ((Entity)object).getPosition().getY(), 60)) {
                 ((Player)object).packetSender.sendObjectCreate(dynamicObject.restoreObjectId, dynamicObject.getWorldObject().getPosition().getX(), dynamicObject.getWorldObject().getPosition().getY(), dynamicObject.getWorldObject().getPosition().getPlane(), dynamicObject.orientation, dynamicObject.getWorldObject().getType());
             }
             ++n2;
@@ -175,7 +175,7 @@ public final class ObjectManager {
         if (dynamicObject != null) {
             ObjectManager.removeObjectCollision(dynamicObject.getWorldObject().getObjectId(), n, n2, n3, n4, dynamicObject.getWorldObject().getOrientation());
             if (dynamicObject.getWorldObject().getObjectId() >= 115 && dynamicObject.getWorldObject().getObjectId() <= 122) {
-                PartyRoomManager.d.remove(dynamicObject);
+                PartyRoomManager.activeBalloonObjects.remove(dynamicObject);
             }
             activeDynamicObjects.remove(dynamicObject);
             this.revertDynamicObject(dynamicObject);
@@ -249,7 +249,7 @@ public final class ObjectManager {
         if (dynamicObject == null || player == null) {
             return false;
         }
-        return player.getPosition().getPlane() == dynamicObject.getWorldObject().getPosition().getPlane() && GameUtil.a(dynamicObject.getWorldObject().getPosition().getX(), dynamicObject.getWorldObject().getPosition().getY(), player.getPosition().getX(), player.getPosition().getY(), 60);
+        return player.getPosition().getPlane() == dynamicObject.getWorldObject().getPosition().getPlane() && GameUtil.isWithinDistance(dynamicObject.getWorldObject().getPosition().getX(), dynamicObject.getWorldObject().getPosition().getY(), player.getPosition().getX(), player.getPosition().getY(), 60);
     }
 
     public final void addDynamicObject(DynamicObject object, boolean n) {
@@ -259,18 +259,18 @@ public final class ObjectManager {
             DynamicObject dynamicObject = object;
             object = this;
             if (n2 != 0) {
-                if (dynamicObject.getWorldObject().getObjectId() > 0 && dynamicObject.getWorldObject().getObjectId() != ServerSettings.placeholderObjectId && !FiremakingHandler.isFireObjectId(dynamicObject.getWorldObject().getObjectId()) && !MithrilSeedFlowerHandler.a(dynamicObject.getWorldObject().getObjectId())) {
+                if (dynamicObject.getWorldObject().getObjectId() > 0 && dynamicObject.getWorldObject().getObjectId() != ServerSettings.placeholderObjectId && !FiremakingHandler.isFireObjectId(dynamicObject.getWorldObject().getObjectId()) && !MithrilSeedFlowerHandler.isMithrilSeedFlowerObjectId(dynamicObject.getWorldObject().getObjectId())) {
                     ObjectManager.restoreObjectCollision(dynamicObject.restoreObjectId, dynamicObject.getWorldObject().getPosition().getX(), dynamicObject.getWorldObject().getPosition().getY(), dynamicObject.getWorldObject().getPosition().getPlane(), dynamicObject.getWorldObject().getOrientation(), dynamicObject.getWorldObject().getType());
                 } else {
                     ObjectManager.removeObjectCollision(dynamicObject.restoreObjectId, dynamicObject.getWorldObject().getPosition().getX(), dynamicObject.getWorldObject().getPosition().getY(), dynamicObject.getWorldObject().getPosition().getPlane(), dynamicObject.getWorldObject().getOrientation(), dynamicObject.getWorldObject().getType());
                 }
             }
-            Player[] playerArray = World.f();
+            Player[] playerArray = World.getPlayers();
             int n3 = playerArray.length;
             n2 = 0;
             while (n2 < n3) {
                 object = playerArray[n2];
-                if (object != null && ((Entity)object).getPosition().getPlane() == dynamicObject.getWorldObject().getPosition().getPlane() && GameUtil.a(dynamicObject.getWorldObject().getPosition().getX(), dynamicObject.getWorldObject().getPosition().getY(), ((Entity)object).getPosition().getX(), ((Entity)object).getPosition().getY(), 60)) {
+                if (object != null && ((Entity)object).getPosition().getPlane() == dynamicObject.getWorldObject().getPosition().getPlane() && GameUtil.isWithinDistance(dynamicObject.getWorldObject().getPosition().getX(), dynamicObject.getWorldObject().getPosition().getY(), ((Entity)object).getPosition().getX(), ((Entity)object).getPosition().getY(), 60)) {
                     Object object2 = object;
                     ((Player)object2).packetSender.sendObjectCreate(dynamicObject.getWorldObject().getObjectId(), dynamicObject.getWorldObject().getPosition().getX(), dynamicObject.getWorldObject().getPosition().getY(), dynamicObject.getWorldObject().getPosition().getPlane(), dynamicObject.getWorldObject().getOrientation(), dynamicObject.getWorldObject().getType());
                     ((Player)object).visibleDynamicObjects.add(dynamicObject);

@@ -88,8 +88,8 @@ extends Enum {
     private SpecialAttackDefinition() {
         void var4_1;
         void var3_2;
-        void cfr_renamed_2;
         void cfr_renamed_1;
+        void cfr_renamed_0;
         this.energyCost = (byte)var3_2;
         this.weaponNamePatterns = var4_1;
         if (this.weaponNamePatterns == null || this.weaponNamePatterns.length == 0) {
@@ -129,7 +129,7 @@ extends Enum {
     }
 
     public static void performDragonBattleaxeSpecial(Player player) {
-        if (DuelRule.d.a(player)) {
+        if (DuelRule.NO_SPECIAL_ATTACK.isEnabledFor(player)) {
             Player player2 = player;
             player2.packetSender.sendGameMessage("Special attacks have been disabled during this fight!");
             return;
@@ -166,7 +166,7 @@ extends Enum {
     }
 
     public static void performExcaliburSpecial(Player player) {
-        if (DuelRule.d.a(player)) {
+        if (DuelRule.NO_SPECIAL_ATTACK.isEnabledFor(player)) {
             Player player2 = player;
             player2.packetSender.sendGameMessage("Special attacks have been disabled during this fight!");
             return;
@@ -205,7 +205,7 @@ extends Enum {
         if (object != AttackValidationResult.VALID) {
             return;
         }
-        if (DuelRule.d.a(player)) {
+        if (DuelRule.NO_SPECIAL_ATTACK.isEnabledFor(player)) {
             object = player;
             ((Player)object).packetSender.sendGameMessage("Special attacks have been disabled during this fight!");
             return;
@@ -251,7 +251,7 @@ extends Enum {
                     ((Player)entity).getPrayerManager().deactivatePrayer(12);
                     ((Player)entity).getPrayerManager().deactivatePrayer(13);
                     ((Player)entity).getPrayerManager().deactivatePrayer(14);
-                    ((Player)entity).a(System.currentTimeMillis() + 5000L);
+                    ((Player)entity).setProtectionPrayerDisabledUntil(System.currentTimeMillis() + 5000L);
                     object2 = entity;
                     object2.packetSender.sendGameMessage("You have been injured!");
                     return;
@@ -314,14 +314,14 @@ extends Enum {
                     boolean bl = entity.isInMultiCombatArea();
                     int n7 = 0;
                     if (!bl) break;
-                    object2 = World.f();
+                    object2 = World.getPlayers();
                     n = ((Player[])object2).length;
                     int n8 = 0;
                     while (n8 < n) {
                         Player player = object2[n8];
                         if (player != null && player != entity && player != entity.getCombatTarget()) {
                             object3 = CombatCycleEvent.validateAttack(entity, player);
-                            if (GameUtil.b(entity.getPosition(), player.getPosition()) <= 1 && object3 == AttackValidationResult.VALID) {
+                            if (GameUtil.getDistance(entity.getPosition(), player.getPosition()) <= 1 && object3 == AttackValidationResult.VALID) {
                                 object3 = new WeaponCombatAttack((Player)playerArray, player, playerArray.getWeaponProfile());
                                 object3 = new HitDefinition(((WeaponCombatAttack)object3).getAttackStyle(), HitType.NORMAL, CombatManager.calculateMeleeMaxHit((Player)playerArray, (WeaponCombatAttack)object3)).enableRandomDamage().enableAccuracyCheck(true);
                                 new CombatAction(entity, player, (HitDefinition)object3).queue();
@@ -330,7 +330,7 @@ extends Enum {
                         }
                         ++n8;
                     }
-                    object2 = World.g();
+                    object2 = World.getNpcs();
                     n = ((Npc[])object2).length;
                     n8 = 0;
                     while (n8 < n) {
@@ -415,7 +415,7 @@ extends Enum {
                     return;
                 }
                 case 14: {
-                    if (GameUtil.h(100) >= 6) break;
+                    if (GameUtil.randomInt(100) >= 6) break;
                     n = playerArray.getSkillManager().getCurrentLevels()[4] / 5;
                     object2 = new HitDefinition(ServerSettings.DRAGONFIRE_ATTACK_STYLE, HitType.NORMAL, n).setAccuracyMultiplier(1.0);
                     new CombatAction(entity, entity2, (HitDefinition)object2).queue();
@@ -440,9 +440,9 @@ extends Enum {
      * WARNING - void declaration
      */
     /* synthetic */ SpecialAttackDefinition(int n, String[] stringArray, byte by) {
-        this((String)cfr_renamed_1, (int)stringArray, by, (String[])var4_3);
+        this((String)cfr_renamed_0, (int)stringArray, by, (String[])var4_3);
         void var4_3;
-        void cfr_renamed_1;
+        void cfr_renamed_0;
     }
 }
 

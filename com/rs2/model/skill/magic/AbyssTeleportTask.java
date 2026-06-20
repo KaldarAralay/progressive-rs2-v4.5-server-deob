@@ -45,7 +45,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        TeleportManager.a(this.b).n(false);
+        TeleportManager.a(this.b).setActionLocked(false);
         TeleportManager.a(this.b).getAttributes().put("canTakeDamage", Boolean.TRUE);
     }
 }

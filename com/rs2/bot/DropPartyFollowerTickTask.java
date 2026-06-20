@@ -23,7 +23,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        if (this.follower.isDead() || !this.follower.bW() || !this.follower.dropPartyFollower || this.follower.botTaskState.equals("wait for new task")) {
+        if (this.follower.isDead() || !this.follower.isRegistered() || !this.follower.dropPartyFollower || this.follower.botTaskState.equals("wait for new task")) {
             this.stop();
             return;
         }
@@ -41,7 +41,7 @@ extends TickTask {
             this.stop();
             return;
         }
-        if (!(GameUtil.h(3) != 0 || this.leader.botTaskState.equals("do task") || this.leader.botTaskState.equals("wait for new task") || this.follower.dropPartySentToAssignedDrop)) {
+        if (!(GameUtil.randomInt(3) != 0 || this.leader.botTaskState.equals("do task") || this.leader.botTaskState.equals("wait for new task") || this.follower.dropPartySentToAssignedDrop)) {
             this.follower.queuePublicChatMessage(this.follower.botPublicChatMessage, this.follower.botPublicChatColor, this.follower.botPublicChatEffect);
         }
     }

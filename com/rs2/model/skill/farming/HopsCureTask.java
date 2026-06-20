@@ -26,8 +26,8 @@ extends CycleEvent {
     @Override
     public final void onStop() {
         this.manager.refreshConfig();
-        HopsPatchManager.getPlayer(this.manager).n(false);
-        HopsPatchManager.getPlayer(this.manager).aN();
+        HopsPatchManager.getPlayer(this.manager).setActionLocked(false);
+        HopsPatchManager.getPlayer(this.manager).resetAnimation();
     }
 }
 

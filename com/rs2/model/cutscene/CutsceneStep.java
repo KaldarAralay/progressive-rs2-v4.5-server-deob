@@ -6,17 +6,17 @@ package com.rs2.model.cutscene;
 import com.rs2.model.cutscene.Cutscene;
 
 public class CutsceneStep {
-    private int a;
+    private int delayTicks;
 
     public CutsceneStep(Cutscene cutscene, int n) {
-        this.a = n;
+        this.delayTicks = n;
     }
 
-    public final int b() {
-        return this.a;
+    public final int getDelayTicks() {
+        return this.delayTicks;
     }
 
-    public void a() {
+    public void executeStep() {
     }
 }
 

@@ -47,7 +47,7 @@ extends TickTask {
             return;
         }
         Object object2 = ObjectDefinition.forId(this.player.getInteractionTargetId());
-        Position position = GameUtil.a(((WorldObject)object).getPosition().getX(), ((WorldObject)object).getPosition().getY(), this.player.getPosition().getX(), this.player.getPosition().getY(), ((ObjectDefinition)object2).getWidthForOrientation(((WorldObject)object).getOrientation()), ((ObjectDefinition)object2).getLengthForOrientation(((WorldObject)object).getOrientation()), this.objectPlane);
+        Position position = GameUtil.findReachableInteractionPosition(((WorldObject)object).getPosition().getX(), ((WorldObject)object).getPosition().getY(), this.player.getPosition().getX(), this.player.getPosition().getY(), ((ObjectDefinition)object2).getWidthForOrientation(((WorldObject)object).getOrientation()), ((ObjectDefinition)object2).getLengthForOrientation(((WorldObject)object).getOrientation()), this.objectPlane);
         if (position == null) {
             return;
         }
@@ -69,24 +69,24 @@ extends TickTask {
                 break;
             }
             case 10177: {
-                AttackStyleDefinition.a(this.player, new Position(1798, 4407, 3));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(1798, 4407, 3));
                 break;
             }
             case 1739: 
             case 4569: 
             case 12537: {
-                AttackStyleDefinition.b(this.player, "down");
+                AttackStyleDefinition.climbOffsetLadder(this.player, "down");
                 break;
             }
             case 1748: 
             case 2884: 
             case 8745: 
             case 12965: {
-                AttackStyleDefinition.a(this.player, "down");
+                AttackStyleDefinition.climbOneFloorAtCurrentTile(this.player, "down");
                 break;
             }
             case 4187: {
-                AttackStyleDefinition.a(this.player, "up");
+                AttackStyleDefinition.climbOneFloorAtCurrentTile(this.player, "up");
                 break;
             }
             default: {

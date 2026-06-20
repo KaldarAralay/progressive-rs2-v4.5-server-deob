@@ -48,7 +48,7 @@ extends CycleEvent {
             return;
         }
         Object object = this.player;
-        if (object.interfaceAction.equals("cookFire") && !SkillActionHelper.isObjectPresent(this.player.eO(), this.player.getCookingManager().firePosition.getX(), this.player.getCookingManager().firePosition.getY(), this.player.getCookingManager().firePosition.getPlane())) {
+        if (object.interfaceAction.equals("cookFire") && !SkillActionHelper.isObjectPresent(this.player.getCookingObjectId(), this.player.getCookingManager().firePosition.getX(), this.player.getCookingManager().firePosition.getY(), this.player.getCookingManager().firePosition.getPlane())) {
             if (this.player.botEnabled) {
                 object = CookableFoodDefinition.forRawItemId(this.player.ei());
                 if (object != null && this.player.getInventoryManager().getContainer().containsItem(((CookableFoodDefinition)((Object)object)).getBurntItemId())) {
@@ -75,7 +75,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        this.player.aN();
+        this.player.resetAnimation();
     }
 }
 

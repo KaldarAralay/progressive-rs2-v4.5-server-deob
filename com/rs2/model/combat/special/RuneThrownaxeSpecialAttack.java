@@ -44,22 +44,22 @@ extends WeaponCombatAttack {
         }
         ArrayList<Object> arrayList = new ArrayList<Object>();
         if (this.player.isInMultiCombatArea() && this.primaryTarget.isInMultiCombatArea()) {
-            object2 = World.f();
+            object2 = World.getPlayers();
             int n2 = ((Player[])object2).length;
             n = 0;
             while (n < n2) {
                 object = object2[n];
-                if (object != null && object != this.getAttacker() && object != this.getTarget() && ((Entity)object).isInMultiCombatArea() && GameUtil.a(this.getTarget().getPosition(), ((Entity)object).getPosition(), 3)) {
+                if (object != null && object != this.getAttacker() && object != this.getTarget() && ((Entity)object).isInMultiCombatArea() && GameUtil.isWithinDistance(this.getTarget().getPosition(), ((Entity)object).getPosition(), 3)) {
                     arrayList.add(object);
                 }
                 ++n;
             }
-            object2 = World.g();
+            object2 = World.getNpcs();
             n2 = ((Npc[])object2).length;
             n = 0;
             while (n < n2) {
                 object = object2[n];
-                if (object != null && object != this.getTarget() && ((Entity)object).isInMultiCombatArea() && GameUtil.a(this.getTarget().getPosition(), ((Entity)object).getPosition(), 3)) {
+                if (object != null && object != this.getTarget() && ((Entity)object).isInMultiCombatArea() && GameUtil.isWithinDistance(this.getTarget().getPosition(), ((Entity)object).getPosition(), 3)) {
                     arrayList.add(object);
                 }
                 ++n;

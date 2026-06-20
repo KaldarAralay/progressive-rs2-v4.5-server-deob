@@ -31,14 +31,14 @@ extends CycleEvent {
         this.player.getSkillManager().addExperience(16, this.experience);
         this.player.getUpdateState().setForcedMovementUpdateRequired(false);
         if (this.unlockPlayer) {
-            this.player.n(false);
+            this.player.setActionLocked(false);
         }
         this.player.aw = false;
         this.player.moveTo(new Position(this.destinationX, this.destinationY, this.destinationPlane));
         this.player.getUpdateState().clearForcedMovement();
-        this.player.aj(-1);
-        this.player.ak(-1);
-        this.player.f(true);
+        this.player.setRunAnimationOverride(-1);
+        this.player.setWalkAnimationOverride(-1);
+        this.player.setAppearanceUpdateRequired(true);
         cycleEventContainer.stop();
     }
 

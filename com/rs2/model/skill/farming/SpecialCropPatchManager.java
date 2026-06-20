@@ -95,7 +95,7 @@ public final class SpecialCropPatchManager {
     public final void processGrowth() {
         int n = 0;
         while (n < this.cropIds.length) {
-            long l = Server.e() - this.lastUpdateTicks[n];
+            long l = Server.getElapsedMinutes() - this.lastUpdateTicks[n];
             if (l >= 5L) {
                 if (this.growthStages[n] > 0 && this.growthStages[n] <= 3) {
                     int n2 = (int)(l / 5L);
@@ -104,7 +104,7 @@ public final class SpecialCropPatchManager {
                         if (this.growthStages[n] != 0) {
                             int n4 = n;
                             this.growthStages[n4] = this.growthStages[n4] - 1;
-                            this.lastUpdateTicks[n] = Server.e();
+                            this.lastUpdateTicks[n] = Server.getElapsedMinutes();
                             ++n3;
                             continue;
                         }
@@ -124,7 +124,7 @@ public final class SpecialCropPatchManager {
                                 } else {
                                     int n8 = n;
                                     SpecialCropPatchManager specialCropPatchManager = this;
-                                    if (specialCropPatchManager.patchStates[n8] == 1 && GameUtil.h(2) == 0) {
+                                    if (specialCropPatchManager.patchStates[n8] == 1 && GameUtil.randomInt(2) == 0) {
                                         specialCropPatchManager.patchStates[n8] = 2;
                                     }
                                     if (specialCropPatchManager.patchStates[n8] != 1 && specialCropPatchManager.patchStates[n8] != 2) {
@@ -136,7 +136,7 @@ public final class SpecialCropPatchManager {
                                             double d = specialCropPatchManager.diseaseChanceMultipliers[n8] * specialCropDefinition2.getDiseaseChance();
                                             double d2 = d * 100.0;
                                             int n9 = (int)d2;
-                                            if (GameUtil.g(100) <= n9 && ServerSettings.diseasingEnabled) {
+                                            if (GameUtil.randomInclusive(100) <= n9 && ServerSettings.diseasingEnabled) {
                                                 specialCropPatchManager.patchStates[n8] = 1;
                                             }
                                         }
@@ -173,7 +173,7 @@ public final class SpecialCropPatchManager {
         if (specialCropDefinition == null) {
             return;
         }
-        long l = Server.e() - this.lastUpdateTicks[n];
+        long l = Server.getElapsedMinutes() - this.lastUpdateTicks[n];
         int n2 = (int)(l / (long)specialCropDefinition.getGrowthCycleTicks());
         this.growthStages[n] = n2 + 4;
         this.refreshConfig();
@@ -218,7 +218,7 @@ public final class SpecialCropPatchManager {
             n2 = 232;
             n4 = 3;
         }
-        this.player.n(true);
+        this.player.setActionLocked(true);
         Player player = this.player;
         player.packetSender.sendSoundEffect(n2, 1, 0);
         this.player.getUpdateState().setAnimation(n3);
@@ -259,7 +259,7 @@ public final class SpecialCropPatchManager {
         player.packetSender.sendSoundEffect(1321, 1, 0);
         this.growthStages[specialCropPatch.getIndex()] = 4;
         this.player.getInventoryManager().removeItem(new ItemStack(n3, specialCropDefinition.getSeedAmount()));
-        this.player.n(true);
+        this.player.setActionLocked(true);
         CycleEventHandler.getInstance().schedule(this.player, new SpecialCropPlantingTask(this, specialCropPatch, n3, specialCropDefinition), 3);
         return true;
     }
@@ -283,7 +283,7 @@ public final class SpecialCropPatchManager {
             ((Player)object).packetSender.sendGameMessage("Not enough space in your inventory.");
             return true;
         }
-        this.player.n(true);
+        this.player.setActionLocked(true);
         this.player.getUpdateState().setAnimation(832);
         int n3 = this.player.nextActionSequence();
         this.player.setActiveCycleEvent(new SpecialCropHarvestTask(this, n3, (SpecialCropPatch)((Object)object), specialCropDefinition));
@@ -315,7 +315,7 @@ public final class SpecialCropPatchManager {
         player.packetSender.sendGameMessage("You pour some " + (n3 == 6034 ? "super" : "") + "compost on the patch.");
         this.player.getUpdateState().setAnimation(2283);
         this.player.getSkillManager().addExperience(19, n3 == 6034 ? 26.0 : 18.0);
-        this.player.n(true);
+        this.player.setActionLocked(true);
         CycleEventHandler.getInstance().schedule(this.player, new SpecialCropCompostTask(this, specialCropPatch, n3), 7);
         return true;
     }
@@ -360,7 +360,7 @@ public final class SpecialCropPatchManager {
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("You bend down and start to inspect the patch...");
             this.player.getUpdateState().setAnimation(1331);
-            this.player.n(true);
+            this.player.setActionLocked(true);
             CycleEventHandler.getInstance().schedule(this.player, new SpecialCropInspectTask(this, specialCropPatch, specialCropGrowthDefinition), 5);
         }
         return true;
@@ -400,22 +400,22 @@ public final class SpecialCropPatchManager {
             ((Player)object).packetSender.sendGameMessage("This plant doesn't need to be resurrected.");
             return true;
         }
-        this.player.a("special2", object.getIndex());
+        this.player.setPendingCropResurrectionTarget("special2", object.getIndex());
         return true;
     }
 
     public final boolean finishResurrection(boolean bl) {
         if (bl) {
-            Object object = SpecialCropDefinition.forSeedId(this.cropIds[this.player.ds]);
-            this.patchStates[this.player.ds] = 0;
-            int n = this.growthStages[this.player.ds] - 4;
-            this.lastUpdateTicks[this.player.ds] = Server.e() - (long)(object.getGrowthCycleTicks() * n);
+            Object object = SpecialCropDefinition.forSeedId(this.cropIds[this.player.pendingCropResurrectionPatchIndex]);
+            this.patchStates[this.player.pendingCropResurrectionPatchIndex] = 0;
+            int n = this.growthStages[this.player.pendingCropResurrectionPatchIndex] - 4;
+            this.lastUpdateTicks[this.player.pendingCropResurrectionPatchIndex] = Server.getElapsedMinutes() - (long)(object.getGrowthCycleTicks() * n);
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("You succesfully resurrected the crop.");
         } else {
-            this.resetPatch(this.player.ds);
-            this.growthStages[this.player.ds] = 3;
-            this.lastUpdateTicks[this.player.ds] = Server.e();
+            this.resetPatch(this.player.pendingCropResurrectionPatchIndex);
+            this.growthStages[this.player.pendingCropResurrectionPatchIndex] = 3;
+            this.lastUpdateTicks[this.player.pendingCropResurrectionPatchIndex] = Server.getElapsedMinutes();
             Player player = this.player;
             player.packetSender.sendGameMessage("You failed to resurrect the crop.");
         }
@@ -445,7 +445,7 @@ public final class SpecialCropPatchManager {
         this.player.getInventoryManager().removeItem(new ItemStack(n3));
         this.player.getInventoryManager().addItem(new ItemStack(229));
         this.player.getUpdateState().setAnimation(2288);
-        this.player.n(true);
+        this.player.setActionLocked(true);
         this.patchStates[object.getIndex()] = 0;
         CycleEventHandler.getInstance().schedule(this.player, new SpecialCropCureTask(this), 7);
         return true;

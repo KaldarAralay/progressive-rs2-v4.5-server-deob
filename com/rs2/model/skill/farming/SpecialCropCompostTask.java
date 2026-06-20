@@ -30,8 +30,8 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        SpecialCropPatchManager.getPlayer(this.manager).n(false);
-        SpecialCropPatchManager.getPlayer(this.manager).aN();
+        SpecialCropPatchManager.getPlayer(this.manager).setActionLocked(false);
+        SpecialCropPatchManager.getPlayer(this.manager).resetAnimation();
     }
 }
 

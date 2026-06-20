@@ -15,44 +15,44 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 public class ItemDefinition {
-    public ArrayList a = new ArrayList();
-    private static ItemDefinition[] c;
-    private static int d;
+    public ArrayList grandExchangePriceSamples = new ArrayList();
+    private static ItemDefinition[] definitionsById;
+    private static int definitionCount;
     private static boolean[] e;
     private static boolean[] f;
     private int[] g;
     private int[] h;
-    private boolean i;
-    private int j;
-    private String k;
-    private String l;
-    private boolean m;
-    private boolean n;
-    private boolean o;
-    private int p;
-    private int q;
-    private boolean r;
-    private int s;
+    private boolean destroyOption;
+    private int id;
+    private String name;
+    private String description;
+    private boolean note;
+    private boolean hasNote;
+    private boolean stackable;
+    private int unnotedId;
+    private int notedId;
+    private boolean membersOnly;
+    private int tokkulValue;
     private int t;
-    private int u;
-    private int v;
-    private int w;
-    private final int[] x;
-    private final int[] y;
-    private final boolean[] z;
-    private int A;
-    private int B;
-    private int C;
+    private int highAlchemyValue;
+    private int lowAlchemyValue;
+    private int donatorPointValue;
+    private final int[] bonuses;
+    private final int[] requiredLevels;
+    private final boolean[] requiredQuests;
+    private int equipmentSlot;
+    private int equipmentAppearanceType;
+    private int requiredQuestPoints;
     public int b;
-    private double D;
-    private boolean E;
-    private int F;
-    private boolean G;
+    private double weight;
+    private boolean twoHanded;
+    private int shopValue;
+    private boolean untradeable;
 
     static {
         Logger.getLogger(ItemDefinition.class.getName());
-        c = new ItemDefinition[11884];
-        d = 0;
+        definitionsById = new ItemDefinition[11884];
+        definitionCount = 0;
         e = new boolean[11884];
         f = new boolean[11884];
     }
@@ -62,8 +62,8 @@ public class ItemDefinition {
         if (n < 0) {
             n = 1;
         }
-        if ((itemDefinition = c[n]) == null) {
-            itemDefinition = new ItemDefinition(n, "# + id", "It's an item!", "NONE", false, false, false, -1, -1, true, 0, 0, 0, 0, new int[14], 0, new int[25], 0, new boolean[QuestDefinition.a], 0.0, 0, 0, false);
+        if ((itemDefinition = definitionsById[n]) == null) {
+            itemDefinition = new ItemDefinition(n, "# + id", "It's an item!", "NONE", false, false, false, -1, -1, true, 0, 0, 0, 0, new int[14], 0, new int[25], 0, new boolean[QuestDefinition.questCount], 0.0, 0, 0, false);
         }
         return itemDefinition;
     }
@@ -79,7 +79,7 @@ public class ItemDefinition {
             int n3 = 0;
             while (n3 < n2) {
                 object = ItemDefinition.forId(n3);
-                ItemDefinition.c[n3] = object;
+                ItemDefinition.definitionsById[n3] = object;
                 n = byteArrayReader.readUnsignedByte();
                 if (n != 200) {
                     int n4;
@@ -88,84 +88,84 @@ public class ItemDefinition {
                         n5 = byteArrayReader.readShort();
                         ItemDefinition itemDefinition = ItemDefinition.forId(n5);
                         ((ItemDefinition)object).b = n5;
-                        ((ItemDefinition)object).A = itemDefinition.A;
-                        ((ItemDefinition)object).G = itemDefinition.G;
-                        ItemDefinition.e[n3] = itemDefinition.G;
-                        ((ItemDefinition)object).E = itemDefinition.E;
-                        ((ItemDefinition)object).B = itemDefinition.B;
+                        ((ItemDefinition)object).equipmentSlot = itemDefinition.equipmentSlot;
+                        ((ItemDefinition)object).untradeable = itemDefinition.untradeable;
+                        ItemDefinition.e[n3] = itemDefinition.untradeable;
+                        ((ItemDefinition)object).twoHanded = itemDefinition.twoHanded;
+                        ((ItemDefinition)object).equipmentAppearanceType = itemDefinition.equipmentAppearanceType;
                         n4 = 0;
                         while (n4 < 25) {
-                            ((ItemDefinition)object).y[n4] = itemDefinition.y[n4];
+                            ((ItemDefinition)object).requiredLevels[n4] = itemDefinition.requiredLevels[n4];
                             ++n4;
                         }
-                        ((ItemDefinition)object).C = itemDefinition.C;
+                        ((ItemDefinition)object).requiredQuestPoints = itemDefinition.requiredQuestPoints;
                         n4 = 0;
                         while (n4 < 104) {
-                            ((ItemDefinition)object).z[n4] = itemDefinition.z[n4];
+                            ((ItemDefinition)object).requiredQuests[n4] = itemDefinition.requiredQuests[n4];
                             ++n4;
                         }
-                        ((ItemDefinition)object).F = itemDefinition.F;
-                        ((ItemDefinition)object).u = itemDefinition.u;
-                        ((ItemDefinition)object).v = itemDefinition.v;
-                        ((ItemDefinition)object).s = itemDefinition.s;
+                        ((ItemDefinition)object).shopValue = itemDefinition.shopValue;
+                        ((ItemDefinition)object).highAlchemyValue = itemDefinition.highAlchemyValue;
+                        ((ItemDefinition)object).lowAlchemyValue = itemDefinition.lowAlchemyValue;
+                        ((ItemDefinition)object).tokkulValue = itemDefinition.tokkulValue;
                         ((ItemDefinition)object).t = itemDefinition.t;
-                        ((ItemDefinition)object).D = itemDefinition.D;
+                        ((ItemDefinition)object).weight = itemDefinition.weight;
                         n4 = 0;
                         while (n4 < 14) {
-                            ((ItemDefinition)object).x[n4] = itemDefinition.x[n4];
+                            ((ItemDefinition)object).bonuses[n4] = itemDefinition.bonuses[n4];
                             ++n4;
                         }
                         if (n == 202) {
-                            ((ItemDefinition)object).w = byteArrayReader.readShort();
+                            ((ItemDefinition)object).donatorPointValue = byteArrayReader.readShort();
                             if (n3 == 7999) {
                                 if (ServerSettings.membershipRequirementMode == 4) {
-                                    ((ItemDefinition)object).F = ServerSettings.membershipRequirementValue;
+                                    ((ItemDefinition)object).shopValue = ServerSettings.membershipRequirementValue;
                                 } else if (ServerSettings.membershipRequirementMode == 5) {
-                                    ((ItemDefinition)object).F = 1000;
+                                    ((ItemDefinition)object).shopValue = 1000;
                                 }
                             }
                         }
                     } else {
-                        ((ItemDefinition)object).A = n - 1;
-                        ItemDefinition.e[n3] = ((ItemDefinition)object).G = byteArrayReader.readUnsignedByte() == 1;
+                        ((ItemDefinition)object).equipmentSlot = n - 1;
+                        ItemDefinition.e[n3] = ((ItemDefinition)object).untradeable = byteArrayReader.readUnsignedByte() == 1;
                         if (n != 0) {
-                            ((ItemDefinition)object).E = byteArrayReader.readUnsignedByte() == 1;
-                            ((ItemDefinition)object).B = byteArrayReader.readUnsignedByte();
+                            ((ItemDefinition)object).twoHanded = byteArrayReader.readUnsignedByte() == 1;
+                            ((ItemDefinition)object).equipmentAppearanceType = byteArrayReader.readUnsignedByte();
                             while ((n5 = byteArrayReader.readUnsignedByte()) != 0) {
                                 int n6;
                                 if (n5 == 1) {
                                     n6 = byteArrayReader.readUnsignedByte();
-                                    ((ItemDefinition)object).y[n6] = n4 = byteArrayReader.readUnsignedByte();
+                                    ((ItemDefinition)object).requiredLevels[n6] = n4 = byteArrayReader.readUnsignedByte();
                                 }
                                 if (n5 == 2) {
                                     n6 = byteArrayReader.readUnsignedByte();
                                     if (n6 == 250) {
-                                        n6 = QuestDefinition.a();
+                                        n6 = QuestDefinition.getTotalQuestPointReward();
                                     }
-                                    ((ItemDefinition)object).C = n6;
+                                    ((ItemDefinition)object).requiredQuestPoints = n6;
                                 }
                                 if (n5 != 3) continue;
                                 n6 = byteArrayReader.readUnsignedByte();
-                                ((ItemDefinition)object).z[n6] = true;
+                                ((ItemDefinition)object).requiredQuests[n6] = true;
                             }
                             n5 = byteArrayReader.readUnsignedByte();
                             if ((n5 & 1) != 0) {
-                                ((ItemDefinition)object).F = byteArrayReader.readInt();
+                                ((ItemDefinition)object).shopValue = byteArrayReader.readInt();
                             }
                             if ((n5 & 2) != 0) {
-                                ((ItemDefinition)object).u = byteArrayReader.readInt();
+                                ((ItemDefinition)object).highAlchemyValue = byteArrayReader.readInt();
                             }
                             if ((n5 & 4) != 0) {
-                                ((ItemDefinition)object).v = byteArrayReader.readInt();
+                                ((ItemDefinition)object).lowAlchemyValue = byteArrayReader.readInt();
                             }
                             if ((n5 & 8) != 0) {
-                                ((ItemDefinition)object).s = byteArrayReader.readInt();
+                                ((ItemDefinition)object).tokkulValue = byteArrayReader.readInt();
                             }
                             if ((n5 & 0x10) != 0) {
                                 ((ItemDefinition)object).t = byteArrayReader.readInt();
                             }
                             double d = byteArrayReader.readShort();
-                            ((ItemDefinition)object).D = d / 1000.0;
+                            ((ItemDefinition)object).weight = d / 1000.0;
                             n = 0;
                             while (n < 14) {
                                 double d2 = byteArrayReader.readShort();
@@ -176,28 +176,28 @@ public class ItemDefinition {
                                         d2 *= ServerSettings.mod2hsStrengthBonusRate;
                                     }
                                 }
-                                ((ItemDefinition)object).x[n] = (int)d2;
+                                ((ItemDefinition)object).bonuses[n] = (int)d2;
                                 ++n;
                             }
                         } else {
                             n5 = byteArrayReader.readUnsignedByte();
                             if ((n5 & 1) != 0) {
-                                ((ItemDefinition)object).F = byteArrayReader.readInt();
+                                ((ItemDefinition)object).shopValue = byteArrayReader.readInt();
                             }
                             if ((n5 & 2) != 0) {
-                                ((ItemDefinition)object).u = byteArrayReader.readInt();
+                                ((ItemDefinition)object).highAlchemyValue = byteArrayReader.readInt();
                             }
                             if ((n5 & 4) != 0) {
-                                ((ItemDefinition)object).v = byteArrayReader.readInt();
+                                ((ItemDefinition)object).lowAlchemyValue = byteArrayReader.readInt();
                             }
                             if ((n5 & 8) != 0) {
-                                ((ItemDefinition)object).s = byteArrayReader.readInt();
+                                ((ItemDefinition)object).tokkulValue = byteArrayReader.readInt();
                             }
                             if ((n5 & 0x10) != 0) {
                                 ((ItemDefinition)object).t = byteArrayReader.readInt();
                             }
                             double d = byteArrayReader.readShort();
-                            ((ItemDefinition)object).D = d / 1000.0;
+                            ((ItemDefinition)object).weight = d / 1000.0;
                         }
                     }
                 }
@@ -217,23 +217,23 @@ public class ItemDefinition {
             IOException iOException2 = iOException;
             iOException.printStackTrace();
         }
-        d = cacheStore.getDefinitionIndex().getItemDefinitionEntries().length;
+        definitionCount = cacheStore.getDefinitionIndex().getItemDefinitionEntries().length;
         int n7 = 0;
-        while (n7 < d) {
+        while (n7 < definitionCount) {
             byteArrayReader.position = cacheStore.getDefinitionIndex().getItemDefinitionEntry(n7).getDataOffset();
             n = n7;
             object = byteArrayReader;
-            ItemDefinition itemDefinition = c[n];
-            c[n].o = false;
-            itemDefinition.n = false;
-            itemDefinition.m = false;
-            itemDefinition.r = false;
-            itemDefinition.i = false;
+            ItemDefinition itemDefinition = definitionsById[n];
+            definitionsById[n].stackable = false;
+            itemDefinition.hasNote = false;
+            itemDefinition.note = false;
+            itemDefinition.membersOnly = false;
+            itemDefinition.destroyOption = false;
             block11: while (true) {
                 int n8;
                 if ((n8 = ((ByteArrayReader)object).readUnsignedByte()) == 0) {
                     if (n != 4561) break;
-                    itemDefinition.o = true;
+                    itemDefinition.stackable = true;
                     break;
                 }
                 if (n8 == 1) {
@@ -241,12 +241,12 @@ public class ItemDefinition {
                     continue;
                 }
                 if (n8 == 2) {
-                    itemDefinition.k = ((ByteArrayReader)object).readString();
+                    itemDefinition.name = ((ByteArrayReader)object).readString();
                     continue;
                 }
                 if (n8 == 3) {
                     String string;
-                    itemDefinition.l = string = new String(((ByteArrayReader)object).readLineBytes());
+                    itemDefinition.description = string = new String(((ByteArrayReader)object).readLineBytes());
                     continue;
                 }
                 if (n8 == 4) {
@@ -274,7 +274,7 @@ public class ItemDefinition {
                     continue;
                 }
                 if (n8 == 11) {
-                    itemDefinition.o = true;
+                    itemDefinition.stackable = true;
                     continue;
                 }
                 if (n8 == 12) {
@@ -282,7 +282,7 @@ public class ItemDefinition {
                     continue;
                 }
                 if (n8 == 16) {
-                    itemDefinition.r = true;
+                    itemDefinition.membersOnly = true;
                     continue;
                 }
                 if (n8 == 23) {
@@ -310,7 +310,7 @@ public class ItemDefinition {
                 if (n8 >= 35 && n8 < 40) {
                     String string = ((ByteArrayReader)object).readString();
                     if (!string.toLowerCase().equals("destroy")) continue;
-                    itemDefinition.i = true;
+                    itemDefinition.destroyOption = true;
                     continue;
                 }
                 if (n8 == 40) {
@@ -353,11 +353,11 @@ public class ItemDefinition {
                 }
                 if (n8 == 97) {
                     n8 = ((ByteArrayReader)object).readUnsignedShort();
-                    itemDefinition.m = true;
-                    itemDefinition.p = n8;
-                    ItemDefinition itemDefinition2 = c[n8];
-                    c[n8].n = true;
-                    itemDefinition2.q = n;
+                    itemDefinition.note = true;
+                    itemDefinition.unnotedId = n8;
+                    ItemDefinition itemDefinition2 = definitionsById[n8];
+                    definitionsById[n8].hasNote = true;
+                    itemDefinition2.notedId = n;
                     continue;
                 }
                 if (n8 == 98) {
@@ -426,174 +426,174 @@ public class ItemDefinition {
     }
 
     public static boolean isDefined(int n) {
-        return n < d;
+        return n < definitionCount;
     }
 
     private ItemDefinition(int n, String string, String string2, String string3, boolean bl, boolean bl2, boolean bl3, int n2, int n3, boolean bl4, int n4, int n5, int n6, int n7, int[] nArray, int n8, int[] nArray2, int n9, boolean[] blArray, double d, int n10, int n11, boolean bl5) {
-        this.j = n;
-        this.k = string;
-        this.l = string2;
-        this.m = false;
-        this.n = false;
-        this.o = false;
-        this.p = -1;
-        this.q = -1;
-        this.r = true;
-        this.s = 0;
+        this.id = n;
+        this.name = string;
+        this.description = string2;
+        this.note = false;
+        this.hasNote = false;
+        this.stackable = false;
+        this.unnotedId = -1;
+        this.notedId = -1;
+        this.membersOnly = true;
+        this.tokkulValue = 0;
         this.t = 0;
-        this.u = 0;
-        this.v = 0;
-        this.x = nArray;
+        this.highAlchemyValue = 0;
+        this.lowAlchemyValue = 0;
+        this.bonuses = nArray;
         String string4 = string3;
-        this.A = string4.equals("HAT") ? 0 : (string4.equals("CAPE") ? 1 : (string4.equals("AMULET") ? 2 : (string4.equals("WEAPON") ? 3 : (string4.equals("BODY") ? 4 : (string4.equals("SHIELD") ? 5 : (string4.equals("LEGS") ? 7 : (string4.equals("GLOVES") ? 9 : (string4.equals("BOOTS") ? 10 : (string4.equals("RING") ? 12 : (string4.equals("ARROWS") ? 13 : -1))))))))));
-        this.B = 0;
-        this.y = nArray2;
-        this.C = 0;
-        this.z = blArray;
-        this.D = 0.0;
-        this.w = 0;
-        this.i = false;
+        this.equipmentSlot = string4.equals("HAT") ? 0 : (string4.equals("CAPE") ? 1 : (string4.equals("AMULET") ? 2 : (string4.equals("WEAPON") ? 3 : (string4.equals("BODY") ? 4 : (string4.equals("SHIELD") ? 5 : (string4.equals("LEGS") ? 7 : (string4.equals("GLOVES") ? 9 : (string4.equals("BOOTS") ? 10 : (string4.equals("RING") ? 12 : (string4.equals("ARROWS") ? 13 : -1))))))))));
+        this.equipmentAppearanceType = 0;
+        this.requiredLevels = nArray2;
+        this.requiredQuestPoints = 0;
+        this.requiredQuests = blArray;
+        this.weight = 0.0;
+        this.donatorPointValue = 0;
+        this.destroyOption = false;
     }
 
     public final int getId() {
-        return this.j;
+        return this.id;
     }
 
     public final String getName() {
-        if (this.m && this.p != -1 && this.p != this.j) {
-            this.k = ItemDefinition.forId(this.p).getName();
+        if (this.note && this.unnotedId != -1 && this.unnotedId != this.id) {
+            this.name = ItemDefinition.forId(this.unnotedId).getName();
         }
-        return this.k;
+        return this.name;
     }
 
     public final String getShortName() {
-        if (this.j == 249) {
+        if (this.id == 249) {
             return "guam";
         }
-        if (this.j == 377) {
+        if (this.id == 377) {
             return "raw lob";
         }
-        if (this.j == 379) {
+        if (this.id == 379) {
             return "lob";
         }
-        if (this.j == 381) {
+        if (this.id == 381) {
             return "rare black lobster";
         }
-        if (this.j == 536) {
+        if (this.id == 536) {
             return "d bone";
         }
-        if (this.j == 556) {
+        if (this.id == 556) {
             return "air";
         }
-        if (this.j == 558) {
+        if (this.id == 558) {
             return "mind";
         }
-        if (this.j == 560) {
+        if (this.id == 560) {
             return "death";
         }
-        if (this.j == 561) {
+        if (this.id == 561) {
             return "nat";
         }
-        if (this.j == 563) {
+        if (this.id == 563) {
             return "law";
         }
-        if (this.j == 564) {
+        if (this.id == 564) {
             return "cosmic";
         }
-        if (this.j == 565) {
+        if (this.id == 565) {
             return "blood";
         }
-        if (this.j == 1305) {
+        if (this.id == 1305) {
             return "dlong";
         }
-        if (this.j == 1319) {
+        if (this.id == 1319) {
             return "r2h";
         }
-        if (this.j == 1333) {
+        if (this.id == 1333) {
             return "rune scim";
         }
-        if (this.j == 1373) {
+        if (this.id == 1373) {
             return "rune baxe";
         }
-        if (this.j == 1377) {
+        if (this.id == 1377) {
             return "dbaxe";
         }
-        if (this.j == 1436) {
+        if (this.id == 1436) {
             return "rune ess";
         }
-        if (this.j == 1725) {
+        if (this.id == 1725) {
             return "str ammy";
         }
-        if (this.j == 1727) {
+        if (this.id == 1727) {
             return "mage ammy";
         }
-        if (this.j == 1729) {
+        if (this.id == 1729) {
             return "def ammy";
         }
-        if (this.j == 1731) {
+        if (this.id == 1731) {
             return "power ammy";
         }
-        if (this.j == 4099) {
+        if (this.id == 4099) {
             return "dark mystic hat";
         }
-        if (this.j == 4101) {
+        if (this.id == 4101) {
             return "dark mystic top";
         }
-        if (this.j == 4103) {
+        if (this.id == 4103) {
             return "dark mystic bottom";
         }
-        if (this.j == 4105) {
+        if (this.id == 4105) {
             return "dark mystic gloves";
         }
-        if (this.j == 4107) {
+        if (this.id == 4107) {
             return "dark mystic boots";
         }
-        if (this.j == 4109) {
+        if (this.id == 4109) {
             return "light mystic hat";
         }
-        if (this.j == 4111) {
+        if (this.id == 4111) {
             return "light mystic top";
         }
-        if (this.j == 4113) {
+        if (this.id == 4113) {
             return "light mystic bottom";
         }
-        if (this.j == 4115) {
+        if (this.id == 4115) {
             return "light mystic gloves";
         }
-        if (this.j == 4117) {
+        if (this.id == 4117) {
             return "light mystic boots";
         }
-        if (this.j == 4151) {
+        if (this.id == 4151) {
             return "whip";
         }
-        if (this.j == 4153) {
+        if (this.id == 4153) {
             return "gmaul";
         }
-        if (this.j == 6522) {
+        if (this.id == 6522) {
             return "obby ring";
         }
-        if (this.j == 6523) {
+        if (this.id == 6523) {
             return "obby sword";
         }
-        if (this.j == 6524) {
+        if (this.id == 6524) {
             return "obby shield";
         }
-        if (this.j == 6525) {
+        if (this.id == 6525) {
             return "obby knife";
         }
-        if (this.j == 6526) {
+        if (this.id == 6526) {
             return "obby staff";
         }
-        if (this.j == 6527) {
+        if (this.id == 6527) {
             return "obby mace";
         }
-        if (this.j == 6528) {
+        if (this.id == 6528) {
             return "obby maul";
         }
-        if (this.j == 6568) {
+        if (this.id == 6568) {
             return "obby cape";
         }
-        if (this.j == 7936) {
+        if (this.id == 7936) {
             return "pure ess";
         }
         return null;
@@ -608,49 +608,49 @@ public class ItemDefinition {
     }
 
     public final String getDescription() {
-        if (this.m && this.p != -1 && this.p != this.j) {
-            this.l = "Swap this note at any bank for the equivalent item.";
+        if (this.note && this.unnotedId != -1 && this.unnotedId != this.id) {
+            this.description = "Swap this note at any bank for the equivalent item.";
         }
-        return this.l;
+        return this.description;
     }
 
     public final boolean g() {
-        return this.j == 759 || this.j == 763 || this.j == 765 || this.j == 769 || this.j == 1586 || this.j == 1577 || this.j == 7999;
+        return this.id == 759 || this.id == 763 || this.id == 765 || this.id == 769 || this.id == 1586 || this.id == 1577 || this.id == 7999;
     }
 
     public final boolean isNote() {
-        return this.m;
+        return this.note;
     }
 
     public final boolean hasNote() {
-        return this.n;
+        return this.hasNote;
     }
 
     public final boolean isStackable() {
-        return this.o || this.m;
+        return this.stackable || this.note;
     }
 
     public final int getUnnotedId() {
-        return this.p;
+        return this.unnotedId;
     }
 
     public final int getNotedId() {
-        return this.q;
+        return this.notedId;
     }
 
     public final boolean isMembersOnly() {
-        return this.r;
+        return this.membersOnly;
     }
 
-    public final int n() {
+    public final int getValue() {
         return this.getShopValue();
     }
 
     public final int getTokkulValue() {
-        int n = this.s;
+        int n = this.tokkulValue;
         ItemDefinition itemDefinition = this;
-        if (itemDefinition.m && this.p != -1 && this.p != this.j && n < ItemDefinition.forId(this.p).getTokkulValue()) {
-            n = ItemDefinition.forId(this.p).getTokkulValue();
+        if (itemDefinition.note && this.unnotedId != -1 && this.unnotedId != this.id && n < ItemDefinition.forId(this.unnotedId).getTokkulValue()) {
+            n = ItemDefinition.forId(this.unnotedId).getTokkulValue();
         }
         if (n == 0) {
             return 1;
@@ -659,24 +659,24 @@ public class ItemDefinition {
     }
 
     public final int getShopValue() {
-        if (this.m && this.p != -1 && this.p != this.j && this.F < ItemDefinition.forId(this.p).getShopValue()) {
-            this.F = ItemDefinition.forId(this.p).getShopValue();
+        if (this.note && this.unnotedId != -1 && this.unnotedId != this.id && this.shopValue < ItemDefinition.forId(this.unnotedId).getShopValue()) {
+            this.shopValue = ItemDefinition.forId(this.unnotedId).getShopValue();
         }
-        return this.F;
+        return this.shopValue;
     }
 
     public final int getDonatorPointValue() {
-        if (this.m && this.p != -1 && this.p != this.j && this.w < ItemDefinition.forId(this.p).getDonatorPointValue()) {
-            this.w = ItemDefinition.forId(this.p).getDonatorPointValue();
+        if (this.note && this.unnotedId != -1 && this.unnotedId != this.id && this.donatorPointValue < ItemDefinition.forId(this.unnotedId).getDonatorPointValue()) {
+            this.donatorPointValue = ItemDefinition.forId(this.unnotedId).getDonatorPointValue();
         }
-        return this.w;
+        return this.donatorPointValue;
     }
 
     public final int getLowAlchemyValue() {
-        int n = this.v;
+        int n = this.lowAlchemyValue;
         if (n == 0) {
-            if (this.m && this.p != -1 && this.p != this.j) {
-                n = ItemDefinition.forId(this.p).getLowAlchemyValue();
+            if (this.note && this.unnotedId != -1 && this.unnotedId != this.id) {
+                n = ItemDefinition.forId(this.unnotedId).getLowAlchemyValue();
             }
             if (n == 0) {
                 n = (this.getShopValue() << 1) / 5;
@@ -686,10 +686,10 @@ public class ItemDefinition {
     }
 
     public final int getHighAlchemyValue() {
-        int n = this.u;
+        int n = this.highAlchemyValue;
         if (n == 0) {
-            if (this.m && this.p != -1 && this.p != this.j) {
-                n = ItemDefinition.forId(this.p).getHighAlchemyValue();
+            if (this.note && this.unnotedId != -1 && this.unnotedId != this.id) {
+                n = ItemDefinition.forId(this.unnotedId).getHighAlchemyValue();
             }
             if (n == 0) {
                 n = this.getShopValue() * 3 / 5;
@@ -699,67 +699,67 @@ public class ItemDefinition {
     }
 
     public final int[] getBonuses() {
-        return this.x;
+        return this.bonuses;
     }
 
     public final int getBonus(int n) {
-        return this.x[n];
+        return this.bonuses[n];
     }
 
     public final int getRequiredLevel(int n) {
-        return this.y[n];
+        return this.requiredLevels[n];
     }
 
     public final boolean requiresQuest(int n) {
-        return this.z[n];
+        return this.requiredQuests[n];
     }
 
     public final double getWeight() {
-        return this.D;
+        return this.weight;
     }
 
     public final int getEquipmentSlot() {
-        return this.A;
+        return this.equipmentSlot;
     }
 
-    public final int w() {
-        return this.B;
+    public final int getEquipmentAppearanceType() {
+        return this.equipmentAppearanceType;
     }
 
     public final int getRequiredQuestPoints() {
-        return this.C;
+        return this.requiredQuestPoints;
     }
 
     public final boolean isTwoHanded() {
-        return this.E;
+        return this.twoHanded;
     }
 
-    public final boolean z() {
-        boolean bl = this.G;
-        if (this.m && this.p != -1 && this.p != this.j) {
-            bl = ItemDefinition.forId(this.p).z();
+    public final boolean isUntradeable() {
+        boolean bl = this.untradeable;
+        if (this.note && this.unnotedId != -1 && this.unnotedId != this.id) {
+            bl = ItemDefinition.forId(this.unnotedId).isUntradeable();
         }
         return bl;
     }
 
     public final boolean hasDestroyOption() {
-        boolean bl = this.i;
-        if (this.m && this.p != -1 && this.p != this.j) {
-            bl = ItemDefinition.forId(this.p).hasDestroyOption();
+        boolean bl = this.destroyOption;
+        if (this.note && this.unnotedId != -1 && this.unnotedId != this.id) {
+            bl = ItemDefinition.forId(this.unnotedId).hasDestroyOption();
         }
         return bl;
     }
 
     public static int findIdByName(String object) {
         object = ((String)object).toLowerCase();
-        ItemDefinition[] itemDefinitionArray = c;
-        int n = c.length;
+        ItemDefinition[] itemDefinitionArray = definitionsById;
+        int n = definitionsById.length;
         int n2 = 0;
         while (n2 < n) {
             ItemDefinition itemDefinition = itemDefinitionArray[n2];
             if (itemDefinition.getName().toLowerCase().equalsIgnoreCase((String)object)) {
                 object = itemDefinition;
-                return ((ItemDefinition)object).j;
+                return ((ItemDefinition)object).id;
             }
             ++n2;
         }

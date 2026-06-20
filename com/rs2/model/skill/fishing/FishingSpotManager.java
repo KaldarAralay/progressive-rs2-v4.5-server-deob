@@ -29,7 +29,7 @@ public final class FishingSpotManager {
                 npc.setMovementMode(NpcMovementMode.STATIONARY);
                 npc.setSpawnPosition(spotPositions[n][n2]);
                 npc.setRespawnEnabled(true);
-                World.a(npc);
+                World.registerNpc(npc);
                 activeSpotsByPosition.put(spotPositions[n][n2], npc);
                 ++n2;
             }

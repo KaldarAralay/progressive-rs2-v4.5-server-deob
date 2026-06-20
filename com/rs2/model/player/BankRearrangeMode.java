@@ -4,8 +4,8 @@
 package com.rs2.model.player;
 
 public enum BankRearrangeMode {
-    a,
-    b,
+    SWAP,
+    INSERT,
     c,
     d;
 

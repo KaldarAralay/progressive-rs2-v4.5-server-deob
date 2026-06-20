@@ -12,11 +12,11 @@ public final class DruidicRitualQuest
 extends QuestScript {
     public DruidicRitualQuest(int n) {
         super(29);
-        super.a(4);
+        super.setQuestPointReward(4);
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player stringArray, int n) {
         if (n == 0) {
             stringArray = new String[]{"I can start this quest by speaking to Kaqemeex who is at", "the Druids Circle just North of Taverley."};
             return stringArray;
@@ -41,9 +41,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("4 Quest Points", 12150);
         player2 = player;
@@ -74,8 +74,8 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3) {
-        if (player.getQuestState(this.b()) == 3 && n2 == 2142) {
+    public final boolean handleItemOnObject(Player player, int n, int n2, int n3) {
+        if (player.getQuestState(this.getQuestId()) == 3 && n2 == 2142) {
             if (n == 2136 && player.getInventoryManager().containsItem(2136)) {
                 Player player2 = player;
                 player2.packetSender.sendGameMessage("You dip the raw bear meat in the cauldron.");
@@ -109,7 +109,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         if (n == 455) {
             if (n4 == 0) {
                 if (n2 == 1) {
@@ -247,7 +247,7 @@ extends QuestScript {
                 }
                 if (n2 == 19) {
                     player.getDialogueManager().finishDialogue();
-                    this.c(player);
+                    this.awardCompletionRewards(player);
                     return true;
                 }
             }
@@ -291,13 +291,13 @@ extends QuestScript {
                     }
                     player.getDialogueManager().showPlayerOneLineDialogue("Ok, I'll do that then.", 591);
                     player.getDialogueManager().finishDialogue();
-                    player.setQuestState(this.b(), 3);
+                    player.setQuestState(this.getQuestId(), 3);
                     return true;
                 }
                 if (n2 == 8) {
                     player.getDialogueManager().showNpcFourLineDialogue("It is located somewhere in the mysterious underground", "halls which are located somewhere in the woods just", "South of here. They are too dangerous for me to go", "myself however.", 591);
                     player.getDialogueManager().finishDialogue();
-                    player.setQuestState(this.b(), 3);
+                    player.setQuestState(this.getQuestId(), 3);
                     return true;
                 }
             }
@@ -335,7 +335,7 @@ extends QuestScript {
                     player.getInventoryManager().removeItem(new ItemStack(525, 1));
                     player.getDialogueManager().showNpcThreeLineDialogue("Now go and talk to Kaqemeex and he will introduce", "you to the wonderful world of herblore and potion", "making!", 591);
                     player.getDialogueManager().finishDialogue();
-                    player.setQuestState(this.b(), 4);
+                    player.setQuestState(this.getQuestId(), 4);
                     return true;
                 }
                 if (n2 == 6) {

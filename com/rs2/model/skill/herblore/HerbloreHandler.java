@@ -44,18 +44,18 @@ public final class HerbloreHandler {
                 if (n5 <= 4) break block7;
                 object = String.valueOf(string.substring(0, string.indexOf("(") + 1)) + 4 + ")";
                 object2 = String.valueOf(string.substring(0, string.indexOf("(") + 1)) + (n5 -= 4) + ")";
-                player.getInventoryManager().c(n3);
-                player.getInventoryManager().c(n4);
-                player.getInventoryManager().a(new ItemStack(ItemDefinition.findIdByName((String)object)), n4);
-                player.getInventoryManager().a(new ItemStack(ItemDefinition.findIdByName((String)object2)), n3);
+                player.getInventoryManager().removeItemAtSlot(n3);
+                player.getInventoryManager().removeItemAtSlot(n4);
+                player.getInventoryManager().setItemInSlot(new ItemStack(ItemDefinition.findIdByName((String)object)), n4);
+                player.getInventoryManager().setItemInSlot(new ItemStack(ItemDefinition.findIdByName((String)object2)), n3);
                 return true;
             }
             n6 = n5;
             object = String.valueOf(string.substring(0, string.indexOf("(") + 1)) + n6 + ")";
-            player.getInventoryManager().c(n3);
-            player.getInventoryManager().c(n4);
-            player.getInventoryManager().a(new ItemStack(ItemDefinition.findIdByName((String)object)), n4);
-            player.getInventoryManager().a(new ItemStack(229, 1), n3);
+            player.getInventoryManager().removeItemAtSlot(n3);
+            player.getInventoryManager().removeItemAtSlot(n4);
+            player.getInventoryManager().setItemInSlot(new ItemStack(ItemDefinition.findIdByName((String)object)), n4);
+            player.getInventoryManager().setItemInSlot(new ItemStack(229, 1), n3);
             return true;
         }
         return false;
@@ -90,8 +90,8 @@ public final class HerbloreHandler {
                     Player player2 = player;
                     player2.packetSender.sendGameMessage("This skill is currently disabled.");
                 } else if (player.getQuestState(29) != 1) {
-                    Object object8 = QuestDefinition.b(29);
-                    object8 = ((QuestDefinition)object8).c();
+                    Object object8 = QuestDefinition.forId(29);
+                    object8 = ((QuestDefinition)object8).getName();
                     Player player3 = player;
                     player3.packetSender.sendGameMessage("You need to complete " + (String)object8 + " to do this.");
                 } else {
@@ -117,8 +117,8 @@ public final class HerbloreHandler {
                     Player player5 = player;
                     player5.packetSender.sendGameMessage("This skill is currently disabled.");
                 } else if (player.getQuestState(29) != 1) {
-                    Object object14 = QuestDefinition.b(29);
-                    object13 = ((QuestDefinition)object14).c();
+                    Object object14 = QuestDefinition.forId(29);
+                    object13 = ((QuestDefinition)object14).getName();
                     object14 = player;
                     ((Player)object14).packetSender.sendGameMessage("You need to complete " + (String)object13 + " to do this.");
                 } else {
@@ -142,7 +142,7 @@ public final class HerbloreHandler {
             object = player;
             ((Player)object).packetSender.sendGameMessage("You empty your " + string + ".");
             if (player.getInventoryManager().removeItemFromSlot(itemStack, n)) {
-                player.getInventoryManager().a(new ItemStack(HerbloreHandler.getEmptyContainerItemId(itemStack)), n);
+                player.getInventoryManager().setItemInSlot(new ItemStack(HerbloreHandler.getEmptyContainerItemId(itemStack)), n);
             } else if (player.getInventoryManager().removeItem(itemStack)) {
                 player.getInventoryManager().addItem(new ItemStack(HerbloreHandler.getEmptyContainerItemId(itemStack)));
             }

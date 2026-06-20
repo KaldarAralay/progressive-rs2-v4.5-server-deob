@@ -10,25 +10,25 @@ import com.rs2.util.GameUtil;
 
 final class BarrowsChestDamageTask
 extends TickTask {
-    private /* synthetic */ Player a;
+    private /* synthetic */ Player player;
 
     BarrowsChestDamageTask(Player player, int n) {
-        this.a = player;
+        this.player = player;
         super(50);
     }
 
     @Override
     public final void execute() {
-        if (!this.a.bW()) {
+        if (!this.player.isRegistered()) {
             this.stop();
             return;
         }
-        if (!this.a.bU) {
+        if (!this.player.barrowsChestOpened) {
             this.stop();
             return;
         }
-        this.a.getUpdateState().setGraphic(60, 0);
-        this.a.applyDirectHit(GameUtil.g(5), HitType.NORMAL);
+        this.player.getUpdateState().setGraphic(60, 0);
+        this.player.applyDirectHit(GameUtil.randomInclusive(5), HitType.NORMAL);
     }
 }
 

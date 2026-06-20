@@ -21,6 +21,7 @@ import com.rs2.cache.CacheArchiveEntry;
 import com.rs2.cache.CacheDefinitionIndex;
 import com.rs2.cache.InterfaceDefinition;
 import com.rs2.model.Entity;
+import com.rs2.model.EntityReference;
 import com.rs2.model.EntityTargetMovement;
 import com.rs2.model.GameplayHelper;
 import com.rs2.model.Position;
@@ -175,27 +176,27 @@ import java.util.PriorityQueue;
 public class Player
 extends Entity {
     public int f = ServerSettings.defaultMovementSystem;
-    public int g = 0;
-    public int h = 0;
+    public int localX = 0;
+    public int localY = 0;
     public int i = -1;
     public boolean j = false;
     public ArrayList k = new ArrayList();
     public int l = 0;
-    public int[] m = new int[4];
-    public int[] n = new int[4];
-    public long o;
+    public int[] godWarsKillCounts = new int[4];
+    public int[] lastDisplayedGodWarsKillCounts = new int[4];
+    public long godWarsLastAltarBlessingMillis;
     public long p = -1L;
-    public PlayerGroup q;
-    public PlayerGroup r;
-    public Player s;
+    public PlayerGroup currentGroup;
+    public PlayerGroup pendingGroupCleanup;
+    public Player pendingGroupInviteTarget;
     public boolean t = false;
-    public int u;
-    public int v = 0;
-    public int w = 0;
+    public int godBookPageFlags;
+    public int groupLootRoll = 0;
+    public int craftingThreadUseCount = 0;
     public int gameMode = 0;
     public int y = 0;
     public Position z;
-    public ArrayList A = new ArrayList();
+    public ArrayList temporaryCutsceneNpcs = new ArrayList();
     private int combatLevel;
     private final SelectionKey selectionKey;
     private final ByteBuffer inboundBuffer;
@@ -210,74 +211,74 @@ extends Entity {
     private String password;
     private String submittedPassword;
     private int eR;
-    private int eS = 0;
+    private int bossPetUnlockFlags = 0;
     private int eT;
     private int openInterfaceId = -1;
     public MagicSpellAction B;
     private final ElapsedTimer packetReadTimer = new ElapsedTimer();
-    private final List eW = new LinkedList();
-    private final List eX = new LinkedList();
-    private InventoryManager eY = new InventoryManager(this);
-    private EquipmentManager eZ = new EquipmentManager(this);
-    private SocialManager fa = new SocialManager(this);
-    private PrayerManager fb = new PrayerManager(this);
-    private TeleportManager fc = new TeleportManager(this);
-    private EmoteManager fd = new EmoteManager(this);
-    private SkillManager fe = new SkillManager(this);
-    private QuestManager ff = new QuestManager(this);
-    private RunecraftingObjectHandler fg = new RunecraftingObjectHandler(this);
+    private final List localPlayers = new LinkedList();
+    private final List localNpcs = new LinkedList();
+    private InventoryManager inventoryManager = new InventoryManager(this);
+    private EquipmentManager equipmentManager = new EquipmentManager(this);
+    private SocialManager socialManager = new SocialManager(this);
+    private PrayerManager prayerManager = new PrayerManager(this);
+    private TeleportManager teleportManager = new TeleportManager(this);
+    private EmoteManager emoteManager = new EmoteManager(this);
+    private SkillManager skillManager = new SkillManager(this);
+    private QuestManager questManager = new QuestManager(this);
+    private RunecraftingObjectHandler runecraftingObjectHandler = new RunecraftingObjectHandler(this);
     public PacketSender packetSender = new PacketSender(this);
-    private SlayerManager fh = new SlayerManager(this);
-    private DuelController fi = new DuelController(this);
-    private DuelSession fj = new DuelSession(this);
-    private FightCaveController fk = new FightCaveController(this);
-    private AlchemistPlaygroundController fl = new AlchemistPlaygroundController(this);
-    private CreatureGraveyardController fm = new CreatureGraveyardController(this);
-    private TelekineticTheatreController fn = new TelekineticTheatreController(this);
-    private EnchantmentChamberController fo = new EnchantmentChamberController(this);
-    private DuelInterfaceManager fp = new DuelInterfaceManager(this);
-    private DuelArenaLocationManager fq = new DuelArenaLocationManager(this);
-    private WineFermentationHandler fr = new WineFermentationHandler(this);
-    private FishingHandler fs = new FishingHandler(this);
-    private ItemCombinationHandler ft = new ItemCombinationHandler(this);
-    private SkillGuideManager fu = new SkillGuideManager(this);
-    private FoodHandler fv = new FoodHandler(this);
-    private PotionHandler fw = new PotionHandler(this);
-    private MiningManager fx = new MiningManager(this);
-    private CookingManager fy = new CookingManager(this);
-    private CompostBinManager fz = new CompostBinManager(this);
-    private AllotmentPatchManager fA = new AllotmentPatchManager(this);
-    private FlowerPatchManager fB = new FlowerPatchManager(this);
-    private HerbPatchManager fC = new HerbPatchManager(this);
-    private HopsPatchManager fD = new HopsPatchManager(this);
-    private BushPatchManager fE = new BushPatchManager(this);
-    private PlantPotHandler fF = new PlantPotHandler(this);
-    private TreePatchManager fG = new TreePatchManager(this);
-    private FruitTreePatchManager fH = new FruitTreePatchManager(this);
-    private SpecialTreePatchManager fI = new SpecialTreePatchManager(this);
-    private SpecialCropPatchManager fJ = new SpecialCropPatchManager(this);
-    private FarmingToolStore fK = new FarmingToolStore(this);
-    private FiremakingHandler fL = new FiremakingHandler(this);
-    private BoneBuryingHandler fM = new BoneBuryingHandler(this);
-    private PetManager fN;
-    private SandwichLadyManager fO;
-    private DialogueManager fP;
-    private BankPinManager fQ;
-    private LoginProtocol fR;
-    private Position fS;
+    private SlayerManager slayerManager = new SlayerManager(this);
+    private DuelController duelController = new DuelController(this);
+    private DuelSession duelSession = new DuelSession(this);
+    private FightCaveController fightCaveController = new FightCaveController(this);
+    private AlchemistPlaygroundController alchemistPlaygroundController = new AlchemistPlaygroundController(this);
+    private CreatureGraveyardController creatureGraveyardController = new CreatureGraveyardController(this);
+    private TelekineticTheatreController telekineticTheatreController = new TelekineticTheatreController(this);
+    private EnchantmentChamberController enchantmentChamberController = new EnchantmentChamberController(this);
+    private DuelInterfaceManager duelInterfaceManager = new DuelInterfaceManager(this);
+    private DuelArenaLocationManager duelArenaLocationManager = new DuelArenaLocationManager(this);
+    private WineFermentationHandler wineFermentationHandler = new WineFermentationHandler(this);
+    private FishingHandler fishingHandler = new FishingHandler(this);
+    private ItemCombinationHandler itemCombinationHandler = new ItemCombinationHandler(this);
+    private SkillGuideManager skillGuideManager = new SkillGuideManager(this);
+    private FoodHandler foodHandler = new FoodHandler(this);
+    private PotionHandler potionHandler = new PotionHandler(this);
+    private MiningManager miningManager = new MiningManager(this);
+    private CookingManager cookingManager = new CookingManager(this);
+    private CompostBinManager compostBinManager = new CompostBinManager(this);
+    private AllotmentPatchManager allotmentPatchManager = new AllotmentPatchManager(this);
+    private FlowerPatchManager flowerPatchManager = new FlowerPatchManager(this);
+    private HerbPatchManager herbPatchManager = new HerbPatchManager(this);
+    private HopsPatchManager hopsPatchManager = new HopsPatchManager(this);
+    private BushPatchManager bushPatchManager = new BushPatchManager(this);
+    private PlantPotHandler plantPotHandler = new PlantPotHandler(this);
+    private TreePatchManager treePatchManager = new TreePatchManager(this);
+    private FruitTreePatchManager fruitTreePatchManager = new FruitTreePatchManager(this);
+    private SpecialTreePatchManager specialTreePatchManager = new SpecialTreePatchManager(this);
+    private SpecialCropPatchManager specialCropPatchManager = new SpecialCropPatchManager(this);
+    private FarmingToolStore farmingToolStore = new FarmingToolStore(this);
+    private FiremakingHandler firemakingHandler = new FiremakingHandler(this);
+    private BoneBuryingHandler boneBuryingHandler = new BoneBuryingHandler(this);
+    private PetManager petManager;
+    private SandwichLadyManager sandwichLadyManager;
+    private DialogueManager dialogueManager;
+    private BankPinManager bankPinManager;
+    private LoginProtocol loginProtocol;
+    private Position lastKnownRegionPosition;
     private int playerRights;
-    private boolean fU;
+    private boolean memberFlag;
     public boolean D;
     private int publicChatColor;
-    private int fW;
+    private int idlePacketCount;
     private byte[] publicChatPayload;
     private int[] fY;
     private int gender;
     private final int[] appearanceParts;
     private final int[] appearanceColors;
     private ItemContainer bankContainer;
-    private ItemContainer gd;
-    private ItemContainer ge;
+    private ItemContainer tradeOfferContainer;
+    private ItemContainer partyRoomContainer;
     private int interactionSpellButtonId;
     private int interactionTargetX;
     private int interactionTargetY;
@@ -292,28 +293,28 @@ extends Entity {
     private int selectedInterfaceSlot;
     private int selectedInterfaceId;
     private BankRearrangeMode bankRearrangeMode;
-    private int gt;
-    private boolean gu;
-    private Map gv;
+    private int currentShopId;
+    private boolean registered;
+    private Map combatBonuses;
     private long[] friendsList;
     private long[] ignoreList;
-    private int gy;
-    private TradeState gz;
-    private int[] gA;
-    private int[] gB;
+    private int loginResponseCode;
+    private TradeState tradeState;
+    private int[] queuedLoginItemIds;
+    private int[] queuedLoginItemAmounts;
     private int runEnergyRaw;
-    private boolean gD;
-    private boolean gE;
-    private boolean gF;
-    private int gG;
-    private int gH;
-    private int gI;
-    private boolean[] gJ;
+    private boolean teleporting;
+    private boolean teleportPlacementUpdateRequired;
+    private boolean appearanceUpdateRequired;
+    private int prayerHeadIcon;
+    private int skullIcon;
+    private int donatorPoints;
+    private boolean[] activePrayers;
     private Spellbook spellbook;
     public Spellbook E;
     private boolean autoRetaliate;
-    public boolean F;
-    private boolean gM;
+    public boolean skulled;
+    private boolean actionLocked;
     private int brightness;
     private int mouseButtons;
     private int publicChatEffects;
@@ -331,34 +332,34 @@ extends Entity {
     private int ringOfForgingLife;
     private int bindingNecklaceCharge;
     private int fightMode;
-    private boolean he;
-    private boolean hf;
-    private boolean hg;
-    private boolean hh;
-    private boolean hi;
-    private boolean hj;
-    private boolean hk;
-    private boolean hl;
+    private boolean crystalBowEquipped;
+    private boolean ammunitionDropsEnabled;
+    private boolean dharokSetEffectActive;
+    private boolean ahrimSetEffectActive;
+    private boolean karilSetEffectActive;
+    private boolean toragSetEffectActive;
+    private boolean guthanSetEffectActive;
+    private boolean veracSetEffectActive;
     private List hm;
-    private long hn;
+    private long protectionPrayerDisabledUntil;
     private int ho;
     private int hp;
-    private int hq;
+    private int cookingObjectId;
     private SmithingBarDefinition hr;
     private int hs;
     public String interfaceAction;
     public Npc H;
-    private long ht;
+    private long nameHash;
     private WeaponProfile hu;
-    private SpecialAttackDefinition hv;
-    private List hw;
-    private SpellDefinition hx;
-    private SpellDefinition hy;
-    private boolean hz;
+    private SpecialAttackDefinition specialAttackDefinition;
+    private List pvpCombatReferences;
+    private SpellDefinition queuedCombatSpell;
+    private SpellDefinition autocastSpell;
+    private boolean autocastEnabled;
     public int I;
     public int J;
-    public ItemStack K;
-    public Player L;
+    public ItemStack pendingDialogueItem;
+    public Player pendingItemDropTarget;
     public int pendingGameMode;
     public int N;
     public int O;
@@ -372,19 +373,19 @@ extends Entity {
     public int W;
     public int X;
     private boolean hA;
-    private RectangularArea hB;
-    private List hC;
+    private RectangularArea localViewArea;
+    private List visibleGroundItems;
     private long muteExpires;
     private long banExpires;
-    private boolean[] hF;
-    private int hG;
-    private int hH;
+    private boolean[] barrowsKilledBrothers;
+    private int barrowsKillCount;
+    private int barrowsTargetBrotherIndex;
     private boolean brimhavenOpen;
     private Position hJ;
     private ItemStack hK;
-    private boolean hL;
-    private Npc hM;
-    private ItemStack hN;
+    private boolean bankPinReminderShown;
+    private Npc activeRandomEventNpc;
+    private ItemStack randomEventRequestedItem;
     private int selectedLampSkill;
     private int[] sidebarInterfaceIds;
     public int Y;
@@ -415,18 +416,18 @@ extends Entity {
     private int hR;
     public boolean aw;
     public int ax;
-    private int hS;
-    private int hT;
-    private int hU;
-    private String hV;
+    private int runAnimationOverride;
+    private int standAnimationOverride;
+    private int walkAnimationOverride;
+    private String hostAddress;
     private int inventoryOverlayInterfaceId;
-    private int[] hX;
-    private long hY;
-    private int hZ;
-    private Player ia;
-    private Player ib;
+    private int[] bankPinEntryDigits;
+    private long disconnectGraceExpiresAtMillis;
+    private int coalTruckCoalCount;
+    private Player tradeRequestTarget;
+    private Player duelRequestTarget;
     public boolean ay;
-    public int az;
+    public int botMode;
     public boolean dropPartyLeader;
     public boolean dropPartyPretaskComplete;
     public boolean dropPartyFollower;
@@ -451,7 +452,7 @@ extends Entity {
     private int ic;
     private int id;
     private int ie;
-    private long cfr_renamed_15;
+    private long cfr_renamed_14;
     public int savedWorldRouteIndex;
     public BotWorldRouteChoice currentWorldRouteChoice;
     public int botTaskItemId;
@@ -493,29 +494,29 @@ extends Entity {
     public Player botPvpChatSource;
     public String botPvpChatMessage;
     private int[] questStates;
-    public int[] bI;
-    public int[] bJ;
+    public int[] questProgressFlags;
+    public int[] questHookStates;
     public int bK;
     public ArrayList visibleDynamicObjects;
     public ArrayList pendingDynamicObjectRemovals;
     public int bN;
     public int bO;
     public int bP;
-    private String ii;
-    private String ij;
-    public boolean bQ;
-    public int bR;
-    public int bS;
-    public int[] bT;
-    public boolean bU;
+    private String profileString1;
+    private String profileString2;
+    public boolean barrowsDoorPuzzleSolved;
+    public int activeBarrowsDoorPuzzleIndex;
+    public int barrowsRewardPotential;
+    public int[] activeBarrowsDoorPuzzleAnswerObjectIds;
+    public boolean barrowsChestOpened;
     public String bV;
     public int flourMillHopperGrainCount;
     public boolean bX;
     public long bY;
     public int bZ;
     public int ca;
-    public String cb;
-    public long cc;
+    public String reservedVersion11String;
+    public long membershipExpiresMillis;
     private boolean ik;
     public boolean cd;
     public String[] ce;
@@ -526,7 +527,7 @@ extends Entity {
     public int gatheringHazardCounter;
     public long ck;
     public long cl;
-    public int cm;
+    public int familyCrestGauntletItemId;
     public boolean cn;
     public long co;
     public Entity botLootResumeTarget;
@@ -570,8 +571,8 @@ extends Entity {
     public int botQueuedPrayerId;
     public int botEatDelayTicks;
     public int botWeaponSwapDelayTicks;
-    public boolean de;
-    public boolean df;
+    public boolean isBot;
+    public boolean bonesToPeachesUnlocked;
     private boolean il;
     private ArrayList im;
     public int botPathSegmentIndex;
@@ -586,34 +587,34 @@ extends Entity {
     public boolean botEnabled;
     public int botInteractionOption;
     public String botTaskState;
-    public int ds;
-    public String dt;
+    public int pendingCropResurrectionPatchIndex;
+    public String pendingCropResurrectionPatchType;
     public int currentBankTab;
     public int dv;
-    public boolean[] dw;
-    public int[] dx;
-    public int[] dy;
-    public int[] dz;
-    public boolean[] dA;
-    public int[] dB;
-    public int[] dC;
-    public int[] dD;
-    public int[] dE;
-    public boolean[] dF;
-    public int dG;
-    public int dH;
-    public int dI;
-    public int dJ;
-    public int dK;
-    public int dL;
-    public int dM;
-    public int dN;
-    public int dO;
+    public boolean[] grandExchangeSellOfferFlags;
+    public int[] grandExchangeItemIds;
+    public int[] grandExchangeQuantities;
+    public int[] grandExchangeUnitPrices;
+    public boolean[] grandExchangeCancelledFlags;
+    public int[] grandExchangeCompletedQuantities;
+    public int[] grandExchangeTotalPrices;
+    public int[] grandExchangePrimaryCollectAmounts;
+    public int[] grandExchangeSecondaryCollectAmounts;
+    public boolean[] grandExchangeFinishMessagePending;
+    public int selectedGrandExchangeItemId;
+    public int selectedGrandExchangeQuantity;
+    public int selectedGrandExchangeUnitPrice;
+    public int selectedGrandExchangeSlot;
+    public int mageArenaFlamesOfZamorakCastsRemaining;
+    public int mageArenaClawsOfGuthixCastsRemaining;
+    public int mageArenaSaradominStrikeCastsRemaining;
+    public int mageArenaProgressStage;
+    public int fightCaveWaveIndex;
     public boolean dP;
-    private ArrayList in;
+    private ArrayList fightCaveNpcs;
     public boolean dQ;
     public long dR;
-    public int dS;
+    public int legacyQuestPoints;
     public int dT;
     public int dU;
     public int dV;
@@ -624,9 +625,9 @@ extends Entity {
     public int ea;
     public int eb;
     public int ec;
-    public int ed;
+    public int barrowsRunsCompleted;
     public int ee;
-    public boolean ef;
+    public boolean loginRestrictionExempt;
     public long eg;
     public long eh;
     public long ei;
@@ -638,7 +639,7 @@ extends Entity {
     public boolean eo;
     public int[] ep;
     public int eq;
-    public int er;
+    public int activeEnvironmentalHazardId;
     public int es;
     public int et;
     private boolean io;
@@ -654,31 +655,31 @@ extends Entity {
     public String ex;
     private String iv;
     public String ey;
-    public int ez;
+    public int fightCaveSpawnRotation;
     public int eA;
     public int eB;
     public boolean eC;
     private static Polygon iw = null;
-    public int eD;
-    public int eE;
-    public boolean eF;
-    public boolean eG;
-    public int eH;
-    public int eI;
+    public int savedCacheVersion;
+    public int enterTheAbyssMiniquestState;
+    public boolean swampCaveRopeAttached;
+    public boolean lampOilStillFilled;
+    public int caveInsectSwarmStage;
+    public int swampGasFlareState;
 
-    public final void aK() {
-        if (this.A.size() > 0) {
-            for (Npc npc : this.A) {
+    public final void clearTemporaryCutsceneNpcs() {
+        if (this.temporaryCutsceneNpcs.size() > 0) {
+            for (Npc npc : this.temporaryCutsceneNpcs) {
                 if (npc == null) continue;
                 GameplayHelper.a(npc);
             }
         }
-        this.A = new ArrayList();
+        this.temporaryCutsceneNpcs = new ArrayList();
     }
 
-    public final Npc o(int n) {
-        if (this.A.size() > 0) {
-            for (Npc npc : this.A) {
+    public final Npc findTemporaryCutsceneNpc(int n) {
+        if (this.temporaryCutsceneNpcs.size() > 0) {
+            for (Npc npc : this.temporaryCutsceneNpcs) {
                 if (npc == null || npc.getNpcId() != n) continue;
                 return npc;
             }
@@ -686,7 +687,7 @@ extends Entity {
         return null;
     }
 
-    public final void p(int n) {
+    public final void spawnTenthSquadSigilNpcs(int n) {
         Npc npc = new Npc(1412);
         Npc npc2 = new Npc(1426);
         Npc npc3 = new Npc(1414);
@@ -702,11 +703,11 @@ extends Entity {
         npc3.getUpdateState().setGraphic(86, 25);
         npc4.getUpdateState().setGraphic(86, 25);
         npc5.getUpdateState().setGraphic(86, 25);
-        this.A.add(npc);
-        this.A.add(npc2);
-        this.A.add(npc3);
-        this.A.add(npc4);
-        this.A.add(npc5);
+        this.temporaryCutsceneNpcs.add(npc);
+        this.temporaryCutsceneNpcs.add(npc2);
+        this.temporaryCutsceneNpcs.add(npc3);
+        this.temporaryCutsceneNpcs.add(npc4);
+        this.temporaryCutsceneNpcs.add(npc5);
         if (this.questStates[62] == 21 && !this.l(62, 16)) {
             Player player = this;
             player.packetSender.sendEntityHintIcon(1, npc.getIndex());
@@ -719,10 +720,10 @@ extends Entity {
     }
 
     private boolean l(int n, int n2) {
-        if (this.bI[62] == 0) {
+        if (this.questProgressFlags[62] == 0) {
             return false;
         }
-        return (this.bI[62] & GameUtil.b(16)) != 0;
+        return (this.questProgressFlags[62] & GameUtil.bitFlag(16)) != 0;
     }
 
     public final void d(int n, int n2) {
@@ -746,7 +747,7 @@ extends Entity {
         ((Player)object).botTaskRequiredItems = itemStackArray;
     }
 
-    private boolean A(boolean bl) {
+    private boolean recoverBotTaskStall(boolean bl) {
         if (bl) {
             Player player = this;
             System.out.println("Detected possibly frozen bot: " + player.username + " at: " + this.getPosition() + ", trying to apply fix.");
@@ -757,13 +758,13 @@ extends Entity {
                 this.moveTo(this.currentBotTask.getTaskPosition());
                 Player player = this;
                 System.out.println(String.valueOf(player.username) + " teleported to task location: " + this.currentBotTask.getTaskPosition());
-                this.e();
+                this.startCurrentBotTaskInteraction();
             } else {
                 Player player = this;
                 System.out.println(String.valueOf(player.username) + " can't seem to continue its task.");
                 System.out.println("Reseting to lumbridge and picking new task.");
                 this.iq = 0;
-                this.a();
+                this.resetBotToLumbridge();
             }
             return true;
         }
@@ -776,7 +777,7 @@ extends Entity {
         return false;
     }
 
-    private void a() {
+    private void resetBotToLumbridge() {
         this.bB = true;
         Object object = this;
         this.botShopSellItemIds.clear();
@@ -786,13 +787,13 @@ extends Entity {
         World.getTaskScheduler().schedule((TickTask)object);
     }
 
-    public final boolean aL() {
+    public final boolean hasBotStalled() {
         int n = this.getPosition().getX();
         int n2 = this.getPosition().getY();
         int n3 = this.getPosition().getPlane();
         Player player = this;
-        long l = player.fe.getTotalExperience();
-        if (n == this.ic && n2 == this.id && n3 == this.ie && l == this.cfr_renamed_15) {
+        long l = player.skillManager.getTotalExperience();
+        if (n == this.ic && n2 == this.id && n3 == this.ie && l == this.cfr_renamed_14) {
             ++this.ig;
             if (this.ig == 5) {
                 return true;
@@ -803,11 +804,11 @@ extends Entity {
         this.ic = n;
         this.id = n2;
         this.ie = n3;
-        this.cfr_renamed_15 = l;
+        this.cfr_renamed_14 = l;
         return false;
     }
 
-    public final void aM() {
+    public final void resumeBotTaskState() {
         int n;
         Object object;
         this.botEnabled = true;
@@ -816,7 +817,7 @@ extends Entity {
         if (BotPlayer.forceResetBotNames.contains(player.username.toLowerCase())) {
             player = this;
             System.out.println(String.valueOf(player.username) + " was force reseted.");
-            this.a();
+            this.resetBotToLumbridge();
             return;
         }
         Object object2 = null;
@@ -832,20 +833,20 @@ extends Entity {
         if (this.currentBotTask == null) {
             player = this;
             System.out.println("Reseting " + player.username + " to lumbridge and picking new task");
-            if (!this.de) {
+            if (!this.isBot) {
                 player = this;
                 player.packetSender.sendGameMessage("You didn't have a bot task to continue.");
                 player = this;
                 player.packetSender.sendGameMessage("You have been reset to Lumbridge and given new task.");
             }
-            this.a();
+            this.resetBotToLumbridge();
             return;
         }
         if (this.currentBotTask.taskRouteSegments != null && this.botPathSegmentIndex > this.currentBotTask.taskRouteSegments.length - 1) {
             player = this;
             System.out.println(String.valueOf(player.username) + " has bugged task path at: " + this.getPosition());
             System.out.println("Reseting to lumbridge and picking new task");
-            this.a();
+            this.resetBotToLumbridge();
             return;
         }
         if (this.savedWorldRouteIndex != -1) {
@@ -857,7 +858,7 @@ extends Entity {
             CacheArchiveEntry.startTradeOfferTick(this);
         }
         if (this.currentBotTask.membersOnly && ServerSettings.freeToPlayWorld) {
-            this.a();
+            this.resetBotToLumbridge();
             return;
         }
         boolean bl = true;
@@ -875,19 +876,19 @@ extends Entity {
             SmeltingHandler.prepareBotSmeltingRequirements(this, this.botTaskItemId);
         }
         if (this.botTaskState.equals("do task") && this.currentBotTaskTypeId != 14) {
-            int n2 = GameUtil.b(this.getPosition(), this.currentBotTask.getTaskPosition());
-            if (n2 >= 60 && !this.A(bl)) {
+            int n2 = GameUtil.getDistance(this.getPosition(), this.currentBotTask.getTaskPosition());
+            if (n2 >= 60 && !this.recoverBotTaskStall(bl)) {
                 return;
             }
             if (this.currentBotTaskTypeId == 3) {
                 Player player2 = this;
-                if (player2.eY.getItemAmount(this.botTaskItemId) == 0) {
+                if (player2.inventoryManager.getItemAmount(this.botTaskItemId) == 0) {
                     object2 = CookableFoodDefinition.forRawItemId(this.botTaskItemId);
                     if (object2 != null) {
                         player2 = this;
-                        if (player2.eY.getContainer().containsItem(((CookableFoodDefinition)((Object)object2)).getBurntItemId())) {
+                        if (player2.inventoryManager.getContainer().containsItem(((CookableFoodDefinition)((Object)object2)).getBurntItemId())) {
                             player2 = this;
-                            ItemStack[] itemStackArray = player2.eY.getContainer().getItems();
+                            ItemStack[] itemStackArray = player2.inventoryManager.getContainer().getItems();
                             int n3 = itemStackArray.length;
                             int n4 = 0;
                             while (n4 < n3) {
@@ -907,7 +908,7 @@ extends Entity {
                 this.botUseTaskItemOnTarget = true;
             }
         }
-        if (this.botTaskState.equals("empty inventory") && this.currentBotTaskTypeId != 14 && (n = GameUtil.b(this.getPosition(), this.currentBotTask.getStartPosition())) >= 60 && !this.A(bl)) {
+        if (this.botTaskState.equals("empty inventory") && this.currentBotTaskTypeId != 14 && (n = GameUtil.getDistance(this.getPosition(), this.currentBotTask.getStartPosition())) >= 60 && !this.recoverBotTaskStall(bl)) {
             return;
         }
         if (!(this.botTaskState.equals("walk to task") || this.botTaskState.equals("walk to bank") || this.botTaskState.equals("walk towards task"))) {
@@ -937,7 +938,7 @@ extends Entity {
                 Player player3 = this;
                 System.out.println(String.valueOf(player3.username) + " is trying to continue path while not having one at: " + this.getPosition());
                 System.out.println("Reseting to lumbridge and picking new task");
-                this.a();
+                this.resetBotToLumbridge();
                 return;
             }
             BotWorldRouteWalker.continueWorldRoute(this, object2);
@@ -948,7 +949,7 @@ extends Entity {
                 Player player4 = this;
                 System.out.println(String.valueOf(player4.username) + " is trying to continue path while not having one at: " + this.getPosition());
                 System.out.println("Reseting to lumbridge and picking new task");
-                this.a();
+                this.resetBotToLumbridge();
                 return;
             }
             BotWorldRouteWalker.continueWorldRoute(this, object2);
@@ -959,7 +960,7 @@ extends Entity {
                 Player player5 = this;
                 System.out.println(String.valueOf(player5.username) + " is trying to continue path while not having one at: " + this.getPosition());
                 System.out.println("Reseting to lumbridge and picking new task");
-                this.a();
+                this.resetBotToLumbridge();
                 return;
             }
             BotWorldRouteWalker.continueWorldRoute(this, object2);
@@ -973,7 +974,7 @@ extends Entity {
             this.botInteractionOption = this.currentBotTask.getInteractionOption(this);
             if (!this.dropPartyLeader && !this.currentBotTask.usesCustomTaskAction) {
                 int n5;
-                if (this.botInteractionTargetIds.size() == 1 && (n5 = ((Integer)this.botInteractionTargetIds.get(0)).intValue()) == -1 && !this.A(bl)) {
+                if (this.botInteractionTargetIds.size() == 1 && (n5 = ((Integer)this.botInteractionTargetIds.get(0)).intValue()) == -1 && !this.recoverBotTaskStall(bl)) {
                     return;
                 }
                 if (this.currentBotTask.interactionTargetType == 0) {
@@ -1032,7 +1033,7 @@ extends Entity {
         this.queuePublicChatMessage(string, 0, 0);
     }
 
-    public final void aN() {
+    public final void resetAnimation() {
         this.getUpdateState().setAnimation(-1);
     }
 
@@ -1044,8 +1045,8 @@ extends Entity {
         if (!ServerSettings.skipRequirementsForMissingQuests || bl) {
             return this.questStates[n];
         }
-        QuestScript questScript = QuestDefinition.a(n);
-        if (questScript.b() == -1) {
+        QuestScript questScript = QuestDefinition.getQuestScript(n);
+        if (questScript.getQuestId() == -1) {
             return 1;
         }
         return this.questStates[n];
@@ -1068,7 +1069,7 @@ extends Entity {
         Player player;
         block10: {
             block9: {
-                if (this.de) {
+                if (this.isBot) {
                     return true;
                 }
                 if (ServerSettings.membershipRequirementMode == 0) {
@@ -1080,23 +1081,23 @@ extends Entity {
                 player = this;
                 if (player.playerRights >= 2) break block9;
                 player = this;
-                if (!player.fU || ServerSettings.membershipDaysPerPurchase > 0) break block10;
+                if (!player.memberFlag || ServerSettings.membershipDaysPerPurchase > 0) break block10;
             }
             return true;
         }
         if (ServerSettings.membershipRequirementMode == 2) {
             player = this;
-            if (player.fe.getTotalLevel() >= ServerSettings.membershipRequirementValue) {
+            if (player.skillManager.getTotalLevel() >= ServerSettings.membershipRequirementValue) {
                 return true;
             }
         }
-        if (ServerSettings.membershipRequirementMode == 3 && this.dA() >= ServerSettings.membershipRequirementValue) {
+        if (ServerSettings.membershipRequirementMode == 3 && this.getQuestPoints() >= ServerSettings.membershipRequirementValue) {
             return true;
         }
-        return ServerSettings.membershipDaysPerPurchase > 0 && this.aQ() > 0;
+        return ServerSettings.membershipDaysPerPurchase > 0 && this.getMembershipDaysRemaining() > 0;
     }
 
-    public final int aQ() {
+    public final int getMembershipDaysRemaining() {
         block7: {
             block5: {
                 block6: {
@@ -1104,19 +1105,19 @@ extends Entity {
                     Player player = this;
                     if (player.playerRights >= 2) break block5;
                     player = this;
-                    if (player.fU && ServerSettings.membershipDaysPerPurchase <= 0) break block5;
+                    if (player.memberFlag && ServerSettings.membershipDaysPerPurchase <= 0) break block5;
                     if (ServerSettings.membershipRequirementMode != 2) break block6;
                     player = this;
-                    if (player.fe.getTotalLevel() >= ServerSettings.membershipRequirementValue) break block5;
+                    if (player.skillManager.getTotalLevel() >= ServerSettings.membershipRequirementValue) break block5;
                 }
-                if (ServerSettings.membershipRequirementMode != 3 || this.dA() < ServerSettings.membershipRequirementValue) break block7;
+                if (ServerSettings.membershipRequirementMode != 3 || this.getQuestPoints() < ServerSettings.membershipRequirementValue) break block7;
             }
             return 365;
         }
-        if (this.cc == 0L) {
+        if (this.membershipExpiresMillis == 0L) {
             return 0;
         }
-        int n = GameplayHelper.a(System.currentTimeMillis(), this.cc);
+        int n = GameplayHelper.a(System.currentTimeMillis(), this.membershipExpiresMillis);
         if (n < 0) {
             n = 0;
             this.ik = true;
@@ -1128,33 +1129,33 @@ extends Entity {
         return System.currentTimeMillis() - this.botTaskStartTimeMillis;
     }
 
-    public final void a(String string, int n) {
-        this.dt = string;
-        this.ds = n;
+    public final void setPendingCropResurrectionTarget(String string, int n) {
+        this.pendingCropResurrectionPatchType = string;
+        this.pendingCropResurrectionPatchIndex = n;
     }
 
-    public final void aS() {
-        this.dt = "";
-        this.ds = -1;
+    public final void clearPendingCropResurrectionTarget() {
+        this.pendingCropResurrectionPatchType = "";
+        this.pendingCropResurrectionPatchIndex = -1;
     }
 
-    public final ArrayList aT() {
-        return this.in;
+    public final ArrayList getFightCaveNpcs() {
+        return this.fightCaveNpcs;
     }
 
-    public final void aU() {
-        this.in.clear();
+    public final void clearFightCaveNpcs() {
+        this.fightCaveNpcs.clear();
     }
 
-    public final void a(Npc npc) {
-        this.in.add(npc);
+    public final void addFightCaveNpc(Npc npc) {
+        this.fightCaveNpcs.add(npc);
     }
 
-    public final void b(Npc npc) {
-        if (this.in.contains(npc)) {
-            this.in.remove(npc);
+    public final void removeFightCaveNpc(Npc npc) {
+        if (this.fightCaveNpcs.contains(npc)) {
+            this.fightCaveNpcs.remove(npc);
         }
-        this.packetSender.sendGameMessage("Enemies left: " + this.in.size());
+        this.packetSender.sendGameMessage("Enemies left: " + this.fightCaveNpcs.size());
     }
 
     public final int aV() {
@@ -1189,12 +1190,12 @@ extends Entity {
         this.tradeMode = n;
     }
 
-    public final int aZ() {
+    public final int getMaxedSkillCount() {
         int n = 0;
         int n2 = 0;
         while (n2 < 22) {
             Player player = this;
-            int n3 = player.fe.getBaseLevel(n2);
+            int n3 = player.skillManager.getBaseLevel(n2);
             if (n3 == 99) {
                 ++n;
             }
@@ -1233,22 +1234,22 @@ extends Entity {
         }
     }
 
-    private long c() {
+    private long getSessionPlaytimeMillis() {
         return System.currentTimeMillis() - this.ei;
     }
 
-    public final long ba() {
-        return this.ej + this.c();
+    public final long getTotalPlaytimeMillis() {
+        return this.ej + this.getSessionPlaytimeMillis();
     }
 
-    public final boolean bb() {
-        return this.aq(2412) || this.aq(2413) || this.aq(2414);
+    public final boolean hasMageArenaGodCape() {
+        return this.ownsItem(2412) || this.ownsItem(2413) || this.ownsItem(2414);
     }
 
     public final void a(Player object, int n) {
         boolean bl = true;
         Player player = object;
-        ((Player)object).gM = bl;
+        ((Player)object).actionLocked = bl;
         object = new DropGodCapeTask(this, 4, (Player)object, n);
         World.getTaskScheduler().schedule((TickTask)object);
     }
@@ -1256,25 +1257,25 @@ extends Entity {
     /*
      * Unable to fully structure code
      */
-    public final void bc() {
+    public final void process() {
         block28: {
             block29: {
                 this.pruneExpiredDamageContributions();
                 var1_1 = this;
-                var2_4 = var1_1.hw.size();
+                var2_4 = var1_1.pvpCombatReferences.size();
                 if (var2_4 != 0) {
-                    var3_7 = var1_1.hw.iterator();
+                    var3_7 = var1_1.pvpCombatReferences.iterator();
                     while (var3_7.hasNext()) {
-                        if (!((PvpCombatReference)var3_7.next()).b()) continue;
+                        if (!((PvpCombatReference)var3_7.next()).hasExpired()) continue;
                         var3_7.remove();
                     }
-                    var2_4 = var1_1.hw.size();
+                    var2_4 = var1_1.pvpCombatReferences.size();
                     if (var2_4 == 0) {
-                        var1_1.B(false);
+                        var1_1.setSkulled(false);
                     }
                 }
-                this.fb.drainPrayerPoints();
-                this.fe.startRestorationTasks();
+                this.prayerManager.drainPrayerPoints();
+                this.skillManager.startRestorationTasks();
                 var2_5 = this.hm.iterator();
                 while (var2_5.hasNext()) {
                     var2_5.next();
@@ -1282,18 +1283,18 @@ extends Entity {
                 var1_1 = this;
                 if (var1_1.botEnabled) break block28;
                 var6_9 = var1_1;
-                if (var6_9.fW > 20 || !var1_1.getSingleCombatTimer().hasElapsed() && !var1_1.isInMultiCombatArea()) break block28;
+                if (var6_9.idlePacketCount > 20 || !var1_1.getSingleCombatTimer().hasElapsed() && !var1_1.isInMultiCombatArea()) break block28;
                 var6_9 = var1_1;
-                if (var6_9.H == null || var1_1.dN >= 5) break block29;
+                if (var6_9.H == null || var1_1.mageArenaProgressStage >= 5) break block29;
                 var6_9 = var1_1;
                 if (var6_9.H.getNpcId() < 907) break block29;
                 var6_9 = var1_1;
                 if (var6_9.H.getNpcId() <= 911) break block28;
             }
             var6_9 = var1_1;
-            if (var6_9.eZ.getItemIdAtSlot(3) == 4024 && var1_1.p()) break block28;
+            if (var6_9.equipmentManager.getItemIdAtSlot(3) == 4024 && var1_1.p()) break block28;
             var6_9 = var1_1;
-            for (Object var2_5 : var6_9.eX) {
+            for (Object var2_5 : var6_9.localNpcs) {
                 block31: {
                     block35: {
                         block34: {
@@ -1336,29 +1337,29 @@ extends Entity {
                         v0 = true;
                     }
                 }
-                if (!v0 || !GameUtil.a(var1_1.getPosition(), var2_5.getPosition(), false)) continue;
+                if (!v0 || !GameUtil.hasClearPath(var1_1.getPosition(), var2_5.getPosition(), false)) continue;
                 var4_11 = var2_5.getDefinition().getAggressionRange();
-                if (ServerSettings.content2007Enabled && (var2_5.getNpcId() != 6203 && var2_5.getNpcId() != 6204 && var2_5.getNpcId() != 6206 && var2_5.getNpcId() != 6208 && GodWarsDungeonManager.e.contains(var2_5.getNpcId()) && (var1_1.m("zamorak") || var1_1.m("unholy")) || var2_5.getNpcId() != 6247 && var2_5.getNpcId() != 6248 && var2_5.getNpcId() != 6250 && var2_5.getNpcId() != 6252 && GodWarsDungeonManager.d.contains(var2_5.getNpcId()) && (var1_1.m("saradomin") || var1_1.m("holy")) || var2_5.getNpcId() != 6222 && var2_5.getNpcId() != 6223 && var2_5.getNpcId() != 6225 && var2_5.getNpcId() != 6227 && GodWarsDungeonManager.b.contains(var2_5.getNpcId()) && var1_1.m("armadyl") || var2_5.getNpcId() != 6260 && var2_5.getNpcId() != 6261 && var2_5.getNpcId() != 6263 && var2_5.getNpcId() != 6265 && GodWarsDungeonManager.c.contains(var2_5.getNpcId()) && var1_1.m("bandos"))) continue;
+                if (ServerSettings.content2007Enabled && (var2_5.getNpcId() != 6203 && var2_5.getNpcId() != 6204 && var2_5.getNpcId() != 6206 && var2_5.getNpcId() != 6208 && GodWarsDungeonManager.zamorakNpcIds.contains(var2_5.getNpcId()) && (var1_1.m("zamorak") || var1_1.m("unholy")) || var2_5.getNpcId() != 6247 && var2_5.getNpcId() != 6248 && var2_5.getNpcId() != 6250 && var2_5.getNpcId() != 6252 && GodWarsDungeonManager.saradominNpcIds.contains(var2_5.getNpcId()) && (var1_1.m("saradomin") || var1_1.m("holy")) || var2_5.getNpcId() != 6222 && var2_5.getNpcId() != 6223 && var2_5.getNpcId() != 6225 && var2_5.getNpcId() != 6227 && GodWarsDungeonManager.armadylNpcIds.contains(var2_5.getNpcId()) && var1_1.m("armadyl") || var2_5.getNpcId() != 6260 && var2_5.getNpcId() != 6261 && var2_5.getNpcId() != 6263 && var2_5.getNpcId() != 6265 && GodWarsDungeonManager.bandosNpcIds.contains(var2_5.getNpcId()) && var1_1.m("bandos"))) continue;
                 if (var2_5.getNpcId() == 912) {
                     var6_9 = var1_1;
-                    if (var6_9.eZ.getItemIdAtSlot(1) == 2414) {
-                        if (!GameUtil.a(var2_5.getSpawnPosition(), var1_1.getPosition(), var4_11) || GameUtil.h(4) != 0) continue;
+                    if (var6_9.equipmentManager.getItemIdAtSlot(1) == 2414) {
+                        if (!GameUtil.isWithinDistance(var2_5.getSpawnPosition(), var1_1.getPosition(), var4_11) || GameUtil.randomInt(4) != 0) continue;
                         var2_5.getUpdateState().setForcedText("Hail Zamorak!");
                         continue;
                     }
                 }
                 if (var2_5.getNpcId() == 913) {
                     var6_9 = var1_1;
-                    if (var6_9.eZ.getItemIdAtSlot(1) == 2412) {
-                        if (!GameUtil.a(var2_5.getSpawnPosition(), var1_1.getPosition(), var4_11) || GameUtil.h(4) != 0) continue;
+                    if (var6_9.equipmentManager.getItemIdAtSlot(1) == 2412) {
+                        if (!GameUtil.isWithinDistance(var2_5.getSpawnPosition(), var1_1.getPosition(), var4_11) || GameUtil.randomInt(4) != 0) continue;
                         var2_5.getUpdateState().setForcedText("Hail Saradomin!");
                         continue;
                     }
                 }
                 if (var2_5.getNpcId() == 914) {
                     var6_9 = var1_1;
-                    if (var6_9.eZ.getItemIdAtSlot(1) == 2413) {
-                        if (!GameUtil.a(var2_5.getSpawnPosition(), var1_1.getPosition(), var4_11) || GameUtil.h(4) != 0) continue;
+                    if (var6_9.equipmentManager.getItemIdAtSlot(1) == 2413) {
+                        if (!GameUtil.isWithinDistance(var2_5.getSpawnPosition(), var1_1.getPosition(), var4_11) || GameUtil.randomInt(4) != 0) continue;
                         var2_5.getUpdateState().setForcedText("Hail Guthix!");
                         continue;
                     }
@@ -1369,7 +1370,7 @@ extends Entity {
                 if (var2_5.getNpcId() == 2894 || var2_5.getNpcId() == 2896) {
                     var4_11 = 10;
                 }
-                if (!GameUtil.a(var2_5.getSpawnPosition(), var1_1.getPosition(), var4_11) || (var4_12 = CombatCycleEvent.validateAttack((Entity)var2_5, var1_1)) != AttackValidationResult.VALID) continue;
+                if (!GameUtil.isWithinDistance(var2_5.getSpawnPosition(), var1_1.getPosition(), var4_11) || (var4_12 = CombatCycleEvent.validateAttack((Entity)var2_5, var1_1)) != AttackValidationResult.VALID) continue;
                 if (var2_5.getNpcId() == 180) {
                     var2_5.getUpdateState().setForcedText("Stand and deliver!");
                 }
@@ -1399,7 +1400,7 @@ extends Entity {
         }
         if (this.getRunEnergyPercent() < 100 && var1_2) {
             var6_9 = var1_3 = this;
-            var2_6 = var1_3.fe.getCurrentLevels()[16];
+            var2_6 = var1_3.skillManager.getCurrentLevels()[16];
             if (ServerSettings.freeToPlayWorld) {
                 var2_6 = 1;
             }
@@ -1417,12 +1418,12 @@ extends Entity {
     public Player(SelectionKey object) {
         new EquipmentKeywordBootstrap(this);
         new DairyChurnHandler(this);
-        this.fN = new PetManager(this);
-        this.fO = new SandwichLadyManager(this);
-        this.fP = new DialogueManager(this);
-        this.fQ = new BankPinManager(this);
-        this.fR = new LoginProtocol();
-        this.fS = new Position(0, 0, 0);
+        this.petManager = new PetManager(this);
+        this.sandwichLadyManager = new SandwichLadyManager(this);
+        this.dialogueManager = new DialogueManager(this);
+        this.bankPinManager = new BankPinManager(this);
+        this.loginProtocol = new LoginProtocol();
+        this.lastKnownRegionPosition = new Position(0, 0, 0);
         this.playerRights = 0;
         this.D = false;
         this.fY = new int[4];
@@ -1430,8 +1431,8 @@ extends Entity {
         this.appearanceParts = new int[7];
         this.appearanceColors = new int[5];
         this.bankContainer = new ItemContainer(ItemContainerType.b, 288, 1);
-        this.gd = new ItemContainer(ItemContainerType.a, 28);
-        this.ge = new ItemContainer(ItemContainerType.a, 8);
+        this.tradeOfferContainer = new ItemContainer(ItemContainerType.a, 28);
+        this.partyRoomContainer = new ItemContainer(ItemContainerType.a, 8);
         this.interactionSpellButtonId = -1;
         this.interactionTargetX = -1;
         this.interactionTargetY = -1;
@@ -1440,19 +1441,19 @@ extends Entity {
         this.selectedItemId = -1;
         this.selectedItemInterfaceId = -1;
         this.selectedItemSlot = -1;
-        this.bankRearrangeMode = BankRearrangeMode.a;
-        this.gv = new HashMap();
+        this.bankRearrangeMode = BankRearrangeMode.SWAP;
+        this.combatBonuses = new HashMap();
         this.friendsList = new long[200];
         this.ignoreList = new long[100];
-        this.gy = 2;
-        this.gz = TradeState.a;
-        this.gA = new int[28];
-        this.gB = new int[28];
+        this.loginResponseCode = 2;
+        this.tradeState = TradeState.NONE;
+        this.queuedLoginItemIds = new int[28];
+        this.queuedLoginItemAmounts = new int[28];
         this.runEnergyRaw = 10000;
-        this.gG = -1;
-        this.gH = -1;
-        this.gI = 0;
-        this.gJ = new boolean[18];
+        this.prayerHeadIcon = -1;
+        this.skullIcon = -1;
+        this.donatorPoints = 0;
+        this.activePrayers = new boolean[18];
         this.spellbook = Spellbook.MODERN;
         this.E = Spellbook.MODERN;
         this.autoRetaliate = false;
@@ -1477,9 +1478,9 @@ extends Entity {
         new ArrayList();
         this.interfaceAction = "";
         this.hu = WeaponProfile.FISTS;
-        this.hz = false;
-        this.hC = new LinkedList();
-        this.hF = new boolean[6];
+        this.autocastEnabled = false;
+        this.visibleGroundItems = new LinkedList();
+        this.barrowsKilledBrothers = new boolean[6];
         int[] nArray = new int[14];
         nArray[0] = 2423;
         nArray[1] = 3917;
@@ -1501,12 +1502,12 @@ extends Entity {
         this.ak = -1;
         this.av = new ItemStack[25];
         this.aw = false;
-        this.hS = -1;
-        this.hT = -1;
-        this.hU = -1;
-        this.hX = new int[4];
+        this.runAnimationOverride = -1;
+        this.standAnimationOverride = -1;
+        this.walkAnimationOverride = -1;
+        this.bankPinEntryDigits = new int[4];
         this.ay = false;
-        this.az = -1;
+        this.botMode = -1;
         this.dropPartyLeader = false;
         this.dropPartyPretaskComplete = false;
         this.dropPartyFollower = false;
@@ -1530,7 +1531,7 @@ extends Entity {
         this.ic = 0;
         this.id = 0;
         this.ie = 0;
-        this.cfr_renamed_15 = 0L;
+        this.cfr_renamed_14 = 0L;
         this.savedWorldRouteIndex = -1;
         this.currentWorldRouteChoice = null;
         this.botTaskItemId = -1;
@@ -1570,28 +1571,28 @@ extends Entity {
         this.botPvpTeamRequesters = new ArrayList();
         this.botPvpChatSource = null;
         this.botPvpChatMessage = null;
-        this.questStates = new int[QuestDefinition.b];
-        this.bI = new int[QuestDefinition.b];
-        this.bJ = new int[100];
+        this.questStates = new int[QuestDefinition.questStateCapacity];
+        this.questProgressFlags = new int[QuestDefinition.questStateCapacity];
+        this.questHookStates = new int[100];
         this.visibleDynamicObjects = new ArrayList();
         this.pendingDynamicObjectRemovals = new ArrayList();
         this.bN = 0;
         this.bO = 0;
         this.bP = -1;
-        this.ii = "";
-        this.ij = "";
-        this.bQ = false;
-        this.bR = -1;
-        this.bS = 0;
-        this.bT = new int[3];
-        this.bU = false;
+        this.profileString1 = "";
+        this.profileString2 = "";
+        this.barrowsDoorPuzzleSolved = false;
+        this.activeBarrowsDoorPuzzleIndex = -1;
+        this.barrowsRewardPotential = 0;
+        this.activeBarrowsDoorPuzzleAnswerObjectIds = new int[3];
+        this.barrowsChestOpened = false;
         this.bV = "";
         this.flourMillHopperGrainCount = 0;
         this.bX = false;
         this.bY = 0L;
         this.bZ = 0;
         this.ca = 0;
-        this.cc = 0L;
+        this.membershipExpiresMillis = 0L;
         this.ik = false;
         this.cd = false;
         this.ce = new String[5];
@@ -1601,7 +1602,7 @@ extends Entity {
         this.ci = -1;
         this.gatheringHazardCounter = 0;
         this.cl = 0L;
-        this.cm = 778;
+        this.familyCrestGauntletItemId = 778;
         this.cn = false;
         this.co = 0L;
         this.botLootResumeTarget = null;
@@ -1638,8 +1639,8 @@ extends Entity {
         this.botQueuedPrayerId = -1;
         this.botEatDelayTicks = 0;
         this.botWeaponSwapDelayTicks = 0;
-        this.de = false;
-        this.df = false;
+        this.isBot = false;
+        this.bonesToPeachesUnlocked = false;
         this.il = false;
         this.im = new ArrayList();
         this.botPathSegmentIndex = -1;
@@ -1653,34 +1654,34 @@ extends Entity {
         this.botEnabled = false;
         this.botInteractionOption = 1;
         this.botTaskState = "";
-        this.ds = -1;
-        this.dt = "";
+        this.pendingCropResurrectionPatchIndex = -1;
+        this.pendingCropResurrectionPatchType = "";
         this.currentBankTab = 0;
         this.dv = 0;
-        this.dw = new boolean[6];
-        this.dx = new int[6];
-        this.dy = new int[6];
-        this.dz = new int[6];
-        this.dA = new boolean[6];
-        this.dB = new int[6];
-        this.dC = new int[6];
-        this.dD = new int[6];
-        this.dE = new int[6];
-        this.dF = new boolean[6];
-        this.dG = 0;
-        this.dH = 0;
-        this.dI = 0;
-        this.dJ = 0;
-        this.dK = 100;
-        this.dL = 100;
-        this.dM = 100;
-        this.dN = 0;
+        this.grandExchangeSellOfferFlags = new boolean[6];
+        this.grandExchangeItemIds = new int[6];
+        this.grandExchangeQuantities = new int[6];
+        this.grandExchangeUnitPrices = new int[6];
+        this.grandExchangeCancelledFlags = new boolean[6];
+        this.grandExchangeCompletedQuantities = new int[6];
+        this.grandExchangeTotalPrices = new int[6];
+        this.grandExchangePrimaryCollectAmounts = new int[6];
+        this.grandExchangeSecondaryCollectAmounts = new int[6];
+        this.grandExchangeFinishMessagePending = new boolean[6];
+        this.selectedGrandExchangeItemId = 0;
+        this.selectedGrandExchangeQuantity = 0;
+        this.selectedGrandExchangeUnitPrice = 0;
+        this.selectedGrandExchangeSlot = 0;
+        this.mageArenaFlamesOfZamorakCastsRemaining = 100;
+        this.mageArenaClawsOfGuthixCastsRemaining = 100;
+        this.mageArenaSaradominStrikeCastsRemaining = 100;
+        this.mageArenaProgressStage = 0;
         new ArrayList();
-        this.dO = 0;
+        this.fightCaveWaveIndex = 0;
         this.dP = false;
-        this.in = new ArrayList();
+        this.fightCaveNpcs = new ArrayList();
         this.dQ = false;
-        this.dS = 0;
+        this.legacyQuestPoints = 0;
         this.dT = 0;
         this.dU = 0;
         this.dV = 0;
@@ -1691,15 +1692,15 @@ extends Entity {
         this.ea = 0;
         this.eb = 0;
         this.ec = 0;
-        this.ed = 0;
+        this.barrowsRunsCompleted = 0;
         this.ee = 0;
-        this.ef = false;
+        this.loginRestrictionExempt = false;
         this.el = false;
         this.en = false;
         this.eo = true;
         this.ep = new int[2000];
         this.eq = 0;
-        this.er = 0;
+        this.activeEnvironmentalHazardId = 0;
         this.es = 0;
         this.et = 21;
         this.io = false;
@@ -1711,21 +1712,21 @@ extends Entity {
         this.ex = null;
         this.iv = "Why u messing with my files";
         this.ey = "";
-        this.ez = 0;
+        this.fightCaveSpawnRotation = 0;
         this.eA = 0;
         this.eB = 0;
         this.eC = false;
-        this.eE = 0;
-        this.eF = false;
-        this.eG = false;
-        this.eH = 0;
-        this.eI = 0;
+        this.enterTheAbyssMiniquestState = 0;
+        this.swampCaveRopeAttached = false;
+        this.lampOilStillFilled = false;
+        this.caveInsectSwarmStage = 0;
+        this.swampGasFlareState = 0;
         this.selectionKey = object;
         this.inboundBuffer = ByteBuffer.allocateDirect(512);
         this.outboundBuffer = ByteBuffer.allocateDirect(8192);
         if (object != null) {
             this.socketChannel = (SocketChannel)((SelectionKey)object).channel();
-            this.hV = this.socketChannel.socket().getInetAddress().getHostAddress();
+            this.hostAddress = this.socketChannel.socket().getInetAddress().getHostAddress();
         }
         this.a(new Position(ServerSettings.startX, ServerSettings.startY, ServerSettings.startPlane));
         object = this;
@@ -1747,12 +1748,12 @@ extends Entity {
         object = this;
         ((Player)object).appearanceColors[4] = 0;
         int n = 0;
-        while (n < this.gA.length) {
-            this.gA[n] = -1;
-            this.gB[n] = 0;
+        while (n < this.queuedLoginItemIds.length) {
+            this.queuedLoginItemIds[n] = -1;
+            this.queuedLoginItemAmounts[n] = 0;
             ++n;
         }
-        this.hw = new LinkedList();
+        this.pvpCombatReferences = new LinkedList();
     }
 
     public final void resetAppearance() {
@@ -1767,7 +1768,7 @@ extends Entity {
         System.arraycopy(nArray2, 0, this.appearanceColors, 0, 5);
     }
 
-    public final void be() {
+    public final void applyDefaultMaleAppearance() {
         int n = 0;
         Object object = this;
         this.gender = n;
@@ -1788,11 +1789,11 @@ extends Entity {
         int[] nArray = ServerSettings.APPEARANCE_COLOR_RANGES[this.gender][0];
         object = nArray;
         System.arraycopy(nArray, 0, this.appearanceColors, 0, 5);
-        this.f(true);
+        this.setAppearanceUpdateRequired(true);
         this.getUpdateState().setUpdateRequired(true);
     }
 
-    public final void bf() {
+    public final void dispatchCurrentPacket() {
         Object object = PacketBuffer.wrapReader(this.inboundBuffer);
         object = new IncomingPacket(this.currentPacketOpcode, this.currentPacketLength, (PacketReader)object);
         PacketDispatcher.packetTimers[((IncomingPacket)object).getOpcode()].start();
@@ -1804,9 +1805,9 @@ extends Entity {
         PacketDispatcher.packetTimers[((IncomingPacket)object).getOpcode()].stop();
     }
 
-    public final void bg() {
+    public final void completeAllQuestStates() {
         int n = 0;
-        while (n < QuestDefinition.a) {
+        while (n < QuestDefinition.questCount) {
             this.questStates[n] = 1;
             ++n;
         }
@@ -1816,7 +1817,7 @@ extends Entity {
      * Handled impossible loop by duplicating code
      * Enabled aggressive block sorting
      */
-    public final void bh() {
+    public final void randomizeAppearance() {
         block9: {
             int n;
             int[] nArray;
@@ -1825,7 +1826,7 @@ extends Entity {
             block8: {
                 block7: {
                     block6: {
-                        int n2 = GameUtil.h(2);
+                        int n2 = GameUtil.randomInt(2);
                         player = this;
                         this.gender = n2;
                         player = this;
@@ -1839,7 +1840,7 @@ extends Entity {
                     }
                     do {
                         player = this;
-                        player.appearanceColors[n] = nArray2[n] + GameUtil.h(nArray[n] - nArray2[n]);
+                        player.appearanceColors[n] = nArray2[n] + GameUtil.randomInt(nArray[n] - nArray2[n]);
                         ++n;
                         player = this;
                     } while (n < player.appearanceColors.length);
@@ -1860,13 +1861,13 @@ extends Entity {
                     player.appearanceParts[n] = -1;
                 } else {
                     player = this;
-                    player.appearanceParts[n] = nArray2[n] + GameUtil.h(nArray[n] - nArray2[n]);
+                    player.appearanceParts[n] = nArray2[n] + GameUtil.randomInt(nArray[n] - nArray2[n]);
                 }
                 ++n;
                 player = this;
             } while (n < player.appearanceParts.length);
         }
-        this.f(true);
+        this.setAppearanceUpdateRequired(true);
         this.getUpdateState().setUpdateRequired(true);
     }
 
@@ -1911,17 +1912,17 @@ extends Entity {
             if (this.el) {
                 long l = System.currentTimeMillis() + 15000L;
                 object2 = this;
-                this.hY = l;
+                this.disconnectGraceExpiresAtMillis = l;
                 object = PlayerConnectionState.e;
                 object2 = this;
                 this.connectionState = object;
             }
-            if (!this.de) {
+            if (!this.isBot) {
                 this.selectionKey.attach(null);
                 this.selectionKey.cancel();
             }
-            if (this.q != null) {
-                this.q.e(this);
+            if (this.currentGroup != null) {
+                this.currentGroup.removeMember(this);
             }
             try {
                 try {
@@ -1931,26 +1932,26 @@ extends Entity {
                             object2 = this;
                             if (((Player)object2).password != null) {
                                 object2 = this;
-                                ((Player)object2).fk.b();
+                                ((Player)object2).fightCaveController.cleanupIfInFightCave();
                                 object2 = this;
-                                if (((Player)object2).gy == 2) {
+                                if (((Player)object2).loginResponseCode == 2) {
                                     CharacterFileManager.savePlayer(this);
                                 }
                             }
                         }
                     }
-                    if (!this.de) {
+                    if (!this.isBot) {
                         this.socketChannel.close();
-                        ConnectionThrottle.b(this.hV);
+                        ConnectionThrottle.releaseConnectionSlot(this.hostAddress);
                     }
                 }
                 catch (Exception exception) {
                     object2 = exception;
                     exception.printStackTrace();
                     if (this.getIndex() != -1) {
-                        object = Server.b();
+                        object = Server.getDisconnectQueue();
                         synchronized (object) {
-                            Server.b().offer(this);
+                            Server.getDisconnectQueue().offer(this);
                             return;
                         }
                     }
@@ -1959,24 +1960,24 @@ extends Entity {
             }
             catch (Throwable throwable) {
                 if (this.getIndex() != -1) {
-                    object = Server.b();
+                    object = Server.getDisconnectQueue();
                     synchronized (object) {
-                        Server.b().offer(this);
+                        Server.getDisconnectQueue().offer(this);
                     }
                 }
                 throw throwable;
             }
             if (this.getIndex() != -1) {
-                object = Server.b();
+                object = Server.getDisconnectQueue();
                 synchronized (object) {
-                    Server.b().offer(this);
+                    Server.getDisconnectQueue().offer(this);
                     return;
                 }
             }
         }
     }
 
-    public final void v(int n) {
+    public final void showHiscoreInterface(int n) {
         Object object;
         Object object2 = this;
         int n2 = 0;
@@ -1994,7 +1995,7 @@ extends Entity {
         ArrayList<CharacterFileRecord> arrayList = new ArrayList<CharacterFileRecord>();
         for (CharacterFileRecord characterFileRecord : CharacterFileManager.liveHiscoreRecords) {
             object = characterFileRecord;
-            if (characterFileRecord.playerRights >= 2 || characterFileRecord.cC != n) continue;
+            if (characterFileRecord.playerRights >= 2 || characterFileRecord.gameMode != n) continue;
             arrayList.add(characterFileRecord);
         }
         if (n == 3) {
@@ -2004,7 +2005,7 @@ extends Entity {
         }
         int n3 = this.et;
         int n4 = this.es;
-        String string = n3 != 22 ? String.valueOf(n3 < 21 ? SkillManager.a[n3] : "Overall") + " Hiscores" : "Wealth Hiscores";
+        String string = n3 != 22 ? String.valueOf(n3 < 21 ? SkillManager.SKILL_NAMES[n3] : "Overall") + " Hiscores" : "Wealth Hiscores";
         Object object3 = "";
         if (n == 1) {
             object3 = "<img=3>";
@@ -2032,7 +2033,7 @@ extends Entity {
                 }
                 object = object3;
                 object = object3;
-                int cfr_ignored_0 = ((CharacterFileRecord)object3).cC;
+                int cfr_ignored_0 = ((CharacterFileRecord)object3).gameMode;
                 boolean bl = ((CharacterFileRecord)object).memberFlag;
                 int n7 = ((CharacterFileRecord)object).playerRights;
                 object = "";
@@ -2046,7 +2047,7 @@ extends Entity {
                     object = String.valueOf(object) + "<img=2>";
                 }
                 object2 = object;
-                if (n == 3 && ((CharacterFileRecord)object3).cC != 3) {
+                if (n == 3 && ((CharacterFileRecord)object3).gameMode != 3) {
                     object2 = "<img=6>" + (String)object2;
                 }
                 object = this;
@@ -2058,15 +2059,15 @@ extends Entity {
                 object2 = "";
                 String string3 = "";
                 if (n3 < 21) {
-                    object2 = GameUtil.a((long)CharacterFileRecord.getLevelForExperience(((CharacterFileRecord)object3).getSkillExperience(n3)));
-                    string3 = GameUtil.a(((CharacterFileRecord)object3).getSkillExperience(n3));
+                    object2 = GameUtil.formatNumber((long)CharacterFileRecord.getLevelForExperience(((CharacterFileRecord)object3).getSkillExperience(n3)));
+                    string3 = GameUtil.formatNumber(((CharacterFileRecord)object3).getSkillExperience(n3));
                 }
                 if (n3 == 21) {
-                    object2 = GameUtil.a((long)((CharacterFileRecord)object3).getTotalLevel());
-                    string3 = GameUtil.a(((CharacterFileRecord)object3).getSkillExperience(n3));
+                    object2 = GameUtil.formatNumber((long)((CharacterFileRecord)object3).getTotalLevel());
+                    string3 = GameUtil.formatNumber(((CharacterFileRecord)object3).getSkillExperience(n3));
                 }
                 if (n3 == 22) {
-                    object2 = GameUtil.c(((CharacterFileRecord)object3).getStoredItemValue());
+                    object2 = GameUtil.formatCompactAmountHighThreshold(((CharacterFileRecord)object3).getStoredItemValue());
                 }
                 object = this;
                 ((Player)object).packetSender.sendInterfaceText(String.valueOf(string2) + (String)object2, 18821 + 4 * n6);
@@ -2079,7 +2080,7 @@ extends Entity {
         ((Player)object).packetSender.showInterface(18788);
     }
 
-    public final void bj() {
+    public final void completeQuestJournal() {
         Player player;
         int n = 18;
         if (!ServerSettings.freeToPlayWorld) {
@@ -2087,18 +2088,18 @@ extends Entity {
         }
         int n2 = 1;
         while (n2 <= n) {
-            QuestDefinition questDefinition = QuestDefinition.b(n2);
+            QuestDefinition questDefinition = QuestDefinition.forId(n2);
             player = this;
-            player.packetSender.sendInterfaceTextColor(questDefinition.d(), Color.GREEN);
+            player.packetSender.sendInterfaceTextColor(questDefinition.getJournalButtonId(), Color.GREEN);
             this.questStates[n2] = 1;
-            this.dv = GameUtil.h(2) + 1;
+            this.dv = GameUtil.randomInt(2) + 1;
             ++n2;
         }
         player = this;
-        player.ff.d();
+        player.questManager.refreshQuestPointText();
     }
 
-    private void d() {
+    private void resetQuestJournal() {
         Player player;
         int n = 18;
         if (!ServerSettings.freeToPlayWorld) {
@@ -2106,16 +2107,16 @@ extends Entity {
         }
         int n2 = 1;
         while (n2 <= n) {
-            QuestDefinition questDefinition = QuestDefinition.b(n2);
+            QuestDefinition questDefinition = QuestDefinition.forId(n2);
             player = this;
-            player.packetSender.sendInterfaceTextColor(questDefinition.d(), Color.RED);
+            player.packetSender.sendInterfaceTextColor(questDefinition.getJournalButtonId(), Color.RED);
             this.questStates[n2] = 0;
-            this.bI[n2] = 0;
+            this.questProgressFlags[n2] = 0;
             this.dv = 0;
             ++n2;
         }
         player = this;
-        player.ff.d();
+        player.questManager.refreshQuestPointText();
     }
 
     public final void a(String string, String[] stringArray) {
@@ -2126,44 +2127,44 @@ extends Entity {
         if (string.equals("runes")) {
             int n = 554;
             while (n <= 564) {
-                this.eY.addItem(new ItemStack(n, 10000));
+                this.inventoryManager.addItem(new ItemStack(n, 10000));
                 ++n;
             }
             if (!ServerSettings.freeToPlayWorld) {
-                this.eY.addItem(new ItemStack(565, 10000));
-                this.eY.addItem(new ItemStack(566, 10000));
+                this.inventoryManager.addItem(new ItemStack(565, 10000));
+                this.inventoryManager.addItem(new ItemStack(566, 10000));
             }
         } else if (string.equals("nfood")) {
-            this.eY.addItem(new ItemStack(334, 1000));
-            this.eY.addItem(new ItemStack(330, 1000));
-            this.eY.addItem(new ItemStack(362, 1000));
-            this.eY.addItem(new ItemStack(380, 1000));
-            this.eY.addItem(new ItemStack(374, 1000));
+            this.inventoryManager.addItem(new ItemStack(334, 1000));
+            this.inventoryManager.addItem(new ItemStack(330, 1000));
+            this.inventoryManager.addItem(new ItemStack(362, 1000));
+            this.inventoryManager.addItem(new ItemStack(380, 1000));
+            this.inventoryManager.addItem(new ItemStack(374, 1000));
             if (!ServerSettings.freeToPlayWorld) {
-                this.eY.addItem(new ItemStack(386, 1000));
-                this.eY.addItem(new ItemStack(392, 1000));
+                this.inventoryManager.addItem(new ItemStack(386, 1000));
+                this.inventoryManager.addItem(new ItemStack(392, 1000));
             }
         } else if (string.equals("food")) {
             if (ServerSettings.freeToPlayWorld) {
-                this.eY.addItem(new ItemStack(379, 20));
+                this.inventoryManager.addItem(new ItemStack(379, 20));
             } else {
-                this.eY.addItem(new ItemStack(385, 20));
+                this.inventoryManager.addItem(new ItemStack(385, 20));
             }
         } else if (string.equals("money")) {
-            this.eY.addItem(new ItemStack(995, 1000000));
+            this.inventoryManager.addItem(new ItemStack(995, 1000000));
         } else if (string.equals("arrows")) {
-            this.eY.addItem(new ItemStack(884, 10000));
-            this.eY.addItem(new ItemStack(886, 10000));
-            this.eY.addItem(new ItemStack(888, 10000));
-            this.eY.addItem(new ItemStack(890, 10000));
+            this.inventoryManager.addItem(new ItemStack(884, 10000));
+            this.inventoryManager.addItem(new ItemStack(886, 10000));
+            this.inventoryManager.addItem(new ItemStack(888, 10000));
+            this.inventoryManager.addItem(new ItemStack(890, 10000));
             if (!ServerSettings.freeToPlayWorld) {
-                this.eY.addItem(new ItemStack(892, 10000));
+                this.inventoryManager.addItem(new ItemStack(892, 10000));
             }
         } else if (string.equals("empty")) {
             Player player = this;
-            player.eY.getContainer().clear();
+            player.inventoryManager.getContainer().clear();
             player = this;
-            player.eY.refresh();
+            player.inventoryManager.refresh();
         } else if (string.equals("bank")) {
             BankManager.openBank(this);
         } else if (string.equals("god")) {
@@ -2172,27 +2173,27 @@ extends Entity {
             player.packetSender.sendGameMessage("God mode: " + (this.dP ? "enabled" : "disabled"));
         } else if (string.equals("master")) {
             int n = 0;
-            while (n < this.fe.getCurrentLevels().length - 1) {
-                this.fe.getCurrentLevels()[n] = ServerSettings.maxLevel;
+            while (n < this.skillManager.getCurrentLevels().length - 1) {
+                this.skillManager.getCurrentLevels()[n] = ServerSettings.maxLevel;
                 Player player = this;
-                SkillManager cfr_ignored_0 = player.fe;
-                this.fe.getExperience()[n] = SkillManager.getExperienceForLevel(ServerSettings.maxLevel - 1);
+                SkillManager cfr_ignored_0 = player.skillManager;
+                this.skillManager.getExperience()[n] = SkillManager.getExperienceForLevel(ServerSettings.maxLevel - 1);
                 ++n;
             }
-            this.fe.refreshAllSkills();
+            this.skillManager.refreshAllSkills();
         } else if (string.equals("setlevel")) {
             int n = Integer.parseInt(object[0]);
             int n2 = Integer.parseInt(object[1]);
             n2 = n2 > ServerSettings.maxLevel ? ServerSettings.maxLevel : n2;
             Player player = this;
-            player.fe.getCurrentLevels()[n] = n2;
+            player.skillManager.getCurrentLevels()[n] = n2;
             Player player2 = this;
             player = player2;
             player = this;
-            SkillManager cfr_ignored_1 = player.fe;
-            player2.fe.getExperience()[n] = SkillManager.getExperienceForLevel(n2 - 1);
+            SkillManager cfr_ignored_1 = player.skillManager;
+            player2.skillManager.getExperience()[n] = SkillManager.getExperienceForLevel(n2 - 1);
             player = this;
-            player.fe.refreshSkill(n);
+            player.skillManager.refreshSkill(n);
         } else if (string.equals("run")) {
             this.setRunEnergyPercent(100);
         } else if (string.equals("irun")) {
@@ -2205,19 +2206,19 @@ extends Entity {
             Player player = this;
             Player player3 = player;
             player3 = this;
-            player.fe.setCurrentLevel(5, player3.fe.getBaseLevel(5));
+            player.skillManager.setCurrentLevel(5, player3.skillManager.getBaseLevel(5));
             player3 = this;
-            player3.fe.refreshSkill(5);
+            player3.skillManager.refreshSkill(5);
         } else if (string.equals("nbones")) {
-            this.eY.addItem(new ItemStack(527, 1000));
-            this.eY.addItem(new ItemStack(533, 1000));
+            this.inventoryManager.addItem(new ItemStack(527, 1000));
+            this.inventoryManager.addItem(new ItemStack(533, 1000));
             if (!ServerSettings.freeToPlayWorld) {
-                this.eY.addItem(new ItemStack(537, 1000));
+                this.inventoryManager.addItem(new ItemStack(537, 1000));
             }
         } else if (string.equals("quests")) {
-            this.bj();
+            this.completeQuestJournal();
         } else if (string.equals("rquests")) {
-            this.d();
+            this.resetQuestJournal();
         } else if (string.equals("sitem")) {
             int n = Integer.parseInt(object[0]);
             if ((n < 7956 || n > 8118) && n >= 0 && n <= 11790 && ItemDefinition.isDefined(n)) {
@@ -2231,18 +2232,18 @@ extends Entity {
                     n = itemDefinition.getNotedId();
                 }
                 object = new ItemStack(n, n3);
-                this.eY.addItem((ItemStack)object);
+                this.inventoryManager.addItem((ItemStack)object);
             }
         } else if (string.equals("char")) {
             Player player = this;
             player.packetSender.showInterface(3559);
         } else if (string.equals("rchar")) {
-            this.bh();
+            this.randomizeAppearance();
         } else if (string.equals("skiptask")) {
             Player player = this;
-            player.fh.completeTask();
+            player.slayerManager.completeTask();
         } else if (string.equals("bot")) {
-            if (!this.botEnabled || this.de) {
+            if (!this.botEnabled || this.isBot) {
                 Player player = this;
                 Player player4 = this;
                 player4.packetSender.sendGameMessage("Bot started.");
@@ -2251,20 +2252,20 @@ extends Entity {
                 World.getTaskScheduler().schedule(startBotCommandTask);
             }
         } else if (string.equals("sbot")) {
-            if (this.de) {
+            if (this.isBot) {
                 BotPlayer botPlayer = (BotPlayer)this;
-                if (this.az == 1) {
+                if (this.botMode == 1) {
                     botPlayer.startCombatLoadoutBot();
-                } else if (this.az == 0) {
+                } else if (this.botMode == 0) {
                     botPlayer.startSkillingBot();
-                } else if (this.az == 2) {
+                } else if (this.botMode == 2) {
                     botPlayer.startTradeAdvertBot();
-                } else if (this.az == 3) {
+                } else if (this.botMode == 3) {
                     botPlayer.startDropPartyBot();
-                } else if (this.az == 4) {
+                } else if (this.botMode == 4) {
                     botPlayer.startProgressiveBot();
-                } else if (this.az == 5 || this.az == 6) {
-                    botPlayer.startClanWarsBot(this.az);
+                } else if (this.botMode == 5 || this.botMode == 6) {
+                    botPlayer.startClanWarsBot(this.botMode);
                 }
             }
         } else if (string.equals("modern")) {
@@ -2293,30 +2294,30 @@ extends Entity {
         } else if (string.equals("cquest")) {
             try {
                 int n = Integer.parseInt(object[0]);
-                QuestDefinition questDefinition = QuestDefinition.b(n);
+                QuestDefinition questDefinition = QuestDefinition.forId(n);
                 Player player = this;
-                player.packetSender.sendInterfaceTextColor(questDefinition.d(), Color.GREEN);
+                player.packetSender.sendInterfaceTextColor(questDefinition.getJournalButtonId(), Color.GREEN);
                 this.questStates[n] = 1;
                 if (n == 16) {
-                    this.dv = GameUtil.h(2) + 1;
+                    this.dv = GameUtil.randomInt(2) + 1;
                 }
                 player = this;
-                player.ff.d();
+                player.questManager.refreshQuestPointText();
             }
             catch (Exception exception) {}
         } else if (string.equals("rquest")) {
             try {
                 int n = Integer.parseInt(object[0]);
-                QuestDefinition questDefinition = QuestDefinition.b(n);
+                QuestDefinition questDefinition = QuestDefinition.forId(n);
                 Player player = this;
-                player.packetSender.sendInterfaceTextColor(questDefinition.d(), Color.RED);
+                player.packetSender.sendInterfaceTextColor(questDefinition.getJournalButtonId(), Color.RED);
                 this.questStates[n] = 0;
-                this.bI[n] = 0;
+                this.questProgressFlags[n] = 0;
                 if (n == 16) {
                     this.dv = 0;
                 }
                 player = this;
-                player.ff.d();
+                player.questManager.refreshQuestPointText();
             }
             catch (Exception exception) {}
         }
@@ -2330,7 +2331,7 @@ extends Entity {
             player = this;
             String string3 = String.valueOf(player.username) + " used cheat: " + string2;
             System.out.println(string3);
-            Player[] playerArray = World.f();
+            Player[] playerArray = World.getPlayers();
             int n = playerArray.length;
             int n8 = 0;
             while (n8 < n) {
@@ -2347,18 +2348,18 @@ extends Entity {
         Object object;
         int n;
         if ((string = string.toLowerCase()).equals("pk")) {
-            if (this.q == null) {
+            if (this.currentGroup == null) {
                 this.packetSender.sendGameMessage("You have to be in group in order to use this command.");
                 return;
             }
-            if (this.q != null && this.q.a == this) {
+            if (this.currentGroup != null && this.currentGroup.leader == this) {
                 this.packetSender.sendGameMessage("You can't be the group leader to use this command.");
                 return;
             }
             this.botEnabled = !this.botEnabled;
             this.packetSender.sendGameMessage("Pkbot " + (this.botEnabled ? "enabled." : "disabled."));
             if (this.botEnabled) {
-                BotCombatLoadoutManager.b(this);
+                BotCombatLoadoutManager.startGroupCombatBot(this);
             }
         } else if (string.equals("ms")) {
             this.f = n = this.f == 0 ? 1 : 0;
@@ -2367,11 +2368,11 @@ extends Entity {
             try {
                 String string3 = stringArray[0].toLowerCase();
                 int n2 = 1;
-                while (n2 < QuestDefinition.a) {
-                    object = QuestDefinition.b(n2);
-                    ((QuestDefinition)object).c();
-                    if (((QuestDefinition)object).c().toLowerCase().contains(string3)) {
-                        this.packetSender.sendGameMessage("[" + n2 + "] " + ((QuestDefinition)object).c());
+                while (n2 < QuestDefinition.questCount) {
+                    object = QuestDefinition.forId(n2);
+                    ((QuestDefinition)object).getName();
+                    if (((QuestDefinition)object).getName().toLowerCase().contains(string3)) {
+                        this.packetSender.sendGameMessage("[" + n2 + "] " + ((QuestDefinition)object).getName());
                     }
                     ++n2;
                 }
@@ -2459,11 +2460,11 @@ extends Entity {
                     this.packetSender.sendGameMessage("You are not playing on normal gamemode and cannot form a group.");
                     return;
                 }
-                if (this.q != null && this.q.a != this) {
+                if (this.currentGroup != null && this.currentGroup.leader != this) {
                     this.packetSender.sendGameMessage("You can only invite as a group leader.");
                     return;
                 }
-                Player player = World.a(string2);
+                Player player = World.findPlayerByUsername(string2);
                 if (player == null) {
                     return;
                 }
@@ -2472,22 +2473,22 @@ extends Entity {
                     this.packetSender.sendGameMessage(String.valueOf(((Player)object).username) + " is not playing on normal gamemode and cannot join a group.");
                     return;
                 }
-                if (player.q != null && player.s == this) {
-                    PlayerGroup.a(this, player);
+                if (player.currentGroup != null && player.pendingGroupInviteTarget == this) {
+                    PlayerGroup.handleGroupInvite(this, player);
                     return;
                 }
-                if (player.q != null && this.q != null && player.q == this.q) {
+                if (player.currentGroup != null && this.currentGroup != null && player.currentGroup == this.currentGroup) {
                     object = player;
                     this.packetSender.sendGameMessage("You kicked " + ((Player)object).username + " from the group.");
-                    this.q.e(player);
+                    this.currentGroup.removeMember(player);
                     return;
                 }
-                if (player.q != null) {
+                if (player.currentGroup != null) {
                     object = player;
                     this.packetSender.sendGameMessage(String.valueOf(((Player)object).username) + " is already in a group.");
                     return;
                 }
-                PlayerGroup.a(this, player);
+                PlayerGroup.handleGroupInvite(this, player);
                 return;
             }
             if (string.equals("pw")) {
@@ -2514,18 +2515,18 @@ extends Entity {
                     n = 1;
                 }
                 this.b();
-                this.a(new String[]{"@whi@Your stats", "", "@blu@Account created: " + GameplayHelper.a(this.eg) + " (d-m-y)", "Npcs killed: " + this.dT, "Players killed: " + this.dU, "Deaths: " + this.dV, "@whi@--Dueling--", "Wins: " + this.eb, "Losses: " + this.ec, "@whi@--Barrows--", "Runs done: " + this.ed, "@whi@--Clues Completed--", "Easy: " + this.dW, "Medium: " + this.dX, "Hard: " + this.dY, "@whi@--Shopping--", "Worth of sold items: " + GameUtil.c(this.dZ), "Worth of bought items: " + GameUtil.c(this.ea), "Profit: " + GameUtil.c(this.dZ - this.ea), "@whi@--Playing time--", "This session: " + GameplayHelper.b(this.c()), "Total: " + GameplayHelper.b(this.ba()), "Average per day: " + GameplayHelper.b(this.ba() / (long)n)});
+                this.a(new String[]{"@whi@Your stats", "", "@blu@Account created: " + GameplayHelper.a(this.eg) + " (d-m-y)", "Npcs killed: " + this.dT, "Players killed: " + this.dU, "Deaths: " + this.dV, "@whi@--Dueling--", "Wins: " + this.eb, "Losses: " + this.ec, "@whi@--Barrows--", "Runs done: " + this.barrowsRunsCompleted, "@whi@--Clues Completed--", "Easy: " + this.dW, "Medium: " + this.dX, "Hard: " + this.dY, "@whi@--Shopping--", "Worth of sold items: " + GameUtil.formatCompactAmountHighThreshold(this.dZ), "Worth of bought items: " + GameUtil.formatCompactAmountHighThreshold(this.ea), "Profit: " + GameUtil.formatCompactAmountHighThreshold(this.dZ - this.ea), "@whi@--Playing time--", "This session: " + GameplayHelper.b(this.getSessionPlaytimeMillis()), "Total: " + GameplayHelper.b(this.getTotalPlaytimeMillis()), "Average per day: " + GameplayHelper.b(this.getTotalPlaytimeMillis() / (long)n)});
                 object = this;
                 ((Player)object).packetSender.showInterface(8134);
                 return;
             }
             if (string.equals("players")) {
-                this.packetSender.sendGameMessage("There are currently " + World.b() + " players online.");
+                this.packetSender.sendGameMessage("There are currently " + World.getPlayerCount() + " players online.");
             }
         }
     }
 
-    private void e() {
+    private void startCurrentBotTaskInteraction() {
         this.botTaskState = "do task";
         this.botInteractionOption = this.currentBotTask.getInteractionOption(this);
         if (!this.dropPartyLeader && !this.currentBotTask.usesCustomTaskAction) {
@@ -2540,7 +2541,7 @@ extends Entity {
         }
     }
 
-    public final void bk() {
+    public final void continueBotRoute() {
         if (this.currentBotRoute == null) {
             return;
         }
@@ -2559,7 +2560,7 @@ extends Entity {
             return;
         }
         Position position = this.currentBotRoute.waypoints[this.botPathWaypointIndex];
-        int n = GameUtil.b(this.getPosition(), position);
+        int n = GameUtil.getDistance(this.getPosition(), position);
         if (n > 50) {
             Player player = this;
             System.out.println("Detected possibly frozen bot: " + player.username + " at: " + this.getPosition() + ", trying to apply fix.");
@@ -2596,7 +2597,7 @@ extends Entity {
                 this.currentBotRoute = null;
                 this.botPathWaypointIndex = 0;
                 if (this.botTaskState.equals("walk to task")) {
-                    this.e();
+                    this.startCurrentBotTaskInteraction();
                     return;
                 }
                 if (this.botTaskState.equals("walk pretask path1")) {
@@ -2632,7 +2633,7 @@ extends Entity {
                     return;
                 }
                 if (this.botTaskState.startsWith("walk towards")) {
-                    this.currentBotTask.c(this, false);
+                    this.currentBotTask.advanceTaskRouteSegment(this, false);
                     return;
                 }
                 if (this.botTaskState.startsWith("world walk towards")) {
@@ -2653,7 +2654,7 @@ extends Entity {
             position = this.currentBotRoute.waypoints[this.botPathWaypointIndex];
         }
         if (position != null) {
-            if (this.az == 4 && !this.getMovementQueue().isRunning() && this.getRunEnergyPercent() >= 80) {
+            if (this.botMode == 4 && !this.getMovementQueue().isRunning() && this.getRunEnergyPercent() >= 80) {
                 this.getMovementQueue().setRunning(true);
             }
             EntityTargetMovement.clearMovementTarget(this);
@@ -2679,7 +2680,7 @@ extends Entity {
                     void npc;
                     int n2;
                     int n3 = 30;
-                    if (arrayList.size() == 1 && this.az == 4 && (n2 = ((Integer)arrayList.get(0)).intValue()) == -1 && !this.A(true)) {
+                    if (arrayList.size() == 1 && this.botMode == 4 && (n2 = ((Integer)arrayList.get(0)).intValue()) == -1 && !this.recoverBotTaskStall(true)) {
                         return;
                     }
                     if (eu == null) {
@@ -2693,12 +2694,12 @@ extends Entity {
                             n3 = this.currentBotTask.targetSearchRadius;
                         }
                         if (this.currentBotTask.combatTask) {
-                            if (this.botCombatStyle == 2 && this.az == 4 && this.botElementalSpellIndex != -1) {
-                                this.b(BotCombatLoadoutTables.elementalStrikeSpells[this.botElementalSpellIndex]);
+                            if (this.botCombatStyle == 2 && this.botMode == 4 && this.botElementalSpellIndex != -1) {
+                                this.setAutocastSpell(BotCombatLoadoutTables.elementalStrikeSpells[this.botElementalSpellIndex]);
                             }
                             if (this.botCombatStyle == 1) {
                                 Player player = this;
-                                n2 = player.eZ.getItemIdAtSlot(3);
+                                n2 = player.equipmentManager.getItemIdAtSlot(3);
                                 boolean bl = false;
                                 if (n2 > 0 && (((String)(object2 = ItemDefinition.forId(n2).getName().toLowerCase())).contains("bow") || ((String)object2).contains("knife") || ((String)object2).contains("dart") || ((String)object2).contains("javelin") || ((String)object2).contains("thrownaxe"))) {
                                     bl = true;
@@ -2712,7 +2713,7 @@ extends Entity {
                         }
                         if (this.currentBotTask.combatTask && this.currentBotTask.getForcedCombatStyle() != 2) {
                             Player player = this;
-                            if (player.eY.getItemAmount(this.botFoodItemId) == 0 || this.eY.getContainer().getFreeSlots() == 0) {
+                            if (player.inventoryManager.getItemAmount(this.botFoodItemId) == 0 || this.inventoryManager.getContainer().getFreeSlots() == 0) {
                                 this.currentBotTask.startWalkToBank(this);
                                 return;
                             }
@@ -2722,12 +2723,12 @@ extends Entity {
                     Position position2 = this.getPosition();
                     object2 = null;
                     ArrayList<Object> arrayList2 = new ArrayList<Object>();
-                    Object object4 = World.g();
+                    Object object4 = World.getNpcs();
                     int n5 = ((Npc[])object4).length;
                     boolean n6 = false;
                     while (npc < n5) {
                         object3 = object4[npc];
-                        if (object3 != null && !((Entity)object3).isDead() && ((Npc)object3).isActive() && ((Npc)object3).getOwnerPlayer() == null && (n = GameUtil.b(position2, ((Entity)object3).getPosition())) <= n3) {
+                        if (object3 != null && !((Entity)object3).isDead() && ((Npc)object3).isActive() && ((Npc)object3).getOwnerPlayer() == null && (n = GameUtil.getDistance(position2, ((Entity)object3).getPosition())) <= n3) {
                             int n7 = ((Entity)object3).getPosition().getY();
                             int n8 = ((Entity)object3).getPosition().getX();
                             Player player = this;
@@ -2755,7 +2756,7 @@ extends Entity {
                                     int n13 = (Integer)iterator.next();
                                     if (n13 != ((Npc)object3).getNpcId()) continue;
                                     arrayList2.add(object3);
-                                    n13 = GameUtil.b(position2, ((Entity)object3).getPosition());
+                                    n13 = GameUtil.getDistance(position2, ((Entity)object3).getPosition());
                                     if (n13 >= n4) continue;
                                     n4 = n13;
                                 }
@@ -2765,7 +2766,7 @@ extends Entity {
                     }
                     object3 = new ArrayList();
                     for (Npc position : arrayList2) {
-                        int n14 = GameUtil.b(position2, position.getPosition());
+                        int n14 = GameUtil.getDistance(position2, position.getPosition());
                         if (n14 > n4 + 3) continue;
                         ((ArrayList)object3).add(position);
                     }
@@ -2776,7 +2777,7 @@ extends Entity {
                     while (object4.hasNext()) {
                         Position position;
                         object = (Npc)object4.next();
-                        boolean bl = GameUtil.a(this.getPosition(), ((Entity)object).getPosition(), false);
+                        boolean bl = GameUtil.hasClearPath(this.getPosition(), ((Entity)object).getPosition(), false);
                         n = bl ? 1 : 0;
                         if (!bl && (position = this.d((Npc)object)) == null) {
                             continue;
@@ -2787,7 +2788,7 @@ extends Entity {
                 }
                 if (((ArrayList)object3).size() != 1) break block42;
                 object = (Npc)((ArrayList)object3).get(0);
-                boolean bl = GameUtil.a(this.getPosition(), ((Entity)object).getPosition(), false);
+                boolean bl = GameUtil.hasClearPath(this.getPosition(), ((Entity)object).getPosition(), false);
                 if (!bl) {
                     Position position = this.d((Npc)object);
                 }
@@ -2797,10 +2798,10 @@ extends Entity {
         if (object2 != null) {
             void var8_30;
             int n = ((Entity)object2).getIndex();
-            if (n < 0 || n > World.g().length) {
+            if (n < 0 || n > World.getNpcs().length) {
                 return;
             }
-            Npc npc = World.g()[n];
+            Npc npc = World.getNpcs()[n];
             if (npc == null || !npc.isInteractable()) {
                 return;
             }
@@ -2848,7 +2849,7 @@ extends Entity {
                 }
             } else {
                 player = this;
-                n15 = player.eY.getContainer().indexOfItem(this.botTaskItemId);
+                n15 = player.inventoryManager.getContainer().indexOfItem(this.botTaskItemId);
                 player = this;
                 this.selectedItemSlot = n15;
                 n15 = this.botTaskItemId;
@@ -2865,7 +2866,7 @@ extends Entity {
         ++this.ip;
         if (this.ip == 10) {
             this.ip = 0;
-            this.A(true);
+            this.recoverBotTaskStall(true);
             return;
         }
         object = this;
@@ -2886,9 +2887,9 @@ extends Entity {
             while (n7 <= n2 + n4 + 1) {
                 if (n6 < n || n6 > n + n3 || n7 < n2 || n7 > n2 + n4) {
                     Position position2 = new Position(n6, n7);
-                    Position position3 = GameUtil.a(npc.getPosition().getX(), npc.getPosition().getY(), position2.getX(), position2.getY(), npc.getSize(), npc.getSize(), this.getPosition().getPlane());
+                    Position position3 = GameUtil.findReachableInteractionPosition(npc.getPosition().getX(), npc.getPosition().getY(), position2.getX(), position2.getY(), npc.getSize(), npc.getSize(), this.getPosition().getPlane());
                     if (position3 != null) {
-                        boolean bl = GameUtil.a(position2, npc.getPosition(), false);
+                        boolean bl = GameUtil.hasClearPath(position2, npc.getPosition(), false);
                         PathFinder.getInstance();
                         boolean bl2 = PathFinder.findPath(this, n6, n7, false, 0, 0);
                         int n8 = this.getMovementQueue().getSteps().size();
@@ -2919,7 +2920,7 @@ extends Entity {
             while (n7 <= n2 + n4 + 1) {
                 if (n6 < n || n6 > n + n3 || n7 < n2 || n7 > n2 + n4) {
                     Position position2 = new Position(n6, n7);
-                    Position position3 = GameUtil.a(worldObject.getPosition().getX(), worldObject.getPosition().getY(), position2.getX(), position2.getY(), objectDefinition.getWidthForOrientation(worldObject.getOrientation()), objectDefinition.getLengthForOrientation(worldObject.getOrientation()), this.getPosition().getPlane());
+                    Position position3 = GameUtil.findReachableInteractionPosition(worldObject.getPosition().getX(), worldObject.getPosition().getY(), position2.getX(), position2.getY(), objectDefinition.getWidthForOrientation(worldObject.getOrientation()), objectDefinition.getLengthForOrientation(worldObject.getOrientation()), this.getPosition().getPlane());
                     if (position3 != null) {
                         boolean bl = InteractionDispatcher.canReachObjectInteraction(position2, worldObject.getPosition(), worldObject);
                         PathFinder.getInstance();
@@ -2994,7 +2995,7 @@ extends Entity {
         WorldObject worldObject7;
         int n3;
         int n4;
-        if (arrayList.size() == 1 && this.az == 4 && (n4 = ((Integer)arrayList.get(0)).intValue()) == -1) {
+        if (arrayList.size() == 1 && this.botMode == 4 && (n4 = ((Integer)arrayList.get(0)).intValue()) == -1) {
             Player player = this;
             System.out.println("Detected bugged bot: " + player.username + ", trying to fix by reseting and relogging.");
             arrayList = null;
@@ -3003,8 +3004,8 @@ extends Entity {
             arrayList = null;
             player = this;
             this.deferredBotTask = arrayList;
-            this.f(new Position(ServerSettings.respawnX, ServerSettings.respawnY, ServerSettings.respawnPlane));
-            World.a(this);
+            this.applyTeleportPosition(new Position(ServerSettings.respawnX, ServerSettings.respawnY, ServerSettings.respawnPlane));
+            World.logoutBotAndScheduleRelogin(this);
             return false;
         }
         if (this.currentBotTask != null) {
@@ -3127,7 +3128,7 @@ extends Entity {
             Collections.shuffle(arrayList2);
             for (WorldObject worldObject7 : arrayList2) {
                 ObjectDefinition objectDefinition = ObjectDefinition.forId(worldObject7.getObjectId());
-                n3 = GameUtil.b(this.getPosition(), worldObject7.getPosition());
+                n3 = GameUtil.getDistance(this.getPosition(), worldObject7.getPosition());
                 object = this.a(worldObject7, objectDefinition);
                 if (object == null && n3 > 2) continue;
                 worldObject2 = worldObject7;
@@ -3136,7 +3137,7 @@ extends Entity {
         } else if (arrayList2.size() == 1) {
             worldObject7 = (WorldObject)arrayList2.get(0);
             ObjectDefinition objectDefinition = ObjectDefinition.forId(worldObject7.getObjectId());
-            n3 = GameUtil.b(this.getPosition(), worldObject7.getPosition());
+            n3 = GameUtil.getDistance(this.getPosition(), worldObject7.getPosition());
             object = this.a(worldObject7, objectDefinition);
             worldObject2 = worldObject7;
         }
@@ -3183,7 +3184,7 @@ extends Entity {
                     }
                 } else {
                     player = this;
-                    n15 = player.eY.getContainer().indexOfItem(this.botTaskItemId);
+                    n15 = player.inventoryManager.getContainer().indexOfItem(this.botTaskItemId);
                     player = this;
                     this.selectedItemSlot = n15;
                     n15 = this.botTaskItemId;
@@ -3241,11 +3242,11 @@ extends Entity {
         player.packetSender.showInterface(8677);
         boolean bl = true;
         player = this;
-        this.gM = bl;
+        this.actionLocked = bl;
         CycleEventHandler.getInstance().schedule(this, new DelayedPositionMoveTask(this, position), 4);
     }
 
-    public final void bl() {
+    public final void startBarrowsChestDamage() {
         Object object = this;
         if (((Player)object).ho == 4535) {
             int n = -1;
@@ -3258,7 +3259,7 @@ extends Entity {
         ((Player)object).packetSender.sendCameraShake(2, 3, 2, 3);
         object = new BarrowsChestDamageTask(this, 50);
         World.getTaskScheduler().schedule((TickTask)object);
-        this.bU = true;
+        this.barrowsChestOpened = true;
     }
 
     public final void b(Position position, boolean bl) {
@@ -3280,7 +3281,7 @@ extends Entity {
         Player player2 = this;
         int n = player2.getPosition().getPlane();
         this.ew = ((Position)object).getPlane() != n;
-        n = this.dJ() ? 1 : 0;
+        n = this.isActionLocked() ? 1 : 0;
         if (this.ew) {
             GroundItemManager.getInstance();
             GroundItemManager.clearVisibleItems(player2);
@@ -3288,12 +3289,12 @@ extends Entity {
         if (n == 0) {
             boolean bl = true;
             player = this;
-            this.gM = bl;
+            this.actionLocked = bl;
         }
         if (!this.is) {
             this.er();
         }
-        this.f((Position)object);
+        this.applyTeleportPosition((Position)object);
         if (!this.ev && !this.isInBarrows()) {
             player = this;
             player.packetSender.sendMinimapState(0);
@@ -3302,17 +3303,17 @@ extends Entity {
                 player.packetSender.closeInterfaces();
             }
         }
-        if (this.bU && !this.isInBarrows()) {
+        if (this.barrowsChestOpened && !this.isInBarrows()) {
             object = this;
             player = object;
             ((Player)object).packetSender.resetCamera();
-            ((Player)object).bU = false;
-            BarrowsManager.c(this);
+            ((Player)object).barrowsChestOpened = false;
+            BarrowsManager.resetBarrowsState(this);
         }
         CycleEventHandler.getInstance().schedule(this, new PostTeleportBotContinuationTask(this, n != 0, player2), 1);
     }
 
-    public final void bm() {
+    public final void refreshRegionState() {
         GameplayHelper.g(this);
         GameplayHelper.h(this);
         ObjectManager.getInstance().refreshDynamicObjectsForPlayer(this);
@@ -3322,17 +3323,17 @@ extends Entity {
         Npc.refreshNearbyTransformedNpcs(this);
     }
 
-    public final void f(Position object) {
+    public final void applyTeleportPosition(Position object) {
         this.getPosition().set((Position)object);
         this.getPosition().setPreviousX(((Position)object).getX());
         this.getPosition().setPreviousY(((Position)object).getY() + 1);
         this.getMovementQueue().clear();
         boolean bl = true;
         object = this;
-        this.gE = bl;
+        this.teleportPlacementUpdateRequired = bl;
         bl = true;
         object = this;
-        this.gD = bl;
+        this.teleporting = bl;
         object = this;
         ((Player)object).packetSender.sendPlayerIndex();
     }
@@ -3341,14 +3342,14 @@ extends Entity {
         this.moveTo(new Position(n, n2, 0));
     }
 
-    public final void bn() {
-        if (this.de) {
+    public final void sendLoginResponse() {
+        if (this.isBot) {
             return;
         }
-        if (this.eQ()) {
+        if (this.isBanned()) {
             PacketWriter packetWriter = PacketBuffer.allocateWriter(3);
             Player player = this;
-            packetWriter.writeByte(player.gy);
+            packetWriter.writeByte(player.loginResponseCode);
             player = this;
             int n = GameplayHelper.b(System.currentTimeMillis(), player.banExpires) + 1;
             packetWriter.writeShort(n);
@@ -3357,26 +3358,26 @@ extends Entity {
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(3);
         Player player = this;
-        packetWriter.writeByte(player.gy);
+        packetWriter.writeByte(player.loginResponseCode);
         player = this;
         packetWriter.writeByte(player.playerRights);
         packetWriter.writeByte(0);
         this.writePacketBuffer(packetWriter.getBuffer());
     }
 
-    public final String bo() {
-        return this.ii;
+    public final String getProfileString1() {
+        return this.profileString1;
     }
 
-    public final void b(String string) {
-        this.ii = string;
+    public final void setProfileString1(String string) {
+        this.profileString1 = string;
     }
 
     public final void bp() {
         int n = 0;
-        if (this.eE == 1) {
+        if (this.enterTheAbyssMiniquestState == 1) {
             n = 4;
-        } else if (this.eE >= 2) {
+        } else if (this.enterTheAbyssMiniquestState >= 2) {
             n = 1;
         }
         this.ep[492] = n;
@@ -3384,18 +3385,18 @@ extends Entity {
         player.packetSender.sendConfig(492, this.ep[492]);
     }
 
-    public final void bq() {
+    public final void processPostLogin() {
         Player player;
-        boolean bl = this.g();
-        this.bn();
+        boolean bl = this.validateLocalLogin();
+        this.sendLoginResponse();
         if (!bl) {
             this.disconnect();
             return;
         }
         if (this.ik) {
             Player player2 = this;
-            this.cc = 0L;
-            player2.f(TeleportManager.a);
+            this.membershipExpiresMillis = 0L;
+            player2.applyTeleportPosition(TeleportManager.a);
         }
         Player player3 = this;
         int n = 0;
@@ -3410,25 +3411,25 @@ extends Entity {
         player3.bp();
         int n2 = 1;
         player = this;
-        this.gM = n2;
-        World.b(this);
+        this.actionLocked = n2;
+        World.registerPlayer(this);
         this.packetSender.sendPostLoginState().syncPlayerConfigs();
         this.getPoisonDamage();
         this.getMovementQueue().isRunning();
         if (this.s()) {
             n2 = this.getPosition().getPlane() + 4 + (this.getIndex() << 2);
             this.moveTo(new Position(this.getPosition().getX(), this.getPosition().getY(), n2));
-            this.p(n2);
+            this.spawnTenthSquadSigilNpcs(n2);
         }
         n2 = 1;
         player = this;
-        this.gD = n2;
+        this.teleporting = n2;
         PluginManager.a(this);
         this.packetSender.sendPlayerOption("Follow", 2, false);
         this.packetSender.sendPlayerOption("Trade with", 3, false);
-        this.fe.refreshAllSkills();
-        this.gu = true;
-        Object object = this.eZ.getContainer().getItemAt(3);
+        this.skillManager.refreshAllSkills();
+        this.registered = true;
+        Object object = this.equipmentManager.getContainer().getItemAt(3);
         if (object != null && object.getDefinition().isMembersOnly() && ServerSettings.freeToPlayWorld) {
             object = null;
         }
@@ -3436,42 +3437,42 @@ extends Entity {
             this.ak = 1463;
         }
         this.getUpdateState().setUpdateRequired(true);
-        this.f(true);
+        this.setAppearanceUpdateRequired(true);
         this.setWeaponProfile(WeaponProfile.forItem(object));
         object = SpecialAttackDefinition.forItem(object);
         player = this;
-        this.hv = object;
+        this.specialAttackDefinition = object;
         player = this;
-        player.fj.c();
+        player.duelSession.moveToDuelArenaExit();
         player = this;
-        player.fk.b();
+        player.fightCaveController.cleanupIfInFightCave();
         player = this;
         player.packetSender.clearSidebarInterfaces();
         player = this;
-        int n3 = player.fe.getCombatLevel();
+        int n3 = player.skillManager.getCombatLevel();
         player = this;
         this.combatLevel = n3;
         player = this;
-        GameplayHelper.f(this, player.eZ.getItemIdAtSlot(0));
+        GameplayHelper.f(this, player.equipmentManager.getItemIdAtSlot(0));
         player = this;
-        player.eZ.j();
+        player.equipmentManager.refreshWeaponAmmunitionState();
         player = this;
-        player.eZ.i();
+        player.equipmentManager.refreshBarrowsSetEffects();
         Player player4 = this;
-        Object object2 = player4.eY;
+        Object object2 = player4.inventoryManager;
         ((InventoryManager)object2).refresh();
-        object2 = player4.eZ;
+        object2 = player4.equipmentManager;
         ((EquipmentManager)object2).refresh();
-        player4.fQ.processPendingPinChanges();
+        player4.bankPinManager.processPendingPinChanges();
         object2 = player4;
         player = object2;
         World.scheduleTickTask(new PostLoginSyncTask((Player)object2, 3, player));
-        player4.fb.deactivateAll();
-        player4.fe.d();
-        player4.ff.d();
+        player4.prayerManager.deactivateAll();
+        player4.skillManager.d();
+        player4.questManager.refreshQuestPointText();
         boolean bl2 = false;
         player = this;
-        this.gM = bl2;
+        this.actionLocked = bl2;
         this.aj = this.isInWilderness();
         Object object3 = this;
         MusicManager.unlockTrack((Player)object3, 16);
@@ -3481,24 +3482,24 @@ extends Entity {
         MusicManager.unlockTrack((Player)object3, 547);
         if (this.questStates[0] != 1) {
             player = this;
-            player.ff.refreshQuestJournal();
+            player.questManager.refreshQuestJournal();
             if (this.questStates[0] >= 45) {
                 player = this;
-                player.eZ.refreshWeaponInterface();
+                player.equipmentManager.refreshWeaponInterface();
             }
         } else {
             player = this;
             player.packetSender.refreshSidebarInterfaces();
             player = this;
-            player.eZ.refreshWeaponInterface();
+            player.equipmentManager.refreshWeaponInterface();
         }
         if (this.getCurrentHitpoints() <= 0) {
             CombatManager.handleDeath(this);
         }
         CacheDefinitionIndex.scheduleRandomEventRoll(this);
-        this.f(true);
+        this.setAppearanceUpdateRequired(true);
         player = this;
-        player.packetSender.sendInterfaceText("Total Lvl: " + this.fe.getTotalLevel(), 3984);
+        player.packetSender.sendInterfaceText("Total Lvl: " + this.skillManager.getTotalLevel(), 3984);
         if (this.getPoisonDamage() > 0.0) {
             object3 = new HitDefinition(null, HitType.POISON, Math.ceil(this.getPoisonDamage())).setDelay(30);
             object3 = new CombatAction(this, this, (HitDefinition)object3);
@@ -3507,31 +3508,31 @@ extends Entity {
         }
         int n4 = 0;
         while (n4 < 6) {
-            if (this.dF[n4]) {
-                GrandExchangeManager.a(this, n4);
+            if (this.grandExchangeFinishMessagePending[n4]) {
+                GrandExchangeManager.sendOfferCompletionMessage(this, n4);
             }
-            this.dF[n4] = false;
+            this.grandExchangeFinishMessagePending[n4] = false;
             ++n4;
         }
-        if (this.bU) {
-            this.bl();
+        if (this.barrowsChestOpened) {
+            this.startBarrowsChestDamage();
         }
         player = this;
-        if (player.fn.g()) {
+        if (player.telekineticTheatreController.isInsideTheatre()) {
             player = this;
-            player.fn.f();
+            player.telekineticTheatreController.refreshCurrentMaze();
         }
-        if (this.de && this.az == 4 && this.ej > 0L) {
+        if (this.isBot && this.botMode == 4 && this.ej > 0L) {
             this.a("bot", null, false);
         }
     }
 
-    public final boolean br() {
+    public final boolean loadAndValidateLogin() {
         CharacterFileManager.loadPlayer(this);
-        if (this.g()) {
+        if (this.validateLocalLogin()) {
             return true;
         }
-        this.bn();
+        this.sendLoginResponse();
         Player player = this;
         if (LoginProtocol.a.contains(player.username)) {
             player = this;
@@ -3581,46 +3582,46 @@ extends Entity {
         return BotPlayer.defaultProgressiveBotNames.contains(string.toLowerCase());
     }
 
-    private boolean g() {
+    private boolean validateLocalLogin() {
         boolean bl = false;
         if (FileUtil.exists("./data/characters/" + this.username + ".dat")) {
             bl = true;
         } else {
-            if (this.username.toLowerCase().startsWith("mod ") || this.username.toLowerCase().startsWith("admin ") || this.username.toLowerCase().startsWith("owner ") || this.username.contains("  ") || !Player.k(this.username) || Player.l(this.username) && !this.de) {
+            if (this.username.toLowerCase().startsWith("mod ") || this.username.toLowerCase().startsWith("admin ") || this.username.toLowerCase().startsWith("owner ") || this.username.contains("  ") || !Player.k(this.username) || Player.l(this.username) && !this.isBot) {
                 int n = 3;
                 Player player = this;
-                this.gy = n;
+                this.loginResponseCode = n;
                 return false;
             }
             this.eg = System.currentTimeMillis();
-            this.bK = 1234 + GameUtil.h(4321);
-            if (this.de) {
+            this.bK = 1234 + GameUtil.randomInt(4321);
+            if (this.isBot) {
                 this.f();
             }
         }
         if (this.username.length() <= 0 || this.username.length() > 12 || this.submittedPassword.length() < 4 || this.submittedPassword.length() > 20 || !this.submittedPassword.equals(this.password) && bl) {
             int n = 3;
             Player player = this;
-            this.gy = n;
+            this.loginResponseCode = n;
             return false;
         }
         Object object = this;
-        if (!((Player)object).hV.equals("127.0.0.1")) {
+        if (!((Player)object).hostAddress.equals("127.0.0.1")) {
             object = this;
-            if (!((Player)object).hV.startsWith("192.168.")) {
+            if (!((Player)object).hostAddress.startsWith("192.168.")) {
                 object = this;
-                if (!((Player)object).hV.startsWith("10.")) {
+                if (!((Player)object).hostAddress.startsWith("10.")) {
                     int n = 11;
                     object = this;
-                    this.gy = n;
+                    this.loginResponseCode = n;
                     return false;
                 }
             }
         }
-        if (World.c() >= 5) {
+        if (World.getNonBotPlayerCount() >= 5) {
             int n = 11;
             object = this;
-            this.gy = n;
+            this.loginResponseCode = n;
             return false;
         }
         Object object2 = this.submittedPassword;
@@ -3629,32 +3630,32 @@ extends Entity {
         object = this;
         if (((Player)object).playerRights > 1 || this.username.toLowerCase().startsWith("bot ")) {
             object = this;
-            if (!((Player)object).hV.equals("127.0.0.1")) {
+            if (!((Player)object).hostAddress.equals("127.0.0.1")) {
                 int n = 3;
                 object = this;
-                this.gy = n;
+                this.loginResponseCode = n;
                 return false;
             }
         }
-        if (Player.l(this.username) && !this.de) {
+        if (Player.l(this.username) && !this.isBot) {
             int n = 3;
             object = this;
-            this.gy = n;
+            this.loginResponseCode = n;
             return false;
         }
-        if (Server.b == 3) {
+        if (Server.serverStatus == 3) {
             int n = 14;
             object = this;
-            this.gy = n;
+            this.loginResponseCode = n;
             return false;
         }
-        if (World.b() >= ServerSettings.maxPlayers) {
+        if (World.getPlayerCount() >= ServerSettings.maxPlayers) {
             int n = 7;
             object = this;
-            this.gy = n;
+            this.loginResponseCode = n;
             return false;
         }
-        Player[] playerArray = World.f();
+        Player[] playerArray = World.getPlayers();
         int n = playerArray.length;
         int n2 = 0;
         while (n2 < n) {
@@ -3663,22 +3664,22 @@ extends Entity {
                 Object object3 = object2;
                 object = object3;
                 object = this;
-                if (((Player)object3).ht == ((Player)object).ht) {
+                if (((Player)object3).nameHash == ((Player)object).nameHash) {
                     int n3 = 5;
                     object = this;
-                    this.gy = n3;
+                    this.loginResponseCode = n3;
                     return false;
                 }
                 object = this;
-                if (!((Player)object).hV.equals("127.0.0.1")) {
+                if (!((Player)object).hostAddress.equals("127.0.0.1")) {
                     Object object4;
                     object = object2;
                     object = object2;
                     object = this;
-                    if (((Player)object4).hV.equals(((Player)object).hV)) {
+                    if (((Player)object4).hostAddress.equals(((Player)object).hostAddress)) {
                         int n4 = 9;
                         object = this;
-                        this.gy = n4;
+                        this.loginResponseCode = n4;
                         return false;
                     }
                 }
@@ -3689,14 +3690,14 @@ extends Entity {
         if (((Player)object2).eR != ServerSettings.clientBuild) {
             int n5 = 6;
             object = this;
-            this.gy = n5;
+            this.loginResponseCode = n5;
             return false;
         }
         object2 = this;
         if (((Player)object2).eT != -1) {
             int n6 = 10;
             object = this;
-            this.gy = n6;
+            this.loginResponseCode = n6;
             return false;
         }
         int n7 = 0;
@@ -3706,36 +3707,36 @@ extends Entity {
         while (n < n8) {
             String string = stringArray[n];
             object = this;
-            if (((Player)object).hV.equals(string)) {
+            if (((Player)object).hostAddress.equals(string)) {
                 n7 = 1;
                 break;
             }
             ++n;
         }
-        if (this.eQ() || n7 != 0) {
+        if (this.isBanned() || n7 != 0) {
             n7 = 4;
             object = this;
-            this.gy = n7;
+            this.loginResponseCode = n7;
             return false;
         }
         if (!this.isMember() && !ServerSettings.freeToPlayWorld) {
             n7 = 12;
             object = this;
-            this.gy = n7;
+            this.loginResponseCode = n7;
             return false;
         }
         object = this;
-        if (!((Player)object).fU && !this.ef && ServerSettings.loginRestrictionMode == 1) {
+        if (!((Player)object).memberFlag && !this.loginRestrictionExempt && ServerSettings.loginRestrictionMode == 1) {
             object = this;
             if (((Player)object).playerRights == 0) {
                 if (bl) {
                     n7 = 12;
                     object = this;
-                    this.gy = n7;
+                    this.loginResponseCode = n7;
                 } else {
                     n7 = 29;
                     object = this;
-                    this.gy = n7;
+                    this.loginResponseCode = n7;
                     CharacterFileManager.savePlayer(this);
                 }
                 return false;
@@ -3743,7 +3744,7 @@ extends Entity {
         }
         n7 = 2;
         object = this;
-        this.gy = n7;
+        this.loginResponseCode = n7;
         return true;
     }
 
@@ -3752,71 +3753,71 @@ extends Entity {
         Player player = this;
         Player player2 = player;
         player2 = this;
-        if (player.fe.getCurrentLevels()[3] + n <= player2.fe.getBaseLevel(3)) {
+        if (player.skillManager.getCurrentLevels()[3] + n <= player2.skillManager.getBaseLevel(3)) {
             player2 = this;
-            int[] nArray = player2.fe.getCurrentLevels();
+            int[] nArray = player2.skillManager.getCurrentLevels();
             nArray[3] = nArray[3] + n;
         } else {
             Player player3 = this;
             player2 = player3;
             player2 = this;
-            player3.fe.getCurrentLevels()[3] = player2.fe.getBaseLevel(3);
+            player3.skillManager.getCurrentLevels()[3] = player2.skillManager.getBaseLevel(3);
         }
         player2 = this;
-        player2.fe.refreshSkill(3);
+        player2.skillManager.refreshSkill(3);
     }
 
     public String toString() {
         Player player = this;
         if (player.username == null) {
             player = this;
-            return "Client(" + player.hV + ")";
+            return "Client(" + player.hostAddress + ")";
         }
         Player player2 = this;
         player = player2;
         Player player3 = this;
         player = player3;
         player = this;
-        return "Player(" + player2.username + ":" + player3.password + " - " + player.hV + ")";
+        return "Player(" + player2.username + ":" + player3.password + " - " + player.hostAddress + ")";
     }
 
     public final void c(String string) {
-        if (this.de) {
-            this.hV = string;
+        if (this.isBot) {
+            this.hostAddress = string;
             return;
         }
         System.err.println("setHost method can only be used for bot accounts!");
     }
 
-    public final String bs() {
-        return this.hV;
+    public final String getHostAddress() {
+        return this.hostAddress;
     }
 
-    public final Position bt() {
-        return this.fS;
+    public final Position getLastKnownRegionPosition() {
+        return this.lastKnownRegionPosition;
     }
 
-    public final void e(boolean bl) {
-        this.gD = bl;
+    public final void setTeleporting(boolean bl) {
+        this.teleporting = bl;
     }
 
-    public final boolean bu() {
-        return this.gD;
+    public final boolean isTeleporting() {
+        return this.teleporting;
     }
 
     public final InventoryManager getInventoryManager() {
-        return this.eY;
+        return this.inventoryManager;
     }
 
-    public final void f(boolean bl) {
+    public final void setAppearanceUpdateRequired(boolean bl) {
         if (bl) {
             this.getUpdateState().setUpdateRequired(true);
         }
-        this.gF = bl;
+        this.appearanceUpdateRequired = bl;
     }
 
-    public final boolean bw() {
-        return this.gF;
+    public final boolean isAppearanceUpdateRequired() {
+        return this.appearanceUpdateRequired;
     }
 
     public final void setPlayerRights(int n) {
@@ -3827,12 +3828,12 @@ extends Entity {
         return this.playerRights;
     }
 
-    public final void g(boolean bl) {
-        this.gE = bl;
+    public final void setTeleportPlacementUpdateRequired(boolean bl) {
+        this.teleportPlacementUpdateRequired = bl;
     }
 
-    public final boolean by() {
-        return this.gE;
+    public final boolean isTeleportPlacementUpdateRequired() {
+        return this.teleportPlacementUpdateRequired;
     }
 
     public final void setPublicChatColor(int n) {
@@ -3880,16 +3881,16 @@ extends Entity {
         return this.gender;
     }
 
-    public final List bF() {
-        return this.eW;
+    public final List getLocalPlayers() {
+        return this.localPlayers;
     }
 
-    public final void A(int n) {
-        this.gy = n;
+    public final void setLoginResponseCode(int n) {
+        this.loginResponseCode = n;
     }
 
-    public final List bG() {
-        return this.eX;
+    public final List getLocalNpcs() {
+        return this.localNpcs;
     }
 
     public final void setInteractionTargetX(int n) {
@@ -3980,36 +3981,36 @@ extends Entity {
         return this.bankRearrangeMode;
     }
 
-    public final void K(int n) {
-        this.gt = n;
+    public final void setCurrentShopId(int n) {
+        this.currentShopId = n;
     }
 
-    public final int bS() {
-        return this.gt;
+    public final int getCurrentShopId() {
+        return this.currentShopId;
     }
 
     public final ItemContainer getBankContainer() {
         return this.bankContainer;
     }
 
-    public final void g(int n, int n2) {
-        this.gv.put(n, n2);
+    public final void setCombatBonus(int n, int n2) {
+        this.combatBonuses.put(n, n2);
     }
 
-    public final Map bU() {
-        return this.gv;
+    public final Map getCombatBonuses() {
+        return this.combatBonuses;
     }
 
     public final long[] getFriendsList() {
         return this.friendsList;
     }
 
-    public final void j(boolean bl) {
-        this.gu = false;
+    public final void setRegistered(boolean bl) {
+        this.registered = false;
     }
 
-    public final boolean bW() {
-        return this.gu;
+    public final boolean isRegistered() {
+        return this.registered;
     }
 
     public final long[] getIgnoreList() {
@@ -4017,19 +4018,19 @@ extends Entity {
     }
 
     public final EquipmentManager getEquipmentManager() {
-        return this.eZ;
+        return this.equipmentManager;
     }
 
     public final SkillManager getSkillManager() {
-        return this.fe;
+        return this.skillManager;
     }
 
     public final QuestManager getQuestManager() {
-        return this.ff;
+        return this.questManager;
     }
 
     public final RunecraftingObjectHandler getRunecraftingObjectHandler() {
-        return this.fg;
+        return this.runecraftingObjectHandler;
     }
 
     public final String getInterfaceAction() {
@@ -4041,43 +4042,43 @@ extends Entity {
     }
 
     public final SlayerManager getSlayerManager() {
-        return this.fh;
+        return this.slayerManager;
     }
 
     public final AlchemistPlaygroundController getAlchemistPlaygroundController() {
-        return this.fl;
+        return this.alchemistPlaygroundController;
     }
 
     public final CreatureGraveyardController getCreatureGraveyardController() {
-        return this.fm;
+        return this.creatureGraveyardController;
     }
 
     public final TelekineticTheatreController getTelekineticTheatreController() {
-        return this.fn;
+        return this.telekineticTheatreController;
     }
 
     public final EnchantmentChamberController getEnchantmentChamberController() {
-        return this.fo;
+        return this.enchantmentChamberController;
     }
 
     public final DuelController getDuelController() {
-        return this.fi;
+        return this.duelController;
     }
 
     public final DuelSession getDuelSession() {
-        return this.fj;
+        return this.duelSession;
     }
 
     public final FightCaveController getFightCaveController() {
-        return this.fk;
+        return this.fightCaveController;
     }
 
     public final DuelInterfaceManager getDuelInterfaceManager() {
-        return this.fp;
+        return this.duelInterfaceManager;
     }
 
     public final DuelArenaLocationManager getDuelArenaLocationManager() {
-        return this.fq;
+        return this.duelArenaLocationManager;
     }
 
     public final Npc co() {
@@ -4085,135 +4086,135 @@ extends Entity {
     }
 
     public final WineFermentationHandler getWineFermentationHandler() {
-        return this.fr;
+        return this.wineFermentationHandler;
     }
 
     public final CookingManager getCookingManager() {
-        return this.fy;
+        return this.cookingManager;
     }
 
     public final ItemCombinationHandler getItemCombinationHandler() {
-        return this.ft;
+        return this.itemCombinationHandler;
     }
 
     public final SkillGuideManager getSkillGuideManager() {
-        return this.fu;
+        return this.skillGuideManager;
     }
 
     public final FoodHandler getFoodHandler() {
-        return this.fv;
+        return this.foodHandler;
     }
 
     public final PotionHandler getPotionHandler() {
-        return this.fw;
+        return this.potionHandler;
     }
 
     public final BankPinManager getBankPinManager() {
-        return this.fQ;
+        return this.bankPinManager;
     }
 
     public final DialogueManager getDialogueManager() {
-        return this.fP;
+        return this.dialogueManager;
     }
 
     public final FiremakingHandler getFiremakingHandler() {
-        return this.fL;
+        return this.firemakingHandler;
     }
 
     public final MiningManager getMiningManager() {
-        return this.fx;
+        return this.miningManager;
     }
 
     public final CompostBinManager getCompostBinManager() {
-        return this.fz;
+        return this.compostBinManager;
     }
 
     public final AllotmentPatchManager getAllotmentPatchManager() {
-        return this.fA;
+        return this.allotmentPatchManager;
     }
 
     public final FlowerPatchManager getFlowerPatchManager() {
-        return this.fB;
+        return this.flowerPatchManager;
     }
 
     public final HerbPatchManager getHerbPatchManager() {
-        return this.fC;
+        return this.herbPatchManager;
     }
 
     public final HopsPatchManager getHopsPatchManager() {
-        return this.fD;
+        return this.hopsPatchManager;
     }
 
     public final BushPatchManager getBushPatchManager() {
-        return this.fE;
+        return this.bushPatchManager;
     }
 
     public final PlantPotHandler getPlantPotHandler() {
-        return this.fF;
+        return this.plantPotHandler;
     }
 
     public final TreePatchManager getTreePatchManager() {
-        return this.fG;
+        return this.treePatchManager;
     }
 
     public final FruitTreePatchManager getFruitTreePatchManager() {
-        return this.fH;
+        return this.fruitTreePatchManager;
     }
 
     public final SpecialTreePatchManager getSpecialTreePatchManager() {
-        return this.fI;
+        return this.specialTreePatchManager;
     }
 
     public final SpecialCropPatchManager getSpecialCropPatchManager() {
-        return this.fJ;
+        return this.specialCropPatchManager;
     }
 
     public final FarmingToolStore getFarmingToolStore() {
-        return this.fK;
+        return this.farmingToolStore;
     }
 
     public final BoneBuryingHandler getBoneBuryingHandler() {
-        return this.fM;
+        return this.boneBuryingHandler;
     }
 
     public final FishingHandler getFishingHandler() {
-        return this.fs;
+        return this.fishingHandler;
     }
 
     public final SandwichLadyManager getSandwichLadyManager() {
-        return this.fO;
+        return this.sandwichLadyManager;
     }
 
     public final PetManager getPetManager() {
-        return this.fN;
+        return this.petManager;
     }
 
     public final SocialManager getSocialManager() {
-        return this.fa;
+        return this.socialManager;
     }
 
-    public final void a(TradeState tradeState) {
-        this.gz = tradeState;
+    public final void setTradeState(TradeState tradeState) {
+        this.tradeState = tradeState;
     }
 
     public final TradeState getTradeState() {
-        return this.gz;
+        return this.tradeState;
     }
 
     public final ItemContainer getTradeOfferContainer() {
-        return this.gd;
+        return this.tradeOfferContainer;
     }
 
     public final ItemContainer getPartyRoomContainer() {
-        return this.ge;
+        return this.partyRoomContainer;
     }
 
-    public final int[] cT() {
-        return this.gA;
+    public final int[] getQueuedLoginItemIds() {
+        return this.queuedLoginItemIds;
     }
 
-    public final int[] cU() {
-        return this.gB;
+    public final int[] getQueuedLoginItemAmounts() {
+        return this.queuedLoginItemAmounts;
     }
 
     public final void setRunEnergyRaw(int n) {
@@ -4301,8 +4302,8 @@ extends Entity {
         return this.connectionState;
     }
 
-    public final LoginProtocol df() {
-        return this.fR;
+    public final LoginProtocol getLoginProtocol() {
+        return this.loginProtocol;
     }
 
     public final void setCurrentPacketOpcode(int n) {
@@ -4341,52 +4342,52 @@ extends Entity {
         return this.password;
     }
 
-    public final void R(int n) {
-        this.gG = n;
+    public final void setPrayerHeadIcon(int n) {
+        this.prayerHeadIcon = n;
     }
 
-    public final int dk() {
-        return this.gG;
+    public final int getPrayerHeadIcon() {
+        return this.prayerHeadIcon;
     }
 
-    public final String dl() {
-        return this.ij;
+    public final String getProfileString2() {
+        return this.profileString2;
     }
 
-    public final void g(String string) {
-        this.ij = string;
+    public final void setProfileString2(String string) {
+        this.profileString2 = string;
     }
 
-    public final void S(int n) {
-        this.gI -= n;
+    public final void subtractDonatorPoints(int n) {
+        this.donatorPoints -= n;
     }
 
-    public final void T(int n) {
-        this.gI = n;
+    public final void setDonatorPoints(int n) {
+        this.donatorPoints = n;
     }
 
-    public final int dm() {
-        return this.gI;
+    public final int getDonatorPoints() {
+        return this.donatorPoints;
     }
 
-    public final int dn() {
-        return this.gH;
+    public final int getSkullIcon() {
+        return this.skullIcon;
     }
 
-    public final boolean[] cfr_renamed_0() {
-        return this.gJ;
+    public final boolean[] getActivePrayers() {
+        return this.activePrayers;
     }
 
     public final PrayerManager getPrayerManager() {
-        return this.fb;
+        return this.prayerManager;
     }
 
     public final TeleportManager getTeleportManager() {
-        return this.fc;
+        return this.teleportManager;
     }
 
     public final EmoteManager getEmoteManager() {
-        return this.fd;
+        return this.emoteManager;
     }
 
     public final boolean isAutoRetaliate() {
@@ -4449,13 +4450,13 @@ extends Entity {
         this.effectVolume = n;
     }
 
-    public final int dA() {
+    public final int getQuestPoints() {
         int n = 0;
         int n2 = 1;
-        while (n2 < QuestDefinition.a) {
-            QuestScript questScript = QuestDefinition.a(n2);
+        while (n2 < QuestDefinition.questCount) {
+            QuestScript questScript = QuestDefinition.getQuestScript(n2);
             if (this.questStates[n2] == 1) {
-                n += questScript.a();
+                n += questScript.getQuestPointReward();
             }
             ++n2;
         }
@@ -4474,7 +4475,7 @@ extends Entity {
         return this.spellbook;
     }
 
-    public final void a(PlayerPlugin playerPlugin) {
+    public final void addPlayerPlugin(PlayerPlugin playerPlugin) {
         this.hm.add(playerPlugin);
     }
 
@@ -4533,97 +4534,97 @@ extends Entity {
         return this.fightMode;
     }
 
-    public final void m(boolean bl) {
-        this.he = bl;
+    public final void setCrystalBowEquipped(boolean bl) {
+        this.crystalBowEquipped = bl;
     }
 
-    public final boolean dI() {
-        return this.he;
+    public final boolean isCrystalBowEquipped() {
+        return this.crystalBowEquipped;
     }
 
-    public final void n(boolean bl) {
-        this.gM = bl;
+    public final void setActionLocked(boolean bl) {
+        this.actionLocked = bl;
     }
 
-    public final boolean dJ() {
+    public final boolean isActionLocked() {
         if (this.ak == 2626 || this.ak >= 3689 && this.ak <= 3694) {
             return true;
         }
-        return this.gM;
+        return this.actionLocked;
     }
 
-    public final void o(boolean bl) {
-        this.hf = bl;
+    public final void setAmmunitionDropsEnabled(boolean bl) {
+        this.ammunitionDropsEnabled = bl;
     }
 
-    public final boolean dK() {
-        return this.hf;
+    public final boolean isAmmunitionDropsEnabled() {
+        return this.ammunitionDropsEnabled;
     }
 
-    public final void p(boolean bl) {
-        this.hg = bl;
+    public final void setDharokSetEffectActive(boolean bl) {
+        this.dharokSetEffectActive = bl;
     }
 
-    public final boolean dL() {
-        return this.hg;
+    public final boolean isDharokSetEffectActive() {
+        return this.dharokSetEffectActive;
     }
 
-    public final void q(boolean bl) {
-        this.hh = bl;
+    public final void setAhrimSetEffectActive(boolean bl) {
+        this.ahrimSetEffectActive = bl;
     }
 
-    public final boolean dM() {
-        return this.hh;
+    public final boolean isAhrimSetEffectActive() {
+        return this.ahrimSetEffectActive;
     }
 
-    public final void r(boolean bl) {
-        this.hi = bl;
+    public final void setKarilSetEffectActive(boolean bl) {
+        this.karilSetEffectActive = bl;
     }
 
-    public final boolean dN() {
-        return this.hi;
+    public final boolean isKarilSetEffectActive() {
+        return this.karilSetEffectActive;
     }
 
-    public final void s(boolean bl) {
-        this.hj = bl;
+    public final void setToragSetEffectActive(boolean bl) {
+        this.toragSetEffectActive = bl;
     }
 
-    public final boolean dO() {
-        return this.hj;
+    public final boolean isToragSetEffectActive() {
+        return this.toragSetEffectActive;
     }
 
-    public final void t(boolean bl) {
-        this.hk = bl;
+    public final void setGuthanSetEffectActive(boolean bl) {
+        this.guthanSetEffectActive = bl;
     }
 
-    public final boolean dP() {
-        return this.hk;
+    public final boolean isGuthanSetEffectActive() {
+        return this.guthanSetEffectActive;
     }
 
-    public final void u(boolean bl) {
-        this.hl = bl;
+    public final void setVeracSetEffectActive(boolean bl) {
+        this.veracSetEffectActive = bl;
     }
 
-    public final boolean dQ() {
-        return this.hl;
+    public final boolean isVeracSetEffectActive() {
+        return this.veracSetEffectActive;
     }
 
-    public final void a(long l) {
-        this.hn = l;
+    public final void setProtectionPrayerDisabledUntil(long l) {
+        this.protectionPrayerDisabledUntil = l;
     }
 
-    public final long dR() {
-        return this.hn;
+    public final long getProtectionPrayerDisabledUntil() {
+        return this.protectionPrayerDisabledUntil;
     }
 
     @Override
     public final int getCurrentHitpoints() {
-        return this.fe.getCurrentLevels()[3];
+        return this.skillManager.getCurrentLevels()[3];
     }
 
     @Override
     public final int getMaxHitpoints() {
-        return this.fe.getBaseLevel(3);
+        return this.skillManager.getBaseLevel(3);
     }
 
     @Override
@@ -4636,7 +4637,7 @@ extends Entity {
 
     @Override
     public final int getBlockAnimationId() {
-        Object object = this.eZ.getContainer().getItemAt(5);
+        Object object = this.equipmentManager.getContainer().getItemAt(5);
         if (object != null && ((String)(object = ItemDefinition.forId(((ItemStack)object).getId()).getName().toLowerCase())).contains("shield")) {
             return 1156;
         }
@@ -4651,48 +4652,48 @@ extends Entity {
     @Override
     public final int getAttackLevelFor(CombatType combatType) {
         if (combatType == CombatType.RANGED) {
-            return this.fe.getCurrentLevels()[4];
+            return this.skillManager.getCurrentLevels()[4];
         }
         if (combatType == CombatType.MAGIC) {
-            return this.fe.getCurrentLevels()[6];
+            return this.skillManager.getCurrentLevels()[6];
         }
-        return this.fe.getCurrentLevels()[0];
+        return this.skillManager.getCurrentLevels()[0];
     }
 
     @Override
     public final int getDefenceLevelFor(CombatType combatType) {
         if (combatType == CombatType.MAGIC) {
-            return this.fe.getCurrentLevels()[6];
+            return this.skillManager.getCurrentLevels()[6];
         }
-        return this.fe.getCurrentLevels()[1];
+        return this.skillManager.getCurrentLevels()[1];
     }
 
     @Override
     public final boolean isProtectedFrom(CombatType combatType) {
         if (combatType == CombatType.MELEE) {
-            return this.gJ[14];
+            return this.activePrayers[14];
         }
         if (combatType == CombatType.RANGED) {
-            return this.gJ[13];
+            return this.activePrayers[13];
         }
         if (combatType == CombatType.MAGIC) {
-            return this.gJ[12];
+            return this.activePrayers[12];
         }
         return false;
     }
 
     @Override
     public final void setCurrentHitpoints(int n) {
-        this.fe.setCurrentLevel(3, n);
-        this.fe.refreshSkill(3);
+        this.skillManager.setCurrentLevel(3, n);
+        this.skillManager.refreshSkill(3);
     }
 
-    public final long dS() {
-        return this.ht;
+    public final long getNameHash() {
+        return this.nameHash;
     }
 
-    public final void b(long l) {
-        this.ht = l;
+    public final void setNameHash(long l) {
+        this.nameHash = l;
     }
 
     public final void af(int n) {
@@ -4703,12 +4704,12 @@ extends Entity {
         return this.ho;
     }
 
-    public final void a(SpecialAttackDefinition specialAttackDefinition) {
-        this.hv = specialAttackDefinition;
+    public final void setSpecialAttackDefinition(SpecialAttackDefinition specialAttackDefinition) {
+        this.specialAttackDefinition = specialAttackDefinition;
     }
 
-    public final SpecialAttackDefinition dU() {
-        return this.hv;
+    public final SpecialAttackDefinition getSpecialAttackDefinition() {
+        return this.specialAttackDefinition;
     }
 
     public final void setWeaponProfile(WeaponProfile weaponProfile) {
@@ -4722,10 +4723,10 @@ extends Entity {
         return this.hu;
     }
 
-    public final int dW() {
+    public final int getBlockSoundId() {
         int n = 405;
         Player player = this;
-        int n2 = player.eZ.getItemIdAtSlot(4);
+        int n2 = player.equipmentManager.getItemIdAtSlot(4);
         String string = new ItemStack(n2).getDefinition().getName().toLowerCase();
         if (string.contains("platebody")) {
             n = 410;
@@ -4741,19 +4742,19 @@ extends Entity {
         switch (n) {
             case 7487: {
                 player = this;
-                if (player.eZ.getItemIdAtSlot(3) != 1377) break;
+                if (player.equipmentManager.getItemIdAtSlot(3) != 1377) break;
                 SpecialAttackDefinition.performDragonBattleaxeSpecial(this);
                 return true;
             }
             case 7587: {
                 player = this;
-                if (player.eZ.getItemIdAtSlot(3) != 35) break;
+                if (player.equipmentManager.getItemIdAtSlot(3) != 35) break;
                 SpecialAttackDefinition.performExcaliburSpecial(this);
                 return true;
             }
             case 7462: {
                 player = this;
-                if (player.eZ.getItemIdAtSlot(3) != 4153) break;
+                if (player.equipmentManager.getItemIdAtSlot(3) != 4153) break;
                 if (this.getCombatTarget() == null) {
                     player = this;
                     player.packetSender.sendGameMessage("You can only use this special when attacking something.");
@@ -4768,7 +4769,7 @@ extends Entity {
             return false;
         }
         player = this;
-        SpecialAttackDefinition specialAttackDefinition = player.hv;
+        SpecialAttackDefinition specialAttackDefinition = player.specialAttackDefinition;
         if (specialAttackDefinition != null) {
             player = this;
             if (player.specialEnergy < specialAttackDefinition.getEnergyCost()) {
@@ -4800,33 +4801,33 @@ extends Entity {
         this.packetSender.refreshSpecialAttackConfig();
     }
 
-    public final void dY() {
-        this.hw.clear();
-        this.B(false);
+    public final void clearPvpCombatReferences() {
+        this.pvpCombatReferences.clear();
+        this.setSkulled(false);
     }
 
-    public final int dZ() {
-        int n = this.hw.size();
+    public final int getSkullTimer() {
+        int n = this.pvpCombatReferences.size();
         if (n == 0) {
             return 0;
         }
         n = 0;
-        Iterator iterator = this.hw.iterator();
+        Iterator iterator = this.pvpCombatReferences.iterator();
         while (iterator.hasNext()) {
-            int n2 = ((PvpCombatReference)iterator.next()).d();
+            int n2 = ((PvpCombatReference)iterator.next()).getRemainingTicks();
             if (n2 <= n) continue;
             n = n2;
         }
         return n;
     }
 
-    public final void b(Player object, int n) {
+    public final void addPvpCombatReference(Player object, int n) {
         object = new PvpCombatReference((Entity)object, n);
-        this.hw.add(object);
-        this.B(true);
+        this.pvpCombatReferences.add(object);
+        this.setSkulled(true);
     }
 
-    public final void a(Player player) {
+    public final void recordPvpAttack(Player player) {
         boolean bl;
         block5: {
             if (!player.isPlayer()) {
@@ -4837,8 +4838,8 @@ extends Entity {
                 return;
             }
             Player player2 = this;
-            for (Object object2 : ((Player)object2).hw) {
-                if (object2.a() != player2) continue;
+            for (Object object2 : ((Player)object2).pvpCombatReferences) {
+                if (((EntityReference)object2).resolve() != player2) continue;
                 bl = true;
                 break block5;
             }
@@ -4847,23 +4848,23 @@ extends Entity {
         if (bl) {
             return;
         }
-        for (Object object2 : this.hw) {
-            if (object2.a() != player) continue;
-            ((PvpCombatReference)object2).c();
+        for (Object object2 : this.pvpCombatReferences) {
+            if (((EntityReference)object2).resolve() != player) continue;
+            ((PvpCombatReference)object2).resetTimer();
             return;
         }
-        this.b(player, 2000);
+        this.addPvpCombatReference(player, 2000);
     }
 
-    private void B(boolean bl) {
-        this.F = bl;
+    private void setSkulled(boolean bl) {
+        this.skulled = bl;
         int n = bl ? 0 : -1;
         Player player = this;
-        this.gH = n;
-        this.f(true);
+        this.skullIcon = n;
+        this.setAppearanceUpdateRequired(true);
     }
 
-    public final ArrayList a(ItemStack[] object) {
+    public final ArrayList getUnprotectedItems(ItemStack[] object) {
         ArrayList<ItemStack> arrayList = new ArrayList<ItemStack>();
         PriorityQueue<ItemStack> priorityQueue = new PriorityQueue<ItemStack>(1, new ProtectedItemValueComparator(this));
         ItemStack[] itemStackArray = object;
@@ -4871,15 +4872,15 @@ extends Entity {
         int n2 = 0;
         while (n2 < n) {
             object = itemStackArray[n2];
-            if (!(object == null || ((ItemStack)object).getDefinition().z() && ((ItemStack)object).getDefinition().n() == 1)) {
+            if (!(object == null || ((ItemStack)object).getDefinition().isUntradeable() && ((ItemStack)object).getDefinition().getValue() == 1)) {
                 priorityQueue.add(new ItemStack(((ItemStack)object).getId()));
                 arrayList.add(new ItemStack(((ItemStack)object).getId()));
             }
             ++n2;
         }
         object = new ArrayList();
-        int n3 = n2 = this.F ? 0 : 3;
-        if (this.gJ[8]) {
+        int n3 = n2 = this.skulled ? 0 : 3;
+        if (this.activePrayers[8]) {
             ++n2;
         }
         if (this.gameMode == 2) {
@@ -4899,27 +4900,27 @@ extends Entity {
         }
         this.questStates[0] = this.questStates[0] + 1;
         Player player = this;
-        player.ff.refreshQuestJournal();
+        player.questManager.refreshQuestJournal();
     }
 
     public final void eb() {
         this.questStates[0] = 68;
         Player player = this;
-        player.ff.refreshQuestJournal();
+        player.questManager.refreshQuestJournal();
     }
 
     @Override
     public final void dropDeathItems(Entity entity) {
         Object object = this;
-        if (this.playerRights >= 2 || this.isInDuelArena() || this.fm.a() || this.isInFightCave()) {
+        if (this.playerRights >= 2 || this.isInDuelArena() || this.creatureGraveyardController.isInsideGraveyard() || this.isInFightCave()) {
             return;
         }
         if (entity == null || !(entity instanceof Player)) {
             entity = this;
         }
-        object = new ItemStack[this.eZ.getContainer().g() + this.eY.getContainer().g()];
-        System.arraycopy(this.eZ.getContainer().getItems(), 0, object, 0, this.eZ.getContainer().getItems().length);
-        System.arraycopy(this.eY.getContainer().getItems(), 0, object, this.eZ.getContainer().getItems().length, this.eY.getContainer().getItems().length);
+        object = new ItemStack[this.equipmentManager.getContainer().g() + this.inventoryManager.getContainer().g()];
+        System.arraycopy(this.equipmentManager.getContainer().getItems(), 0, object, 0, this.equipmentManager.getContainer().getItems().length);
+        System.arraycopy(this.inventoryManager.getContainer().getItems(), 0, object, this.equipmentManager.getContainer().getItems().length, this.inventoryManager.getContainer().getItems().length);
         Object object2 = object;
         Object object3 = this;
         Object object4 = new PriorityQueue<ItemStack>(1, new DeathItemValueComparator((Player)object3));
@@ -4928,14 +4929,14 @@ extends Entity {
         int n2 = 0;
         while (n2 < n) {
             object2 = object5[n2];
-            if (!(object2 == null || ((ItemStack)object2).getDefinition().z() && ((ItemStack)object2).getDefinition().n() == 1)) {
+            if (!(object2 == null || ((ItemStack)object2).getDefinition().isUntradeable() && ((ItemStack)object2).getDefinition().getValue() == 1)) {
                 ((PriorityQueue)object4).add(new ItemStack(((ItemStack)object2).getId(), ((ItemStack)object2).getAmount(), ((ItemStack)object2).getMetadata()));
             }
             ++n2;
         }
         object2 = new ArrayList();
-        int n3 = n2 = ((Player)object3).F ? 0 : 3;
-        if (((Player)object3).gJ[8]) {
+        int n3 = n2 = ((Player)object3).skulled ? 0 : 3;
+        if (((Player)object3).activePrayers[8]) {
             ++n2;
         }
         if (((Player)object3).gameMode == 2) {
@@ -4968,8 +4969,8 @@ extends Entity {
                 continue block2;
             }
         }
-        this.eZ.getContainer().clear();
-        this.eY.getContainer().clear();
+        this.equipmentManager.getContainer().clear();
+        this.inventoryManager.getContainer().clear();
         object2 = entity;
         if (entity.isPlayer() && entity != this) {
             object4 = (Player)entity;
@@ -4981,7 +4982,7 @@ extends Entity {
         Object object6 = ((ArrayList)object3).iterator();
         while (object6.hasNext()) {
             object4 = (ItemStack)object6.next();
-            this.eY.addItem((ItemStack)object4);
+            this.inventoryManager.addItem((ItemStack)object4);
         }
         object6 = object.iterator();
         while (object6.hasNext()) {
@@ -4990,11 +4991,11 @@ extends Entity {
             if (((ItemStack)object4).getDefinition().getName().toLowerCase().contains("clue scroll")) {
                 this.ar = 0;
             }
-            BarrowsRepairHandler barrowsRepairHandler = BarrowsRepairHandler.b((ItemStack)object4);
-            if (((ItemStack)object4).getDefinition().z() && barrowsRepairHandler == null) continue;
+            BarrowsRepairHandler barrowsRepairHandler = BarrowsRepairHandler.forItem((ItemStack)object4);
+            if (((ItemStack)object4).getDefinition().isUntradeable() && barrowsRepairHandler == null) continue;
             object = new ItemStack(((ItemStack)object4).getId(), ((ItemStack)object4).getAmount());
             if (barrowsRepairHandler != null) {
-                object = new ItemStack(barrowsRepairHandler.a(), 1);
+                object = new ItemStack(barrowsRepairHandler.getFullyDegradedItemId(), 1);
             }
             object = new GroundItem((ItemStack)object, (Entity)this, (Entity)object2, this.getDeathPosition());
             GroundItemManager.getInstance().spawn((GroundItem)object);
@@ -5029,27 +5030,27 @@ extends Entity {
             object6 = new GroundItem(new ItemStack(526, 1), (Entity)this, entity, this.getDeathPosition());
             GroundItemManager.getInstance().spawn((GroundItem)object6);
         }
-        this.eZ.refresh();
-        this.eY.refresh();
+        this.equipmentManager.refresh();
+        this.inventoryManager.refresh();
     }
 
-    public final SpellDefinition ec() {
-        return this.hx;
+    public final SpellDefinition getQueuedCombatSpell() {
+        return this.queuedCombatSpell;
     }
 
-    public final SpellDefinition ed() {
-        return this.hy;
+    public final SpellDefinition getAutocastSpell() {
+        return this.autocastSpell;
     }
 
-    public final void a(SpellDefinition spellDefinition) {
-        this.hx = spellDefinition;
+    public final void setQueuedCombatSpell(SpellDefinition spellDefinition) {
+        this.queuedCombatSpell = spellDefinition;
     }
 
-    public final boolean ee() {
-        return this.hz;
+    public final boolean isAutocastEnabled() {
+        return this.autocastEnabled;
     }
 
-    public final void v(boolean bl) {
+    public final void setAutocastEnabled(boolean bl) {
         if (bl) {
             Player player = this;
             player.packetSender.sendConfig(108, 3);
@@ -5059,14 +5060,14 @@ extends Entity {
             Player player = this;
             player.packetSender.refreshAutocastConfig();
         }
-        this.hz = bl;
+        this.autocastEnabled = bl;
     }
 
-    public final void b(SpellDefinition spellDefinition) {
+    public final void setAutocastSpell(SpellDefinition spellDefinition) {
         if (spellDefinition == null) {
             Player player = this;
             player.packetSender.refreshAutocastConfig();
-            this.hz = false;
+            this.autocastEnabled = false;
         } else {
             Object object = this;
             ((Player)object).packetSender.setSidebarInterface(0, 328);
@@ -5077,23 +5078,23 @@ extends Entity {
             ((PacketSender)object).sendInterfaceText((String)object2, 352);
             ((PacketSender)object).sendConfig(108, 3);
             ((PacketSender)object).sendConfig(43, 3);
-            this.hz = true;
+            this.autocastEnabled = true;
         }
-        this.hy = spellDefinition;
+        this.autocastSpell = spellDefinition;
     }
 
     public final void ef() {
         Player player = this;
         player.packetSender.sendConfig(108, 2);
-        this.hz = false;
+        this.autocastEnabled = false;
     }
 
-    public final void w(boolean bl) {
-        this.fU = bl;
+    public final void setMemberFlag(boolean bl) {
+        this.memberFlag = bl;
     }
 
-    public final boolean eg() {
-        return this.fU;
+    public final boolean hasMemberFlag() {
+        return this.memberFlag;
     }
 
     public final ByteBuffer getOutboundBuffer() {
@@ -5128,40 +5129,40 @@ extends Entity {
         return this.hr;
     }
 
-    public final int el() {
-        if (this.hT == -1) {
+    public final int getStandAnimation() {
+        if (this.standAnimationOverride == -1) {
             Player player = this;
-            return player.eZ.getStandAnimation();
+            return player.equipmentManager.getStandAnimation();
         }
-        return this.hT;
+        return this.standAnimationOverride;
     }
 
-    public final int em() {
-        if (this.hU == -1) {
+    public final int getWalkAnimation() {
+        if (this.walkAnimationOverride == -1) {
             Player player = this;
-            return player.eZ.getWalkAnimation();
+            return player.equipmentManager.getWalkAnimation();
         }
-        return this.hU;
+        return this.walkAnimationOverride;
     }
 
-    public final int en() {
-        if (this.hS == -1) {
+    public final int getRunAnimation() {
+        if (this.runAnimationOverride == -1) {
             Player player = this;
-            return player.eZ.getRunAnimation();
+            return player.equipmentManager.getRunAnimation();
         }
-        return this.hS;
+        return this.runAnimationOverride;
     }
 
-    public final void aj(int n) {
-        this.hS = n;
+    public final void setRunAnimationOverride(int n) {
+        this.runAnimationOverride = n;
     }
 
-    public final void ak(int n) {
-        this.hU = n;
+    public final void setWalkAnimationOverride(int n) {
+        this.walkAnimationOverride = n;
     }
 
-    public final void al(int n) {
-        this.hT = n;
+    public final void setStandAnimationOverride(int n) {
+        this.standAnimationOverride = n;
     }
 
     public final void setMuteExpires(long l) {
@@ -5182,23 +5183,23 @@ extends Entity {
 
     public final void eq() {
         Object object = this;
-        ((Player)object).hw.clear();
-        this.B(false);
+        ((Player)object).pvpCombatReferences.clear();
+        this.setSkulled(false);
         Player player = this;
-        player.fb.deactivateAll();
+        player.prayerManager.deactivateAll();
         this.setRunEnergyPercent(100);
         this.setSpecialEnergy(100);
         this.refreshSpecialAttackWidgets();
         this.clearNegativeStatusTimers();
         this.clearImmunityTimers();
         player = this;
-        object = player.fe.getCurrentLevels();
+        object = player.skillManager.getCurrentLevels();
         int n = 0;
         while (n < ((Object)object).length) {
             Player player2 = this;
             player = player2;
             player = this;
-            player2.fe.setCurrentLevel(n, player.fe.getBaseLevel(n));
+            player2.skillManager.setCurrentLevel(n, player.skillManager.getBaseLevel(n));
             ++n;
         }
     }
@@ -5280,7 +5281,7 @@ extends Entity {
         this.setInteractionTarget(null);
         CombatManager.stopCombat(this);
         player2 = this;
-        player2.fP.finishDialogue();
+        player2.dialogueManager.finishDialogue();
         if (this.getUpdateState().getFaceEntityId() != 65535) {
             this.getUpdateState().setFaceEntity(65535);
         }
@@ -5318,13 +5319,13 @@ extends Entity {
 
     public final boolean ev() {
         Player player = this;
-        if (player.eZ.getItemIdAtSlot(9) == 8842) {
+        if (player.equipmentManager.getItemIdAtSlot(9) == 8842) {
             player = this;
-            if (player.eZ.getItemIdAtSlot(7) == 8840) {
+            if (player.equipmentManager.getItemIdAtSlot(7) == 8840) {
                 player = this;
-                if (player.eZ.getItemIdAtSlot(4) == 8839) {
+                if (player.equipmentManager.getItemIdAtSlot(4) == 8839) {
                     player = this;
-                    if (player.eZ.getItemIdAtSlot(0) == 11663) {
+                    if (player.equipmentManager.getItemIdAtSlot(0) == 11663) {
                         return true;
                     }
                 }
@@ -5335,13 +5336,13 @@ extends Entity {
 
     public final boolean ew() {
         Player player = this;
-        if (player.eZ.getItemIdAtSlot(9) == 8842) {
+        if (player.equipmentManager.getItemIdAtSlot(9) == 8842) {
             player = this;
-            if (player.eZ.getItemIdAtSlot(7) == 8840) {
+            if (player.equipmentManager.getItemIdAtSlot(7) == 8840) {
                 player = this;
-                if (player.eZ.getItemIdAtSlot(4) == 8839) {
+                if (player.equipmentManager.getItemIdAtSlot(4) == 8839) {
                     player = this;
-                    if (player.eZ.getItemIdAtSlot(0) == 11664) {
+                    if (player.equipmentManager.getItemIdAtSlot(0) == 11664) {
                         return true;
                     }
                 }
@@ -5352,13 +5353,13 @@ extends Entity {
 
     public final boolean ex() {
         Player player = this;
-        if (player.eZ.getItemIdAtSlot(9) == 8842) {
+        if (player.equipmentManager.getItemIdAtSlot(9) == 8842) {
             player = this;
-            if (player.eZ.getItemIdAtSlot(7) == 8840) {
+            if (player.equipmentManager.getItemIdAtSlot(7) == 8840) {
                 player = this;
-                if (player.eZ.getItemIdAtSlot(4) == 8839) {
+                if (player.equipmentManager.getItemIdAtSlot(4) == 8839) {
                     player = this;
-                    if (player.eZ.getItemIdAtSlot(0) == 11665) {
+                    if (player.equipmentManager.getItemIdAtSlot(0) == 11665) {
                         return true;
                     }
                 }
@@ -5382,15 +5383,15 @@ extends Entity {
                     bl3 = true;
                 }
                 Player player = this;
-                if (player.gJ[12]) {
+                if (player.activePrayers[12]) {
                     bl2 = true;
                 }
                 player = this;
-                if (player.eZ.getItemIdAtSlot(5) == 1540) break block12;
+                if (player.equipmentManager.getItemIdAtSlot(5) == 1540) break block12;
                 player = this;
-                if (player.eZ.getItemIdAtSlot(5) == 11283) break block12;
+                if (player.equipmentManager.getItemIdAtSlot(5) == 11283) break block12;
                 player = this;
-                if (player.eZ.getItemIdAtSlot(5) != 11284) break block13;
+                if (player.equipmentManager.getItemIdAtSlot(5) != 11284) break block13;
             }
             bl = true;
         }
@@ -5420,9 +5421,9 @@ extends Entity {
 
     public final boolean ez() {
         Player player = this;
-        if (player.eZ.getItemIdAtSlot(3) == 4024) {
+        if (player.equipmentManager.getItemIdAtSlot(3) == 4024) {
             player = this;
-            if (player.eZ.getItemIdAtSlot(2) == 4021) {
+            if (player.equipmentManager.getItemIdAtSlot(2) == 4021) {
                 return true;
             }
         }
@@ -5453,12 +5454,12 @@ extends Entity {
         return this.hs;
     }
 
-    public final boolean eB() {
+    public final boolean hasRestrictedCombatEquipment() {
         int n;
         int n2;
         int[] nArray;
         Object object = this;
-        ItemStack[] itemStackArray = ((Player)object).eY.getContainer().getItems();
+        ItemStack[] itemStackArray = ((Player)object).inventoryManager.getContainer().getItems();
         int n3 = itemStackArray.length;
         int n4 = 0;
         while (n4 < n3) {
@@ -5478,7 +5479,7 @@ extends Entity {
             ++n4;
         }
         object = this;
-        itemStackArray = ((Player)object).eZ.getContainer().getItems();
+        itemStackArray = ((Player)object).equipmentManager.getContainer().getItems();
         n3 = itemStackArray.length;
         n4 = 0;
         while (n4 < n3) {
@@ -5500,15 +5501,15 @@ extends Entity {
         return false;
     }
 
-    public final boolean eC() {
+    public final boolean depositInventoryAndEquipment() {
         return BankManager.depositInventoryAndEquipment(this);
     }
 
-    public final RectangularArea eD() {
-        return this.hB;
+    public final RectangularArea getLocalViewArea() {
+        return this.localViewArea;
     }
 
-    public final void eE() {
+    public final void refreshLocalViewArea() {
         Object object = this;
         ((Entity)object).getPosition();
         int n = Position.updateLocalX((Player)object);
@@ -5517,12 +5518,12 @@ extends Entity {
         n = ((Entity)object).getPosition().getX() - n;
         n2 = ((Entity)object).getPosition().getY() - n2;
         object = new Position(n, n2, ((Entity)object).getPosition().getPlane());
-        this.hB = RectangularArea.fromPositionOffset((Position)object, 104, 104);
+        this.localViewArea = RectangularArea.fromPositionOffset((Position)object, 104, 104);
     }
 
-    public final boolean aq(int n) {
+    public final boolean ownsItem(int n) {
         Object object = this;
-        ItemStack[] itemStackArray = ((Player)object).eY.getContainer().getItems();
+        ItemStack[] itemStackArray = ((Player)object).inventoryManager.getContainer().getItems();
         int n2 = itemStackArray.length;
         int n3 = 0;
         while (n3 < n2) {
@@ -5544,7 +5545,7 @@ extends Entity {
             ++n3;
         }
         object = this;
-        itemStackArray = ((Player)object).eZ.getContainer().getItems();
+        itemStackArray = ((Player)object).equipmentManager.getContainer().getItems();
         n2 = itemStackArray.length;
         n3 = 0;
         while (n3 < n2) {
@@ -5557,10 +5558,10 @@ extends Entity {
         return false;
     }
 
-    public final boolean i(int n, int n2) {
+    public final boolean ownsItemAmount(int n, int n2) {
         int n3 = 0;
         Object object = this;
-        ItemStack[] itemStackArray = ((Player)object).eY.getContainer().getItems();
+        ItemStack[] itemStackArray = ((Player)object).inventoryManager.getContainer().getItems();
         int n4 = itemStackArray.length;
         int n5 = 0;
         while (n5 < n4) {
@@ -5582,7 +5583,7 @@ extends Entity {
             ++n5;
         }
         object = this;
-        itemStackArray = ((Player)object).eZ.getContainer().getItems();
+        itemStackArray = ((Player)object).equipmentManager.getContainer().getItems();
         n4 = itemStackArray.length;
         n5 = 0;
         while (n5 < n4) {
@@ -5595,10 +5596,10 @@ extends Entity {
         return n3 >= n2;
     }
 
-    public final int ar(int n) {
+    public final int getOwnedItemAmount(int n) {
         int n2 = 0;
         Object object = this;
-        ItemStack[] itemStackArray = ((Player)object).eY.getContainer().getItems();
+        ItemStack[] itemStackArray = ((Player)object).inventoryManager.getContainer().getItems();
         int n3 = itemStackArray.length;
         int n4 = 0;
         while (n4 < n3) {
@@ -5620,7 +5621,7 @@ extends Entity {
             ++n4;
         }
         object = this;
-        itemStackArray = ((Player)object).eZ.getContainer().getItems();
+        itemStackArray = ((Player)object).equipmentManager.getContainer().getItems();
         n3 = itemStackArray.length;
         n4 = 0;
         while (n4 < n3) {
@@ -5633,20 +5634,20 @@ extends Entity {
         return n2;
     }
 
-    public final void eF() {
+    public final void resetMageTrainingArenaPizazzPoints() {
         Player player = this;
-        this.fn.a = 0;
+        this.telekineticTheatreController.pizazzPoints = 0;
         player = this;
-        this.fo.a = 0;
+        this.enchantmentChamberController.pizazzPoints = 0;
         player = this;
-        this.fl.a = 0;
+        this.alchemistPlaygroundController.pizazzPoints = 0;
         player = this;
-        this.fm.a = 0;
+        this.creatureGraveyardController.pizazzPoints = 0;
     }
 
-    public final boolean eG() {
+    public final boolean ownsProgressHat() {
         Object object = this;
-        ItemStack[] itemStackArray = ((Player)object).eY.getContainer().getItems();
+        ItemStack[] itemStackArray = ((Player)object).inventoryManager.getContainer().getItems();
         int n = itemStackArray.length;
         int n2 = 0;
         while (n2 < n) {
@@ -5668,7 +5669,7 @@ extends Entity {
             ++n2;
         }
         object = this;
-        itemStackArray = ((Player)object).eZ.getContainer().getItems();
+        itemStackArray = ((Player)object).equipmentManager.getContainer().getItems();
         n = itemStackArray.length;
         n2 = 0;
         while (n2 < n) {
@@ -5681,9 +5682,9 @@ extends Entity {
         return false;
     }
 
-    public final boolean eH() {
+    public final boolean hasActiveProgressHat() {
         Object object = this;
-        ItemStack[] itemStackArray = ((Player)object).eY.getContainer().getItems();
+        ItemStack[] itemStackArray = ((Player)object).inventoryManager.getContainer().getItems();
         int n = itemStackArray.length;
         int n2 = 0;
         while (n2 < n) {
@@ -5694,7 +5695,7 @@ extends Entity {
             ++n2;
         }
         object = this;
-        itemStackArray = ((Player)object).eZ.getContainer().getItems();
+        itemStackArray = ((Player)object).equipmentManager.getContainer().getItems();
         n = itemStackArray.length;
         n2 = 0;
         while (n2 < n) {
@@ -5707,43 +5708,43 @@ extends Entity {
         return false;
     }
 
-    public final int eI() {
+    public final int getActiveCaveLightLevel() {
         int n = 0;
         Object object = this;
-        ItemStack[] itemStackArray = ((Player)object).eY.getContainer().getItems();
+        ItemStack[] itemStackArray = ((Player)object).inventoryManager.getContainer().getItems();
         int n2 = itemStackArray.length;
         int n3 = 0;
         while (n3 < n2) {
             object = itemStackArray[n3];
             if (object != null && ((ItemStack)object).getDefinition().getEquipmentSlot() == -1) {
-                n += GameplayHelper.f(((ItemStack)object).getId());
+                n += GameplayHelper.getCaveLightLevelForItemId(((ItemStack)object).getId());
             }
             ++n3;
         }
         object = this;
-        itemStackArray = ((Player)object).eZ.getContainer().getItems();
+        itemStackArray = ((Player)object).equipmentManager.getContainer().getItems();
         n2 = itemStackArray.length;
         n3 = 0;
         while (n3 < n2) {
             object = itemStackArray[n3];
             if (object != null && ((ItemStack)object).getDefinition().getEquipmentSlot() != -1) {
-                n += GameplayHelper.f(((ItemStack)object).getId());
+                n += GameplayHelper.getCaveLightLevelForItemId(((ItemStack)object).getId());
             }
             ++n3;
         }
         return n;
     }
 
-    public final ItemStack eJ() {
+    public final ItemStack findLitCaveLightSource() {
         Object object = this;
-        ItemStack[] itemStackArray = ((Player)object).eY.getContainer().getItems();
+        ItemStack[] itemStackArray = ((Player)object).inventoryManager.getContainer().getItems();
         int n = itemStackArray.length;
         int n2 = 0;
         while (n2 < n) {
             int n3;
             CaveLightSourceDefinition caveLightSourceDefinition;
             object = itemStackArray[n2];
-            if (object != null && ((ItemStack)object).getDefinition().getEquipmentSlot() == -1 && ((caveLightSourceDefinition = CaveLightSourceDefinition.a(n3 = ((ItemStack)object).getId())) == null ? false : (caveLightSourceDefinition.b() == n3 ? false : caveLightSourceDefinition.e()))) {
+            if (object != null && ((ItemStack)object).getDefinition().getEquipmentSlot() == -1 && ((caveLightSourceDefinition = CaveLightSourceDefinition.forItemId(n3 = ((ItemStack)object).getId())) == null ? false : (caveLightSourceDefinition.getUnlitItemId() == n3 ? false : caveLightSourceDefinition.canFlareInSwampGas()))) {
                 return object;
             }
             ++n2;
@@ -5751,9 +5752,9 @@ extends Entity {
         return null;
     }
 
-    public final boolean eK() {
+    public final boolean ownsClueScroll() {
         Object object = this;
-        ItemStack[] itemStackArray = ((Player)object).eY.getContainer().getItems();
+        ItemStack[] itemStackArray = ((Player)object).inventoryManager.getContainer().getItems();
         int n = itemStackArray.length;
         int n2 = 0;
         while (n2 < n) {
@@ -5779,7 +5780,7 @@ extends Entity {
 
     private boolean m(String string) {
         Object object = this;
-        ItemStack[] itemStackArray = ((Player)object).eZ.getContainer().getItems();
+        ItemStack[] itemStackArray = ((Player)object).equipmentManager.getContainer().getItems();
         int n = itemStackArray.length;
         int n2 = 0;
         while (n2 < n) {
@@ -5792,22 +5793,22 @@ extends Entity {
         return false;
     }
 
-    public final boolean eL() {
+    public final boolean hasChargedAmuletOfGloryEquipped() {
         if (ServerSettings.freeToPlayWorld || !this.isMember()) {
             return false;
         }
         Player player = this;
-        if (player.eZ.getContainer().getItemAt(2) == null) {
+        if (player.equipmentManager.getContainer().getItemAt(2) == null) {
             return false;
         }
         player = this;
-        int n = player.eZ.getContainer().getItemAt(2).getId();
+        int n = player.equipmentManager.getContainer().getItemAt(2).getId();
         return n >= 1706 && n <= 1712 || n >= 10354 && n <= 10360;
     }
 
-    public final boolean eM() {
+    public final boolean ownsCluePuzzleBox() {
         Object object = this;
-        ItemStack[] itemStackArray = ((Player)object).eY.getContainer().getItems();
+        ItemStack[] itemStackArray = ((Player)object).inventoryManager.getContainer().getItems();
         int n = itemStackArray.length;
         int n2 = 0;
         while (n2 < n) {
@@ -5831,23 +5832,23 @@ extends Entity {
         return false;
     }
 
-    public final List eN() {
-        return this.hC;
+    public final List getVisibleGroundItems() {
+        return this.visibleGroundItems;
     }
 
-    public final void as(int n) {
-        this.hq = n;
+    public final void setCookingObjectId(int n) {
+        this.cookingObjectId = n;
     }
 
-    public final int eO() {
-        return this.hq;
+    public final int getCookingObjectId() {
+        return this.cookingObjectId;
     }
 
-    public final boolean eP() {
+    public final boolean isMuted() {
         return this.muteExpires != 0L && this.muteExpires > System.currentTimeMillis();
     }
 
-    public final boolean eQ() {
+    public final boolean isBanned() {
         return this.banExpires != 0L && this.banExpires > System.currentTimeMillis();
     }
 
@@ -5859,32 +5860,32 @@ extends Entity {
         this.openInterfaceId = n;
     }
 
-    public final void b(int n, boolean bl) {
-        this.hF[n] = bl;
+    public final void setBarrowsBrotherKilled(int n, boolean bl) {
+        this.barrowsKilledBrothers[n] = bl;
     }
 
-    public final boolean[] eS() {
-        return this.hF;
+    public final boolean[] getBarrowsKilledBrothers() {
+        return this.barrowsKilledBrothers;
     }
 
-    public final boolean au(int n) {
-        return this.hF[n];
+    public final boolean isBarrowsBrotherKilled(int n) {
+        return this.barrowsKilledBrothers[n];
     }
 
-    public final void av(int n) {
-        this.hG = n;
+    public final void setBarrowsKillCount(int n) {
+        this.barrowsKillCount = n;
     }
 
-    public final int eT() {
-        return this.hG;
+    public final int getBarrowsKillCount() {
+        return this.barrowsKillCount;
     }
 
-    public final void aw(int n) {
-        this.hH = n;
+    public final void setBarrowsTargetBrotherIndex(int n) {
+        this.barrowsTargetBrotherIndex = n;
     }
 
-    public final int eU() {
-        return this.hH;
+    public final int getBarrowsTargetBrotherIndex() {
+        return this.barrowsTargetBrotherIndex;
     }
 
     public final int getCombatLevel() {
@@ -5895,12 +5896,12 @@ extends Entity {
         this.combatLevel = n;
     }
 
-    public final void b(Player player) {
-        this.ia = player;
+    public final void setTradeRequestTarget(Player player) {
+        this.tradeRequestTarget = player;
     }
 
-    public final Player eW() {
-        return this.ia;
+    public final Player getTradeRequestTarget() {
+        return this.tradeRequestTarget;
     }
 
     public final void setInteractionTargetPlane(int n) {
@@ -5959,48 +5960,48 @@ extends Entity {
         return this.hK;
     }
 
-    public final void z(boolean bl) {
-        this.hL = true;
+    public final void setBankPinReminderShown(boolean bl) {
+        this.bankPinReminderShown = true;
     }
 
-    public final boolean fd() {
-        return this.hL;
+    public final boolean isBankPinReminderShown() {
+        return this.bankPinReminderShown;
     }
 
-    public final void k(int n, int n2) {
-        this.hX[n2] = n;
+    public final void setBankPinEntryDigit(int n, int n2) {
+        this.bankPinEntryDigits[n2] = n;
     }
 
-    public final void fe() {
-        this.hX = new int[4];
+    public final void resetBankPinEntryDigits() {
+        this.bankPinEntryDigits = new int[4];
     }
 
-    public final int[] ff() {
-        return this.hX;
+    public final int[] getBankPinEntryDigits() {
+        return this.bankPinEntryDigits;
     }
 
-    public final void c(Npc npc) {
-        this.hM = npc;
+    public final void setActiveRandomEventNpc(Npc npc) {
+        this.activeRandomEventNpc = npc;
     }
 
-    public final Npc fg() {
-        return this.hM;
+    public final Npc getActiveRandomEventNpc() {
+        return this.activeRandomEventNpc;
     }
 
-    public final int fh() {
-        return this.eS;
+    public final int getBossPetUnlockFlags() {
+        return this.bossPetUnlockFlags;
     }
 
-    public final void aC(int n) {
-        this.eS = n;
+    public final void setBossPetUnlockFlags(int n) {
+        this.bossPetUnlockFlags = n;
     }
 
-    public final void b(ItemStack itemStack) {
-        this.hN = itemStack;
+    public final void setRandomEventRequestedItem(ItemStack itemStack) {
+        this.randomEventRequestedItem = itemStack;
     }
 
-    public final ItemStack fi() {
-        return this.hN;
+    public final ItemStack getRandomEventRequestedItem() {
+        return this.randomEventRequestedItem;
     }
 
     public final void setSelectedLampSkill(int n) {
@@ -6011,32 +6012,32 @@ extends Entity {
         return this.selectedLampSkill;
     }
 
-    public final long fk() {
-        return this.hY;
+    public final long getDisconnectGraceExpiresAtMillis() {
+        return this.disconnectGraceExpiresAtMillis;
     }
 
-    public final void aE(int n) {
-        this.hZ = n;
+    public final void setCoalTruckCoalCount(int n) {
+        this.coalTruckCoalCount = n;
     }
 
-    public final int fl() {
-        return this.hZ;
+    public final int getCoalTruckCoalCount() {
+        return this.coalTruckCoalCount;
     }
 
-    public final void c(Player player) {
-        this.ib = player;
+    public final void setDuelRequestTarget(Player player) {
+        this.duelRequestTarget = player;
     }
 
-    public final Player fm() {
-        return this.ib;
+    public final Player getDuelRequestTarget() {
+        return this.duelRequestTarget;
     }
 
-    public final int fn() {
-        return this.fW;
+    public final int getIdlePacketCount() {
+        return this.idlePacketCount;
     }
 
-    public final void aF(int n) {
-        this.fW = n;
+    public final void setIdlePacketCount(int n) {
+        this.idlePacketCount = n;
     }
 }
 

@@ -40,7 +40,7 @@ public class SmithingHandler {
         player.a((SmithingBarDefinition)object2);
         if (!SkillActionHelper.checkSkillRequirement(player, 13, ((SmithingBarDefinition)object2).getRequiredLevel(), "smith this bar")) {
             player.nextActionSequence();
-            player.aN();
+            player.resetAnimation();
             if (player.botEnabled) {
                 player.currentBotTask.startWalkToBank(player);
             }

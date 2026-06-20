@@ -19,7 +19,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        if (this.a.isDead() || !this.a.bW()) {
+        if (this.a.isDead() || !this.a.isRegistered()) {
             this.stop();
             return;
         }

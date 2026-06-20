@@ -23,9 +23,9 @@ implements Runnable {
             InterruptedException interruptedException2 = interruptedException;
             interruptedException.printStackTrace();
         }
-        ConnectionThrottleSettings.a = false;
+        ConnectionThrottleSettings.connectionsEnabled = false;
         System.exit(0);
-        Server.c = true;
+        Server.shutdownRequested = true;
     }
 }
 

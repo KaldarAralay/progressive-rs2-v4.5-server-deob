@@ -43,7 +43,7 @@ public final class MusicManager {
                         int n10 = n6;
                         n4 = n5;
                         n9 = n8;
-                        n3 = GameUtil.a(n4, n10);
+                        n3 = GameUtil.getRegionId(n4, n10);
                         musicAreaDefinition = MusicAreaDefinition.forAreaId(n9);
                         if (musicAreaDefinition.getRegionCount() != 0) break block17;
                         if (!musicAreaDefinition.getAreaBounds().contains(new Position(n4, n10, 0))) break block18;

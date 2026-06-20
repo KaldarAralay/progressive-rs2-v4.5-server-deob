@@ -24,7 +24,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        if (this.b.isDead() || !this.b.bW() || !this.b.currentBotTask.usesCustomTaskAction || !this.b.botTaskState.equals("do task")) {
+        if (this.b.isDead() || !this.b.isRegistered() || !this.b.currentBotTask.usesCustomTaskAction || !this.b.botTaskState.equals("do task")) {
             this.stop();
             return;
         }

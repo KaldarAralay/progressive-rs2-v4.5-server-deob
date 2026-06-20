@@ -61,7 +61,7 @@ public class WoodcuttingHandler {
             player2.packetSender.sendGameMessage("This skill is currently disabled.");
             return;
         }
-        GatheringToolDefinition gatheringToolDefinition = ItemCombinationHandler.a(player, 8);
+        GatheringToolDefinition gatheringToolDefinition = ItemCombinationHandler.findUsableGatheringTool(player, 8);
         if (gatheringToolDefinition == null) {
             Player player3 = player;
             player3.packetSender.sendGameMessage("You do not have an axe which you have the woodcutting level to use.");
@@ -97,9 +97,9 @@ public class WoodcuttingHandler {
         if (object3 == TreeDefinition.VINES && player.botEnabled) {
             player.dm = true;
         }
-        player.getUpdateState().setAnimation(gatheringToolDefinition.d(), 0);
+        player.getUpdateState().setAnimation(gatheringToolDefinition.getGatherAnimationId(), 0);
         player.gatheringHazardCounter = 0;
-        if (player.getQuestState(0) == 1 && ServerSettings.randomEventsMode == 0 && GameUtil.h(800) == 0 && ((TreeDefinition)((Object)object3)).getEntNpcIds() != null && !player.botEnabled && !player.r()) {
+        if (player.getQuestState(0) == 1 && ServerSettings.randomEventsMode == 0 && GameUtil.randomInt(800) == 0 && ((TreeDefinition)((Object)object3)).getEntNpcIds() != null && !player.botEnabled && !player.r()) {
             int n4 = TreeDefinition.getObjectIdIndex(n, (TreeDefinition)((Object)object3)) >= ((TreeDefinition)((Object)object3)).getEntNpcIds().length ? 0 : TreeDefinition.getObjectIdIndex(n, (TreeDefinition)((Object)object3));
             n4 = ((TreeDefinition)((Object)object3)).getEntNpcIds()[n4];
             if (NpcDefinition.isDefined(n4)) {
@@ -119,7 +119,7 @@ public class WoodcuttingHandler {
         this.g = n;
         this.a = n2;
         this.e = projectileDefinition;
-        n = GameUtil.b(position, position2);
+        n = GameUtil.getDistance(position, position2);
         n2 = projectileDefinition.getTiming().getSpeed();
         this.b = projectileDefinition.getTiming().getStartDelay() + n2 + n * 5;
         this.c = (byte)(position2.getX() - position.getX());
@@ -139,7 +139,7 @@ public class WoodcuttingHandler {
             return;
         }
         ProjectileTiming projectileTiming = this.e.getTiming();
-        Player[] playerArray = World.f();
+        Player[] playerArray = World.getPlayers();
         int n = playerArray.length;
         int n2 = 0;
         while (n2 < n) {

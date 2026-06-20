@@ -25,13 +25,13 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        if (!this.b.bW()) {
+        if (!this.b.isRegistered()) {
             this.stop();
             return;
         }
         if (this.a.a.contains(this.b.getPosition())) {
             Object object = Npc.findByDefinitionId(896);
-            if (GameUtil.b(this.b, (Npc)object)) {
+            if (GameUtil.isNpcWaypointFacingPlayer(this.b, (Npc)object)) {
                 ((Entity)object).getUpdateState().setForcedText("Get out of my property!");
                 Player player = this.b;
                 object = this.a;

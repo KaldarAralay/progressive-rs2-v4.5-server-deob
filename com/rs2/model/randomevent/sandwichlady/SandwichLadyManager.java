@@ -65,7 +65,7 @@ public final class SandwichLadyManager {
                 object = player.H;
                 SandwichLadyManager sandwichLadyManager = this.player.getSandwichLadyManager();
                 SandwichLadyRewardSet sandwichLadyRewardSet = SandwichLadyManager.getRewardSetForNpcId(((Npc)object).getNpcId());
-                GameUtil.g(6);
+                GameUtil.randomInclusive(6);
                 player = sandwichLadyManager.player;
                 player.packetSender.closeInterfaces();
                 Player cfr_ignored_0 = sandwichLadyManager.player;

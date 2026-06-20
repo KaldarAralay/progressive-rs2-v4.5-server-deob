@@ -20,8 +20,8 @@ implements Comparator {
         Entity entity = (Entity)object2;
         object2 = (Entity)object;
         object = this;
-        int n = GameUtil.b(((AreaAttackTargetDistanceComparator)object).attack.getTarget().getPosition(), ((Entity)object2).getPosition());
-        int n2 = GameUtil.b(((AreaAttackTargetDistanceComparator)object).attack.getTarget().getPosition(), entity.getPosition());
+        int n = GameUtil.getDistance(((AreaAttackTargetDistanceComparator)object).attack.getTarget().getPosition(), ((Entity)object2).getPosition());
+        int n2 = GameUtil.getDistance(((AreaAttackTargetDistanceComparator)object).attack.getTarget().getPosition(), entity.getPosition());
         return Long.compare(n, n2);
     }
 }

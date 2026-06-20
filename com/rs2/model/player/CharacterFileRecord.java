@@ -13,15 +13,15 @@ public final class CharacterFileRecord {
     public String username;
     public String password;
     public String hostAddress = "0.0.0.0";
-    public String d = "";
+    public String reservedVersion11String = "";
     public int playerRights;
-    public String f = "";
-    public String g = "";
-    public String h = "";
+    public String legacyProfileString = "";
+    public String profileString1 = "";
+    public String profileString2 = "";
     public long lastSavedMillis;
     public long totalPlayTimeMillis;
     public long createdAtMillis;
-    public boolean l;
+    public boolean loginRestrictionExempt;
     public boolean memberFlag;
     public int donatorPoints;
     public int petUnlockFlags;
@@ -40,7 +40,7 @@ public final class CharacterFileRecord {
     public int boughtItemsValue;
     public int duelWins;
     public int duelLosses;
-    public int E;
+    public int legacyQuestPoints;
     public boolean autoRetaliate;
     public int fightMode;
     public int brightness = 2;
@@ -153,15 +153,15 @@ public final class CharacterFileRecord {
     public int[] compostBinItemIds = new int[4];
     public int[] farmingToolStoreAmounts = new int[18];
     public int[] configStates = new int[2000];
-    public int[] questProgress = new int[QuestDefinition.b];
-    public int[] questBitFlags = new int[QuestDefinition.b];
+    public int[] questProgress = new int[QuestDefinition.questStateCapacity];
+    public int[] questBitFlags = new int[QuestDefinition.questStateCapacity];
     public int[] questHookStates = new int[100];
     public int[] currentLevels = new int[22];
     public long[] skillExperience = new long[22];
     public boolean barrowsDoorPuzzleSolved;
     public boolean barrowsChestOpened;
     private int cachedItemValue = 0;
-    public int bU = 0;
+    public int barrowsRewardPotential = 0;
     public boolean[] grandExchangeSellOfferFlags = new boolean[6];
     public int[] grandExchangeItemIds = new int[6];
     public int[] grandExchangeQuantities = new int[6];
@@ -181,75 +181,75 @@ public final class CharacterFileRecord {
     public long cl = 0L;
     public int cm = 0;
     public int cn = 0;
-    public int co = 778;
-    public int cp = 100;
-    public int cq = 100;
-    public int cr = 100;
-    public int cs = 0;
-    public int ct = 0;
-    public int cu = 0;
-    public int cv = 0;
-    public int cw = 0;
-    public boolean cx = false;
-    public int cy = 0;
-    public boolean cz = false;
-    public int cA = 0;
+    public int familyCrestGauntletItemId = 778;
+    public int mageArenaFlamesOfZamorakCastsRemaining = 100;
+    public int mageArenaSaradominStrikeCastsRemaining = 100;
+    public int mageArenaClawsOfGuthixCastsRemaining = 100;
+    public int mageArenaProgressStage = 0;
+    public int telekineticPizazzPoints = 0;
+    public int enchantmentPizazzPoints = 0;
+    public int alchemistPizazzPoints = 0;
+    public int graveyardPizazzPoints = 0;
+    public boolean bonesToPeachesUnlocked = false;
+    public int telekineticMazeIndex = 0;
+    public boolean telekineticMazeSolved = false;
+    public int telekineticConsecutiveMazesSolved = 0;
     public ArrayList bankTabs = new ArrayList();
     private int dF = 10;
-    public int cC = 0;
-    public int cD = 0;
+    public int gameMode = 0;
+    public int barrowsRunsCompleted = 0;
     public int cE = -1;
     public int cF = -1;
     public int cG = -1;
     public int cH = -1;
-    public int cI = -1;
-    public int cJ = -1;
+    public int botCompletionItemAmount = -1;
+    public int botCompletionItemId = -1;
     public byte cK = (byte)-1;
     public byte cL = (byte)-1;
     public byte cM = (byte)-1;
     public byte cN = (byte)-1;
-    public byte cO = (byte)-1;
-    public byte cP = (byte)-1;
-    public byte cQ = (byte)-1;
-    public ArrayList cR = new ArrayList();
-    public ArrayList cS;
-    public int cT;
-    public int cU;
-    public byte cV;
-    public int cW;
-    public boolean cX;
-    public boolean cY;
-    public int cZ;
-    public int da;
-    public int db;
-    public byte dc;
-    public byte dd;
-    public byte de;
-    public long df;
-    public boolean dg;
-    public byte dh;
-    public byte di;
-    public int dj;
-    public ItemStack[] dk;
-    public String dl;
-    public int dm;
-    public byte dn;
-    public int cfr_renamed_0;
-    public byte dp;
-    public byte dq;
-    public boolean dr;
-    public boolean ds;
-    public int dt;
-    public int[] du;
-    public long dv;
-    public byte dw;
+    public byte botSkillTargetLevel = (byte)-1;
+    public byte botSkillTargetSkillId = (byte)-1;
+    public byte botCombatStyle = (byte)-1;
+    public ArrayList botCombatLoadoutItemIds = new ArrayList();
+    public ArrayList botShopSellItemIds;
+    public int botShopItemAmount;
+    public int botTaskItemId;
+    public byte botShopBuyMode;
+    public int tradeAdvertLastOfferAmount;
+    public boolean tradeAdvertVariableQuantity;
+    public boolean tradeAdvertScam;
+    public int tradeAdvertUnitPrice;
+    public int tradeAdvertQuantityRemaining;
+    public int botAdvertItemId;
+    public byte tradeAdvertMode;
+    public byte savedWorldRouteIndex;
+    public byte botTaskDurationMinutes;
+    public long botTaskSavedElapsedMillis;
+    public boolean savedWorldRouteReversed;
+    public byte botPathWaypointIndex;
+    public byte botPathSegmentIndex;
+    public int botFoodItemId;
+    public ItemStack[] botTaskRequiredItems;
+    public String botTaskState;
+    public int deferredBotTaskIndex;
+    public byte deferredBotTaskTypeId;
+    public int currentBotTaskIndex;
+    public byte currentBotTaskTypeId;
+    public byte botMode;
+    public boolean botEnabled;
+    public boolean botTaskReturnToBankRequested;
+    public int botElementalSpellIndex;
+    public int[] godWarsKillCounts;
+    public long godWarsLastAltarBlessingMillis;
+    public byte craftingThreadUseCount;
     public int dx;
-    public long dy;
-    public int dz;
-    public int dA;
-    public boolean dB;
-    public boolean dC;
-    public int dD;
+    public long membershipExpiresMillis;
+    public int savedCacheVersion;
+    public int godBookPageFlags;
+    public boolean swampCaveRopeAttached;
+    public boolean lampOilStillFilled;
+    public int enterTheAbyssMiniquestState;
     private static final int[] experienceForLevel;
 
     static {
@@ -280,38 +280,38 @@ public final class CharacterFileRecord {
 
     public CharacterFileRecord() {
         new ArrayList();
-        this.cS = new ArrayList();
-        this.cT = -1;
-        this.cU = -1;
-        this.cV = (byte)-1;
-        this.cW = -1;
-        this.cX = false;
-        this.cY = false;
-        this.cZ = -1;
-        this.da = -1;
-        this.db = -1;
-        this.dc = (byte)-1;
-        this.dd = (byte)-1;
-        this.de = 0;
-        this.df = 0L;
-        this.dg = false;
-        this.dh = (byte)-1;
-        this.di = (byte)-1;
-        this.dj = -1;
-        this.dm = -1;
-        this.dn = (byte)-1;
-        this.cfr_renamed_0 = -1;
-        this.dp = (byte)-1;
-        this.dq = (byte)-1;
-        this.dr = false;
-        this.ds = false;
-        this.dt = -1;
-        this.du = new int[4];
-        this.dw = 0;
+        this.botShopSellItemIds = new ArrayList();
+        this.botShopItemAmount = -1;
+        this.botTaskItemId = -1;
+        this.botShopBuyMode = (byte)-1;
+        this.tradeAdvertLastOfferAmount = -1;
+        this.tradeAdvertVariableQuantity = false;
+        this.tradeAdvertScam = false;
+        this.tradeAdvertUnitPrice = -1;
+        this.tradeAdvertQuantityRemaining = -1;
+        this.botAdvertItemId = -1;
+        this.tradeAdvertMode = (byte)-1;
+        this.savedWorldRouteIndex = (byte)-1;
+        this.botTaskDurationMinutes = 0;
+        this.botTaskSavedElapsedMillis = 0L;
+        this.savedWorldRouteReversed = false;
+        this.botPathWaypointIndex = (byte)-1;
+        this.botPathSegmentIndex = (byte)-1;
+        this.botFoodItemId = -1;
+        this.deferredBotTaskIndex = -1;
+        this.deferredBotTaskTypeId = (byte)-1;
+        this.currentBotTaskIndex = -1;
+        this.currentBotTaskTypeId = (byte)-1;
+        this.botMode = (byte)-1;
+        this.botEnabled = false;
+        this.botTaskReturnToBankRequested = false;
+        this.botElementalSpellIndex = -1;
+        this.godWarsKillCounts = new int[4];
+        this.craftingThreadUseCount = 0;
         this.dx = 0;
-        this.dB = false;
-        this.dC = false;
-        this.dD = 0;
+        this.swampCaveRopeAttached = false;
+        this.lampOilStillFilled = false;
+        this.enterTheAbyssMiniquestState = 0;
         this.bankTabs.add(new CharacterFileBankTab(0));
     }
 
@@ -352,8 +352,8 @@ public final class CharacterFileRecord {
                 n = 0;
                 while (n < ((ArrayList)object2).size()) {
                     object = (ItemStack)((ArrayList)object2).get(n);
-                    if (object != null && ((ItemStack)object).getAmount() > 0 && !(itemDefinition = ((ItemStack)object).getDefinition()).z()) {
-                        this.cachedItemValue += itemDefinition.n() * ((ItemStack)object).getAmount();
+                    if (object != null && ((ItemStack)object).getAmount() > 0 && !(itemDefinition = ((ItemStack)object).getDefinition()).isUntradeable()) {
+                        this.cachedItemValue += itemDefinition.getValue() * ((ItemStack)object).getAmount();
                     }
                     ++n;
                 }
@@ -364,8 +364,8 @@ public final class CharacterFileRecord {
             int n3 = 0;
             while (n3 < n) {
                 ItemStack itemStack = object[n3];
-                if (itemStack != null && itemStack.getAmount() > 0 && !(itemDefinition = itemStack.getDefinition()).z()) {
-                    this.cachedItemValue += itemDefinition.n() * itemStack.getAmount();
+                if (itemStack != null && itemStack.getAmount() > 0 && !(itemDefinition = itemStack.getDefinition()).isUntradeable()) {
+                    this.cachedItemValue += itemDefinition.getValue() * itemStack.getAmount();
                 }
                 ++n3;
             }
@@ -374,8 +374,8 @@ public final class CharacterFileRecord {
             n3 = 0;
             while (n3 < n) {
                 Object object3 = object[n3];
-                if (object3 != null && ((ItemStack)object3).getAmount() > 0 && !(itemDefinition = ((ItemStack)object3).getDefinition()).z()) {
-                    this.cachedItemValue += itemDefinition.n() * ((ItemStack)object3).getAmount();
+                if (object3 != null && ((ItemStack)object3).getAmount() > 0 && !(itemDefinition = ((ItemStack)object3).getDefinition()).isUntradeable()) {
+                    this.cachedItemValue += itemDefinition.getValue() * ((ItemStack)object3).getAmount();
                 }
                 ++n3;
             }

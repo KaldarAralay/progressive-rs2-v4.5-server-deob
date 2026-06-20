@@ -9,27 +9,27 @@ import com.rs2.net.packet.handler.PlayerInteractionPacketHandler;
 
 final class DelayedBotTradeRequestTask
 extends TickTask {
-    private final /* synthetic */ Player a;
-    private final /* synthetic */ String b;
-    private final /* synthetic */ Player c;
+    private final /* synthetic */ Player bot;
+    private final /* synthetic */ String triggerMessage;
+    private final /* synthetic */ Player targetPlayer;
 
     DelayedBotTradeRequestTask(Player player, int n, Player player2, String string, Player player3) {
-        this.a = player2;
-        this.b = string;
-        this.c = player3;
+        this.bot = player2;
+        this.triggerMessage = string;
+        this.targetPlayer = player3;
         super(n);
     }
 
     @Override
     public final void execute() {
-        if (this.a.isDead() || !this.a.bW()) {
+        if (this.bot.isDead() || !this.bot.isRegistered()) {
             this.stop();
             return;
         }
-        if (this.b.contains("buy") && this.a.tradeAdvertMode == 0) {
-            PlayerInteractionPacketHandler.a(this.a, this.c);
-        } else if (this.b.contains("sell") && this.a.tradeAdvertMode == 1) {
-            PlayerInteractionPacketHandler.a(this.a, this.c);
+        if (this.triggerMessage.contains("buy") && this.bot.tradeAdvertMode == 0) {
+            PlayerInteractionPacketHandler.dispatchDeferredTradeRequest(this.bot, this.targetPlayer);
+        } else if (this.triggerMessage.contains("sell") && this.bot.tradeAdvertMode == 1) {
+            PlayerInteractionPacketHandler.dispatchDeferredTradeRequest(this.bot, this.targetPlayer);
         }
         this.stop();
     }

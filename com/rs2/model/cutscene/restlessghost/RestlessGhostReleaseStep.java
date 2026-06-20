@@ -12,26 +12,26 @@ import com.rs2.model.player.Player;
 
 final class RestlessGhostReleaseStep
 extends CutsceneStep {
-    private /* synthetic */ RestlessGhostCutscene a;
+    private /* synthetic */ RestlessGhostCutscene cutscene;
 
     RestlessGhostReleaseStep(RestlessGhostCutscene restlessGhostCutscene, Cutscene cutscene, int n) {
-        this.a = restlessGhostCutscene;
+        this.cutscene = restlessGhostCutscene;
         super(cutscene, 2);
     }
 
     @Override
-    public final void a() {
-        this.a.c.setActive(false);
-        World.b(this.a.c);
-        Player player = this.a.b;
+    public final void executeStep() {
+        this.cutscene.ghost.setActive(false);
+        World.unregisterNpc(this.cutscene.ghost);
+        Player player = this.cutscene.player;
         player.packetSender.sendCameraLookAt(2659, 3195, 965, 0, 100);
-        player = this.a.b;
+        player = this.cutscene.player;
         player.packetSender.sendCameraPosition(3660, 2500, 2000, 0, 100);
-        player = this.a.b;
+        player = this.cutscene.player;
         player.packetSender.sendCameraLookAt(2559, 3195, 1000, 0, 15);
-        player = this.a.b;
+        player = this.cutscene.player;
         player.packetSender.sendCameraPosition(3560, 2400, 1100, 0, 15);
-        RestlessGhostCutscene.a(new Position(3244, 3193, 0), new Position(3253, 3179, 0), 605);
+        RestlessGhostCutscene.sendReleaseProjectile(new Position(3244, 3193, 0), new Position(3253, 3179, 0), 605);
     }
 }
 

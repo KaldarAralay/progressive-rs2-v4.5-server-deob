@@ -22,7 +22,7 @@ public class EntityTargetMovement {
     private Entity entity;
 
     public static void startRuneEssenceMining(Player player) {
-        GatheringToolDefinition gatheringToolDefinition = ItemCombinationHandler.a(player, 14);
+        GatheringToolDefinition gatheringToolDefinition = ItemCombinationHandler.findUsableGatheringTool(player, 14);
         if (gatheringToolDefinition == null) {
             Player player2 = player;
             player2.packetSender.sendGameMessage("You do not have a pickaxe that you can use.");
@@ -43,9 +43,9 @@ public class EntityTargetMovement {
         }
         int n = player.nextActionSequence();
         int n2 = player.getSkillManager().getBaseLevel(14) >= 30 && player.isMember() && !ServerSettings.freeToPlayWorld ? RunecraftingHandler.PURE_ESSENCE_ITEM_ID : 1436;
-        int n3 = gatheringToolDefinition.d();
-        gatheringToolDefinition.g();
-        int n4 = (int)gatheringToolDefinition.f();
+        int n3 = gatheringToolDefinition.getGatherAnimationId();
+        gatheringToolDefinition.getGraphicId();
+        int n4 = (int)gatheringToolDefinition.getToolSpeed();
         Player player4 = player;
         player4.packetSender.sendGameMessage("You swing your pick at the rock.");
         player.getUpdateState().setAnimation(n3);
@@ -238,7 +238,7 @@ public class EntityTargetMovement {
                     }
                     ++n3;
                 }
-                if (!GameUtil.a(entity.getPosition(), ((Npc)entity).getSpawnPosition(), ((Npc)entity).getDefinition().getChaseRadius()) && !bl && ((Npc)entity).getForcedCombatTarget() == null) {
+                if (!GameUtil.isWithinDistance(entity.getPosition(), ((Npc)entity).getSpawnPosition(), ((Npc)entity).getDefinition().getChaseRadius()) && !bl && ((Npc)entity).getForcedCombatTarget() == null) {
                     CombatManager.stopCombat(entity);
                     Entity entity3 = entity;
                     entity3.nextActionSequence();
@@ -327,7 +327,7 @@ public class EntityTargetMovement {
                 return true;
             }
         }
-        return GameUtil.a(entity.getPosition(), entity2.getPosition(), n < 2);
+        return GameUtil.hasClearPath(entity.getPosition(), entity2.getPosition(), n < 2);
     }
 
     public void moveAwayFromOverlap() {

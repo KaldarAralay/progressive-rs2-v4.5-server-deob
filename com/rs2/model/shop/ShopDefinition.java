@@ -8,123 +8,123 @@ import com.rs2.model.shop.ShopCurrency;
 import com.rs2.model.task.TickTask;
 
 public final class ShopDefinition {
-    private int a;
-    private String b;
-    private boolean c;
-    private boolean d = false;
-    private ShopCurrency e;
-    private int f;
-    private ItemContainer g;
-    private ItemContainer h;
-    private int i;
-    private int j;
-    private int k;
-    private int[] l;
-    private TickTask[] m;
+    private int shopId;
+    private String name;
+    private boolean generalStore;
+    private boolean membersOnly = false;
+    private ShopCurrency currency;
+    private int currencyItemId;
+    private ItemContainer originalStock;
+    private ItemContainer stock;
+    private int buyPricePercent;
+    private int sellPricePercent;
+    private int priceChangeRateTenths;
+    private int[] restockDelayTicks;
+    private TickTask[] restockTasks;
 
-    public final void a(int n) {
-        this.i = n;
+    public final void setBuyPricePercent(int n) {
+        this.buyPricePercent = n;
     }
 
-    public final int a() {
-        return this.i;
+    public final int getBuyPricePercent() {
+        return this.buyPricePercent;
     }
 
-    public final void b(int n) {
-        this.j = n;
+    public final void setSellPricePercent(int n) {
+        this.sellPricePercent = n;
     }
 
-    public final int b() {
-        return this.j;
+    public final int getSellPricePercent() {
+        return this.sellPricePercent;
     }
 
-    public final void c(int n) {
-        this.k = n;
+    public final void setPriceChangeRateTenths(int n) {
+        this.priceChangeRateTenths = n;
     }
 
-    public final double c() {
-        double d = this.k;
+    public final double getPriceChangeRate() {
+        double d = this.priceChangeRateTenths;
         return d /= 10.0;
     }
 
-    public final void a(String string) {
-        this.b = string;
+    public final void setName(String string) {
+        this.name = string;
     }
 
-    public final String d() {
-        return this.b;
+    public final String getName() {
+        return this.name;
     }
 
-    public final boolean e() {
-        return this.d;
+    public final boolean isMembersOnly() {
+        return this.membersOnly;
     }
 
-    public final void a(boolean bl) {
-        this.d = bl;
+    public final void setMembersOnly(boolean bl) {
+        this.membersOnly = bl;
     }
 
-    public final int f() {
-        return this.a;
+    public final int getShopId() {
+        return this.shopId;
     }
 
-    public final void b(boolean bl) {
-        this.c = bl;
+    public final void setGeneralStore(boolean bl) {
+        this.generalStore = bl;
     }
 
-    public final boolean g() {
-        return this.c;
+    public final boolean isGeneralStore() {
+        return this.generalStore;
     }
 
-    public final void d(int n) {
-        this.f = n;
+    public final void setCurrencyItemId(int n) {
+        this.currencyItemId = n;
     }
 
-    public final int h() {
-        return this.f;
+    public final int getCurrencyItemId() {
+        return this.currencyItemId;
     }
 
-    public final ShopCurrency i() {
-        return this.e;
+    public final ShopCurrency getCurrency() {
+        return this.currency;
     }
 
-    public final void a(ShopCurrency shopCurrency) {
-        this.e = shopCurrency;
+    public final void setCurrency(ShopCurrency shopCurrency) {
+        this.currency = shopCurrency;
     }
 
-    public final void a(ItemContainer itemContainer) {
-        this.g = itemContainer;
+    public final void setOriginalStock(ItemContainer itemContainer) {
+        this.originalStock = itemContainer;
     }
 
-    public final ItemContainer j() {
-        return this.g;
+    public final ItemContainer getOriginalStock() {
+        return this.originalStock;
     }
 
-    public final void b(ItemContainer itemContainer) {
-        this.h = itemContainer;
+    public final void setStock(ItemContainer itemContainer) {
+        this.stock = itemContainer;
     }
 
-    public final ItemContainer k() {
-        return this.h;
+    public final ItemContainer getStock() {
+        return this.stock;
     }
 
-    static /* synthetic */ void a(ShopDefinition shopDefinition, int[] nArray) {
-        shopDefinition.l = nArray;
+    static /* synthetic */ void setRestockDelayTicks(ShopDefinition shopDefinition, int[] nArray) {
+        shopDefinition.restockDelayTicks = nArray;
     }
 
-    static /* synthetic */ void a(ShopDefinition shopDefinition, TickTask[] tickTaskArray) {
-        shopDefinition.m = tickTaskArray;
+    static /* synthetic */ void setRestockTasks(ShopDefinition shopDefinition, TickTask[] tickTaskArray) {
+        shopDefinition.restockTasks = tickTaskArray;
     }
 
-    static /* synthetic */ int[] a(ShopDefinition shopDefinition) {
-        return shopDefinition.l;
+    static /* synthetic */ int[] getRestockDelayTicks(ShopDefinition shopDefinition) {
+        return shopDefinition.restockDelayTicks;
     }
 
-    static /* synthetic */ void a(ShopDefinition shopDefinition, int n) {
-        shopDefinition.a = n;
+    static /* synthetic */ void setShopId(ShopDefinition shopDefinition, int n) {
+        shopDefinition.shopId = n;
     }
 
-    static /* synthetic */ TickTask[] b(ShopDefinition shopDefinition) {
-        return shopDefinition.m;
+    static /* synthetic */ TickTask[] getRestockTasks(ShopDefinition shopDefinition) {
+        return shopDefinition.restockTasks;
     }
 }
 

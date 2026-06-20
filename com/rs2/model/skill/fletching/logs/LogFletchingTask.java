@@ -27,7 +27,7 @@ extends CycleEvent {
             String string = "";
             Player player = this.action.player;
             this.action.player.interfaceAction = string;
-            this.action.player.aN();
+            this.action.player.resetAnimation();
             cycleEventContainer.stop();
             return;
         }
@@ -46,7 +46,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        this.action.player.aN();
+        this.action.player.resetAnimation();
     }
 }
 

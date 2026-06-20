@@ -23,12 +23,12 @@ extends TickTask {
         Object object;
         Object object2 = new ArrayList();
         ArrayList<String> arrayList = new ArrayList<String>();
-        Player[] playerArray = World.f();
+        Player[] playerArray = World.getPlayers();
         int n = playerArray.length;
         int n2 = 0;
         while (n2 < n) {
             object = playerArray[n2];
-            if (object != null && ((Player)object).de && (((Player)object).az == 4 || ((Player)object).az == 0) && ((Player)object).aL()) {
+            if (object != null && ((Player)object).isBot && (((Player)object).botMode == 4 || ((Player)object).botMode == 0) && ((Player)object).hasBotStalled()) {
                 ((ArrayList)object2).add(object);
                 arrayList.add(((Player)object).getUsername());
                 System.out.println("Detected possibly frozen bot: " + ((Player)object).getUsername() + " at: " + ((Entity)object).getPosition() + ", trying to fix by relogging.");

@@ -77,7 +77,7 @@ public final class SlayerManager {
         this.slayerTaskName = ((SlayerAssignmentDefinition)object2).taskName;
         object = object2 = object;
         object = object2;
-        this.taskAmount = GameUtil.b(((SlayerAssignmentDefinition)object2).minAmount, ((SlayerAssignmentDefinition)object).maxAmount);
+        this.taskAmount = GameUtil.randomBetweenInclusive(((SlayerAssignmentDefinition)object2).minAmount, ((SlayerAssignmentDefinition)object).maxAmount);
         this.player.getDialogueManager().showNpcOneLineDialogue("Your new task is to kill " + this.taskAmount + " " + this.slayerTaskName + "s.", 588);
     }
 
@@ -108,7 +108,7 @@ public final class SlayerManager {
             dArray[n3] = d2 / d;
             ++n3;
         }
-        n3 = GameUtil.a(dArray);
+        n3 = GameUtil.rollProbabilityIndex(dArray);
         return (SlayerAssignmentDefinition)arrayList.get(n3);
     }
 
@@ -144,7 +144,7 @@ public final class SlayerManager {
             if (this.player.isInWilderness()) {
                 --this.taskAmount;
                 int n = npc.getDefinition().getHitpoints() << 1;
-                if (this.player.F) {
+                if (this.player.skulled) {
                     n <<= 1;
                 }
                 this.player.getSkillManager().addExperience(18, n);
@@ -172,7 +172,7 @@ public final class SlayerManager {
             if (this.player.getWeaponProfile() != null && (this.player.getWeaponProfile().getInterfaceDefinition() != null && this.player.getWeaponProfile().getInterfaceDefinition() == WeaponInterfaceDefinition.LONG_BOW || this.player.getWeaponProfile().getInterfaceDefinition() == WeaponInterfaceDefinition.BOW) && this.player.getEquipmentManager().getContainer().getItemAt(13) != null && this.player.getEquipmentManager().getContainer().getItemAt(13).getId() == 4160) {
                 return true;
             }
-            if (this.player.ec() == SpellDefinition.MAGIC_DART || this.player.ed() == SpellDefinition.MAGIC_DART) {
+            if (this.player.getQueuedCombatSpell() == SpellDefinition.MAGIC_DART || this.player.getAutocastSpell() == SpellDefinition.MAGIC_DART) {
                 return true;
             }
         }
@@ -217,7 +217,7 @@ public final class SlayerManager {
         int n = entity.getMaxHitpoints() / 10;
         if (slayerMonsterDefinition.getRequirementMode().equals("use") && entity.getCurrentHitpoints() <= n) {
             entity = this.player;
-            ((Player)entity).packetSender.sendGameMessage("The " + GameUtil.a(slayerMonsterDefinition.getMonsterName()) + " is on its last legs! Finish it quickly!");
+            ((Player)entity).packetSender.sendGameMessage("The " + GameUtil.capitalizeLowercaseFirst(slayerMonsterDefinition.getMonsterName()) + " is on its last legs! Finish it quickly!");
             return true;
         }
         return false;
@@ -238,7 +238,7 @@ public final class SlayerManager {
     }
 
     public final boolean handleMogreLure(int n, int n2, int n3) {
-        if (!GameUtil.a(this.player.getPosition().getX(), this.player.getPosition().getY(), n2, n3, 7)) {
+        if (!GameUtil.isWithinDistance(this.player.getPosition().getX(), this.player.getPosition().getY(), n2, n3, 7)) {
             return false;
         }
         switch (n) {
@@ -257,7 +257,7 @@ public final class SlayerManager {
                 player.packetSender.sendGameMessage("You throw the shuddering vial into the water...");
                 this.player.getInventoryManager().removeItem(new ItemStack(6664));
                 new WoodcuttingHandler(this.player.getPosition(), 3, new Position(n2, n3), 0, new ProjectileDefinition(29, ProjectileTiming.d)).a();
-                this.player.n(true);
+                this.player.setActionLocked(true);
                 CycleEventHandler.getInstance().schedule(this.player, new MogreSpawnTask(this), 5);
                 return true;
             }

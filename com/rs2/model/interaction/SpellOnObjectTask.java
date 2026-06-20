@@ -49,7 +49,7 @@ extends TickTask {
             return;
         }
         ObjectDefinition objectDefinition = ObjectDefinition.forId(this.player.getInteractionTargetId());
-        Position position = GameUtil.a(((WorldObject)object).getPosition().getX(), ((WorldObject)object).getPosition().getY(), this.player.getPosition().getX(), this.player.getPosition().getY(), objectDefinition.getWidthForOrientation(((WorldObject)object).getOrientation()), objectDefinition.getLengthForOrientation(((WorldObject)object).getOrientation()), this.objectPlane);
+        Position position = GameUtil.findReachableInteractionPosition(((WorldObject)object).getPosition().getX(), ((WorldObject)object).getPosition().getY(), this.player.getPosition().getX(), this.player.getPosition().getY(), objectDefinition.getWidthForOrientation(((WorldObject)object).getOrientation()), objectDefinition.getLengthForOrientation(((WorldObject)object).getOrientation()), this.objectPlane);
         if (this.objectId != 2638) {
             if (position == null) {
                 return;

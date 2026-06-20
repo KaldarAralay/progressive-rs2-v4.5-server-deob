@@ -19,7 +19,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        Player[] playerArray = World.f();
+        Player[] playerArray = World.getPlayers();
         int n = playerArray.length;
         int n2 = 0;
         while (n2 < n) {

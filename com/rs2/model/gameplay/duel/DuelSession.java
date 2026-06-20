@@ -20,27 +20,27 @@ import com.rs2.util.GameUtil;
 import java.util.ArrayList;
 
 public final class DuelSession {
-    private Player a;
-    private Player b;
-    private boolean c = false;
+    private Player player;
+    private Player opponent;
+    private boolean started = false;
     private ArrayList d = new ArrayList();
-    private ArrayList e = new ArrayList();
-    private ArrayList f = new ArrayList();
-    private boolean[] g = new boolean[22];
-    private ArrayList h = new ArrayList();
+    private ArrayList equipmentToRemove = new ArrayList();
+    private ArrayList ruleDescriptions = new ArrayList();
+    private boolean[] enabledRules = new boolean[22];
+    private ArrayList stakedItems = new ArrayList();
 
     public DuelSession(Player player) {
-        this.a = player;
+        this.player = player;
     }
 
-    public final void a() {
-        this.h.clear();
-        this.f.clear();
-        this.e.clear();
+    public final void clearDuelState() {
+        this.stakedItems.clear();
+        this.ruleDescriptions.clear();
+        this.equipmentToRemove.clear();
         this.d.clear();
     }
 
-    public static ItemStack[] a(ArrayList arrayList) {
+    public static ItemStack[] toItemArray(ArrayList arrayList) {
         ItemStack[] itemStackArray = new ItemStack[arrayList.size()];
         int n = 0;
         while (n < arrayList.size()) {
@@ -50,8 +50,8 @@ public final class DuelSession {
         return itemStackArray;
     }
 
-    public final CombatType b() {
-        return new WeaponCombatAttack(this.a, this.a.getDuelSession().b, WeaponProfile.forItem(new ItemStack(this.a.getEquipmentManager().getItemIdAtSlot(3)))).getAttackStyle().getCombatType();
+    public final CombatType getCurrentCombatType() {
+        return new WeaponCombatAttack(this.player, this.player.getDuelSession().opponent, WeaponProfile.forItem(new ItemStack(this.player.getEquipmentManager().getItemIdAtSlot(3)))).getAttackStyle().getCombatType();
     }
 
     public final boolean handleButtonClick(int n) {
@@ -60,74 +60,74 @@ public final class DuelSession {
         block7: {
             block6: {
                 if (n == 6674 || n == 6520) {
-                    if (!this.a.getDuelSession().c) {
-                        this.a.getDuelController().a();
+                    if (!this.player.getDuelSession().started) {
+                        this.player.getDuelController().acceptCurrentDuelScreen();
                     }
                     return true;
                 }
-                duelRule = DuelRule.a(n);
+                duelRule = DuelRule.forButtonId(n);
                 if (duelRule == null) {
                     return false;
                 }
-                duelSession = this.a.getDuelSession();
-                if (duelSession.b == null) break block6;
-                duelSession = this.a.getDuelSession();
-                if (duelSession.b.bW()) break block7;
+                duelSession = this.player.getDuelSession();
+                if (duelSession.opponent == null) break block6;
+                duelSession = this.player.getDuelSession();
+                if (duelSession.opponent.isRegistered()) break block7;
             }
-            this.a.getDuelController().a(true);
+            this.player.getDuelController().resetDuel(true);
             return true;
         }
-        duelRule.a(this.a, true);
-        duelSession = this.a.getDuelSession();
-        duelRule.a(duelSession.b, false);
+        duelRule.toggleForPlayer(this.player, true);
+        duelSession = this.player.getDuelSession();
+        duelRule.toggleForPlayer(duelSession.opponent, false);
         return true;
     }
 
-    public static void a(Player player, Player player2) {
+    public static void finishDuelVictory(Player player, Player player2) {
         if (player == null || player2 == null) {
             return;
         }
-        DuelHistory.a(player, player2);
+        DuelHistory.recordDuelResult(player, player2);
         String string = player2.getUsername();
         String string2 = "" + player2.getCombatLevel();
         ItemStack[] itemStackArray = player2.getDuelSession();
-        itemStackArray = DuelSession.a(itemStackArray.h);
-        player.getDuelController().a(true);
-        player.getDuelSession().a();
-        player2.getDuelSession().a();
-        player.n(true);
+        itemStackArray = DuelSession.toItemArray(itemStackArray.stakedItems);
+        player.getDuelController().resetDuel(true);
+        player.getDuelSession().clearDuelState();
+        player2.getDuelSession().clearDuelState();
+        player.setActionLocked(true);
         ++player.eb;
         ++player2.ec;
         CycleEventHandler.getInstance().schedule(player, new DuelVictoryTask(player, string, string2, itemStackArray), 2);
     }
 
-    public final void a(boolean bl) {
+    public final void finishDuelLoss(boolean bl) {
         Player player;
-        if (this.b != null && this.b.getDuelSession() != null) {
-            this.b.getAttributes().put("canTakeDamage", true);
-            DuelSession.a(this.b, this.a);
+        if (this.opponent != null && this.opponent.getDuelSession() != null) {
+            this.opponent.getAttributes().put("canTakeDamage", true);
+            DuelSession.finishDuelVictory(this.opponent, this.player);
         }
         if (bl) {
-            player = this.a;
+            player = this.player;
             player.packetSender.closeInterfaces();
-            player = this.a;
+            player = this.player;
             player.packetSender.sendGameMessage("You forfeited the duel.");
         } else {
-            player = this.a;
+            player = this.player;
             player.packetSender.sendGameMessage("You have been defeated!");
         }
-        this.a.eq();
-        player = this.a;
+        this.player.eq();
+        player = this.player;
         player.packetSender.sendEntityHintIcon(10, -1);
-        this.a.getDuelController().a(false);
-        this.a.getDuelArenaLocationManager();
-        this.a.moveTo(DuelArenaLocationManager.a());
+        this.player.getDuelController().resetDuel(false);
+        this.player.getDuelArenaLocationManager();
+        this.player.moveTo(DuelArenaLocationManager.randomExitPosition());
     }
 
-    public final void c() {
-        if (this.a.isInDuelArena()) {
-            this.a.getDuelArenaLocationManager();
-            this.a.moveTo(DuelArenaLocationManager.a());
+    public final void moveToDuelArenaExit() {
+        if (this.player.isInDuelArena()) {
+            this.player.getDuelArenaLocationManager();
+            this.player.moveTo(DuelArenaLocationManager.randomExitPosition());
         }
     }
 
@@ -135,91 +135,91 @@ public final class DuelSession {
      * Handled impossible loop by duplicating code
      * Enabled aggressive block sorting
      */
-    public final void d() {
+    public final void startDuel() {
         Position position;
         int n;
         block6: {
             int n2;
             Object object;
             block5: {
-                n = GameUtil.g(2);
-                this.a.eq();
-                this.b.eq();
-                object = this.a;
+                n = GameUtil.randomInclusive(2);
+                this.player.eq();
+                this.opponent.eq();
+                object = this.player;
                 ((Player)object).packetSender.closeInterfaces();
-                object = this.b;
+                object = this.opponent;
                 ((Player)object).packetSender.closeInterfaces();
-                object = this.a;
-                ((Player)object).packetSender.sendEntityHintIcon(10, this.b.getIndex());
-                object = this.b;
-                ((Player)object).packetSender.sendEntityHintIcon(10, this.a.getIndex());
+                object = this.player;
+                ((Player)object).packetSender.sendEntityHintIcon(10, this.opponent.getIndex());
+                object = this.opponent;
+                ((Player)object).packetSender.sendEntityHintIcon(10, this.player.getIndex());
                 n2 = 0;
-                while (n2 < this.e.size()) {
-                    this.a.getEquipmentManager().unequipSlot(this.a.getEquipmentManager().getContainer().indexOfItem(((ItemStack)this.e.get(n2)).getId()));
+                while (n2 < this.equipmentToRemove.size()) {
+                    this.player.getEquipmentManager().unequipSlot(this.player.getEquipmentManager().getContainer().indexOfItem(((ItemStack)this.equipmentToRemove.get(n2)).getId()));
                     ++n2;
                 }
                 n2 = 0;
                 if (!true) break block5;
-                object = this.b.getDuelSession();
-                if (n2 >= ((DuelSession)object).e.size()) break block6;
+                object = this.opponent.getDuelSession();
+                if (n2 >= ((DuelSession)object).equipmentToRemove.size()) break block6;
             }
             do {
-                object = this.b.getDuelSession();
-                this.b.getEquipmentManager().unequipSlot(this.b.getEquipmentManager().getContainer().indexOfItem(((ItemStack)((DuelSession)object).e.get(n2)).getId()));
+                object = this.opponent.getDuelSession();
+                this.opponent.getEquipmentManager().unequipSlot(this.opponent.getEquipmentManager().getContainer().indexOfItem(((ItemStack)((DuelSession)object).equipmentToRemove.get(n2)).getId()));
                 ++n2;
-                object = this.b.getDuelSession();
-            } while (n2 < ((DuelSession)object).e.size());
+                object = this.opponent.getDuelSession();
+            } while (n2 < ((DuelSession)object).equipmentToRemove.size());
         }
-        Position position2 = this.a.getDuelArenaLocationManager().a(DuelRule.k.a(this.a), n);
-        this.a.moveTo(position2);
-        if (DuelRule.j.a(this.b)) {
-            this.a.getDuelArenaLocationManager();
-            position = DuelArenaLocationManager.a(position2);
+        Position position2 = this.player.getDuelArenaLocationManager().randomStartPosition(DuelRule.OBSTACLES.isEnabledFor(this.player), n);
+        this.player.moveTo(position2);
+        if (DuelRule.NO_MOVEMENT.isEnabledFor(this.opponent)) {
+            this.player.getDuelArenaLocationManager();
+            position = DuelArenaLocationManager.findAdjacentOpenPosition(position2);
         } else {
-            position = this.a.getDuelArenaLocationManager().a(DuelRule.k.a(this.b), n);
+            position = this.player.getDuelArenaLocationManager().randomStartPosition(DuelRule.OBSTACLES.isEnabledFor(this.opponent), n);
         }
-        this.b.moveTo(position);
-        this.m();
-        this.b.getDuelSession().m();
-        this.a.getDuelController().b(false);
+        this.opponent.moveTo(position);
+        this.startCountdown();
+        this.opponent.getDuelSession().startCountdown();
+        this.player.getDuelController().setAccepted(false);
     }
 
-    private void m() {
-        CycleEventHandler.getInstance().schedule(this.a, new DuelCountdownTask(this), 2);
+    private void startCountdown() {
+        CycleEventHandler.getInstance().schedule(this.player, new DuelCountdownTask(this), 2);
     }
 
-    public final void a(ItemStack itemStack, int n) {
-        Player player = this.a;
-        if (player.interfaceAction != "duel" || !this.a.getInventoryManager().getContainer().containsItem(itemStack.getId()) || this.b == null) {
+    public final void addStakeItem(ItemStack itemStack, int n) {
+        Player player = this.player;
+        if (player.interfaceAction != "duel" || !this.player.getInventoryManager().getContainer().containsItem(itemStack.getId()) || this.opponent == null) {
             return;
         }
-        if (itemStack.getDefinition().z()) {
-            player = this.a;
+        if (itemStack.getDefinition().isUntradeable()) {
+            player = this.player;
             player.packetSender.sendGameMessage("You can't stake this item.");
             return;
         }
-        if (!(this.h.size() < this.b.getInventoryManager().getContainer().getFreeSlots() || itemStack.getDefinition().isStackable() && this.b(itemStack))) {
-            player = this.a;
+        if (!(this.stakedItems.size() < this.opponent.getInventoryManager().getContainer().getFreeSlots() || itemStack.getDefinition().isStackable() && this.hasStakedItemAmount(itemStack))) {
+            player = this.player;
             player.packetSender.sendGameMessage("The opponent has no free spaces left for that.");
             return;
         }
-        if (!ServerSettings.adminInteractionsAllowed && this.a.getPlayerRights() >= 2) {
-            player = this.a;
+        if (!ServerSettings.adminInteractionsAllowed && this.player.getPlayerRights() >= 2) {
+            player = this.player;
             player.packetSender.sendGameMessage("This action is not allowed.");
             return;
         }
-        if (!this.a.getInventoryManager().containsItemStack(itemStack)) {
+        if (!this.player.getInventoryManager().containsItemStack(itemStack)) {
             return;
         }
-        int n2 = this.a.getInventoryManager().getItemAmount(itemStack.getId());
-        if (!this.a.getInventoryManager().removeItemFromSlot(itemStack, n)) {
+        int n2 = this.player.getInventoryManager().getItemAmount(itemStack.getId());
+        if (!this.player.getInventoryManager().removeItemFromSlot(itemStack, n)) {
             return;
         }
         if (!itemStack.getDefinition().isStackable() && !itemStack.getDefinition().isNote()) {
             n = 0;
             while (n < itemStack.getAmount()) {
                 if (n2 > 0) {
-                    this.h.add(new ItemStack(itemStack.getId(), 1));
+                    this.stakedItems.add(new ItemStack(itemStack.getId(), 1));
                     --n2;
                 }
                 ++n;
@@ -227,28 +227,28 @@ public final class DuelSession {
         } else {
             n = 0;
             int n3 = 0;
-            while (n3 < this.h.size()) {
-                if (((ItemStack)this.h.get(n3)).getId() == itemStack.getId()) {
-                    ((ItemStack)this.h.get(n3)).setAmount(((ItemStack)this.h.get(n3)).getAmount() + itemStack.getAmount());
+            while (n3 < this.stakedItems.size()) {
+                if (((ItemStack)this.stakedItems.get(n3)).getId() == itemStack.getId()) {
+                    ((ItemStack)this.stakedItems.get(n3)).setAmount(((ItemStack)this.stakedItems.get(n3)).getAmount() + itemStack.getAmount());
                     n = 1;
                 }
                 ++n3;
             }
             if (n == 0) {
-                this.h.add(new ItemStack(itemStack.getId(), itemStack.getAmount() > n2 ? n2 : itemStack.getAmount()));
+                this.stakedItems.add(new ItemStack(itemStack.getId(), itemStack.getAmount() > n2 ? n2 : itemStack.getAmount()));
             }
         }
-        this.a.getDuelController().b(false);
-        this.b.getDuelController().b(false);
-        this.a.getDuelInterfaceManager().c();
-        this.b.getDuelInterfaceManager().c();
-        this.a.getDuelInterfaceManager().e();
-        this.b.getDuelInterfaceManager().e();
+        this.player.getDuelController().setAccepted(false);
+        this.opponent.getDuelController().setAccepted(false);
+        this.player.getDuelInterfaceManager().refreshAcceptStatus();
+        this.opponent.getDuelInterfaceManager().refreshAcceptStatus();
+        this.player.getDuelInterfaceManager().refreshStakeContainers();
+        this.opponent.getDuelInterfaceManager().refreshStakeContainers();
     }
 
-    public final void a(ItemStack itemStack) {
-        Player player = this.a;
-        if (player.interfaceAction != "duel" || this.h.size() <= 0 || !this.b(itemStack) || this.b == null) {
+    public final void removeStakeItem(ItemStack itemStack) {
+        Player player = this.player;
+        if (player.interfaceAction != "duel" || this.stakedItems.size() <= 0 || !this.hasStakedItemAmount(itemStack) || this.opponent == null) {
             return;
         }
         if (!itemStack.getDefinition().isNote() && !itemStack.getDefinition().isStackable()) {
@@ -256,10 +256,10 @@ public final class DuelSession {
             while (n < itemStack.getAmount()) {
                 boolean bl = false;
                 int n2 = 0;
-                while (n2 < this.h.size()) {
-                    if (((ItemStack)this.h.get(n2)).getId() == itemStack.getId() && !bl) {
-                        this.h.remove(n2);
-                        this.a.getInventoryManager().addItem(new ItemStack(itemStack.getId()));
+                while (n2 < this.stakedItems.size()) {
+                    if (((ItemStack)this.stakedItems.get(n2)).getId() == itemStack.getId() && !bl) {
+                        this.stakedItems.remove(n2);
+                        this.player.getInventoryManager().addItem(new ItemStack(itemStack.getId()));
                         bl = true;
                     }
                     ++n2;
@@ -268,33 +268,33 @@ public final class DuelSession {
             }
         } else {
             int n = 0;
-            while (n < this.h.size()) {
-                if (((ItemStack)this.h.get(n)).getId() == itemStack.getId()) {
-                    if (itemStack.getAmount() >= ((ItemStack)this.h.get(n)).getAmount()) {
-                        int n3 = ((ItemStack)this.h.get(n)).getAmount();
-                        this.h.remove(n);
-                        this.a.getInventoryManager().addItem(new ItemStack(itemStack.getId(), n3));
+            while (n < this.stakedItems.size()) {
+                if (((ItemStack)this.stakedItems.get(n)).getId() == itemStack.getId()) {
+                    if (itemStack.getAmount() >= ((ItemStack)this.stakedItems.get(n)).getAmount()) {
+                        int n3 = ((ItemStack)this.stakedItems.get(n)).getAmount();
+                        this.stakedItems.remove(n);
+                        this.player.getInventoryManager().addItem(new ItemStack(itemStack.getId(), n3));
                     } else {
-                        ((ItemStack)this.h.get(n)).setAmount(((ItemStack)this.h.get(n)).getAmount() - itemStack.getAmount());
-                        this.a.getInventoryManager().addItem(new ItemStack(itemStack.getId(), itemStack.getAmount()));
+                        ((ItemStack)this.stakedItems.get(n)).setAmount(((ItemStack)this.stakedItems.get(n)).getAmount() - itemStack.getAmount());
+                        this.player.getInventoryManager().addItem(new ItemStack(itemStack.getId(), itemStack.getAmount()));
                     }
                 }
                 ++n;
             }
         }
-        this.a.getDuelController().b(false);
-        this.b.getDuelController().b(false);
-        this.a.getDuelInterfaceManager().c();
-        this.b.getDuelInterfaceManager().c();
-        this.a.getDuelInterfaceManager().e();
-        this.b.getDuelInterfaceManager().e();
+        this.player.getDuelController().setAccepted(false);
+        this.opponent.getDuelController().setAccepted(false);
+        this.player.getDuelInterfaceManager().refreshAcceptStatus();
+        this.opponent.getDuelInterfaceManager().refreshAcceptStatus();
+        this.player.getDuelInterfaceManager().refreshStakeContainers();
+        this.opponent.getDuelInterfaceManager().refreshStakeContainers();
     }
 
-    private boolean b(ItemStack itemStack) {
+    private boolean hasStakedItemAmount(ItemStack itemStack) {
         int n = 0;
         int n2 = 0;
-        while (n2 < this.h.size()) {
-            if (((ItemStack)this.h.get(n2)).getId() == itemStack.getId()) {
+        while (n2 < this.stakedItems.size()) {
+            if (((ItemStack)this.stakedItems.get(n2)).getId() == itemStack.getId()) {
                 ++n;
             }
             ++n2;
@@ -302,74 +302,74 @@ public final class DuelSession {
         return n >= itemStack.getAmount();
     }
 
-    public final boolean e() {
-        return this.c;
+    public final boolean isStarted() {
+        return this.started;
     }
 
-    public final boolean f() {
+    public final boolean isActiveDuelStarted() {
         Object object;
         block6: {
             block5: {
-                if (!this.a.isInDuelArena()) break block5;
+                if (!this.player.isInDuelArena()) break block5;
                 object = this;
-                if (((DuelSession)object).c) break block6;
+                if (((DuelSession)object).started) break block6;
             }
-            object = this.a;
+            object = this.player;
             ((Player)object).packetSender.sendGameMessage("The duel hasn't started yet!");
         }
-        if (this.a.isInDuelArena()) {
+        if (this.player.isInDuelArena()) {
             object = this;
-            if (((DuelSession)object).c) {
+            if (((DuelSession)object).started) {
                 return true;
             }
         }
         return false;
     }
 
-    public final void g() {
-        if (this.a.getSkillManager().getCurrentLevels()[3] < this.a.getSkillManager().getBaseLevel(3)) {
-            this.a.getUpdateState().setGraphic(84);
-            this.a.getUpdateState().setAnimation(866);
-            Player player = this.a;
+    public final void restoreHitpoints() {
+        if (this.player.getSkillManager().getCurrentLevels()[3] < this.player.getSkillManager().getBaseLevel(3)) {
+            this.player.getUpdateState().setGraphic(84);
+            this.player.getUpdateState().setAnimation(866);
+            Player player = this.player;
             player.packetSender.sendGameMessage("You have been healed.");
-            this.a.getSkillManager().setCurrentLevel(3, this.a.getSkillManager().getBaseLevel(3));
-            this.a.getSkillManager().refreshSkill(3);
+            this.player.getSkillManager().setCurrentLevel(3, this.player.getSkillManager().getBaseLevel(3));
+            this.player.getSkillManager().refreshSkill(3);
             return;
         }
-        Player player = this.a;
+        Player player = this.player;
         player.packetSender.sendGameMessage("You are already very healthy.");
     }
 
-    public final ArrayList h() {
-        return this.h;
+    public final ArrayList getStakedItems() {
+        return this.stakedItems;
     }
 
-    public final Player i() {
-        return this.b;
+    public final Player getOpponent() {
+        return this.opponent;
     }
 
-    public final void a(Player player) {
-        this.b = player;
+    public final void setOpponent(Player player) {
+        this.opponent = player;
     }
 
-    public final ArrayList j() {
-        return this.e;
+    public final ArrayList getEquipmentToRemove() {
+        return this.equipmentToRemove;
     }
 
-    public final boolean[] k() {
-        return this.g;
+    public final boolean[] getEnabledRules() {
+        return this.enabledRules;
     }
 
-    public final ArrayList l() {
-        return this.f;
+    public final ArrayList getRuleDescriptions() {
+        return this.ruleDescriptions;
     }
 
-    public final void b(boolean bl) {
-        this.c = bl;
+    public final void setStarted(boolean bl) {
+        this.started = bl;
     }
 
-    static /* synthetic */ Player a(DuelSession duelSession) {
-        return duelSession.a;
+    static /* synthetic */ Player getPlayer(DuelSession duelSession) {
+        return duelSession.player;
     }
 }
 

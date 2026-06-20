@@ -22,16 +22,16 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        if (!this.b.bW()) {
+        if (!this.b.isRegistered()) {
             this.stop();
             return;
         }
         if (this.a.a.containsExclusive(this.b.getPosition()) && !this.a.b.containsExclusive(this.b.getPosition())) {
             this.b.getUpdateState().setGraphic(60, 0);
-            this.b.applyDirectHit(GameUtil.g(2), HitType.NORMAL);
+            this.b.applyDirectHit(GameUtil.randomInclusive(2), HitType.NORMAL);
             return;
         }
-        this.b.er = -1;
+        this.b.activeEnvironmentalHazardId = -1;
         this.stop();
     }
 }

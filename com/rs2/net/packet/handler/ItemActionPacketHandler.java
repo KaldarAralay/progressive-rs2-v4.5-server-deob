@@ -92,7 +92,7 @@ implements PacketHandler {
      */
     @Override
     public final void handle(Player var1_1, IncomingPacket var2_2) {
-        if (var1_1.dJ()) {
+        if (var1_1.isActionLocked()) {
             return;
         }
         switch (var2_2.getOpcode()) {
@@ -172,15 +172,15 @@ implements PacketHandler {
                 }
                 var6_22 = var2_2.getId();
                 var7_23 = var5_20.getId();
-                if (var1_1.getDuelSession().i() != null && !var1_1.isInDuelArena()) {
-                    var1_1.getDuelController().a(true);
+                if (var1_1.getDuelSession().getOpponent() != null && !var1_1.isInDuelArena()) {
+                    var1_1.getDuelController().resetDuel(true);
                     break;
                 }
-                if (var1_1.getQuestManager().a(var6_22, var7_23) || ServerSettings.content2007Enabled && GodWarsDungeonManager.b((Player)var1_1, var6_22, var7_23)) ** GOTO lbl605
+                if (var1_1.getQuestManager().handleItemOnItem(var6_22, var7_23) || ServerSettings.content2007Enabled && GodWarsDungeonManager.handleGodWarsItemCombination((Player)var1_1, var6_22, var7_23)) ** GOTO lbl605
                 var10_24 = var7_23;
                 var9_27 = var6_22;
                 var8_30 = var1_1;
-                var13_33 = FoodPreparationRecipe.a(var9_27, var10_24);
+                var13_33 = FoodPreparationRecipe.forIngredients(var9_27, var10_24);
                 if (var13_33 != null) ** GOTO lbl78
                 v0 = false;
                 ** GOTO lbl139
@@ -194,26 +194,26 @@ lbl78:
 lbl84:
                 // 1 sources
 
-                if (var8_30.getSkillManager().getCurrentLevels()[7] >= var13_33.e()) ** GOTO lbl87
-                var8_30.getDialogueManager().showOneLineStatement("You need a cooking level of " + var13_33.e() + " to do this.");
+                if (var8_30.getSkillManager().getCurrentLevels()[7] >= var13_33.getRequiredLevel()) ** GOTO lbl87
+                var8_30.getDialogueManager().showOneLineStatement("You need a cooking level of " + var13_33.getRequiredLevel() + " to do this.");
                 ** GOTO lbl138
 lbl87:
                 // 1 sources
 
-                v1 = var14_35 = var13_33.b() == 0 ? 1 : var13_33.b();
-                if (var8_30.getInventoryManager().getItemAmount(var13_33.a()) >= var14_35) ** GOTO lbl91
-                var8_30.getDialogueManager().showOneLineStatement("You need " + var14_35 + " " + ItemDefinition.forId(var13_33.a()).getName().toLowerCase() + " to do this");
+                v1 = var14_35 = var13_33.getIngredientAmount() == 0 ? 1 : var13_33.getIngredientAmount();
+                if (var8_30.getInventoryManager().getItemAmount(var13_33.getIngredientItemId()) >= var14_35) ** GOTO lbl91
+                var8_30.getDialogueManager().showOneLineStatement("You need " + var14_35 + " " + ItemDefinition.forId(var13_33.getIngredientItemId()).getName().toLowerCase() + " to do this");
                 ** GOTO lbl138
 lbl91:
                 // 1 sources
 
-                if (var13_33.d() != 1871 && var13_33.d() != 7080 && var13_33.d() != 7074 || var8_30.getInventoryManager().getContainer().containsItem(946)) ** GOTO lbl95
+                if (var13_33.getProductItemId() != 1871 && var13_33.getProductItemId() != 7080 && var13_33.getProductItemId() != 7074 || var8_30.getInventoryManager().getContainer().containsItem(946)) ** GOTO lbl95
                 var8_30.getPacketSender().sendGameMessage("You need a knife for that.");
                 ** GOTO lbl138
 lbl95:
                 // 1 sources
 
-                if (var13_33.d() != 1889) ** GOTO lbl117
+                if (var13_33.getProductItemId() != 1889) ** GOTO lbl117
                 if (var8_30.getInventoryManager().getContainer().containsItem(1933) && var8_30.getInventoryManager().getContainer().containsItem(1927) && var8_30.getInventoryManager().getContainer().containsItem(1944)) ** GOTO lbl99
                 v0 = true;
                 ** GOTO lbl139
@@ -233,22 +233,22 @@ lbl99:
 lbl117:
                 // 1 sources
 
-                if (var13_33.d() == 7066) {
+                if (var13_33.getProductItemId() == 7066) {
                     var8_30.getInventoryManager().addItem(new ItemStack(1923));
                 }
-                if (var13_33.g()) {
-                    var8_30.getPacketSender().sendGameMessage("You put the " + ItemDefinition.forId(var13_33.a()).getName().toLowerCase() + " into the " + ItemDefinition.forId(var13_33.c()).getName().toLowerCase() + " and make a " + ItemDefinition.forId(var13_33.d()).getName().toLowerCase() + ".");
+                if (var13_33.usesPutIntoMessage()) {
+                    var8_30.getPacketSender().sendGameMessage("You put the " + ItemDefinition.forId(var13_33.getIngredientItemId()).getName().toLowerCase() + " into the " + ItemDefinition.forId(var13_33.getBaseItemId()).getName().toLowerCase() + " and make a " + ItemDefinition.forId(var13_33.getProductItemId()).getName().toLowerCase() + ".");
                 } else {
-                    var8_30.getPacketSender().sendGameMessage("You mix the " + ItemDefinition.forId(var13_33.a()).getName().toLowerCase() + " with the " + ItemDefinition.forId(var13_33.c()).getName().toLowerCase() + " and make a " + ItemDefinition.forId(var13_33.d()).getName().toLowerCase() + ".");
+                    var8_30.getPacketSender().sendGameMessage("You mix the " + ItemDefinition.forId(var13_33.getIngredientItemId()).getName().toLowerCase() + " with the " + ItemDefinition.forId(var13_33.getBaseItemId()).getName().toLowerCase() + " and make a " + ItemDefinition.forId(var13_33.getProductItemId()).getName().toLowerCase() + ".");
                 }
-                if (var13_33.d() != 1889) {
-                    var8_30.getInventoryManager().removeItem(new ItemStack(var13_33.a(), var14_35));
+                if (var13_33.getProductItemId() != 1889) {
+                    var8_30.getInventoryManager().removeItem(new ItemStack(var13_33.getIngredientItemId(), var14_35));
                 }
-                var8_30.getInventoryManager().removeItem(new ItemStack(var13_33.c()));
-                var8_30.getInventoryManager().addItem(new ItemStack(var13_33.d()));
-                var8_30.getSkillManager().addExperience(7, var13_33.f());
-                if (var13_33.h() != 0) {
-                    var8_30.getInventoryManager().addItem(new ItemStack(var13_33.h()));
+                var8_30.getInventoryManager().removeItem(new ItemStack(var13_33.getBaseItemId()));
+                var8_30.getInventoryManager().addItem(new ItemStack(var13_33.getProductItemId()));
+                var8_30.getSkillManager().addExperience(7, var13_33.getExperience());
+                if (var13_33.getReturnedItemId() != 0) {
+                    var8_30.getInventoryManager().addItem(new ItemStack(var13_33.getReturnedItemId()));
                 }
 lbl138:
                 // 8 sources
@@ -261,22 +261,22 @@ lbl139:
                 var10_24 = var7_23;
                 var9_27 = var6_22;
                 var8_30 = var1_1;
-                var13_33 = MultiIngredientFoodRecipe.a(var9_27) != null ? MultiIngredientFoodRecipe.a(var9_27) : MultiIngredientFoodRecipe.a(var10_24);
-                var14_36 = MultiIngredientFoodRecipe.b(var9_27) != null ? MultiIngredientFoodRecipe.b(var9_27) : MultiIngredientFoodRecipe.b(var10_24);
+                var13_33 = MultiIngredientFoodRecipe.forFirstIngredientItemId(var9_27) != null ? MultiIngredientFoodRecipe.forFirstIngredientItemId(var9_27) : MultiIngredientFoodRecipe.forFirstIngredientItemId(var10_24);
+                var14_36 = MultiIngredientFoodRecipe.forFirstStageProductItemId(var9_27) != null ? MultiIngredientFoodRecipe.forFirstStageProductItemId(var9_27) : MultiIngredientFoodRecipe.forFirstStageProductItemId(var10_24);
                 var15_40 = -1;
                 var16_43 = -1;
                 var17_44 = -1;
                 var18_45 = null;
-                if (var13_33 != null && (var9_27 == var13_33.d() || var10_24 == var13_33.d())) {
-                    var15_40 = var13_33.a();
-                    var16_43 = var13_33.d();
-                    var17_44 = var13_33.c();
+                if (var13_33 != null && (var9_27 == var13_33.getBaseItemId() || var10_24 == var13_33.getBaseItemId())) {
+                    var15_40 = var13_33.getFirstIngredientItemId();
+                    var16_43 = var13_33.getBaseItemId();
+                    var17_44 = var13_33.getFirstStageProductItemId();
                     var18_45 = var13_33;
                 }
-                if (!(var14_36 == null || var9_27 != var14_36.c() && var10_24 != var14_36.c() || var9_27 != var14_36.b() && var10_24 != var14_36.b())) {
-                    var15_40 = var14_36.b();
-                    var16_43 = var14_36.c();
-                    var17_44 = var14_36.e();
+                if (!(var14_36 == null || var9_27 != var14_36.getFirstStageProductItemId() && var10_24 != var14_36.getFirstStageProductItemId() || var9_27 != var14_36.getSecondIngredientItemId() && var10_24 != var14_36.getSecondIngredientItemId())) {
+                    var15_40 = var14_36.getSecondIngredientItemId();
+                    var16_43 = var14_36.getFirstStageProductItemId();
+                    var17_44 = var14_36.getFinalProductItemId();
                     var18_45 = var14_36;
                 }
                 if (var18_45 == null) {
@@ -285,25 +285,25 @@ lbl139:
                     var8_30.getPacketSender().closeInterfaces();
                     if (!ServerSettings.cookingEnabled) {
                         var8_30.getPacketSender().sendGameMessage("This skill is currently disabled.");
-                    } else if (var8_30.getSkillManager().getCurrentLevels()[7] < var18_45.f()) {
-                        var8_30.getPacketSender().sendGameMessage("You need a cooking level of " + var18_45.f() + " to do this.");
-                    } else if (var18_45.e() == 7068 && !var8_30.getInventoryManager().getContainer().containsItem(946)) {
+                    } else if (var8_30.getSkillManager().getCurrentLevels()[7] < var18_45.getRequiredLevel()) {
+                        var8_30.getPacketSender().sendGameMessage("You need a cooking level of " + var18_45.getRequiredLevel() + " to do this.");
+                    } else if (var18_45.getFinalProductItemId() == 7068 && !var8_30.getInventoryManager().getContainer().containsItem(946)) {
                         var8_30.getPacketSender().sendGameMessage("You need a knife for that.");
                     } else {
-                        if (var18_45.h()) {
+                        if (var18_45.usesPutIntoMessage()) {
                             var8_30.getPacketSender().sendGameMessage("You put the " + ItemDefinition.forId(var15_40).getName().toLowerCase() + " into the " + ItemDefinition.forId(var16_43).getName().toLowerCase() + " and make a " + ItemDefinition.forId(var17_44).getName().toLowerCase() + ".");
                         } else {
                             var8_30.getPacketSender().sendGameMessage("You mix the " + ItemDefinition.forId(var15_40).getName().toLowerCase() + " with the " + ItemDefinition.forId(var16_43).getName().toLowerCase() + " and make a " + ItemDefinition.forId(var17_44).getName().toLowerCase() + ".");
                         }
                         var8_30.getInventoryManager().removeItem(new ItemStack(var9_27));
                         var8_30.getInventoryManager().removeItem(new ItemStack(var10_24));
-                        var8_30.getInventoryManager().b(new ItemStack(var17_44));
-                        var8_30.getSkillManager().addExperience(7, var18_45.g());
-                        if (var18_45.i() != 0 && var18_45 == var13_33) {
-                            var8_30.getInventoryManager().b(new ItemStack(var18_45.i()));
+                        var8_30.getInventoryManager().addOrDropItem(new ItemStack(var17_44));
+                        var8_30.getSkillManager().addExperience(7, var18_45.getExperience());
+                        if (var18_45.getFirstStageReturnedItemId() != 0 && var18_45 == var13_33) {
+                            var8_30.getInventoryManager().addOrDropItem(new ItemStack(var18_45.getFirstStageReturnedItemId()));
                         }
-                        if (var18_45.j() != 0 && var18_45 == var14_36) {
-                            var8_30.getInventoryManager().b(new ItemStack(var18_45.j()));
+                        if (var18_45.getFinalStageReturnedItemId() != 0 && var18_45 == var14_36) {
+                            var8_30.getInventoryManager().addOrDropItem(new ItemStack(var18_45.getFinalStageReturnedItemId()));
                         }
                     }
                     v2 = true;
@@ -314,29 +314,29 @@ lbl139:
                 var10_24 = var7_23;
                 var9_27 = var6_22;
                 var8_30 = var1_1;
-                var13_33 = PieRecipe.a(var9_27) != null ? PieRecipe.a(var9_27) : PieRecipe.a(var10_24);
-                var14_36 = PieRecipe.b(var9_27) != null ? PieRecipe.b(var9_27) : PieRecipe.b(var10_24);
-                var15_41 = PieRecipe.c(var9_27) != null ? PieRecipe.c(var9_27) : PieRecipe.c(var10_24);
+                var13_33 = PieRecipe.forFirstIngredientItemId(var9_27) != null ? PieRecipe.forFirstIngredientItemId(var9_27) : PieRecipe.forFirstIngredientItemId(var10_24);
+                var14_36 = PieRecipe.forFirstStagePieItemId(var9_27) != null ? PieRecipe.forFirstStagePieItemId(var9_27) : PieRecipe.forFirstStagePieItemId(var10_24);
+                var15_41 = PieRecipe.forSecondStagePieItemId(var9_27) != null ? PieRecipe.forSecondStagePieItemId(var9_27) : PieRecipe.forSecondStagePieItemId(var10_24);
                 var16_43 = -1;
                 var17_44 = -1;
                 var18_46 = -1;
                 var19_58 = null;
-                if (var13_33 != null && (var9_27 == var13_33.f() || var10_24 == var13_33.f())) {
-                    var16_43 = var13_33.a();
-                    var17_44 = var13_33.f();
-                    var18_46 = var13_33.d();
+                if (var13_33 != null && (var9_27 == var13_33.getPieShellItemId() || var10_24 == var13_33.getPieShellItemId())) {
+                    var16_43 = var13_33.getFirstIngredientItemId();
+                    var17_44 = var13_33.getPieShellItemId();
+                    var18_46 = var13_33.getFirstStagePieItemId();
                     var19_58 = var13_33;
                 }
-                if (!(var14_36 == null || var9_27 != var14_36.d() && var10_24 != var14_36.d() || var9_27 != var14_36.b() && var10_24 != var14_36.b())) {
-                    var16_43 = var14_36.b();
-                    var17_44 = var14_36.d();
-                    var18_46 = var14_36.e();
+                if (!(var14_36 == null || var9_27 != var14_36.getFirstStagePieItemId() && var10_24 != var14_36.getFirstStagePieItemId() || var9_27 != var14_36.getSecondIngredientItemId() && var10_24 != var14_36.getSecondIngredientItemId())) {
+                    var16_43 = var14_36.getSecondIngredientItemId();
+                    var17_44 = var14_36.getFirstStagePieItemId();
+                    var18_46 = var14_36.getSecondStagePieItemId();
                     var19_58 = var14_36;
                 }
-                if (!(var15_41 == null || var9_27 != var15_41.e() && var10_24 != var15_41.e() || var9_27 != var15_41.c() && var10_24 != var15_41.c())) {
-                    var16_43 = var15_41.c();
-                    var17_44 = var15_41.e();
-                    var18_46 = var15_41.g();
+                if (!(var15_41 == null || var9_27 != var15_41.getSecondStagePieItemId() && var10_24 != var15_41.getSecondStagePieItemId() || var9_27 != var15_41.getThirdIngredientItemId() && var10_24 != var15_41.getThirdIngredientItemId())) {
+                    var16_43 = var15_41.getThirdIngredientItemId();
+                    var17_44 = var15_41.getSecondStagePieItemId();
+                    var18_46 = var15_41.getRawPieItemId();
                     var19_58 = var15_41;
                 }
                 if (var19_58 == null) {
@@ -345,26 +345,26 @@ lbl139:
                     var8_30.getPacketSender().closeInterfaces();
                     if (!ServerSettings.cookingEnabled) {
                         var8_30.getPacketSender().sendGameMessage("This skill is currently disabled.");
-                    } else if (var8_30.getSkillManager().getCurrentLevels()[7] < var19_58.h()) {
-                        var8_30.getDialogueManager().showOneLineStatement("You need a cooking level of " + var19_58.h() + " to do this.");
+                    } else if (var8_30.getSkillManager().getCurrentLevels()[7] < var19_58.getRequiredLevel()) {
+                        var8_30.getDialogueManager().showOneLineStatement("You need a cooking level of " + var19_58.getRequiredLevel() + " to do this.");
                     } else {
-                        if (var19_58.j()) {
+                        if (var19_58.usesPutIntoMessage()) {
                             var8_30.getPacketSender().sendGameMessage("You put the " + ItemDefinition.forId(var16_43).getName().toLowerCase() + " into the " + ItemDefinition.forId(var17_44).getName().toLowerCase() + " and make a " + ItemDefinition.forId(var18_46).getName().toLowerCase() + ".");
                         } else {
                             var8_30.getPacketSender().sendGameMessage("You mix the " + ItemDefinition.forId(var16_43).getName().toLowerCase() + " with the " + ItemDefinition.forId(var17_44).getName().toLowerCase() + " and make a " + ItemDefinition.forId(var18_46).getName().toLowerCase() + ".");
                         }
                         var8_30.getInventoryManager().removeItem(new ItemStack(var9_27));
                         var8_30.getInventoryManager().removeItem(new ItemStack(var10_24));
-                        var8_30.getInventoryManager().a(new ItemStack(var18_46), var9_27 == var17_44 ? var11_53 : var12_47);
-                        var8_30.getSkillManager().addExperience(7, var19_58.i() / 5.0);
-                        if (var19_58.k() != 0 && var19_58 == var13_33) {
-                            var8_30.getInventoryManager().addItem(new ItemStack(var19_58.k()));
+                        var8_30.getInventoryManager().setItemInSlot(new ItemStack(var18_46), var9_27 == var17_44 ? var11_53 : var12_47);
+                        var8_30.getSkillManager().addExperience(7, var19_58.getExperience() / 5.0);
+                        if (var19_58.getFirstStageReturnedItemId() != 0 && var19_58 == var13_33) {
+                            var8_30.getInventoryManager().addItem(new ItemStack(var19_58.getFirstStageReturnedItemId()));
                         }
-                        if (var19_58.l() != 0 && var19_58 == var14_36) {
-                            var8_30.getInventoryManager().addItem(new ItemStack(var19_58.l()));
+                        if (var19_58.getSecondStageReturnedItemId() != 0 && var19_58 == var14_36) {
+                            var8_30.getInventoryManager().addItem(new ItemStack(var19_58.getSecondStageReturnedItemId()));
                         }
-                        if (var19_58.m() != 0 && var19_58 == var15_41) {
-                            var8_30.getInventoryManager().addItem(new ItemStack(var19_58.m()));
+                        if (var19_58.getThirdStageReturnedItemId() != 0 && var19_58 == var15_41) {
+                            var8_30.getInventoryManager().addItem(new ItemStack(var19_58.getThirdStageReturnedItemId()));
                         }
                     }
                     v3 = true;
@@ -499,7 +499,7 @@ lbl341:
                     GameplayHelper.a((Player)var1_1, "glassMaking");
                     break;
                 }
-                if (DyeMixingHandler.a((Player)var1_1, var6_22, var7_23)) ** GOTO lbl605
+                if (DyeMixingHandler.mixDyes((Player)var1_1, var6_22, var7_23)) ** GOTO lbl605
                 var8_31 = 0;
                 while (var8_31 < JewelleryCraftingData.amuletStringingRecipes.length) {
                     if (JewelleryCraftingData.amuletStringingRecipes[var8_31][0] == var6_22 || JewelleryCraftingData.amuletStringingRecipes[var8_31][0] == var7_23) {
@@ -508,7 +508,7 @@ lbl341:
                     }
                     ++var8_31;
                 }
-                if (GodBookHandler.a((Player)var1_1, var6_22, var7_23)) ** GOTO lbl605
+                if (GodBookHandler.handlePageOnBook((Player)var1_1, var6_22, var7_23)) ** GOTO lbl605
                 var10_24 = var7_23;
                 var9_27 = var6_22;
                 var8_32 = var1_1;
@@ -549,8 +549,8 @@ lbl341:
                         v7 = false;
                     }
                 }
-                if (v7 || var1_1.getPlantPotHandler().plantSeedInPot(var2_2.getId(), var5_20.getId(), var3_15, var4_6) || var1_1.getPlantPotHandler().waterSeedling(var2_2.getId(), var5_20.getId()) || var1_1.getItemCombinationHandler().a((ItemStack)var2_2, var5_20)) ** GOTO lbl605
-                if (ItemCombinationHandler.a((Player)var1_1, var6_22, var7_23)) {
+                if (v7 || var1_1.getPlantPotHandler().plantSeedInPot(var2_2.getId(), var5_20.getId(), var3_15, var4_6) || var1_1.getPlantPotHandler().waterSeedling(var2_2.getId(), var5_20.getId()) || var1_1.getItemCombinationHandler().handleItemCombination((ItemStack)var2_2, var5_20)) ** GOTO lbl605
+                if (ItemCombinationHandler.handleToolHeadAttachment((Player)var1_1, var6_22, var7_23)) {
                     var1_1.getPacketSender().sendGameMessage("You put together the head and handle.");
                     break;
                 }
@@ -567,8 +567,8 @@ lbl471:
                 // 1 sources
 
                 if (var8_32.getQuestState(29) == 1) ** GOTO lbl478
-                var11_55 = QuestDefinition.b(29);
-                var12_50 = var11_55.c();
+                var11_55 = QuestDefinition.forId(29);
+                var12_50 = var11_55.getName();
                 var8_32.getPacketSender().sendGameMessage("You need to complete " + var12_50 + " to do this.");
                 v8 = true;
                 ** GOTO lbl511
@@ -587,8 +587,8 @@ lbl485:
                         var8_32.getPacketSender().sendGameMessage("This skill is currently disabled.");
                         v8 = true;
                     } else if (var8_32.getQuestState(29) != 1) {
-                        var11_56 = QuestDefinition.b(29);
-                        var12_51 = var11_56.c();
+                        var11_56 = QuestDefinition.forId(29);
+                        var12_51 = var11_56.getName();
                         var8_32.getPacketSender().sendGameMessage("You need to complete " + var12_51 + " to do this.");
                         v8 = true;
                     } else {
@@ -623,19 +623,19 @@ lbl511:
                     v9 = false;
                 } else {
                     var11_57 = var9_29 != 590 ? var9_29 : var10_26;
-                    var12_52 = CaveLightSourceDefinition.a(var11_57);
+                    var12_52 = CaveLightSourceDefinition.forItemId(var11_57);
                     if (var12_52 == null) {
                         v9 = false;
-                    } else if (var12_52.b() != var11_57) {
+                    } else if (var12_52.getUnlitItemId() != var11_57) {
                         v9 = false;
                     } else {
-                        var13_34 = var12_52.a();
+                        var13_34 = var12_52.getFiremakingLevelRequirement();
                         if (var8_32.getSkillManager().getCurrentLevels()[11] < var13_34) {
                             var8_32.getDialogueManager().showOneLineStatement("You need a firemaking level of " + var13_34 + " to do that.");
                             v9 = true;
                         } else {
                             var8_32.getInventoryManager().removeItem(new ItemStack(var11_57));
-                            var8_32.getInventoryManager().addItem(new ItemStack(var12_52.c()));
+                            var8_32.getInventoryManager().addItem(new ItemStack(var12_52.getLitItemId()));
                             var14_38 = ItemDefinition.forId(var11_57);
                             var8_32.getPacketSender().sendGameMessage("You light the " + var14_38.getName().toLowerCase() + ".");
                             v9 = true;
@@ -702,14 +702,14 @@ lbl605:
                 var1_1.setInteractionTargetId(var2_2.getReader().readSignedShort());
                 var1_1.setInteractionTargetX(var2_2.getReader().readSignedShort(ByteOrder.LITTLE));
                 var1_1.setInteractionTargetPlane(var1_1.getPosition().getPlane());
-                if (var1_1.getInteractionTargetId() == 6888 && var1_1.getTelekineticTheatreController().g()) {
-                    var1_1.getTelekineticTheatreController().b();
+                if (var1_1.getInteractionTargetId() == 6888 && var1_1.getTelekineticTheatreController().isInsideTheatre()) {
+                    var1_1.getTelekineticTheatreController().handleMazeItemPickupAttempt();
                     break;
                 }
                 GroundItemManager.getInstance();
                 var4_8 = GroundItemManager.findVisibleItem((Player)var1_1, var1_1.getInteractionTargetId(), new Position(var1_1.getInteractionTargetX(), var1_1.getInteractionTargetY(), var1_1.getPosition().getPlane()));
-                if (var4_8 != null && var1_1.getInventoryManager().e(var4_8.getItem())) {
-                    if (var1_1.eK() && new ItemStack(var1_1.getInteractionTargetId()).getDefinition().getName().toLowerCase().contains("clue scroll")) {
+                if (var4_8 != null && var1_1.getInventoryManager().canAddItem(var4_8.getItem())) {
+                    if (var1_1.ownsClueScroll() && new ItemStack(var1_1.getInteractionTargetId()).getDefinition().getName().toLowerCase().contains("clue scroll")) {
                         var1_1.getPacketSender().sendGameMessage("You can only have one scroll at a time.");
                         break;
                     }
@@ -731,12 +731,12 @@ lbl605:
                 if (var2_2.getPlayerRights() > 1 && ServerSettings.debugModeEnabled) {
                     System.out.println(String.valueOf(var2_2.getInteractionTargetX()) + " " + var2_2.getInteractionTargetY());
                 }
-                if (var2_2.getInteractionTargetId() == 6888 && var2_2.getTelekineticTheatreController().g()) {
+                if (var2_2.getInteractionTargetId() == 6888 && var2_2.getTelekineticTheatreController().isInsideTheatre()) {
                     GroundItemManager.getInstance();
                     var4_9 = GroundItemManager.findVisibleItem((Player)var2_2, var2_2.getInteractionTargetId(), new Position(var2_2.getInteractionTargetX(), var2_2.getInteractionTargetY(), var2_2.getInteractionTargetPlane()));
                     if (var4_9 != null) {
                         var2_2.getPacketSender().sendGroundItemRemove(var4_9);
-                        var2_2.getTelekineticTheatreController().c();
+                        var2_2.getTelekineticTheatreController().spawnMazeItem();
                         break;
                     }
                 } else {
@@ -761,35 +761,35 @@ lbl605:
                     } else if (var4_11 == 5064 || var4_11 == 7423) {
                         BankManager.depositInventoryItem((Player)var1_1, var1_1.getSelectedItemSlot(), var3_18, 1);
                     } else if (var4_11 == 2006) {
-                        PartyRoomManager.b((Player)var1_1, var1_1.getSelectedItemSlot(), var3_18, 1);
+                        PartyRoomManager.stageInventoryItemForChest((Player)var1_1, var1_1.getSelectedItemSlot(), var3_18, 1);
                     } else if (var4_11 == 2274) {
-                        PartyRoomManager.c((Player)var1_1, var1_1.getSelectedItemSlot(), var3_18, 1);
+                        PartyRoomManager.withdrawStagedChestItem((Player)var1_1, var1_1.getSelectedItemSlot(), var3_18, 1);
                     } else if (var4_11 == 5382 || var4_11 == 19532 || var4_11 == 19533 || var4_11 == 19534 || var4_11 == 19535 || var4_11 == 19536 || var4_11 == 19537 || var4_11 == 19538 || var4_11 == 19539 || var4_11 == 19540) {
                         BankManager.withdrawItemFromTab((Player)var1_1, var1_1.getSelectedItemSlot(), var3_18, 1, var4_11);
                     } else if (var4_11 == 19102) {
-                        GrandExchangeManager.b((Player)var1_1, var1_1.getSelectedItemSlot(), var3_18, 1);
+                        GrandExchangeManager.selectSellOfferItem((Player)var1_1, var1_1.getSelectedItemSlot(), var3_18, 1);
                     } else if (var4_11 == 19006) {
-                        GrandExchangeManager.a((Player)var1_1, var1_1.getSelectedItemSlot(), var3_18, 1);
+                        GrandExchangeManager.collectOfferItem((Player)var1_1, var1_1.getSelectedItemSlot(), var3_18, 1);
                     } else if (var4_11 == 3900) {
-                        ShopManager.b((Player)var1_1, var3_18);
+                        ShopManager.sendBuyPrice((Player)var1_1, var3_18);
                     } else if (var4_11 == 15948) {
-                        MageTrainingArenaRewardShop.a((Player)var1_1, var1_1.getSelectedItemSlot());
+                        MageTrainingArenaRewardShop.sendRewardCostMessage((Player)var1_1, var1_1.getSelectedItemSlot());
                     } else if (var4_11 == 3823) {
-                        ShopManager.c((Player)var1_1, var3_18);
+                        ShopManager.sendSellPrice((Player)var1_1, var3_18);
                     } else if (var4_11 == 3322) {
                         if (var1_1.getInterfaceAction() == "duel") {
-                            var1_1.getDuelSession().a(new ItemStack(var3_18, 1), var1_1.getSelectedItemSlot());
+                            var1_1.getDuelSession().addStakeItem(new ItemStack(var3_18, 1), var1_1.getSelectedItemSlot());
                         } else {
-                            GameplayHelper.b((Player)var1_1, var1_1.getSelectedItemSlot(), var3_18, 1);
+                            GameplayHelper.addTradeOfferItem((Player)var1_1, var1_1.getSelectedItemSlot(), var3_18, 1);
                         }
                     } else if (var4_11 == 3415) {
-                        GameplayHelper.c((Player)var1_1, var1_1.getSelectedItemSlot(), var3_18, 1);
+                        GameplayHelper.removeTradeOfferItem((Player)var1_1, var1_1.getSelectedItemSlot(), var3_18, 1);
                     } else if (var4_11 == 15682 || var4_11 == 15683) {
                         var1_1.getFarmingToolStore().withdrawItem(var3_18, 1);
                     } else if (var4_11 == 15594 || var4_11 == 15595) {
                         var1_1.getFarmingToolStore().depositItem(var3_18, 1);
                     } else if (var4_11 == 6669) {
-                        var1_1.getDuelSession().a(new ItemStack(var3_18, 1));
+                        var1_1.getDuelSession().removeStakeItem(new ItemStack(var3_18, 1));
                     }
                     switch (var4_11) {
                         case 4233: {
@@ -875,7 +875,7 @@ lbl605:
         if (!player.getInventoryManager().getContainer().containsItem(itemStack.getId())) {
             return;
         }
-        if (player.getQuestManager().a(itemStack.getId())) {
+        if (player.getQuestManager().handleDropItem(itemStack.getId())) {
             return;
         }
         Object object = PetManager.a;
@@ -888,8 +888,8 @@ lbl605:
             }
             ++n3;
         }
-        String[][] stringArrayArray = BarrowsRepairHandler.b(itemStack);
-        if (itemStack.getDefinition().hasDestroyOption() || stringArrayArray != null && itemStack.getDefinition().z()) {
+        String[][] stringArrayArray = BarrowsRepairHandler.forItem(itemStack);
+        if (itemStack.getDefinition().hasDestroyOption() || stringArrayArray != null && itemStack.getDefinition().isUntradeable()) {
             String[][] stringArrayArray2 = "Dropping this item will make you lose it forever.";
             if (stringArrayArray != null) {
                 stringArrayArray2 = "Dropping this item will make it degrade to 0.";
@@ -939,26 +939,26 @@ lbl605:
         if (n == 5064 || n == 7423) {
             BankManager.depositInventoryItem(player, player.getSelectedItemSlot(), n2, 5);
         } else if (n == 2006) {
-            PartyRoomManager.b(player, player.getSelectedItemSlot(), n2, 5);
+            PartyRoomManager.stageInventoryItemForChest(player, player.getSelectedItemSlot(), n2, 5);
         } else if (n == 2274) {
-            PartyRoomManager.c(player, player.getSelectedItemSlot(), n2, 5);
+            PartyRoomManager.withdrawStagedChestItem(player, player.getSelectedItemSlot(), n2, 5);
         } else if (n == 5382 || n == 19532 || n == 19533 || n == 19534 || n == 19535 || n == 19536 || n == 19537 || n == 19538 || n == 19539 || n == 19540) {
             BankManager.withdrawItemFromTab(player, player.getSelectedItemSlot(), n2, 5, n);
         } else if (n == 15948) {
-            MageTrainingArenaRewardShop.b(player, player.getSelectedItemSlot());
+            MageTrainingArenaRewardShop.buyReward(player, player.getSelectedItemSlot());
         } else if (n == 3900) {
-            ShopManager.a(player, player.getSelectedItemSlot(), n2, 1);
+            ShopManager.buyItem(player, player.getSelectedItemSlot(), n2, 1);
         } else if (n == 3823) {
-            ShopManager.b(player, player.getSelectedItemSlot(), n2, 1);
+            ShopManager.sellItem(player, player.getSelectedItemSlot(), n2, 1);
         } else if (n == 3322) {
             object = player;
             if (((Player)object).interfaceAction == "duel") {
-                player.getDuelSession().a(new ItemStack(n2, 5), player.getSelectedItemSlot());
+                player.getDuelSession().addStakeItem(new ItemStack(n2, 5), player.getSelectedItemSlot());
             } else {
-                GameplayHelper.b(player, player.getSelectedItemSlot(), n2, 5);
+                GameplayHelper.addTradeOfferItem(player, player.getSelectedItemSlot(), n2, 5);
             }
         } else if (n == 3415) {
-            GameplayHelper.c(player, player.getSelectedItemSlot(), n2, 5);
+            GameplayHelper.removeTradeOfferItem(player, player.getSelectedItemSlot(), n2, 5);
         } else if (n == 15682 || n == 15683) {
             player.getFarmingToolStore().withdrawItem(n2, 5);
         } else if (n == 15594 || n == 15595) {
@@ -966,7 +966,7 @@ lbl605:
         } else if (n == 1119 || n == 1120 || n == 1121 || n == 1122 || n == 1123) {
             SmithingHandler.startSmithingTask(player, n2, 5);
         } else if (n == 6669) {
-            player.getDuelSession().a(new ItemStack(n2, 5));
+            player.getDuelSession().removeStakeItem(new ItemStack(n2, 5));
         }
         switch (n) {
             case 4233: {
@@ -998,15 +998,15 @@ lbl605:
         if (n == 5064 || n == 7423) {
             BankManager.depositInventoryItem(player, player.getSelectedItemSlot(), n2, 10);
         } else if (n == 2006) {
-            PartyRoomManager.b(player, player.getSelectedItemSlot(), n2, 10);
+            PartyRoomManager.stageInventoryItemForChest(player, player.getSelectedItemSlot(), n2, 10);
         } else if (n == 2274) {
-            PartyRoomManager.c(player, player.getSelectedItemSlot(), n2, 10);
+            PartyRoomManager.withdrawStagedChestItem(player, player.getSelectedItemSlot(), n2, 10);
         } else if (n == 5382 || n == 19532 || n == 19533 || n == 19534 || n == 19535 || n == 19536 || n == 19537 || n == 19538 || n == 19539 || n == 19540) {
             BankManager.withdrawItemFromTab(player, player.getSelectedItemSlot(), n2, 10, n);
         } else if (n == 3900) {
-            ShopManager.a(player, player.getSelectedItemSlot(), n2, 5);
+            ShopManager.buyItem(player, player.getSelectedItemSlot(), n2, 5);
         } else if (n == 3823) {
-            ShopManager.b(player, player.getSelectedItemSlot(), n2, 5);
+            ShopManager.sellItem(player, player.getSelectedItemSlot(), n2, 5);
         } else if (n == 1688) {
             player.getSelectedItemSlot();
             Player player2 = player;
@@ -1112,7 +1112,7 @@ lbl605:
                             Object object3 = new GraphicEffect(1167, 96);
                             Object object4 = ProjectileTiming.a;
                             object4 = new ProjectileDefinition(1166, ((ProjectileTiming)object4).copy());
-                            n4 = 20 + GameUtil.h(6);
+                            n4 = 20 + GameUtil.randomInt(6);
                             object3 = new HitDefinition(ServerSettings.DRAGONFIRE_ATTACK_STYLE, HitType.NORMAL, n4).setAccuracyMultiplier(1.0).setProjectile((ProjectileDefinition)object4).setGraphic((GraphicEffect)object3);
                             new CombatAction(player2, player2.getCombatTarget(), (HitDefinition)object3).queue();
                             int n5 = player2.getEquipmentManager().getContainer().getItemAt(5).getMetadata();
@@ -1132,12 +1132,12 @@ lbl605:
         } else if (n == 3322) {
             object = player;
             if (((Player)object).interfaceAction == "duel") {
-                player.getDuelSession().a(new ItemStack(n2, 10), player.getSelectedItemSlot());
+                player.getDuelSession().addStakeItem(new ItemStack(n2, 10), player.getSelectedItemSlot());
             } else {
-                GameplayHelper.b(player, player.getSelectedItemSlot(), n2, 10);
+                GameplayHelper.addTradeOfferItem(player, player.getSelectedItemSlot(), n2, 10);
             }
         } else if (n == 3415) {
-            GameplayHelper.c(player, player.getSelectedItemSlot(), n2, 10);
+            GameplayHelper.removeTradeOfferItem(player, player.getSelectedItemSlot(), n2, 10);
         } else if (n == 15682 || n == 15683) {
             player.getFarmingToolStore().withdrawItem(n2, 255);
         } else if (n == 15594 || n == 15595) {
@@ -1145,7 +1145,7 @@ lbl605:
         } else if (n == 1119 || n == 1120 || n == 1121 || n == 1122 || n == 1123) {
             SmithingHandler.startSmithingTask(player, n2, 10);
         } else if (n == 6669) {
-            player.getDuelSession().a(new ItemStack(n2, 10));
+            player.getDuelSession().removeStakeItem(new ItemStack(n2, 10));
         }
         switch (n) {
             case 4233: {
@@ -1175,11 +1175,11 @@ lbl605:
             return;
         }
         if (n == 2006) {
-            PartyRoomManager.b(player, player.getSelectedItemSlot(), n2, player.getInventoryManager().getContainer().getItemAmount(n2));
+            PartyRoomManager.stageInventoryItemForChest(player, player.getSelectedItemSlot(), n2, player.getInventoryManager().getContainer().getItemAmount(n2));
             return;
         }
         if (n == 2274) {
-            PartyRoomManager.c(player, player.getSelectedItemSlot(), n2, player.getPartyRoomContainer().getItemAmount(n2));
+            PartyRoomManager.withdrawStagedChestItem(player, player.getSelectedItemSlot(), n2, player.getPartyRoomContainer().getItemAmount(n2));
             return;
         }
         if (n == 5382 || n == 19532 || n == 19533 || n == 19534 || n == 19535 || n == 19536 || n == 19537 || n == 19538 || n == 19539 || n == 19540) {
@@ -1187,20 +1187,20 @@ lbl605:
             return;
         }
         if (n == 3900) {
-            ShopManager.a(player, player.getSelectedItemSlot(), n2, 10);
+            ShopManager.buyItem(player, player.getSelectedItemSlot(), n2, 10);
             return;
         }
         if (n == 3823) {
-            ShopManager.b(player, player.getSelectedItemSlot(), n2, 10);
+            ShopManager.sellItem(player, player.getSelectedItemSlot(), n2, 10);
             return;
         }
         if (n == 3322) {
             object = player;
             if (((Player)object).interfaceAction == "duel") {
-                player.getDuelSession().a(new ItemStack(n2, player.getInventoryManager().getContainer().getItemAmount(n2)), player.getSelectedItemSlot());
+                player.getDuelSession().addStakeItem(new ItemStack(n2, player.getInventoryManager().getContainer().getItemAmount(n2)), player.getSelectedItemSlot());
                 return;
             }
-            GameplayHelper.b(player, player.getSelectedItemSlot(), n2, player.getInventoryManager().getContainer().getItemAmount(n2));
+            GameplayHelper.addTradeOfferItem(player, player.getSelectedItemSlot(), n2, player.getInventoryManager().getContainer().getItemAmount(n2));
             return;
         }
         if (n == 15594 || n == 15595) {
@@ -1216,11 +1216,11 @@ lbl605:
             return;
         }
         if (n == 3415) {
-            GameplayHelper.c(player, player.getSelectedItemSlot(), n2, Integer.MAX_VALUE);
+            GameplayHelper.removeTradeOfferItem(player, player.getSelectedItemSlot(), n2, Integer.MAX_VALUE);
             return;
         }
         if (n == 6669) {
-            player.getDuelSession().a(new ItemStack(n2, Integer.MAX_VALUE));
+            player.getDuelSession().removeStakeItem(new ItemStack(n2, Integer.MAX_VALUE));
         }
     }
 
@@ -1247,16 +1247,16 @@ lbl605:
             var1_1.packetSender.sendGameMessage("You need to be in members world to access members content.");
             return;
         }
-        if (var1_1.getQuestManager().b(var3_4, var2_3)) {
+        if (var1_1.getQuestManager().handleInventoryItemFirstOption(var3_4, var2_3)) {
             return;
         }
-        if (BirdNestSearchHandler.a(var1_1, var2_3)) {
+        if (BirdNestSearchHandler.searchNest(var1_1, var2_3)) {
             return;
         }
-        if (ToyHorseyHandler.a(var1_1, var2_3)) {
+        if (ToyHorseyHandler.play(var1_1, var2_3)) {
             return;
         }
-        if (SpinningPlateHandler.a(var1_1, var2_3)) {
+        if (SpinningPlateHandler.spinPlate(var1_1, var2_3)) {
             return;
         }
         if (var2_3 == 4155) {
@@ -1279,8 +1279,8 @@ lbl605:
                 var3_5.packetSender.sendGameMessage("You need to be in members world to access members content.");
                 v0 = true;
             } else if (var3_5.getQuestState(29) != 1) {
-                var5_12 = QuestDefinition.b(29);
-                var5_12 = var5_12.c();
+                var5_12 = QuestDefinition.forId(29);
+                var5_12 = var5_12.getName();
                 var9_15 = var3_5;
                 var9_15.packetSender.sendGameMessage("You need to complete " + (String)var5_12 + " to do this.");
                 v0 = true;
@@ -1293,7 +1293,7 @@ lbl605:
             } else {
                 var3_5.getSkillManager().addExperience(15, var7_14.getExperience());
                 if (var3_5.getInventoryManager().removeItemFromSlot(new ItemStack(var5_11), var6_9)) {
-                    var3_5.getInventoryManager().a(new ItemStack(var7_14.getCleanItemId()), var6_9);
+                    var3_5.getInventoryManager().setItemInSlot(new ItemStack(var7_14.getCleanItemId()), var6_9);
                 } else if (var3_5.getInventoryManager().removeItem(new ItemStack(var5_11))) {
                     var3_5.getInventoryManager().addItem(new ItemStack(var7_14.getCleanItemId()));
                 }
@@ -1314,11 +1314,11 @@ lbl605:
             GameplayHelper.fillEssencePouch(var1_1, var2_3);
             return;
         }
-        if (var1_1.getPotionHandler().a(var2_3)) {
-            var1_1.getPotionHandler().a(var2_3, var1_1.getSelectedItemSlot());
+        if (var1_1.getPotionHandler().selectPotionForItemId(var2_3)) {
+            var1_1.getPotionHandler().drinkPotion(var2_3, var1_1.getSelectedItemSlot());
             return;
         }
-        if (var1_1.getFoodHandler().a(var2_3, var1_1.getSelectedItemSlot())) {
+        if (var1_1.getFoodHandler().eatFood(var2_3, var1_1.getSelectedItemSlot())) {
             return;
         }
         if (TreasureTrailManager.handleRewardContainerItem(var1_1, var2_3)) {
@@ -1381,14 +1381,14 @@ lbl605:
         }
         var9_15 = var1_1;
         var3_6 = var2_3;
-        if (GameplayHelper.a(var9_15, var3_6, true)) {
+        if (GameplayHelper.extinguishCaveLightSource(var9_15, var3_6, true)) {
             return;
         }
         if (new ItemStack(var2_3).getDefinition().getName().toLowerCase().contains("progress hat")) {
             var9_15 = var1_1;
-            var9_15.packetSender.sendGameMessage("You have " + var1_1.getTelekineticTheatreController().a + "/4000" + " Telekinetic, " + var1_1.getAlchemistPlaygroundController().a + "/8000" + " Alchemist,");
+            var9_15.packetSender.sendGameMessage("You have " + var1_1.getTelekineticTheatreController().pizazzPoints + "/4000" + " Telekinetic, " + var1_1.getAlchemistPlaygroundController().pizazzPoints + "/8000" + " Alchemist,");
             var9_15 = var1_1;
-            var9_15.packetSender.sendGameMessage(String.valueOf(var1_1.getEnchantmentChamberController().a) + "/16000" + " Enchantment and " + var1_1.getCreatureGraveyardController().a + "/4000" + " Graveyard Pizazz Points.");
+            var9_15.packetSender.sendGameMessage(String.valueOf(var1_1.getEnchantmentChamberController().pizazzPoints) + "/16000" + " Enchantment and " + var1_1.getCreatureGraveyardController().pizazzPoints + "/4000" + " Graveyard Pizazz Points.");
             return;
         }
         switch (var2_3) {
@@ -1396,7 +1396,7 @@ lbl605:
                 if (var1_1.getInventoryManager().removeItemFromSlot((ItemStack)var4_8, var1_1.getSelectedItemSlot())) {
                     var9_15 = var1_1;
                     var9_15.packetSender.sendGameMessage("You empty the pie dish.");
-                    var1_1.getInventoryManager().a(new ItemStack(2313), var1_1.getSelectedItemSlot());
+                    var1_1.getInventoryManager().setItemInSlot(new ItemStack(2313), var1_1.getSelectedItemSlot());
                 }
                 return;
             }
@@ -1418,7 +1418,7 @@ lbl605:
             }
             case 405: {
                 if (var1_1.getInventoryManager().removeItemFromSlot((ItemStack)var4_8, var1_1.getSelectedItemSlot())) {
-                    CasketRewardHandler.a(var1_1);
+                    CasketRewardHandler.openCasket(var1_1);
                 }
                 return;
             }
@@ -1432,7 +1432,7 @@ lbl605:
                     return;
                 }
                 if (ServerSettings.membershipDaysPerPurchase <= 0) {
-                    if (var1_1.eg()) {
+                    if (var1_1.hasMemberFlag()) {
                         var9_15 = var1_1;
                         var9_15.packetSender.sendGameMessage("You are already member!");
                         return;
@@ -1440,15 +1440,15 @@ lbl605:
                     if (var1_1.getInventoryManager().removeItemFromSlot((ItemStack)var4_8, var1_1.getSelectedItemSlot())) {
                         var9_15 = var1_1;
                         var9_15.packetSender.sendGameMessage("You are now a member!");
-                        var1_1.w(true);
+                        var1_1.setMemberFlag(true);
                         return;
                     }
                 } else if (var1_1.getInventoryManager().removeItemFromSlot((ItemStack)var4_8, var1_1.getSelectedItemSlot())) {
                     var8_17 = System.currentTimeMillis();
                     if (var1_1.isMember()) {
-                        var8_17 = var1_1.cc;
+                        var8_17 = var1_1.membershipExpiresMillis;
                     }
-                    var1_1.cc = GameplayHelper.a(var8_17, ServerSettings.membershipDaysPerPurchase);
+                    var1_1.membershipExpiresMillis = GameplayHelper.a(var8_17, ServerSettings.membershipDaysPerPurchase);
                     var9_15 = var1_1;
                     var9_15.packetSender.sendGameMessage("You claimed " + ServerSettings.membershipDaysPerPurchase + " days of membership.");
                 }
@@ -1458,7 +1458,7 @@ lbl605:
                 if (var1_1.getInventoryManager().removeItemFromSlot((ItemStack)var4_8, var1_1.getSelectedItemSlot())) {
                     var9_15 = var1_1;
                     var9_15.packetSender.sendGameMessage("You pull the legs off the toad. Poor toad. At least they'll grow back.");
-                    var1_1.getInventoryManager().a(new ItemStack(2152), var1_1.getSelectedItemSlot());
+                    var1_1.getInventoryManager().setItemInSlot(new ItemStack(2152), var1_1.getSelectedItemSlot());
                 }
                 return;
             }
@@ -1466,7 +1466,7 @@ lbl605:
                 if (var1_1.getInventoryManager().removeItemFromSlot((ItemStack)var4_8, var1_1.getSelectedItemSlot())) {
                     var9_15 = var1_1;
                     var9_15.packetSender.sendGameMessage("You open the oyster.");
-                    var1_1.getInventoryManager().a(new ItemStack(411), var1_1.getSelectedItemSlot());
+                    var1_1.getInventoryManager().setItemInSlot(new ItemStack(411), var1_1.getSelectedItemSlot());
                 }
                 return;
             }
@@ -1484,15 +1484,15 @@ lbl605:
                     var3_7.getInventoryManager().removeItem(new ItemStack(var5_13.getClueItemId(), 1));
                     switch (var5_13.getLevel()) {
                         case 1: {
-                            var3_7.getInventoryManager().b(new ItemStack(2724, 1));
+                            var3_7.getInventoryManager().addOrDropItem(new ItemStack(2724, 1));
                             break;
                         }
                         case 2: {
-                            var3_7.getInventoryManager().b(new ItemStack(2726, 1));
+                            var3_7.getInventoryManager().addOrDropItem(new ItemStack(2726, 1));
                             break;
                         }
                         case 3: {
-                            var3_7.getInventoryManager().b(new ItemStack(2728, 1));
+                            var3_7.getInventoryManager().addOrDropItem(new ItemStack(2728, 1));
                         }
                     }
                     var3_7.getDialogueManager().a("You've found a casket!", 2724);
@@ -1509,21 +1509,21 @@ lbl605:
                     var3_7.getInventoryManager().removeItem(new ItemStack(var5_13.getClueItemId(), 1));
                     switch (var5_13.getLevel()) {
                         case 1: {
-                            var3_7.getInventoryManager().b(new ItemStack(2724, 1));
+                            var3_7.getInventoryManager().addOrDropItem(new ItemStack(2724, 1));
                             break;
                         }
                         case 2: {
-                            var3_7.getInventoryManager().b(new ItemStack(2726, 1));
+                            var3_7.getInventoryManager().addOrDropItem(new ItemStack(2726, 1));
                             break;
                         }
                         case 3: {
-                            var3_7.getInventoryManager().b(new ItemStack(2728, 1));
+                            var3_7.getInventoryManager().addOrDropItem(new ItemStack(2728, 1));
                         }
                     }
                     var3_7.getDialogueManager().a("You've found a casket!", 2724);
                     v4 = true;
                 }
-                if (!(v4 || CoordinateClueHandler.digAtCoordinateClue(var1_1) || BarrowsManager.a(var1_1))) {
+                if (!(v4 || CoordinateClueHandler.digAtCoordinateClue(var1_1) || BarrowsManager.digIntoCrypt(var1_1))) {
                     v5 = true;
                 } else lbl-1000:
                 // 2 sources
@@ -1545,7 +1545,7 @@ lbl605:
                 return;
             }
             case 299: {
-                MithrilSeedFlowerHandler.a(var1_1);
+                MithrilSeedFlowerHandler.plantMithrilSeedFlower(var1_1);
                 return;
             }
             case 4079: {
@@ -1577,18 +1577,18 @@ lbl605:
             player.packetSender.sendGameMessage("You need to be in members world to access members content.");
             return;
         }
-        if (ServerSettings.content2007Enabled && GodWarsDungeonManager.b(player, n)) {
+        if (ServerSettings.content2007Enabled && GodWarsDungeonManager.dismantleGodsword(player, n)) {
             return;
         }
-        if (GodBookHandler.a(player, n)) {
+        if (GodBookHandler.showMissingPages(player, n)) {
             return;
         }
-        if (GodBookHandler.c(player, n)) {
+        if (GodBookHandler.openRecitationDialogue(player, n)) {
             return;
         }
         Player player2 = player;
         int n3 = n;
-        if (GameplayHelper.a(player2, n3, true)) {
+        if (GameplayHelper.extinguishCaveLightSource(player2, n3, true)) {
             return;
         }
         int n4 = n;
@@ -1599,8 +1599,8 @@ lbl605:
                 player2 = player3;
                 player2.packetSender.sendGameMessage("This skill is currently disabled.");
             } else if (player3.getQuestState(14) != 1) {
-                Object object2 = QuestDefinition.b(14);
-                object2 = ((QuestDefinition)object2).c();
+                Object object2 = QuestDefinition.forId(14);
+                object2 = ((QuestDefinition)object2).getName();
                 player2 = player3;
                 player2.packetSender.sendGameMessage("You need to complete " + (String)object2 + " to do this.");
             } else if (player3.am(essencePouchDefinition.getPouchIndex()) > 0) {
@@ -1690,7 +1690,7 @@ lbl605:
         switch (((ItemStack)object).getId()) {
             case 11283: {
                 if (player.getInventoryManager().removeItemFromSlot((ItemStack)object, player.getSelectedItemSlot())) {
-                    player.getInventoryManager().a(new ItemStack(11284), player.getSelectedItemSlot());
+                    player.getInventoryManager().setItemInSlot(new ItemStack(11284), player.getSelectedItemSlot());
                 }
                 player.getUpdateState().setAnimation(6700);
                 player.getUpdateState().setGraphic(1168, 10);
@@ -1765,8 +1765,8 @@ lbl605:
             if (!ServerSettings.runecraftingEnabled) {
                 player2.packetSender.sendGameMessage("This skill is currently disabled.");
             } else if (player2.getQuestState(14) != 1) {
-                Object object2 = QuestDefinition.b(14);
-                object2 = ((QuestDefinition)object2).c();
+                Object object2 = QuestDefinition.forId(14);
+                object2 = ((QuestDefinition)object2).getName();
                 player2.packetSender.sendGameMessage("You need to complete " + (String)object2 + " to do this.");
             } else if (player2.am(essencePouchDefinition.getPouchIndex()) > 0) {
                 if (player2.getInventoryManager().getContainer().getFreeSlots() >= player2.am(essencePouchDefinition.getPouchIndex())) {
@@ -1789,7 +1789,7 @@ lbl605:
         if (AllotmentPatchManager.a(player, n)) {
             return;
         }
-        if (((ItemStack)object).getDefinition().getEquipmentSlot() == -1 && GameplayHelper.a(player2 = player, n2 = n, true)) {
+        if (((ItemStack)object).getDefinition().getEquipmentSlot() == -1 && GameplayHelper.extinguishCaveLightSource(player2 = player, n2 = n, true)) {
             return;
         }
         switch (((ItemStack)object).getId()) {
@@ -1815,8 +1815,8 @@ lbl605:
         if (new ItemStack(n).getDefinition().getEquipmentSlot() == -1) {
             return;
         }
-        if (player.getDuelSession().i() != null && !player.isInDuelArena()) {
-            player.getDuelController().a(true);
+        if (player.getDuelSession().getOpponent() != null && !player.isInDuelArena()) {
+            player.getDuelController().resetDuel(true);
             return;
         }
         player.getEquipmentManager().equipFromInventorySlot(player.getSelectedItemSlot());
@@ -1850,7 +1850,7 @@ lbl605:
         int n3 = ((PacketReader)object).readSignedShort(ByteOrder.LITTLE);
         int n4 = ((PacketReader)object).readSignedShort(ByteTransform.ADD);
         SpellDefinition spellDefinition = (SpellDefinition)((Object)player.getSpellbook().getSpellByButtonId().get(n4));
-        if (player.getQuestManager().c(n2)) {
+        if (player.getQuestManager().handleGroundItemInteraction(n2)) {
             return;
         }
         if (spellDefinition != null) {

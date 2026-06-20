@@ -15,32 +15,32 @@ import java.util.ArrayList;
 
 final class PartyRoomBalloonSpawnTask
 extends TickTask {
-    private final /* synthetic */ ArrayList a;
-    private final /* synthetic */ ArrayList b;
+    private final /* synthetic */ ArrayList balloonPositions;
+    private final /* synthetic */ ArrayList rewardItems;
 
     PartyRoomBalloonSpawnTask(int n, ArrayList arrayList, ArrayList arrayList2) {
-        this.a = arrayList;
-        this.b = arrayList2;
+        this.balloonPositions = arrayList;
+        this.rewardItems = arrayList2;
         super(n);
     }
 
     @Override
     public final void execute() {
         int n = 0;
-        for (Position position : this.a) {
+        for (Position position : this.balloonPositions) {
             ItemStack itemStack;
-            PartyRoomManager.d.add(new DynamicObject(115 + GameUtil.h(7), position.getX(), position.getY(), 0, 0 + GameUtil.h(3), 10, ServerSettings.placeholderObjectId, 1000, false));
-            if (n < this.b.size() && (itemStack = (ItemStack)this.b.get(n)) != null) {
+            PartyRoomManager.activeBalloonObjects.add(new DynamicObject(115 + GameUtil.randomInt(7), position.getX(), position.getY(), 0, 0 + GameUtil.randomInt(3), 10, ServerSettings.placeholderObjectId, 1000, false));
+            if (n < this.rewardItems.size() && (itemStack = (ItemStack)this.rewardItems.get(n)) != null) {
                 new PartyRoomBalloonReward(itemStack, position, 0);
             }
             ++n;
         }
         this.stop();
-        PartyRoomManager.c.clear();
-        PartyRoomManager.a = false;
-        PartyRoomManager.f = 0;
-        PartyRoomManager.d();
-        PartyRoomManager.b();
+        PartyRoomManager.partyChestContainer.clear();
+        PartyRoomManager.balloonDropPending = false;
+        PartyRoomManager.partyChestValue = 0;
+        PartyRoomManager.savePartyChest();
+        PartyRoomManager.refreshOpenPartyChestInterfaces();
     }
 }
 

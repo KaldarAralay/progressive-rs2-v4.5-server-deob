@@ -168,7 +168,7 @@ public abstract class Entity {
     public final int getCombatBonus(int n) {
         if (this.isPlayer()) {
             Player player = (Player)this;
-            return (Integer)player.bU().get(n);
+            return (Integer)player.getCombatBonuses().get(n);
         }
         Npc npc = (Npc)this;
         return (Integer)npc.getCombatDefinition().getCombatBonuses().get(n);
@@ -284,23 +284,23 @@ public abstract class Entity {
             Entity entity = this;
             Object object = entity;
             object = entity;
-            int n = GameUtil.a(entity.position.getX(), ((Entity)object).position.getY());
-            int n2 = MultiwayAreaDefinition.a.length;
+            int n = GameUtil.getRegionId(entity.position.getX(), ((Entity)object).position.getY());
+            int n2 = MultiwayAreaDefinition.definitions.length;
             int n3 = 0;
             while (n3 < n2) {
-                object = MultiwayAreaDefinition.a(n3);
+                object = MultiwayAreaDefinition.forDefinitionId(n3);
                 if (object != null) {
-                    if (((MultiwayAreaDefinition)object).c() == 0) {
-                        RectangularArea rectangularArea = ((MultiwayAreaDefinition)object).b();
+                    if (((MultiwayAreaDefinition)object).getRegionCount() == 0) {
+                        RectangularArea rectangularArea = ((MultiwayAreaDefinition)object).getAreaBounds();
                         object = entity;
                         if (rectangularArea.contains(((Entity)object).position)) {
                             bl = true;
                             break block7;
                         }
                     } else {
-                        int[] nArray = ((MultiwayAreaDefinition)object).d();
+                        int[] nArray = ((MultiwayAreaDefinition)object).getRegionIds();
                         int n4 = 0;
-                        while (n4 < ((MultiwayAreaDefinition)object).c()) {
+                        while (n4 < ((MultiwayAreaDefinition)object).getRegionCount()) {
                             if (n == nArray[n4]) {
                                 bl = true;
                                 break block7;
@@ -549,7 +549,7 @@ public abstract class Entity {
             object3 = entity;
             Object object4 = this;
             object4 = new CombatAttack[]{BaseCombatAttack.a((Entity)object4, (Entity)object3, CombatType.MAGIC, AttackXpMode.KBD_SPECIAL, 50, 4, 81, new GraphicEffect(-1, 0), new GraphicEffect(-1, 0), 394, ProjectileTiming.a, new PoisonEffect(8.0)), BaseCombatAttack.a((Entity)object4, (Entity)object3, CombatType.MAGIC, AttackXpMode.KBD_SPECIAL, 50, 4, 81, new GraphicEffect(-1, 0), new GraphicEffect(-1, 0), 395, ProjectileTiming.a, new MovementLockEffect(10)), BaseCombatAttack.a((Entity)object4, (Entity)object3, CombatType.MAGIC, AttackXpMode.KBD_SPECIAL, 50, 4, 81, new GraphicEffect(-1, 0), new GraphicEffect(-1, 0), 396, ProjectileTiming.a, new StatDrainEffect(-1, 2))};
-            int n7 = GameUtil.h(3);
+            int n7 = GameUtil.randomInt(3);
             object4 = object4[n7];
             object4.prepare();
             combatAttackArray[n3] = object4;
@@ -564,11 +564,11 @@ public abstract class Entity {
                 Npc npc = (Npc)this;
                 object2 = (Player)entity;
                 if (npc.getNpcId() == 1264) {
-                    if (((Player)object2).cfr_renamed_0()[14]) {
+                    if (((Player)object2).getActivePrayers()[14]) {
                         if (combatAttack.getCombatType() == CombatType.MELEE) {
                             combatAttackState = CombatAttackState.a;
                         }
-                    } else if (((Player)object2).cfr_renamed_0()[12] && combatAttack.getCombatType() != CombatType.MELEE) {
+                    } else if (((Player)object2).getActivePrayers()[12] && combatAttack.getCombatType() != CombatType.MELEE) {
                         combatAttackState = CombatAttackState.a;
                     }
                 }
@@ -578,7 +578,7 @@ public abstract class Entity {
                     Player player = (Player)this;
                     if (player.botEnabled && (combatAttack.getCombatType() == CombatType.MAGIC || combatAttack.getCombatType() == CombatType.RANGED)) {
                         if (player.isInWilderness()) {
-                            BotCombatEscapeHandler.a(player);
+                            BotCombatEscapeHandler.tryStartBotCombatEscape(player);
                         } else if (player.currentBotTask != null) {
                             player.botCombatState = "escape";
                         }

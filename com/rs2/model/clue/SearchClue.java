@@ -123,13 +123,13 @@ public enum SearchClue {
      * WARNING - void declaration
      */
     private SearchClue(Position position, int n2, int n3, int n4) {
-        void cfr_renamed_3;
+        void cfr_renamed_2;
         this.clueTextLines = position;
         this.clueItemId = n2;
         this.position = (Position)n3;
         this.replacementObjectId = n4;
         this.animationId = 832;
-        this.level = cfr_renamed_3;
+        this.level = cfr_renamed_2;
     }
 
     public final String[] getClueTextLines() {

@@ -39,7 +39,7 @@ extends InventoryItemRequirement {
         }
         ArrayList<ItemStack> arrayList = (Player)entity;
         ItemStack[] itemStackArray = (ItemStack[])this.spell.getRuneCosts().clone();
-        if ((this.spell == SpellDefinition.LOW_LEVEL_ALCHEMY || this.spell == SpellDefinition.HIGH_LEVEL_ALCHEMY) && ((Player)((Object)arrayList)).getAlchemistPlaygroundController().b() && AlchemistPlaygroundController.c == ((Player)((Object)arrayList)).N) {
+        if ((this.spell == SpellDefinition.LOW_LEVEL_ALCHEMY || this.spell == SpellDefinition.HIGH_LEVEL_ALCHEMY) && ((Player)((Object)arrayList)).getAlchemistPlaygroundController().isInsidePlayground() && AlchemistPlaygroundController.currentFreeAlchemyItemId == ((Player)((Object)arrayList)).N) {
             arrayList = new ArrayList<ItemStack>();
             arrayList.add(new ItemStack(561, 0));
             this.runeCosts = arrayList;

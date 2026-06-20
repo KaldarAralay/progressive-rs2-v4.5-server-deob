@@ -30,16 +30,16 @@ public final class BotTradeAdvertManager {
         int n2 = 0;
         while (n2 < n) {
             GameplayHelper gameplayHelper = gameplayHelperArray[n2];
-            ItemDefinition itemDefinition = ItemDefinition.forId(gameplayHelper.c());
-            if (!(!ItemDefinition.isDefined(gameplayHelper.c()) || ServerSettings.freeToPlayWorld && itemDefinition.isMembersOnly() && gameplayHelper.c() != 0 || !ServerSettings.content2007Enabled && gameplayHelper.c() >= 7955 || !ServerSettings.otherBotsEnabled && (gameplayHelper.c() == 381 || gameplayHelper.c() == 0))) {
+            ItemDefinition itemDefinition = ItemDefinition.forId(gameplayHelper.getTradeAdvertItemId());
+            if (!(!ItemDefinition.isDefined(gameplayHelper.getTradeAdvertItemId()) || ServerSettings.freeToPlayWorld && itemDefinition.isMembersOnly() && gameplayHelper.getTradeAdvertItemId() != 0 || !ServerSettings.content2007Enabled && gameplayHelper.getTradeAdvertItemId() >= 7955 || !ServerSettings.otherBotsEnabled && (gameplayHelper.getTradeAdvertItemId() == 381 || gameplayHelper.getTradeAdvertItemId() == 0))) {
                 tradeAdvertOfferPool.add(gameplayHelper);
-                if (gameplayHelper.c() == 115 || gameplayHelper.c() == 127 || gameplayHelper.c() == 139 || gameplayHelper.c() == 175 || gameplayHelper.c() == 333 || gameplayHelper.c() == 379 || gameplayHelper.c() == 385 || gameplayHelper.c() == 560 || gameplayHelper.c() == 562 || gameplayHelper.c() == 565 || gameplayHelper.c() == 811 || gameplayHelper.c() == 861 || gameplayHelper.c() == 868 || gameplayHelper.c() == 886 || gameplayHelper.c() == 888 || gameplayHelper.c() == 890 || gameplayHelper.c() == 892 || gameplayHelper.c() == 1163 || gameplayHelper.c() == 1201 || gameplayHelper.c() == 1215 || gameplayHelper.c() == 1231 || gameplayHelper.c() == 1303 || gameplayHelper.c() == 1319 || gameplayHelper.c() == 1333 || gameplayHelper.c() == 1373 || gameplayHelper.c() == 2487 || gameplayHelper.c() == 2489 || gameplayHelper.c() == 2491 || gameplayHelper.c() == 2493 || gameplayHelper.c() == 2495 || gameplayHelper.c() == 2497 || gameplayHelper.c() == 2499 || gameplayHelper.c() == 2501 || gameplayHelper.c() == 2503 || gameplayHelper.c() == 4131 || gameplayHelper.c() == 4151 || gameplayHelper.c() == 4153 || gameplayHelper.c() == 4740 || gameplayHelper.c() == 5680 || gameplayHelper.c() == 5698 || gameplayHelper.c() == 6524 || gameplayHelper.c() == 6528 || gameplayHelper.c() == 6568 || gameplayHelper.c() == 6585) {
+                if (gameplayHelper.getTradeAdvertItemId() == 115 || gameplayHelper.getTradeAdvertItemId() == 127 || gameplayHelper.getTradeAdvertItemId() == 139 || gameplayHelper.getTradeAdvertItemId() == 175 || gameplayHelper.getTradeAdvertItemId() == 333 || gameplayHelper.getTradeAdvertItemId() == 379 || gameplayHelper.getTradeAdvertItemId() == 385 || gameplayHelper.getTradeAdvertItemId() == 560 || gameplayHelper.getTradeAdvertItemId() == 562 || gameplayHelper.getTradeAdvertItemId() == 565 || gameplayHelper.getTradeAdvertItemId() == 811 || gameplayHelper.getTradeAdvertItemId() == 861 || gameplayHelper.getTradeAdvertItemId() == 868 || gameplayHelper.getTradeAdvertItemId() == 886 || gameplayHelper.getTradeAdvertItemId() == 888 || gameplayHelper.getTradeAdvertItemId() == 890 || gameplayHelper.getTradeAdvertItemId() == 892 || gameplayHelper.getTradeAdvertItemId() == 1163 || gameplayHelper.getTradeAdvertItemId() == 1201 || gameplayHelper.getTradeAdvertItemId() == 1215 || gameplayHelper.getTradeAdvertItemId() == 1231 || gameplayHelper.getTradeAdvertItemId() == 1303 || gameplayHelper.getTradeAdvertItemId() == 1319 || gameplayHelper.getTradeAdvertItemId() == 1333 || gameplayHelper.getTradeAdvertItemId() == 1373 || gameplayHelper.getTradeAdvertItemId() == 2487 || gameplayHelper.getTradeAdvertItemId() == 2489 || gameplayHelper.getTradeAdvertItemId() == 2491 || gameplayHelper.getTradeAdvertItemId() == 2493 || gameplayHelper.getTradeAdvertItemId() == 2495 || gameplayHelper.getTradeAdvertItemId() == 2497 || gameplayHelper.getTradeAdvertItemId() == 2499 || gameplayHelper.getTradeAdvertItemId() == 2501 || gameplayHelper.getTradeAdvertItemId() == 2503 || gameplayHelper.getTradeAdvertItemId() == 4131 || gameplayHelper.getTradeAdvertItemId() == 4151 || gameplayHelper.getTradeAdvertItemId() == 4153 || gameplayHelper.getTradeAdvertItemId() == 4740 || gameplayHelper.getTradeAdvertItemId() == 5680 || gameplayHelper.getTradeAdvertItemId() == 5698 || gameplayHelper.getTradeAdvertItemId() == 6524 || gameplayHelper.getTradeAdvertItemId() == 6528 || gameplayHelper.getTradeAdvertItemId() == 6568 || gameplayHelper.getTradeAdvertItemId() == 6585) {
                     combatTradeAdvertOfferPool.add(gameplayHelper);
                 }
-                if (gameplayHelper.c() == 127 || gameplayHelper.c() == 139 || gameplayHelper.c() == 175 || gameplayHelper.c() == 223 || gameplayHelper.c() == 225 || gameplayHelper.c() == 231 || gameplayHelper.c() == 237 || gameplayHelper.c() == 249 || gameplayHelper.c() == 251 || gameplayHelper.c() == 253 || gameplayHelper.c() == 255 || gameplayHelper.c() == 257 || gameplayHelper.c() == 314 || gameplayHelper.c() == 333 || gameplayHelper.c() == 335 || gameplayHelper.c() == 377 || gameplayHelper.c() == 379 || gameplayHelper.c() == 383 || gameplayHelper.c() == 385 || gameplayHelper.c() == 453 || gameplayHelper.c() == 532 || gameplayHelper.c() == 536 || gameplayHelper.c() == 556 || gameplayHelper.c() == 561 || gameplayHelper.c() == 563 || gameplayHelper.c() == 564 || gameplayHelper.c() == 1355 || gameplayHelper.c() == 1357 || gameplayHelper.c() == 1359 || gameplayHelper.c() == 1391 || gameplayHelper.c() == 1436 || gameplayHelper.c() == 1438 || gameplayHelper.c() == 1440 || gameplayHelper.c() == 1442 || gameplayHelper.c() == 1444 || gameplayHelper.c() == 1446 || gameplayHelper.c() == 1448 || gameplayHelper.c() == 1452 || gameplayHelper.c() == 1454 || gameplayHelper.c() == 1462 || gameplayHelper.c() == 1470 || gameplayHelper.c() == 1472 || gameplayHelper.c() == 1474 || gameplayHelper.c() == 1476 || gameplayHelper.c() == 1511 || gameplayHelper.c() == 1513 || gameplayHelper.c() == 1515 || gameplayHelper.c() == 1517 || gameplayHelper.c() == 1519 || gameplayHelper.c() == 1521 || gameplayHelper.c() == 1601 || gameplayHelper.c() == 1603 || gameplayHelper.c() == 1605 || gameplayHelper.c() == 1607 || gameplayHelper.c() == 1615 || gameplayHelper.c() == 1617 || gameplayHelper.c() == 1619 || gameplayHelper.c() == 1621 || gameplayHelper.c() == 1623 || gameplayHelper.c() == 1631 || gameplayHelper.c() == 1712 || gameplayHelper.c() == 1725 || gameplayHelper.c() == 1727 || gameplayHelper.c() == 1729 || gameplayHelper.c() == 1731 || gameplayHelper.c() == 1739 || gameplayHelper.c() == 1747 || gameplayHelper.c() == 1749 || gameplayHelper.c() == 1751 || gameplayHelper.c() == 1753 || gameplayHelper.c() == 1777 || gameplayHelper.c() == 1779 || gameplayHelper.c() == 7936) {
+                if (gameplayHelper.getTradeAdvertItemId() == 127 || gameplayHelper.getTradeAdvertItemId() == 139 || gameplayHelper.getTradeAdvertItemId() == 175 || gameplayHelper.getTradeAdvertItemId() == 223 || gameplayHelper.getTradeAdvertItemId() == 225 || gameplayHelper.getTradeAdvertItemId() == 231 || gameplayHelper.getTradeAdvertItemId() == 237 || gameplayHelper.getTradeAdvertItemId() == 249 || gameplayHelper.getTradeAdvertItemId() == 251 || gameplayHelper.getTradeAdvertItemId() == 253 || gameplayHelper.getTradeAdvertItemId() == 255 || gameplayHelper.getTradeAdvertItemId() == 257 || gameplayHelper.getTradeAdvertItemId() == 314 || gameplayHelper.getTradeAdvertItemId() == 333 || gameplayHelper.getTradeAdvertItemId() == 335 || gameplayHelper.getTradeAdvertItemId() == 377 || gameplayHelper.getTradeAdvertItemId() == 379 || gameplayHelper.getTradeAdvertItemId() == 383 || gameplayHelper.getTradeAdvertItemId() == 385 || gameplayHelper.getTradeAdvertItemId() == 453 || gameplayHelper.getTradeAdvertItemId() == 532 || gameplayHelper.getTradeAdvertItemId() == 536 || gameplayHelper.getTradeAdvertItemId() == 556 || gameplayHelper.getTradeAdvertItemId() == 561 || gameplayHelper.getTradeAdvertItemId() == 563 || gameplayHelper.getTradeAdvertItemId() == 564 || gameplayHelper.getTradeAdvertItemId() == 1355 || gameplayHelper.getTradeAdvertItemId() == 1357 || gameplayHelper.getTradeAdvertItemId() == 1359 || gameplayHelper.getTradeAdvertItemId() == 1391 || gameplayHelper.getTradeAdvertItemId() == 1436 || gameplayHelper.getTradeAdvertItemId() == 1438 || gameplayHelper.getTradeAdvertItemId() == 1440 || gameplayHelper.getTradeAdvertItemId() == 1442 || gameplayHelper.getTradeAdvertItemId() == 1444 || gameplayHelper.getTradeAdvertItemId() == 1446 || gameplayHelper.getTradeAdvertItemId() == 1448 || gameplayHelper.getTradeAdvertItemId() == 1452 || gameplayHelper.getTradeAdvertItemId() == 1454 || gameplayHelper.getTradeAdvertItemId() == 1462 || gameplayHelper.getTradeAdvertItemId() == 1470 || gameplayHelper.getTradeAdvertItemId() == 1472 || gameplayHelper.getTradeAdvertItemId() == 1474 || gameplayHelper.getTradeAdvertItemId() == 1476 || gameplayHelper.getTradeAdvertItemId() == 1511 || gameplayHelper.getTradeAdvertItemId() == 1513 || gameplayHelper.getTradeAdvertItemId() == 1515 || gameplayHelper.getTradeAdvertItemId() == 1517 || gameplayHelper.getTradeAdvertItemId() == 1519 || gameplayHelper.getTradeAdvertItemId() == 1521 || gameplayHelper.getTradeAdvertItemId() == 1601 || gameplayHelper.getTradeAdvertItemId() == 1603 || gameplayHelper.getTradeAdvertItemId() == 1605 || gameplayHelper.getTradeAdvertItemId() == 1607 || gameplayHelper.getTradeAdvertItemId() == 1615 || gameplayHelper.getTradeAdvertItemId() == 1617 || gameplayHelper.getTradeAdvertItemId() == 1619 || gameplayHelper.getTradeAdvertItemId() == 1621 || gameplayHelper.getTradeAdvertItemId() == 1623 || gameplayHelper.getTradeAdvertItemId() == 1631 || gameplayHelper.getTradeAdvertItemId() == 1712 || gameplayHelper.getTradeAdvertItemId() == 1725 || gameplayHelper.getTradeAdvertItemId() == 1727 || gameplayHelper.getTradeAdvertItemId() == 1729 || gameplayHelper.getTradeAdvertItemId() == 1731 || gameplayHelper.getTradeAdvertItemId() == 1739 || gameplayHelper.getTradeAdvertItemId() == 1747 || gameplayHelper.getTradeAdvertItemId() == 1749 || gameplayHelper.getTradeAdvertItemId() == 1751 || gameplayHelper.getTradeAdvertItemId() == 1753 || gameplayHelper.getTradeAdvertItemId() == 1777 || gameplayHelper.getTradeAdvertItemId() == 1779 || gameplayHelper.getTradeAdvertItemId() == 7936) {
                     commonTradeAdvertOfferPool.add(gameplayHelper);
                 }
-                if (gameplayHelper.c() == 0 || gameplayHelper.c() == 381 || gameplayHelper.c() == 1319) {
+                if (gameplayHelper.getTradeAdvertItemId() == 0 || gameplayHelper.getTradeAdvertItemId() == 381 || gameplayHelper.getTradeAdvertItemId() == 1319) {
                     scamTradeAdvertOfferPool.add(gameplayHelper);
                 }
             }
@@ -86,27 +86,27 @@ public final class BotTradeAdvertManager {
         int n;
         double d;
         int n2;
-        player.tradeAdvertMode = GameUtil.h(2);
+        player.tradeAdvertMode = GameUtil.randomInt(2);
         player.tradeAdvertVariableQuantity = false;
         player.tradeAdvertScam = false;
-        if (ServerSettings.otherBotsEnabled && GameUtil.h(scammerChanceDivisor) == 0) {
+        if (ServerSettings.otherBotsEnabled && GameUtil.randomInt(scammerChanceDivisor) == 0) {
             player.tradeAdvertScam = true;
         }
-        Object object = player.currentBotTask.usesCombatTradeAdvertItems ? combatTradeAdvertOfferPool : ((n2 = GameUtil.h(100)) >= commonItemChancePercent ? tradeAdvertOfferPool : commonTradeAdvertOfferPool);
-        if (player.tradeAdvertMode == 0 && player.tradeAdvertScam && GameUtil.h(2) == 0) {
+        Object object = player.currentBotTask.usesCombatTradeAdvertItems ? combatTradeAdvertOfferPool : ((n2 = GameUtil.randomInt(100)) >= commonItemChancePercent ? tradeAdvertOfferPool : commonTradeAdvertOfferPool);
+        if (player.tradeAdvertMode == 0 && player.tradeAdvertScam && GameUtil.randomInt(2) == 0) {
             object = scamTradeAdvertOfferPool;
         }
-        n2 = GameUtil.h(((ArrayList)object).size());
+        n2 = GameUtil.randomInt(((ArrayList)object).size());
         object = (GameplayHelper)((ArrayList)object).get(n2);
         player.tradeAdvertOfferPoolIndex = n2 = tradeAdvertOfferPool.indexOf(object);
-        player.botAdvertItemId = ((GameplayHelper)tradeAdvertOfferPool.get(player.tradeAdvertOfferPoolIndex)).c();
+        player.botAdvertItemId = ((GameplayHelper)tradeAdvertOfferPool.get(player.tradeAdvertOfferPoolIndex)).getTradeAdvertItemId();
         object = ItemDefinition.forId(player.botAdvertItemId);
-        double d2 = GrandExchangeManager.a(player.botAdvertItemId);
+        double d2 = GrandExchangeManager.getGuidePrice(player.botAdvertItemId);
         if (d < 1.0) {
             d2 = 1.0;
         }
         if (player.botAdvertItemId == 381) {
-            n2 = GameUtil.h(4);
+            n2 = GameUtil.randomInt(4);
             if (n2 == 0) {
                 d2 = 1000.0;
             } else if (n2 == 1) {
@@ -117,12 +117,12 @@ public final class BotTradeAdvertManager {
                 d2 = 20000.0;
             }
         }
-        n2 = GameUtil.i(11);
+        n2 = GameUtil.rollPriceFluctuationPercent(11);
         double d3 = d2 / 100.0 * (double)n2;
         double d4 = player.tradeAdvertMode == 0 ? d2 + d3 : d2 - d3;
         n2 = (int)d4;
         if (player.botAdvertItemId == 0) {
-            n = GameUtil.h(4);
+            n = GameUtil.randomInt(4);
             if (n == 0) {
                 n2 = 1000;
             } else if (n == 1) {
@@ -132,12 +132,12 @@ public final class BotTradeAdvertManager {
             } else if (n >= 3) {
                 n2 = 20000;
             }
-            if (GameUtil.h(2) == 0) {
+            if (GameUtil.randomInt(2) == 0) {
                 n2 = 1;
             }
         }
-        player.tradeAdvertQuantityOptionIndex = n = GameUtil.h(((GameplayHelper)tradeAdvertOfferPool.get(player.tradeAdvertOfferPoolIndex)).d().length);
-        n = ((GameplayHelper)tradeAdvertOfferPool.get(player.tradeAdvertOfferPoolIndex)).d()[player.tradeAdvertQuantityOptionIndex];
+        player.tradeAdvertQuantityOptionIndex = n = GameUtil.randomInt(((GameplayHelper)tradeAdvertOfferPool.get(player.tradeAdvertOfferPoolIndex)).getTradeAdvertQuantityOptions().length);
+        n = ((GameplayHelper)tradeAdvertOfferPool.get(player.tradeAdvertOfferPoolIndex)).getTradeAdvertQuantityOptions()[player.tradeAdvertQuantityOptionIndex];
         int n3 = n * n2;
         if (player.botAdvertItemId != 0) {
             int n4 = n;
@@ -185,19 +185,19 @@ public final class BotTradeAdvertManager {
         player.botAdvertItemId = n3;
         player.tradeAdvertQuantityRemaining = n;
         if (n2 <= 0) {
-            n2 = 1 + GameUtil.h(5);
+            n2 = 1 + GameUtil.randomInt(5);
         }
         player.tradeAdvertUnitPrice = n2;
         if (player.tradeAdvertMode == 1 && n >= 1000) {
-            player.tradeAdvertVariableQuantity = GameUtil.h(5) == 0;
+            player.tradeAdvertVariableQuantity = GameUtil.randomInt(5) == 0;
         }
         BotTradeAdvertManager.updateTradeAdvertMessage(player);
-        player.botPublicChatColor = GameUtil.h(12);
+        player.botPublicChatColor = GameUtil.randomInt(12);
         int[] nArray = new int[3];
         nArray[1] = 1;
         nArray[2] = 3;
         object = nArray;
-        n2 = GameUtil.h(3);
+        n2 = GameUtil.randomInt(3);
         player.botPublicChatEffect = (int)object[n2];
     }
 
@@ -207,10 +207,10 @@ public final class BotTradeAdvertManager {
             object = ItemDefinition.forId(((ItemDefinition)object).getUnnotedId());
         }
         int n = player.tradeAdvertQuantityRemaining;
-        String string = GameUtil.d(player.tradeAdvertQuantityRemaining);
+        String string = GameUtil.formatCompactAmount(player.tradeAdvertQuantityRemaining);
         int n2 = player.tradeAdvertUnitPrice * player.tradeAdvertQuantityRemaining;
-        String string2 = GameUtil.e(n2);
-        String string3 = GameUtil.e(player.tradeAdvertUnitPrice);
+        String string2 = GameUtil.formatCompactAmountDetailed(n2);
+        String string3 = GameUtil.formatCompactAmountDetailed(player.tradeAdvertUnitPrice);
         String string4 = n <= 10 && n > 1 || player.tradeAdvertVariableQuantity ? String.valueOf(string3) + " ea" : (n2 < 1000 ? String.valueOf(string2) + "gp" : string2);
         string2 = player.tradeAdvertMode == 0 ? "Selling" : "Buying";
         object = ((ItemDefinition)object).getDisplayName();
@@ -232,43 +232,43 @@ public final class BotTradeAdvertManager {
 
     public static void prepareTradeAdvertCombatLoadout(Player player) {
         GameplayHelper.b(player);
-        int n = 1 + GameUtil.h(99);
+        int n = 1 + GameUtil.randomInt(99);
         int n2 = n / 5 << 1;
         if (n2 == 0) {
             n2 = 2;
         }
-        BotCombatHelper.setBotSkillLevel(player, 0, n - n / 5 + GameUtil.h(n2));
+        BotCombatHelper.setBotSkillLevel(player, 0, n - n / 5 + GameUtil.randomInt(n2));
         n2 = n / 5 << 1;
         if (n2 == 0) {
             n2 = 2;
         }
-        BotCombatHelper.setBotSkillLevel(player, 2, n - n / 5 + GameUtil.h(n2));
+        BotCombatHelper.setBotSkillLevel(player, 2, n - n / 5 + GameUtil.randomInt(n2));
         n2 = n / 5 << 1;
         if (n2 == 0) {
             n2 = 2;
         }
-        BotCombatHelper.setBotSkillLevel(player, 1, n - n / 5 + GameUtil.h(n2));
+        BotCombatHelper.setBotSkillLevel(player, 1, n - n / 5 + GameUtil.randomInt(n2));
         n2 = n / 5 << 1;
         if (n2 == 0) {
             n2 = 2;
         }
-        BotCombatHelper.setBotSkillLevel(player, 4, n - n / 5 + GameUtil.h(n2));
+        BotCombatHelper.setBotSkillLevel(player, 4, n - n / 5 + GameUtil.randomInt(n2));
         n2 = n / 5 << 1;
         if (n2 == 0) {
             n2 = 2;
         }
-        BotCombatHelper.setBotSkillLevel(player, 6, n - n / 5 + GameUtil.h(n2));
+        BotCombatHelper.setBotSkillLevel(player, 6, n - n / 5 + GameUtil.randomInt(n2));
         n2 = n / 5 << 1;
         if (n2 == 0) {
             n2 = 2;
         }
-        BotCombatHelper.setBotSkillLevel(player, 5, n - (n / 5 << 1) + GameUtil.h(n2));
+        BotCombatHelper.setBotSkillLevel(player, 5, n - (n / 5 << 1) + GameUtil.randomInt(n2));
         player.getSkillManager().getExperience()[3] = BotCombatHelper.calculateBotHitpointsExperience(player);
         int[] nArray = player.getSkillManager().getCurrentLevels();
         player.getSkillManager();
         nArray[3] = SkillManager.getLevelForExperience(player.getSkillManager().getExperience()[3]);
         player.getSkillManager().refreshAllSkills();
-        BotCombatLoadoutManager.a(player, true);
+        BotCombatLoadoutManager.selectCombatStyleFromStats(player, true);
     }
 
     public static void prepareTradeAdvertInventory(Player player) {
@@ -286,31 +286,31 @@ public final class BotTradeAdvertManager {
         }
         Player player2 = player;
         if (player2.botCombatStyle == 0) {
-            BotCombatLoadoutManager.e(player2);
-            BotCombatLoadoutManager.d(player2);
+            BotCombatLoadoutManager.prepareMeleeLoadout(player2);
+            BotCombatLoadoutManager.equipGlovesAndBoots(player2);
         } else if (player2.botCombatStyle == 2) {
-            BotCombatLoadoutManager.g(player2);
+            BotCombatLoadoutManager.prepareMagicLoadout(player2);
         } else if (player2.botCombatStyle == 1) {
             int n;
-            BotCombatLoadoutManager.f(player2);
-            int n2 = player2.getSkillManager().getCurrentLevels()[4] >= 40 ? 1731 : (n = GameUtil.h(3) == 0 ? 1478 : 1729);
-            if (!BotCombatHelper.isFreeToPlayWorld() && player2.getCombatLevel() >= 60 && GameUtil.h(2) == 0) {
+            BotCombatLoadoutManager.prepareRangedLoadout(player2);
+            int n2 = player2.getSkillManager().getCurrentLevels()[4] >= 40 ? 1731 : (n = GameUtil.randomInt(3) == 0 ? 1478 : 1729);
+            if (!BotCombatHelper.isFreeToPlayWorld() && player2.getCombatLevel() >= 60 && GameUtil.randomInt(2) == 0) {
                 n = 1712;
             }
             player2.getEquipmentManager().getContainer().setItem(2, new ItemStack(n));
         }
-        BotCombatLoadoutManager.c(player2);
+        BotCombatLoadoutManager.equipRandomCape(player2);
         player.getInventoryManager().refresh();
         player.getEquipmentManager().refresh();
     }
 
     public static void advanceTradeAdvertTradeFlow(Player player) {
         if (player.getOpenInterfaceId() == 3323) {
-            GameplayHelper.q(player);
+            GameplayHelper.acceptTradeFirstScreen(player);
             return;
         }
         if (player.getOpenInterfaceId() == 3443) {
-            GameplayHelper.r(player);
+            GameplayHelper.acceptTradeSecondScreen(player);
         }
     }
 }

@@ -4,12 +4,12 @@
 package com.rs2.model.gameplay.barrows;
 
 public final class BarrowsDoorPuzzle {
-    int[] a;
-    int[] b;
+    int[] displayOptionObjectIds;
+    int[] answerObjectIds;
 
     BarrowsDoorPuzzle(int[] nArray, int[] nArray2) {
-        this.a = nArray;
-        this.b = nArray2;
+        this.displayOptionObjectIds = nArray;
+        this.answerObjectIds = nArray2;
     }
 }
 

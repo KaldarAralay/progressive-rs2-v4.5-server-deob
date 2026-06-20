@@ -19,7 +19,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        this.a.n(false);
+        this.a.setActionLocked(false);
         this.a.getDialogueManager().showThreeLineItemMessage("", "This crate is full of ... magical monkey talking", "dentures!", new ItemStack(4006, 1));
         this.stop();
     }

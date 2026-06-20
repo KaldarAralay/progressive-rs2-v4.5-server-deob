@@ -536,7 +536,7 @@ public class DialogueManager {
         }
     }
 
-    public final void b(String string) {
+    public final void showOneLineChatboxMessage(String string) {
         Player player = this.player;
         player.packetSender.sendInterfaceText(string, 12789);
         player = this.player;
@@ -580,7 +580,7 @@ public class DialogueManager {
             v0 = var5_3.dialogueNpcId;
         }
         var3_4 = v0;
-        var4_5 = World.i()[var3_4];
+        var4_5 = World.getNpcDefinitions()[var3_4];
         var4_5 = var4_5.getName();
         var5_3 = this.player;
         var5_3.packetSender.sendInterfaceAnimation(4883, var2_2);
@@ -611,7 +611,7 @@ public class DialogueManager {
             v0 = var6_4.dialogueNpcId;
         }
         var4_5 = v0;
-        var5_6 = World.i()[var4_5];
+        var5_6 = World.getNpcDefinitions()[var4_5];
         var5_6 = var5_6.getName();
         var6_4 = this.player;
         var6_4.packetSender.sendInterfaceAnimation(4888, var3_3);
@@ -644,7 +644,7 @@ public class DialogueManager {
             v0 = var7_5.dialogueNpcId;
         }
         var5_6 = v0;
-        var6_7 = World.i()[var5_6];
+        var6_7 = World.getNpcDefinitions()[var5_6];
         var6_7 = var6_7.getName();
         var7_5 = this.player;
         var7_5.packetSender.sendInterfaceAnimation(4894, var4_4);
@@ -679,7 +679,7 @@ public class DialogueManager {
             v0 = var8_6.dialogueNpcId;
         }
         var6_7 = v0;
-        var7_8 = World.i()[var6_7];
+        var7_8 = World.getNpcDefinitions()[var6_7];
         var7_8 = var7_8.getName();
         var8_6 = this.player;
         var8_6.packetSender.sendInterfaceAnimation(4901, var5_5);
@@ -702,7 +702,7 @@ public class DialogueManager {
     /*
      * Unable to fully structure code
      */
-    public final void b(String var1_1, String var2_2, String var3_3, int var4_4) {
+    public final void showAlternateNpcThreeLineDialogue(String var1_1, String var2_2, String var3_3, int var4_4) {
         var6_5 = this;
         if (var6_5.dialogueNpcId < 0) ** GOTO lbl-1000
         var6_5 = this;
@@ -716,7 +716,7 @@ public class DialogueManager {
             v0 = var6_5.dialogueNpcId;
         }
         var4_4 = v0;
-        var5_6 = World.i()[var4_4];
+        var5_6 = World.getNpcDefinitions()[var4_4];
         var5_6 = var5_6.getName();
         var6_5 = this.player;
         var6_5.packetSender.sendInterfaceAnimation(12384, 591);
@@ -738,7 +738,7 @@ public class DialogueManager {
         Player player = this.player;
         player.packetSender.sendInterfaceAnimation(969, n);
         player = this.player;
-        player.packetSender.sendInterfaceText(GameUtil.c(this.player.getUsername()), 970);
+        player.packetSender.sendInterfaceText(GameUtil.formatDisplayName(this.player.getUsername()), 970);
         player = this.player;
         player.packetSender.sendInterfaceText(string, 971);
         player = this.player;
@@ -751,7 +751,7 @@ public class DialogueManager {
         Player player = this.player;
         player.packetSender.sendInterfaceAnimation(974, n);
         player = this.player;
-        player.packetSender.sendInterfaceText(GameUtil.c(this.player.getUsername()), 975);
+        player.packetSender.sendInterfaceText(GameUtil.formatDisplayName(this.player.getUsername()), 975);
         player = this.player;
         player.packetSender.sendInterfaceText(string, 976);
         player = this.player;
@@ -766,7 +766,7 @@ public class DialogueManager {
         Player player = this.player;
         player.packetSender.sendInterfaceAnimation(980, 591);
         player = this.player;
-        player.packetSender.sendInterfaceText(GameUtil.c(this.player.getUsername()), 981);
+        player.packetSender.sendInterfaceText(GameUtil.formatDisplayName(this.player.getUsername()), 981);
         player = this.player;
         player.packetSender.sendInterfaceText(string, 982);
         player = this.player;
@@ -783,7 +783,7 @@ public class DialogueManager {
         Player player = this.player;
         player.packetSender.sendInterfaceAnimation(987, 591);
         player = this.player;
-        player.packetSender.sendInterfaceText(GameUtil.c(this.player.getUsername()), 988);
+        player.packetSender.sendInterfaceText(GameUtil.formatDisplayName(this.player.getUsername()), 988);
         player = this.player;
         player.packetSender.sendInterfaceText(string, 989);
         player = this.player;
@@ -907,7 +907,7 @@ public class DialogueManager {
         n8 = n5;
         object = player.getDialogueManager();
         player.getDialogueManager().dialogueNpcId = n8;
-        if (player.getQuestManager().a(n, n2, n3, n4, n5, n6, n7)) {
+        if (player.getQuestManager().handleContextDialogue(n, n2, n3, n4, n5, n6, n7)) {
             return true;
         }
         block0 : switch (n2) {
@@ -959,7 +959,7 @@ public class DialogueManager {
                         if (n2 == 2411) {
                             n = 0;
                             n2 = 0;
-                            if (CacheCoordinateTranslator.a) {
+                            if (CacheCoordinateTranslator.dungeonCoordinateShiftActive) {
                                 n = 768;
                                 n2 = 5120;
                             }
@@ -1008,19 +1008,19 @@ public class DialogueManager {
                                     player.getDialogueManager().dialogueStep = 9001;
                                     return true;
                                 }
-                                if (PartyRoomManager.a()) {
+                                if (PartyRoomManager.hasActiveDropParty()) {
                                     player.getDialogueManager().showOneLineStatement("Drop party already in progress!");
                                     object = player.getDialogueManager();
                                     player.getDialogueManager().dialogueStep = 9001;
                                     return true;
                                 }
-                                if (Server.b == 3) {
+                                if (Server.serverStatus == 3) {
                                     player.getDialogueManager().showOneLineStatement("You can't start a party during a system update!");
                                     object = player.getDialogueManager();
                                     player.getDialogueManager().dialogueStep = 9001;
                                     return true;
                                 }
-                                if (PartyRoomManager.c.getFreeSlots() == PartyRoomManager.c.g()) {
+                                if (PartyRoomManager.partyChestContainer.getFreeSlots() == PartyRoomManager.partyChestContainer.g()) {
                                     player.getDialogueManager().showOneLineStatement("There are no items to be dropped!");
                                     object = player.getDialogueManager();
                                     player.getDialogueManager().dialogueStep = 9001;
@@ -1039,7 +1039,7 @@ public class DialogueManager {
                                     player.getDialogueManager().dialogueStep = 9001;
                                     return true;
                                 }
-                                if (PartyRoomManager.b(player)) break;
+                                if (PartyRoomManager.startNightlyDance(player)) break;
                                 player.getDialogueManager().showOneLineStatement("Dance event already in progress!");
                                 object = player.getDialogueManager();
                                 player.getDialogueManager().dialogueStep = 9001;
@@ -1051,7 +1051,7 @@ public class DialogueManager {
                     case 3: {
                         switch (n4) {
                             case 1: {
-                                PartyRoomManager.a(player);
+                                PartyRoomManager.startBalloonBonanza(player);
                                 break block20;
                             }
                         }
@@ -1063,7 +1063,7 @@ public class DialogueManager {
                 object = player.getDialogueManager();
                 switch (((DialogueManager)object).dialogueStep) {
                     case 1: {
-                        if (player.dN < 5) return false;
+                        if (player.mageArenaProgressStage < 5) return false;
                         player.getDialogueManager().showTwoLineStatement("You step into the pool of sparkling water. You feel energy rush", "through your veins.");
                         return true;
                     }
@@ -1088,7 +1088,7 @@ public class DialogueManager {
                 break;
             }
             case 2874: {
-                if (player.bb()) {
+                if (player.hasMageArenaGodCape()) {
                     player.getDialogueManager().showOneLineStatement("You already have a God cape!");
                     object = player.getDialogueManager();
                     player.getDialogueManager().dialogueStep = 9001;
@@ -1120,7 +1120,7 @@ public class DialogueManager {
                 break;
             }
             case 2875: {
-                if (player.bb()) {
+                if (player.hasMageArenaGodCape()) {
                     player.getDialogueManager().showOneLineStatement("You already have a God cape!");
                     object = player.getDialogueManager();
                     player.getDialogueManager().dialogueStep = 9001;
@@ -1152,7 +1152,7 @@ public class DialogueManager {
                 break;
             }
             case 2873: {
-                if (player.bb()) {
+                if (player.hasMageArenaGodCape()) {
                     player.getDialogueManager().showOneLineStatement("You already have a God cape!");
                     object = player.getDialogueManager();
                     player.getDialogueManager().dialogueStep = 9001;
@@ -1211,12 +1211,12 @@ public class DialogueManager {
                             player.packetSender.sendGameMessage("You need to be in members world to access members content.");
                             return true;
                         }
-                        if (player.eE == 4) {
+                        if (player.enterTheAbyssMiniquestState == 4) {
                             player.getDialogueManager().showPlayerTwoLineDialogue("So... that's my end of the deal upheld.", "What do I get in return?", 591);
                             return true;
                         }
-                        if (player.eE == 3) {
-                            if (!player.aq(5518) && !player.aq(5519)) {
+                        if (player.enterTheAbyssMiniquestState == 3) {
+                            if (!player.ownsItem(5518) && !player.ownsItem(5519)) {
                                 player.getDialogueManager().showPlayerOneLineDialogue("I lost the orb.", 591);
                                 int n3 = 37;
                                 dialogueManager = player.getDialogueManager();
@@ -1226,7 +1226,7 @@ public class DialogueManager {
                             player.getDialogueManager().showNpcThreeLineDialogue("Well?", "Have you managed to use my scrying orb to obtain the", "information yet?", 591);
                             return true;
                         }
-                        if (player.eE == 2) {
+                        if (player.enterTheAbyssMiniquestState == 2) {
                             player.getDialogueManager().showNpcFourLineDialogue("Ah, you again.", "What was it you wanted?", "The wilderness is hardly the appropriate place for a", "conversation now, is it?", 591);
                             return true;
                         }
@@ -1236,24 +1236,24 @@ public class DialogueManager {
                         return true;
                     }
                     case 2: {
-                        if (player.eE == 4) {
+                        if (player.enterTheAbyssMiniquestState == 4) {
                             player.getDialogueManager().showNpcOneLineDialogue("Indeed, a deal is always a deal.", 591);
                             int n4 = 39;
                             dialogueManager = player.getDialogueManager();
                             player.getDialogueManager().dialogueStep = n4 - 1;
                             return true;
                         }
-                        if (player.eE != 3) {
+                        if (player.enterTheAbyssMiniquestState != 3) {
                             player.getDialogueManager().showFourOptions("I'd like to buy some runes!", "Where do you get your runes from?", "All hail Zamorak!", "Nothing, thanks.");
                             return true;
                         }
-                        if (!player.aq(5518)) {
+                        if (!player.ownsItem(5518)) {
                             player.getDialogueManager().showPlayerOneLineDialogue("No, not yet.", 591);
                             dialogueManager = player.getDialogueManager();
                             player.getDialogueManager().dialogueStep = 9001;
                             return true;
                         }
-                        if (player.aq(5518) && !player.getInventoryManager().containsItem(5518)) {
+                        if (player.ownsItem(5518) && !player.getInventoryManager().containsItem(5518)) {
                             player.getDialogueManager().showPlayerOneLineDialogue("Yes, I just need to go and get it.", 591);
                             dialogueManager = player.getDialogueManager();
                             player.getDialogueManager().dialogueStep = 9001;
@@ -1409,8 +1409,8 @@ public class DialogueManager {
                         return true;
                     }
                     case 36: {
-                        player.getInventoryManager().b(new ItemStack(5519));
-                        player.eE = 3;
+                        player.getInventoryManager().addOrDropItem(new ItemStack(5519));
+                        player.enterTheAbyssMiniquestState = 3;
                         return false;
                     }
                     case 37: {
@@ -1423,7 +1423,7 @@ public class DialogueManager {
                     case 38: {
                         player.getDialogueManager().showNpcThreeLineDialogue("Excellent.", "Give it here, and I shall examine the findings.", "Speak to me in a small while.", 591);
                         if (player.getInventoryManager().removeItem(new ItemStack(5518))) {
-                            player.eE = 4;
+                            player.enterTheAbyssMiniquestState = 4;
                         }
                         dialogueManager = player.getDialogueManager();
                         player.getDialogueManager().dialogueStep = 9001;
@@ -1446,11 +1446,11 @@ public class DialogueManager {
                         return true;
                     }
                     case 43: {
-                        player.eE = 1;
+                        player.enterTheAbyssMiniquestState = 1;
                         player.bp();
-                        player.getInventoryManager().b(new ItemStack(5520));
-                        if (!player.aq(5509)) {
-                            player.getInventoryManager().b(new ItemStack(5509));
+                        player.getInventoryManager().addOrDropItem(new ItemStack(5520));
+                        if (!player.ownsItem(5509)) {
+                            player.getInventoryManager().addOrDropItem(new ItemStack(5509));
                         }
                         player.getSkillManager().addQuestExperience(20, 1000.0);
                         player.getDialogueManager().showNpcThreeLineDialogue("And so I have done.", "Read my research notes, they may enlighten you", "somewhat.", 591);
@@ -1561,7 +1561,7 @@ public class DialogueManager {
                     case 4: {
                         if (player.getInventoryManager().removeItem(new ItemStack(995, 1000))) {
                             player.getDialogueManager().showNpcOneLineDialogue("Here you go.", 591);
-                            player.getInventoryManager().b(new ItemStack(33));
+                            player.getInventoryManager().addOrDropItem(new ItemStack(33));
                             return true;
                         }
                         player.getDialogueManager().showPlayerOneLineDialogue("Looks like I don't have enough coins.", 599);
@@ -1631,7 +1631,7 @@ public class DialogueManager {
         var0.getDialogueManager().setDialogueId(var1_1);
         var0.getDialogueManager().setDialogueType(0);
         var0.getDialogueManager().setDialogueNpcId(var4_19);
-        if (var0.getQuestManager().a(var1_1, var2_17, var3_18, var4_19)) {
+        if (var0.getQuestManager().handleNpcDialogue(var1_1, var2_17, var3_18, var4_19)) {
             return true;
         }
         if (DialogueManager.b(var0, var1_1, var3_18)) {
@@ -1683,7 +1683,7 @@ public class DialogueManager {
                         return true;
                     }
                     case 2: {
-                        var1_1 = GameUtil.g(12);
+                        var1_1 = GameUtil.randomInclusive(12);
                         if (var1_1 == 0) {
                             var0.getDialogueManager().showNpcOneLineDialogue("How can I help you?", 591);
                         } else if (var1_1 == 1) {
@@ -1791,7 +1791,7 @@ public class DialogueManager {
                             var0.getInventoryManager().removeItem(new ItemStack(1540, 1));
                             var0.getInventoryManager().removeItem(new ItemStack(11286, 1));
                             var0.getInventoryManager().removeItem(new ItemStack(995, 1250000));
-                            var0.getInventoryManager().b(new ItemStack(11284));
+                            var0.getInventoryManager().addOrDropItem(new ItemStack(11284));
                             var0.getPacketSender().sendGameMessage("Oziach makes you a dragonfire shield.");
                             break block0;
                         }
@@ -1824,13 +1824,13 @@ public class DialogueManager {
                         return true;
                     }
                     case 2: {
-                        GodBookHandler.d(var0, var3_18);
+                        GodBookHandler.startRecitation(var0, var3_18);
                     }
                 }
                 break;
             }
             case 3097: {
-                if (var0.eG() && var2_17 == 1) {
+                if (var0.ownsProgressHat() && var2_17 == 1) {
                     return false;
                 }
                 switch (var0.getDialogueManager().getDialogueStep()) {
@@ -1905,7 +1905,7 @@ public class DialogueManager {
                         return true;
                     }
                     case 16: {
-                        var0.getInventoryManager().b(new ItemStack(6885, 1));
+                        var0.getInventoryManager().addOrDropItem(new ItemStack(6885, 1));
                         var0.getDialogueManager().showNpcTwoLineDialogue("Here you go. Talk to the hat to find out your current", "Pizazz Point totals.", 591);
                         return true;
                     }
@@ -1987,24 +1987,24 @@ public class DialogueManager {
                         return true;
                     }
                     case 5: {
-                        ShopManager.a(var0, GameplayHelper.c(var1_1));
+                        ShopManager.openShop(var0, GameplayHelper.c(var1_1));
                         var0.getDialogueManager().markDialogueInactive();
                         break;
                     }
                     case 6: {
-                        var0.N = GameUtil.b(1) + GameUtil.b(2) + GameUtil.b(3);
+                        var0.N = GameUtil.bitFlag(1) + GameUtil.bitFlag(2) + GameUtil.bitFlag(3);
                         var1_1 = 0;
-                        if (!var0.aq(GodBookHandler.a) && !var0.aq(GodBookHandler.b)) {
+                        if (!var0.ownsItem(GodBookHandler.damagedSaradominBookId) && !var0.ownsItem(GodBookHandler.holyBookId)) {
                             ++var1_1;
-                            var0.N -= GameUtil.b(1);
+                            var0.N -= GameUtil.bitFlag(1);
                         }
-                        if (!var0.aq(GodBookHandler.c) && !var0.aq(GodBookHandler.d)) {
+                        if (!var0.ownsItem(GodBookHandler.damagedZamorakBookId) && !var0.ownsItem(GodBookHandler.unholyBookId)) {
                             ++var1_1;
-                            var0.N -= GameUtil.b(2);
+                            var0.N -= GameUtil.bitFlag(2);
                         }
-                        if (!var0.aq(GodBookHandler.e) && !var0.aq(GodBookHandler.f)) {
+                        if (!var0.ownsItem(GodBookHandler.damagedGuthixBookId) && !var0.ownsItem(GodBookHandler.bookOfBalanceId)) {
                             ++var1_1;
-                            var0.N -= GameUtil.b(3);
+                            var0.N -= GameUtil.bitFlag(3);
                         }
                         if (var1_1 == 0) {
                             var0.getDialogueManager().showNpcOneLineDialogue("No haven't found anything.", 591);
@@ -2021,19 +2021,19 @@ public class DialogueManager {
                         return true;
                     }
                     case 7: {
-                        if ((var0.N & GameUtil.b(1)) == 0 && (var0.N & GameUtil.b(2)) == 0 && (var0.N & GameUtil.b(3)) == 0) {
+                        if ((var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) == 0) {
                             var0.getDialogueManager().showFourOptions("Buy a book of Saradomin", "Buy a book of Zamorak", "Buy a book of Guthix", "Don't buy anything");
-                        } else if ((var0.N & GameUtil.b(1)) == 0 && (var0.N & GameUtil.b(2)) == 0 && (var0.N & GameUtil.b(3)) != 0) {
+                        } else if ((var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) != 0) {
                             var0.getDialogueManager().showThreeOptions("Buy a book of Saradomin", "Buy a book of Zamorak", "Don't buy anything");
-                        } else if ((var0.N & GameUtil.b(1)) == 0 && (var0.N & GameUtil.b(2)) != 0 && (var0.N & GameUtil.b(3)) == 0) {
+                        } else if ((var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) != 0 && (var0.N & GameUtil.bitFlag(3)) == 0) {
                             var0.getDialogueManager().showThreeOptions("Buy a book of Saradomin", "Buy a book of Guthix", "Don't buy anything");
-                        } else if ((var0.N & GameUtil.b(1)) != 0 && (var0.N & GameUtil.b(2)) == 0 && (var0.N & GameUtil.b(3)) == 0) {
+                        } else if ((var0.N & GameUtil.bitFlag(1)) != 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) == 0) {
                             var0.getDialogueManager().showThreeOptions("Buy a book of Zamorak", "Buy a book of Guthix", "Don't buy anything");
-                        } else if ((var0.N & GameUtil.b(1)) == 0 && (var0.N & GameUtil.b(2)) != 0 && (var0.N & GameUtil.b(3)) != 0) {
+                        } else if ((var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) != 0 && (var0.N & GameUtil.bitFlag(3)) != 0) {
                             var0.getDialogueManager().showTwoOptions("Buy a book of Saradomin", "Don't buy anything");
-                        } else if ((var0.N & GameUtil.b(1)) != 0 && (var0.N & GameUtil.b(2)) == 0 && (var0.N & GameUtil.b(3)) != 0) {
+                        } else if ((var0.N & GameUtil.bitFlag(1)) != 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) != 0) {
                             var0.getDialogueManager().showTwoOptions("Buy a book of Zamorak", "Don't buy anything");
-                        } else if ((var0.N & GameUtil.b(1)) != 0 && (var0.N & GameUtil.b(2)) != 0 && (var0.N & GameUtil.b(3)) == 0) {
+                        } else if ((var0.N & GameUtil.bitFlag(1)) != 0 && (var0.N & GameUtil.bitFlag(2)) != 0 && (var0.N & GameUtil.bitFlag(3)) == 0) {
                             var0.getDialogueManager().showTwoOptions("Buy a book of Guthix", "Don't buy anything");
                         }
                         return true;
@@ -2044,12 +2044,12 @@ public class DialogueManager {
                                 if (var0.getInventoryManager().containsItemAmount(995, 5000)) {
                                     var0.getDialogueManager().showNpcOneLineDialogue("Here you go!", 591);
                                     var0.getInventoryManager().removeItem(new ItemStack(995, 5000));
-                                    if ((var0.N & GameUtil.b(1)) == 0 && (var0.N & GameUtil.b(2)) != 0 && (var0.N & GameUtil.b(3)) != 0 || (var0.N & GameUtil.b(1)) == 0 && (var0.N & GameUtil.b(2)) == 0 && (var0.N & GameUtil.b(3)) == 0 || (var0.N & GameUtil.b(1)) == 0 && (var0.N & GameUtil.b(2)) == 0 && (var0.N & GameUtil.b(3)) != 0 || (var0.N & GameUtil.b(1)) == 0 && (var0.N & GameUtil.b(2)) != 0 && (var0.N & GameUtil.b(3)) == 0) {
-                                        GodBookHandler.b(var0, GodBookHandler.a);
-                                    } else if ((var0.N & GameUtil.b(1)) != 0 && (var0.N & GameUtil.b(2)) == 0 && (var0.N & GameUtil.b(3)) != 0 || (var0.N & GameUtil.b(1)) != 0 && (var0.N & GameUtil.b(2)) == 0 && (var0.N & GameUtil.b(3)) == 0) {
-                                        GodBookHandler.b(var0, GodBookHandler.c);
-                                    } else if ((var0.N & GameUtil.b(1)) != 0 && (var0.N & GameUtil.b(2)) != 0 && (var0.N & GameUtil.b(3)) == 0) {
-                                        GodBookHandler.b(var0, GodBookHandler.e);
+                                    if ((var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) != 0 && (var0.N & GameUtil.bitFlag(3)) != 0 || (var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) == 0 || (var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) != 0 || (var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) != 0 && (var0.N & GameUtil.bitFlag(3)) == 0) {
+                                        GodBookHandler.giveReplacementBook(var0, GodBookHandler.damagedSaradominBookId);
+                                    } else if ((var0.N & GameUtil.bitFlag(1)) != 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) != 0 || (var0.N & GameUtil.bitFlag(1)) != 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) == 0) {
+                                        GodBookHandler.giveReplacementBook(var0, GodBookHandler.damagedZamorakBookId);
+                                    } else if ((var0.N & GameUtil.bitFlag(1)) != 0 && (var0.N & GameUtil.bitFlag(2)) != 0 && (var0.N & GameUtil.bitFlag(3)) == 0) {
+                                        GodBookHandler.giveReplacementBook(var0, GodBookHandler.damagedGuthixBookId);
                                     }
                                 } else {
                                     var0.getDialogueManager().showPlayerOneLineDialogue("Sorry, don't have enough money right now.", 591);
@@ -2058,15 +2058,15 @@ public class DialogueManager {
                                 return true;
                             }
                             case 2: {
-                                if ((var0.N & GameUtil.b(1)) == 0 && (var0.N & GameUtil.b(2)) != 0 && (var0.N & GameUtil.b(3)) != 0 || (var0.N & GameUtil.b(1)) != 0 && (var0.N & GameUtil.b(2)) == 0 && (var0.N & GameUtil.b(3)) != 0 || (var0.N & GameUtil.b(1)) != 0 && (var0.N & GameUtil.b(2)) != 0 && (var0.N & GameUtil.b(3)) == 0) {
+                                if ((var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) != 0 && (var0.N & GameUtil.bitFlag(3)) != 0 || (var0.N & GameUtil.bitFlag(1)) != 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) != 0 || (var0.N & GameUtil.bitFlag(1)) != 0 && (var0.N & GameUtil.bitFlag(2)) != 0 && (var0.N & GameUtil.bitFlag(3)) == 0) {
                                     var0.getDialogueManager().showPlayerOneLineDialogue("Maybe next time.", 591);
                                 } else if (var0.getInventoryManager().containsItemAmount(995, 5000)) {
                                     var0.getDialogueManager().showNpcOneLineDialogue("Here you go!", 591);
                                     var0.getInventoryManager().removeItem(new ItemStack(995, 5000));
-                                    if ((var0.N & GameUtil.b(1)) == 0 && (var0.N & GameUtil.b(2)) == 0 && (var0.N & GameUtil.b(3)) == 0 || (var0.N & GameUtil.b(1)) == 0 && (var0.N & GameUtil.b(2)) == 0 && (var0.N & GameUtil.b(3)) != 0) {
-                                        GodBookHandler.b(var0, GodBookHandler.c);
-                                    } else if ((var0.N & GameUtil.b(1)) == 0 && (var0.N & GameUtil.b(2)) != 0 && (var0.N & GameUtil.b(3)) == 0 || (var0.N & GameUtil.b(1)) != 0 && (var0.N & GameUtil.b(2)) == 0 && (var0.N & GameUtil.b(3)) == 0) {
-                                        GodBookHandler.b(var0, GodBookHandler.e);
+                                    if ((var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) == 0 || (var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) != 0) {
+                                        GodBookHandler.giveReplacementBook(var0, GodBookHandler.damagedZamorakBookId);
+                                    } else if ((var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) != 0 && (var0.N & GameUtil.bitFlag(3)) == 0 || (var0.N & GameUtil.bitFlag(1)) != 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) == 0) {
+                                        GodBookHandler.giveReplacementBook(var0, GodBookHandler.damagedGuthixBookId);
                                     }
                                 } else {
                                     var0.getDialogueManager().showPlayerOneLineDialogue("Sorry, don't have enough money right now.", 591);
@@ -2075,13 +2075,13 @@ public class DialogueManager {
                                 return true;
                             }
                             case 3: {
-                                if ((var0.N & GameUtil.b(1)) == 0 && (var0.N & GameUtil.b(2)) == 0 && (var0.N & GameUtil.b(3)) != 0 || (var0.N & GameUtil.b(1)) == 0 && (var0.N & GameUtil.b(2)) != 0 && (var0.N & GameUtil.b(3)) == 0 || (var0.N & GameUtil.b(1)) != 0 && (var0.N & GameUtil.b(2)) == 0 && (var0.N & GameUtil.b(3)) == 0) {
+                                if ((var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) != 0 || (var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) != 0 && (var0.N & GameUtil.bitFlag(3)) == 0 || (var0.N & GameUtil.bitFlag(1)) != 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) == 0) {
                                     var0.getDialogueManager().showPlayerOneLineDialogue("Maybe next time.", 591);
                                 } else if (var0.getInventoryManager().containsItemAmount(995, 5000)) {
                                     var0.getDialogueManager().showNpcOneLineDialogue("Here you go!", 591);
                                     var0.getInventoryManager().removeItem(new ItemStack(995, 5000));
-                                    if ((var0.N & GameUtil.b(1)) == 0 && (var0.N & GameUtil.b(2)) == 0 && (var0.N & GameUtil.b(3)) == 0) {
-                                        GodBookHandler.b(var0, GodBookHandler.e);
+                                    if ((var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) == 0) {
+                                        GodBookHandler.giveReplacementBook(var0, GodBookHandler.damagedGuthixBookId);
                                     }
                                 } else {
                                     var0.getDialogueManager().showPlayerOneLineDialogue("Sorry, don't have enough money right now.", 591);
@@ -2102,7 +2102,7 @@ public class DialogueManager {
             case 3886: {
                 switch (var0.getDialogueManager().getDialogueStep()) {
                     case 1: {
-                        if (var0.eK()) {
+                        if (var0.ownsClueScroll()) {
                             return false;
                         }
                         if (var0.isMember()) {
@@ -2125,7 +2125,7 @@ public class DialogueManager {
                         return true;
                     }
                     case 4: {
-                        var0.getDialogueManager().showNpcOneLineDialogue("Would you like to buy it for " + GameUtil.a((long)ServerSettings.clueMerchantPriceCoins) + " coins?", 591);
+                        var0.getDialogueManager().showNpcOneLineDialogue("Would you like to buy it for " + GameUtil.formatNumber((long)ServerSettings.clueMerchantPriceCoins) + " coins?", 591);
                         return true;
                     }
                     case 5: {
@@ -2152,7 +2152,7 @@ public class DialogueManager {
                             var0.getDialogueManager().showNpcOneLineDialogue("There you go! Good luck with that!", 591);
                             var0.getInventoryManager().removeItem(new ItemStack(995, ServerSettings.clueMerchantPriceCoins));
                             if (ServerSettings.clueMerchantClueLevel == 0) {
-                                var1_1 = TreasureTrailManager.randomClueItemForLevel(GameUtil.h(3) + 1);
+                                var1_1 = TreasureTrailManager.randomClueItemForLevel(GameUtil.randomInt(3) + 1);
                             } else {
                                 var6_21 = ServerSettings.clueMerchantClueLevel;
                                 if (var6_21 < 0) {
@@ -2162,10 +2162,10 @@ public class DialogueManager {
                                 }
                                 var1_1 = TreasureTrailManager.randomClueItemForLevel(var6_21);
                             }
-                            var0.getInventoryManager().b(new ItemStack(var1_1, 1));
+                            var0.getInventoryManager().addOrDropItem(new ItemStack(var1_1, 1));
                             var0.getDialogueManager().finishDialogue();
                         } else {
-                            var0.getDialogueManager().showNpcOneLineDialogue("I said " + GameUtil.a((long)ServerSettings.clueMerchantPriceCoins) + " coins! You haven't got " + GameUtil.a((long)ServerSettings.clueMerchantPriceCoins) + " coins!", 614);
+                            var0.getDialogueManager().showNpcOneLineDialogue("I said " + GameUtil.formatNumber((long)ServerSettings.clueMerchantPriceCoins) + " coins! You haven't got " + GameUtil.formatNumber((long)ServerSettings.clueMerchantPriceCoins) + " coins!", 614);
                             var0.getDialogueManager().finishDialogue();
                         }
                         return true;
@@ -2288,7 +2288,7 @@ public class DialogueManager {
                 break;
             }
             case 3098: {
-                if (!var0.getTelekineticTheatreController().c) {
+                if (!var0.getTelekineticTheatreController().mazeSolved) {
                     return false;
                 }
                 switch (var0.getDialogueManager().getDialogueStep()) {
@@ -2323,7 +2323,7 @@ public class DialogueManager {
                         return true;
                     }
                     case 6: {
-                        var0.getTelekineticTheatreController().e();
+                        var0.getTelekineticTheatreController().startNextMaze();
                         var0.getDialogueManager().finishDialogue();
                     }
                 }
@@ -2392,7 +2392,7 @@ public class DialogueManager {
                 switch (var0.getDialogueManager().getDialogueStep()) {
                     case 1: {
                         var0.getDialogueManager().showPlayerOneLineDialogue("Hi.", 591);
-                        if (var0.dN == 6 || !var0.bb()) {
+                        if (var0.mageArenaProgressStage == 6 || !var0.hasMageArenaGodCape()) {
                             var0.getDialogueManager().finishDialogue();
                         }
                         return true;
@@ -2411,18 +2411,18 @@ public class DialogueManager {
                     }
                     case 5: {
                         var1_1 = 1;
-                        if (var0.aq(2412)) {
+                        if (var0.ownsItem(2412)) {
                             var1_1 = 2415;
                         }
-                        if (var0.aq(2413)) {
+                        if (var0.ownsItem(2413)) {
                             var1_1 = 2416;
                         }
-                        if (var0.aq(2414)) {
+                        if (var0.ownsItem(2414)) {
                             var1_1 = 2417;
                         }
                         var0.getDialogueManager().showItemMessage("The guardian hands you an ornate magic staff.", new ItemStack(var1_1, 1));
-                        var0.getInventoryManager().b(new ItemStack(var1_1, 1));
-                        var0.dN = 6;
+                        var0.getInventoryManager().addOrDropItem(new ItemStack(var1_1, 1));
+                        var0.mageArenaProgressStage = 6;
                         return true;
                     }
                 }
@@ -2431,16 +2431,16 @@ public class DialogueManager {
             case 905: {
                 switch (var0.getDialogueManager().getDialogueStep()) {
                     case 1: {
-                        if (var0.dN == 6) {
+                        if (var0.mageArenaProgressStage == 6) {
                             return false;
                         }
-                        if (var0.dN == 0) {
+                        if (var0.mageArenaProgressStage == 0) {
                             var0.getDialogueManager().showPlayerOneLineDialogue("Hello there. What is this place?", 591);
                             return true;
                         }
-                        if (var0.dN <= 5) {
+                        if (var0.mageArenaProgressStage <= 5) {
                             var0.getDialogueManager().showPlayerOneLineDialogue("Hello, Kolodion.", 591);
-                            if (var0.dN == 5) {
+                            if (var0.mageArenaProgressStage == 5) {
                                 var0.getDialogueManager().setNextDialogueStep(52);
                             } else {
                                 var0.getDialogueManager().setNextDialogueStep(10);
@@ -2676,7 +2676,7 @@ public class DialogueManager {
                         if (var0.getInventoryManager().containsItemAmount(995, 3)) {
                             var0.getDialogueManager().showPlayerOneLineDialogue("Thanks, " + new Npc(var1_1).getDefinition().getName() + ".", 591);
                             var0.getInventoryManager().removeItem(new ItemStack(995, 3));
-                            var0.getInventoryManager().b(new ItemStack(var0.aV(), 1));
+                            var0.getInventoryManager().addOrDropItem(new ItemStack(var0.aV(), 1));
                             var0.getDialogueManager().finishDialogue();
                         } else {
                             var0.getDialogueManager().showNpcOneLineDialogue("I said 3 coins! You haven't got 3 coins!", 614);
@@ -2723,7 +2723,7 @@ public class DialogueManager {
                     }
                     case 5: {
                         var0.getInventoryManager().removeItem(new ItemStack(995, 2));
-                        var0.getInventoryManager().b(new ItemStack(1917, 1));
+                        var0.getInventoryManager().addOrDropItem(new ItemStack(1917, 1));
                         var0.getDialogueManager().showTwoItemMessage("You buy a pint of beer!", "", new ItemStack(-1, 1), new ItemStack(1917, 1));
                         var0.getDialogueManager().finishDialogue();
                         return true;
@@ -2773,7 +2773,7 @@ public class DialogueManager {
                         if (var0.getInventoryManager().containsItemAmount(995, 2)) {
                             var0.getPacketSender().sendGameMessage("You buy a pint of beer.");
                             var0.getInventoryManager().removeItem(new ItemStack(995, 2));
-                            var0.getInventoryManager().b(new ItemStack(1917, 1));
+                            var0.getInventoryManager().addOrDropItem(new ItemStack(1917, 1));
                             break block0;
                         }
                         var0.getDialogueManager().showPlayerOneLineDialogue("Oh dear, I don't seem to have enough money!", 591);
@@ -2847,7 +2847,7 @@ public class DialogueManager {
                         if (var0.getInventoryManager().containsItemAmount(995, 2)) {
                             var0.getPacketSender().sendGameMessage("You buy a pint of beer.");
                             var0.getInventoryManager().removeItem(new ItemStack(995, 2));
-                            var0.getInventoryManager().b(new ItemStack(1917, 1));
+                            var0.getInventoryManager().addOrDropItem(new ItemStack(1917, 1));
                             break block0;
                         }
                         var0.getDialogueManager().showPlayerOneLineDialogue("Sorry, don't have that right now.", 591);
@@ -2978,7 +2978,7 @@ public class DialogueManager {
                         if (var0.getInventoryManager().containsItemAmount(995, 20)) {
                             var0.getDialogueManager().showPlayerOneLineDialogue("Thanks.", 589);
                             var0.getInventoryManager().removeItem(new ItemStack(995, 20));
-                            var0.getInventoryManager().b(new ItemStack(1793, 2));
+                            var0.getInventoryManager().addOrDropItem(new ItemStack(1793, 2));
                             var0.getDialogueManager().finishDialogue();
                         } else {
                             var0.getDialogueManager().showNpcOneLineDialogue("You don't have enough coins with you.", 589);
@@ -3086,7 +3086,7 @@ public class DialogueManager {
                             var0.getDialogueManager().showTwoItemMessage("You hand the berries and payment to Aggie. Aggie", "produces a red bottle and hands it to you.", new ItemStack(-1, 1), new ItemStack(1763, 1));
                             var0.getInventoryManager().removeItem(new ItemStack(1951, 3));
                             var0.getInventoryManager().removeItem(new ItemStack(995, 5));
-                            var0.getInventoryManager().b(new ItemStack(1763, 1));
+                            var0.getInventoryManager().addOrDropItem(new ItemStack(1763, 1));
                             var0.getDialogueManager().finishDialogue();
                         } else {
                             var0.getDialogueManager().showNpcOneLineDialogue("You don't have the ingredients for me to do that.", 589);
@@ -3165,7 +3165,7 @@ public class DialogueManager {
                             var0.getDialogueManager().showTwoItemMessage("You hand the onions and payment to Aggie. Aggie", "produces a yellow bottle and hands it to you.", new ItemStack(-1, 1), new ItemStack(1765, 1));
                             var0.getInventoryManager().removeItem(new ItemStack(1957, 2));
                             var0.getInventoryManager().removeItem(new ItemStack(995, 5));
-                            var0.getInventoryManager().b(new ItemStack(1765, 1));
+                            var0.getInventoryManager().addOrDropItem(new ItemStack(1765, 1));
                             var0.getDialogueManager().finishDialogue();
                         } else {
                             var0.getDialogueManager().showNpcOneLineDialogue("You don't have the ingredients for me to do that.", 589);
@@ -3211,7 +3211,7 @@ public class DialogueManager {
                             var0.getDialogueManager().showTwoItemMessage("You hand the woad leaves and payment to Aggie. Aggie", "produces a blue bottle and hands it to you.", new ItemStack(-1, 1), new ItemStack(1767, 1));
                             var0.getInventoryManager().removeItem(new ItemStack(1793, 2));
                             var0.getInventoryManager().removeItem(new ItemStack(995, 5));
-                            var0.getInventoryManager().b(new ItemStack(1767, 1));
+                            var0.getInventoryManager().addOrDropItem(new ItemStack(1767, 1));
                             var0.getDialogueManager().finishDialogue();
                         } else {
                             var0.getDialogueManager().showNpcOneLineDialogue("You don't have the ingredients for me to do that.", 589);
@@ -3307,7 +3307,7 @@ public class DialogueManager {
                     case 13: {
                         if (!var0.getInventoryManager().containsItemAmount(995, 15)) break;
                         var0.getInventoryManager().removeItem(new ItemStack(995, 15));
-                        var0.getInventoryManager().b(new ItemStack(954, 1));
+                        var0.getInventoryManager().addOrDropItem(new ItemStack(954, 1));
                         var0.getDialogueManager().finishDialogue();
                         break;
                     }
@@ -3322,7 +3322,7 @@ public class DialogueManager {
                     case 16: {
                         if (!var0.getInventoryManager().containsItemAmount(1759, 4)) break;
                         var0.getInventoryManager().removeItem(new ItemStack(1759, 4));
-                        var0.getInventoryManager().b(new ItemStack(954, 1));
+                        var0.getInventoryManager().addOrDropItem(new ItemStack(954, 1));
                         var0.getDialogueManager().finishDialogue();
                     }
                 }
@@ -3382,7 +3382,7 @@ public class DialogueManager {
                             var0.setQuestState(10, 4);
                         }
                         var0.getPacketSender().sendGameMessage("Luthas hands you 30 coins.");
-                        var0.getInventoryManager().b(new ItemStack(995, 30));
+                        var0.getInventoryManager().addOrDropItem(new ItemStack(995, 30));
                         var0.getDialogueManager().finishDialogue();
                     }
                 }
@@ -3410,7 +3410,7 @@ public class DialogueManager {
                                 return true;
                             }
                             case 2: {
-                                if (var0.aq(2576)) {
+                                if (var0.ownsItem(2576)) {
                                     var0.getDialogueManager().showNpcOneLineDialogue("I have already given you a chart!", 591);
                                     var0.getDialogueManager().finishDialogue();
                                     return true;
@@ -3478,7 +3478,7 @@ public class DialogueManager {
                         return true;
                     }
                     case 17: {
-                        var0.getInventoryManager().b(new ItemStack(2576, 1));
+                        var0.getInventoryManager().addOrDropItem(new ItemStack(2576, 1));
                         var0.getDialogueManager().a("The professor has given you a navigation chart.", 2576);
                         return true;
                     }
@@ -3516,7 +3516,7 @@ public class DialogueManager {
                         break;
                     }
                     case 4: {
-                        GrandExchangeManager.a(var0);
+                        GrandExchangeManager.openGrandExchange(var0);
                         var0.getDialogueManager().markDialogueInactive();
                     }
                 }
@@ -3525,7 +3525,7 @@ public class DialogueManager {
             case 223: {
                 switch (var0.getDialogueManager().getDialogueStep()) {
                     case 1: {
-                        if (var0.aq(2575) || !var0.D) {
+                        if (var0.ownsItem(2575) || !var0.D) {
                             return false;
                         }
                         var0.getDialogueManager().showPlayerOneLineDialogue("Hello.", 591);
@@ -3560,7 +3560,7 @@ public class DialogueManager {
                         return true;
                     }
                     case 9: {
-                        var0.getInventoryManager().b(new ItemStack(2575, 1));
+                        var0.getInventoryManager().addOrDropItem(new ItemStack(2575, 1));
                         var0.getDialogueManager().a("Brother Kojo has given you a watch.", 2575);
                         var0.getDialogueManager().finishDialogue();
                         return true;
@@ -3571,7 +3571,7 @@ public class DialogueManager {
             case 463: {
                 switch (var0.getDialogueManager().getDialogueStep()) {
                     case 1: {
-                        if (var0.aq(2574) || !var0.D) {
+                        if (var0.ownsItem(2574) || !var0.D) {
                             return false;
                         }
                         var0.getDialogueManager().showPlayerOneLineDialogue("Ahoy there!", 591);
@@ -3614,7 +3614,7 @@ public class DialogueManager {
                         return true;
                     }
                     case 11: {
-                        var0.getInventoryManager().b(new ItemStack(2574, 1));
+                        var0.getInventoryManager().addOrDropItem(new ItemStack(2574, 1));
                         var0.getDialogueManager().a("Murphy has given you his old sextant.", 2574);
                         return true;
                     }
@@ -3661,7 +3661,7 @@ public class DialogueManager {
                     case 4: {
                         if (var0.getInventoryManager().containsItemStack(new ItemStack(995))) {
                             var0.getInventoryManager().removeItem(new ItemStack(995));
-                            var0.getInventoryManager().b(new ItemStack(1971));
+                            var0.getInventoryManager().addOrDropItem(new ItemStack(1971));
                             var0.getPacketSender().sendGameMessage("You buy a kebab.");
                             break block0;
                         }
@@ -3752,7 +3752,7 @@ public class DialogueManager {
                     case 12: {
                         if (var0.getInventoryManager().containsItemStack(new ItemStack(995, 3))) {
                             var0.getInventoryManager().removeItem(new ItemStack(995, 3));
-                            var0.getInventoryManager().b(new ItemStack(950));
+                            var0.getInventoryManager().addOrDropItem(new ItemStack(950));
                             var0.getDialogueManager().showItemMessage("You buy some silk for 3gp.", new ItemStack(950));
                             var0.getDialogueManager().finishDialogue();
                         } else {
@@ -3768,7 +3768,7 @@ public class DialogueManager {
                     case 14: {
                         if (var0.getInventoryManager().containsItemStack(new ItemStack(995, 2))) {
                             var0.getInventoryManager().removeItem(new ItemStack(995, 2));
-                            var0.getInventoryManager().b(new ItemStack(950));
+                            var0.getInventoryManager().addOrDropItem(new ItemStack(950));
                             var0.getDialogueManager().showItemMessage("You buy some silk for 2gp.", new ItemStack(950));
                             var0.getDialogueManager().finishDialogue();
                         } else {
@@ -3784,7 +3784,7 @@ public class DialogueManager {
                 switch (var0.getDialogueManager().getDialogueStep()) {
                     case 1: {
                         var0.getDialogueManager().showNpcOneLineDialogue("Hello there, can I help you?", 588);
-                        var1_1 = GameUtil.g(2);
+                        var1_1 = GameUtil.randomInclusive(2);
                         var0.getDialogueManager().setNextDialogueStep(var1_1 == 0 ? 2 : (var1_1 == 1 ? 6 : 4));
                         return true;
                     }
@@ -3969,7 +3969,7 @@ public class DialogueManager {
                         switch (var3_18) {
                             case 1: {
                                 var0.getPacketSender().sendGameMessage("The 10th squad sigil begins to shake violently!");
-                                var0.n(true);
+                                var0.setActionLocked(true);
                                 var0.getPacketSender().showInterface(8677);
                                 var1_4 = var0;
                                 var6_22 = new TenthSquadSigilTeleportTask(5, var1_4);
@@ -4086,12 +4086,12 @@ public class DialogueManager {
                     }
                     case 2: {
                         if (ServerSettings.cacheVersion >= 336) {
-                            if (PartyRoomManager.f >= 1000000 && PartyRoomManager.a) {
+                            if (PartyRoomManager.partyChestValue >= 1000000 && PartyRoomManager.balloonDropPending) {
                                 var0.getDialogueManager().showFourOptions("I would like to access my bank account.", "I would like to edit my Bank Pin settings.", "Teleport me to Party Room.", "Nothing.");
                             } else {
                                 var0.getDialogueManager().showThreeOptions("I would like to access my bank account.", "I would like to edit my Bank Pin settings.", "Nothing.");
                             }
-                        } else if (PartyRoomManager.f >= 1000000 && PartyRoomManager.a) {
+                        } else if (PartyRoomManager.partyChestValue >= 1000000 && PartyRoomManager.balloonDropPending) {
                             var0.getDialogueManager().showThreeOptions("I would like to access my bank account.", "Teleport me to Party Room.", "Nothing.");
                         } else {
                             var0.getDialogueManager().showTwoOptions("I would like to access my bank account.", "Nothing.");
@@ -4111,7 +4111,7 @@ public class DialogueManager {
                                     return true;
                                 }
                                 case 3: {
-                                    if (PartyRoomManager.f >= 1000000 && PartyRoomManager.a) {
+                                    if (PartyRoomManager.partyChestValue >= 1000000 && PartyRoomManager.balloonDropPending) {
                                         var0.getDialogueManager().showPlayerOneLineDialogue("Teleport me to Party Room please.", 591);
                                         var0.getDialogueManager().setNextDialogueStep(30);
                                     } else {
@@ -4134,7 +4134,7 @@ public class DialogueManager {
                                 return true;
                             }
                             case 2: {
-                                if (PartyRoomManager.f >= 1000000 && PartyRoomManager.a) {
+                                if (PartyRoomManager.partyChestValue >= 1000000 && PartyRoomManager.balloonDropPending) {
                                     var0.getDialogueManager().showPlayerOneLineDialogue("Teleport me to Party Room please.", 591);
                                     var0.getDialogueManager().setNextDialogueStep(30);
                                 } else {
@@ -4362,7 +4362,7 @@ public class DialogueManager {
                     case 3: {
                         switch (var3_18) {
                             case 1: {
-                                BarrowsManager.a(var0, true);
+                                BarrowsManager.generateTunnelRoute(var0, true);
                                 break block729;
                             }
                             case 2: {
@@ -4405,7 +4405,7 @@ public class DialogueManager {
                         }
                     }
                     case 5: {
-                        var0.getDuelSession().g();
+                        var0.getDuelSession().restoreHitpoints();
                         break block0;
                     }
                     case 6: {
@@ -4419,7 +4419,7 @@ public class DialogueManager {
             case 741: {
                 block750 : switch (var0.getDialogueManager().getDialogueStep()) {
                     case 1: {
-                        if (var0.getQuestState(5) == 1 && !var0.aq(1540)) {
+                        if (var0.getQuestState(5) == 1 && !var0.ownsItem(1540)) {
                             var0.getDialogueManager().showNpcOneLineDialogue("Hello, welcome to my kingdom.", 591);
                             return true;
                         }
@@ -4504,7 +4504,7 @@ public class DialogueManager {
                         break;
                     }
                     case 6: {
-                        AttackStyleDefinition.a(var0, new Position(2822, 9774, 0));
+                        AttackStyleDefinition.startDelayedObjectMove(var0, new Position(2822, 9774, 0));
                         var0.getSkillManager().setCurrentLevel(5, 1);
                         var0.getSkillManager().refreshSkill(5);
                         var0.getDialogueManager().finishDialogue();
@@ -4657,12 +4657,12 @@ public class DialogueManager {
             case 10088: {
                 block818 : switch (var0.getDialogueManager().getDialogueStep()) {
                     case 1: {
-                        var1_6 = ItemCombinationHandler.c(var0.N);
+                        var1_6 = ItemCombinationHandler.forBrokenToolItemId(var0.N);
                         if (var1_6 == null) break;
                         var0.getDialogueManager().setDialogueNpcId(var0.O);
                         var6_23 = "free";
-                        if (var1_6.j() != 0) {
-                            var6_23 = String.valueOf(var1_6.j()) + "gp";
+                        if (var1_6.getRepairCostCoins() != 0) {
+                            var6_23 = String.valueOf(var1_6.getRepairCostCoins()) + "gp";
                         }
                         var0.getDialogueManager().showNpcTwoLineDialogue("Quite badly damaged, but easy to repair. Would you", "like me to repair it for " + var6_23 + "?", 591);
                         return true;
@@ -4674,18 +4674,18 @@ public class DialogueManager {
                     case 3: {
                         switch (var3_18) {
                             case 1: {
-                                var1_7 = ItemCombinationHandler.c(var0.N);
+                                var1_7 = ItemCombinationHandler.forBrokenToolItemId(var0.N);
                                 if (var1_7 == null) break block818;
                                 var7_31 = "axe";
-                                if (var1_7.i() == 14) {
+                                if (var1_7.getSkillId() == 14) {
                                     var7_31 = "pickaxe";
                                 }
                                 var6_24 = "free";
-                                if (var1_7.j() != 0) {
-                                    var6_24 = String.valueOf(var1_7.j()) + "gp";
+                                if (var1_7.getRepairCostCoins() != 0) {
+                                    var6_24 = String.valueOf(var1_7.getRepairCostCoins()) + "gp";
                                 }
                                 var8_39 = new Npc(var0.O);
-                                if (ItemCombinationHandler.e(var0, var0.N)) {
+                                if (ItemCombinationHandler.repairBrokenGatheringTool(var0, var0.N)) {
                                     var0.getPacketSender().sendGameMessage(String.valueOf(var8_39.getDefinition().getName()) + " fixes your " + var7_31 + " for " + var6_24 + ".");
                                 }
                                 var0.N = -1;
@@ -4706,10 +4706,10 @@ public class DialogueManager {
             case 10089: {
                 switch (var0.getDialogueManager().getDialogueStep()) {
                     case 1: {
-                        var1_8 = var0.K;
+                        var1_8 = var0.pendingDialogueItem;
                         if (var1_8 == null) break block0;
                         var0.getDialogueManager().setDialogueNpcId(var0.O);
-                        var0.getDialogueManager().showNpcOneLineDialogue("That'll cost you " + GameUtil.a((long)BarrowsRepairHandler.a(var1_8)) + " gold coins to fix, are you sure?", 591);
+                        var0.getDialogueManager().showNpcOneLineDialogue("That'll cost you " + GameUtil.formatNumber((long)BarrowsRepairHandler.calculateRepairCost(var1_8)) + " gold coins to fix, are you sure?", 591);
                         return true;
                     }
                     case 2: {
@@ -4725,7 +4725,7 @@ public class DialogueManager {
                             case 2: {
                                 var0.getDialogueManager().showPlayerOneLineDialogue("On second thoughts, no thanks.", 591);
                                 var0.O = -1;
-                                var0.K = null;
+                                var0.pendingDialogueItem = null;
                                 var0.getDialogueManager().finishDialogue();
                                 return true;
                             }
@@ -4733,16 +4733,16 @@ public class DialogueManager {
                         break block0;
                     }
                     case 4: {
-                        var1_9 = var0.K;
+                        var1_9 = var0.pendingDialogueItem;
                         if (var1_9 == null) break block0;
                         var0.getDialogueManager().setDialogueNpcId(var0.O);
-                        if (BarrowsRepairHandler.a(var0, var1_9)) {
+                        if (BarrowsRepairHandler.repairItem(var0, var1_9)) {
                             var0.getDialogueManager().showNpcOneLineDialogue("There you go, happy doing business with you!", 591);
                         } else {
                             var0.getDialogueManager().showNpcOneLineDialogue("You do not have enough gold coins!", 614);
                         }
                         var0.O = -1;
-                        var0.K = null;
+                        var0.pendingDialogueItem = null;
                         var0.getDialogueManager().finishDialogue();
                         return true;
                     }
@@ -4850,13 +4850,13 @@ public class DialogueManager {
                                 var0.packetSender.sendGameMessage("You need to be in members world to access members content.");
                             } else {
                                 if (var0.getQuestState(46) != 1) {
-                                    var1_10 = QuestDefinition.b(46);
-                                    var6_25 = var1_10.c();
+                                    var1_10 = QuestDefinition.forId(46);
+                                    var6_25 = var1_10.getName();
                                     var0.getPacketSender().sendGameMessage("You need to complete " + var6_25 + " to use the glider.");
                                     var0.getDialogueManager().finishDialogue();
                                     return true;
                                 }
-                                var1_1 = GameUtil.a(var0.getPosition().getX(), var0.getPosition().getY());
+                                var1_1 = GameUtil.getRegionId(var0.getPosition().getX(), var0.getPosition().getY());
                                 if (var1_1 == 13109) {
                                     return false;
                                 }
@@ -4886,8 +4886,8 @@ public class DialogueManager {
                 block870 : switch (var0.getDialogueManager().getDialogueStep()) {
                     case 1: {
                         if (var0.getQuestState(85) != 1) {
-                            var1_11 = QuestDefinition.b(85);
-                            var6_26 = var1_11.c();
+                            var1_11 = QuestDefinition.forId(85);
+                            var6_26 = var1_11.getName();
                             var0.getDialogueManager().showOneLineStatement("You need to complete " + var6_26 + " to do this.");
                             var0.getDialogueManager().finishDialogue();
                             return true;
@@ -4986,7 +4986,7 @@ public class DialogueManager {
                         return true;
                     }
                     case 2: {
-                        if (ServerSettings.membershipRequirementMode == 4 && !var0.eg()) {
+                        if (ServerSettings.membershipRequirementMode == 4 && !var0.hasMemberFlag()) {
                             var0.getDialogueManager().showFourOptions("I'm looking for whoever is in charge of this place.", "I have come to kill everyone in this castle!", "I don't know. I'm lost. Where am I?", "I would like to buy membership.");
                         } else {
                             var0.getDialogueManager().showThreeOptions("I'm looking for whoever is in charge of this place.", "I have come to kill everyone in this castle!", "I don't know. I'm lost. Where am I?");
@@ -5011,9 +5011,9 @@ public class DialogueManager {
                             }
                             case 4: {
                                 if (ServerSettings.membershipDaysPerPurchase <= 0) {
-                                    var0.getDialogueManager().showNpcOneLineDialogue("That will cost you " + GameUtil.a((long)ServerSettings.membershipRequirementValue) + " coins.", 591);
+                                    var0.getDialogueManager().showNpcOneLineDialogue("That will cost you " + GameUtil.formatNumber((long)ServerSettings.membershipRequirementValue) + " coins.", 591);
                                 } else {
-                                    var0.getDialogueManager().showNpcTwoLineDialogue("That will cost you " + GameUtil.a((long)ServerSettings.membershipRequirementValue) + " coins", "for " + ServerSettings.membershipDaysPerPurchase + " days of membership.", 591);
+                                    var0.getDialogueManager().showNpcTwoLineDialogue("That will cost you " + GameUtil.formatNumber((long)ServerSettings.membershipRequirementValue) + " coins", "for " + ServerSettings.membershipDaysPerPurchase + " days of membership.", 591);
                                 }
                                 var0.getDialogueManager().setNextDialogueStep(10);
                                 return true;
@@ -5022,7 +5022,7 @@ public class DialogueManager {
                         break;
                     }
                     case 4: {
-                        var1_12 = World.g()[var0.getInteractionTargetIndex()];
+                        var1_12 = World.getNpcs()[var0.getInteractionTargetIndex()];
                         var1_12.getUpdateState().setForcedTextAndMarkUpdated("Help! Help!");
                         var1_12.getTargetMovement().moveAwayFromOverlap();
                         break;
@@ -5036,7 +5036,7 @@ public class DialogueManager {
                             case 1: {
                                 if (var0.getInventoryManager().removeItem(new ItemStack(995, ServerSettings.membershipRequirementValue))) {
                                     if (ServerSettings.membershipDaysPerPurchase <= 0) {
-                                        var0.w(true);
+                                        var0.setMemberFlag(true);
                                         var0.getPacketSender().sendGameMessage("You are now a member!");
                                         var0.getDialogueManager().showNpcOneLineDialogue("You have now been granted members access!", 588);
                                     } else {
@@ -5049,9 +5049,9 @@ public class DialogueManager {
                                         }
                                         var6_27 = System.currentTimeMillis();
                                         if (var0.isMember()) {
-                                            var6_27 = var0.cc;
+                                            var6_27 = var0.membershipExpiresMillis;
                                         }
-                                        var0.cc = GameplayHelper.a(var6_27, ServerSettings.membershipDaysPerPurchase);
+                                        var0.membershipExpiresMillis = GameplayHelper.a(var6_27, ServerSettings.membershipDaysPerPurchase);
                                     }
                                     var0.getDialogueManager().finishDialogue();
                                     return true;
@@ -5074,11 +5074,11 @@ public class DialogueManager {
                     case 2: {
                         switch (var3_18) {
                             case 1: {
-                                AttackStyleDefinition.a(var0, new Position(2544, 3741, 0));
+                                AttackStyleDefinition.startDelayedObjectMove(var0, new Position(2544, 3741, 0));
                                 break block903;
                             }
                             case 2: {
-                                AttackStyleDefinition.a(var0, new Position(1798, 4407, 3));
+                                AttackStyleDefinition.startDelayedObjectMove(var0, new Position(1798, 4407, 3));
                             }
                         }
                     }
@@ -5158,7 +5158,7 @@ public class DialogueManager {
                                     while (var6_28 < var7_36) {
                                         var1_13 = var8_40[var6_28];
                                         if (var1_13 != null && var1_13.getId() == 1716) {
-                                            var0.getInventoryManager().a(new ItemStack(1716), new ItemStack(1718));
+                                            var0.getInventoryManager().replaceItem(new ItemStack(1716), new ItemStack(1718));
                                         }
                                         ++var6_28;
                                     }
@@ -5181,11 +5181,11 @@ public class DialogueManager {
                     case 2: {
                         switch (var3_18) {
                             case 1: {
-                                AttackStyleDefinition.a(var0, "up");
+                                AttackStyleDefinition.climbOneFloorAtCurrentTile(var0, "up");
                                 break block936;
                             }
                             case 2: {
-                                AttackStyleDefinition.a(var0, "down");
+                                AttackStyleDefinition.climbOneFloorAtCurrentTile(var0, "down");
                             }
                         }
                     }
@@ -5201,11 +5201,11 @@ public class DialogueManager {
                     case 2: {
                         switch (var3_18) {
                             case 1: {
-                                AttackStyleDefinition.b(var0, "up");
+                                AttackStyleDefinition.climbOffsetLadder(var0, "up");
                                 break block944;
                             }
                             case 2: {
-                                AttackStyleDefinition.b(var0, "down");
+                                AttackStyleDefinition.climbOffsetLadder(var0, "down");
                             }
                         }
                     }
@@ -5256,11 +5256,11 @@ lbl2786:
                         if (var0.isMember()) {
                             if (ServerSettings.freeToPlayWorld) {
                                 var0.packetSender.sendGameMessage("You need to be in members world to access members content.");
-                            } else if (var0.eE == 1) {
+                            } else if (var0.enterTheAbyssMiniquestState == 1) {
                                 var0.getDialogueManager().showNpcOneLineDialogue("How can I help a fellow Zamorak follower?", 591);
-                            } else if (var0.getQuestState(14) == 1 && (var0.eE == 0 || var0.eE == 2)) {
+                            } else if (var0.getQuestState(14) == 1 && (var0.enterTheAbyssMiniquestState == 0 || var0.enterTheAbyssMiniquestState == 2)) {
                                 var0.getDialogueManager().showNpcTwoLineDialogue("Meet me in Varrock's Chaos Temple.", "Here is not the place to talk.", 591);
-                                var0.eE = 2;
+                                var0.enterTheAbyssMiniquestState = 2;
                                 var0.bp();
                                 var0.getDialogueManager().finishDialogue();
                             } else {
@@ -5297,15 +5297,15 @@ lbl2786:
                     }
                     case 4: {
                         if (var0.getQuestState(14) != 1) {
-                            var1_14 = QuestDefinition.b(14);
-                            var6_29 = var1_14.c();
+                            var1_14 = QuestDefinition.forId(14);
+                            var6_29 = var1_14.getName();
                             var0.getDialogueManager().showOneLineStatement("You need to complete " + var6_29 + " to do this.");
                             var0.getDialogueManager().finishDialogue();
                             return true;
                         }
-                        var1_15 = World.g()[var0.getInteractionTargetIndex()];
-                        if (var0.eE == 1) {
-                            AbyssManager.b(var0, var1_15);
+                        var1_15 = World.getNpcs()[var0.getInteractionTargetIndex()];
+                        if (var0.enterTheAbyssMiniquestState == 1) {
+                            AbyssManager.startAbyssMageTeleport(var0, var1_15);
                             break block0;
                         }
                         var0.getDialogueManager().showOneLineStatement("You need to complete Enter the Abyss miniquest to do this.");
@@ -5313,7 +5313,7 @@ lbl2786:
                         break block0;
                     }
                     case 5: {
-                        ShopManager.a(var0, GameplayHelper.c(var1_1));
+                        ShopManager.openShop(var0, GameplayHelper.c(var1_1));
                         var0.getDialogueManager().markDialogueInactive();
                         break block0;
                     }
@@ -5362,7 +5362,7 @@ lbl2786:
                     case 2: {
                         switch (var3_18) {
                             case 1: {
-                                ShopManager.a(var0, GameplayHelper.c(var1_1));
+                                ShopManager.openShop(var0, GameplayHelper.c(var1_1));
                                 var0.getDialogueManager().markDialogueInactive();
                                 break block981;
                             }
@@ -5371,7 +5371,7 @@ lbl2786:
                                     var0.getDialogueManager().showTwoOptionsWithTitle("Are you sure you want to spend 700 donator poins?", "Yes", "No");
                                     return true;
                                 }
-                                var0.be();
+                                var0.applyDefaultMaleAppearance();
                                 var0.getDialogueManager().showNpcOneLineDialogue("Come back anytime.", 591);
                                 var0.getDialogueManager().finishDialogue();
                                 return true;
@@ -5382,9 +5382,9 @@ lbl2786:
                     case 3: {
                         switch (var3_18) {
                             case 1: {
-                                if (var0.dm() >= 700) {
-                                    var0.be();
-                                    var0.S(700);
+                                if (var0.getDonatorPoints() >= 700) {
+                                    var0.applyDefaultMaleAppearance();
+                                    var0.subtractDonatorPoints(700);
                                     var0.ee = 1;
                                 }
                                 var0.getDialogueManager().showNpcOneLineDialogue("Come back anytime.", 591);
@@ -5646,7 +5646,7 @@ lbl2919:
                     case 9: {
                         if (var0.getInventoryManager().getContainer().getFreeSlots() <= 0) {
                             var0.getDialogueManager().showNpcTwoLineDialogue("Looks like you don't have enough room", "in your inventory.", 591);
-                        } else if (var0.aq(1590)) {
+                        } else if (var0.ownsItem(1590)) {
                             var0.getDialogueManager().showNpcOneLineDialogue("I already gave you the key!", 591);
                         } else {
                             var0.getInventoryManager().addItem(new ItemStack(1590));
@@ -5779,24 +5779,24 @@ lbl2919:
             case 12345: {
                 switch (var0.getDialogueManager().getDialogueStep()) {
                     case 1: {
-                        var0.getDialogueManager().showTwoOptionsWithTitle("Drop your " + var0.K.getDefinition().getName() + " for " + var0.L.getUsername() + " to take?", "Yes", "No");
+                        var0.getDialogueManager().showTwoOptionsWithTitle("Drop your " + var0.pendingDialogueItem.getDefinition().getName() + " for " + var0.pendingItemDropTarget.getUsername() + " to take?", "Yes", "No");
                         return true;
                     }
                     case 2: {
                         switch (var3_18) {
                             case 1: {
-                                if (var0.L != null && !var0.L.isDead()) {
-                                    GroundItemManager.getInstance().spawn(new GroundItem(new ItemStack(var0.K.getId(), 1), var0.L));
-                                    var0.getInventoryManager().removeItem(new ItemStack(var0.K.getId(), 1));
-                                    var0.getPacketSender().sendGameMessage(String.valueOf(var0.L.getUsername()) + " can now take the item from the ground.");
-                                    var0.L.getPacketSender().sendGameMessage(String.valueOf(var0.getUsername()) + " has dropped something for you to take.");
-                                    var0.K = null;
-                                    var0.L = null;
+                                if (var0.pendingItemDropTarget != null && !var0.pendingItemDropTarget.isDead()) {
+                                    GroundItemManager.getInstance().spawn(new GroundItem(new ItemStack(var0.pendingDialogueItem.getId(), 1), var0.pendingItemDropTarget));
+                                    var0.getInventoryManager().removeItem(new ItemStack(var0.pendingDialogueItem.getId(), 1));
+                                    var0.getPacketSender().sendGameMessage(String.valueOf(var0.pendingItemDropTarget.getUsername()) + " can now take the item from the ground.");
+                                    var0.pendingItemDropTarget.getPacketSender().sendGameMessage(String.valueOf(var0.getUsername()) + " has dropped something for you to take.");
+                                    var0.pendingDialogueItem = null;
+                                    var0.pendingItemDropTarget = null;
                                 }
                             }
                             case 2: {
-                                var0.K = null;
-                                var0.L = null;
+                                var0.pendingDialogueItem = null;
+                                var0.pendingItemDropTarget = null;
                             }
                         }
                     }
@@ -5842,19 +5842,19 @@ lbl2919:
                         break;
                     }
                     case 4: {
-                        AttackStyleDefinition.a(var0, new Position(2542, 3169, 0));
+                        AttackStyleDefinition.startDelayedObjectMove(var0, new Position(2542, 3169, 0));
                         break;
                     }
                     case 5: {
-                        AttackStyleDefinition.a(var0, new Position(2462, 3444, 0));
+                        AttackStyleDefinition.startDelayedObjectMove(var0, new Position(2462, 3444, 0));
                         break;
                     }
                     case 6: {
-                        AttackStyleDefinition.a(var0, new Position(2556, 3259, 0));
+                        AttackStyleDefinition.startDelayedObjectMove(var0, new Position(2556, 3259, 0));
                         break;
                     }
                     case 7: {
-                        AttackStyleDefinition.a(var0, new Position(3179, 3506, 0));
+                        AttackStyleDefinition.startDelayedObjectMove(var0, new Position(3179, 3506, 0));
                     }
                 }
                 break;
@@ -5894,19 +5894,19 @@ lbl2919:
                         break;
                     }
                     case 4: {
-                        AttackStyleDefinition.a(var0, new Position(2542, 3169, 0));
+                        AttackStyleDefinition.startDelayedObjectMove(var0, new Position(2542, 3169, 0));
                         break;
                     }
                     case 5: {
-                        AttackStyleDefinition.a(var0, new Position(2462, 3444, 0));
+                        AttackStyleDefinition.startDelayedObjectMove(var0, new Position(2462, 3444, 0));
                         break;
                     }
                     case 6: {
-                        AttackStyleDefinition.a(var0, new Position(2556, 3259, 0));
+                        AttackStyleDefinition.startDelayedObjectMove(var0, new Position(2556, 3259, 0));
                         break;
                     }
                     case 7: {
-                        AttackStyleDefinition.a(var0, new Position(3179, 3506, 0));
+                        AttackStyleDefinition.startDelayedObjectMove(var0, new Position(3179, 3506, 0));
                     }
                 }
                 break;
@@ -6018,7 +6018,7 @@ lbl2919:
                         return true;
                     }
                     case 10: {
-                        ShopManager.a(var0, GameplayHelper.c(var1_1));
+                        ShopManager.openShop(var0, GameplayHelper.c(var1_1));
                         var0.getDialogueManager().markDialogueInactive();
                         break;
                     }
@@ -6532,7 +6532,7 @@ lbl2919:
             case 599: {
                 block1280 : switch (var0.getDialogueManager().getDialogueStep()) {
                     case 1: {
-                        var0.getDialogueManager().showNpcTwoLineDialogue("Greetings, " + GameUtil.c(var0.getUsername()) + ".", "How may I assist you?", 591);
+                        var0.getDialogueManager().showNpcTwoLineDialogue("Greetings, " + GameUtil.formatDisplayName(var0.getUsername()) + ".", "How may I assist you?", 591);
                         return true;
                     }
                     case 2: {
@@ -6621,8 +6621,8 @@ lbl2919:
                 break;
             }
             case 10010: {
-                if (!var0.getDuelSession().f()) break;
-                if (DuelRule.f.a(var0)) {
+                if (!var0.getDuelSession().isActiveDuelStarted()) break;
+                if (DuelRule.NO_FORFEIT.isEnabledFor(var0)) {
                     var0.getPacketSender().sendGameMessage("Forfeiting is disabled in this match!");
                     break;
                 }
@@ -6638,7 +6638,7 @@ lbl2919:
                     case 3: {
                         switch (var3_18) {
                             case 1: {
-                                var0.getDuelSession().a(true);
+                                var0.getDuelSession().finishDuelLoss(true);
                                 return true;
                             }
                         }
@@ -6660,7 +6660,7 @@ lbl2919:
                         return true;
                     }
                     case 2: {
-                        if (var0.getSlayerManager().slayerMasterId == 3887 && !var0.F) {
+                        if (var0.getSlayerManager().slayerMasterId == 3887 && !var0.skulled) {
                             var0.getDialogueManager().showOptions(new String[]{"How am I doing so far?", "Who are you?", "Where are you?", "Got any tips for me?", "Activate skull"});
                         } else {
                             var0.getDialogueManager().showOptions(new String[]{"How am I doing so far?", "Who are you?", "Where are you?", "Got any tips for me?", "Nothing really."});
@@ -6695,8 +6695,8 @@ lbl2919:
                                 return true;
                             }
                             case 5: {
-                                if (var0.getSlayerManager().slayerMasterId == 3887 && !var0.F) {
-                                    var0.b(var0, 2000);
+                                if (var0.getSlayerManager().slayerMasterId == 3887 && !var0.skulled) {
+                                    var0.addPvpCombatReference(var0, 2000);
                                     var0.getPacketSender().sendGameMessage("You are now skulled!");
                                 } else {
                                     ** GOTO lbl3882
@@ -6784,7 +6784,7 @@ lbl3882:
                         break;
                     }
                     case 6: {
-                        ShopManager.a(var0, GameplayHelper.c(var1_1));
+                        ShopManager.openShop(var0, GameplayHelper.c(var1_1));
                         var0.getDialogueManager().markDialogueInactive();
                     }
                 }
@@ -6797,8 +6797,8 @@ lbl3882:
                         return true;
                     }
                     case 2: {
-                        var0.getInventoryManager().b(new ItemStack(1971));
-                        var0.getInventoryManager().b(new ItemStack(1917));
+                        var0.getInventoryManager().addOrDropItem(new ItemStack(1971));
+                        var0.getInventoryManager().addOrDropItem(new ItemStack(1917));
                         var0.getDialogueManager().showTwoItemMessage("The dwarf gives you beer and a kebab.", "", new ItemStack(1971), new ItemStack(1917));
                         CacheDefinitionIndex.dismissRandomEventNpc(var0);
                         var0.getDialogueManager().finishDialogue();
@@ -6814,7 +6814,7 @@ lbl3882:
                         return true;
                     }
                     case 2: {
-                        var0.getInventoryManager().b(new ItemStack(2528));
+                        var0.getInventoryManager().addOrDropItem(new ItemStack(2528));
                         var0.getDialogueManager().showItemMessage("The genie gives you a lamp.", new ItemStack(2528));
                         CacheDefinitionIndex.dismissRandomEventNpc(var0);
                         var0.getDialogueManager().finishDialogue();
@@ -6831,8 +6831,8 @@ lbl3882:
                     }
                     case 2: {
                         var9_48 = new ItemStack[]{new ItemStack(995, 50), new ItemStack(1969), new ItemStack(985), new ItemStack(987), new ItemStack(1623), new ItemStack(1621), new ItemStack(1619), new ItemStack(1617)};
-                        var10_50 = var9_48[GameUtil.f(8)];
-                        var0.getInventoryManager().b(var10_50);
+                        var10_50 = var9_48[GameUtil.randomExclusive(8)];
+                        var0.getInventoryManager().addOrDropItem(var10_50);
                         var0.getDialogueManager().showItemMessage("Rick hands you " + var10_50.getDefinition().getName().toLowerCase() + ".", var10_50);
                         CacheDefinitionIndex.dismissRandomEventNpc(var0);
                         var0.getDialogueManager().finishDialogue();
@@ -6844,10 +6844,10 @@ lbl3882:
             case 2540: {
                 switch (var0.getDialogueManager().getDialogueStep()) {
                     case 1: {
-                        if (var0.fi() == null) {
-                            var0.b(RandomEventManager.a());
+                        if (var0.getRandomEventRequestedItem() == null) {
+                            var0.setRandomEventRequestedItem(RandomEventManager.a());
                         }
-                        var0.getDialogueManager().showNpcTwoLineDialogue("Hello " + var0.getUsername() + ",", "would you happen to have a " + var0.fi().getDefinition().getName().toLowerCase() + "?", 588);
+                        var0.getDialogueManager().showNpcTwoLineDialogue("Hello " + var0.getUsername() + ",", "would you happen to have a " + var0.getRandomEventRequestedItem().getDefinition().getName().toLowerCase() + "?", 588);
                         return true;
                     }
                     case 2: {
@@ -6857,16 +6857,16 @@ lbl3882:
                     case 3: {
                         switch (var3_18) {
                             case 1: {
-                                if (var0.getInventoryManager().removeItem(var0.fi())) {
+                                if (var0.getInventoryManager().removeItem(var0.getRandomEventRequestedItem())) {
                                     var0.getDialogueManager().showNpcOneLineDialogue("Oh thank you so much, here have this potion.", 588);
                                 } else {
                                     var0.getDialogueManager().showNpcTwoLineDialogue("Looks like you don't have it. Oh well,", "have this potion I don't need anyways.", 588);
-                                    var0.b(new ItemStack(1));
+                                    var0.setRandomEventRequestedItem(new ItemStack(1));
                                 }
                                 return true;
                             }
                             case 2: {
-                                var0.b(new ItemStack(1));
+                                var0.setRandomEventRequestedItem(new ItemStack(1));
                                 var0.getDialogueManager().showNpcTwoLineDialogue("Oh well, was worth a try.", "Here, have this potion I don't need.", 588);
                                 return true;
                             }
@@ -6874,10 +6874,10 @@ lbl3882:
                         break block0;
                     }
                     case 4: {
-                        var9_49 = RandomEventManager.a(var0.fi().getId());
-                        var0.getInventoryManager().b(var9_49);
+                        var9_49 = RandomEventManager.a(var0.getRandomEventRequestedItem().getId());
+                        var0.getInventoryManager().addOrDropItem(var9_49);
                         var0.getDialogueManager().showTwoItemMessage("Jekyll hands you " + var9_49.getDefinition().getName().toLowerCase() + ".", "", new ItemStack(-1, 1), var9_49);
-                        var0.b((ItemStack)null);
+                        var0.setRandomEventRequestedItem(null);
                         CacheDefinitionIndex.dismissRandomEventNpc(var0);
                         var0.getDialogueManager().finishDialogue();
                         return true;

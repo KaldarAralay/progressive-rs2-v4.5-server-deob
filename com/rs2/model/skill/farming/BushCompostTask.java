@@ -30,8 +30,8 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        BushPatchManager.getPlayer(this.manager).n(false);
-        BushPatchManager.getPlayer(this.manager).aN();
+        BushPatchManager.getPlayer(this.manager).setActionLocked(false);
+        BushPatchManager.getPlayer(this.manager).resetAnimation();
     }
 }
 

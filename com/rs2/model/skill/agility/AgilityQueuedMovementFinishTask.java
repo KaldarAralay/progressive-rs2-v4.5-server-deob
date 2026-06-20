@@ -33,15 +33,15 @@ extends CycleEvent {
         player.packetSender.sendGameMessage("...You make it safely to the other side.");
         this.player.getUpdateState().setForcedMovementUpdateRequired(false);
         if (this.unlockPlayer) {
-            this.player.n(false);
+            this.player.setActionLocked(false);
         }
         this.player.aw = false;
         this.player.moveTo(new Position(this.destinationX, this.destinationY, this.destinationPlane));
         this.player.getUpdateState().clearForcedMovement();
-        this.player.al(-1);
-        this.player.aj(-1);
-        this.player.ak(-1);
-        this.player.f(true);
+        this.player.setStandAnimationOverride(-1);
+        this.player.setRunAnimationOverride(-1);
+        this.player.setWalkAnimationOverride(-1);
+        this.player.setAppearanceUpdateRequired(true);
         cycleEventContainer.stop();
     }
 

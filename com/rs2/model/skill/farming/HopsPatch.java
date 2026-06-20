@@ -9,10 +9,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum HopsPatch {
-    a(0, new Position[]{new Position(3227, 3313, 0), new Position(3231, 3317, 0)}, 2333),
-    b(1, new Position[]{new Position(2664, 3523, 0), new Position(2669, 3528, 0)}, 2334),
-    c(2, new Position[]{new Position(2574, 3103, 0), new Position(2577, 3106, 0)}, 2332),
-    d(3, new Position[]{new Position(2809, 3335, 0), new Position(2812, 3338, 0)}, 2327);
+    LUMBRIDGE(0, new Position[]{new Position(3227, 3313, 0), new Position(3231, 3317, 0)}, 2333),
+    SEERS_VILLAGE(1, new Position[]{new Position(2664, 3523, 0), new Position(2669, 3528, 0)}, 2334),
+    YANILLE(2, new Position[]{new Position(2574, 3103, 0), new Position(2577, 3106, 0)}, 2332),
+    ENTRANA(3, new Position[]{new Position(2809, 3335, 0), new Position(2812, 3338, 0)}, 2327);
 
     private int index;
     private Position[] bounds;
@@ -55,7 +55,7 @@ public enum HopsPatch {
             HopsPatch hopsPatch;
             HopsPatch hopsPatch2 = hopsPatch = hopsPatchArray[n2];
             hopsPatch2 = hopsPatch;
-            if (FarmingPatchUtils.a(hopsPatch.bounds[0], hopsPatch2.bounds[1], position)) {
+            if (FarmingPatchUtils.containsPosition(hopsPatch.bounds[0], hopsPatch2.bounds[1], position)) {
                 return hopsPatch;
             }
             ++n2;

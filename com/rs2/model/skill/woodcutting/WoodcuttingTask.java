@@ -77,7 +77,7 @@ extends CycleEvent {
         }
         if (bl) {
             if (this.player.gatheringHazardCounter >= 2) {
-                ItemCombinationHandler.d(this.player, 8);
+                ItemCombinationHandler.breakGatheringTool(this.player, 8);
                 object = this.player;
                 ((Player)object).packetSender.sendGameMessage("Your axe has been broken by the tree ent!");
                 object = this.player;
@@ -89,7 +89,7 @@ extends CycleEvent {
                 cycleEventContainer.stop();
                 return;
             }
-            this.player.getUpdateState().setAnimation(this.gatheringTool.d(), 0);
+            this.player.getUpdateState().setAnimation(this.gatheringTool.getGatherAnimationId(), 0);
             ++this.player.gatheringHazardCounter;
             return;
         }
@@ -123,11 +123,11 @@ extends CycleEvent {
         if (SkillActionHelper.shouldTriggerRandomEvent(this.player) && !this.player.botEnabled && !this.player.r()) {
             GameplayHelper.a(this.player, SkillRandomEventNpc.c);
         }
-        if (this.player.isMember() && !ServerSettings.freeToPlayWorld && GameUtil.h(256) == 0 && !this.player.botEnabled && !this.player.r() && ItemDefinition.isDefined(n = 5070 + GameUtil.g(4))) {
+        if (this.player.isMember() && !ServerSettings.freeToPlayWorld && GameUtil.randomInt(256) == 0 && !this.player.botEnabled && !this.player.r() && ItemDefinition.isDefined(n = 5070 + GameUtil.randomInclusive(4))) {
             GroundItem groundItem = new GroundItem(new ItemStack(n), this.player);
             GroundItemManager.getInstance().spawn(groundItem);
         }
-        if (GameUtil.a(this.treeDefinition.getCutChanceLow(), this.treeDefinition.getCutChanceHigh(), this.player.getSkillManager().getCurrentLevels()[8], this.gatheringTool.f())) {
+        if (GameUtil.rollLevelScaledChance(this.treeDefinition.getCutChanceLow(), this.treeDefinition.getCutChanceHigh(), this.player.getSkillManager().getCurrentLevels()[8], this.gatheringTool.getToolSpeed())) {
             this.player.getSkillManager().addExperience(8, this.treeDefinition.getExperience());
             if (((ItemStack)object3).getId() > 0) {
                 this.player.getInventoryManager().addItem((ItemStack)object3);
@@ -154,7 +154,7 @@ extends CycleEvent {
                     ((Player)object).packetSender.sendGameMessage("You cut a branch from the strangely musical tree.");
                 }
             }
-            if (this.treeDefinition != TreeDefinition.DRAMEN_TREE && this.treeDefinition != TreeDefinition.STRANGE_MUSICAL_TREE && GameUtil.a(TreeDefinition.getDepletionChance(this.treeDefinition))) {
+            if (this.treeDefinition != TreeDefinition.DRAMEN_TREE && this.treeDefinition != TreeDefinition.STRANGE_MUSICAL_TREE && GameUtil.rollChance(TreeDefinition.getDepletionChance(this.treeDefinition))) {
                 if (this.treeDefinition != TreeDefinition.VINES) {
                     object = this.player;
                     ((Player)object).packetSender.sendGameMessage("The tree has run out of logs.");
@@ -162,7 +162,7 @@ extends CycleEvent {
                     ((Player)object).packetSender.sendSoundEffect(1312, 1, 0);
                 }
                 int n5 = SkillActionHelper.getObjectOrientation(this.treeObjectId, this.x, this.y, this.player.getPosition().getPlane());
-                int n6 = GameUtil.b(this.treeDefinition.getRespawnTicksLow(), this.treeDefinition.getRespawnTicksHigh());
+                int n6 = GameUtil.randomBetweenInclusive(this.treeDefinition.getRespawnTicksLow(), this.treeDefinition.getRespawnTicksHigh());
                 new DynamicObject(this.treeDefinition.getStumpObjectId(), this.x, this.y, this.player.getPosition().getPlane(), n5, 10, this.treeObjectId, n6, this.treeDefinition != TreeDefinition.VINES);
                 cycleEventContainer.stop();
                 if (this.treeDefinition == TreeDefinition.VINES) {
@@ -204,7 +204,7 @@ extends CycleEvent {
             }
             return;
         }
-        this.player.getUpdateState().setAnimation(this.gatheringTool.d(), 0);
+        this.player.getUpdateState().setAnimation(this.gatheringTool.getGatherAnimationId(), 0);
     }
 
     @Override

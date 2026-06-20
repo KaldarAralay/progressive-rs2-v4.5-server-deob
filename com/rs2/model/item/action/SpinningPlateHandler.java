@@ -8,36 +8,36 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEventHandler;
 
 public final class SpinningPlateHandler {
-    private static int a = 4613;
-    private static int b = 4614;
-    private static int c = 1902;
-    private static int d = 1904;
-    private static int e = 1906;
+    private static int spinningPlateItemId = 4613;
+    private static int brokenPlateItemId = 4614;
+    private static int startSpinAnimationId = 1902;
+    private static int catchPlateAnimationId = 1904;
+    private static int breakPlateAnimationId = 1906;
 
-    public static boolean a(Player player, int n) {
-        if (n == a) {
-            player.n(true);
-            player.getUpdateState().setAnimation(c, 0);
+    public static boolean spinPlate(Player player, int n) {
+        if (n == spinningPlateItemId) {
+            player.setActionLocked(true);
+            player.getUpdateState().setAnimation(startSpinAnimationId, 0);
             CycleEventHandler.getInstance().schedule(player, new SpinningPlateResultEvent(player), 5);
             return true;
         }
         return false;
     }
 
-    static /* synthetic */ int a() {
-        return e;
+    static /* synthetic */ int getBreakPlateAnimationId() {
+        return breakPlateAnimationId;
     }
 
-    static /* synthetic */ int b() {
-        return a;
+    static /* synthetic */ int getSpinningPlateItemId() {
+        return spinningPlateItemId;
     }
 
-    static /* synthetic */ int c() {
-        return b;
+    static /* synthetic */ int getBrokenPlateItemId() {
+        return brokenPlateItemId;
     }
 
-    static /* synthetic */ int d() {
-        return d;
+    static /* synthetic */ int getCatchPlateAnimationId() {
+        return catchPlateAnimationId;
     }
 }
 

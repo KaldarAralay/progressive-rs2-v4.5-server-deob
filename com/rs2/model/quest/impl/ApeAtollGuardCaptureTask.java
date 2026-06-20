@@ -20,9 +20,9 @@ extends TickTask {
     @Override
     public final void execute() {
         this.a.ai = false;
-        this.a.n(false);
+        this.a.setActionLocked(false);
         this.a.moveTo(new Position(2772, 2794, 0));
-        this.a.aN();
+        this.a.resetAnimation();
         Player player = this.a;
         player.packetSender.showWalkableInterface(-1);
         this.stop();

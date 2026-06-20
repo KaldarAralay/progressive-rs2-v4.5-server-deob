@@ -38,14 +38,14 @@ extends CycleEvent {
         player.packetSender.sendGameMessage("You harvest the crop, and get some herbs.");
         HerbPatchManager.getPlayer(this.manager).getInventoryManager().addItem(new ItemStack(this.definition.getProduceItemId()));
         HerbPatchManager.getPlayer(this.manager).getSkillManager().addExperience(19, this.definition.getHarvestExperience());
-        if (!GameUtil.b(this.definition.getHarvestChanceLow(), this.definition.getHarvestChanceHigh(), HerbPatchManager.getPlayer(this.manager).getSkillManager().getCurrentLevels()[19])) {
+        if (!GameUtil.rollLevelScaledChance(this.definition.getHarvestChanceLow(), this.definition.getHarvestChanceHigh(), HerbPatchManager.getPlayer(this.manager).getSkillManager().getCurrentLevels()[19])) {
             int n = this.patch.getIndex();
             this.manager.harvestAmounts[n] = this.manager.harvestAmounts[n] - 1;
         }
         if (this.manager.harvestAmounts[this.patch.getIndex()] <= 0) {
             HerbPatchManager.a(this.manager, this.patch.getIndex());
             this.manager.growthStages[this.patch.getIndex()] = 3;
-            this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.e();
+            this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.getElapsedMinutes();
             cycleEventContainer.stop();
             return;
         }
@@ -54,7 +54,7 @@ extends CycleEvent {
     @Override
     public final void onStop() {
         this.manager.refreshConfig();
-        HerbPatchManager.getPlayer(this.manager).aN();
+        HerbPatchManager.getPlayer(this.manager).resetAnimation();
     }
 }
 

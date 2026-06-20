@@ -13,11 +13,11 @@ public final class RuneMysteriesQuest
 extends QuestScript {
     public RuneMysteriesQuest(int n) {
         super(14);
-        super.a(1);
+        super.setQuestPointReward(1);
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player stringArray, int n) {
         if (n == 0) {
             stringArray = new String[]{"I can start this quest by speaking to Duke Horacio of ", "Lumbridge, upstairs in Lumbridge Castle."};
             return stringArray;
@@ -50,9 +50,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("1 Quest Point", 12150);
         player2 = player;
@@ -74,7 +74,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         if (n == 741 && n4 == 0) {
             if (n2 == 1) {
                 player.getDialogueManager().showNpcOneLineDialogue("Greetings. Welcome to my castle.", 591);
@@ -128,7 +128,7 @@ extends QuestScript {
                 return true;
             }
             if (n2 == 11) {
-                player.getInventoryManager().b(new ItemStack(1438, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(1438, 1));
                 this.d(player);
                 player.getDialogueManager().finishDialogue();
                 return false;
@@ -188,7 +188,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 10 && player.getInventoryManager().containsItem(1438)) {
-                    player.setQuestState(this.b(), 3);
+                    player.setQuestState(this.getQuestId(), 3);
                     player.getInventoryManager().removeItem(new ItemStack(1438, 1));
                     player.getDialogueManager().showNpcOneLineDialogue("Wow! This is... incredible!", 591);
                     player.getDialogueManager().setNextDialogueStep(1);
@@ -254,8 +254,8 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 14) {
-                    player.getInventoryManager().b(new ItemStack(290, 1));
-                    player.setQuestState(this.b(), 4);
+                    player.getInventoryManager().addOrDropItem(new ItemStack(290, 1));
+                    player.setQuestState(this.getQuestId(), 4);
                     player.getDialogueManager().showNpcOneLineDialogue("Best of luck with your quest, " + player.getUsername() + ".", 591);
                     player.getDialogueManager().finishDialogue();
                     return true;
@@ -271,10 +271,10 @@ extends QuestScript {
                 }
                 if (n2 == 2) {
                     player.getDialogueManager().showNpcTwoLineDialogue("Ah, " + player.getUsername() + ". How goes your quest? Have you", "delivered the research notes to my friend Aubury yet?", 591);
-                    if (n4 == 4 && !player.aq(290)) {
+                    if (n4 == 4 && !player.ownsItem(290)) {
                         player.getDialogueManager().setNextDialogueStep(3);
                     }
-                    if (n4 == 4 && player.aq(290)) {
+                    if (n4 == 4 && player.ownsItem(290)) {
                         player.getDialogueManager().setNextDialogueStep(7);
                     }
                     if (n4 == 6) {
@@ -295,7 +295,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 6) {
-                    player.getInventoryManager().b(new ItemStack(290, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(290, 1));
                     player.getDialogueManager().showNpcOneLineDialogue("Try not to lose it this time.", 591);
                     player.getDialogueManager().finishDialogue();
                     return true;
@@ -415,8 +415,8 @@ extends QuestScript {
                 }
                 if (n2 == 35 && player.getInventoryManager().containsItem(291)) {
                     player.getInventoryManager().removeItem(new ItemStack(291, 1));
-                    player.getInventoryManager().b(new ItemStack(1438, 1));
-                    this.c(player);
+                    player.getInventoryManager().addOrDropItem(new ItemStack(1438, 1));
+                    this.awardCompletionRewards(player);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -465,7 +465,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 7 && player.getInventoryManager().containsItem(290)) {
-                    player.setQuestState(this.b(), 5);
+                    player.setQuestState(this.getQuestId(), 5);
                     player.getInventoryManager().removeItem(new ItemStack(290, 1));
                     player.getDialogueManager().showNpcTwoLineDialogue("This... this is incredible. Please, give me a few moments", "to quickly look over this, and then talk to me again.", 591);
                     player.getDialogueManager().finishDialogue();
@@ -487,8 +487,8 @@ extends QuestScript {
                 }
                 if (n2 == 4) {
                     player.getDialogueManager().showOneLineStatement("Aubury gives you his research notes.");
-                    player.getInventoryManager().b(new ItemStack(291, 1));
-                    player.setQuestState(this.b(), 6);
+                    player.getInventoryManager().addOrDropItem(new ItemStack(291, 1));
+                    player.setQuestState(this.getQuestId(), 6);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -510,7 +510,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 4) {
-                    player.getInventoryManager().b(new ItemStack(291, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(291, 1));
                     player.getDialogueManager().showNpcOneLineDialogue("Try not to lose it this time.", 591);
                     player.getDialogueManager().finishDialogue();
                     return true;

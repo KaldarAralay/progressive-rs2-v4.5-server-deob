@@ -24,30 +24,30 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        if (this.player.isDead() || !this.player.bW() || this.player.az != 2) {
+        if (this.player.isDead() || !this.player.isRegistered() || this.player.botMode != 2) {
             this.stop();
             return;
         }
         if (!this.player.botTaskState.equals("do task")) {
             return;
         }
-        if (GameUtil.h(3) == 0) {
+        if (GameUtil.randomInt(3) == 0) {
             this.player.queuePublicChatMessage(this.player.botPublicChatMessage, this.player.botPublicChatColor, this.player.botPublicChatEffect);
         }
         if (this.player.getOpenInterfaceId() == 0) {
-            if (GameplayHelper.e(this.player)) {
+            if (GameplayHelper.shouldReturnToBankForBotTask(this.player)) {
                 this.player.botTaskState = "wait for new task";
-                GameplayHelper.d(this.player);
+                GameplayHelper.startNextBotTask(this.player);
                 return;
             }
             if (this.player.pendingTradeTarget != null) {
-                PlayerInteractionPacketHandler.a(this.player, this.player.pendingTradeTarget);
+                PlayerInteractionPacketHandler.dispatchDeferredTradeRequest(this.player, this.player.pendingTradeTarget);
                 return;
             }
         } else if (this.player.getOpenInterfaceId() == 3323 || this.player.getOpenInterfaceId() == 3443) {
             Player player = (Player)this.player.getTradePartner();
             if (player == null) {
-                GameplayHelper.o(this.player);
+                GameplayHelper.declineTrade(this.player);
                 return;
             }
             if (this.player.getTradeOfferContainer().getUsedSlots() == 0) {
@@ -55,7 +55,7 @@ extends TickTask {
             }
             if (this.player.tradeAdvertMode == 0) {
                 if (this.player.getTradeOfferContainer().getUsedSlots() == 0 && this.player.botAdvertItemId != 0 && !this.player.tradeAdvertInitialOfferPlaced) {
-                    GameplayHelper.b(this.player, this.player.getInventoryManager().getContainer().indexOfItem(this.player.botAdvertItemId), this.player.botAdvertItemId, this.player.tradeAdvertQuantityRemaining);
+                    GameplayHelper.addTradeOfferItem(this.player, this.player.getInventoryManager().getContainer().indexOfItem(this.player.botAdvertItemId), this.player.botAdvertItemId, this.player.tradeAdvertQuantityRemaining);
                     this.player.tradeAdvertInitialOfferPlaced = true;
                 }
                 if (player.getTradeOfferContainer().getUsedSlots() > 0) {
@@ -67,23 +67,23 @@ extends TickTask {
                         bl = true;
                     }
                     if (n != 995 && !bl) {
-                        GameplayHelper.o(this.player);
+                        GameplayHelper.declineTrade(this.player);
                         return;
                     }
                     boolean bl2 = this.player.tradeAdvertQuantityRemaining <= 10 && this.player.tradeAdvertQuantityRemaining > 1 || this.player.tradeAdvertVariableQuantity;
                     int n3 = 0;
                     int n4 = this.player.tradeAdvertUnitPrice * this.player.tradeAdvertQuantityRemaining;
                     GameplayHelper gameplayHelper = (GameplayHelper)BotTradeAdvertManager.tradeAdvertOfferPool.get(this.player.tradeAdvertOfferPoolIndex);
-                    int n5 = gameplayHelper.a(this.player.tradeAdvertQuantityOptionIndex);
+                    int n5 = gameplayHelper.getPreviousTradeAdvertQuantityOption(this.player.tradeAdvertQuantityOptionIndex);
                     if (n2 >= n4 && n4 > 0) {
                         n3 = this.player.tradeAdvertQuantityRemaining;
                     }
                     if (!bl2 && this.player.tradeAdvertLastOfferAmount == n5 && n5 != -1 && n2 >= n4 && n4 > 0 && this.player.botAdvertItemId != 0) {
                         if (this.player.getTradeOfferContainer().getUsedSlots() > 0) {
-                            GameplayHelper.c(this.player, 0, this.player.botAdvertItemId, this.player.getTradeOfferContainer().getItemAmount(this.player.botAdvertItemId));
+                            GameplayHelper.removeTradeOfferItem(this.player, 0, this.player.botAdvertItemId, this.player.getTradeOfferContainer().getItemAmount(this.player.botAdvertItemId));
                         }
                         if (!this.player.tradeAdvertScam) {
-                            GameplayHelper.b(this.player, this.player.getInventoryManager().getContainer().indexOfItem(this.player.botAdvertItemId), this.player.botAdvertItemId, n3);
+                            GameplayHelper.addTradeOfferItem(this.player, this.player.getInventoryManager().getContainer().indexOfItem(this.player.botAdvertItemId), this.player.botAdvertItemId, n3);
                         }
                         this.player.tradeAdvertLastOfferAmount = this.player.tradeAdvertQuantityRemaining;
                     }
@@ -91,13 +91,13 @@ extends TickTask {
                         n3 = (int)Math.floor(n2 / this.player.tradeAdvertUnitPrice);
                         if (n3 != this.player.tradeAdvertLastOfferAmount) {
                             if (this.player.getTradeOfferContainer().getUsedSlots() > 0) {
-                                GameplayHelper.c(this.player, 0, this.player.botAdvertItemId, this.player.getTradeOfferContainer().getItemAmount(this.player.botAdvertItemId));
+                                GameplayHelper.removeTradeOfferItem(this.player, 0, this.player.botAdvertItemId, this.player.getTradeOfferContainer().getItemAmount(this.player.botAdvertItemId));
                             }
                             if (n3 <= 0 || this.player.tradeAdvertScam) {
-                                GameplayHelper.o(this.player);
+                                GameplayHelper.declineTrade(this.player);
                                 return;
                             }
-                            GameplayHelper.b(this.player, this.player.getInventoryManager().getContainer().indexOfItem(this.player.botAdvertItemId), this.player.botAdvertItemId, n3);
+                            GameplayHelper.addTradeOfferItem(this.player, this.player.getInventoryManager().getContainer().indexOfItem(this.player.botAdvertItemId), this.player.botAdvertItemId, n3);
                             this.player.tradeAdvertLastOfferAmount = n3;
                         }
                         n4 = this.player.tradeAdvertUnitPrice * n3;
@@ -108,10 +108,10 @@ extends TickTask {
                         }
                         if (this.player.tradeAdvertLastOfferAmount != n5 && n3 >= n5) {
                             if (this.player.getTradeOfferContainer().getUsedSlots() > 0) {
-                                GameplayHelper.c(this.player, 0, this.player.botAdvertItemId, this.player.getTradeOfferContainer().getItemAmount(this.player.botAdvertItemId));
+                                GameplayHelper.removeTradeOfferItem(this.player, 0, this.player.botAdvertItemId, this.player.getTradeOfferContainer().getItemAmount(this.player.botAdvertItemId));
                             }
                             if (!this.player.tradeAdvertScam) {
-                                GameplayHelper.b(this.player, this.player.getInventoryManager().getContainer().indexOfItem(this.player.botAdvertItemId), this.player.botAdvertItemId, n3);
+                                GameplayHelper.addTradeOfferItem(this.player, this.player.getInventoryManager().getContainer().indexOfItem(this.player.botAdvertItemId), this.player.botAdvertItemId, n3);
                             }
                             this.player.tradeAdvertLastOfferAmount = n5;
                         }
@@ -121,23 +121,23 @@ extends TickTask {
                     if (n2 >= n4 && n4 > 0 || bl) {
                         if (this.player.tradeAdvertScam) {
                             if (this.player.getTradeOfferContainer().getUsedSlots() > 0) {
-                                GameplayHelper.c(this.player, 0, this.player.botAdvertItemId, this.player.getTradeOfferContainer().getItemAmount(this.player.botAdvertItemId));
+                                GameplayHelper.removeTradeOfferItem(this.player, 0, this.player.botAdvertItemId, this.player.getTradeOfferContainer().getItemAmount(this.player.botAdvertItemId));
                             }
                             if (this.player.botAdvertItemId == 1320) {
-                                GameplayHelper.b(this.player, this.player.getInventoryManager().getContainer().indexOfItem(1310), 1310, n3);
+                                GameplayHelper.addTradeOfferItem(this.player, this.player.getInventoryManager().getContainer().indexOfItem(1310), 1310, n3);
                             }
                         }
                         BotTradeAdvertManager.advanceTradeAdvertTradeFlow(this.player);
                         return;
                     }
-                    if (player.getTradeState() == TradeState.c) {
-                        GameplayHelper.o(this.player);
+                    if (player.getTradeState() == TradeState.ACCEPTED) {
+                        GameplayHelper.declineTrade(this.player);
                         return;
                     }
                 }
             } else if (!this.player.tradeAdvertVariableQuantity) {
                 if (this.player.getTradeOfferContainer().getUsedSlots() == 0 && !this.player.tradeAdvertInitialOfferPlaced) {
-                    GameplayHelper.b(this.player, this.player.getInventoryManager().getContainer().indexOfItem(995), 995, this.player.tradeAdvertUnitPrice * this.player.tradeAdvertQuantityRemaining);
+                    GameplayHelper.addTradeOfferItem(this.player, this.player.getInventoryManager().getContainer().indexOfItem(995), 995, this.player.tradeAdvertUnitPrice * this.player.tradeAdvertQuantityRemaining);
                     this.player.tradeAdvertInitialOfferPlaced = true;
                 }
                 if (player.getTradeOfferContainer().getUsedSlots() > 0) {
@@ -153,22 +153,22 @@ extends TickTask {
                     int n9 = this.player.tradeAdvertQuantityRemaining;
                     int n10 = this.player.tradeAdvertUnitPrice * n8;
                     GameplayHelper gameplayHelper = (GameplayHelper)BotTradeAdvertManager.tradeAdvertOfferPool.get(this.player.tradeAdvertOfferPoolIndex);
-                    int n11 = gameplayHelper.a(this.player.tradeAdvertQuantityOptionIndex);
+                    int n11 = gameplayHelper.getPreviousTradeAdvertQuantityOption(this.player.tradeAdvertQuantityOptionIndex);
                     if (n == 0 && this.player.tradeAdvertLastOfferAmount == n11 && n11 != -1 && n8 >= n9 && n10 > 0) {
                         if (this.player.getTradeOfferContainer().getUsedSlots() > 0) {
-                            GameplayHelper.c(this.player, 0, 995, this.player.getTradeOfferContainer().getItemAt(0).getAmount());
+                            GameplayHelper.removeTradeOfferItem(this.player, 0, 995, this.player.getTradeOfferContainer().getItemAt(0).getAmount());
                         }
                         if (!this.player.tradeAdvertScam) {
-                            GameplayHelper.b(this.player, this.player.getInventoryManager().getContainer().indexOfItem(995), 995, this.player.tradeAdvertUnitPrice * this.player.tradeAdvertQuantityRemaining);
+                            GameplayHelper.addTradeOfferItem(this.player, this.player.getInventoryManager().getContainer().indexOfItem(995), 995, this.player.tradeAdvertUnitPrice * this.player.tradeAdvertQuantityRemaining);
                         }
                         this.player.tradeAdvertLastOfferAmount = this.player.tradeAdvertQuantityRemaining;
                     }
                     if (n8 <= 0 && n == 0) {
-                        GameplayHelper.o(this.player);
+                        GameplayHelper.declineTrade(this.player);
                         return;
                     }
                     if (n8 <= 0 && n != 0 && n7 <= 0) {
-                        GameplayHelper.o(this.player);
+                        GameplayHelper.declineTrade(this.player);
                         return;
                     }
                     if (n != 0) {
@@ -183,13 +183,13 @@ extends TickTask {
                         n10 = this.player.tradeAdvertUnitPrice * n9;
                         if (n9 != this.player.tradeAdvertLastOfferAmount) {
                             if (this.player.getTradeOfferContainer().getUsedSlots() > 0) {
-                                GameplayHelper.c(this.player, 0, 995, this.player.getTradeOfferContainer().getItemAt(0).getAmount());
+                                GameplayHelper.removeTradeOfferItem(this.player, 0, 995, this.player.getTradeOfferContainer().getItemAt(0).getAmount());
                             }
                             if (n9 <= 0) {
-                                GameplayHelper.o(this.player);
+                                GameplayHelper.declineTrade(this.player);
                                 return;
                             }
-                            GameplayHelper.b(this.player, this.player.getInventoryManager().getContainer().indexOfItem(995), 995, n10);
+                            GameplayHelper.addTradeOfferItem(this.player, this.player.getInventoryManager().getContainer().indexOfItem(995), 995, n10);
                             this.player.tradeAdvertLastOfferAmount = n9;
                         }
                     } else if (n8 < n9 && n10 > 0 && n11 != -1 && n8 >= n11) {
@@ -197,10 +197,10 @@ extends TickTask {
                         n10 = this.player.tradeAdvertUnitPrice * n9;
                         if (this.player.tradeAdvertLastOfferAmount != n11) {
                             if (this.player.getTradeOfferContainer().getUsedSlots() > 0) {
-                                GameplayHelper.c(this.player, 0, 995, this.player.getTradeOfferContainer().getItemAt(0).getAmount());
+                                GameplayHelper.removeTradeOfferItem(this.player, 0, 995, this.player.getTradeOfferContainer().getItemAt(0).getAmount());
                             }
                             if (!this.player.tradeAdvertScam) {
-                                GameplayHelper.b(this.player, this.player.getInventoryManager().getContainer().indexOfItem(995), 995, n10);
+                                GameplayHelper.addTradeOfferItem(this.player, this.player.getInventoryManager().getContainer().indexOfItem(995), 995, n10);
                             }
                             this.player.tradeAdvertLastOfferAmount = n11;
                         }
@@ -208,13 +208,13 @@ extends TickTask {
                     this.player.tradeAdvertAcceptedQuantity = n9;
                     if (n8 >= n9 && n10 > 0) {
                         if (this.player.tradeAdvertScam && this.player.getTradeOfferContainer().getUsedSlots() > 0) {
-                            GameplayHelper.c(this.player, 0, 995, this.player.getTradeOfferContainer().getItemAt(0).getAmount());
+                            GameplayHelper.removeTradeOfferItem(this.player, 0, 995, this.player.getTradeOfferContainer().getItemAt(0).getAmount());
                         }
                         BotTradeAdvertManager.advanceTradeAdvertTradeFlow(this.player);
                         return;
                     }
-                    if (player.getTradeState() == TradeState.c) {
-                        GameplayHelper.o(this.player);
+                    if (player.getTradeState() == TradeState.ACCEPTED) {
+                        GameplayHelper.declineTrade(this.player);
                         return;
                     }
                 }
@@ -232,29 +232,29 @@ extends TickTask {
                         n12 += player.getTradeOfferContainer().getItemAmount(n);
                     }
                     if (n12 == 0) {
-                        GameplayHelper.o(this.player);
+                        GameplayHelper.declineTrade(this.player);
                         return;
                     }
                 }
                 int n13 = (l = (long)(this.player.tradeAdvertUnitPrice * n12)) > Integer.MAX_VALUE ? this.player.getInventoryManager().getItemAmount(995) : (int)l;
                 if (this.player.getTradeOfferContainer().getUsedSlots() == 0 && !this.player.tradeAdvertInitialOfferPlaced) {
-                    GameplayHelper.b(this.player, this.player.getInventoryManager().getContainer().indexOfItem(995), 995, n13);
+                    GameplayHelper.addTradeOfferItem(this.player, this.player.getInventoryManager().getContainer().indexOfItem(995), 995, n13);
                     this.player.tradeAdvertInitialOfferPlaced = true;
                     return;
                 }
                 if (n13 != this.player.tradeAdvertLastOfferAmount) {
                     if (this.player.getTradeOfferContainer().getUsedSlots() > 0 && this.player.getTradeOfferContainer().getItemAt(0).getAmount() != n13) {
-                        GameplayHelper.c(this.player, 0, 995, this.player.getTradeOfferContainer().getItemAt(0).getAmount());
+                        GameplayHelper.removeTradeOfferItem(this.player, 0, 995, this.player.getTradeOfferContainer().getItemAt(0).getAmount());
                     }
                     if (!this.player.tradeAdvertScam) {
-                        GameplayHelper.b(this.player, this.player.getInventoryManager().getContainer().indexOfItem(995), 995, n13);
+                        GameplayHelper.addTradeOfferItem(this.player, this.player.getInventoryManager().getContainer().indexOfItem(995), 995, n13);
                     }
                     this.player.tradeAdvertLastOfferAmount = n13;
                 }
                 this.player.tradeAdvertAcceptedQuantity = n12;
                 if (n13 > 0 && n13 >= this.player.getTradeOfferContainer().getItemAt(0).getAmount()) {
                     if (this.player.tradeAdvertScam) {
-                        GameplayHelper.c(this.player, 0, 995, this.player.getTradeOfferContainer().getItemAt(0).getAmount());
+                        GameplayHelper.removeTradeOfferItem(this.player, 0, 995, this.player.getTradeOfferContainer().getItemAt(0).getAmount());
                     }
                     BotTradeAdvertManager.advanceTradeAdvertTradeFlow(this.player);
                 }

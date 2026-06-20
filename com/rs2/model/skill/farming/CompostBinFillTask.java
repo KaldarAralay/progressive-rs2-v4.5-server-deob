@@ -39,7 +39,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        CompostBinManager.getPlayer(this.manager).aN();
+        CompostBinManager.getPlayer(this.manager).resetAnimation();
     }
 }
 

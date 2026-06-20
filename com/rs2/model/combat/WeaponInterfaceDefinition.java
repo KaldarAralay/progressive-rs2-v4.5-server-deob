@@ -57,9 +57,9 @@ public enum WeaponInterfaceDefinition {
      * WARNING - void declaration
      */
     private WeaponInterfaceDefinition(int[] nArray, int n3, int n4, AttackStyleDefinition[] attackStyleDefinitionArray) {
-        this((String)cfr_renamed_1, n2, (int)nArray, n3, (int[])n4, -1, -1, -1, (AttackStyleDefinition[])cfr_renamed_3);
-        void cfr_renamed_3;
-        void cfr_renamed_1;
+        this((String)cfr_renamed_0, n2, (int)nArray, n3, (int[])n4, -1, -1, -1, (AttackStyleDefinition[])cfr_renamed_2);
+        void cfr_renamed_2;
+        void cfr_renamed_0;
     }
 
     public final int getSpecialAttackButtonId() {

@@ -40,14 +40,14 @@ extends TickTask {
             this.stop();
             return;
         }
-        Entity[] entityArray = World.f();
+        Entity[] entityArray = World.getPlayers();
         int n = entityArray.length;
         int n2 = 0;
         while (n2 < n) {
             entity = entityArray[n2];
             if (entity != null && entity != this.source) {
                 attackValidationResult = CombatCycleEvent.validateAttack(this.source, entity);
-                if (GameUtil.b(this.source.getPosition(), entity.getPosition()) <= 1 && attackValidationResult == AttackValidationResult.VALID) {
+                if (GameUtil.getDistance(this.source.getPosition(), entity.getPosition()) <= 1 && attackValidationResult == AttackValidationResult.VALID) {
                     new CombatAction(this.source, entity, this.hitDefinition).queue();
                     if (!this.multiCombat) {
                         this.stop();
@@ -57,7 +57,7 @@ extends TickTask {
             }
             ++n2;
         }
-        entityArray = World.g();
+        entityArray = World.getNpcs();
         n = entityArray.length;
         n2 = 0;
         while (n2 < n) {

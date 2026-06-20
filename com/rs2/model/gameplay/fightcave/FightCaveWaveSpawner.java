@@ -19,23 +19,23 @@ import java.util.Collections;
 import java.util.Iterator;
 
 public final class FightCaveWaveSpawner {
-    private static int[][] a = new int[][]{{2627}, {2627, 2627}, {2630}, {2630, 2627}, {2630, 2627, 2627}, {2630, 2630}, {2631}, {2631, 2627}, {2631, 2627, 2627}, {2631, 2630}, {2631, 2630, 2627}, {2631, 2630, 2627, 2627}, {2631, 2630, 2630}, {2631, 2631}, {2741}, {2741, 2627}, {2741, 2627, 2627}, {2741, 2630}, {2741, 2630, 2627}, {2741, 2630, 2627, 2627}, {2741, 2630, 2630}, {2741, 2631}, {2741, 2631, 2627}, {2741, 2631, 2627, 2627}, {2741, 2631, 2630}, {2741, 2631, 2630, 2627}, {2741, 2631, 2630, 2627, 2627}, {2741, 2631, 2630, 2630}, {2741, 2631, 2631}, {2741, 2741}, {2743}, {2743, 2627}, {2743, 2627, 2627}, {2743, 2630}, {2743, 2630, 2627}, {2743, 2630, 2627, 2627}, {2743, 2630, 2630}, {2743, 2631}, {2743, 2631, 2627}, {2743, 2631, 2627, 2627}, {2743, 2631, 2630}, {2743, 2631, 2630, 2627}, {2743, 2631, 2630, 2627, 2627}, {2743, 2631, 2630, 2630}, {2743, 2631, 2631}, {2743, 2741}, {2743, 2741, 2627}, {2743, 2741, 2627, 2627}, {2743, 2741, 2630}, {2743, 2741, 2630, 2627}, {2743, 2741, 2630, 2627, 2627}, {2743, 2741, 2630, 2630}, {2743, 2741, 2631}, {2743, 2741, 2631, 2627}, {2743, 2741, 2631, 2627, 2627}, {2743, 2741, 2631, 2630}, {2743, 2741, 2631, 2630, 2627}, {2743, 2741, 2631, 2630, 2627, 2627}, {2743, 2741, 2631, 2630, 2630}, {2743, 2741, 2631, 2631}, {2743, 2741, 2741}, {2743, 2744}, {2745}};
+    private static int[][] waveNpcIds = new int[][]{{2627}, {2627, 2627}, {2630}, {2630, 2627}, {2630, 2627, 2627}, {2630, 2630}, {2631}, {2631, 2627}, {2631, 2627, 2627}, {2631, 2630}, {2631, 2630, 2627}, {2631, 2630, 2627, 2627}, {2631, 2630, 2630}, {2631, 2631}, {2741}, {2741, 2627}, {2741, 2627, 2627}, {2741, 2630}, {2741, 2630, 2627}, {2741, 2630, 2627, 2627}, {2741, 2630, 2630}, {2741, 2631}, {2741, 2631, 2627}, {2741, 2631, 2627, 2627}, {2741, 2631, 2630}, {2741, 2631, 2630, 2627}, {2741, 2631, 2630, 2627, 2627}, {2741, 2631, 2630, 2630}, {2741, 2631, 2631}, {2741, 2741}, {2743}, {2743, 2627}, {2743, 2627, 2627}, {2743, 2630}, {2743, 2630, 2627}, {2743, 2630, 2627, 2627}, {2743, 2630, 2630}, {2743, 2631}, {2743, 2631, 2627}, {2743, 2631, 2627, 2627}, {2743, 2631, 2630}, {2743, 2631, 2630, 2627}, {2743, 2631, 2630, 2627, 2627}, {2743, 2631, 2630, 2630}, {2743, 2631, 2631}, {2743, 2741}, {2743, 2741, 2627}, {2743, 2741, 2627, 2627}, {2743, 2741, 2630}, {2743, 2741, 2630, 2627}, {2743, 2741, 2630, 2627, 2627}, {2743, 2741, 2630, 2630}, {2743, 2741, 2631}, {2743, 2741, 2631, 2627}, {2743, 2741, 2631, 2627, 2627}, {2743, 2741, 2631, 2630}, {2743, 2741, 2631, 2630, 2627}, {2743, 2741, 2631, 2630, 2627, 2627}, {2743, 2741, 2631, 2630, 2630}, {2743, 2741, 2631, 2631}, {2743, 2741, 2741}, {2743, 2744}, {2745}};
 
-    public static void a(Player player, int n) {
+    public static void spawnWave(Player player, int n) {
         Object object;
         int n2 = n + 1;
         Object object2 = player;
         ((Player)object2).packetSender.sendGameMessage("Wave " + n2 + "/" + 63);
-        player.aU();
+        player.clearFightCaveNpcs();
         object2 = new ArrayList();
-        int[] nArray = a[n];
+        int[] nArray = waveNpcIds[n];
         int n3 = nArray.length;
         int n4 = 0;
         while (n4 < n3) {
             n = nArray[n4];
             object = new Npc(n);
             ((ArrayList)object2).add(object);
-            player.a((Npc)object);
+            player.addFightCaveNpc((Npc)object);
             ++n4;
         }
         Collections.sort(object2, new FightCaveNpcLevelComparator());
@@ -43,8 +43,8 @@ public final class FightCaveWaveSpawner {
         Iterator iterator = ((ArrayList)object2).iterator();
         while (iterator.hasNext()) {
             Npc npc = (Npc)iterator.next();
-            int n5 = player.ez + n;
-            object = FightCaveSpawnTable.a[n5];
+            int n5 = player.fightCaveSpawnRotation + n;
+            object = FightCaveSpawnTable.spawnAreaRotation[n5];
             int n6 = player.getPosition().getPlane();
             ((PositionRange)object).setPlane(n6);
             Object var3_5 = null;
@@ -57,7 +57,7 @@ public final class FightCaveWaveSpawner {
             npc.setSpawnX(position.getX());
             npc.setSpawnY(position.getY());
             npc.setRespawnEnabled(false);
-            World.a(npc);
+            World.registerNpc(npc);
             if (object2 != null) {
                 npc.setMovementTarget((Entity)object2);
                 CombatManager.startCombat(npc, (Entity)object2);
@@ -72,16 +72,16 @@ public final class FightCaveWaveSpawner {
                 player.getDialogueManager().showNpcOneLineDialogue("Look out, here comes TzTok-Jad!", 591);
                 player.getDialogueManager().finishDialogue();
             }
-            int n7 = player.ez + ++n;
+            int n7 = player.fightCaveSpawnRotation + ++n;
             if (n7 < 15) continue;
             n -= 15;
         }
-        ++player.ez;
-        if (player.ez >= 15) {
-            player.ez = 0;
+        ++player.fightCaveSpawnRotation;
+        if (player.fightCaveSpawnRotation >= 15) {
+            player.fightCaveSpawnRotation = 0;
         }
         object2 = player;
-        ((Player)object2).packetSender.sendGameMessage("Enemies to kill: " + player.aT().size());
+        ((Player)object2).packetSender.sendGameMessage("Enemies to kill: " + player.getFightCaveNpcs().size());
     }
 }
 

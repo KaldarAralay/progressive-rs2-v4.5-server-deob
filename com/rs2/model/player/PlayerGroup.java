@@ -21,10 +21,10 @@ import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class PlayerGroup {
-    public Player a;
-    public CopyOnWriteArrayList b = new CopyOnWriteArrayList();
-    public CopyOnWriteArrayList c = new CopyOnWriteArrayList();
-    public Boolean d = true;
+    public Player leader;
+    public CopyOnWriteArrayList members = new CopyOnWriteArrayList();
+    public CopyOnWriteArrayList deferredRemovedMembers = new CopyOnWriteArrayList();
+    public Boolean rollLootEnabled = true;
 
     public static boolean handleBowStringing(Player player, int n, int n2) {
         BowStringingDefinition bowStringingDefinition = BowStringingDefinition.forComponents(n, n2);
@@ -50,36 +50,36 @@ public class PlayerGroup {
     }
 
     public PlayerGroup(Player player, Player player2) {
-        if (player.q != null || player2.q != null) {
+        if (player.currentGroup != null || player2.currentGroup != null) {
             return;
         }
-        this.a = player;
-        this.b.add(player);
-        this.b.add(player2);
-        player.q = this;
-        player2.q = this;
+        this.leader = player;
+        this.members.add(player);
+        this.members.add(player2);
+        player.currentGroup = this;
+        player2.currentGroup = this;
         Player player3 = player;
         player3.packetSender.sendGameMessage(String.valueOf(player2.getUsername()) + " joined your group.");
         player3 = player2;
         player3.packetSender.sendGameMessage("You joined a group lead by: " + player.getUsername());
-        this.b(player2);
+        this.showMemberList(player2);
     }
 
-    public boolean a() {
-        return this.b.size() >= 5;
+    public boolean isFull() {
+        return this.members.size() >= 5;
     }
 
-    public void b() {
-        Player player = this.a;
-        Iterator iterator = this.b.iterator();
+    public void refreshGroupFollowChain() {
+        Player player = this.leader;
+        Iterator iterator = this.members.iterator();
         while (iterator.hasNext()) {
             Player player2 = (Player)iterator.next();
-            if (this.c.contains(player2)) {
+            if (this.deferredRemovedMembers.contains(player2)) {
                 iterator.remove();
                 continue;
             }
             CombatManager.stopCombat(player2);
-            if (player2 == this.a || BotCombatHelper.hasExternalCombatTarget(player2)) continue;
+            if (player2 == this.leader || BotCombatHelper.hasExternalCombatTarget(player2)) continue;
             player2.getUpdateState().setFaceEntity(player.getEncodedIndex());
             player2.setAttackRange(1);
             player2.setMovementTarget(player);
@@ -87,11 +87,11 @@ public class PlayerGroup {
         }
     }
 
-    public boolean a(Player player) {
-        Iterator iterator = this.b.iterator();
+    public boolean containsMember(Player player) {
+        Iterator iterator = this.members.iterator();
         while (iterator.hasNext()) {
             Player player2 = (Player)iterator.next();
-            if (this.c.contains(player2)) {
+            if (this.deferredRemovedMembers.contains(player2)) {
                 iterator.remove();
                 continue;
             }
@@ -101,11 +101,11 @@ public class PlayerGroup {
         return false;
     }
 
-    public void a(Entity entity) {
-        Iterator iterator = this.b.iterator();
+    public void attackTarget(Entity entity) {
+        Iterator iterator = this.members.iterator();
         while (iterator.hasNext()) {
             Player player = (Player)iterator.next();
-            if (this.c.contains(player)) {
+            if (this.deferredRemovedMembers.contains(player)) {
                 iterator.remove();
                 continue;
             }
@@ -114,29 +114,29 @@ public class PlayerGroup {
         }
     }
 
-    public void b(Player player) {
-        player.packetSender.sendGameMessage("Group members: (size:" + this.b.size() + ", roll loot:" + this.d + ")");
-        Iterator iterator = this.b.iterator();
+    public void showMemberList(Player player) {
+        player.packetSender.sendGameMessage("Group members: (size:" + this.members.size() + ", roll loot:" + this.rollLootEnabled + ")");
+        Iterator iterator = this.members.iterator();
         while (iterator.hasNext()) {
             Player player2 = (Player)iterator.next();
-            if (this.c.contains(player2)) {
+            if (this.deferredRemovedMembers.contains(player2)) {
                 iterator.remove();
                 continue;
             }
             String string = "";
-            if (player2 == this.a) {
+            if (player2 == this.leader) {
                 string = " (leader)";
             }
             player.packetSender.sendGameMessage(String.valueOf(player2.getUsername()) + string);
         }
     }
 
-    public int c() {
+    public int getHighestCombatLevel() {
         int n = 0;
-        Iterator iterator = this.b.iterator();
+        Iterator iterator = this.members.iterator();
         while (iterator.hasNext()) {
             Player player = (Player)iterator.next();
-            if (this.c.contains(player)) {
+            if (this.deferredRemovedMembers.contains(player)) {
                 iterator.remove();
                 continue;
             }
@@ -146,12 +146,12 @@ public class PlayerGroup {
         return n;
     }
 
-    public int d() {
+    public int getTotalCombatLevel() {
         int n = 0;
-        Iterator iterator = this.b.iterator();
+        Iterator iterator = this.members.iterator();
         while (iterator.hasNext()) {
             Player player = (Player)iterator.next();
-            if (this.c.contains(player)) {
+            if (this.deferredRemovedMembers.contains(player)) {
                 iterator.remove();
                 continue;
             }
@@ -160,71 +160,71 @@ public class PlayerGroup {
         return n;
     }
 
-    public void c(Player player) {
+    public void addMember(Player player) {
         Player player2;
-        if (this.b.size() >= 5) {
+        if (this.members.size() >= 5) {
             return;
         }
-        if (player.q != null) {
+        if (player.currentGroup != null) {
             return;
         }
-        Iterator iterator = this.b.iterator();
+        Iterator iterator = this.members.iterator();
         while (iterator.hasNext()) {
             player2 = (Player)iterator.next();
-            if (this.c.contains(player2)) {
+            if (this.deferredRemovedMembers.contains(player2)) {
                 iterator.remove();
                 continue;
             }
             player2.packetSender.sendGameMessage(String.valueOf(player.getUsername()) + " joined the group.");
         }
-        this.b.add(player);
-        player.q = this;
+        this.members.add(player);
+        player.currentGroup = this;
         player2 = player;
-        player2.packetSender.sendGameMessage("You joined a group lead by: " + this.a.getUsername());
-        this.b(player);
+        player2.packetSender.sendGameMessage("You joined a group lead by: " + this.leader.getUsername());
+        this.showMemberList(player);
     }
 
-    public void d(Player player) {
-        player.r = null;
-        this.c.remove(player);
-        int n = this.b.size() + this.c.size();
+    public void finishDeferredRemoval(Player player) {
+        player.pendingGroupCleanup = null;
+        this.deferredRemovedMembers.remove(player);
+        int n = this.members.size() + this.deferredRemovedMembers.size();
         if (n == 1) {
-            if (this.b.size() == 1) {
-                ((Player)this.b.get((int)0)).q = null;
-                ((Player)this.b.get((int)0)).r = null;
-                this.b.clear();
+            if (this.members.size() == 1) {
+                ((Player)this.members.get((int)0)).currentGroup = null;
+                ((Player)this.members.get((int)0)).pendingGroupCleanup = null;
+                this.members.clear();
                 return;
             }
-            if (this.c.size() == 1) {
-                this.c.clear();
+            if (this.deferredRemovedMembers.size() == 1) {
+                this.deferredRemovedMembers.clear();
             }
             return;
         }
     }
 
-    public void e(Player object) {
+    public void removeMember(Player object) {
         boolean bl = false;
-        if (((Player)object).de && !this.a.de) {
-            this.a.botPvpTeamRequesters.remove(object);
+        if (((Player)object).isBot && !this.leader.isBot) {
+            this.leader.botPvpTeamRequesters.remove(object);
             EntityTargetMovement.clearMovementTarget((Entity)object);
         }
-        if (!((Player)object).de) {
+        if (!((Player)object).isBot) {
             ((Player)object).botPvpTeamRequesters.clear();
             bl = true;
         }
         Player player = object;
         player.packetSender.sendGameMessage("You are no longer in the group.");
         boolean bl2 = false;
-        if (this.a == object) {
+        if (this.leader == object) {
             bl2 = true;
         }
-        this.b.remove(object);
-        ((Player)object).q = null;
+        this.members.remove(object);
+        ((Player)object).currentGroup = null;
         boolean bl3 = true;
-        Iterator iterator = this.b.iterator();
+        Iterator iterator = this.members.iterator();
         while (iterator.hasNext()) {
             Player player2 = (Player)iterator.next();
-            if (this.c.contains(player2)) {
+            if (this.deferredRemovedMembers.contains(player2)) {
                 iterator.remove();
                 continue;
             }
@@ -237,44 +237,44 @@ public class PlayerGroup {
             if (!bl || player2.botPvpRejectedTeamTargets.contains(object)) continue;
             player2.botPvpRejectedTeamTargets.add(object);
         }
-        int n = this.b.size() + this.c.size();
+        int n = this.members.size() + this.deferredRemovedMembers.size();
         if (n == 1) {
-            if (this.b.size() == 1) {
-                ((Player)this.b.get((int)0)).q = null;
-                ((Player)this.b.get((int)0)).r = null;
-                this.b.clear();
+            if (this.members.size() == 1) {
+                ((Player)this.members.get((int)0)).currentGroup = null;
+                ((Player)this.members.get((int)0)).pendingGroupCleanup = null;
+                this.members.clear();
                 return;
             }
-            if (this.c.size() == 1) {
-                this.c.clear();
+            if (this.deferredRemovedMembers.size() == 1) {
+                this.deferredRemovedMembers.clear();
             }
             return;
         }
-        if (bl2 && this.b.size() > 0) {
-            this.a = (Player)this.b.get(0);
-            object = this.b.iterator();
+        if (bl2 && this.members.size() > 0) {
+            this.leader = (Player)this.members.get(0);
+            object = this.members.iterator();
             while (object.hasNext()) {
                 Player player3 = (Player)object.next();
-                if (this.c.contains(player3)) {
+                if (this.deferredRemovedMembers.contains(player3)) {
                     object.remove();
                     continue;
                 }
                 player = player3;
-                player.packetSender.sendGameMessage(String.valueOf(this.a.getUsername()) + " is the new group leader.");
+                player.packetSender.sendGameMessage(String.valueOf(this.leader.getUsername()) + " is the new group leader.");
             }
         }
         if (bl3) {
-            EntityTargetMovement.clearMovementTarget(this.a);
-            this.b();
+            EntityTargetMovement.clearMovementTarget(this.leader);
+            this.refreshGroupFollowChain();
         }
     }
 
-    public static void a(Player player, Player player2) {
+    public static void handleGroupInvite(Player player, Player player2) {
         if (player.getQuestState(0) != 1) {
             return;
         }
         Player player3 = player2;
-        if (player3.s != player) {
+        if (player3.pendingGroupInviteTarget != player) {
             player3 = player;
             player3.packetSender.sendGameMessage("Sending group invite...");
             player3 = player2;
@@ -282,42 +282,42 @@ public class PlayerGroup {
             Player player4 = player;
             player = player2;
             player3 = player4;
-            player4.s = player;
+            player4.pendingGroupInviteTarget = player;
             return;
         }
-        if (player2.q == null) {
-            if (player2.de) {
+        if (player2.currentGroup == null) {
+            if (player2.isBot) {
                 new PlayerGroup(player, player2);
             } else {
                 new PlayerGroup(player2, player);
             }
         } else {
-            player2.q.c(player);
+            player2.currentGroup.addMember(player);
         }
         Player player5 = player;
         player = null;
         player3 = player5;
-        player5.s = player;
+        player5.pendingGroupInviteTarget = player;
         player = null;
         player3 = player2;
-        player2.s = player;
+        player2.pendingGroupInviteTarget = player;
     }
 
-    public Entity a(Player player, Position object5) {
-        if (this.d.booleanValue()) {
+    public Entity selectLootRecipient(Player player, Position object5) {
+        if (this.rollLootEnabled.booleanValue()) {
             Object object;
             Object object2;
             ArrayList<Player> arrayList = new ArrayList<Player>();
             ArrayList<Player> arrayList2 = new ArrayList<Player>();
             ArrayList<Player> arrayList3 = new ArrayList<Player>();
-            Iterator iterator = this.b.iterator();
+            Iterator iterator = this.members.iterator();
             while (iterator.hasNext()) {
                 Player player2 = (Player)iterator.next();
-                if (this.c.contains(player2)) {
+                if (this.deferredRemovedMembers.contains(player2)) {
                     iterator.remove();
                     continue;
                 }
-                if (GameUtil.b(player2.getPosition(), (Position)object5) <= 20) {
+                if (GameUtil.getDistance(player2.getPosition(), (Position)object5) <= 20) {
                     arrayList.add(player2);
                     continue;
                 }
@@ -338,34 +338,34 @@ public class PlayerGroup {
                 int n = 0;
                 for (Player player4 : arrayList) {
                     int n2;
-                    player4.v = n2 = GameUtil.g(100);
+                    player4.groupLootRoll = n2 = GameUtil.randomInclusive(100);
                     if (n2 <= n) continue;
                     n = n2;
                 }
-                Iterator iterator2 = this.b.iterator();
+                Iterator iterator2 = this.members.iterator();
                 while (iterator2.hasNext()) {
                     Player player5 = (Player)iterator2.next();
-                    if (this.c.contains(player5)) {
+                    if (this.deferredRemovedMembers.contains(player5)) {
                         iterator2.remove();
                         continue;
                     }
                     for (Player player6 : arrayList) {
                         object2 = player5;
-                        ((Player)object2).packetSender.sendGameMessage(String.valueOf(player6.getUsername()) + " rolled: " + player6.v);
+                        ((Player)object2).packetSender.sendGameMessage(String.valueOf(player6.getUsername()) + " rolled: " + player6.groupLootRoll);
                     }
                 }
                 for (Player player7 : arrayList) {
-                    if (player7.v >= n) continue;
+                    if (player7.groupLootRoll >= n) continue;
                     arrayList2.add(player7);
                 }
                 for (Player player8 : arrayList2) {
                     arrayList.remove(player8);
                 }
                 if (arrayList.size() == 1) continue;
-                Iterator iterator3 = this.b.iterator();
+                Iterator iterator3 = this.members.iterator();
                 while (iterator3.hasNext()) {
                     object = (Player)iterator3.next();
-                    if (this.c.contains(object)) {
+                    if (this.deferredRemovedMembers.contains(object)) {
                         iterator3.remove();
                         continue;
                     }
@@ -374,10 +374,10 @@ public class PlayerGroup {
                 }
             }
             if (arrayList.size() == 1) {
-                Iterator iterator4 = this.b.iterator();
+                Iterator iterator4 = this.members.iterator();
                 while (iterator4.hasNext()) {
                     Player player9 = (Player)iterator4.next();
-                    if (this.c.contains(player9)) {
+                    if (this.deferredRemovedMembers.contains(player9)) {
                         iterator4.remove();
                         continue;
                     }

@@ -19,9 +19,9 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        this.a.bj();
-        this.b.az = 4;
-        this.a.aM();
+        this.a.completeQuestJournal();
+        this.b.botMode = 4;
+        this.a.resumeBotTaskState();
         this.stop();
     }
 }

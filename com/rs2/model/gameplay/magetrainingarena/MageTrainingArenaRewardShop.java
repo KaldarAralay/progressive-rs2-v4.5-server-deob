@@ -10,7 +10,7 @@ import com.rs2.model.player.Player;
 import com.rs2.net.packet.PacketSender;
 
 public final class MageTrainingArenaRewardShop {
-    private static MageTrainingArenaRewardDefinition[] a;
+    private static MageTrainingArenaRewardDefinition[] rewardDefinitions;
 
     static {
         MageTrainingArenaRewardDefinition[] mageTrainingArenaRewardDefinitionArray = new MageTrainingArenaRewardDefinition[24];
@@ -47,17 +47,17 @@ public final class MageTrainingArenaRewardShop {
         mageTrainingArenaRewardDefinitionArray[21] = new MageTrainingArenaRewardDefinition(563, nArray4);
         mageTrainingArenaRewardDefinitionArray[22] = new MageTrainingArenaRewardDefinition(566, new int[]{2, 2, 25, 2});
         mageTrainingArenaRewardDefinitionArray[23] = new MageTrainingArenaRewardDefinition(565, new int[]{2, 2, 25, 2});
-        a = mageTrainingArenaRewardDefinitionArray;
+        rewardDefinitions = mageTrainingArenaRewardDefinitionArray;
     }
 
-    public static void a(Player player) {
+    public static void openRewardShop(Player player) {
         Object object;
-        MageTrainingArenaRewardShop.b(player);
-        ItemStack[] itemStackArray = new ItemStack[a.length];
+        MageTrainingArenaRewardShop.refreshPizazzPointBalances(player);
+        ItemStack[] itemStackArray = new ItemStack[rewardDefinitions.length];
         int n = 0;
-        while (n < a.length) {
-            object = a[n];
-            itemStackArray[n] = new ItemStack(((MageTrainingArenaRewardDefinition)object).a, 100);
+        while (n < rewardDefinitions.length) {
+            object = rewardDefinitions[n];
+            itemStackArray[n] = new ItemStack(((MageTrainingArenaRewardDefinition)object).itemId, 100);
             ++n;
         }
         object = player;
@@ -66,47 +66,47 @@ public final class MageTrainingArenaRewardShop {
         ((Player)object).packetSender.showInterface(15944);
     }
 
-    private static void b(Player player) {
+    private static void refreshPizazzPointBalances(Player player) {
         Player player2 = player;
-        player2.packetSender.sendInterfaceText("" + player.getTelekineticTheatreController().a, 15955);
+        player2.packetSender.sendInterfaceText("" + player.getTelekineticTheatreController().pizazzPoints, 15955);
         player2 = player;
-        player2.packetSender.sendInterfaceText("" + player.getEnchantmentChamberController().a, 15956);
+        player2.packetSender.sendInterfaceText("" + player.getEnchantmentChamberController().pizazzPoints, 15956);
         player2 = player;
-        player2.packetSender.sendInterfaceText("" + player.getAlchemistPlaygroundController().a, 15957);
+        player2.packetSender.sendInterfaceText("" + player.getAlchemistPlaygroundController().pizazzPoints, 15957);
         player2 = player;
-        player2.packetSender.sendInterfaceText("" + player.getCreatureGraveyardController().a, 15958);
+        player2.packetSender.sendInterfaceText("" + player.getCreatureGraveyardController().pizazzPoints, 15958);
     }
 
-    public static void a(Player player, int n) {
+    public static void sendRewardCostMessage(Player player, int n) {
         Object object = player;
         PacketSender packetSender = ((Player)object).packetSender;
         ItemService.getInstance();
-        object = a[n];
-        MageTrainingArenaRewardDefinition mageTrainingArenaRewardDefinition = a[n];
+        object = rewardDefinitions[n];
+        MageTrainingArenaRewardDefinition mageTrainingArenaRewardDefinition = rewardDefinitions[n];
         object = mageTrainingArenaRewardDefinition;
-        object = a[n];
-        packetSender.sendGameMessage(String.valueOf(ItemService.getItemName(((MageTrainingArenaRewardDefinition)object).a)) + " costs " + mageTrainingArenaRewardDefinition.b[0] + " Telekinetic, " + ((MageTrainingArenaRewardDefinition)object).b[1] + " Alchemist,");
+        object = rewardDefinitions[n];
+        packetSender.sendGameMessage(String.valueOf(ItemService.getItemName(((MageTrainingArenaRewardDefinition)object).itemId)) + " costs " + mageTrainingArenaRewardDefinition.pizazzPointCosts[0] + " Telekinetic, " + ((MageTrainingArenaRewardDefinition)object).pizazzPointCosts[1] + " Alchemist,");
         Player player2 = player;
         object = player2;
-        object = a[n];
-        object = a[n];
-        player2.packetSender.sendGameMessage(String.valueOf(((MageTrainingArenaRewardDefinition)object).b[2]) + " Enchantment and " + ((MageTrainingArenaRewardDefinition)object).b[3] + " Graveyard Pizazz Points.");
+        object = rewardDefinitions[n];
+        object = rewardDefinitions[n];
+        player2.packetSender.sendGameMessage(String.valueOf(((MageTrainingArenaRewardDefinition)object).pizazzPointCosts[2]) + " Enchantment and " + ((MageTrainingArenaRewardDefinition)object).pizazzPointCosts[3] + " Graveyard Pizazz Points.");
     }
 
-    public static void b(Player player, int n) {
+    public static void buyReward(Player player, int n) {
         Object object;
         MageTrainingArenaRewardDefinition mageTrainingArenaRewardDefinition;
         block15: {
             block14: {
-                mageTrainingArenaRewardDefinition = a[n];
+                mageTrainingArenaRewardDefinition = rewardDefinitions[n];
                 object = mageTrainingArenaRewardDefinition;
-                if (mageTrainingArenaRewardDefinition.a == 6926 && player.df) {
+                if (mageTrainingArenaRewardDefinition.itemId == 6926 && player.bonesToPeachesUnlocked) {
                     object = player;
                     ((Player)object).packetSender.sendGameMessage("You have already bought this item!");
                     return;
                 }
                 object = mageTrainingArenaRewardDefinition;
-                if (((MageTrainingArenaRewardDefinition)object).a == 6910 && !player.getInventoryManager().containsItem(6908)) {
+                if (((MageTrainingArenaRewardDefinition)object).itemId == 6910 && !player.getInventoryManager().containsItem(6908)) {
                     object = player;
                     PacketSender packetSender = ((Player)object).packetSender;
                     StringBuilder stringBuilder = new StringBuilder("You need ");
@@ -115,7 +115,7 @@ public final class MageTrainingArenaRewardShop {
                     return;
                 }
                 object = mageTrainingArenaRewardDefinition;
-                if (((MageTrainingArenaRewardDefinition)object).a == 6912 && !player.getInventoryManager().containsItem(6910)) {
+                if (((MageTrainingArenaRewardDefinition)object).itemId == 6912 && !player.getInventoryManager().containsItem(6910)) {
                     object = player;
                     PacketSender packetSender = ((Player)object).packetSender;
                     StringBuilder stringBuilder = new StringBuilder("You need ");
@@ -124,7 +124,7 @@ public final class MageTrainingArenaRewardShop {
                     return;
                 }
                 object = mageTrainingArenaRewardDefinition;
-                if (((MageTrainingArenaRewardDefinition)object).a == 6914 && !player.getInventoryManager().containsItem(6912)) {
+                if (((MageTrainingArenaRewardDefinition)object).itemId == 6914 && !player.getInventoryManager().containsItem(6912)) {
                     object = player;
                     PacketSender packetSender = ((Player)object).packetSender;
                     StringBuilder stringBuilder = new StringBuilder("You need ");
@@ -133,58 +133,58 @@ public final class MageTrainingArenaRewardShop {
                     return;
                 }
                 object = mageTrainingArenaRewardDefinition;
-                if (((MageTrainingArenaRewardDefinition)object).b[0] > player.getTelekineticTheatreController().a) break block14;
+                if (((MageTrainingArenaRewardDefinition)object).pizazzPointCosts[0] > player.getTelekineticTheatreController().pizazzPoints) break block14;
                 object = mageTrainingArenaRewardDefinition;
-                if (((MageTrainingArenaRewardDefinition)object).b[2] > player.getEnchantmentChamberController().a) break block14;
+                if (((MageTrainingArenaRewardDefinition)object).pizazzPointCosts[2] > player.getEnchantmentChamberController().pizazzPoints) break block14;
                 object = mageTrainingArenaRewardDefinition;
-                if (((MageTrainingArenaRewardDefinition)object).b[1] > player.getAlchemistPlaygroundController().a) break block14;
+                if (((MageTrainingArenaRewardDefinition)object).pizazzPointCosts[1] > player.getAlchemistPlaygroundController().pizazzPoints) break block14;
                 object = mageTrainingArenaRewardDefinition;
-                if (((MageTrainingArenaRewardDefinition)object).b[3] <= player.getCreatureGraveyardController().a) break block15;
+                if (((MageTrainingArenaRewardDefinition)object).pizazzPointCosts[3] <= player.getCreatureGraveyardController().pizazzPoints) break block15;
             }
             object = player;
             ((Player)object).packetSender.sendGameMessage("You don't have enough points to buy this!");
             return;
         }
         object = mageTrainingArenaRewardDefinition;
-        if (((MageTrainingArenaRewardDefinition)object).a == 6926) {
-            player.df = true;
+        if (((MageTrainingArenaRewardDefinition)object).itemId == 6926) {
+            player.bonesToPeachesUnlocked = true;
             object = player;
             ((Player)object).packetSender.sendGameMessage("You have unlocked 'bones to peaches' spell.");
-            MageTrainingArenaRewardShop.a(player, mageTrainingArenaRewardDefinition);
+            MageTrainingArenaRewardShop.deductRewardCost(player, mageTrainingArenaRewardDefinition);
             return;
         }
         object = mageTrainingArenaRewardDefinition;
-        if (player.getInventoryManager().e(new ItemStack(((MageTrainingArenaRewardDefinition)object).a, 1))) {
+        if (player.getInventoryManager().canAddItem(new ItemStack(((MageTrainingArenaRewardDefinition)object).itemId, 1))) {
             object = mageTrainingArenaRewardDefinition;
-            if (((MageTrainingArenaRewardDefinition)object).a == 6910) {
+            if (((MageTrainingArenaRewardDefinition)object).itemId == 6910) {
                 player.getInventoryManager().removeItem(new ItemStack(6908, 1));
             } else {
                 object = mageTrainingArenaRewardDefinition;
-                if (((MageTrainingArenaRewardDefinition)object).a == 6912) {
+                if (((MageTrainingArenaRewardDefinition)object).itemId == 6912) {
                     player.getInventoryManager().removeItem(new ItemStack(6910, 1));
                 } else {
                     object = mageTrainingArenaRewardDefinition;
-                    if (((MageTrainingArenaRewardDefinition)object).a == 6914) {
+                    if (((MageTrainingArenaRewardDefinition)object).itemId == 6914) {
                         player.getInventoryManager().removeItem(new ItemStack(6912, 1));
                     }
                 }
             }
             object = mageTrainingArenaRewardDefinition;
-            player.getInventoryManager().addItem(new ItemStack(((MageTrainingArenaRewardDefinition)object).a, 1));
-            MageTrainingArenaRewardShop.a(player, mageTrainingArenaRewardDefinition);
+            player.getInventoryManager().addItem(new ItemStack(((MageTrainingArenaRewardDefinition)object).itemId, 1));
+            MageTrainingArenaRewardShop.deductRewardCost(player, mageTrainingArenaRewardDefinition);
         }
     }
 
-    private static void a(Player player, MageTrainingArenaRewardDefinition mageTrainingArenaRewardDefinition) {
+    private static void deductRewardCost(Player player, MageTrainingArenaRewardDefinition mageTrainingArenaRewardDefinition) {
         MageTrainingArenaRewardDefinition mageTrainingArenaRewardDefinition2 = mageTrainingArenaRewardDefinition;
-        player.getTelekineticTheatreController().a -= mageTrainingArenaRewardDefinition2.b[0];
+        player.getTelekineticTheatreController().pizazzPoints -= mageTrainingArenaRewardDefinition2.pizazzPointCosts[0];
         mageTrainingArenaRewardDefinition2 = mageTrainingArenaRewardDefinition;
-        player.getEnchantmentChamberController().a -= mageTrainingArenaRewardDefinition2.b[2];
+        player.getEnchantmentChamberController().pizazzPoints -= mageTrainingArenaRewardDefinition2.pizazzPointCosts[2];
         mageTrainingArenaRewardDefinition2 = mageTrainingArenaRewardDefinition;
-        player.getAlchemistPlaygroundController().a -= mageTrainingArenaRewardDefinition2.b[1];
+        player.getAlchemistPlaygroundController().pizazzPoints -= mageTrainingArenaRewardDefinition2.pizazzPointCosts[1];
         mageTrainingArenaRewardDefinition2 = mageTrainingArenaRewardDefinition;
-        player.getCreatureGraveyardController().a -= mageTrainingArenaRewardDefinition2.b[3];
-        MageTrainingArenaRewardShop.b(player);
+        player.getCreatureGraveyardController().pizazzPoints -= mageTrainingArenaRewardDefinition2.pizazzPointCosts[3];
+        MageTrainingArenaRewardShop.refreshPizazzPointBalances(player);
     }
 }
 

@@ -13,44 +13,44 @@ import com.rs2.model.quest.event.NoopQuestEventHook;
 import com.rs2.model.quest.event.ServerMaintenanceEventHook;
 
 public final class QuestEventRegistry {
-    public static int a = 0;
-    private static int b = 0;
-    private static int c = 1;
-    private static int d = 2;
-    private static int e = 3;
-    private static QuestHook[] f = new QuestHook[]{new NoopQuestEventHook(-1), new ServerMaintenanceEventHook(-1, 0), new HalloweenMaskDropEventHook(-1, c), new ChristmasDropEventHook(-1, d), new EasterEggDropEventHook(-1, e)};
+    public static int eventHookCount = 0;
+    private static int SERVER_MAINTENANCE_EVENT_TYPE = 0;
+    private static int HALLOWEEN_EVENT_TYPE = 1;
+    private static int CHRISTMAS_EVENT_TYPE = 2;
+    private static int EASTER_EVENT_TYPE = 3;
+    private static QuestHook[] eventHooks = new QuestHook[]{new NoopQuestEventHook(-1), new ServerMaintenanceEventHook(-1, 0), new HalloweenMaskDropEventHook(-1, HALLOWEEN_EVENT_TYPE), new ChristmasDropEventHook(-1, CHRISTMAS_EVENT_TYPE), new EasterEggDropEventHook(-1, EASTER_EVENT_TYPE)};
 
-    public static QuestHook a(int n) {
+    public static QuestHook getEventHook(int n) {
         int n2 = 0;
-        while (n2 < f.length) {
-            int n3 = f[n2].b();
-            if (n == n3 && f[n2].d()) {
-                return f[n2];
+        while (n2 < eventHooks.length) {
+            int n3 = eventHooks[n2].getQuestId();
+            if (n == n3 && eventHooks[n2].isEnabled()) {
+                return eventHooks[n2];
             }
             ++n2;
         }
-        return f[0];
+        return eventHooks[0];
     }
 
-    public static void a() {
-        a = f.length;
+    public static void initializeEventHooks() {
+        eventHookCount = eventHooks.length;
         int n = 0;
-        while (n < f.length) {
-            if (f[n].c() == 0) {
-                f[n].e();
-                f[n].a(true);
+        while (n < eventHooks.length) {
+            if (eventHooks[n].getEventType() == 0) {
+                eventHooks[n].initialize();
+                eventHooks[n].setEnabled(true);
             }
-            if (f[n].c() == c && Server.f && ServerSettings.holidayItemDropsEnabled) {
-                f[n].e();
-                f[n].a(true);
+            if (eventHooks[n].getEventType() == HALLOWEEN_EVENT_TYPE && Server.halloweenEventActive && ServerSettings.holidayItemDropsEnabled) {
+                eventHooks[n].initialize();
+                eventHooks[n].setEnabled(true);
             }
-            if (f[n].c() == d && Server.g && ServerSettings.holidayItemDropsEnabled) {
-                f[n].e();
-                f[n].a(true);
+            if (eventHooks[n].getEventType() == CHRISTMAS_EVENT_TYPE && Server.christmasEventActive && ServerSettings.holidayItemDropsEnabled) {
+                eventHooks[n].initialize();
+                eventHooks[n].setEnabled(true);
             }
-            if (f[n].c() == e && Server.h && ServerSettings.holidayItemDropsEnabled) {
-                f[n].e();
-                f[n].a(true);
+            if (eventHooks[n].getEventType() == EASTER_EVENT_TYPE && Server.easterEventActive && ServerSettings.holidayItemDropsEnabled) {
+                eventHooks[n].initialize();
+                eventHooks[n].setEnabled(true);
             }
             ++n;
         }

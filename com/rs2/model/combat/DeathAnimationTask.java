@@ -29,7 +29,7 @@ extends TickTask {
             player = (Player)this.b;
             player.x(true);
             this.b.getUpdateState().setFaceEntity(-1);
-            player.f(true);
+            player.setAppearanceUpdateRequired(true);
             if (player.ak > 0) {
                 n = new Npc(player.ak).getDefinition().getDeathAnimationId();
             }

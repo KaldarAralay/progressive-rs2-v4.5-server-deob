@@ -45,57 +45,57 @@ import com.rs2.util.ByteArrayReader;
 import com.rs2.util.FileUtil;
 
 public final class QuestDefinition {
-    private String c;
-    private int d;
-    private boolean e;
-    public static int a = 0;
-    public static int b = 200;
-    private static QuestDefinition[] f = new QuestDefinition[0];
-    private static QuestScript[] g = new QuestScript[]{new NullQuestScript(-1), new TutorialQuest(0), new BlackKnightsFortressQuest(1), new CooksAssistantQuest(2), new DemonSlayerQuest(3), new DoricsQuest(4), new DragonSlayerQuest(5), new ErnestTheChickenQuest(6), new GoblinDiplomacyQuest(7), new ImpCatcherQuest(8), new KnightsSwordQuest(9), new PiratesTreasureQuest(10), new PrinceAliRescueQuest(11), new RestlessGhostQuest(12), new RomeoAndJulietQuest(13), new RuneMysteriesQuest(14), new SheepShearerQuest(15), new ShieldOfArravQuest(16), new VampireSlayerQuest(17), new WitchsPotionQuest(18), new DruidicRitualQuest(29), new ElementalWorkshopQuest(32), new FamilyCrestQuest(35), new FremennikTrialsQuest(40), new GertrudesCatQuest(42), new GrandTreeQuest(46), new HeroesQuest(50), new HolyGrailQuest(51), new JunglePotionQuest(56), new LostCityQuest(58), new MerlinsCrystalQuest(61), new MonkeyMadnessQuest(62), new PriestInPerilQuest(72), new ScorpionCatcherQuest(80), new TreeGnomeVillageQuest(95), new WitchsHouseQuest(103)};
+    private String name;
+    private int journalButtonId;
+    private boolean membersOnly;
+    public static int questCount = 0;
+    public static int questStateCapacity = 200;
+    private static QuestDefinition[] definitionsById = new QuestDefinition[0];
+    private static QuestScript[] questScripts = new QuestScript[]{new NullQuestScript(-1), new TutorialQuest(0), new BlackKnightsFortressQuest(1), new CooksAssistantQuest(2), new DemonSlayerQuest(3), new DoricsQuest(4), new DragonSlayerQuest(5), new ErnestTheChickenQuest(6), new GoblinDiplomacyQuest(7), new ImpCatcherQuest(8), new KnightsSwordQuest(9), new PiratesTreasureQuest(10), new PrinceAliRescueQuest(11), new RestlessGhostQuest(12), new RomeoAndJulietQuest(13), new RuneMysteriesQuest(14), new SheepShearerQuest(15), new ShieldOfArravQuest(16), new VampireSlayerQuest(17), new WitchsPotionQuest(18), new DruidicRitualQuest(29), new ElementalWorkshopQuest(32), new FamilyCrestQuest(35), new FremennikTrialsQuest(40), new GertrudesCatQuest(42), new GrandTreeQuest(46), new HeroesQuest(50), new HolyGrailQuest(51), new JunglePotionQuest(56), new LostCityQuest(58), new MerlinsCrystalQuest(61), new MonkeyMadnessQuest(62), new PriestInPerilQuest(72), new ScorpionCatcherQuest(80), new TreeGnomeVillageQuest(95), new WitchsHouseQuest(103)};
 
-    public static int a() {
+    public static int getTotalQuestPointReward() {
         int n = 0;
         int n2 = 1;
-        while (n2 < a) {
-            QuestScript questScript = QuestDefinition.a(n2);
-            n += questScript.a();
+        while (n2 < questCount) {
+            QuestScript questScript = QuestDefinition.getQuestScript(n2);
+            n += questScript.getQuestPointReward();
             ++n2;
         }
         return n;
     }
 
-    public static QuestScript a(int n) {
+    public static QuestScript getQuestScript(int n) {
         int n2 = 0;
-        while (n2 < g.length) {
-            int n3 = g[n2].b();
+        while (n2 < questScripts.length) {
+            int n3 = questScripts[n2].getQuestId();
             if (n == n3) {
-                return g[n2];
+                return questScripts[n2];
             }
             ++n2;
         }
-        return g[0];
+        return questScripts[0];
     }
 
-    public static QuestDefinition b(int n) {
+    public static QuestDefinition forId(int n) {
         QuestDefinition questDefinition;
         if (n < 0) {
             n = 1;
         }
-        if ((questDefinition = f[n]) == null) {
+        if ((questDefinition = definitionsById[n]) == null) {
             questDefinition = new QuestDefinition(n, "UNKNOWN", -1, false);
         }
         return questDefinition;
     }
 
-    public static void b() {
+    public static void loadDefinitions() {
         try {
             Object object = FileUtil.readBytes("./data/content/questing/Quests.dat");
             ByteArrayReader byteArrayReader = new ByteArrayReader((byte[])object);
             object = byteArrayReader;
-            a = byteArrayReader.readUnsignedByte();
-            f = new QuestDefinition[a];
+            questCount = byteArrayReader.readUnsignedByte();
+            definitionsById = new QuestDefinition[questCount];
             int n = 0;
-            while (n < a) {
+            while (n < questCount) {
                 boolean bl;
                 String string = ((ByteArrayReader)object).readString();
                 int n2 = ((ByteArrayReader)object).readUnsignedShort() - 1;
@@ -103,7 +103,7 @@ public final class QuestDefinition {
                 if (ServerSettings.cacheVersion < 274 && n == 99) {
                     n2 = 7382;
                 }
-                QuestDefinition.f[n] = new QuestDefinition(n, string, n2, bl);
+                QuestDefinition.definitionsById[n] = new QuestDefinition(n, string, n2, bl);
                 ++n;
             }
             return;
@@ -116,21 +116,21 @@ public final class QuestDefinition {
     }
 
     private QuestDefinition(int n, String string, int n2, boolean bl) {
-        this.c = string;
-        this.d = n2;
-        this.e = bl;
+        this.name = string;
+        this.journalButtonId = n2;
+        this.membersOnly = bl;
     }
 
-    public final String c() {
-        return this.c;
+    public final String getName() {
+        return this.name;
     }
 
-    public final int d() {
-        return this.d;
+    public final int getJournalButtonId() {
+        return this.journalButtonId;
     }
 
-    public final boolean e() {
-        return this.e;
+    public final boolean isMembersOnly() {
+        return this.membersOnly;
     }
 }
 

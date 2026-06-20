@@ -10,35 +10,35 @@ import com.rs2.net.packet.handler.PlayerInteractionPacketHandler;
 
 final class DuelRequestTask
 extends TickTask {
-    private final /* synthetic */ Player a;
-    private final /* synthetic */ Player b;
-    private final /* synthetic */ int c;
+    private final /* synthetic */ Player targetPlayer;
+    private final /* synthetic */ Player requestingPlayer;
+    private final /* synthetic */ int actionSequence;
 
     DuelRequestTask(PlayerInteractionPacketHandler playerInteractionPacketHandler, int n, Player player, Player player2, int n2) {
-        this.a = player;
-        this.b = player2;
-        this.c = n2;
+        this.targetPlayer = player;
+        this.requestingPlayer = player2;
+        this.actionSequence = n2;
         super(1);
     }
 
     @Override
     public final void execute() {
-        if (this.a == null || this.a.isDead() || !this.b.isCurrentActionSequence(this.c)) {
-            EntityTargetMovement.clearMovementTarget(this.b);
-            this.b.setInteractionTarget(null);
-            this.b.getMovementQueue().clear();
+        if (this.targetPlayer == null || this.targetPlayer.isDead() || !this.requestingPlayer.isCurrentActionSequence(this.actionSequence)) {
+            EntityTargetMovement.clearMovementTarget(this.requestingPlayer);
+            this.requestingPlayer.setInteractionTarget(null);
+            this.requestingPlayer.getMovementQueue().clear();
             this.stop();
             return;
         }
-        if (this.b.isWithinReach(this.a, 1) && !this.b.isOverlapping(this.a) && !EntityTargetMovement.isDiagonalTo(this.b.getPosition(), this.a.getPosition())) {
-            if (this.b.isInDuelArenaLobby()) {
-                this.b.getDuelController().a(this.a);
-                this.b.getUpdateState().setFaceEntity(-1);
+        if (this.requestingPlayer.isWithinReach(this.targetPlayer, 1) && !this.requestingPlayer.isOverlapping(this.targetPlayer) && !EntityTargetMovement.isDiagonalTo(this.requestingPlayer.getPosition(), this.targetPlayer.getPosition())) {
+            if (this.requestingPlayer.isInDuelArenaLobby()) {
+                this.requestingPlayer.getDuelController().handleDuelRequest(this.targetPlayer);
+                this.requestingPlayer.getUpdateState().setFaceEntity(-1);
             }
-            EntityTargetMovement.clearMovementTarget(this.b);
-            this.b.getUpdateState().setFacePosition(this.a.getPosition());
-            this.b.setInteractionTarget(null);
-            this.b.getMovementQueue().clear();
+            EntityTargetMovement.clearMovementTarget(this.requestingPlayer);
+            this.requestingPlayer.getUpdateState().setFacePosition(this.targetPlayer.getPosition());
+            this.requestingPlayer.setInteractionTarget(null);
+            this.requestingPlayer.getMovementQueue().clear();
             this.stop();
         }
     }

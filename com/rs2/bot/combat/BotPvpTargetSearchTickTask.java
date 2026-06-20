@@ -24,12 +24,12 @@ import java.util.Collections;
 
 final class BotPvpTargetSearchTickTask
 extends TickTask {
-    private final /* synthetic */ Player a;
-    private final /* synthetic */ boolean b;
+    private final /* synthetic */ Player bot;
+    private final /* synthetic */ boolean ignoreLootRiskCheck;
 
     BotPvpTargetSearchTickTask(int n, Player player, boolean bl) {
-        this.a = player;
-        this.b = bl;
+        this.bot = player;
+        this.ignoreLootRiskCheck = bl;
         super(10);
     }
 
@@ -43,55 +43,55 @@ extends TickTask {
             int n;
             int n2;
             Object object;
-            if (this.a.isDead() || !this.a.bW()) {
+            if (this.bot.isDead() || !this.bot.isRegistered()) {
                 this.stop();
                 return;
             }
-            if (this.a.botCombatEscapeActive) {
-                if (this.a.getPosition().equals(this.a.botEscapeLastPosition) && this.a.getRecentCombatTimer().hasElapsed()) {
-                    ++this.a.botEscapeStuckTicks;
+            if (this.bot.botCombatEscapeActive) {
+                if (this.bot.getPosition().equals(this.bot.botEscapeLastPosition) && this.bot.getRecentCombatTimer().hasElapsed()) {
+                    ++this.bot.botEscapeStuckTicks;
                 } else {
-                    this.a.botEscapeLastPosition = this.a.getPosition().copy();
-                    this.a.botEscapeStuckTicks = 0;
+                    this.bot.botEscapeLastPosition = this.bot.getPosition().copy();
+                    this.bot.botEscapeStuckTicks = 0;
                 }
-                if (this.a.botEscapeStuckTicks >= 10) {
-                    BotCombatLoadoutManager.a(this.a);
-                }
-            }
-            if (BotCombatHelper.hasExternalCombatTarget(this.a) || this.a.botCombatState != null || this.a.botCombatEscapeActive) break block74;
-            if (!this.a.isInWilderness()) {
-                BotCombatHelper.prepareBotPvpSearchPosition(this.a);
-            }
-            if (this.a.getEquipmentManager().getItemIdAtSlot(3) != this.a.botWeaponItemId) {
-                this.a.getEquipmentManager().equipFromInventorySlot(this.a.getInventoryManager().getContainer().indexOfItem(this.a.botWeaponItemId));
-                if (this.a.botShieldItemId != 0 && this.a.getEquipmentManager().getItemIdAtSlot(5) != this.a.botShieldItemId) {
-                    this.a.getEquipmentManager().equipFromInventorySlot(this.a.getInventoryManager().getContainer().indexOfItem(this.a.botShieldItemId));
-                }
-                this.a.botActiveCombatStyle = this.a.botPrimaryCombatStyle;
-            }
-            if (this.a.botMagicPenaltyGearUnequipped) {
-                BotCombatHelper.reequipMagicPenaltyGear(this.a);
-            }
-            if (this.a.getMovementQueue().isRunning()) {
-                if (this.a.q == null) {
-                    this.a.getMovementQueue().setRunning(false);
-                } else if (this.a.q.a == this.a) {
-                    this.a.getMovementQueue().setRunning(false);
+                if (this.bot.botEscapeStuckTicks >= 10) {
+                    BotCombatLoadoutManager.startCombatLoadoutBot(this.bot);
                 }
             }
-            BotCombatHelper.disableBotCombatPrayers(this.a);
-            Object object2 = this.a;
+            if (BotCombatHelper.hasExternalCombatTarget(this.bot) || this.bot.botCombatState != null || this.bot.botCombatEscapeActive) break block74;
+            if (!this.bot.isInWilderness()) {
+                BotCombatHelper.prepareBotPvpSearchPosition(this.bot);
+            }
+            if (this.bot.getEquipmentManager().getItemIdAtSlot(3) != this.bot.botWeaponItemId) {
+                this.bot.getEquipmentManager().equipFromInventorySlot(this.bot.getInventoryManager().getContainer().indexOfItem(this.bot.botWeaponItemId));
+                if (this.bot.botShieldItemId != 0 && this.bot.getEquipmentManager().getItemIdAtSlot(5) != this.bot.botShieldItemId) {
+                    this.bot.getEquipmentManager().equipFromInventorySlot(this.bot.getInventoryManager().getContainer().indexOfItem(this.bot.botShieldItemId));
+                }
+                this.bot.botActiveCombatStyle = this.bot.botPrimaryCombatStyle;
+            }
+            if (this.bot.botMagicPenaltyGearUnequipped) {
+                BotCombatHelper.reequipMagicPenaltyGear(this.bot);
+            }
+            if (this.bot.getMovementQueue().isRunning()) {
+                if (this.bot.currentGroup == null) {
+                    this.bot.getMovementQueue().setRunning(false);
+                } else if (this.bot.currentGroup.leader == this.bot) {
+                    this.bot.getMovementQueue().setRunning(false);
+                }
+            }
+            BotCombatHelper.disableBotCombatPrayers(this.bot);
+            Object object2 = this.bot;
             if (((Player)object2).botPvpChatSource != null && ((Player)object2).botPvpChatMessage != null) {
-                if (((Player)object2).q == null && ((Player)object2).botPvpPendingTeamTarget != null && ((Player)object2).botPvpPendingTeamTarget == ((Player)object2).botPvpChatSource) {
+                if (((Player)object2).currentGroup == null && ((Player)object2).botPvpPendingTeamTarget != null && ((Player)object2).botPvpPendingTeamTarget == ((Player)object2).botPvpChatSource) {
                     if (((Player)object2).botPvpChatMessage.toLowerCase().equals("sure") || ((Player)object2).botPvpChatMessage.toLowerCase().equals("okay") || ((Player)object2).botPvpChatMessage.toLowerCase().equals("ok") || ((Player)object2).botPvpChatMessage.toLowerCase().equals("k")) {
                         ((Player)object2).botPvpPendingTeamTarget = null;
                         ((Player)object2).botPvpTeamInviteTicks = 0;
-                        if (((Player)object2).botPvpChatSource.q == null) {
+                        if (((Player)object2).botPvpChatSource.currentGroup == null) {
                             object = new PlayerGroup(((Player)object2).botPvpChatSource, (Player)object2);
-                            ((PlayerGroup)object).b();
+                            ((PlayerGroup)object).refreshGroupFollowChain();
                         } else {
-                            ((Player)object2).botPvpChatSource.q.c((Player)object2);
-                            ((Player)object2).botPvpChatSource.q.b();
+                            ((Player)object2).botPvpChatSource.currentGroup.addMember((Player)object2);
+                            ((Player)object2).botPvpChatSource.currentGroup.refreshGroupFollowChain();
                         }
                     } else if (((Player)object2).botPvpChatMessage.toLowerCase().equals("nty") || ((Player)object2).botPvpChatMessage.toLowerCase().equals("nah") || ((Player)object2).botPvpChatMessage.toLowerCase().equals("no") || ((Player)object2).botPvpChatMessage.toLowerCase().equals("nope") || ((Player)object2).botPvpChatMessage.toLowerCase().equals("no thanks")) {
                         ((Player)object2).botPvpPendingTeamTarget.botPvpTeamRequesters.remove(object2);
@@ -102,21 +102,21 @@ extends TickTask {
                     }
                 }
                 if (((Player)object2).botPvpChatMessage.toLowerCase().equals("team") || ((Player)object2).botPvpChatMessage.toLowerCase().equals("team?")) {
-                    if (((Player)object2).q == null && BotCombatHelper.canTeamWithBotPvpPlayer((Player)object2, ((Player)object2).botPvpChatSource, false)) {
+                    if (((Player)object2).currentGroup == null && BotCombatHelper.canTeamWithBotPvpPlayer((Player)object2, ((Player)object2).botPvpChatSource, false)) {
                         object = new String[]{"sure", "okay", "ok", "k"};
-                        ((Player)object2).queuePublicChatMessage(object[GameUtil.h(4)]);
+                        ((Player)object2).queuePublicChatMessage(object[GameUtil.randomInt(4)]);
                         ((Player)object2).botPvpChatSource.botPvpTeamRequesters.add(object2);
-                        if (((Player)object2).botPvpChatSource.q == null) {
+                        if (((Player)object2).botPvpChatSource.currentGroup == null) {
                             PlayerGroup playerGroup = new PlayerGroup(((Player)object2).botPvpChatSource, (Player)object2);
-                            playerGroup.b();
+                            playerGroup.refreshGroupFollowChain();
                         } else {
-                            ((Player)object2).botPvpChatSource.q.c((Player)object2);
-                            ((Player)object2).botPvpChatSource.q.b();
+                            ((Player)object2).botPvpChatSource.currentGroup.addMember((Player)object2);
+                            ((Player)object2).botPvpChatSource.currentGroup.refreshGroupFollowChain();
                         }
                     } else {
                         ((Player)object2).queuePublicChatMessage("nty");
                     }
-                } else if (((Player)object2).q != null && ((Player)object2).botPvpChatSource.q != null && ((Player)object2).q == ((Player)object2).botPvpChatSource.q) {
+                } else if (((Player)object2).currentGroup != null && ((Player)object2).botPvpChatSource.currentGroup != null && ((Player)object2).currentGroup == ((Player)object2).botPvpChatSource.currentGroup) {
                     if (((Player)object2).botPvpChatMessage.toLowerCase().equals("food") || ((Player)object2).botPvpChatMessage.toLowerCase().equals("food?") || ((Player)object2).botPvpChatMessage.toLowerCase().equals("food left") || ((Player)object2).botPvpChatMessage.toLowerCase().equals("food left?")) {
                         void n12;
                         object = ItemDefinition.forId(((Player)object2).botFoodItemId);
@@ -162,87 +162,87 @@ extends TickTask {
                         ((Player)object2).queuePublicChatMessage("cya");
                         EntityTargetMovement.clearMovementTarget((Entity)object2);
                         ((Player)object2).botPvpRejectedTeamTargets.add(((Player)object2).botPvpChatSource);
-                        ((Player)object2).q.e(((Player)object2).botPvpChatSource);
+                        ((Player)object2).currentGroup.removeMember(((Player)object2).botPvpChatSource);
                     }
                 }
                 ((Player)object2).botPvpChatMessage = null;
                 ((Player)object2).botPvpChatSource = null;
             }
-            this.a.botMagicGearSwapDelayTicks = 0;
-            this.a.botThreatEscapeDelayTicks = 0;
-            this.a.botPrayerSwitchDelayTicks = 0;
-            this.a.botQueuedPrayerId = -1;
-            this.a.botEatDelayTicks = 0;
-            this.a.botWeaponSwapDelayTicks = 0;
-            if (!(this.a.getCombatTarget() == null || this.a.getCombatTarget().isDead() || this.a.botCombatTickTask != null && this.a.botCombatTickTask.isActive())) {
-                this.a.getMovementQueue().setRunning(true);
-                CombatManager.startCombat(this.a, this.a.getCombatTarget());
+            this.bot.botMagicGearSwapDelayTicks = 0;
+            this.bot.botThreatEscapeDelayTicks = 0;
+            this.bot.botPrayerSwitchDelayTicks = 0;
+            this.bot.botQueuedPrayerId = -1;
+            this.bot.botEatDelayTicks = 0;
+            this.bot.botWeaponSwapDelayTicks = 0;
+            if (!(this.bot.getCombatTarget() == null || this.bot.getCombatTarget().isDead() || this.bot.botCombatTickTask != null && this.bot.botCombatTickTask.isActive())) {
+                this.bot.getMovementQueue().setRunning(true);
+                CombatManager.startCombat(this.bot, this.bot.getCombatTarget());
             }
-            object2 = FoodDefinition.a(this.a.botFoodItemId);
-            int n8 = ((FoodDefinition)((Object)object2)).a();
-            int n7 = this.a.getSkillManager().getCurrentLevels()[3] + n8;
-            this.a.getSkillManager();
-            int n9 = n8 = n7 <= SkillManager.getLevelForExperience(this.a.getSkillManager().getExperience()[3]) ? 1 : 0;
-            if (!this.a.botFoodDepleted && n8 != 0) {
-                int n10 = n8 = this.a.isTeleblocked() ? 6 : 4;
-                if (!BotCombatHelper.eatBotFood(this.a) || this.a.getInventoryManager().getItemAmount(this.a.botFoodItemId) <= n8) {
-                    BotCombatEscapeHandler.a(this.a);
+            object2 = FoodDefinition.forItemId(this.bot.botFoodItemId);
+            int n8 = ((FoodDefinition)((Object)object2)).getHealAmount();
+            int n7 = this.bot.getSkillManager().getCurrentLevels()[3] + n8;
+            this.bot.getSkillManager();
+            int n9 = n8 = n7 <= SkillManager.getLevelForExperience(this.bot.getSkillManager().getExperience()[3]) ? 1 : 0;
+            if (!this.bot.botFoodDepleted && n8 != 0) {
+                int n10 = n8 = this.bot.isTeleblocked() ? 6 : 4;
+                if (!BotCombatHelper.eatBotFood(this.bot) || this.bot.getInventoryManager().getItemAmount(this.bot.botFoodItemId) <= n8) {
+                    BotCombatEscapeHandler.tryStartBotCombatEscape(this.bot);
                 }
             }
-            if (this.a.getPoisonDamage() > 0.0) {
-                BotCombatHelper.drinkAntipoisonPotion(this.a);
+            if (this.bot.getPoisonDamage() > 0.0) {
+                BotCombatHelper.drinkAntipoisonPotion(this.bot);
             }
-            if (this.a.botPvpTeamInviteTicks >= 3) {
-                this.a.botPvpPendingTeamTarget.botPvpTeamRequesters.remove(this.a);
-                EntityTargetMovement.clearMovementTarget(this.a);
-                this.a.botPvpRejectedTeamTargets.add(this.a.botPvpPendingTeamTarget);
-                this.a.botPvpPendingTeamTarget = null;
-                this.a.botPvpTeamInviteTicks = 0;
+            if (this.bot.botPvpTeamInviteTicks >= 3) {
+                this.bot.botPvpPendingTeamTarget.botPvpTeamRequesters.remove(this.bot);
+                EntityTargetMovement.clearMovementTarget(this.bot);
+                this.bot.botPvpRejectedTeamTargets.add(this.bot.botPvpPendingTeamTarget);
+                this.bot.botPvpPendingTeamTarget = null;
+                this.bot.botPvpTeamInviteTicks = 0;
             }
-            if (this.a.botPvpTeamInviteTicks > 0) {
-                ++this.a.botPvpTeamInviteTicks;
+            if (this.bot.botPvpTeamInviteTicks > 0) {
+                ++this.bot.botPvpTeamInviteTicks;
                 return;
             }
-            if (this.a.q != null && this.a.q.a != this.a) {
-                if (!this.a.q.a.isInWilderness()) {
-                    this.a.q.e(this.a.q.a);
+            if (this.bot.currentGroup != null && this.bot.currentGroup.leader != this.bot) {
+                if (!this.bot.currentGroup.leader.isInWilderness()) {
+                    this.bot.currentGroup.removeMember(this.bot.currentGroup.leader);
                 } else {
-                    if (this.a.getMovementTarget() == null) {
-                        this.a.q.b();
-                    } else if (this.a.getMovementQueue().isRunning() != this.a.q.a.getMovementQueue().isRunning()) {
-                        this.a.getMovementQueue().setRunning(this.a.q.a.getMovementQueue().isRunning());
+                    if (this.bot.getMovementTarget() == null) {
+                        this.bot.currentGroup.refreshGroupFollowChain();
+                    } else if (this.bot.getMovementQueue().isRunning() != this.bot.currentGroup.leader.getMovementQueue().isRunning()) {
+                        this.bot.getMovementQueue().setRunning(this.bot.currentGroup.leader.getMovementQueue().isRunning());
                     }
-                    if (this.a.q.a.getCombatTarget() != null && !this.a.q.a.getCombatTarget().isDead()) {
-                        this.a.getMovementQueue().setRunning(true);
-                        CombatManager.startCombat(this.a, this.a.q.a.getCombatTarget());
+                    if (this.bot.currentGroup.leader.getCombatTarget() != null && !this.bot.currentGroup.leader.getCombatTarget().isDead()) {
+                        this.bot.getMovementQueue().setRunning(true);
+                        CombatManager.startCombat(this.bot, this.bot.currentGroup.leader.getCombatTarget());
                     }
                 }
             }
-            if (this.a.q != null && this.a.q.a != this.a) {
+            if (this.bot.currentGroup != null && this.bot.currentGroup.leader != this.bot) {
                 return;
             }
             ArrayList<Object> arrayList = new ArrayList<Object>();
-            Object object3 = World.a;
-            n2 = World.a.length;
+            Object object3 = World.players;
+            n2 = World.players.length;
             boolean n13 = false;
             while (var3_12 < n2) {
                 block75: {
                     block76: {
                         block77: {
                             object = object3[var3_12];
-                            if (object == null || object == this.a || ((Player)object).clanWarsBot) break block75;
-                            if (this.a.q == null) break block76;
-                            if (!this.a.q.a((Player)object)) break block77;
-                            if (!((Entity)object).getPosition().isWithinViewport(this.a.getPosition())) {
-                                this.a.q.e((Player)object);
+                            if (object == null || object == this.bot || ((Player)object).clanWarsBot) break block75;
+                            if (this.bot.currentGroup == null) break block76;
+                            if (!this.bot.currentGroup.containsMember((Player)object)) break block77;
+                            if (!((Entity)object).getPosition().isWithinViewport(this.bot.getPosition())) {
+                                this.bot.currentGroup.removeMember((Player)object);
                             }
                             break block75;
                         }
-                        if (this.a.q.c.contains(object)) break block75;
+                        if (this.bot.currentGroup.deferredRemovedMembers.contains(object)) break block75;
                     }
-                    if (((Entity)object).getPosition().isWithinViewport(this.a.getPosition())) {
-                        n = BotCombatHelper.getEscapeCombatLevelMargin(this.a);
-                        if (((Player)object).getCombatLevel() <= this.a.getCombatLevel() + n) {
+                    if (((Entity)object).getPosition().isWithinViewport(this.bot.getPosition())) {
+                        n = BotCombatHelper.getEscapeCombatLevelMargin(this.bot);
+                        if (((Player)object).getCombatLevel() <= this.bot.getCombatLevel() + n) {
                             arrayList.add(object);
                         }
                     }
@@ -252,34 +252,34 @@ extends TickTask {
             Collections.shuffle(arrayList);
             boolean bl = false;
             for (Player player : arrayList) {
-                if (player.getWildernessLevel() < Math.abs(this.a.getCombatLevel() - player.getCombatLevel()) || !player.isInMultiCombatArea() && !player.getSingleCombatTimer().hasElapsed()) continue;
-                if (!PathReachability.isReachable(this.a, player.getPosition().getX(), player.getPosition().getY(), true, 0, 0) || BotCombatHelper.tryHandleBotPvpTeamGrouping(this.a, player)) continue;
+                if (player.getWildernessLevel() < Math.abs(this.bot.getCombatLevel() - player.getCombatLevel()) || !player.isInMultiCombatArea() && !player.getSingleCombatTimer().hasElapsed()) continue;
+                if (!PathReachability.isReachable(this.bot, player.getPosition().getX(), player.getPosition().getY(), true, 0, 0) || BotCombatHelper.tryHandleBotPvpTeamGrouping(this.bot, player)) continue;
                 object3 = player;
-                if (player.q != null) {
-                    object3 = player.q.a;
+                if (player.currentGroup != null) {
+                    object3 = player.currentGroup.leader;
                 }
-                if (!object3.de && BotCombatHelper.canTeamWithBotPvpPlayer(this.a, (Player)object3, true) && !this.a.botPvpRejectedTeamTargets.contains(object3)) {
-                    this.a.getMovementQueue().setRunning(true);
-                    this.a.getUpdateState().setFaceEntity(player.getEncodedIndex());
-                    this.a.setAttackRange(1);
-                    this.a.setMovementTarget(player);
-                    this.a.botPvpPendingTeamTarget = object3;
-                    if (GameUtil.b(this.a.getPosition(), player.getPosition()) > 5) continue;
-                    this.a.queuePublicChatMessage("team?");
-                    object3.botPvpTeamRequesters.add(this.a);
-                    this.a.botPvpTeamInviteTicks = 1;
+                if (!object3.isBot && BotCombatHelper.canTeamWithBotPvpPlayer(this.bot, (Player)object3, true) && !this.bot.botPvpRejectedTeamTargets.contains(object3)) {
+                    this.bot.getMovementQueue().setRunning(true);
+                    this.bot.getUpdateState().setFaceEntity(player.getEncodedIndex());
+                    this.bot.setAttackRange(1);
+                    this.bot.setMovementTarget(player);
+                    this.bot.botPvpPendingTeamTarget = object3;
+                    if (GameUtil.getDistance(this.bot.getPosition(), player.getPosition()) > 5) continue;
+                    this.bot.queuePublicChatMessage("team?");
+                    object3.botPvpTeamRequesters.add(this.bot);
+                    this.bot.botPvpTeamInviteTicks = 1;
                     continue;
                 }
-                if (!this.b && !BotCombatHelper.isTargetLootWorthRisk(this.a, player)) continue;
-                if (!this.a.getMovementQueue().isRunning()) {
-                    this.a.getMovementQueue().setRunning(true);
+                if (!this.ignoreLootRiskCheck && !BotCombatHelper.isTargetLootWorthRisk(this.bot, player)) continue;
+                if (!this.bot.getMovementQueue().isRunning()) {
+                    this.bot.getMovementQueue().setRunning(true);
                 }
-                if (this.a.q == null && player.q != null && (this.a.isInMultiCombatArea() || player.isInMultiCombatArea()) && ((double)player.q.c() >= (double)this.a.getCombatLevel() * 0.7 || (double)player.q.d() >= (double)this.a.getCombatLevel() * 1.2)) continue;
+                if (this.bot.currentGroup == null && player.currentGroup != null && (this.bot.isInMultiCombatArea() || player.isInMultiCombatArea()) && ((double)player.currentGroup.getHighestCombatLevel() >= (double)this.bot.getCombatLevel() * 0.7 || (double)player.currentGroup.getTotalCombatLevel() >= (double)this.bot.getCombatLevel() * 1.2)) continue;
                 if (player == null || player.isDead()) break;
-                if (this.a.q == null) {
-                    CombatManager.startCombat(this.a, player);
+                if (this.bot.currentGroup == null) {
+                    CombatManager.startCombat(this.bot, player);
                 } else {
-                    this.a.q.a((Entity)player);
+                    this.bot.currentGroup.attackTarget(player);
                 }
                 bl = true;
                 break;
@@ -287,8 +287,8 @@ extends TickTask {
             if (!bl) {
                 int n11;
                 int n12;
-                int n14 = this.a.getPosition().getX() + GameUtil.h(20) - 10;
-                int n15 = this.a.getPosition().getY() + GameUtil.h(20) - 10;
+                int n14 = this.bot.getPosition().getX() + GameUtil.randomInt(20) - 10;
+                int n15 = this.bot.getPosition().getY() + GameUtil.randomInt(20) - 10;
                 if (n14 < 2951) {
                     n12 = 2961;
                 }
@@ -298,11 +298,11 @@ extends TickTask {
                 if (n15 < 3520) {
                     n15 = 3530;
                 }
-                if (n15 > this.a.botWildernessMaxY) {
-                    n15 = this.a.botWildernessMaxY - 10;
+                if (n15 > this.bot.botWildernessMaxY) {
+                    n15 = this.bot.botWildernessMaxY - 10;
                 }
                 PathFinder.getInstance();
-                PathFinder.findPath(this.a, n11, n15, true, 0, 0);
+                PathFinder.findPath(this.bot, n11, n15, true, 0, 0);
             }
         }
     }

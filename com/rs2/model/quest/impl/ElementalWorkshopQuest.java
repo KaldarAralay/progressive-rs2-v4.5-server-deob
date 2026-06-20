@@ -27,11 +27,11 @@ extends QuestScript {
 
     public ElementalWorkshopQuest(int n) {
         super(32);
-        super.a(1);
+        super.setQuestPointReward(1);
     }
 
     @Override
-    public final String[] a(Player player, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         int n2 = n - 3;
         if (n == 0) {
             n = player.getSkillManager().getBaseLevel(12);
@@ -60,9 +60,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("1 Quest Point", 12150);
         player2 = player;
@@ -86,13 +86,13 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleFirstObjectAction(Player player, int n, int n2, int n3, int n4) {
         int n5 = n4 - 3;
         if (n == 3403) {
             if (player.H != null && !player.H.isDead() && player.H.getNpcId() == 1023) {
                 return true;
             }
-            GatheringToolDefinition gatheringToolDefinition = ItemCombinationHandler.a(player, 14);
+            GatheringToolDefinition gatheringToolDefinition = ItemCombinationHandler.findUsableGatheringTool(player, 14);
             if (gatheringToolDefinition == null) {
                 Player player2 = player;
                 player2.packetSender.sendGameMessage("You do not have a pickaxe that you can use.");
@@ -108,8 +108,8 @@ extends QuestScript {
             npc.getUpdateState().setForcedText("Grr... Ge'roff us!");
             return true;
         }
-        if (n == 3389 && n2 == 2716 && n3 == 3481 && !player.aq(2886)) {
-            player.getInventoryManager().b(new ItemStack(2886, 1));
+        if (n == 3389 && n2 == 2716 && n3 == 3481 && !player.ownsItem(2886)) {
+            player.getInventoryManager().addOrDropItem(new ItemStack(2886, 1));
             player.getDialogueManager().showItemMessage("You find a book titled 'The Elemental Shield'.", new ItemStack(2886, 1));
             return true;
         }
@@ -130,13 +130,13 @@ extends QuestScript {
                 player4.packetSender.sendGameMessage("You stitch the leather over the hole in the bellows.");
                 player.getInventoryManager().removeItem(new ItemStack(1741, 1));
                 player.getInventoryManager().removeItem(new ItemStack(1734, 1));
-                player.addQuestState(this.b(), 8);
+                player.addQuestState(this.getQuestId(), 8);
                 return true;
             }
         }
         if (n == 3397 && n2 == 2724 && n3 == 9894) {
-            if (!player.aq(2888)) {
-                player.getInventoryManager().b(new ItemStack(2888, 1));
+            if (!player.ownsItem(2888)) {
+                player.getInventoryManager().addOrDropItem(new ItemStack(2888, 1));
                 Player player5 = player;
                 player5.packetSender.sendGameMessage("You find a stone bowl.");
             } else {
@@ -169,7 +169,7 @@ extends QuestScript {
             if (n4 == 2) {
                 player.getDialogueManager().showPlayerTwoLineDialogue("Now to explore this area thoroughly, to find what", "forgotten secrets it contains.", 591);
                 player.getDialogueManager().finishDialogue();
-                player.setQuestState(this.b(), 3);
+                player.setQuestState(this.getQuestId(), 3);
             }
             return true;
         }
@@ -184,7 +184,7 @@ extends QuestScript {
             if ((n5 & 1) == 0) {
                 Player player9 = player;
                 player9.packetSender.sendGameMessage("You turn the handle.");
-                player.addQuestState(this.b(), 1);
+                player.addQuestState(this.getQuestId(), 1);
             } else {
                 Player player10 = player;
                 player10.packetSender.sendGameMessage("You have already turned this handle.");
@@ -202,7 +202,7 @@ extends QuestScript {
             if ((n5 & 2) == 0 && (n5 & 1) != 0) {
                 Player player12 = player;
                 player12.packetSender.sendGameMessage("You turn the handle.");
-                player.addQuestState(this.b(), 2);
+                player.addQuestState(this.getQuestId(), 2);
             }
             if ((n5 & 2) != 0) {
                 Player player13 = player;
@@ -223,7 +223,7 @@ extends QuestScript {
                 player15.packetSender.sendGameMessage("You pull the lever.");
                 player15 = player;
                 player15.packetSender.sendGameMessage("You hear the sound of a water wheel starting up.");
-                player.addQuestState(this.b(), 4);
+                player.addQuestState(this.getQuestId(), 4);
             }
             if ((n5 & 4) != 0) {
                 Player player16 = player;
@@ -244,7 +244,7 @@ extends QuestScript {
                 player18.packetSender.sendGameMessage("You pull the lever.");
                 player18 = player;
                 player18.packetSender.sendGameMessage("The bellows pump air down the pipe.");
-                player.addQuestState(this.b(), 16);
+                player.addQuestState(this.getQuestId(), 16);
             }
             if ((n5 & 0x10) != 0) {
                 Player player19 = player;
@@ -256,10 +256,10 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2, int n3) {
+    public final boolean handleItemOnItem(Player player, int n, int n2, int n3) {
         if (n == 2886 && n2 == 946 || n == 946 && n2 == 2886) {
             if (n3 != 0) {
-                if (!player.aq(2887)) {
+                if (!player.ownsItem(2887)) {
                     player.getInventoryManager().addItem(new ItemStack(2887, 1));
                     Player player2 = player;
                     player2.packetSender.sendGameMessage("You make a small cut in the spine of the book.");
@@ -277,10 +277,10 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player object, int n, int n2, int n3) {
+    public final boolean handleItemOnObject(Player object, int n, int n2, int n3) {
         int n4 = n3 - 3;
         if (n == 2888 && n2 == 3414) {
-            ((Player)object).getInventoryManager().a(new ItemStack(2888, 1), new ItemStack(2889, 1));
+            ((Player)object).getInventoryManager().replaceItem(new ItemStack(2888, 1), new ItemStack(2889, 1));
             Player player = object;
             player.packetSender.sendGameMessage("You fill the bowl with hot lava.");
             return true;
@@ -294,10 +294,10 @@ extends QuestScript {
                 player.packetSender.sendGameMessage("You have already added lava to the furnace.");
                 return true;
             }
-            ((Player)object).getInventoryManager().a(new ItemStack(2889, 1), new ItemStack(2888, 1));
+            ((Player)object).getInventoryManager().replaceItem(new ItemStack(2889, 1), new ItemStack(2888, 1));
             Player player = object;
             player.packetSender.sendGameMessage("You empty the lava into the furnace.");
-            ((Player)object).addQuestState(this.b(), 32);
+            ((Player)object).addQuestState(this.getQuestId(), 32);
             return true;
         }
         if (n == 2892 && n2 == 3413 && (n3 == 66 || n3 == 1)) {
@@ -366,7 +366,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean e(Player player, int n, int n2) {
+    public final boolean handleButtonClick(Player player, int n, int n2) {
         if (player.W == 2886) {
             if (n == 841 && player.X < this.a) {
                 ++player.X;
@@ -383,7 +383,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean c(Player player, int n, int n2, int n3) {
+    public final boolean handleInventoryItemFirstOption(Player player, int n, int n2, int n3) {
         if (n == 3214 && n2 == 2886) {
             this.e(player, 0);
             player.W = n2;

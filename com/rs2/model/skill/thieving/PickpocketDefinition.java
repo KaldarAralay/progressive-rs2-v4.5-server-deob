@@ -28,12 +28,12 @@ extends Enum {
     private PickpocketDefinition(double d, ItemStack[] itemStackArray, int n, int stringArray22, int n2, int n3) {
         void var11_8;
         void var10_7;
-        void cfr_renamed_4;
+        void cfr_renamed_3;
         void var4_2;
         this.npcNames = (String[])d;
         this.requiredLevel = var4_2;
         this.experience = (double)itemStackArray;
-        this.commonRewards = cfr_renamed_4;
+        this.commonRewards = cfr_renamed_3;
         this.stunTicks = n2;
         this.minDamage = n3;
         this.maxDamage = n3;

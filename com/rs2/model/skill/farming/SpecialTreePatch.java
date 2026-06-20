@@ -7,10 +7,10 @@ import com.rs2.model.Position;
 import com.rs2.model.skill.farming.FarmingPatchUtils;
 
 public enum SpecialTreePatch {
-    a(0, new Position[]{new Position(2801, 3202), new Position(2803, 3204)}, 5375),
-    b(1, new Position[]{new Position(2795, 3100), new Position(2797, 3102)}, 5503),
-    c(2, new Position[]{new Position(3059, 3257), new Position(3061, 3259)}, 5375),
-    d(3, new Position[]{new Position(2612, 3857), new Position(2614, 3859)}, 5375);
+    BRIMHAVEN_SPIRIT_TREE(0, new Position[]{new Position(2801, 3202), new Position(2803, 3204)}, 5375),
+    TAI_BWO_WANNAI_CALQUAT(1, new Position[]{new Position(2795, 3100), new Position(2797, 3102)}, 5503),
+    PORT_SARIM_SPIRIT_TREE(2, new Position[]{new Position(3059, 3257), new Position(3061, 3259)}, 5375),
+    ETCETERIA_SPIRIT_TREE(3, new Position[]{new Position(2612, 3857), new Position(2614, 3859)}, 5375);
 
     private int index;
     private Position[] bounds;
@@ -36,7 +36,7 @@ public enum SpecialTreePatch {
             SpecialTreePatch specialTreePatch;
             SpecialTreePatch specialTreePatch2 = specialTreePatch = specialTreePatchArray[n2];
             specialTreePatch2 = specialTreePatch;
-            if (FarmingPatchUtils.a(specialTreePatch.bounds[0], specialTreePatch2.bounds[1], position)) {
+            if (FarmingPatchUtils.containsPosition(specialTreePatch.bounds[0], specialTreePatch2.bounds[1], position)) {
                 return specialTreePatch;
             }
             ++n2;

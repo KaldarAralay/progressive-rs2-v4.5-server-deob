@@ -13,33 +13,33 @@ import com.rs2.util.path.PathFinder;
 
 final class BotGroundItemPickupTask
 extends TickTask {
-    private final /* synthetic */ Player a;
-    private final /* synthetic */ Position b;
-    private final /* synthetic */ int c;
-    private final /* synthetic */ GroundItem d;
+    private final /* synthetic */ Player player;
+    private final /* synthetic */ Position itemPosition;
+    private final /* synthetic */ int itemId;
+    private final /* synthetic */ GroundItem groundItem;
 
     BotGroundItemPickupTask(int n, Player player, Position position, int n2, GroundItem groundItem) {
-        this.a = player;
-        this.b = position;
-        this.c = n2;
-        this.d = groundItem;
+        this.player = player;
+        this.itemPosition = position;
+        this.itemId = n2;
+        this.groundItem = groundItem;
         super(2);
     }
 
     @Override
     public final void execute() {
-        if (this.a.isDead() || !this.a.bW()) {
+        if (this.player.isDead() || !this.player.isRegistered()) {
             this.stop();
             return;
         }
-        this.a.setInteractionTargetY(this.b.getY());
-        this.a.setInteractionTargetId(this.c);
-        this.a.setInteractionTargetX(this.b.getX());
-        this.a.setInteractionTargetPlane(this.a.getPosition().getPlane());
-        ItemStack itemStack = this.d.getItem();
+        this.player.setInteractionTargetY(this.itemPosition.getY());
+        this.player.setInteractionTargetId(this.itemId);
+        this.player.setInteractionTargetX(this.itemPosition.getX());
+        this.player.setInteractionTargetPlane(this.player.getPosition().getPlane());
+        ItemStack itemStack = this.groundItem.getItem();
         PathFinder.getInstance();
-        PathFinder.findPath(this.a, this.b.getX(), this.b.getY(), true, 0, 0);
-        ItemService.getInstance().pickupItem(this.a, itemStack.getId(), this.d.getPosition());
+        PathFinder.findPath(this.player, this.itemPosition.getX(), this.itemPosition.getY(), true, 0, 0);
+        ItemService.getInstance().pickupItem(this.player, itemStack.getId(), this.groundItem.getPosition());
         this.stop();
     }
 }

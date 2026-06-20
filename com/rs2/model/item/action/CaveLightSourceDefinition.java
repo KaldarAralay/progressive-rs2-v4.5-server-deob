@@ -18,22 +18,22 @@ public enum CaveLightSourceDefinition {
     i(49, 3, false, false, 9064, 9065),
     j(65, 2, false, false, 5014, 5013);
 
-    private int k;
-    private int l;
-    private int m;
-    private int n;
-    private boolean o;
-    private static Map p;
+    private int firemakingLevelRequirement;
+    private int unlitItemId;
+    private int litItemId;
+    private int lightLevel;
+    private boolean flaresInSwampGas;
+    private static Map definitionsByItemId;
 
     static {
-        p = new HashMap();
+        definitionsByItemId = new HashMap();
         CaveLightSourceDefinition[] caveLightSourceDefinitionArray = CaveLightSourceDefinition.values();
         int n = caveLightSourceDefinitionArray.length;
         int n2 = 0;
         while (n2 < n) {
             CaveLightSourceDefinition caveLightSourceDefinition = caveLightSourceDefinitionArray[n2];
-            p.put(caveLightSourceDefinition.l, caveLightSourceDefinition);
-            p.put(caveLightSourceDefinition.m, caveLightSourceDefinition);
+            definitionsByItemId.put(caveLightSourceDefinition.unlitItemId, caveLightSourceDefinition);
+            definitionsByItemId.put(caveLightSourceDefinition.litItemId, caveLightSourceDefinition);
             ++n2;
         }
     }
@@ -45,35 +45,35 @@ public enum CaveLightSourceDefinition {
     private CaveLightSourceDefinition(boolean bl, boolean bl2, int n3, int n4) {
         void var8_6;
         void var7_5;
-        this.k = bl ? 1 : 0;
-        this.l = var7_5;
-        this.m = var8_6;
-        this.n = bl2 ? 1 : 0;
-        this.o = n3;
+        this.firemakingLevelRequirement = bl ? 1 : 0;
+        this.unlitItemId = var7_5;
+        this.litItemId = var8_6;
+        this.lightLevel = bl2 ? 1 : 0;
+        this.flaresInSwampGas = n3;
     }
 
-    public final int a() {
-        return this.k;
+    public final int getFiremakingLevelRequirement() {
+        return this.firemakingLevelRequirement;
     }
 
-    public final int b() {
-        return this.l;
+    public final int getUnlitItemId() {
+        return this.unlitItemId;
     }
 
-    public final int c() {
-        return this.m;
+    public final int getLitItemId() {
+        return this.litItemId;
     }
 
-    public final int d() {
-        return this.n;
+    public final int getLightLevel() {
+        return this.lightLevel;
     }
 
-    public final boolean e() {
-        return this.o;
+    public final boolean canFlareInSwampGas() {
+        return this.flaresInSwampGas;
     }
 
-    public static CaveLightSourceDefinition a(int n) {
-        return (CaveLightSourceDefinition)((Object)p.get(n));
+    public static CaveLightSourceDefinition forItemId(int n) {
+        return (CaveLightSourceDefinition)((Object)definitionsByItemId.get(n));
     }
 }
 

@@ -34,7 +34,7 @@ public final class ThievingObjectHandler {
         player.getUpdateState().setAnimation(2246);
         Player player5 = player;
         player5.packetSender.sendGameMessage("You attempt to pick the lock...");
-        player.n(true);
+        player.setActionLocked(true);
         CycleEventHandler.getInstance().schedule(player, new LockpickTask(player, d, n, position, n3, n4), 4);
     }
 
@@ -115,7 +115,7 @@ public final class ThievingObjectHandler {
                         Player player4 = player2;
                         player4.packetSender.sendGameMessage("Your thieving level is not high enough to disarm traps.");
                     } else {
-                        player2.n(true);
+                        player2.setActionLocked(true);
                         player2.getUpdateState().setAnimation(2246);
                         Player player5 = player2;
                         player5.packetSender.sendGameMessage("You attempt to disarm the traps...");

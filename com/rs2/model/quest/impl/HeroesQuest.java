@@ -20,57 +20,57 @@ public final class HeroesQuest
 extends QuestScript {
     public HeroesQuest(int n) {
         super(50);
-        super.a(1);
+        super.setQuestPointReward(1);
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player stringArray, int n) {
         if (n == 0) {
             n = stringArray.getSkillManager().getBaseLevel(15);
             int n2 = stringArray.getSkillManager().getBaseLevel(14);
             int n3 = stringArray.getSkillManager().getBaseLevel(10);
             int n4 = stringArray.getSkillManager().getBaseLevel(7);
             boolean bl = false;
-            if (stringArray.dA() >= 56 && stringArray.getQuestState(16) == 1 && stringArray.getQuestState(58) == 1 && stringArray.getQuestState(5) == 1 && stringArray.getQuestState(61) == 1 && stringArray.getQuestState(29) == 1) {
+            if (stringArray.getQuestPoints() >= 56 && stringArray.getQuestState(16) == 1 && stringArray.getQuestState(58) == 1 && stringArray.getQuestState(5) == 1 && stringArray.getQuestState(61) == 1 && stringArray.getQuestState(29) == 1) {
                 bl = true;
             }
             if (bl) {
                 stringArray = new String[]{"I can start this quest by speaking to Achietties at the", "Heroes' Guild located North of Taverley", "as all reguired quests are complete, and I have enough QP.", "To complete this quest I need:", String.valueOf(n >= 25 ? "@str@" : "") + "Level 25 Herblore", String.valueOf(n2 >= 50 ? "@str@" : "") + "Level 50 Mining", String.valueOf(n3 >= 53 ? "@str@" : "") + "Level 53 Fishing", String.valueOf(n4 >= 53 ? "@str@" : "") + "Level 53 Cooking"};
                 return stringArray;
             }
-            stringArray = new String[]{"I can start this quest by speaking to Achietties at the", "Heroes' Guild located North of Taverley.", "To start this quest I need:", String.valueOf(stringArray.dA() >= 56 ? "@str@" : "") + "56 Quest Points", String.valueOf(stringArray.getQuestState(16) == 1 ? "@str@" : "") + "Complete Shield of Arrav", String.valueOf(stringArray.getQuestState(58) == 1 ? "@str@" : "") + "Complete Lost City", String.valueOf(stringArray.getQuestState(5) == 1 ? "@str@" : "") + "Complete Dragon Slayer", String.valueOf(stringArray.getQuestState(61) == 1 ? "@str@" : "") + "Complete Merlin's Crystal", String.valueOf(stringArray.getQuestState(29) == 1 ? "@str@" : "") + "Complete Druidic Ritual", "To complete this quest I need:", String.valueOf(n >= 25 ? "@str@" : "") + "Level 25 Herblore", String.valueOf(n2 >= 50 ? "@str@" : "") + "Level 50 Mining", String.valueOf(n3 >= 53 ? "@str@" : "") + "Level 53 Fishing", String.valueOf(n4 >= 53 ? "@str@" : "") + "Level 53 Cooking"};
+            stringArray = new String[]{"I can start this quest by speaking to Achietties at the", "Heroes' Guild located North of Taverley.", "To start this quest I need:", String.valueOf(stringArray.getQuestPoints() >= 56 ? "@str@" : "") + "56 Quest Points", String.valueOf(stringArray.getQuestState(16) == 1 ? "@str@" : "") + "Complete Shield of Arrav", String.valueOf(stringArray.getQuestState(58) == 1 ? "@str@" : "") + "Complete Lost City", String.valueOf(stringArray.getQuestState(5) == 1 ? "@str@" : "") + "Complete Dragon Slayer", String.valueOf(stringArray.getQuestState(61) == 1 ? "@str@" : "") + "Complete Merlin's Crystal", String.valueOf(stringArray.getQuestState(29) == 1 ? "@str@" : "") + "Complete Druidic Ritual", "To complete this quest I need:", String.valueOf(n >= 25 ? "@str@" : "") + "Level 25 Herblore", String.valueOf(n2 >= 50 ? "@str@" : "") + "Level 50 Mining", String.valueOf(n3 >= 53 ? "@str@" : "") + "Level 53 Fishing", String.valueOf(n4 >= 53 ? "@str@" : "") + "Level 53 Cooking"};
             return stringArray;
         }
         if (n == 2 || n == 8) {
-            String[] stringArray2 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(stringArray.aq(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(stringArray.aq(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(stringArray.aq(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (stringArray.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", HeroesQuest.e((Player)stringArray) ? "I should bring the items to Achietties now." : ""};
+            String[] stringArray2 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(stringArray.ownsItem(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(stringArray.ownsItem(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(stringArray.ownsItem(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (stringArray.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", HeroesQuest.e((Player)stringArray) ? "I should bring the items to Achietties now." : ""};
             return stringArray2;
         }
         if (n == 3) {
-            String[] stringArray3 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(stringArray.aq(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(stringArray.aq(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(stringArray.aq(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (stringArray.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", "@str@I spoke to " + (stringArray.dv == 1 ? "Katrine" : "Straven") + " about the Master Thieves Armband.", String.valueOf(stringArray.dv == 1 ? "She" : "He") + " told me I can get one by stealing Pete's Candlestick", "I should use the password " + (stringArray.dv == 1 ? "she" : "he") + " gave me at Brimhaven"};
+            String[] stringArray3 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(stringArray.ownsItem(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(stringArray.ownsItem(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(stringArray.ownsItem(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (stringArray.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", "@str@I spoke to " + (stringArray.dv == 1 ? "Katrine" : "Straven") + " about the Master Thieves Armband.", String.valueOf(stringArray.dv == 1 ? "She" : "He") + " told me I can get one by stealing Pete's Candlestick", "I should use the password " + (stringArray.dv == 1 ? "she" : "he") + " gave me at Brimhaven"};
             return stringArray3;
         }
         if (n == 4 && stringArray.dv == 1) {
-            String[] stringArray4 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(stringArray.aq(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(stringArray.aq(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(stringArray.aq(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (stringArray.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", "@str@I spoke to " + (stringArray.dv == 1 ? "Katrine" : "Straven") + " about the Master Thieves Armband.", "I should impersonate Hartigen the Black Knight to gain", "access to the mansion."};
+            String[] stringArray4 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(stringArray.ownsItem(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(stringArray.ownsItem(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(stringArray.ownsItem(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (stringArray.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", "@str@I spoke to " + (stringArray.dv == 1 ? "Katrine" : "Straven") + " about the Master Thieves Armband.", "I should impersonate Hartigen the Black Knight to gain", "access to the mansion."};
             return stringArray4;
         }
         if (n == 4 && stringArray.dv == 2) {
-            String[] stringArray5 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(stringArray.aq(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(stringArray.aq(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(stringArray.aq(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (stringArray.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", "@str@I spoke to " + (stringArray.dv == 1 ? "Katrine" : "Straven") + " about the Master Thieves Armband.", "I should go talk to Charlie the Cook in the back", "of the bar."};
+            String[] stringArray5 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(stringArray.ownsItem(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(stringArray.ownsItem(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(stringArray.ownsItem(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (stringArray.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", "@str@I spoke to " + (stringArray.dv == 1 ? "Katrine" : "Straven") + " about the Master Thieves Armband.", "I should go talk to Charlie the Cook in the back", "of the bar."};
             return stringArray5;
         }
         if (n == 5 && stringArray.dv == 1) {
-            String[] stringArray6 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(stringArray.aq(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(stringArray.aq(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(stringArray.aq(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (stringArray.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", "@str@I spoke to " + (stringArray.dv == 1 ? "Katrine" : "Straven") + " about the Master Thieves Armband.", "I should go talk to Grip."};
+            String[] stringArray6 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(stringArray.ownsItem(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(stringArray.ownsItem(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(stringArray.ownsItem(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (stringArray.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", "@str@I spoke to " + (stringArray.dv == 1 ? "Katrine" : "Straven") + " about the Master Thieves Armband.", "I should go talk to Grip."};
             return stringArray6;
         }
         if (n == 5 && stringArray.dv == 2) {
-            String[] stringArray7 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(stringArray.aq(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(stringArray.aq(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(stringArray.aq(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (stringArray.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", "@str@I spoke to " + (stringArray.dv == 1 ? "Katrine" : "Straven") + " about the Master Thieves Armband.", "Charlie told me that there is a side entrance to the mansion", "that I can use."};
+            String[] stringArray7 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(stringArray.ownsItem(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(stringArray.ownsItem(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(stringArray.ownsItem(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (stringArray.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", "@str@I spoke to " + (stringArray.dv == 1 ? "Katrine" : "Straven") + " about the Master Thieves Armband.", "Charlie told me that there is a side entrance to the mansion", "that I can use."};
             return stringArray7;
         }
         if (n == 6 && stringArray.dv == 1) {
-            String[] stringArray8 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(stringArray.aq(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(stringArray.aq(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(stringArray.aq(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (stringArray.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", "@str@I spoke to " + (stringArray.dv == 1 ? "Katrine" : "Straven") + " about the Master Thieves Armband.", stringArray.aq(1586) ? "I should find out what the key Grip gave me opens." : "I should talk to Grip."};
+            String[] stringArray8 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(stringArray.ownsItem(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(stringArray.ownsItem(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(stringArray.ownsItem(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (stringArray.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", "@str@I spoke to " + (stringArray.dv == 1 ? "Katrine" : "Straven") + " about the Master Thieves Armband.", stringArray.ownsItem(1586) ? "I should find out what the key Grip gave me opens." : "I should talk to Grip."};
             return stringArray8;
         }
         if (n == 7 && stringArray.dv == 1) {
-            String[] stringArray9 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(stringArray.aq(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(stringArray.aq(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(stringArray.aq(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (stringArray.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", "@str@I spoke to " + (stringArray.dv == 1 ? "Katrine" : "Straven") + " about the Master Thieves Armband.", "I should now give the other candlestick to my partner and", "then return to Katrine."};
+            String[] stringArray9 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(stringArray.ownsItem(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(stringArray.ownsItem(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(stringArray.ownsItem(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (stringArray.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", "@str@I spoke to " + (stringArray.dv == 1 ? "Katrine" : "Straven") + " about the Master Thieves Armband.", "I should now give the other candlestick to my partner and", "then return to Katrine."};
             return stringArray9;
         }
         if (n == 1) {
@@ -81,9 +81,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("1 Quest Point", 12150);
         player2 = player;
@@ -121,7 +121,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean c(Player player, int n, int n2) {
+    public final boolean handleGroundItemInteraction(Player player, int n, int n2) {
         if (n == 1583) {
             if (n2 == 0) {
                 player.packetSender.sendGameMessage("It looks dangerously hot, and you have no reason to take it.");
@@ -136,7 +136,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3) {
+    public final boolean handleItemOnObject(Player player, int n, int n2, int n3) {
         if (n == 1586 && n2 == 2622) {
             Player player2 = player;
             player2.packetSender.queueRelativeMovementStep(0, player.getPosition().getY() < 3197 ? 1 : -1, true);
@@ -148,7 +148,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
+    public final boolean handleContextDialogue(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
         if (n2 == 2633 && n5 == 2766 && n6 == 3199 && n == 1 && n7 == 6) {
             if (n3 == 1) {
                 player.getDialogueManager().showTwoLineStatement("You find two candlesticks in the chest. So that will be one for you,", "and one for the person who killed Grip for you.");
@@ -156,10 +156,10 @@ extends QuestScript {
             }
             if (n3 == 2) {
                 player.getDialogueManager().finishDialogue();
-                player.getInventoryManager().b(new ItemStack(1577, 2));
+                player.getInventoryManager().addOrDropItem(new ItemStack(1577, 2));
                 ObjectManager.getInstance().removeDynamicObjectAt(2766, 3199, 0, 0);
                 ObjectManager.getInstance().addDynamicObject(new DynamicObject(2632, 2766, 3199, 0, 2, 10, 2632, 999999999), true);
-                player.setQuestState(this.b(), 7);
+                player.setQuestState(this.getQuestId(), 7);
                 return false;
             }
         }
@@ -167,7 +167,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleFirstObjectAction(Player player, int n, int n2, int n3, int n4) {
         if (n == 2621 && n2 == 2764 && n3 == 3197) {
             if (n4 >= 6) {
                 if (player.getPosition().getX() < 2764) {
@@ -274,7 +274,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player object, int n, int n2) {
+    public final boolean handleNpcKill(Player object, int n, int n2) {
         if (n == 792) {
             object = Npc.findByDefinitionId(792);
             object = new GroundItem(new ItemStack(1588, 1), ((Entity)object).getPosition(), false, true);
@@ -285,7 +285,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2, int n3) {
+    public final boolean handleItemOnItem(Player player, int n, int n2, int n3) {
         if (n3 >= 2) {
             if (n == 97 && n2 == 1581 || n == 1581 && n2 == 97) {
                 player.getInventoryManager().removeItem(new ItemStack(n, 1));
@@ -308,7 +308,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2) {
+    public final boolean canAttackNpc(Player player, int n, int n2) {
         if (n == 792 && player.dv == 1) {
             player.getDialogueManager().showPlayerFourLineDialogue("I can't attack the head guard here! There are too", "many witnesses around to see me do it! I'd have the", "whole of Brimhaven after me! Besides, if he dies I want", "the promotion!", 591);
             player.getDialogueManager().finishDialogue();
@@ -318,11 +318,11 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         Player player2;
         if (n == 796) {
             player2 = player;
-            if (!(player2.getSkillManager().getBaseLevel(15) < 25 || player2.getSkillManager().getBaseLevel(14) < 50 || player2.getSkillManager().getBaseLevel(10) < 53 || player2.getSkillManager().getBaseLevel(7) < 53 ? false : player2.dA() >= 56 && player2.getQuestState(16) == 1 && player2.getQuestState(58) == 1 && player2.getQuestState(5) == 1 && player2.getQuestState(61) == 1 && player2.getQuestState(29) == 1)) {
+            if (!(player2.getSkillManager().getBaseLevel(15) < 25 || player2.getSkillManager().getBaseLevel(14) < 50 || player2.getSkillManager().getBaseLevel(10) < 53 || player2.getSkillManager().getBaseLevel(7) < 53 ? false : player2.getQuestPoints() >= 56 && player2.getQuestState(16) == 1 && player2.getQuestState(58) == 1 && player2.getQuestState(5) == 1 && player2.getQuestState(61) == 1 && player2.getQuestState(29) == 1)) {
                 return false;
             }
             if (n2 == 1) {
@@ -448,13 +448,13 @@ extends QuestScript {
                     player.getInventoryManager().removeItem(new ItemStack(1583, 1));
                     player.getInventoryManager().removeItem(new ItemStack(2149, 1));
                     player.getInventoryManager().removeItem(new ItemStack(1579, 1));
-                    this.c(player);
+                    this.awardCompletionRewards(player);
                     return true;
                 }
             }
         }
         if (n == 558 && n4 >= 2) {
-            if (player.aq(1581) || player.aq(1582) || player.aq(1585) || player.aq(2148) || player.aq(2149)) {
+            if (player.ownsItem(1581) || player.ownsItem(1582) || player.ownsItem(1585) || player.ownsItem(2148) || player.ownsItem(2149)) {
                 return false;
             }
             if (n2 == 1) {
@@ -487,7 +487,7 @@ extends QuestScript {
                 return true;
             }
             if (n2 == 7) {
-                player.getInventoryManager().b(new ItemStack(1581, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(1581, 1));
                 player.getDialogueManager().showNpcThreeLineDialogue("Aha! Here it is! Take this slime, mix it with some", "Harralander and water and you'll have the Blamish Oil", "you need for treating your fishing rod.", 591);
                 player.getDialogueManager().finishDialogue();
                 return true;
@@ -520,7 +520,7 @@ extends QuestScript {
                 }
                 if (n2 == 6) {
                     player.getDialogueManager().showNpcOneLineDialogue("Use the secret word 'gherkin' to show you're one of us.", 591);
-                    player.setQuestState(this.b(), 3);
+                    player.setQuestState(this.getQuestId(), 3);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -562,15 +562,15 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 9) {
-                    player.setQuestState(this.b(), 8);
+                    player.setQuestState(this.getQuestId(), 8);
                     player.getInventoryManager().removeItem(new ItemStack(1577, 1));
-                    player.getInventoryManager().b(new ItemStack(1579, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(1579, 1));
                     player.getDialogueManager().finishDialogue();
                     return false;
                 }
             }
             if (n4 == 8) {
-                if (player.aq(1579)) {
+                if (player.ownsItem(1579)) {
                     return false;
                 }
                 if (n2 == 1) {
@@ -578,7 +578,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 2) {
-                    player.getInventoryManager().b(new ItemStack(1579, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(1579, 1));
                     player.getDialogueManager().finishDialogue();
                     return false;
                 }
@@ -644,7 +644,7 @@ extends QuestScript {
                 }
                 if (n2 == 13) {
                     player.getDialogueManager().showNpcTwoLineDialogue("To get in you will need to tell them the secret password", "'four leafed clover'.", 591);
-                    player.setQuestState(this.b(), 3);
+                    player.setQuestState(this.getQuestId(), 3);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -687,15 +687,15 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 8) {
-                    player.setQuestState(this.b(), 8);
+                    player.setQuestState(this.getQuestId(), 8);
                     player.getInventoryManager().removeItem(new ItemStack(1577, 1));
-                    player.getInventoryManager().b(new ItemStack(1579, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(1579, 1));
                     player.getDialogueManager().finishDialogue();
                     return false;
                 }
             }
             if (n4 == 8) {
-                if (player.aq(1579)) {
+                if (player.ownsItem(1579)) {
                     return false;
                 }
                 if (n2 == 1) {
@@ -703,7 +703,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 2) {
-                    player.getInventoryManager().b(new ItemStack(1579, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(1579, 1));
                     player.getDialogueManager().finishDialogue();
                     return false;
                 }
@@ -737,7 +737,7 @@ extends QuestScript {
                 }
                 if (n2 == 104) {
                     player.getDialogueManager().showOneLineStatement("You hear the door being unbarred from inside.");
-                    player.setQuestState(this.b(), 4);
+                    player.setQuestState(this.getQuestId(), 4);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -806,7 +806,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 10) {
-                    player.getInventoryManager().b(new ItemStack(1584, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(1584, 1));
                     player.getDialogueManager().finishDialogue();
                     return false;
                 }
@@ -883,7 +883,7 @@ extends QuestScript {
                     player.getDialogueManager().finishDialogue();
                 } else {
                     player.getDialogueManager().showNpcTwoLineDialogue("You'd better come in then. Grip will want to talk to", "you.", 591);
-                    player.setQuestState(this.b(), 5);
+                    player.setQuestState(this.getQuestId(), 5);
                 }
                 return true;
             }
@@ -916,13 +916,13 @@ extends QuestScript {
                 if (n2 == 6 && player.getInventoryManager().containsItem(1584)) {
                     player.getDialogueManager().showThreeOptions("So can I guard the treasure room please?", "So what do my duties involve?", "Well, I'd better sort my new room out.");
                     player.getInventoryManager().removeItem(new ItemStack(1584, 1));
-                    player.setQuestState(this.b(), 6);
+                    player.setQuestState(this.getQuestId(), 6);
                     player.getDialogueManager().setNextDialogueStep(10);
                     return true;
                 }
             }
             if (n4 == 6) {
-                if (n2 == 1 && !player.aq(1586)) {
+                if (n2 == 1 && !player.ownsItem(1586)) {
                     player.getDialogueManager().showNpcFourLineDialogue("You'll have various guard related duties on various", "shifts. I'll assign specific duties as they are reguired as", "and when they become necessary. Just so you know, if", "anything happens to me", 591);
                     return true;
                 }
@@ -969,7 +969,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 9) {
-                    player.getInventoryManager().b(new ItemStack(1586, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(1586, 1));
                     player.getDialogueManager().finishDialogue();
                     return false;
                 }
@@ -1008,7 +1008,7 @@ extends QuestScript {
                 }
                 if (n2 == 5) {
                     player.getDialogueManager().showOneLineStatement("Alfonse winks at you.");
-                    player.setQuestState(this.b(), 4);
+                    player.setQuestState(this.getQuestId(), 4);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -1075,7 +1075,7 @@ extends QuestScript {
                 }
                 if (n2 == 12) {
                     player.getDialogueManager().showNpcTwoLineDialogue("Not at all! The more minds we have working on the", "problem, the quicker we get that loot!", 591);
-                    player.setQuestState(this.b(), 5);
+                    player.setQuestState(this.getQuestId(), 5);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }

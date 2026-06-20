@@ -27,12 +27,12 @@ implements PacketHandler {
             by = (byte)incomingPacket.getReader().readUnsignedByte(false);
             bl = (byte)incomingPacket.getReader().readUnsignedByte(false) == 1;
             long l2 = l;
-            Player[] playerArray = World.f();
+            Player[] playerArray = World.getPlayers();
             n = playerArray.length;
             int n2 = 0;
             while (n2 < n) {
                 object = playerArray[n2];
-                if (object != null && ((Player)object).dS() == l2) {
+                if (object != null && ((Player)object).getNameHash() == l2) {
                     player3 = object;
                     break block7;
                 }
@@ -45,7 +45,7 @@ implements PacketHandler {
             player4.packetSender.sendGameMessage("You cannot report offline players.");
             return;
         }
-        if (player.dS() == l) {
+        if (player.getNameHash() == l) {
             Player player5 = player;
             player5.packetSender.sendGameMessage("You cannot report yourself!");
             return;
@@ -59,7 +59,7 @@ implements PacketHandler {
         Player player8 = player;
         player8.packetSender.sendGameMessage("Thank-you, your abuse report has been received.");
         if (bl && player.getPlayerRights() > 0 && player2.getPlayerRights() == 0) {
-            if (player2.eP()) {
+            if (player2.isMuted()) {
                 return;
             }
             n = 48;

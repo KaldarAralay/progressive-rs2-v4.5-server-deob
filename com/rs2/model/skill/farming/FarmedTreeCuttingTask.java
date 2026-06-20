@@ -52,12 +52,12 @@ extends CycleEvent {
         if (TreePatchManager.getPlayer((TreePatchManager)this.manager).N % 4 != 0) {
             return;
         }
-        if (GameUtil.g(256) == 0) {
-            object = new GroundItem(new ItemStack(5070 + GameUtil.g(4)), TreePatchManager.getPlayer(this.manager));
+        if (GameUtil.randomInclusive(256) == 0) {
+            object = new GroundItem(new ItemStack(5070 + GameUtil.randomInclusive(4)), TreePatchManager.getPlayer(this.manager));
             GroundItemManager.getInstance().spawn((GroundItem)object);
         }
         TreePatchManager.getPlayer(this.manager).getUpdateState().setAnimation(this.animationId);
-        if (GameUtil.a(this.treeDefinition.getCutChanceLow(), this.treeDefinition.getCutChanceHigh(), TreePatchManager.getPlayer(this.manager).getSkillManager().getCurrentLevels()[8], this.gatheringTool.f())) {
+        if (GameUtil.rollLevelScaledChance(this.treeDefinition.getCutChanceLow(), this.treeDefinition.getCutChanceHigh(), TreePatchManager.getPlayer(this.manager).getSkillManager().getCurrentLevels()[8], this.gatheringTool.getToolSpeed())) {
             TreePatchManager.getPlayer(this.manager).getInventoryManager().addItem(new ItemStack(this.treeDefinition.getLogItemId()));
             object = TreePatchManager.getPlayer(this.manager);
             PacketSender packetSender = ((Player)object).packetSender;
@@ -65,7 +65,7 @@ extends CycleEvent {
             ItemService.getInstance();
             packetSender.sendGameMessage(stringBuilder.append(ItemService.getItemName(TreeDefinition.forObjectId(this.treeObjectId).getLogItemId()).toLowerCase()).append(".").toString());
             TreePatchManager.getPlayer(this.manager).getSkillManager().addExperience(8, this.treeDefinition.getExperience());
-            if (GameUtil.a(this.treeDefinition.getDepletionChance())) {
+            if (GameUtil.rollChance(this.treeDefinition.getDepletionChance())) {
                 TreePatchManager.getPlayer(this.manager).getTreePatchManager().scheduleStumpRegrowth(this.patch.getIndex());
                 this.manager.patchStates[this.patch.getIndex()] = 7;
                 this.manager.refreshConfig();

@@ -20,7 +20,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        if (!this.a.bW()) {
+        if (!this.a.isRegistered()) {
             this.stop();
             return;
         }

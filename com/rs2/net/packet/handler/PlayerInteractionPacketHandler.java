@@ -31,7 +31,7 @@ implements PacketHandler {
      */
     @Override
     public final void handle(Player object, IncomingPacket object2) {
-        if (((Player)object).dJ()) {
+        if (((Player)object).isActionLocked()) {
             return;
         }
         Object object3 = object;
@@ -46,17 +46,17 @@ implements PacketHandler {
                 object = this;
                 int n = ((IncomingPacket)object3).getReader().readSignedShort(true, ByteOrder.LITTLE);
                 if (n < 0) return;
-                if (n > World.f().length) {
+                if (n > World.getPlayers().length) {
                     return;
                 }
-                Player player = World.f()[n];
+                Player player = World.getPlayers()[n];
                 if (player == null) return;
-                if (!GameUtil.a(((Entity)object2).getPosition(), player.getPosition(), 15)) {
+                if (!GameUtil.isWithinDistance(((Entity)object2).getPosition(), player.getPosition(), 15)) {
                     return;
                 }
                 int n2 = ((Entity)object2).nextActionSequence();
                 if (player.getTradePartner() == object2) {
-                    GameplayHelper.o((Player)object2);
+                    GameplayHelper.declineTrade((Player)object2);
                 } else if (player.getOpenInterfaceId() > 0) {
                     Object object4 = object2;
                     ((Player)object4).packetSender.sendGameMessage("This player is busy.");
@@ -71,12 +71,12 @@ implements PacketHandler {
             case 153: {
                 int n = ((IncomingPacket)object2).getReader().readSignedShort(true, ByteOrder.LITTLE);
                 if (n < 0) return;
-                if (n > World.f().length) {
+                if (n > World.getPlayers().length) {
                     return;
                 }
-                Player player = World.f()[n];
+                Player player = World.getPlayers()[n];
                 if (player == null) return;
-                if (!GameUtil.a(((Entity)object).getPosition(), player.getPosition(), 15)) {
+                if (!GameUtil.isWithinDistance(((Entity)object).getPosition(), player.getPosition(), 15)) {
                     return;
                 }
                 ((Entity)object).getUpdateState().setFaceEntity(player.getEncodedIndex());
@@ -90,16 +90,16 @@ implements PacketHandler {
                 object = this;
                 int n = ((IncomingPacket)object3).getReader().readSignedShort();
                 if (n < 0) return;
-                if (n > World.f().length) {
+                if (n > World.getPlayers().length) {
                     return;
                 }
-                Player player = World.f()[n];
+                Player player = World.getPlayers()[n];
                 if (player == null) return;
-                if (!GameUtil.a(((Entity)object2).getPosition(), player.getPosition(), 15)) {
+                if (!GameUtil.isWithinDistance(((Entity)object2).getPosition(), player.getPosition(), 15)) {
                     return;
                 }
                 int n3 = ((Entity)object2).nextActionSequence();
-                ((Player)object2).a((SpellDefinition)null);
+                ((Player)object2).setQueuedCombatSpell(null);
                 ((Entity)object2).getUpdateState().setFaceEntity(player.getEncodedIndex());
                 if (!((Entity)object2).isInDuelArena() && !((Entity)object2).isInWilderness()) {
                     Object object5 = object;
@@ -129,12 +129,12 @@ implements PacketHandler {
             case 249: {
                 int n = ((IncomingPacket)object2).getReader().readSignedShort(true, ByteTransform.ADD);
                 if (n < 0) return;
-                if (n > World.f().length) {
+                if (n > World.getPlayers().length) {
                     return;
                 }
-                Player player = World.f()[n];
+                Player player = World.getPlayers()[n];
                 if (player == null) return;
-                if (!GameUtil.a(((Entity)object).getPosition(), player.getPosition(), 15)) {
+                if (!GameUtil.isWithinDistance(((Entity)object).getPosition(), player.getPosition(), 15)) {
                     return;
                 }
                 int n5 = ((IncomingPacket)object2).getReader().readSignedShort(true, ByteOrder.LITTLE);
@@ -146,23 +146,23 @@ implements PacketHandler {
                     return;
                 }
                 if (!((Entity)object).isInMageArena()) {
-                    if (spellDefinition == SpellDefinition.SARADOMIN_STRIKE && ((Player)object).dM > 0) {
+                    if (spellDefinition == SpellDefinition.SARADOMIN_STRIKE && ((Player)object).mageArenaSaradominStrikeCastsRemaining > 0) {
                         Object object10 = object;
-                        ((Player)object10).packetSender.sendGameMessage("You need to cast this spell " + ((Player)object).dM + " times at Mage arena first.");
+                        ((Player)object10).packetSender.sendGameMessage("You need to cast this spell " + ((Player)object).mageArenaSaradominStrikeCastsRemaining + " times at Mage arena first.");
                         return;
                     }
-                    if (spellDefinition == SpellDefinition.FLAMES_OF_ZAMORAK && ((Player)object).dK > 0) {
+                    if (spellDefinition == SpellDefinition.FLAMES_OF_ZAMORAK && ((Player)object).mageArenaFlamesOfZamorakCastsRemaining > 0) {
                         Object object11 = object;
-                        ((Player)object11).packetSender.sendGameMessage("You need to cast this spell " + ((Player)object).dK + " times at Mage arena first.");
+                        ((Player)object11).packetSender.sendGameMessage("You need to cast this spell " + ((Player)object).mageArenaFlamesOfZamorakCastsRemaining + " times at Mage arena first.");
                         return;
                     }
-                    if (spellDefinition == SpellDefinition.CLAWS_OF_GUTHIX && ((Player)object).dL > 0) {
+                    if (spellDefinition == SpellDefinition.CLAWS_OF_GUTHIX && ((Player)object).mageArenaClawsOfGuthixCastsRemaining > 0) {
                         Object object12 = object;
-                        ((Player)object12).packetSender.sendGameMessage("You need to cast this spell " + ((Player)object).dL + " times at Mage arena first.");
+                        ((Player)object12).packetSender.sendGameMessage("You need to cast this spell " + ((Player)object).mageArenaClawsOfGuthixCastsRemaining + " times at Mage arena first.");
                         return;
                     }
                 }
-                ((Player)object).a(spellDefinition);
+                ((Player)object).setQueuedCombatSpell(spellDefinition);
                 if (spellDefinition != SpellDefinition.TELEOTHER_CAMELOT && spellDefinition != SpellDefinition.TELEOTHER_FALADOR && spellDefinition != SpellDefinition.TELEOTHER_LUMBRIDGE) {
                     CombatManager.startCombat((Entity)object, player);
                     return;
@@ -176,12 +176,12 @@ implements PacketHandler {
                 object = this;
                 int n = ((IncomingPacket)object3).getReader().readSignedShort();
                 if (n < 0) return;
-                if (n > World.f().length) {
+                if (n > World.getPlayers().length) {
                     return;
                 }
-                Player player = World.f()[n];
+                Player player = World.getPlayers()[n];
                 if (player == null) return;
-                if (!GameUtil.a(((Entity)object2).getPosition(), player.getPosition(), 15)) {
+                if (!GameUtil.isWithinDistance(((Entity)object2).getPosition(), player.getPosition(), 15)) {
                     return;
                 }
                 int n6 = ((IncomingPacket)object3).getReader().readSignedShort(ByteOrder.LITTLE);
@@ -205,12 +205,12 @@ implements PacketHandler {
                 object = this;
                 int n = ((IncomingPacket)object3).getReader().readSignedShort(true, ByteOrder.LITTLE);
                 if (n < 0) return;
-                if (n > World.f().length) {
+                if (n > World.getPlayers().length) {
                     return;
                 }
-                Player player = World.f()[n];
+                Player player = World.getPlayers()[n];
                 if (player == null) return;
-                if (!GameUtil.a(((Entity)object2).getPosition(), player.getPosition(), 15)) {
+                if (!GameUtil.isWithinDistance(((Entity)object2).getPosition(), player.getPosition(), 15)) {
                     return;
                 }
                 ((Entity)object2).setInteractionTarget(player);
@@ -223,14 +223,14 @@ implements PacketHandler {
         }
     }
 
-    public static void a(Player player, Player player2) {
-        if (player2 == null || !GameUtil.a(player.getPosition(), player2.getPosition(), 15)) {
+    public static void dispatchDeferredTradeRequest(Player player, Player player2) {
+        if (player2 == null || !GameUtil.isWithinDistance(player.getPosition(), player2.getPosition(), 15)) {
             player.pendingTradeTarget = null;
             return;
         }
         int n = player.nextActionSequence();
         if (player2.getTradePartner() == player) {
-            GameplayHelper.o(player);
+            GameplayHelper.declineTrade(player);
             player.pendingTradeTarget = null;
         } else if (player2.getOpenInterfaceId() > 0) {
             player2 = player;

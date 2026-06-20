@@ -15,8 +15,8 @@ implements PacketHandler {
     public final void handle(Player player, IncomingPacket object) {
         block10: {
             block9: {
-                GameplayHelper.o(player);
-                PartyRoomManager.d(player);
+                GameplayHelper.declineTrade(player);
+                PartyRoomManager.returnStagedChestItems(player);
                 object = player;
                 if (((Player)object).interfaceAction == "flour") {
                     GameplayHelper.d(player, 53204);
@@ -27,12 +27,12 @@ implements PacketHandler {
                 if (((Player)object).interfaceAction != "duel2") break block10;
             }
             if (!player.isInDuelArena()) {
-                if (player.getDuelSession().i() != null && player.getDuelSession().i().bW()) {
-                    player.getDuelSession().i().getDuelController().a(true);
-                    object = player.getDuelSession().i();
+                if (player.getDuelSession().getOpponent() != null && player.getDuelSession().getOpponent().isRegistered()) {
+                    player.getDuelSession().getOpponent().getDuelController().resetDuel(true);
+                    object = player.getDuelSession().getOpponent();
                     ((Player)object).packetSender.sendGameMessage("Other played declined the duel.");
                 }
-                player.getDuelController().a(true);
+                player.getDuelController().resetDuel(true);
             }
         }
         player.getAttributes().put("isBanking", Boolean.FALSE);

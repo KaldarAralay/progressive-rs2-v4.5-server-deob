@@ -10,37 +10,37 @@ import com.rs2.model.player.Player;
 import com.rs2.util.GameUtil;
 
 public abstract class QuestHook {
-    private int a;
-    private int b = 0;
-    private boolean c = false;
+    private int questId;
+    private int eventType = 0;
+    private boolean enabled = false;
 
     public QuestHook(int n) {
-        this.a = n;
+        this.questId = n;
     }
 
     public QuestHook(int n, int n2) {
-        this.a = n;
-        this.b = n2;
+        this.questId = n;
+        this.eventType = n2;
     }
 
-    public final int b() {
-        return this.a;
+    public final int getQuestId() {
+        return this.questId;
     }
 
-    public final int c() {
-        return this.b;
+    public final int getEventType() {
+        return this.eventType;
     }
 
-    public final boolean d() {
-        return this.c;
+    public final boolean isEnabled() {
+        return this.enabled;
     }
 
-    public final void a(boolean bl) {
-        this.c = true;
+    public final void setEnabled(boolean bl) {
+        this.enabled = true;
     }
 
-    public static int a(Position position, Position object) {
-        int n = GameUtil.b(position, (Position)object);
+    public static int calculateProjectileTravelTicks(Position position, Position object) {
+        int n = GameUtil.getDistance(position, (Position)object);
         object = ProjectileTiming.d;
         double d = (double)(((ProjectileTiming)object).getStartDelay() + ((ProjectileTiming)object).getSpeed()) + (double)n * 5.0;
         d = Math.ceil(d * 12.0 / 600.0);
@@ -51,86 +51,86 @@ public abstract class QuestHook {
         return n;
     }
 
-    public boolean a(Player player, int n, int n2, int n3, int n4) {
+    public boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         return false;
     }
 
-    public boolean a(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
+    public boolean handleContextDialogue(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
         return false;
     }
 
-    public boolean a(Player player, int n, Position position, int n2) {
+    public boolean handleNpcDeathDrop(Player player, int n, Position position, int n2) {
         return false;
     }
 
-    public boolean b(Player player, int n, int n2, int n3, int n4) {
+    public boolean handleFirstObjectAction(Player player, int n, int n2, int n3, int n4) {
         return false;
     }
 
-    public boolean c(Player player, int n, int n2, int n3, int n4) {
+    public boolean handleSecondObjectAction(Player player, int n, int n2, int n3, int n4) {
         return false;
     }
 
-    public boolean a(Entity entity, Entity entity2, int n) {
+    public boolean handleCombatDeath(Entity entity, Entity entity2, int n) {
         return false;
     }
 
-    public int b(Entity entity, Entity entity2, int n) {
+    public int getQuestDamageOverride(Entity entity, Entity entity2, int n) {
         return -1;
     }
 
-    public boolean a(Player player, int n, int n2) {
+    public boolean handleNpcKill(Player player, int n, int n2) {
         return false;
     }
 
-    public boolean b(Player player, int n) {
+    public boolean handleMovementStep(Player player, int n) {
         return false;
     }
 
-    public boolean b(Player player, int n, int n2) {
+    public boolean canAttackNpc(Player player, int n, int n2) {
         return true;
     }
 
-    public boolean c(Player player, int n) {
+    public boolean refreshQuestJournalStatus(Player player, int n) {
         return false;
     }
 
-    public void d(Player player, int n) {
+    public void refreshQuestJournal(Player player, int n) {
     }
 
-    public boolean c(Player player, int n, int n2) {
+    public boolean handleGroundItemInteraction(Player player, int n, int n2) {
         return false;
     }
 
-    public boolean a(Player player, int n, int n2, int n3) {
+    public boolean handleItemOnObject(Player player, int n, int n2, int n3) {
         return false;
     }
 
-    public boolean b(Player player, int n, int n2, int n3) {
+    public boolean handleItemOnItem(Player player, int n, int n2, int n3) {
         return false;
     }
 
-    public boolean d(Player player, int n, int n2) {
+    public boolean handleDropItem(Player player, int n, int n2) {
         return false;
     }
 
-    public boolean c(Player player, int n, int n2, int n3) {
+    public boolean handleInventoryItemFirstOption(Player player, int n, int n2, int n3) {
         return false;
     }
 
-    public boolean e(Player player, int n, int n2) {
+    public boolean handleButtonClick(Player player, int n, int n2) {
         return false;
     }
 
-    public boolean f(Player player, int n, int n2) {
+    public boolean handleFirstNpcAction(Player player, int n, int n2) {
         return false;
     }
 
-    public boolean d(Player player, int n, int n2, int n3) {
+    public boolean handleItemOnNpc(Player player, int n, int n2, int n3) {
         return false;
     }
 
-    public void e() {
+    public void initialize() {
     }
 }
 

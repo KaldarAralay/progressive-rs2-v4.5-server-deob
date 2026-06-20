@@ -30,7 +30,7 @@ public final class PetManager {
             player.packetSender.sendGameMessage("You already have a pet following you!");
             return;
         }
-        int n3 = this.b.fh();
+        int n3 = this.b.getBossPetUnlockFlags();
         if (n == 8070 && (n3 & 1) == 0) {
             Player player = this.b;
             player.packetSender.sendGameMessage("You need to defeat King Black Dragon first!");
@@ -58,7 +58,7 @@ public final class PetManager {
         this.c.setSpawnPosition(new Position(this.b.getPosition().getX() - 1, this.b.getPosition().getY(), this.b.getPosition().getPlane()));
         this.c.setSpawnX(this.b.getPosition().getX() - 1);
         this.c.setSpawnY(this.b.getPosition().getY() - 1);
-        World.a(this.c);
+        World.registerNpc(this.c);
         this.c.setMovementTarget(this.b);
     }
 
@@ -69,7 +69,7 @@ public final class PetManager {
         this.c.setSpawnPosition(new Position(this.b.getPosition().getX(), this.b.getPosition().getY() - 1, this.b.getPosition().getPlane()));
         this.c.setSpawnX(this.b.getPosition().getX() - 1);
         this.c.setSpawnY(this.b.getPosition().getY() - 1);
-        World.a(this.c);
+        World.registerNpc(this.c);
         this.c.setMovementTarget(this.b);
         this.c.getUpdateState().setForcedText("Miaow!");
     }
@@ -80,7 +80,7 @@ public final class PetManager {
         }
         Player player = this.b;
         player.packetSender.sendGameMessage("You pick up your pet.");
-        if (this.b.getInventoryManager().e(new ItemStack(this.d, 1))) {
+        if (this.b.getInventoryManager().canAddItem(new ItemStack(this.d, 1))) {
             this.b.getInventoryManager().addItem(new ItemStack(this.d, 1));
         } else {
             int n = this.b.getBankContainer().getFirstFreeSlot();
@@ -98,7 +98,7 @@ public final class PetManager {
         this.d = -1;
         this.c.setActive(false);
         EntityTargetMovement.clearMovementTarget(this.c);
-        World.b(this.c);
+        World.unregisterNpc(this.c);
         this.c = null;
     }
 

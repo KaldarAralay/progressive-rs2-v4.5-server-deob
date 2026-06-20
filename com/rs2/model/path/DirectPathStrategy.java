@@ -54,7 +54,7 @@ implements PathStrategy {
         n = 0;
         while (n <= n7) {
             n2 += n8;
-            if (!position2.equals(object) && bl && !GameUtil.a((Position)object, position2, true)) {
+            if (!position2.equals(object) && bl && !GameUtil.hasClearPath((Position)object, position2, true)) {
                 return pathResult;
             }
             position2 = ((Position)object).copy();

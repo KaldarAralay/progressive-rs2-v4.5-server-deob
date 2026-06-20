@@ -20,11 +20,11 @@ public final class FamilyCrestQuest
 extends QuestScript {
     public FamilyCrestQuest(int n) {
         super(35);
-        super.a(1);
+        super.setQuestPointReward(1);
     }
 
     @Override
-    public final String[] a(Player player, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
             n = player.getSkillManager().getBaseLevel(14);
             int n2 = player.getSkillManager().getBaseLevel(12);
@@ -78,7 +78,7 @@ extends QuestScript {
             return stringArray;
         }
         if (n == 13) {
-            if (!player.aq(781) && !player.aq(782)) {
+            if (!player.ownsItem(781) && !player.ownsItem(782)) {
                 String[] stringArray = new String[]{"I can find Chronozon somewhere below Obelisk of Air"};
                 return stringArray;
             }
@@ -93,9 +93,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("1 Quest Point", 12150);
         player2 = player;
@@ -108,7 +108,7 @@ extends QuestScript {
         player2.packetSender.sendInterfaceText("", 12154);
         player2 = player;
         player2.packetSender.sendInterfaceText("", 12155);
-        player.getInventoryManager().b(new ItemStack(778, 1));
+        player.getInventoryManager().addOrDropItem(new ItemStack(778, 1));
         player2 = player;
         player2.packetSender.sendInterfaceModel(InterfaceDefinition.interfaceCount <= 12140 ? 6161 : 12145, 250, 778);
         player2 = player;
@@ -118,17 +118,17 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleFirstObjectAction(Player player, int n, int n2, int n3, int n4) {
         if (n == 2425 && n2 == 2722 && n3 == 9718) {
             Player player2;
-            if ((player.bI[this.b()] & GameUtil.b(1)) != 0) {
-                int n5 = this.b();
-                player.bI[n5] = player.bI[n5] - GameUtil.b(1);
+            if ((player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(1)) != 0) {
+                int n5 = this.getQuestId();
+                player.questProgressFlags[n5] = player.questProgressFlags[n5] - GameUtil.bitFlag(1);
                 player2 = player;
                 player2.packetSender.sendGameMessage("The lever is now down.");
             } else {
-                int n6 = this.b();
-                player.bI[n6] = player.bI[n6] + GameUtil.b(1);
+                int n6 = this.getQuestId();
+                player.questProgressFlags[n6] = player.questProgressFlags[n6] + GameUtil.bitFlag(1);
                 player2 = player;
                 player2.packetSender.sendGameMessage("The lever is now up.");
             }
@@ -144,14 +144,14 @@ extends QuestScript {
                 player4.packetSender.sendGameMessage("You have no reason to do that.");
                 return true;
             }
-            if ((player.bI[this.b()] & GameUtil.b(2)) != 0) {
-                int n7 = this.b();
-                player.bI[n7] = player.bI[n7] - GameUtil.b(2);
+            if ((player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(2)) != 0) {
+                int n7 = this.getQuestId();
+                player.questProgressFlags[n7] = player.questProgressFlags[n7] - GameUtil.bitFlag(2);
                 player3 = player;
                 player3.packetSender.sendGameMessage("The lever is now down.");
             } else {
-                int n8 = this.b();
-                player.bI[n8] = player.bI[n8] + GameUtil.b(2);
+                int n8 = this.getQuestId();
+                player.questProgressFlags[n8] = player.questProgressFlags[n8] + GameUtil.bitFlag(2);
                 player3 = player;
                 player3.packetSender.sendGameMessage("The lever is now up.");
             }
@@ -162,14 +162,14 @@ extends QuestScript {
         }
         if (n == 2423 && n2 == 2724 && n3 == 9669) {
             Player player5;
-            if ((player.bI[this.b()] & GameUtil.b(3)) != 0) {
-                int n9 = this.b();
-                player.bI[n9] = player.bI[n9] - GameUtil.b(3);
+            if ((player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(3)) != 0) {
+                int n9 = this.getQuestId();
+                player.questProgressFlags[n9] = player.questProgressFlags[n9] - GameUtil.bitFlag(3);
                 player5 = player;
                 player5.packetSender.sendGameMessage("The lever is now down.");
             } else {
-                int n10 = this.b();
-                player.bI[n10] = player.bI[n10] + GameUtil.b(3);
+                int n10 = this.getQuestId();
+                player.questProgressFlags[n10] = player.questProgressFlags[n10] + GameUtil.bitFlag(3);
                 player5 = player;
                 player5.packetSender.sendGameMessage("The lever is now up.");
             }
@@ -179,7 +179,7 @@ extends QuestScript {
             return true;
         }
         if (n == 2431 && n2 == 2723 && n3 == 9711) {
-            if ((player.bI[this.b()] & GameUtil.b(2)) == 0 && (player.bI[this.b()] & GameUtil.b(3)) != 0) {
+            if ((player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(2)) == 0 && (player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(3)) != 0) {
                 Player player6 = player;
                 player6.packetSender.openSingleDoor(n, n2, n3, 0);
                 player6 = player;
@@ -191,7 +191,7 @@ extends QuestScript {
             return true;
         }
         if (n == 2430 && n2 == 2727 && n3 == 9690) {
-            if ((player.bI[this.b()] & GameUtil.b(1)) != 0 && (player.bI[this.b()] & GameUtil.b(2)) != 0 && (player.bI[this.b()] & GameUtil.b(3)) == 0) {
+            if ((player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(1)) != 0 && (player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(2)) != 0 && (player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(3)) == 0) {
                 Player player8 = player;
                 player8.packetSender.openSingleDoor(n, n2, n3, 0);
                 player8 = player;
@@ -203,7 +203,7 @@ extends QuestScript {
             return true;
         }
         if (n == 2427 && n2 == 2719 && n3 == 9671) {
-            if ((player.bI[this.b()] & GameUtil.b(2)) != 0 && (player.bI[this.b()] & GameUtil.b(3)) != 0) {
+            if ((player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(2)) != 0 && (player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(3)) != 0) {
                 Player player10 = player;
                 player10.packetSender.openSingleDoor(n, n2, n3, 0);
                 player10 = player;
@@ -215,7 +215,7 @@ extends QuestScript {
             return true;
         }
         if (n == 2429 && n2 == 2722 && n3 == 9671) {
-            if ((player.bI[this.b()] & GameUtil.b(2)) != 0 && (player.bI[this.b()] & GameUtil.b(3)) == 0) {
+            if ((player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(2)) != 0 && (player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(3)) == 0) {
                 Player player12 = player;
                 player12.packetSender.openSingleDoor(n, n2, n3, 0);
                 player12 = player;
@@ -230,7 +230,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2, int n3) {
+    public final boolean handleItemOnItem(Player player, int n, int n2, int n3) {
         Player player2 = player;
         if (player2.getInventoryManager().containsItem(779) && player2.getInventoryManager().containsItem(780) && player2.getInventoryManager().containsItem(781) && FamilyCrestQuest.b(n) && FamilyCrestQuest.b(n2)) {
             player.getInventoryManager().removeItem(new ItemStack(779, 1));
@@ -244,7 +244,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean d(Player player, int n, int n2, int n3) {
+    public final boolean handleItemOnNpc(Player player, int n, int n2, int n3) {
         if (n3 == 11) {
             boolean bl;
             n3 = n2;
@@ -274,7 +274,7 @@ extends QuestScript {
             }
             if (bl && n == 668) {
                 player.getInventoryManager().removeItem(new ItemStack(n2, 1));
-                player.setQuestState(this.b(), 12);
+                player.setQuestState(this.getQuestId(), 12);
                 DialogueManager.continueDialogue(player, 668, 100, 0);
                 return true;
             }
@@ -287,8 +287,8 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player object, int n, Position position, int n2) {
-        if (n == 667 && n2 == 13 && !((Player)object).aq(781) && !((Player)object).aq(782)) {
+    public final boolean handleNpcDeathDrop(Player object, int n, Position position, int n2) {
+        if (n == 667 && n2 == 13 && !((Player)object).ownsItem(781) && !((Player)object).ownsItem(782)) {
             object = new GroundItem(new ItemStack(781, 1), (Entity)object, position);
             GroundItemManager.getInstance().spawn((GroundItem)object);
             return true;
@@ -297,7 +297,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Entity entity, Entity entity2, int n) {
+    public final boolean handleCombatDeath(Entity entity, Entity entity2, int n) {
         if (entity2.isNpc() && entity.isPlayer()) {
             entity = (Player)entity;
             if (((Npc)(entity2 = (Npc)entity2)).getNpcId() == 667) {
@@ -335,11 +335,11 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         if (n == 664) {
             if (n4 == 1) {
                 Player player2 = player;
-                if (player2.aq(778) || player2.aq(775) || player2.aq(776) || player2.aq(777)) {
+                if (player2.ownsItem(778) || player2.ownsItem(775) || player2.ownsItem(776) || player2.ownsItem(777)) {
                     return false;
                 }
                 if (n2 == 1) {
@@ -348,7 +348,7 @@ extends QuestScript {
                 }
                 if (n2 == 2) {
                     player.getDialogueManager().showNpcOneLineDialogue("Here you go.", 591);
-                    player.getInventoryManager().b(new ItemStack(player.cm, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(player.familyCrestGauntletItemId, 1));
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -486,7 +486,7 @@ extends QuestScript {
                 }
                 if (n2 == 2 && player.getInventoryManager().containsItem(782)) {
                     player.getInventoryManager().removeItem(new ItemStack(782, 1));
-                    player.setQuestState(this.b(), 14);
+                    player.setQuestState(this.getQuestId(), 14);
                     player.getDialogueManager().showNpcThreeLineDialogue("Adventurer... I can only thank you for your kindness,", "although the words are insufficient to express the", "gratitude I feel!", 591);
                     player.getDialogueManager().setNextDialogueStep(1);
                     return true;
@@ -515,13 +515,13 @@ extends QuestScript {
                 }
                 if (n2 == 6) {
                     player.getDialogueManager().finishDialogue();
-                    this.c(player);
+                    this.awardCompletionRewards(player);
                     return true;
                 }
             }
         }
         if (n == 666) {
-            if (n4 == 1 && FamilyCrestQuest.e(player) && player.cm != 775) {
+            if (n4 == 1 && FamilyCrestQuest.e(player) && player.familyCrestGauntletItemId != 775) {
                 if (n2 == 1) {
                     player.getDialogueManager().showNpcTwoLineDialogue("I hear you have brought the completed crest to my", "father. I must say, That was awfully impressive work.", 591);
                     return true;
@@ -539,7 +539,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 5) {
-                    if (player.cm != 778) {
+                    if (player.familyCrestGauntletItemId != 778) {
                         player.getDialogueManager().showTwoOptions("Can you change my gauntlets for me?", "No thanks.");
                     } else {
                         player.getDialogueManager().showTwoOptions("Yes, please do that for me.", "I'll see what your brothers have to offer first.");
@@ -548,7 +548,7 @@ extends QuestScript {
                 }
                 if (n2 == 6) {
                     if (n3 == 1) {
-                        if (player.cm != 778) {
+                        if (player.familyCrestGauntletItemId != 778) {
                             player.getDialogueManager().showPlayerOneLineDialogue("Can you change my gauntlets for me?", 591);
                             player.getDialogueManager().setNextDialogueStep(8);
                         } else {
@@ -561,13 +561,13 @@ extends QuestScript {
                     return false;
                 }
                 if (n2 == 7) {
-                    if (player.cm != 778) {
+                    if (player.familyCrestGauntletItemId != 778) {
                         player.getInventoryManager().removeItem(new ItemStack(995, 25000));
                     }
                     player.getDialogueManager().showThreeLineItemMessage("Caleb takes the gauntlets from you, pours some herbs", "and seasonings on them, bakes them on his range for a", "short time, then hands them back to you.", new ItemStack(775, 1));
-                    player.getInventoryManager().removeItem(new ItemStack(player.cm, 1));
-                    player.cm = 775;
-                    player.getInventoryManager().b(new ItemStack(player.cm, 1));
+                    player.getInventoryManager().removeItem(new ItemStack(player.familyCrestGauntletItemId, 1));
+                    player.familyCrestGauntletItemId = 775;
+                    player.getInventoryManager().addOrDropItem(new ItemStack(player.familyCrestGauntletItemId, 1));
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -666,7 +666,7 @@ extends QuestScript {
                 if (n2 == 19) {
                     if (n3 == 1) {
                         player.getDialogueManager().showPlayerOneLineDialogue("Ok, I will get those.", 591);
-                        player.setQuestState(this.b(), 3);
+                        player.setQuestState(this.getQuestId(), 3);
                         player.getDialogueManager().setNextDialogueStep(20);
                         return true;
                     }
@@ -704,8 +704,8 @@ extends QuestScript {
                     player.getInventoryManager().removeItem(new ItemStack(361, 1));
                     player.getInventoryManager().removeItem(new ItemStack(329, 1));
                     player.getInventoryManager().removeItem(new ItemStack(315, 1));
-                    player.getInventoryManager().b(new ItemStack(780, 1));
-                    player.setQuestState(this.b(), 4);
+                    player.getInventoryManager().addOrDropItem(new ItemStack(780, 1));
+                    player.setQuestState(this.getQuestId(), 4);
                     player.getDialogueManager().showTwoOptions("Uh... what happened to the rest of it?", "Thank you very much!");
                     return true;
                 }
@@ -715,8 +715,8 @@ extends QuestScript {
                     return true;
                 }
             }
-            if (n4 >= 4 && !player.aq(780) && !player.aq(782) && n2 == 1) {
-                player.getInventoryManager().b(new ItemStack(780, 1));
+            if (n4 >= 4 && !player.ownsItem(780) && !player.ownsItem(782) && n2 == 1) {
+                player.getInventoryManager().addOrDropItem(new ItemStack(780, 1));
                 player.getDialogueManager().showNpcOneLineDialogue("Don't lose it this time!", 591);
                 player.getDialogueManager().finishDialogue();
                 return true;
@@ -787,7 +787,7 @@ extends QuestScript {
                 }
                 if (n2 == 106) {
                     player.getDialogueManager().showNpcThreeLineDialogue("Avan always did have expensive tastes however. You", "may find he is not prepared to hand over his crest", "piece to you as easily as I have.", 591);
-                    player.setQuestState(this.b(), 5);
+                    player.setQuestState(this.getQuestId(), 5);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -830,13 +830,13 @@ extends QuestScript {
             }
             if (n2 == 8) {
                 player.getDialogueManager().showNpcTwoLineDialogue("Maybe we'll all get lucky and the scorpions will deal with", "him.", 591);
-                player.setQuestState(this.b(), 6);
+                player.setQuestState(this.getQuestId(), 6);
                 player.getDialogueManager().finishDialogue();
                 return true;
             }
         }
         if (n == 663) {
-            if (n4 == 1 && FamilyCrestQuest.e(player) && player.cm != 776) {
+            if (n4 == 1 && FamilyCrestQuest.e(player) && player.familyCrestGauntletItemId != 776) {
                 if (n2 == 1) {
                     player.getDialogueManager().showNpcThreeLineDialogue("I have received word from my father of your assistance", "to our family in this matter. You have my thanks for", "restoring our honour.", 591);
                     return true;
@@ -850,7 +850,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 4) {
-                    if (player.cm != 778) {
+                    if (player.familyCrestGauntletItemId != 778) {
                         player.getDialogueManager().showTwoOptions("Can you change my gauntlets for me?", "No thanks.");
                     } else {
                         player.getDialogueManager().showTwoOptions("Enchant my gauntlets please.", "I'll see what your brothers have to offer first.");
@@ -859,7 +859,7 @@ extends QuestScript {
                 }
                 if (n2 == 5) {
                     if (n3 == 1) {
-                        if (player.cm != 778) {
+                        if (player.familyCrestGauntletItemId != 778) {
                             player.getDialogueManager().showPlayerOneLineDialogue("Can you change my gauntlets for me?", 591);
                             player.getDialogueManager().setNextDialogueStep(6);
                         } else {
@@ -889,13 +889,13 @@ extends QuestScript {
                     return false;
                 }
                 if (n2 == 9) {
-                    if (player.cm != 778) {
+                    if (player.familyCrestGauntletItemId != 778) {
                         player.getInventoryManager().removeItem(new ItemStack(995, 25000));
                     }
                     player.getDialogueManager().showTwoLineStatement("Avan takes your gauntlets, takes out a small hammer, and pounds", "them into a slightly new shape, then hands them back to you.");
-                    player.getInventoryManager().removeItem(new ItemStack(player.cm, 1));
-                    player.cm = 776;
-                    player.getInventoryManager().b(new ItemStack(player.cm, 1));
+                    player.getInventoryManager().removeItem(new ItemStack(player.familyCrestGauntletItemId, 1));
+                    player.familyCrestGauntletItemId = 776;
+                    player.getInventoryManager().addOrDropItem(new ItemStack(player.familyCrestGauntletItemId, 1));
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -973,7 +973,7 @@ extends QuestScript {
                 }
                 if (n2 == 17) {
                     player.getDialogueManager().showPlayerOneLineDialogue("Well, I'll see what I can do.", 591);
-                    player.setQuestState(this.b(), 7);
+                    player.setQuestState(this.getQuestId(), 7);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -999,15 +999,15 @@ extends QuestScript {
                 if (n2 == 4 && player.getInventoryManager().containsItem(774) && player.getInventoryManager().containsItem(773)) {
                     player.getInventoryManager().removeItem(new ItemStack(773, 1));
                     player.getInventoryManager().removeItem(new ItemStack(774, 1));
-                    player.getInventoryManager().b(new ItemStack(779, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(779, 1));
                     player.getDialogueManager().showNpcThreeLineDialogue("These... these are exquisite! EXACTLY what I was", "searching for all of this time! Please, take my crest", "fragment!", 591);
                     player.getDialogueManager().setNextDialogueStep(1);
-                    player.setQuestState(this.b(), 9);
+                    player.setQuestState(this.getQuestId(), 9);
                     return true;
                 }
             }
-            if (n4 >= 9 && !player.aq(779) && !player.aq(782) && n2 == 1) {
-                player.getInventoryManager().b(new ItemStack(779, 1));
+            if (n4 >= 9 && !player.ownsItem(779) && !player.ownsItem(782) && n2 == 1) {
+                player.getInventoryManager().addOrDropItem(new ItemStack(779, 1));
                 player.getDialogueManager().showNpcOneLineDialogue("Don't lose it this time!", 591);
                 player.getDialogueManager().finishDialogue();
                 return true;
@@ -1041,7 +1041,7 @@ extends QuestScript {
                 if (n2 == 6) {
                     player.getDialogueManager().showPlayerOneLineDialogue("Thanks Avan.", 591);
                     if (n4 == 9) {
-                        player.setQuestState(this.b(), 10);
+                        player.setQuestState(this.getQuestId(), 10);
                     }
                     player.getDialogueManager().finishDialogue();
                     return true;
@@ -1074,14 +1074,14 @@ extends QuestScript {
             if (n2 == 5) {
                 player.getDialogueManager().showNpcOneLineDialogue("I don't believe it's exactly easy to get to though...", 591);
                 if (n4 == 7) {
-                    player.setQuestState(this.b(), 8);
+                    player.setQuestState(this.getQuestId(), 8);
                 }
                 player.getDialogueManager().finishDialogue();
                 return true;
             }
         }
         if (n == 668) {
-            if (n4 == 1 && FamilyCrestQuest.e(player) && player.cm != 777) {
+            if (n4 == 1 && FamilyCrestQuest.e(player) && player.familyCrestGauntletItemId != 777) {
                 if (n2 == 1) {
                     player.getDialogueManager().showNpcOneLineDialogue("Hello again.", 591);
                     return true;
@@ -1099,7 +1099,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 5) {
-                    if (player.cm != 778) {
+                    if (player.familyCrestGauntletItemId != 778) {
                         player.getDialogueManager().showTwoOptions("Can you change my gauntlets for me?", "No thanks.");
                     } else {
                         player.getDialogueManager().showTwoOptions("That sounds good to me.", "I shall see what options your brothers can offer me first.");
@@ -1108,7 +1108,7 @@ extends QuestScript {
                 }
                 if (n2 == 6) {
                     if (n3 == 1) {
-                        if (player.cm != 778) {
+                        if (player.familyCrestGauntletItemId != 778) {
                             player.getDialogueManager().showPlayerOneLineDialogue("Can you change my gauntlets for me?", 591);
                             player.getDialogueManager().setNextDialogueStep(8);
                         } else {
@@ -1121,13 +1121,13 @@ extends QuestScript {
                     return false;
                 }
                 if (n2 == 7) {
-                    if (player.cm != 778) {
+                    if (player.familyCrestGauntletItemId != 778) {
                         player.getInventoryManager().removeItem(new ItemStack(995, 25000));
                     }
                     player.getDialogueManager().showThreeLineStatement("Johnathon takes your gauntlets from you, and begins a low chant", "over them. You see them begin to glow and sparkle, before he", "returns them to you.");
-                    player.getInventoryManager().removeItem(new ItemStack(player.cm, 1));
-                    player.cm = 777;
-                    player.getInventoryManager().b(new ItemStack(player.cm, 1));
+                    player.getInventoryManager().removeItem(new ItemStack(player.familyCrestGauntletItemId, 1));
+                    player.familyCrestGauntletItemId = 777;
+                    player.getInventoryManager().addOrDropItem(new ItemStack(player.familyCrestGauntletItemId, 1));
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -1168,7 +1168,7 @@ extends QuestScript {
                 }
                 if (n2 == 5) {
                     player.getDialogueManager().showOneLineStatement("Sweat is pouring down Johnathons' face.");
-                    player.setQuestState(this.b(), 11);
+                    player.setQuestState(this.getQuestId(), 11);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -1191,7 +1191,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 5) {
-                    player.setQuestState(this.b(), 13);
+                    player.setQuestState(this.getQuestId(), 13);
                     player.pendingGameMode = 0;
                     player.getDialogueManager().showNpcTwoLineDialogue("our last battle when he bested me and forced me away", "from his den. He probably still has it now.", 591);
                     return true;

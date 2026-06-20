@@ -34,10 +34,10 @@ extends TickTask {
         }
         player = this.player;
         player.packetSender.sendMinimapState(0);
-        this.player.n(false);
+        this.player.setActionLocked(false);
         if (this.player.currentBotRoute != null) {
             this.player.dn = false;
-            this.player.bk();
+            this.player.continueBotRoute();
         }
         this.stop();
     }

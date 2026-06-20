@@ -30,7 +30,7 @@ public final class TeleportManager {
     }
 
     public final boolean castSpellbookTeleport(Position object) {
-        if (this.i.getEnchantmentChamberController().c() || this.i.getAlchemistPlaygroundController().b() || this.i.getCreatureGraveyardController().a() || this.i.getTelekineticTheatreController().g()) {
+        if (this.i.getEnchantmentChamberController().isInsideChamber() || this.i.getAlchemistPlaygroundController().isInsidePlayground() || this.i.getCreatureGraveyardController().isInsideGraveyard() || this.i.getTelekineticTheatreController().isInsideTheatre()) {
             object = this.i;
             ((Player)object).packetSender.sendGameMessage("You can't teleport out of here.");
             return false;
@@ -55,7 +55,7 @@ public final class TeleportManager {
     }
 
     public final boolean b(Position position) {
-        if (this.i.getEnchantmentChamberController().c() || this.i.getAlchemistPlaygroundController().b() || this.i.getCreatureGraveyardController().a() || this.i.getTelekineticTheatreController().g()) {
+        if (this.i.getEnchantmentChamberController().isInsideChamber() || this.i.getAlchemistPlaygroundController().isInsidePlayground() || this.i.getCreatureGraveyardController().isInsideGraveyard() || this.i.getTelekineticTheatreController().isInsideTheatre()) {
             Player player = this.i;
             player.packetSender.sendGameMessage("You can't teleport out of here.");
             return false;
@@ -84,13 +84,13 @@ public final class TeleportManager {
     }
 
     public final void a(int n, int n2, int n3, String string, int n4, int n5, int n6, int n7) {
-        this.i.n(true);
+        this.i.setActionLocked(true);
         this.i.getAttributes().put("canTakeDamage", Boolean.FALSE);
         CycleEventHandler.getInstance().schedule(this.i, new ScriptedTeleportTask(this, 5, 804, 68, -1, n, n2, 0, null), 1);
     }
 
     public final void a(int n, int n2, int n3, String string) {
-        this.i.n(true);
+        this.i.setActionLocked(true);
         this.i.getAttributes().put("canTakeDamage", Boolean.FALSE);
         CycleEventHandler.getInstance().schedule(this.i, new StandardTeleportTask(this, n, n2, n3, string), 1);
     }
@@ -101,7 +101,7 @@ public final class TeleportManager {
             player.packetSender.sendGameMessage("You can't teleport out of here!");
             return;
         }
-        this.i.n(true);
+        this.i.setActionLocked(true);
         this.i.getAttributes().put("canTakeDamage", Boolean.FALSE);
         CycleEventHandler.getInstance().schedule(this.i, new MagicTeleportTask(this, bl, n, n2, n3), 1);
     }
@@ -125,7 +125,7 @@ public final class TeleportManager {
             this.i.getUpdateState().setGraphicHeight100(342);
         }
         this.i.getUpdateState().setAnimation(1816);
-        this.i.n(true);
+        this.i.setActionLocked(true);
         this.i.getAttributes().put("canTakeDamage", Boolean.FALSE);
         CycleEventHandler.getInstance().schedule(this.i, new DelayedTeleportTask(this, n, n2, n3, string), 1);
     }

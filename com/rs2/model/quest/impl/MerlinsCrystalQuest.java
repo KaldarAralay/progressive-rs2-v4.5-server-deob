@@ -24,11 +24,11 @@ public final class MerlinsCrystalQuest
 extends QuestScript {
     public MerlinsCrystalQuest(int n) {
         super(61);
-        super.a(6);
+        super.setQuestPointReward(6);
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player stringArray, int n) {
         int n2 = n - 7;
         if (n == 0) {
             String[] stringArray2 = new String[]{"I can start this quest by speaking to King Arthur at", "Camelot Castle, just North West of Catherby", "I must be able to defeat a level 37 enemy"};
@@ -59,7 +59,7 @@ extends QuestScript {
             String string2 = "";
             String string3 = "";
             String string4 = "";
-            if ((n2 & 1) != 0 && !stringArray.aq(38) && !stringArray.aq(32) && ((n2 & 2) == 0 || (n2 & 2) != 0 && (n2 & 4) != 0)) {
+            if ((n2 & 1) != 0 && !stringArray.ownsItem(38) && !stringArray.ownsItem(32) && ((n2 & 2) == 0 || (n2 & 2) != 0 && (n2 & 4) != 0)) {
                 string = "Candle maker agreed to make me a black candle";
                 string2 = "if I brought him bucket full of wax.";
             }
@@ -70,12 +70,12 @@ extends QuestScript {
             if ((n2 & 2) != 0 && (n2 & 1) != 0 && (n2 & 4) == 0) {
                 string = "Lady of the lake told me to go upstairs of the";
                 string2 = "jewellery store in Port Sarim.";
-                if (!stringArray.aq(38) && !stringArray.aq(32)) {
+                if (!stringArray.ownsItem(38) && !stringArray.ownsItem(32)) {
                     string3 = "Candle maker agreed to make me a black candle";
                     string4 = "if I brought him bucket full of wax.";
                 }
             }
-            stringArray = new String[]{"Morgan le faye told me that I need the following", "things to untrap Merlin:", String.valueOf(stringArray.aq(35) ? "@str@" : "") + "Excalibur, from the lady of the lake.", String.valueOf((n2 & 8) != 0 ? "@str@" : "") + "Some magic words, from one of the chaos altars.", String.valueOf(stringArray.getInventoryManager().containsItemAmount(530, 1) ? "@str@" : "") + "Bat bones", String.valueOf(stringArray.getInventoryManager().containsItemAmount(32, 1) ? "@str@" : "") + "Lit black candle", "", string, string2, "", string3, string4};
+            stringArray = new String[]{"Morgan le faye told me that I need the following", "things to untrap Merlin:", String.valueOf(stringArray.ownsItem(35) ? "@str@" : "") + "Excalibur, from the lady of the lake.", String.valueOf((n2 & 8) != 0 ? "@str@" : "") + "Some magic words, from one of the chaos altars.", String.valueOf(stringArray.getInventoryManager().containsItemAmount(530, 1) ? "@str@" : "") + "Bat bones", String.valueOf(stringArray.getInventoryManager().containsItemAmount(32, 1) ? "@str@" : "") + "Lit black candle", "", string, string2, "", string3, string4};
             return stringArray;
         }
         if (n == 23) {
@@ -94,9 +94,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("6 Quest Points", 12150);
         player2 = player;
@@ -118,7 +118,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3) {
+    public final boolean handleItemOnObject(Player player, int n, int n2, int n3) {
         if (n == 28 && n2 == 68) {
             player.getDialogueManager().showTwoLineStatement("You pour insect repellent on the beehive. You see bees leaving the", "hive.");
             player.N = 28;
@@ -153,14 +153,14 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
+    public final boolean handleContextDialogue(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
         if (n2 == 68) {
             if (n3 == 100) {
                 player.getDialogueManager().showOneLineStatement("You try and get some wax from the beehive.");
                 return true;
             }
             if (n3 == 101 && player.getInventoryManager().containsItemAmount(1925, 1)) {
-                player.getInventoryManager().a(new ItemStack(1925, 1), new ItemStack(30, 1));
+                player.getInventoryManager().replaceItem(new ItemStack(1925, 1), new ItemStack(30, 1));
                 player.getDialogueManager().showOneLineStatement("You get some wax from the hive.");
                 return true;
             }
@@ -286,7 +286,7 @@ extends QuestScript {
             }
             if (n3 == 25) {
                 player.moveTo(new Position(2778, 3401, 0));
-                player.setQuestState(this.b(), 6);
+                player.setQuestState(this.getQuestId(), 6);
                 player.getDialogueManager().finishDialogue();
                 return false;
             }
@@ -295,14 +295,14 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean d(Player object, int n, int n2) {
+    public final boolean handleDropItem(Player object, int n, int n2) {
         if (n == 530 && n2 == 22 && ((Entity)object).getPosition().getX() == 2780 && ((Entity)object).getPosition().getY() == 3515) {
             n = 0;
             if (((Player)object).getEquipmentManager().getContainer().getItemAt(3) != null && ((Player)object).getEquipmentManager().getContainer().getItemAt(3).getId() == 35) {
                 n = 1;
             }
             if (((Player)object).getInventoryManager().containsItemAmount(32, 1) && (((Player)object).getInventoryManager().containsItemAmount(35, 1) || n != 0)) {
-                ((Player)object).n(true);
+                ((Player)object).setActionLocked(true);
                 Player player = object;
                 player.packetSender.queueRelativeMovementStep(-2, 0, true);
                 object = new MerlinsCrystalThrantaxSummonTask(this, 3, (Player)object);
@@ -314,10 +314,10 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean c(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleSecondObjectAction(Player player, int n, int n2, int n3, int n4) {
         int n5 = n4 - 7;
         if (n == 61 && n2 == 3259 && n3 == 3381 && n4 >= 7 && (n5 & 8) == 0) {
-            player.addQuestState(this.b(), 8);
+            player.addQuestState(this.getQuestId(), 8);
             player.getDialogueManager().showTwoLineStatement("You find a small inscription at the bottom of the altar. It reads:", "'Snarthon Candtrick Termanto'.");
             player.getDialogueManager().finishDialogue();
             return true;
@@ -326,10 +326,10 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleFirstObjectAction(Player player, int n, int n2, int n3, int n4) {
         int n5 = n4 - 7;
         if (n == 59 && n2 == 3016 && n3 == 3246) {
-            if ((n5 & 2) != 0 && n4 > 7 && !player.aq(35)) {
+            if ((n5 & 2) != 0 && n4 > 7 && !player.ownsItem(35)) {
                 if ((n5 & 4) == 0 && player.getInventoryManager().containsItemAmount(2309, 1) || (n5 & 4) != 0) {
                     Npc npc = new Npc(252);
                     Player player2 = player;
@@ -360,7 +360,7 @@ extends QuestScript {
         }
         if (n == 65 && n4 == 5) {
             player.moveTo(new Position(2778, 3401, 0));
-            player.setQuestState(this.b(), 6);
+            player.setQuestState(this.getQuestId(), 6);
             return true;
         }
         if (n == 71 && n2 == 2763 && n3 == 3402 || n == 72 && n2 == 2763 && n3 == 3401) {
@@ -379,7 +379,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Entity entity, Entity entity2, int n) {
+    public final boolean handleCombatDeath(Entity entity, Entity entity2, int n) {
         if (entity2.isNpc() && entity.isPlayer()) {
             entity = (Player)entity;
             if (((Npc)(entity2 = (Npc)entity2)).getNpcId() == 247) {
@@ -395,7 +395,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2) {
+    public final boolean canAttackNpc(Player player, int n, int n2) {
         if (n == 247 && n2 != 6) {
             return false;
         }
@@ -403,7 +403,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         Player player2;
         int n5 = n4 - 7;
         if (n == 251) {
@@ -483,7 +483,7 @@ extends QuestScript {
                 }
                 if (n2 == 3) {
                     player.getDialogueManager().finishDialogue();
-                    this.c(player);
+                    this.awardCompletionRewards(player);
                     return true;
                 }
             }
@@ -529,7 +529,7 @@ extends QuestScript {
                 }
                 if (n2 == 7) {
                     player.getDialogueManager().showNpcTwoLineDialogue("She lives in her stronghold to the south of here,", "guarded by some renegade knights led by Sir Mordred.", 591);
-                    player.setQuestState(this.b(), 3);
+                    player.setQuestState(this.getQuestId(), 3);
                     return true;
                 }
             }
@@ -598,7 +598,7 @@ extends QuestScript {
             }
             if (n2 == 8) {
                 player.getDialogueManager().showNpcOneLineDialogue("They take all their deliveries by boat.", 591);
-                player.setQuestState(this.b(), 4);
+                player.setQuestState(this.getQuestId(), 4);
                 player.getDialogueManager().finishDialogue();
                 return true;
             }
@@ -648,7 +648,7 @@ extends QuestScript {
                 }
                 if (n2 == 7) {
                     player.getDialogueManager().showNpcThreeLineDialogue("Yes, I do have orders to deliver there from time to", "time. I think I may have some bits and pieces for them", "when I leave here next actually.", 591);
-                    player.setQuestState(this.b(), 5);
+                    player.setQuestState(this.getQuestId(), 5);
                     return true;
                 }
             }
@@ -744,7 +744,7 @@ extends QuestScript {
                     }
                     if (n2 == 11) {
                         player.pendingGameMode = 0;
-                        player.setQuestState(this.b(), 7);
+                        player.setQuestState(this.getQuestId(), 7);
                         player.getDialogueManager().showNpcTwoLineDialogue("Then you will need the sword Excalibur with which the", "spell was bound in order to shatter the crystal.", 591);
                         return true;
                     }
@@ -817,7 +817,7 @@ extends QuestScript {
                         Npc npc = Npc.findByDefinitionId(248);
                         if (npc != null) {
                             npc.setActive(false);
-                            World.b(npc);
+                            World.unregisterNpc(npc);
                             player2 = player;
                             player2.packetSender.sendStillGraphicToNearbyPlayers(86, npc.getPosition().getX(), npc.getPosition().getY(), npc.getPosition().getPlane(), 0);
                         }
@@ -874,12 +874,12 @@ extends QuestScript {
                 }
                 if (n2 == 10) {
                     player.getDialogueManager().showNpcOneLineDialogue("IF you can bring me a bucket FULL of wax.", 591);
-                    player.addQuestState(this.b(), 1);
+                    player.addQuestState(this.getQuestId(), 1);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
             }
-            if ((n5 & 1) != 0 && !player.aq(38) && !player.aq(32)) {
+            if ((n5 & 1) != 0 && !player.ownsItem(38) && !player.ownsItem(32)) {
                 if (n2 == 1) {
                     player.getDialogueManager().showNpcOneLineDialogue("Have you got any wax yet?", 591);
                     return true;
@@ -898,7 +898,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 4 && player.getInventoryManager().containsItemAmount(30, 1)) {
-                    player.getInventoryManager().a(new ItemStack(30, 1), new ItemStack(38, 1));
+                    player.getInventoryManager().replaceItem(new ItemStack(30, 1), new ItemStack(38, 1));
                     player.getDialogueManager().finishDialogue();
                     return false;
                 }
@@ -906,12 +906,12 @@ extends QuestScript {
         }
         if (n == 250) {
             if (n4 == 1) {
-                if (player.aq(35)) {
+                if (player.ownsItem(35)) {
                     return false;
                 }
                 if (n2 == 1) {
                     player.getDialogueManager().showNpcOneLineDialogue("Here is Excalibur, guard it well.", 591);
-                    player.getInventoryManager().b(new ItemStack(35, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(35, 1));
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -963,7 +963,7 @@ extends QuestScript {
                 }
                 if (n2 == 10) {
                     player.getDialogueManager().showPlayerOneLineDialogue("Ok. That seems easy enough.", 591);
-                    player.addQuestState(this.b(), 2);
+                    player.addQuestState(this.getQuestId(), 2);
                     return true;
                 }
             }
@@ -1022,7 +1022,7 @@ extends QuestScript {
                 if (n2 == 6 && player.getInventoryManager().containsItemAmount(2309, 1)) {
                     player.getInventoryManager().removeItem(new ItemStack(2309, 1));
                     player.getDialogueManager().showNpcOneLineDialogue("Thank you very much!", 591);
-                    player.addQuestState(this.b(), 4);
+                    player.addQuestState(this.getQuestId(), 4);
                     return true;
                 }
                 if (n2 == 7) {
@@ -1048,9 +1048,9 @@ extends QuestScript {
                         player2 = player;
                         player2.H.setActive(false);
                         player2 = player;
-                        World.b(player2.H);
+                        World.unregisterNpc(player2.H);
                     }
-                    player.getInventoryManager().b(new ItemStack(35, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(35, 1));
                     player.getDialogueManager().finishDialogue();
                     return false;
                 }
@@ -1135,9 +1135,9 @@ extends QuestScript {
                     Npc npc = player2.H;
                     if (npc != null) {
                         npc.setActive(false);
-                        World.b(npc);
+                        World.unregisterNpc(npc);
                     }
-                    player.setQuestState(this.b(), 23);
+                    player.setQuestState(this.getQuestId(), 23);
                     player.getDialogueManager().finishDialogue();
                     return false;
                 }
@@ -1167,9 +1167,9 @@ extends QuestScript {
                     Npc npc = player2.H;
                     if (npc != null) {
                         npc.setActive(false);
-                        World.b(npc);
+                        World.unregisterNpc(npc);
                     }
-                    player.setQuestState(this.b(), 24);
+                    player.setQuestState(this.getQuestId(), 24);
                     player.getDialogueManager().finishDialogue();
                     return false;
                 }

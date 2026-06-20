@@ -24,32 +24,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class ShopManager {
-    private static List a = new ArrayList(40);
-    private static /* synthetic */ int[] b;
+    private static List shopDefinitions = new ArrayList(40);
 
-    public static void a(int n) {
-        ItemStack[] itemStackArray = (ItemStack[])a.get(n);
-        Player[] playerArray = World.f();
+    public static void refreshShopForPlayers(int n) {
+        ItemStack[] itemStackArray = (ItemStack[])shopDefinitions.get(n);
+        Player[] playerArray = World.getPlayers();
         int n2 = playerArray.length;
         int n3 = 0;
         while (n3 < n2) {
             Player player = playerArray[n3];
-            if (player != null && player.bS() == n) {
+            if (player != null && player.getCurrentShopId() == n) {
                 ItemStack[] itemStackArray2 = itemStackArray;
-                itemStackArray2 = itemStackArray2.k().getRawItems();
+                itemStackArray2 = itemStackArray2.getStock().getRawItems();
                 player.packetSender.sendItemContainer(3900, itemStackArray2);
             }
             ++n3;
         }
     }
 
-    public static void a(Player player, int n) {
+    public static void openShop(Player player, int n) {
         Player player2;
-        if (n >= a.toArray().length) {
+        if (n >= shopDefinitions.toArray().length) {
             return;
         }
-        ItemStack[] itemStackArray = (ItemStack[])a.get(n);
-        if (itemStackArray.e()) {
+        ItemStack[] itemStackArray = (ItemStack[])shopDefinitions.get(n);
+        if (itemStackArray.isMembersOnly()) {
             if (player.isMember()) {
                 if (ServerSettings.freeToPlayWorld) {
                     player.packetSender.sendGameMessage("You need to be in members world to access members content.");
@@ -60,13 +59,13 @@ public final class ShopManager {
                 return;
             }
         }
-        String string = itemStackArray.d();
-        if (itemStackArray.i() == ShopCurrency.b) {
+        String string = itemStackArray.getName();
+        if (itemStackArray.getCurrency() == ShopCurrency.DONATOR_POINTS) {
             string = "<img=2>" + string + "<img=2>";
             player2 = player;
-            player2.packetSender.sendGameMessage("You have " + player.dm() + " Donator points.");
+            player2.packetSender.sendGameMessage("You have " + player.getDonatorPoints() + " Donator points.");
         }
-        itemStackArray = itemStackArray.k().getRawItems();
+        itemStackArray = itemStackArray.getStock().getRawItems();
         player.getInventoryManager().sendToInterface(3823);
         player2 = player;
         player2.packetSender.sendItemContainer(3900, itemStackArray);
@@ -74,50 +73,50 @@ public final class ShopManager {
         player2.packetSender.sendInterfaceText(string, 3901);
         player2 = player;
         player2.packetSender.showInterfaceWithInventory(3824, 3822);
-        player.K(n);
+        player.setCurrentShopId(n);
         player.getAttributes().put("isShopping", Boolean.TRUE);
     }
 
-    private static boolean b(int n) {
+    private static boolean isSkillcapeBundleItem(int n) {
         return n >= 7992 && n <= 7997 || n >= 8001 && n <= 8012 || n >= 8016 && n <= 8065;
     }
 
-    private static boolean c(int n) {
+    private static boolean requiresSecondaryCurrencyItem(int n) {
         return n == 7958 || n == 7972 || n == 7974 || n == 7976 || n == 7982 || n == 7984 || n == 7986 || n == 8068 || n == 8076 || n == 8078;
     }
 
-    public static void a(Player player, ItemStack itemStack) {
+    public static void buyItemStack(Player player, ItemStack itemStack) {
         if (itemStack == null) {
             return;
         }
-        ShopDefinition shopDefinition = (ShopDefinition)a.get(player.bS());
+        ShopDefinition shopDefinition = (ShopDefinition)shopDefinitions.get(player.getCurrentShopId());
         if (shopDefinition == null) {
             return;
         }
-        int n = shopDefinition.k().indexOfItem(itemStack.getId());
+        int n = shopDefinition.getStock().indexOfItem(itemStack.getId());
         if (n == -1) {
             return;
         }
-        ShopManager.a(player, n, itemStack.getId(), itemStack.getAmount());
+        ShopManager.buyItem(player, n, itemStack.getId(), itemStack.getAmount());
     }
 
-    public static void a(Player player, int n, int n2, int n3) {
+    public static void buyItem(Player player, int n, int n2, int n3) {
         int n4;
         int n5;
         int n6;
         Object object;
         int n7;
-        ShopDefinition shopDefinition = (ShopDefinition)a.get(player.bS());
+        ShopDefinition shopDefinition = (ShopDefinition)shopDefinitions.get(player.getCurrentShopId());
         ItemContainer itemContainer = player.getInventoryManager().getContainer();
-        ItemStack itemStack = shopDefinition.k().getItemAt(n);
-        if (shopDefinition.i() == ShopCurrency.a) {
-            n7 = shopDefinition.h();
+        ItemStack itemStack = shopDefinition.getStock().getItemAt(n);
+        if (shopDefinition.getCurrency() == ShopCurrency.ITEM_CURRENCY) {
+            n7 = shopDefinition.getCurrencyItemId();
         } else {
             ShopDefinition shopDefinition2 = shopDefinition;
             object = player;
-            switch (ShopManager.c()[shopDefinition2.i().ordinal()]) {
-                case 2: {
-                    n7 = ((Player)object).dm();
+            switch (shopDefinition2.getCurrency()) {
+                case DONATOR_POINTS: {
+                    n7 = ((Player)object).getDonatorPoints();
                     break;
                 }
                 default: {
@@ -137,10 +136,10 @@ public final class ShopManager {
             return;
         }
         boolean bl = false;
-        if (ShopManager.c(itemStack.getId())) {
+        if (ShopManager.requiresSecondaryCurrencyItem(itemStack.getId())) {
             bl = true;
         }
-        if (shopDefinition.i() == ShopCurrency.a) {
+        if (shopDefinition.getCurrency() == ShopCurrency.ITEM_CURRENCY) {
             ItemService.getInstance();
             n5 = ItemService.getPrice(n2, "buyfromshop", n6);
         } else {
@@ -164,8 +163,8 @@ public final class ShopManager {
                 }
             }
         }
-        if (shopDefinition.k().getItemAt(n).getAmount() < n3) {
-            n3 = shopDefinition.k().getItemAt(n).getAmount();
+        if (shopDefinition.getStock().getItemAt(n).getAmount() < n3) {
+            n3 = shopDefinition.getStock().getItemAt(n).getAmount();
         }
         int n8 = itemContainer.getFreeSlots();
         int n9 = n5;
@@ -175,7 +174,7 @@ public final class ShopManager {
             ++n8;
         }
         int n11 = n4 = !itemStack.getDefinition().isStackable() ? n3 : 1;
-        if (ShopManager.b(itemStack.getId())) {
+        if (ShopManager.isSkillcapeBundleItem(itemStack.getId())) {
             n4 = 2 * n3;
         }
         if (!(itemStack.getDefinition().isStackable() && player.getInventoryManager().containsItem(n2) || n8 >= n4)) {
@@ -185,23 +184,23 @@ public final class ShopManager {
             if (player.botEnabled) {
                 player.currentBotTask.startWalkToBank(player);
             }
-            if (ShopManager.b(itemStack.getId())) {
+            if (ShopManager.isSkillcapeBundleItem(itemStack.getId())) {
                 return;
             }
         }
-        if (shopDefinition.k().getItemAt(n).getAmount() < n3) {
-            n3 = shopDefinition.k().getItemAt(n).getAmount();
+        if (shopDefinition.getStock().getItemAt(n).getAmount() < n3) {
+            n3 = shopDefinition.getStock().getItemAt(n).getAmount();
         }
-        if (shopDefinition.g() && shopDefinition.k().getItemAt(n).getAmount() == 0) {
+        if (shopDefinition.isGeneralStore() && shopDefinition.getStock().getItemAt(n).getAmount() == 0) {
             object = player;
             ((Player)object).packetSender.sendGameMessage("This item is out of stock.");
             return;
         }
         n = 0;
-        if (shopDefinition.j().findFlatItem(n2) != null) {
-            n = shopDefinition.j().findFlatItem(n2).getAmount();
+        if (shopDefinition.getOriginalStock().findFlatItem(n2) != null) {
+            n = shopDefinition.getOriginalStock().findFlatItem(n2).getAmount();
         }
-        n8 = shopDefinition.k().getItemAmount(n2);
+        n8 = shopDefinition.getStock().getItemAmount(n2);
         n4 = 0;
         if (player.gameMode != 0 && n8 > n) {
             object = player;
@@ -210,9 +209,9 @@ public final class ShopManager {
         }
         n8 = 0;
         while (n8 < n3) {
-            if (shopDefinition.i() == ShopCurrency.a) {
+            if (shopDefinition.getCurrency() == ShopCurrency.ITEM_CURRENCY) {
                 int n12 = itemContainer.getItemAmount(n6);
-                n = ShopManager.b(shopDefinition, n2, n8);
+                n = ShopManager.calculateBuyPrice(shopDefinition, n2, n8);
                 if (n > n12) {
                     Player player2 = player;
                     PacketSender packetSender = player2.packetSender;
@@ -237,83 +236,83 @@ public final class ShopManager {
                 n9 = n5;
                 ShopDefinition shopDefinition3 = shopDefinition;
                 Player player3 = player;
-                switch (ShopManager.c()[shopDefinition3.i().ordinal()]) {
-                    case 2: {
-                        player3.S(n9);
+                switch (shopDefinition3.getCurrency()) {
+                    case DONATOR_POINTS: {
+                        player3.subtractDonatorPoints(n9);
                     }
                 }
-                if (shopDefinition.i() == ShopCurrency.b) {
+                if (shopDefinition.getCurrency() == ShopCurrency.DONATOR_POINTS) {
                     player3 = player;
-                    player3.packetSender.sendGameMessage("You have " + player.dm() + " Donator points remaining.");
+                    player3.packetSender.sendGameMessage("You have " + player.getDonatorPoints() + " Donator points remaining.");
                 }
             }
             ++n8;
         }
-        n8 = ShopManager.a(shopDefinition, itemStack.getId());
-        if (shopDefinition.j().containsItem(itemStack.getId())) {
-            shopDefinition.k().removeKeepingPlaceholder(new ItemStack(itemStack.getId(), n3));
+        n8 = ShopManager.indexOfStockItem(shopDefinition, itemStack.getId());
+        if (shopDefinition.getOriginalStock().containsItem(itemStack.getId())) {
+            shopDefinition.getStock().removeKeepingPlaceholder(new ItemStack(itemStack.getId(), n3));
         } else {
-            shopDefinition.k().remove(new ItemStack(itemStack.getId(), n3));
+            shopDefinition.getStock().remove(new ItemStack(itemStack.getId(), n3));
         }
-        ShopManager.d(shopDefinition, itemStack.getId(), n8);
-        if (!ShopManager.b(n2)) {
+        ShopManager.updateRestockSchedule(shopDefinition, itemStack.getId(), n8);
+        if (!ShopManager.isSkillcapeBundleItem(n2)) {
             ItemStack itemStack2 = new ItemStack(n2, n3);
             player.getInventoryManager().addItem(itemStack2);
             if (player.botEnabled) {
                 player.botTaskReturnToBankRequested = true;
                 player.currentBotTask.startWalkToBank(player);
             }
-            if (shopDefinition.i() == ShopCurrency.b) {
-                GameUtil.a(itemStack2);
+            if (shopDefinition.getCurrency() == ShopCurrency.DONATOR_POINTS) {
+                GameUtil.addTrackedRareItemAmount(itemStack2);
             }
         } else {
-            player.getInventoryManager().addItem(new ItemStack(player.aZ() >= 2 && n2 != 8058 ? n2 + 1 : n2, n3));
+            player.getInventoryManager().addItem(new ItemStack(player.getMaxedSkillCount() >= 2 && n2 != 8058 ? n2 + 1 : n2, n3));
             player.getInventoryManager().addItem(new ItemStack(n2 != 8058 ? n2 + 2 : n2 + 1, n3));
         }
         player.getInventoryManager().sendToInterface(3823);
-        ShopManager.a(player.bS());
+        ShopManager.refreshShopForPlayers(player.getCurrentShopId());
     }
 
-    private static int b(ShopDefinition shopDefinition, int n, int n2) {
+    private static int calculateBuyPrice(ShopDefinition shopDefinition, int n, int n2) {
         int n3 = new ItemStack(n).getDefinition().getShopValue();
         int n4 = 0;
-        if (shopDefinition.j().findFlatItem(n) != null) {
-            n4 = shopDefinition.j().findFlatItem(n).getAmount();
+        if (shopDefinition.getOriginalStock().findFlatItem(n) != null) {
+            n4 = shopDefinition.getOriginalStock().findFlatItem(n).getAmount();
         }
-        n = shopDefinition.k().getItemAmount(n) - n2;
+        n = shopDefinition.getStock().getItemAmount(n) - n2;
         n -= n4;
         if (!ServerSettings.dynamicShopPricesEnabled) {
             n = 0;
         }
         n2 = n3 * 30;
-        int n5 = (int)((double)n3 * ((double)shopDefinition.a() - shopDefinition.c() * (double)n));
+        int n5 = (int)((double)n3 * ((double)shopDefinition.getBuyPricePercent() - shopDefinition.getPriceChangeRate() * (double)n));
         n5 /= 100;
         n5 = Math.max(n5, n2 /= 100);
         return n5;
     }
 
-    private static int c(ShopDefinition shopDefinition, int n, int n2) {
+    private static int calculateSellPrice(ShopDefinition shopDefinition, int n, int n2) {
         int n3 = new ItemStack(n).getDefinition().getShopValue();
         int n4 = 0;
-        if (shopDefinition.j().findFlatItem(n) != null) {
-            n4 = shopDefinition.j().findFlatItem(n).getAmount();
+        if (shopDefinition.getOriginalStock().findFlatItem(n) != null) {
+            n4 = shopDefinition.getOriginalStock().findFlatItem(n).getAmount();
         }
-        n = shopDefinition.k().getItemAmount(n) + n2;
+        n = shopDefinition.getStock().getItemAmount(n) + n2;
         n -= n4;
         if (!ServerSettings.dynamicShopPricesEnabled) {
             n = 0;
         }
-        int n5 = (int)(((double)shopDefinition.b() - shopDefinition.c() * (double)Math.min(n, 10)) * (double)n3);
+        int n5 = (int)(((double)shopDefinition.getSellPricePercent() - shopDefinition.getPriceChangeRate() * (double)Math.min(n, 10)) * (double)n3);
         n = n3 / 10;
         n5 = (n5 /= 100) < n ? n : n5;
         return n5;
     }
 
-    public static void b(Player player, int n, int n2, int n3) {
-        ShopDefinition shopDefinition = (ShopDefinition)a.get(player.bS());
+    public static void sellItem(Player player, int n, int n2, int n3) {
+        ShopDefinition shopDefinition = (ShopDefinition)shopDefinitions.get(player.getCurrentShopId());
         ItemContainer itemContainer = player.getInventoryManager().getContainer();
         ItemStack itemStack = itemContainer.getItemAt(n);
-        int n4 = shopDefinition.h();
+        int n4 = shopDefinition.getCurrencyItemId();
         if (itemStack == null) {
             return;
         }
@@ -321,7 +320,7 @@ public final class ShopManager {
         if (itemStack.getDefinition().isNote()) {
             n5 = itemStack.getDefinition().getUnnotedId();
         }
-        int n6 = shopDefinition.k().getItemAmount(n5);
+        int n6 = shopDefinition.getStock().getItemAmount(n5);
         if (!ServerSettings.adminInteractionsAllowed && player.getPlayerRights() >= 2) {
             Player player2 = player;
             player2.packetSender.sendGameMessage("This action is not allowed.");
@@ -330,12 +329,12 @@ public final class ShopManager {
         if (itemStack.getId() != n2 || !itemStack.isValid()) {
             return;
         }
-        if (shopDefinition.i() != ShopCurrency.a) {
+        if (shopDefinition.getCurrency() != ShopCurrency.ITEM_CURRENCY) {
             Player player3 = player;
             player3.packetSender.sendGameMessage("This shop can't buy anything.");
             return;
         }
-        if (shopDefinition.k().getFreeSlots() <= 0 && n6 <= 0) {
+        if (shopDefinition.getStock().getFreeSlots() <= 0 && n6 <= 0) {
             Player player4 = player;
             player4.packetSender.sendGameMessage("The shop is currently full!");
             return;
@@ -345,7 +344,7 @@ public final class ShopManager {
             player5.packetSender.sendGameMessage("You cannot sell coins to the shop.");
             return;
         }
-        if (!shopDefinition.g() && !shopDefinition.k().containsItem(n5) || itemStack.getDefinition().z()) {
+        if (!shopDefinition.isGeneralStore() && !shopDefinition.getStock().containsItem(n5) || itemStack.getDefinition().isUntradeable()) {
             Player player6 = player;
             player6.packetSender.sendGameMessage("You cannot sell this item in this shop.");
             return;
@@ -366,8 +365,8 @@ public final class ShopManager {
             n3 = n7;
         }
         n7 = 0;
-        if (shopDefinition.j().findFlatItem(n5) != null) {
-            n7 = shopDefinition.j().findFlatItem(n5).getAmount();
+        if (shopDefinition.getOriginalStock().findFlatItem(n5) != null) {
+            n7 = shopDefinition.getOriginalStock().findFlatItem(n5).getAmount();
         }
         if (player.gameMode != 0 && n6 < n7) {
             Player player8 = player;
@@ -378,7 +377,7 @@ public final class ShopManager {
         double d = 0.0;
         n7 = 0;
         while (n7 < n3) {
-            d += (double)ShopManager.c(shopDefinition, n2, n7);
+            d += (double)ShopManager.calculateSellPrice(shopDefinition, n2, n7);
             ++n7;
         }
         if (!player.botEnabled || player.currentBotTask != null) {
@@ -387,15 +386,15 @@ public final class ShopManager {
         if (n4 == 995) {
             player.dZ = (int)((double)player.dZ + d);
         }
-        n7 = ShopManager.a(shopDefinition, n5);
-        if (shopDefinition.g() && n6 <= 0) {
+        n7 = ShopManager.indexOfStockItem(shopDefinition, n5);
+        if (shopDefinition.isGeneralStore() && n6 <= 0) {
             ItemStack itemStack2 = new ItemStack(n5, n3);
-            ItemContainer itemContainer2 = shopDefinition.k();
+            ItemContainer itemContainer2 = shopDefinition.getStock();
             itemContainer2.add(itemStack2, -1);
         } else {
-            shopDefinition.k().setItem(shopDefinition.k().indexOfItem(n5), new ItemStack(n5, n6 + n3));
+            shopDefinition.getStock().setItem(shopDefinition.getStock().indexOfItem(n5), new ItemStack(n5, n6 + n3));
         }
-        ShopManager.d(shopDefinition, n5, n7);
+        ShopManager.updateRestockSchedule(shopDefinition, n5, n7);
         if (player.botShopSellItemIds.contains(n5)) {
             n7 = player.botShopSellItemIds.indexOf(n5);
             player.botShopSellItemIds.remove(n7);
@@ -405,40 +404,40 @@ public final class ShopManager {
             player.currentBotTask.startWalkToBank(player);
         }
         player.getInventoryManager().sendToInterface(3823);
-        ShopManager.a(player.bS());
+        ShopManager.refreshShopForPlayers(player.getCurrentShopId());
     }
 
-    public static void b(Player player, ItemStack itemStack) {
+    public static void sellItemStack(Player player, ItemStack itemStack) {
         if (itemStack == null) {
             return;
         }
-        ShopManager.b(player, player.getInventoryManager().getContainer().indexOfItem(itemStack.getId()), itemStack.getId(), itemStack.getAmount());
+        ShopManager.sellItem(player, player.getInventoryManager().getContainer().indexOfItem(itemStack.getId()), itemStack.getId(), itemStack.getAmount());
     }
 
-    public static void b(Player player, int n) {
-        ShopDefinition shopDefinition = (ShopDefinition)a.get(player.bS());
-        if (shopDefinition.i() == ShopCurrency.a) {
+    public static void sendBuyPrice(Player player, int n) {
+        ShopDefinition shopDefinition = (ShopDefinition)shopDefinitions.get(player.getCurrentShopId());
+        if (shopDefinition.getCurrency() == ShopCurrency.ITEM_CURRENCY) {
             int n2 = n;
             ItemService.getInstance();
-            String string = ItemService.getItemName(shopDefinition.h());
-            int n3 = ShopManager.b(shopDefinition, n2, 0);
+            String string = ItemService.getItemName(shopDefinition.getCurrencyItemId());
+            int n3 = ShopManager.calculateBuyPrice(shopDefinition, n2, 0);
             PacketSender packetSender = player.packetSender;
             StringBuilder stringBuilder = new StringBuilder();
             ItemService.getInstance();
-            packetSender.sendGameMessage(stringBuilder.append(ItemService.getItemName(n)).append(": currently costs ").append(GameUtil.b((double)n3)).append(" ").append(string).append(".").toString());
+            packetSender.sendGameMessage(stringBuilder.append(ItemService.getItemName(n)).append(": currently costs ").append(GameUtil.formatNumber((double)n3)).append(" ").append(string).append(".").toString());
             return;
         }
         ItemService.getInstance();
-        int n4 = ItemService.getPrice(n, "donator", shopDefinition.h());
+        int n4 = ItemService.getPrice(n, "donator", shopDefinition.getCurrencyItemId());
         boolean bl = false;
-        if (ShopManager.c(n)) {
+        if (ShopManager.requiresSecondaryCurrencyItem(n)) {
             bl = true;
         }
         if (!bl) {
             PacketSender packetSender = player.packetSender;
             StringBuilder stringBuilder = new StringBuilder();
             ItemService.getInstance();
-            packetSender.sendGameMessage(stringBuilder.append(ItemService.getItemName(n)).append(": currently costs ").append(n4).append(" ").append(ShopManager.a(shopDefinition)).append(".").toString());
+            packetSender.sendGameMessage(stringBuilder.append(ItemService.getItemName(n)).append(": currently costs ").append(n4).append(" ").append(ShopManager.getCurrencyDisplayName(shopDefinition)).append(".").toString());
             return;
         }
         ItemDefinition itemDefinition = ItemDefinition.forId(n);
@@ -446,18 +445,18 @@ public final class ShopManager {
         PacketSender packetSender = player.packetSender;
         StringBuilder stringBuilder = new StringBuilder();
         ItemService.getInstance();
-        packetSender.sendGameMessage(stringBuilder.append(ItemService.getItemName(n)).append(": currently costs ").append(n4).append(" ").append(ShopManager.a(shopDefinition)).append(" + ").append(itemDefinition.getName()).append(".").toString());
+        packetSender.sendGameMessage(stringBuilder.append(ItemService.getItemName(n)).append(": currently costs ").append(n4).append(" ").append(ShopManager.getCurrencyDisplayName(shopDefinition)).append(" + ").append(itemDefinition.getName()).append(".").toString());
     }
 
-    public static void c(Player player, int n) {
-        ShopDefinition shopDefinition = (ShopDefinition)a.get(player.bS());
+    public static void sendSellPrice(Player player, int n) {
+        ShopDefinition shopDefinition = (ShopDefinition)shopDefinitions.get(player.getCurrentShopId());
         Object object = ItemDefinition.forId(n);
-        shopDefinition.h();
+        shopDefinition.getCurrencyItemId();
         int n2 = n;
         if (((ItemDefinition)object).isNote()) {
             n2 = ((ItemDefinition)object).getUnnotedId();
         }
-        if (shopDefinition.i() != ShopCurrency.a) {
+        if (shopDefinition.getCurrency() != ShopCurrency.ITEM_CURRENCY) {
             player.packetSender.sendGameMessage("This shop can't buy anything.");
             return;
         }
@@ -465,33 +464,33 @@ public final class ShopManager {
             player.packetSender.sendGameMessage("You cannot sell coins to the shop.");
             return;
         }
-        if (!shopDefinition.g() && !shopDefinition.k().containsItem(n2) || ((ItemDefinition)object).z()) {
+        if (!shopDefinition.isGeneralStore() && !shopDefinition.getStock().containsItem(n2) || ((ItemDefinition)object).isUntradeable()) {
             player.packetSender.sendGameMessage("You cannot sell this item in this shop.");
             return;
         }
-        if (shopDefinition.i() == ShopCurrency.a || shopDefinition.g()) {
+        if (shopDefinition.getCurrency() == ShopCurrency.ITEM_CURRENCY || shopDefinition.isGeneralStore()) {
             object = shopDefinition;
-            int n3 = ShopManager.c((ShopDefinition)object, n2, 0);
+            int n3 = ShopManager.calculateSellPrice((ShopDefinition)object, n2, 0);
             PacketSender packetSender = player.packetSender;
             StringBuilder stringBuilder = new StringBuilder();
             ItemService.getInstance();
-            packetSender.sendGameMessage(stringBuilder.append(ItemService.getItemName(n)).append(": shop will buy for ").append(GameUtil.b((double)n3)).append(" ").append(ShopManager.a(shopDefinition)).append(".").toString());
+            packetSender.sendGameMessage(stringBuilder.append(ItemService.getItemName(n)).append(": shop will buy for ").append(GameUtil.formatNumber((double)n3)).append(" ").append(ShopManager.getCurrencyDisplayName(shopDefinition)).append(".").toString());
             return;
         }
         player.packetSender.sendGameMessage("You cannot sell this item to this shop.");
     }
 
-    private static String a(ShopDefinition shopDefinition) {
-        switch (ShopManager.c()[shopDefinition.i().ordinal()]) {
-            case 2: {
+    private static String getCurrencyDisplayName(ShopDefinition shopDefinition) {
+        switch (shopDefinition.getCurrency()) {
+            case DONATOR_POINTS: {
                 return "Donator Points";
             }
         }
         ItemService.getInstance();
-        return ItemService.getItemName(shopDefinition.h());
+        return ItemService.getItemName(shopDefinition.getCurrencyItemId());
     }
 
-    public static void a() {
+    public static void loadShops() {
         try {
             byte[] byArray = FileUtil.readBytes("./data/content/Shops.dat");
             ByteArrayReader byteArrayReader = new ByteArrayReader(byArray);
@@ -508,11 +507,11 @@ public final class ShopManager {
                 int n7 = byteArrayReader.readUnsignedByte();
                 ItemContainer itemContainer = new ItemContainer(ItemContainerType.b, 40);
                 ItemContainer itemContainer2 = new ItemContainer(ItemContainerType.b, 40);
-                ShopDefinition.a(shopDefinition, new int[40]);
-                ShopDefinition.a(shopDefinition, new TickTask[40]);
+                ShopDefinition.setRestockDelayTicks(shopDefinition, new int[40]);
+                ShopDefinition.setRestockTasks(shopDefinition, new TickTask[40]);
                 int n8 = 0;
                 while (n8 < 40) {
-                    ShopDefinition.a((ShopDefinition)shopDefinition)[n8] = 100;
+                    ShopDefinition.getRestockDelayTicks((ShopDefinition)shopDefinition)[n8] = 100;
                     ++n8;
                 }
                 n8 = 0;
@@ -522,7 +521,7 @@ public final class ShopManager {
                     int n11 = byteArrayReader.readUnsignedShort();
                     n10 = (int)((double)n10 * ServerSettings.shopItemMultiplier);
                     if (!(ServerSettings.freeToPlayWorld && n2 != 169 && new ItemStack(n9).getDefinition().isMembersOnly() || !ItemDefinition.isDefined(n9))) {
-                        ShopDefinition.a((ShopDefinition)shopDefinition)[n8] = n11;
+                        ShopDefinition.getRestockDelayTicks((ShopDefinition)shopDefinition)[n8] = n11;
                         ItemStack itemStack = new ItemStack(n9, n10);
                         ItemContainer itemContainer3 = itemContainer;
                         itemContainer3.add(itemStack, -1);
@@ -532,19 +531,19 @@ public final class ShopManager {
                     }
                     ++n8;
                 }
-                shopDefinition.b(n3 == 0);
-                shopDefinition.a(itemContainer);
-                shopDefinition.b(itemContainer2);
+                shopDefinition.setGeneralStore(n3 == 0);
+                shopDefinition.setOriginalStock(itemContainer);
+                shopDefinition.setStock(itemContainer2);
                 n8 = byteArrayReader.readUnsignedShort();
-                shopDefinition.a(string);
-                shopDefinition.a(bl);
-                shopDefinition.d(n8);
-                shopDefinition.a(ShopCurrency.values()[n3 == 2 ? 1 : 0]);
-                shopDefinition.a(n4);
-                shopDefinition.b(n5);
-                shopDefinition.c(n6);
-                ShopDefinition.a(shopDefinition, n2);
-                a.add(shopDefinition);
+                shopDefinition.setName(string);
+                shopDefinition.setMembersOnly(bl);
+                shopDefinition.setCurrencyItemId(n8);
+                shopDefinition.setCurrency(ShopCurrency.values()[n3 == 2 ? 1 : 0]);
+                shopDefinition.setBuyPricePercent(n4);
+                shopDefinition.setSellPricePercent(n5);
+                shopDefinition.setPriceChangeRateTenths(n6);
+                ShopDefinition.setShopId(shopDefinition, n2);
+                shopDefinitions.add(shopDefinition);
                 ++n2;
             }
             return;
@@ -556,58 +555,58 @@ public final class ShopManager {
         }
     }
 
-    private static void d(ShopDefinition shopDefinition, int n, int n2) {
+    private static void updateRestockSchedule(ShopDefinition shopDefinition, int n, int n2) {
         int n3;
         TickTask tickTask = null;
         if (n2 != -1) {
-            tickTask = ShopDefinition.b(shopDefinition)[n2];
+            tickTask = ShopDefinition.getRestockTasks(shopDefinition)[n2];
         }
-        if (shopDefinition.j().containsItem(n)) {
-            n3 = shopDefinition.j().findFlatItem(n).getAmount();
-            int n4 = shopDefinition.k().findFlatItem(n).getAmount();
+        if (shopDefinition.getOriginalStock().containsItem(n)) {
+            n3 = shopDefinition.getOriginalStock().findFlatItem(n).getAmount();
+            int n4 = shopDefinition.getStock().findFlatItem(n).getAmount();
             if (n4 < n3) {
-                ShopManager.b(shopDefinition, n);
+                ShopManager.startRestockTask(shopDefinition, n);
                 return;
             }
             if (n4 > n3) {
-                ShopManager.b(shopDefinition, n);
+                ShopManager.startRestockTask(shopDefinition, n);
                 return;
             }
-        } else if (shopDefinition.k().containsItem(n)) {
-            ShopManager.b(shopDefinition, n);
+        } else if (shopDefinition.getStock().containsItem(n)) {
+            ShopManager.startRestockTask(shopDefinition, n);
             return;
         }
         if (tickTask != null) {
             tickTask.stop();
-            n3 = ShopDefinition.a(shopDefinition)[n2];
+            n3 = ShopDefinition.getRestockDelayTicks(shopDefinition)[n2];
             tickTask.setIntervalTicks(n3);
             tickTask.setRemainingTicks(n3);
         }
     }
 
-    public static int a(ShopDefinition shopDefinition, int n) {
-        if (shopDefinition.k().containsItem(n)) {
-            return shopDefinition.k().indexOfItem(n);
+    public static int indexOfStockItem(ShopDefinition shopDefinition, int n) {
+        if (shopDefinition.getStock().containsItem(n)) {
+            return shopDefinition.getStock().indexOfItem(n);
         }
         return -1;
     }
 
-    private static void b(ShopDefinition shopDefinition, int n) {
-        int n2 = ShopManager.a(shopDefinition, n);
-        int n3 = ShopDefinition.a(shopDefinition)[n2];
+    private static void startRestockTask(ShopDefinition shopDefinition, int n) {
+        int n2 = ShopManager.indexOfStockItem(shopDefinition, n);
+        int n3 = ShopDefinition.getRestockDelayTicks(shopDefinition)[n2];
         double d = (double)n3 * ServerSettings.shopRestockTimeMultiplier;
         n3 = (int)d;
-        if (ShopDefinition.b(shopDefinition)[n2] != null && ShopDefinition.b(shopDefinition)[n2].isActive()) {
+        if (ShopDefinition.getRestockTasks(shopDefinition)[n2] != null && ShopDefinition.getRestockTasks(shopDefinition)[n2].isActive()) {
             return;
         }
-        ShopDefinition.b((ShopDefinition)shopDefinition)[n2] = new ShopRestockTask(n3, shopDefinition, n, n2);
-        World.getTaskScheduler().schedule(ShopDefinition.b(shopDefinition)[n2]);
+        ShopDefinition.getRestockTasks((ShopDefinition)shopDefinition)[n2] = new ShopRestockTask(n3, shopDefinition, n, n2);
+        World.getTaskScheduler().schedule(ShopDefinition.getRestockTasks(shopDefinition)[n2]);
     }
 
-    public static boolean a(ShopDefinition shopDefinition, int n, int n2) {
-        if (shopDefinition.j().containsItem(n)) {
-            int n3 = shopDefinition.j().findFlatItem(n).getAmount();
-            int n4 = shopDefinition.k().findFlatItem(n).getAmount();
+    public static boolean needsRestock(ShopDefinition shopDefinition, int n, int n2) {
+        if (shopDefinition.getOriginalStock().containsItem(n)) {
+            int n3 = shopDefinition.getOriginalStock().findFlatItem(n).getAmount();
+            int n4 = shopDefinition.getStock().findFlatItem(n).getAmount();
             if (n4 < n3) {
                 return true;
             }
@@ -615,36 +614,19 @@ public final class ShopManager {
                 return true;
             }
         } else {
-            int n5 = ShopManager.a(shopDefinition, n);
+            int n5 = ShopManager.indexOfStockItem(shopDefinition, n);
             if (n5 != n2) {
                 return false;
             }
-            if (shopDefinition.k().containsItem(n)) {
+            if (shopDefinition.getStock().containsItem(n)) {
                 return true;
             }
         }
         return false;
     }
 
-    public static List b() {
-        return a;
-    }
-
-    private static /* synthetic */ int[] c() {
-        if (b != null) {
-            return b;
-        }
-        int[] nArray = new int[ShopCurrency.values().length];
-        try {
-            nArray[ShopCurrency.b.ordinal()] = 2;
-        }
-        catch (NoSuchFieldError noSuchFieldError) {}
-        try {
-            nArray[ShopCurrency.a.ordinal()] = 1;
-        }
-        catch (NoSuchFieldError noSuchFieldError) {}
-        b = nArray;
-        return nArray;
+    public static List getShopDefinitions() {
+        return shopDefinitions;
     }
 }
 

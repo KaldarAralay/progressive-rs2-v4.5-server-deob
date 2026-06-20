@@ -8,13 +8,13 @@ import com.rs2.model.gameplay.partyroom.PartyRoomManager;
 import com.rs2.model.item.ItemStack;
 
 public final class PartyRoomBalloonReward {
-    ItemStack a;
-    Position b;
+    ItemStack rewardItem;
+    Position balloonPosition;
 
     private PartyRoomBalloonReward(ItemStack itemStack, Position position) {
-        this.a = itemStack;
-        this.b = position;
-        PartyRoomManager.e.add(this);
+        this.rewardItem = itemStack;
+        this.balloonPosition = position;
+        PartyRoomManager.balloonRewards.add(this);
     }
 
     /* synthetic */ PartyRoomBalloonReward(ItemStack itemStack, Position position, byte by) {

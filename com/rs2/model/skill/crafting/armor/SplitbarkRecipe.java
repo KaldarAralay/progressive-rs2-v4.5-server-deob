@@ -58,12 +58,12 @@ public enum SplitbarkRecipe {
      * WARNING - void declaration
      */
     private SplitbarkRecipe(int n3, int n4, int n5, int n6) {
-        void cfr_renamed_3;
+        void cfr_renamed_2;
         this.buttonId = n3;
         this.productItemId = n4;
         this.quantity = n5;
         this.materialAmount = n6;
-        this.coinAmount = cfr_renamed_3;
+        this.coinAmount = cfr_renamed_2;
     }
 
     public final int getProductItemId() {

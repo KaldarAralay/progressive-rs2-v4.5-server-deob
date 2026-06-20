@@ -25,7 +25,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        this.a.n(false);
+        this.a.setActionLocked(false);
     }
 }
 

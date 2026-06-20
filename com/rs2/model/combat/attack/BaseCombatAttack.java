@@ -75,14 +75,14 @@ extends CombatAttack {
             object = (Player)this.getAttacker();
             switch (new WeaponCombatAttack((Player)object, this.getTarget(), WeaponProfile.forItem(new ItemStack(((Player)object).getEquipmentManager().getItemIdAtSlot(3)))).getAttackStyle().getCombatType()) {
                 case MELEE: {
-                    if (this instanceof MagicCombatAttack || !DuelRule.b.a((Player)object) || ((Player)object).getEquipmentManager().getContainer().getItemAt(3) == null) break;
+                    if (this instanceof MagicCombatAttack || !DuelRule.NO_MELEE.isEnabledFor((Player)object) || ((Player)object).getEquipmentManager().getContainer().getItemAt(3) == null) break;
                     Object object3 = object;
                     ((Player)object3).packetSender.sendGameMessage("Melee attacks have been disabled during this fight!");
                     ((Entity)object).nextActionSequence();
                     return this.attackDelay;
                 }
                 case RANGED: {
-                    if (!DuelRule.a.a((Player)object)) break;
+                    if (!DuelRule.NO_RANGED.isEnabledFor((Player)object)) break;
                     Object object4 = object;
                     ((Player)object4).packetSender.sendGameMessage("Ranged attacks have been disabled during this fight!");
                     ((Entity)object).nextActionSequence();
@@ -90,7 +90,7 @@ extends CombatAttack {
                 }
             }
             if (this.animationId != 1818) {
-                ((Player)this.getAttacker()).a((Player)this.getTarget());
+                ((Player)this.getAttacker()).recordPvpAttack((Player)this.getTarget());
             }
         }
         if (this.attackerGraphic != null) {
@@ -147,7 +147,7 @@ extends CombatAttack {
                 object = objectArray[n3];
                 if (this.getAttacker().isNpc()) {
                     object6 = (Npc)this.getAttacker();
-                    if (((HitDefinition)object).getAttackStyle().getCombatType() == CombatType.MELEE && ((Npc)object6).getDefinition().getPoisonDamage() > 0 && ((Npc)object6).getDefinition().getPoisonChance() > 0.0 && GameUtil.a(((Npc)object6).getDefinition().getPoisonChance())) {
+                    if (((HitDefinition)object).getAttackStyle().getCombatType() == CombatType.MELEE && ((Npc)object6).getDefinition().getPoisonDamage() > 0 && ((Npc)object6).getDefinition().getPoisonChance() > 0.0 && GameUtil.rollChance(((Npc)object6).getDefinition().getPoisonChance())) {
                         ((HitDefinition)object).addEffect(new PoisonEffect(((Npc)object6).getDefinition().getPoisonDamage()));
                     }
                 }
@@ -157,12 +157,12 @@ extends CombatAttack {
                     object2 = ((Npc)object2).getCombatDefinition();
                 }
                 if (((HitDefinition)object).getAttackStyle().getXpMode() == AttackXpMode.KQ_RANGED) {
-                    Player[] playerArray = World.f();
+                    Player[] playerArray = World.getPlayers();
                     n4 = playerArray.length;
                     int n5 = 0;
                     while (n5 < n4) {
                         object2 = playerArray[n5];
-                        if (object2 != null && object2 != this.getAttacker() && object2 != this.getTarget() && GameUtil.a(this.getAttacker().getPosition(), ((Entity)object2).getPosition(), 10) && (object5 = CombatCycleEvent.validateAttack(this.getAttacker(), (Entity)object2)) == AttackValidationResult.VALID) {
+                        if (object2 != null && object2 != this.getAttacker() && object2 != this.getTarget() && GameUtil.isWithinDistance(this.getAttacker().getPosition(), ((Entity)object2).getPosition(), 10) && (object5 = CombatCycleEvent.validateAttack(this.getAttacker(), (Entity)object2)) == AttackValidationResult.VALID) {
                             ((HitDefinition)object).setDelay(-1);
                             new CombatAction(this.getAttacker(), (Entity)object2, (HitDefinition)object).queue();
                         }
@@ -171,12 +171,12 @@ extends CombatAttack {
                 }
                 if (((HitDefinition)object).getAttackStyle().getXpMode() == AttackXpMode.KQ_MAGIC) {
                     object2 = new ArrayList();
-                    object5 = World.f();
+                    object5 = World.getPlayers();
                     int n6 = ((Player[])object5).length;
                     n4 = 0;
                     while (n4 < n6) {
                         Player player = object5[n4];
-                        if (player != null && player != this.getAttacker() && player != this.getTarget() && GameUtil.a(this.getAttacker().getPosition(), player.getPosition(), 6)) {
+                        if (player != null && player != this.getAttacker() && player != this.getTarget() && GameUtil.isWithinDistance(this.getAttacker().getPosition(), player.getPosition(), 6)) {
                             ((ArrayList)object2).add(player);
                         }
                         ++n4;

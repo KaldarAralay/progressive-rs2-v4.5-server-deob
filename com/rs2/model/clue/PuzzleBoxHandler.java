@@ -338,7 +338,7 @@ public final class PuzzleBoxHandler {
                 nArray[n3] = 3;
                 ++n3;
             }
-            n3 = nArray[GameUtil.h(n3)];
+            n3 = nArray[GameUtil.randomInt(n3)];
             switch (n3) {
                 case 0: {
                     Player player2 = player;
@@ -394,7 +394,7 @@ public final class PuzzleBoxHandler {
 
     public static void giveRandomPuzzleBox(Player player) {
         int[] nArray = new int[]{2800, 3565, 3571};
-        player.getInventoryManager().addItem(new ItemStack(nArray[GameUtil.f(3)]));
+        player.getInventoryManager().addItem(new ItemStack(nArray[GameUtil.randomExclusive(3)]));
     }
 }
 

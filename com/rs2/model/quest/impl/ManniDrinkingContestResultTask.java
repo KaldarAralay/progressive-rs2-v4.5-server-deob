@@ -21,14 +21,14 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        this.a.n(false);
-        if ((this.a.bI[this.b] & GameUtil.b(1)) == 0) {
+        this.a.setActionLocked(false);
+        if ((this.a.questProgressFlags[this.b] & GameUtil.bitFlag(1)) == 0) {
             int n = this.b;
-            this.a.bI[n] = this.a.bI[n] + GameUtil.b(1);
+            this.a.questProgressFlags[n] = this.a.questProgressFlags[n] + GameUtil.bitFlag(1);
         }
         if (this.a.pendingGameMode == 3711) {
-            if ((this.a.getQuestState(this.b) & GameUtil.b(3)) == 0) {
-                this.a.addQuestState(this.b, GameUtil.b(3));
+            if ((this.a.getQuestState(this.b) & GameUtil.bitFlag(3)) == 0) {
+                this.a.addQuestState(this.b, GameUtil.bitFlag(3));
             }
             this.a.getDialogueManager().showPlayerTwoLineDialogue("Aaaah, lovely stuff. So you want to get the next round", "in, or shall I? You don't look so good there!", 591);
             Player player = this.a;

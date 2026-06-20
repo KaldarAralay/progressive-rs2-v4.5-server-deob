@@ -28,7 +28,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        this.b.aN();
+        this.b.resetAnimation();
     }
 }
 

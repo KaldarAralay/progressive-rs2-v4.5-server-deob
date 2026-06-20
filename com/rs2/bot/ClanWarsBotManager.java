@@ -53,12 +53,12 @@ public final class ClanWarsBotManager {
             player2 = player;
             GameplayHelper.b(player2);
             n4 = ServerSettings.wildyBotsBaseCombatLevel - ServerSettings.wildyBotsCombatLevelSpread;
-            n3 = n4 + GameUtil.h((ServerSettings.wildyBotsCombatLevelSpread << 1) + 1);
+            n3 = n4 + GameUtil.randomInt((ServerSettings.wildyBotsCombatLevelSpread << 1) + 1);
             if (n3 < 3) {
                 n3 = 3;
             }
-            if (n3 > SkillManager.b) {
-                n3 = SkillManager.b;
+            if (n3 > SkillManager.maxCombatLevel) {
+                n3 = SkillManager.maxCombatLevel;
             }
             while (player2.getCombatLevel() < n3) {
                 int[] nArray = new int[6];
@@ -68,7 +68,7 @@ public final class ClanWarsBotManager {
                 nArray[4] = 6;
                 nArray[5] = 5;
                 int[] nArray2 = nArray;
-                n2 = nArray[GameUtil.h(6)];
+                n2 = nArray[GameUtil.randomInt(6)];
                 player2.getSkillManager();
                 n = SkillManager.getLevelForExperience(player2.getSkillManager().getExperience()[n2]);
                 BotCombatHelper.setBotSkillLevel(player2, n2, n + 1);
@@ -78,50 +78,50 @@ public final class ClanWarsBotManager {
                 nArray3[3] = SkillManager.getLevelForExperience(player2.getSkillManager().getExperience()[3]);
             }
             player2.getSkillManager().refreshAllSkills();
-            BotCombatLoadoutManager.a(player2, false);
+            BotCombatLoadoutManager.selectCombatStyleFromStats(player2, false);
         } else {
             player2 = player;
             GameplayHelper.b(player2);
-            n4 = clanWarsBaseCombatLevel + GameUtil.h(6);
+            n4 = clanWarsBaseCombatLevel + GameUtil.randomInt(6);
             n3 = n4 / 5 << 1;
             if (n3 == 0) {
                 n3 = 2;
             }
-            BotCombatHelper.setBotSkillLevel(player2, 0, n4 - n4 / 5 + GameUtil.h(n3));
+            BotCombatHelper.setBotSkillLevel(player2, 0, n4 - n4 / 5 + GameUtil.randomInt(n3));
             n3 = n4 / 5 << 1;
             if (n3 == 0) {
                 n3 = 2;
             }
-            BotCombatHelper.setBotSkillLevel(player2, 2, n4 - n4 / 5 + GameUtil.h(n3));
+            BotCombatHelper.setBotSkillLevel(player2, 2, n4 - n4 / 5 + GameUtil.randomInt(n3));
             n3 = n4 / 5 << 1;
             if (n3 == 0) {
                 n3 = 2;
             }
-            BotCombatHelper.setBotSkillLevel(player2, 1, n4 - n4 / 5 + GameUtil.h(n3));
+            BotCombatHelper.setBotSkillLevel(player2, 1, n4 - n4 / 5 + GameUtil.randomInt(n3));
             n3 = n4 / 5 << 1;
             if (n3 == 0) {
                 n3 = 2;
             }
-            BotCombatHelper.setBotSkillLevel(player2, 4, n4 - n4 / 5 + GameUtil.h(n3));
+            BotCombatHelper.setBotSkillLevel(player2, 4, n4 - n4 / 5 + GameUtil.randomInt(n3));
             n3 = n4 / 5 << 1;
             if (n3 == 0) {
                 n3 = 2;
             }
-            BotCombatHelper.setBotSkillLevel(player2, 6, n4 - n4 / 5 + GameUtil.h(n3));
+            BotCombatHelper.setBotSkillLevel(player2, 6, n4 - n4 / 5 + GameUtil.randomInt(n3));
             n3 = n4 / 5 << 1;
             if (n3 == 0) {
                 n3 = 2;
             }
-            BotCombatHelper.setBotSkillLevel(player2, 5, n4 - (n4 / 5 << 1) + GameUtil.h(n3));
+            BotCombatHelper.setBotSkillLevel(player2, 5, n4 - (n4 / 5 << 1) + GameUtil.randomInt(n3));
             player2.getSkillManager().getExperience()[3] = BotCombatHelper.calculateBotHitpointsExperience(player2);
             int[] nArray = player2.getSkillManager().getCurrentLevels();
             player2.getSkillManager();
             nArray[3] = SkillManager.getLevelForExperience(player2.getSkillManager().getExperience()[3]);
             player2.getSkillManager().refreshAllSkills();
-            BotCombatLoadoutManager.a(player2, false);
+            BotCombatLoadoutManager.selectCombatStyleFromStats(player2, false);
         }
         player2 = player;
-        BotCombatLoadoutManager.c(player2, true);
+        BotCombatLoadoutManager.prepareCombatLoadout(player2, true);
         if (player2.clanWarsTeamId == 1) {
             player2.getEquipmentManager().getContainer().setItem(1, new ItemStack(clanWarsTeamOneCapeId));
         } else {
@@ -140,7 +140,7 @@ public final class ClanWarsBotManager {
             int n7 = rectangularArea.getMaxY();
             n2 -= n6;
             n7 -= n5;
-            Position position = new Position(n6 += GameUtil.h(n2), n7 = n5 + GameUtil.h(n7));
+            Position position = new Position(n6 += GameUtil.randomInt(n2), n7 = n5 + GameUtil.randomInt(n7));
             n5 = position.getX();
             n = WalkingCollisionMap.getTileFlags(n5, n2 = position.getY(), 0) != 0 ? 1 : 0;
         }
@@ -155,14 +155,14 @@ public final class ClanWarsBotManager {
         if (!clanWarsRetreatActive) {
             bl = false;
             for (Player player : clanWarsTeamOneBots) {
-                int n = GameUtil.b(player.getPosition(), clanWarsRallyPosition);
+                int n = GameUtil.getDistance(player.getPosition(), clanWarsRallyPosition);
                 if ((!player.isInWilderness() || player.botCombatEscapeActive) && n >= 20) continue;
                 bl = true;
                 break;
             }
             boolean bl2 = false;
             for (Object object : clanWarsTeamTwoBots) {
-                int n = GameUtil.b(((Entity)object).getPosition(), clanWarsRallyPosition);
+                int n = GameUtil.getDistance(((Entity)object).getPosition(), clanWarsRallyPosition);
                 if ((!((Entity)object).isInWilderness() || ((Player)object).botCombatEscapeActive) && n >= 20) continue;
                 bl2 = true;
                 break;
@@ -172,13 +172,13 @@ public final class ClanWarsBotManager {
                     for (Object object : clanWarsTeamOneBots) {
                         if (!((Entity)object).isInWilderness()) continue;
                         ((Player)object).queuePublicChatMessage("#" + clanWarsTeamOneTag);
-                        BotCombatEscapeHandler.a((Player)object);
+                        BotCombatEscapeHandler.tryStartBotCombatEscape((Player)object);
                     }
                 } else {
                     for (Object object : clanWarsTeamTwoBots) {
                         if (!((Entity)object).isInWilderness()) continue;
                         ((Player)object).queuePublicChatMessage("#" + clanWarsTeamTwoTag);
-                        BotCombatEscapeHandler.a((Player)object);
+                        BotCombatEscapeHandler.tryStartBotCombatEscape((Player)object);
                     }
                 }
                 clanWarsRetreatActive = true;
@@ -211,8 +211,8 @@ public final class ClanWarsBotManager {
         Player player2;
         ArrayList<Player> arrayList = new ArrayList<Player>();
         int n = clanWarsTeamOneBots.contains(player) ? clanWarsTeamTwoCapeId : clanWarsTeamOneCapeId;
-        Player[] playerArray = World.a;
-        int n2 = World.a.length;
+        Player[] playerArray = World.players;
+        int n2 = World.players.length;
         int n3 = 0;
         while (n3 < n2) {
             player2 = playerArray[n3];

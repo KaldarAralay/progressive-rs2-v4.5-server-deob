@@ -18,69 +18,69 @@ import com.rs2.net.packet.PacketSender;
 import java.util.ArrayList;
 
 public class Cutscene {
-    private ArrayList a = new ArrayList();
-    private ArrayList b = new ArrayList();
-    private Player c;
+    private ArrayList steps = new ArrayList();
+    private ArrayList npcs = new ArrayList();
+    private Player player;
 
     public Cutscene(Player player, ArrayList object) {
         Object object2;
-        this.c = player;
+        this.player = player;
         if (object != null) {
             object2 = ((ArrayList)object).iterator();
             while (object2.hasNext()) {
                 Object object3 = object = (Npc)object2.next();
                 object = this;
-                ((Cutscene)object).b.add(object3);
+                ((Cutscene)object).npcs.add(object3);
             }
         }
         object = new CutsceneSceneSetupStep(this, this, 4, player);
         object2 = new CutsceneDialogueStartStep(this, this, 1, player);
-        this.a((CutsceneStep)object);
-        this.a((CutsceneStep)object2);
-        this.b();
+        this.addStep((CutsceneStep)object);
+        this.addStep((CutsceneStep)object2);
+        this.addCustomSteps();
     }
 
-    public final void a(CutsceneStep cutsceneStep) {
-        this.a.add(cutsceneStep);
+    public final void addStep(CutsceneStep cutsceneStep) {
+        this.steps.add(cutsceneStep);
     }
 
-    public final Npc a(int n) {
-        return (Npc)this.b.get(0);
+    public final Npc getNpc(int n) {
+        return (Npc)this.npcs.get(0);
     }
 
-    public final Player a() {
-        return this.c;
+    public final Player getPlayer() {
+        return this.player;
     }
 
-    public void b() {
+    public void addCustomSteps() {
     }
 
-    public void c() {
+    public void startDialogue() {
     }
 
-    public void d() {
+    public void setupScene() {
     }
 
-    public final void e() {
-        this.c.ev = false;
-        this.c.getMovementLockTimer().setDelayTicks(0);
-        Player player = this.c;
+    public final void finishCutscene() {
+        this.player.ev = false;
+        this.player.getMovementLockTimer().setDelayTicks(0);
+        Player player = this.player;
         player.packetSender.resetCamera();
-        this.c.getDialogueManager().finishDialogue();
-        player = this.c;
+        this.player.getDialogueManager().finishDialogue();
+        player = this.player;
         player.packetSender.sendMinimapState(0);
-        player = this.c;
+        player = this.player;
         player.packetSender.refreshSidebarInterfaces();
     }
 
-    public final void f() {
+    public final void startCutscene() {
         Cutscene cutscene = this;
-        this.c.ev = true;
-        Object object = cutscene.c;
+        this.player.ev = true;
+        Object object = cutscene.player;
         ((Player)object).packetSender.sendMinimapState(2);
-        object = cutscene.c;
+        object = cutscene.player;
         ((Player)object).packetSender.showInterface(8677);
-        object = cutscene.c;
+        object = cutscene.player;
         Object object2 = new int[]{QuestNpcIds.a[0], QuestNpcIds.b[0], QuestNpcIds.c[0], QuestNpcIds.d[0], QuestNpcIds.e[0], QuestNpcIds.f[0], QuestNpcIds.g[0], QuestNpcIds.k[0], QuestNpcIds.l[0]};
         object = ((Player)object).packetSender;
         int n = 0;
@@ -88,38 +88,38 @@ public class Cutscene {
             ((PacketSender)object).setSidebarInterface(object2[n], -1);
             ++n;
         }
-        cutscene.c.getMovementLockTimer().setDelayTicks(cutscene.g());
-        if (cutscene.b != null) {
-            object2 = cutscene.b.iterator();
+        cutscene.player.getMovementLockTimer().setDelayTicks(cutscene.getMovementLockDurationMillis());
+        if (cutscene.npcs != null) {
+            object2 = cutscene.npcs.iterator();
             while (object2.hasNext()) {
                 object = (Npc)object2.next();
-                ((Entity)object).getMovementLockTimer().setDelayTicks(cutscene.g());
+                ((Entity)object).getMovementLockTimer().setDelayTicks(cutscene.getMovementLockDurationMillis());
             }
         }
         int n2 = 0;
-        object2 = this.a.iterator();
+        object2 = this.steps.iterator();
         while (object2.hasNext()) {
             object = (CutsceneStep)object2.next();
-            n2 += ((CutsceneStep)object).b();
+            n2 += ((CutsceneStep)object).getDelayTicks();
             object = new CutsceneStepTask(this, n2, (CutsceneStep)object);
             World.getTaskScheduler().schedule((TickTask)object);
         }
-        object = new CutsceneEndTask(this, this.h());
+        object = new CutsceneEndTask(this, this.getTotalDelayTicks());
         World.getTaskScheduler().schedule((TickTask)object);
     }
 
-    private int g() {
+    private int getMovementLockDurationMillis() {
         int n = 0;
-        for (CutsceneStep cutsceneStep : this.a) {
-            n += cutsceneStep.b();
+        for (CutsceneStep cutsceneStep : this.steps) {
+            n += cutsceneStep.getDelayTicks();
         }
         return n * 600;
     }
 
-    private int h() {
+    private int getTotalDelayTicks() {
         int n = 0;
-        for (CutsceneStep cutsceneStep : this.a) {
-            n += cutsceneStep.b();
+        for (CutsceneStep cutsceneStep : this.steps) {
+            n += cutsceneStep.getDelayTicks();
         }
         return n;
     }

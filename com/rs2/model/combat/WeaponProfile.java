@@ -153,8 +153,8 @@ extends Enum {
     private WeaponProfile(int n, int[] nArray, int[] nArray2, int n2) {
         void var8_6;
         void var7_5;
-        void cfr_renamed_2;
         void cfr_renamed_1;
+        void cfr_renamed_0;
         this.interfaceDefinition = (WeaponInterfaceDefinition)n;
         this.ammunitionProfile = (AmmunitionProfile)nArray;
         this.attackDelay = (int)nArray2;
@@ -174,11 +174,11 @@ extends Enum {
      * WARNING - void declaration
      */
     private WeaponProfile(int[] nArray, int[] nArray2, int n) {
-        this((String)cfr_renamed_1, (int)cfr_renamed_2, (WeaponInterfaceDefinition)nArray, null, (int)nArray2, (int[])n, (int[])var6_4, (int)var7_5);
+        this((String)cfr_renamed_0, (int)cfr_renamed_1, (WeaponInterfaceDefinition)nArray, null, (int)nArray2, (int[])n, (int[])var6_4, (int)var7_5);
         void var7_5;
         void var6_4;
-        void cfr_renamed_2;
         void cfr_renamed_1;
+        void cfr_renamed_0;
     }
 
     public final WeaponInterfaceDefinition getInterfaceDefinition() {

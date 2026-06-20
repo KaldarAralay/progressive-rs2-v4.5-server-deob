@@ -8,16 +8,16 @@ import com.rs2.model.task.TickTask;
 
 final class CutsceneEndTask
 extends TickTask {
-    private /* synthetic */ Cutscene a;
+    private /* synthetic */ Cutscene cutscene;
 
     CutsceneEndTask(Cutscene cutscene, int n) {
-        this.a = cutscene;
+        this.cutscene = cutscene;
         super(n);
     }
 
     @Override
     public final void execute() {
-        this.a.e();
+        this.cutscene.finishCutscene();
         this.stop();
     }
 }

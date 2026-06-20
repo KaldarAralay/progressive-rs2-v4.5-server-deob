@@ -14,33 +14,33 @@ import com.rs2.model.quest.QuestHook;
 import com.rs2.model.quest.QuestScript;
 
 public final class QuestManager {
-    private Player a;
+    private Player player;
 
     public QuestManager(Player player) {
-        this.a = player;
+        this.player = player;
     }
 
-    private static boolean g(int n) {
-        QuestDefinition questDefinition = QuestDefinition.b(n);
-        int n2 = questDefinition.d();
+    private static boolean isQuestJournalButtonAvailable(int n) {
+        QuestDefinition questDefinition = QuestDefinition.forId(n);
+        int n2 = questDefinition.getJournalButtonId();
         return n2 < InterfaceDefinition.interfaceCount;
     }
 
-    public final boolean a(int n, int n2) {
+    public final boolean handleItemOnItem(int n, int n2) {
         QuestHook questHook;
         int n3 = 0;
-        while (n3 < QuestEventRegistry.a) {
-            questHook = QuestEventRegistry.a(n3);
-            if (questHook.b() != -1 && questHook.b(this.a, n, n2, this.a.bJ[n3])) {
+        while (n3 < QuestEventRegistry.eventHookCount) {
+            questHook = QuestEventRegistry.getEventHook(n3);
+            if (questHook.getQuestId() != -1 && questHook.handleItemOnItem(this.player, n, n2, this.player.questHookStates[n3])) {
                 return true;
             }
             ++n3;
         }
         n3 = 1;
-        while (n3 < QuestDefinition.a) {
+        while (n3 < QuestDefinition.questCount) {
             QuestHook questHook2;
-            questHook = QuestDefinition.a(n3);
-            if (!(questHook.b() == -1 || !QuestManager.g(questHook.b()) || QuestDefinition.b((questHook2 = questHook).b()).e() && !this.a.isMember() || QuestDefinition.b((questHook2 = questHook).b()).e() && ServerSettings.freeToPlayWorld || !questHook.b(this.a, n, n2, this.a.getQuestState(n3)))) {
+            questHook = QuestDefinition.getQuestScript(n3);
+            if (!(questHook.getQuestId() == -1 || !QuestManager.isQuestJournalButtonAvailable(questHook.getQuestId()) || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && !this.player.isMember() || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && ServerSettings.freeToPlayWorld || !questHook.handleItemOnItem(this.player, n, n2, this.player.getQuestState(n3)))) {
                 return true;
             }
             ++n3;
@@ -48,21 +48,21 @@ public final class QuestManager {
         return false;
     }
 
-    public final boolean a(int n) {
+    public final boolean handleDropItem(int n) {
         QuestHook questHook;
         int n2 = 0;
-        while (n2 < QuestEventRegistry.a) {
-            questHook = QuestEventRegistry.a(n2);
-            if (questHook.b() != -1 && questHook.d(this.a, n, this.a.bJ[n2])) {
+        while (n2 < QuestEventRegistry.eventHookCount) {
+            questHook = QuestEventRegistry.getEventHook(n2);
+            if (questHook.getQuestId() != -1 && questHook.handleDropItem(this.player, n, this.player.questHookStates[n2])) {
                 return true;
             }
             ++n2;
         }
         n2 = 1;
-        while (n2 < QuestDefinition.a) {
+        while (n2 < QuestDefinition.questCount) {
             QuestHook questHook2;
-            questHook = QuestDefinition.a(n2);
-            if (!(questHook.b() == -1 || !QuestManager.g(questHook.b()) || QuestDefinition.b((questHook2 = questHook).b()).e() && !this.a.isMember() || QuestDefinition.b((questHook2 = questHook).b()).e() && ServerSettings.freeToPlayWorld || !questHook.d(this.a, n, this.a.getQuestState(n2)))) {
+            questHook = QuestDefinition.getQuestScript(n2);
+            if (!(questHook.getQuestId() == -1 || !QuestManager.isQuestJournalButtonAvailable(questHook.getQuestId()) || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && !this.player.isMember() || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && ServerSettings.freeToPlayWorld || !questHook.handleDropItem(this.player, n, this.player.getQuestState(n2)))) {
                 return true;
             }
             ++n2;
@@ -70,21 +70,21 @@ public final class QuestManager {
         return false;
     }
 
-    public final boolean b(int n) {
+    public final boolean handleFirstNpcAction(int n) {
         QuestHook questHook;
         int n2 = 0;
-        while (n2 < QuestEventRegistry.a) {
-            questHook = QuestEventRegistry.a(n2);
-            if (questHook.b() != -1 && questHook.f(this.a, n, this.a.bJ[n2])) {
+        while (n2 < QuestEventRegistry.eventHookCount) {
+            questHook = QuestEventRegistry.getEventHook(n2);
+            if (questHook.getQuestId() != -1 && questHook.handleFirstNpcAction(this.player, n, this.player.questHookStates[n2])) {
                 return true;
             }
             ++n2;
         }
         n2 = 1;
-        while (n2 < QuestDefinition.a) {
+        while (n2 < QuestDefinition.questCount) {
             QuestHook questHook2;
-            questHook = QuestDefinition.a(n2);
-            if (!(questHook.b() == -1 || !QuestManager.g(questHook.b()) || QuestDefinition.b((questHook2 = questHook).b()).e() && !this.a.isMember() || QuestDefinition.b((questHook2 = questHook).b()).e() && ServerSettings.freeToPlayWorld || !questHook.f(this.a, n, this.a.getQuestState(n2)))) {
+            questHook = QuestDefinition.getQuestScript(n2);
+            if (!(questHook.getQuestId() == -1 || !QuestManager.isQuestJournalButtonAvailable(questHook.getQuestId()) || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && !this.player.isMember() || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && ServerSettings.freeToPlayWorld || !questHook.handleFirstNpcAction(this.player, n, this.player.getQuestState(n2)))) {
                 return true;
             }
             ++n2;
@@ -92,21 +92,21 @@ public final class QuestManager {
         return false;
     }
 
-    public final boolean b(int n, int n2) {
+    public final boolean handleInventoryItemFirstOption(int n, int n2) {
         QuestHook questHook;
         int n3 = 0;
-        while (n3 < QuestEventRegistry.a) {
-            questHook = QuestEventRegistry.a(n3);
-            if (questHook.b() != -1 && questHook.c(this.a, n, n2, this.a.bJ[n3])) {
+        while (n3 < QuestEventRegistry.eventHookCount) {
+            questHook = QuestEventRegistry.getEventHook(n3);
+            if (questHook.getQuestId() != -1 && questHook.handleInventoryItemFirstOption(this.player, n, n2, this.player.questHookStates[n3])) {
                 return true;
             }
             ++n3;
         }
         n3 = 1;
-        while (n3 < QuestDefinition.a) {
+        while (n3 < QuestDefinition.questCount) {
             QuestHook questHook2;
-            questHook = QuestDefinition.a(n3);
-            if (!(questHook.b() == -1 || !QuestManager.g(questHook.b()) || QuestDefinition.b((questHook2 = questHook).b()).e() && !this.a.isMember() || QuestDefinition.b((questHook2 = questHook).b()).e() && ServerSettings.freeToPlayWorld || !questHook.c(this.a, n, n2, this.a.getQuestState(n3)))) {
+            questHook = QuestDefinition.getQuestScript(n3);
+            if (!(questHook.getQuestId() == -1 || !QuestManager.isQuestJournalButtonAvailable(questHook.getQuestId()) || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && !this.player.isMember() || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && ServerSettings.freeToPlayWorld || !questHook.handleInventoryItemFirstOption(this.player, n, n2, this.player.getQuestState(n3)))) {
                 return true;
             }
             ++n3;
@@ -114,21 +114,21 @@ public final class QuestManager {
         return false;
     }
 
-    public final boolean a(int n, int n2, int n3) {
+    public final boolean handleFirstObjectAction(int n, int n2, int n3) {
         QuestHook questHook;
         int n4 = 0;
-        while (n4 < QuestEventRegistry.a) {
-            questHook = QuestEventRegistry.a(n4);
-            if (questHook.b() != -1 && questHook.b(this.a, n, n2, n3, this.a.bJ[n4])) {
+        while (n4 < QuestEventRegistry.eventHookCount) {
+            questHook = QuestEventRegistry.getEventHook(n4);
+            if (questHook.getQuestId() != -1 && questHook.handleFirstObjectAction(this.player, n, n2, n3, this.player.questHookStates[n4])) {
                 return true;
             }
             ++n4;
         }
         n4 = 0;
-        while (n4 < QuestDefinition.a) {
+        while (n4 < QuestDefinition.questCount) {
             QuestHook questHook2;
-            questHook = QuestDefinition.a(n4);
-            if (!(questHook.b() == -1 || !QuestManager.g(questHook.b()) || QuestDefinition.b((questHook2 = questHook).b()).e() && !this.a.isMember() || QuestDefinition.b((questHook2 = questHook).b()).e() && ServerSettings.freeToPlayWorld || !questHook.b(this.a, n, n2, n3, this.a.getQuestState(n4)))) {
+            questHook = QuestDefinition.getQuestScript(n4);
+            if (!(questHook.getQuestId() == -1 || !QuestManager.isQuestJournalButtonAvailable(questHook.getQuestId()) || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && !this.player.isMember() || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && ServerSettings.freeToPlayWorld || !questHook.handleFirstObjectAction(this.player, n, n2, n3, this.player.getQuestState(n4)))) {
                 return true;
             }
             ++n4;
@@ -136,21 +136,21 @@ public final class QuestManager {
         return false;
     }
 
-    public final boolean b(int n, int n2, int n3) {
+    public final boolean handleSecondObjectAction(int n, int n2, int n3) {
         QuestHook questHook;
         int n4 = 0;
-        while (n4 < QuestEventRegistry.a) {
-            questHook = QuestEventRegistry.a(n4);
-            if (questHook.b() != -1 && questHook.c(this.a, n, n2, n3, this.a.bJ[n4])) {
+        while (n4 < QuestEventRegistry.eventHookCount) {
+            questHook = QuestEventRegistry.getEventHook(n4);
+            if (questHook.getQuestId() != -1 && questHook.handleSecondObjectAction(this.player, n, n2, n3, this.player.questHookStates[n4])) {
                 return true;
             }
             ++n4;
         }
         n4 = 0;
-        while (n4 < QuestDefinition.a) {
+        while (n4 < QuestDefinition.questCount) {
             QuestHook questHook2;
-            questHook = QuestDefinition.a(n4);
-            if (!(questHook.b() == -1 || !QuestManager.g(questHook.b()) || QuestDefinition.b((questHook2 = questHook).b()).e() && !this.a.isMember() || QuestDefinition.b((questHook2 = questHook).b()).e() && ServerSettings.freeToPlayWorld || !questHook.c(this.a, n, n2, n3, this.a.getQuestState(n4)))) {
+            questHook = QuestDefinition.getQuestScript(n4);
+            if (!(questHook.getQuestId() == -1 || !QuestManager.isQuestJournalButtonAvailable(questHook.getQuestId()) || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && !this.player.isMember() || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && ServerSettings.freeToPlayWorld || !questHook.handleSecondObjectAction(this.player, n, n2, n3, this.player.getQuestState(n4)))) {
                 return true;
             }
             ++n4;
@@ -158,21 +158,21 @@ public final class QuestManager {
         return false;
     }
 
-    public final boolean c(int n) {
+    public final boolean handleGroundItemInteraction(int n) {
         QuestHook questHook;
         int n2 = 0;
-        while (n2 < QuestEventRegistry.a) {
-            questHook = QuestEventRegistry.a(n2);
-            if (questHook.b() != -1 && questHook.c(this.a, n, this.a.bJ[n2])) {
+        while (n2 < QuestEventRegistry.eventHookCount) {
+            questHook = QuestEventRegistry.getEventHook(n2);
+            if (questHook.getQuestId() != -1 && questHook.handleGroundItemInteraction(this.player, n, this.player.questHookStates[n2])) {
                 return true;
             }
             ++n2;
         }
         n2 = 1;
-        while (n2 < QuestDefinition.a) {
+        while (n2 < QuestDefinition.questCount) {
             QuestHook questHook2;
-            questHook = QuestDefinition.a(n2);
-            if (!(questHook.b() == -1 || !QuestManager.g(questHook.b()) || QuestDefinition.b((questHook2 = questHook).b()).e() && !this.a.isMember() || QuestDefinition.b((questHook2 = questHook).b()).e() && ServerSettings.freeToPlayWorld || !questHook.c(this.a, n, this.a.getQuestState(n2)))) {
+            questHook = QuestDefinition.getQuestScript(n2);
+            if (!(questHook.getQuestId() == -1 || !QuestManager.isQuestJournalButtonAvailable(questHook.getQuestId()) || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && !this.player.isMember() || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && ServerSettings.freeToPlayWorld || !questHook.handleGroundItemInteraction(this.player, n, this.player.getQuestState(n2)))) {
                 return true;
             }
             ++n2;
@@ -180,21 +180,21 @@ public final class QuestManager {
         return false;
     }
 
-    public final boolean c(int n, int n2) {
+    public final boolean handleItemOnObject(int n, int n2) {
         QuestHook questHook;
         int n3 = 0;
-        while (n3 < QuestEventRegistry.a) {
-            questHook = QuestEventRegistry.a(n3);
-            if (questHook.b() != -1 && questHook.a(this.a, n, n2, this.a.bJ[n3])) {
+        while (n3 < QuestEventRegistry.eventHookCount) {
+            questHook = QuestEventRegistry.getEventHook(n3);
+            if (questHook.getQuestId() != -1 && questHook.handleItemOnObject(this.player, n, n2, this.player.questHookStates[n3])) {
                 return true;
             }
             ++n3;
         }
         n3 = 1;
-        while (n3 < QuestDefinition.a) {
+        while (n3 < QuestDefinition.questCount) {
             QuestHook questHook2;
-            questHook = QuestDefinition.a(n3);
-            if (!(questHook.b() == -1 || !QuestManager.g(questHook.b()) || QuestDefinition.b((questHook2 = questHook).b()).e() && !this.a.isMember() || QuestDefinition.b((questHook2 = questHook).b()).e() && ServerSettings.freeToPlayWorld || !questHook.a(this.a, n, n2, this.a.getQuestState(n3)))) {
+            questHook = QuestDefinition.getQuestScript(n3);
+            if (!(questHook.getQuestId() == -1 || !QuestManager.isQuestJournalButtonAvailable(questHook.getQuestId()) || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && !this.player.isMember() || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && ServerSettings.freeToPlayWorld || !questHook.handleItemOnObject(this.player, n, n2, this.player.getQuestState(n3)))) {
                 return true;
             }
             ++n3;
@@ -202,21 +202,21 @@ public final class QuestManager {
         return false;
     }
 
-    public final boolean d(int n, int n2) {
+    public final boolean handleItemOnNpc(int n, int n2) {
         QuestHook questHook;
         int n3 = 0;
-        while (n3 < QuestEventRegistry.a) {
-            questHook = QuestEventRegistry.a(n3);
-            if (questHook.b() != -1 && questHook.d(this.a, n, n2, this.a.bJ[n3])) {
+        while (n3 < QuestEventRegistry.eventHookCount) {
+            questHook = QuestEventRegistry.getEventHook(n3);
+            if (questHook.getQuestId() != -1 && questHook.handleItemOnNpc(this.player, n, n2, this.player.questHookStates[n3])) {
                 return true;
             }
             ++n3;
         }
         n3 = 1;
-        while (n3 < QuestDefinition.a) {
+        while (n3 < QuestDefinition.questCount) {
             QuestHook questHook2;
-            questHook = QuestDefinition.a(n3);
-            if (!(questHook.b() == -1 || !QuestManager.g(questHook.b()) || QuestDefinition.b((questHook2 = questHook).b()).e() && !this.a.isMember() || QuestDefinition.b((questHook2 = questHook).b()).e() && ServerSettings.freeToPlayWorld || !questHook.d(this.a, n, n2, this.a.getQuestState(n3)))) {
+            questHook = QuestDefinition.getQuestScript(n3);
+            if (!(questHook.getQuestId() == -1 || !QuestManager.isQuestJournalButtonAvailable(questHook.getQuestId()) || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && !this.player.isMember() || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && ServerSettings.freeToPlayWorld || !questHook.handleItemOnNpc(this.player, n, n2, this.player.getQuestState(n3)))) {
                 return true;
             }
             ++n3;
@@ -224,21 +224,21 @@ public final class QuestManager {
         return false;
     }
 
-    public final boolean d(int n) {
+    public final boolean canAttackNpc(int n) {
         QuestHook questHook;
         int n2 = 0;
-        while (n2 < QuestEventRegistry.a) {
-            questHook = QuestEventRegistry.a(n2);
-            if (questHook.b() != -1 && !questHook.b(this.a, n, this.a.bJ[n2])) {
+        while (n2 < QuestEventRegistry.eventHookCount) {
+            questHook = QuestEventRegistry.getEventHook(n2);
+            if (questHook.getQuestId() != -1 && !questHook.canAttackNpc(this.player, n, this.player.questHookStates[n2])) {
                 return false;
             }
             ++n2;
         }
         n2 = 1;
-        while (n2 < QuestDefinition.a) {
+        while (n2 < QuestDefinition.questCount) {
             QuestHook questHook2;
-            questHook = QuestDefinition.a(n2);
-            if (!(questHook.b() == -1 || !QuestManager.g(questHook.b()) || QuestDefinition.b((questHook2 = questHook).b()).e() && !this.a.isMember() || QuestDefinition.b((questHook2 = questHook).b()).e() && ServerSettings.freeToPlayWorld || questHook.b(this.a, n, this.a.getQuestState(n2)))) {
+            questHook = QuestDefinition.getQuestScript(n2);
+            if (!(questHook.getQuestId() == -1 || !QuestManager.isQuestJournalButtonAvailable(questHook.getQuestId()) || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && !this.player.isMember() || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && ServerSettings.freeToPlayWorld || questHook.canAttackNpc(this.player, n, this.player.getQuestState(n2)))) {
                 return false;
             }
             ++n2;
@@ -246,21 +246,21 @@ public final class QuestManager {
         return true;
     }
 
-    public final boolean a() {
+    public final boolean handleMovementStep() {
         QuestHook questHook;
         int n = 0;
-        while (n < QuestEventRegistry.a) {
-            questHook = QuestEventRegistry.a(n);
-            if (questHook.b() != -1 && questHook.b(this.a, this.a.bJ[n])) {
+        while (n < QuestEventRegistry.eventHookCount) {
+            questHook = QuestEventRegistry.getEventHook(n);
+            if (questHook.getQuestId() != -1 && questHook.handleMovementStep(this.player, this.player.questHookStates[n])) {
                 return true;
             }
             ++n;
         }
         n = 1;
-        while (n < QuestDefinition.a) {
+        while (n < QuestDefinition.questCount) {
             QuestHook questHook2;
-            questHook = QuestDefinition.a(n);
-            if (!(questHook.b() == -1 || !QuestManager.g(questHook.b()) || QuestDefinition.b((questHook2 = questHook).b()).e() && !this.a.isMember() || QuestDefinition.b((questHook2 = questHook).b()).e() && ServerSettings.freeToPlayWorld || !questHook.b(this.a, this.a.getQuestState(n)))) {
+            questHook = QuestDefinition.getQuestScript(n);
+            if (!(questHook.getQuestId() == -1 || !QuestManager.isQuestJournalButtonAvailable(questHook.getQuestId()) || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && !this.player.isMember() || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && ServerSettings.freeToPlayWorld || !questHook.handleMovementStep(this.player, this.player.getQuestState(n)))) {
                 return true;
             }
             ++n;
@@ -268,21 +268,21 @@ public final class QuestManager {
         return false;
     }
 
-    public final boolean a(Entity entity, Entity entity2) {
+    public final boolean handleCombatDeath(Entity entity, Entity entity2) {
         QuestHook questHook;
         int n = 0;
-        while (n < QuestEventRegistry.a) {
-            questHook = QuestEventRegistry.a(n);
-            if (questHook.b() != -1 && questHook.a(entity, entity2, this.a.bJ[n])) {
+        while (n < QuestEventRegistry.eventHookCount) {
+            questHook = QuestEventRegistry.getEventHook(n);
+            if (questHook.getQuestId() != -1 && questHook.handleCombatDeath(entity, entity2, this.player.questHookStates[n])) {
                 return true;
             }
             ++n;
         }
         n = 1;
-        while (n < QuestDefinition.a) {
+        while (n < QuestDefinition.questCount) {
             QuestHook questHook2;
-            questHook = QuestDefinition.a(n);
-            if (!(questHook.b() == -1 || !QuestManager.g(questHook.b()) || QuestDefinition.b((questHook2 = questHook).b()).e() && !this.a.isMember() || QuestDefinition.b((questHook2 = questHook).b()).e() && ServerSettings.freeToPlayWorld || !questHook.a(entity, entity2, this.a.getQuestState(n)))) {
+            questHook = QuestDefinition.getQuestScript(n);
+            if (!(questHook.getQuestId() == -1 || !QuestManager.isQuestJournalButtonAvailable(questHook.getQuestId()) || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && !this.player.isMember() || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && ServerSettings.freeToPlayWorld || !questHook.handleCombatDeath(entity, entity2, this.player.getQuestState(n)))) {
                 return true;
             }
             ++n;
@@ -290,43 +290,43 @@ public final class QuestManager {
         return false;
     }
 
-    public final int b(Entity entity, Entity entity2) {
+    public final int getQuestDamageOverride(Entity entity, Entity entity2) {
         QuestHook questHook;
         int n = 0;
-        while (n < QuestEventRegistry.a) {
-            questHook = QuestEventRegistry.a(n);
-            if (questHook.b() != -1 && questHook.b(entity, entity2, this.a.bJ[n]) != -1) {
-                return questHook.b(entity, entity2, this.a.bJ[n]);
+        while (n < QuestEventRegistry.eventHookCount) {
+            questHook = QuestEventRegistry.getEventHook(n);
+            if (questHook.getQuestId() != -1 && questHook.getQuestDamageOverride(entity, entity2, this.player.questHookStates[n]) != -1) {
+                return questHook.getQuestDamageOverride(entity, entity2, this.player.questHookStates[n]);
             }
             ++n;
         }
         n = 1;
-        while (n < QuestDefinition.a) {
+        while (n < QuestDefinition.questCount) {
             QuestHook questHook2;
-            questHook = QuestDefinition.a(n);
-            if (!(questHook.b() == -1 || !QuestManager.g(questHook.b()) || QuestDefinition.b((questHook2 = questHook).b()).e() && !this.a.isMember() || QuestDefinition.b((questHook2 = questHook).b()).e() && ServerSettings.freeToPlayWorld || questHook.b(entity, entity2, this.a.getQuestState(n)) == -1)) {
-                return questHook.b(entity, entity2, this.a.getQuestState(n));
+            questHook = QuestDefinition.getQuestScript(n);
+            if (!(questHook.getQuestId() == -1 || !QuestManager.isQuestJournalButtonAvailable(questHook.getQuestId()) || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && !this.player.isMember() || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && ServerSettings.freeToPlayWorld || questHook.getQuestDamageOverride(entity, entity2, this.player.getQuestState(n)) == -1)) {
+                return questHook.getQuestDamageOverride(entity, entity2, this.player.getQuestState(n));
             }
             ++n;
         }
         return -1;
     }
 
-    public final boolean e(int n) {
+    public final boolean handleNpcKill(int n) {
         QuestHook questHook;
         int n2 = 0;
-        while (n2 < QuestEventRegistry.a) {
-            questHook = QuestEventRegistry.a(n2);
-            if (questHook.b() != -1 && questHook.a(this.a, n, this.a.bJ[n2])) {
+        while (n2 < QuestEventRegistry.eventHookCount) {
+            questHook = QuestEventRegistry.getEventHook(n2);
+            if (questHook.getQuestId() != -1 && questHook.handleNpcKill(this.player, n, this.player.questHookStates[n2])) {
                 return true;
             }
             ++n2;
         }
         n2 = 1;
-        while (n2 < QuestDefinition.a) {
+        while (n2 < QuestDefinition.questCount) {
             QuestHook questHook2;
-            questHook = QuestDefinition.a(n2);
-            if (!(questHook.b() == -1 || !QuestManager.g(questHook.b()) || QuestDefinition.b((questHook2 = questHook).b()).e() && !this.a.isMember() || QuestDefinition.b((questHook2 = questHook).b()).e() && ServerSettings.freeToPlayWorld || !questHook.a(this.a, n, this.a.getQuestState(n2)))) {
+            questHook = QuestDefinition.getQuestScript(n2);
+            if (!(questHook.getQuestId() == -1 || !QuestManager.isQuestJournalButtonAvailable(questHook.getQuestId()) || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && !this.player.isMember() || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && ServerSettings.freeToPlayWorld || !questHook.handleNpcKill(this.player, n, this.player.getQuestState(n2)))) {
                 return true;
             }
             ++n2;
@@ -335,25 +335,25 @@ public final class QuestManager {
     }
 
     public final void refreshQuestJournal() {
-        QuestScript questScript = QuestDefinition.a(0);
-        questScript.d(this.a, this.a.getQuestState(0));
+        QuestScript questScript = QuestDefinition.getQuestScript(0);
+        questScript.refreshQuestJournal(this.player, this.player.getQuestState(0));
     }
 
-    public final boolean a(int n, Player player, Position position) {
+    public final boolean handleNpcDeathDrop(int n, Player player, Position position) {
         QuestHook questHook;
         int n2 = 0;
-        while (n2 < QuestEventRegistry.a) {
-            questHook = QuestEventRegistry.a(n2);
-            if (questHook.b() != -1 && questHook.a(player, n, position, this.a.bJ[n2])) {
+        while (n2 < QuestEventRegistry.eventHookCount) {
+            questHook = QuestEventRegistry.getEventHook(n2);
+            if (questHook.getQuestId() != -1 && questHook.handleNpcDeathDrop(player, n, position, this.player.questHookStates[n2])) {
                 return true;
             }
             ++n2;
         }
         n2 = 1;
-        while (n2 < QuestDefinition.a) {
+        while (n2 < QuestDefinition.questCount) {
             QuestHook questHook2;
-            questHook = QuestDefinition.a(n2);
-            if (!(questHook.b() == -1 || !QuestManager.g(questHook.b()) || QuestDefinition.b((questHook2 = questHook).b()).e() && !this.a.isMember() || QuestDefinition.b((questHook2 = questHook).b()).e() && ServerSettings.freeToPlayWorld || !questHook.a(player, n, position, this.a.getQuestState(n2)))) {
+            questHook = QuestDefinition.getQuestScript(n2);
+            if (!(questHook.getQuestId() == -1 || !QuestManager.isQuestJournalButtonAvailable(questHook.getQuestId()) || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && !this.player.isMember() || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && ServerSettings.freeToPlayWorld || !questHook.handleNpcDeathDrop(player, n, position, this.player.getQuestState(n2)))) {
                 return true;
             }
             ++n2;
@@ -361,21 +361,21 @@ public final class QuestManager {
         return false;
     }
 
-    public final boolean a(int n, int n2, int n3, int n4, int n5, int n6, int n7) {
+    public final boolean handleContextDialogue(int n, int n2, int n3, int n4, int n5, int n6, int n7) {
         QuestHook questHook;
         n5 = 0;
-        while (n5 < QuestEventRegistry.a) {
-            questHook = QuestEventRegistry.a(n5);
-            if (questHook.b() != -1 && questHook.a(n, this.a, n2, n3, n4, n6, n7, this.a.bJ[n5])) {
+        while (n5 < QuestEventRegistry.eventHookCount) {
+            questHook = QuestEventRegistry.getEventHook(n5);
+            if (questHook.getQuestId() != -1 && questHook.handleContextDialogue(n, this.player, n2, n3, n4, n6, n7, this.player.questHookStates[n5])) {
                 return true;
             }
             ++n5;
         }
         n5 = 0;
-        while (n5 < QuestDefinition.a) {
+        while (n5 < QuestDefinition.questCount) {
             QuestHook questHook2;
-            questHook = QuestDefinition.a(n5);
-            if (!(questHook.b() == -1 || !QuestManager.g(questHook.b()) || QuestDefinition.b((questHook2 = questHook).b()).e() && !this.a.isMember() || QuestDefinition.b((questHook2 = questHook).b()).e() && ServerSettings.freeToPlayWorld || !questHook.a(n, this.a, n2, n3, n4, n6, n7, this.a.getQuestState(n5)))) {
+            questHook = QuestDefinition.getQuestScript(n5);
+            if (!(questHook.getQuestId() == -1 || !QuestManager.isQuestJournalButtonAvailable(questHook.getQuestId()) || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && !this.player.isMember() || QuestDefinition.forId((questHook2 = questHook).getQuestId()).isMembersOnly() && ServerSettings.freeToPlayWorld || !questHook.handleContextDialogue(n, this.player, n2, n3, n4, n6, n7, this.player.getQuestState(n5)))) {
                 return true;
             }
             ++n5;
@@ -383,28 +383,28 @@ public final class QuestManager {
         return false;
     }
 
-    public final boolean a(int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(int n, int n2, int n3, int n4) {
         QuestHook questHook;
         n4 = 0;
-        while (n4 < QuestEventRegistry.a) {
-            questHook = QuestEventRegistry.a(n4);
-            if (questHook.b() != -1 && questHook.a(this.a, n, n2, n3, this.a.bJ[n4])) {
+        while (n4 < QuestEventRegistry.eventHookCount) {
+            questHook = QuestEventRegistry.getEventHook(n4);
+            if (questHook.getQuestId() != -1 && questHook.handleNpcDialogue(this.player, n, n2, n3, this.player.questHookStates[n4])) {
                 return true;
             }
             ++n4;
         }
         n4 = 0;
-        while (n4 < QuestDefinition.a) {
+        while (n4 < QuestDefinition.questCount) {
             Object object;
-            questHook = QuestDefinition.a(n4);
-            if (!(questHook.b() == -1 || !QuestManager.g(questHook.b()) || QuestDefinition.b(((QuestHook)(object = questHook)).b()).e() && !this.a.isMember() || QuestDefinition.b(((QuestHook)(object = questHook)).b()).e() && ServerSettings.freeToPlayWorld || !questHook.a(this.a, n, n2, n3, this.a.getQuestState(n4)))) {
-                if (this.a.getQuestState(questHook.b()) == 0 && questHook.b() >= 105 && !this.a.eg()) {
-                    object = this.a;
+            questHook = QuestDefinition.getQuestScript(n4);
+            if (!(questHook.getQuestId() == -1 || !QuestManager.isQuestJournalButtonAvailable(questHook.getQuestId()) || QuestDefinition.forId(((QuestHook)(object = questHook)).getQuestId()).isMembersOnly() && !this.player.isMember() || QuestDefinition.forId(((QuestHook)(object = questHook)).getQuestId()).isMembersOnly() && ServerSettings.freeToPlayWorld || !questHook.handleNpcDialogue(this.player, n, n2, n3, this.player.getQuestState(n4)))) {
+                if (this.player.getQuestState(questHook.getQuestId()) == 0 && questHook.getQuestId() >= 105 && !this.player.hasMemberFlag()) {
+                    object = this.player;
                     ((Player)object).packetSender.closeInterfaces();
-                    Player player = this.a;
+                    Player player = this.player;
                     object = player;
                     object = questHook;
-                    player.packetSender.sendGameMessage("You need a donator rank to start this quest: " + QuestDefinition.b(((QuestHook)object).b()).c());
+                    player.packetSender.sendGameMessage("You need a donator rank to start this quest: " + QuestDefinition.forId(((QuestHook)object).getQuestId()).getName());
                     return false;
                 }
                 return true;
@@ -414,22 +414,22 @@ public final class QuestManager {
         return false;
     }
 
-    public final boolean c() {
+    public final boolean refreshQuestJournalStatuses() {
         int n = 0;
-        while (n < QuestDefinition.a) {
+        while (n < QuestDefinition.questCount) {
             QuestScript questScript;
-            QuestScript questScript2 = QuestDefinition.a(n);
-            if (!(questScript2.b() == -1 || !QuestManager.g(questScript2.b()) || QuestDefinition.b((questScript = questScript2).b()).e() && !this.a.isMember() || QuestDefinition.b((questScript = questScript2).b()).e() && ServerSettings.freeToPlayWorld)) {
-                questScript2.c(this.a, this.a.getQuestState(n));
+            QuestScript questScript2 = QuestDefinition.getQuestScript(n);
+            if (!(questScript2.getQuestId() == -1 || !QuestManager.isQuestJournalButtonAvailable(questScript2.getQuestId()) || QuestDefinition.forId((questScript = questScript2).getQuestId()).isMembersOnly() && !this.player.isMember() || QuestDefinition.forId((questScript = questScript2).getQuestId()).isMembersOnly() && ServerSettings.freeToPlayWorld)) {
+                questScript2.refreshQuestJournalStatus(this.player, this.player.getQuestState(n));
             }
             ++n;
         }
         return false;
     }
 
-    public final void d() {
-        Player player = this.a;
-        player.packetSender.sendInterfaceText("QP: " + this.a.dA(), 3985);
+    public final void refreshQuestPointText() {
+        Player player = this.player;
+        player.packetSender.sendInterfaceText("QP: " + this.player.getQuestPoints(), 3985);
     }
 
     public final boolean handleButtonClick(int n) {
@@ -440,42 +440,42 @@ public final class QuestManager {
             int n3;
             if (ServerSettings.cacheVersion > 245) {
                 n3 = 1;
-                while (n3 < QuestDefinition.a) {
-                    QuestDefinition questDefinition = QuestDefinition.b(n3);
-                    object = questDefinition.c();
-                    n2 = questDefinition.d();
+                while (n3 < QuestDefinition.questCount) {
+                    QuestDefinition questDefinition = QuestDefinition.forId(n3);
+                    object = questDefinition.getName();
+                    n2 = questDefinition.getJournalButtonId();
                     if (n == n2) {
                         QuestManager questManager = this;
-                        Player player = questManager.a;
+                        Player player = questManager.player;
                         player.packetSender.sendInterfaceText("", 8145);
                         n2 = 8147;
                         while (n2 <= 8195) {
-                            player = questManager.a;
+                            player = questManager.player;
                             player.packetSender.sendInterfaceText("", n2);
                             ++n2;
                         }
                         n2 = 12174;
                         while (n2 <= 12223) {
-                            player = questManager.a;
+                            player = questManager.player;
                             player.packetSender.sendInterfaceText("", n2);
                             ++n2;
                         }
-                        player = this.a;
+                        player = this.player;
                         player.packetSender.sendInterfaceText((String)object, 8144);
-                        this.a.dA();
+                        this.player.getQuestPoints();
                         n2 = n3;
                         questManager = this;
-                        QuestScript questScript = QuestDefinition.a(n2);
-                        object = questScript.a(questManager.a, questManager.a.getQuestState(n2));
-                        player = questManager.a;
+                        QuestScript questScript = QuestDefinition.getQuestScript(n2);
+                        object = questScript.buildQuestJournal(questManager.player, questManager.player.getQuestState(n2));
+                        player = questManager.player;
                         player.packetSender.sendInterfaceText(object[0], 8145);
                         int n4 = 1;
                         while (n4 < ((String[])object).length) {
-                            player = questManager.a;
+                            player = questManager.player;
                             player.packetSender.sendInterfaceText(object[n4], n4 + 8146);
                             ++n4;
                         }
-                        player = this.a;
+                        player = this.player;
                         player.packetSender.showInterface(8134);
                         return true;
                     }
@@ -485,13 +485,13 @@ public final class QuestManager {
             n2 = n;
             QuestManager questManager = this;
             n3 = 1;
-            while (n3 < QuestDefinition.a) {
-                object = QuestDefinition.a(n3);
-                if (object.b() != -1 && QuestManager.g(object.b())) {
+            while (n3 < QuestDefinition.questCount) {
+                object = QuestDefinition.getQuestScript(n3);
+                if (object.getQuestId() != -1 && QuestManager.isQuestJournalButtonAvailable(object.getQuestId())) {
                     String[] stringArray = object;
-                    if (!QuestDefinition.b(object.b()).e() || questManager.a.isMember()) {
+                    if (!QuestDefinition.forId(object.getQuestId()).isMembersOnly() || questManager.player.isMember()) {
                         stringArray = object;
-                        if (!(QuestDefinition.b(object.b()).e() && ServerSettings.freeToPlayWorld || !object.e(questManager.a, n2, questManager.a.getQuestState(n3)))) {
+                        if (!(QuestDefinition.forId(object.getQuestId()).isMembersOnly() && ServerSettings.freeToPlayWorld || !object.handleButtonClick(questManager.player, n2, questManager.player.getQuestState(n3)))) {
                             bl = true;
                             break block10;
                         }

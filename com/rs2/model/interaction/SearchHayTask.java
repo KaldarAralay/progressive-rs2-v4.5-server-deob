@@ -21,8 +21,8 @@ extends CycleEvent {
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        if (GameUtil.g(99) == 0) {
-            if (GameUtil.g(1) == 0) {
+        if (GameUtil.randomInclusive(99) == 0) {
+            if (GameUtil.randomInclusive(1) == 0) {
                 this.a.getDialogueManager().showPlayerTwoLineDialogue("Wow! A needle!", "Now what are the chances of finding that?", 588);
                 this.a.getDialogueManager().finishDialogue();
                 this.a.getInventoryManager().addItem(new ItemStack(1733));
@@ -40,7 +40,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        this.a.n(false);
+        this.a.setActionLocked(false);
     }
 }
 

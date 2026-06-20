@@ -23,7 +23,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        this.b.getInventoryManager().b(new ItemStack(431, 1));
+        this.b.getInventoryManager().addOrDropItem(new ItemStack(431, 1));
         this.b.getUpdateState().setAnimation(832);
         Player player = this.b;
         player.packetSender.sendGameMessage("You find your bottle of rum in amongst the bananas.");

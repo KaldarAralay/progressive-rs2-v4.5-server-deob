@@ -27,10 +27,10 @@ implements Runnable {
 
     static {
         f = new GroundItemManager();
-        b = (int)GameUtil.b(100L);
-        c = (int)GameUtil.b(100L);
-        d = (int)GameUtil.b((long)ServerSettings.groundItemLifetimeSeconds);
-        e = (int)GameUtil.b((long)ServerSettings.groundItemLifetimeSeconds);
+        b = (int)GameUtil.secondsToTicks(100L);
+        c = (int)GameUtil.secondsToTicks(100L);
+        d = (int)GameUtil.secondsToTicks(ServerSettings.groundItemLifetimeSeconds);
+        e = (int)GameUtil.secondsToTicks(ServerSettings.groundItemLifetimeSeconds);
     }
 
     /*
@@ -68,13 +68,13 @@ implements Runnable {
                         if (groundItem.getItem().getDefinition().isStackable()) {
                             for (GroundItem groundItem2 : linkedList) {
                                 if (groundItem2 == null || !groundItem.canStackWith(groundItem2)) continue;
-                                GroundItemManager.mergeStackedItems(groundItem, groundItem2, World.f());
+                                GroundItemManager.mergeStackedItems(groundItem, groundItem2, World.getPlayers());
                                 this.a.remove(n2);
                                 --n;
                                 continue block11;
                             }
                         }
-                        GroundItemManager.showToPlayers(groundItem, World.f());
+                        GroundItemManager.showToPlayers(groundItem, World.getPlayers());
                         break;
                     }
                     case b: {
@@ -82,12 +82,12 @@ implements Runnable {
                         groundItem.getTimer().reset();
                         if (groundItem.isRespawning()) break;
                         linkedList.remove(groundItem);
-                        this.removeForPlayers(groundItem, World.f());
+                        this.removeForPlayers(groundItem, World.getPlayers());
                         --n;
                         continue block11;
                     }
                     case a: {
-                        if (groundItem.getItem().getDefinition().z()) {
+                        if (groundItem.getItem().getDefinition().isUntradeable()) {
                             Entity entity;
                             if (groundItem.getItem().getId() == 6888) {
                                 if (groundItem.getOwner().resolve() != null) break;
@@ -109,14 +109,14 @@ implements Runnable {
                         if (groundItem.getItem().getDefinition().isStackable()) {
                             for (GroundItem groundItem3 : linkedList) {
                                 if (groundItem3 == null || !groundItem.canStackWith(groundItem3)) continue;
-                                GroundItemManager.mergeStackedItems(groundItem, groundItem3, World.f());
+                                GroundItemManager.mergeStackedItems(groundItem, groundItem3, World.getPlayers());
                                 this.a.remove(n2);
                                 --n;
                                 continue block11;
                             }
                         }
                         linkedList.add(groundItem);
-                        Player[] playerArray = World.f();
+                        Player[] playerArray = World.getPlayers();
                         Object object = groundItem.getOwner() == null ? null : groundItem.getOwner().resolve();
                         if (object != null && !((Entity)object).isPlayer()) {
                             object = null;
@@ -124,8 +124,8 @@ implements Runnable {
                         int n3 = 0;
                         while (n3 < playerArray.length) {
                             Player player = playerArray[n3];
-                            if (player != null && (player != object || !player.eN().contains(groundItem)) && groundItem.isVisibleTo(player)) {
-                                player.eN().add(groundItem);
+                            if (player != null && (player != object || !player.getVisibleGroundItems().contains(groundItem)) && groundItem.isVisibleTo(player)) {
+                                player.getVisibleGroundItems().add(groundItem);
                                 player.packetSender.sendGroundItemCreate(groundItem);
                             }
                             ++n3;
@@ -162,15 +162,15 @@ implements Runnable {
             while (n < n2) {
                 object = object3[n];
                 if (object != null && groundItem2.isVisibleTo((Player)object)) {
-                    if (((Player)object).eN().contains(groundItem2)) {
+                    if (((Player)object).getVisibleGroundItems().contains(groundItem2)) {
                         object2 = object;
                         ((Player)object2).packetSender.sendGroundItemRemove(groundItem2);
-                        ((Player)object).eN().remove(groundItem2);
+                        ((Player)object).getVisibleGroundItems().remove(groundItem2);
                     }
-                    if (((Player)object).eN().contains(groundItem)) {
+                    if (((Player)object).getVisibleGroundItems().contains(groundItem)) {
                         object2 = object;
                         ((Player)object2).packetSender.sendGroundItemRemove(groundItem);
-                        ((Player)object).eN().remove(groundItem);
+                        ((Player)object).getVisibleGroundItems().remove(groundItem);
                     }
                     linkedList.add(object);
                 }
@@ -189,7 +189,7 @@ implements Runnable {
                 if (groundItem.isVisibleTo((Player)object)) {
                     object2 = object;
                     ((Player)object2).packetSender.sendGroundItemCreate(groundItem2);
-                    ((Player)object).eN().add(groundItem2);
+                    ((Player)object).getVisibleGroundItems().add(groundItem2);
                 }
                 ++n;
             }
@@ -209,7 +209,7 @@ implements Runnable {
         while (n2 < n) {
             object = playerArray[n2];
             if (object != null && groundItem.isVisibleTo((Player)object)) {
-                ((Player)object).eN().remove(groundItem);
+                ((Player)object).getVisibleGroundItems().remove(groundItem);
                 ((Player)object).packetSender.sendGroundItemRemove(groundItem);
             }
             ++n2;
@@ -227,7 +227,7 @@ implements Runnable {
         while (n2 < n) {
             object = playerArray[n2];
             if (object != null && groundItem.isVisibleTo((Player)object)) {
-                ((Player)object).eN().add(groundItem);
+                ((Player)object).getVisibleGroundItems().add(groundItem);
                 ((Player)object).packetSender.sendGroundItemCreate(groundItem);
             }
             ++n2;
@@ -248,7 +248,7 @@ implements Runnable {
                 playerArray = new Player[]{(Player)entity};
             }
         } else if (groundItem.getVisibility() == GroundItemVisibility.b) {
-            playerArray = World.f();
+            playerArray = World.getPlayers();
         }
         if (groundItem.getVisibility() == GroundItemVisibility.b && groundItem.isRespawning()) {
             groundItem.setVisibility(GroundItemVisibility.c);
@@ -268,13 +268,13 @@ implements Runnable {
         while (n2 < n) {
             entity = playerArray2[n2];
             if (entity != null && groundItem.isVisibleTo((Player)entity)) {
-                ((Player)entity).eN().contains(groundItem);
-                ((Player)entity).eN().remove(groundItem);
+                ((Player)entity).getVisibleGroundItems().contains(groundItem);
+                ((Player)entity).getVisibleGroundItems().remove(groundItem);
                 ((Player)entity).packetSender.sendGroundItemRemove(groundItem);
             }
             ++n2;
         }
-        player.eN().contains(groundItem);
+        player.getVisibleGroundItems().contains(groundItem);
         return true;
     }
 
@@ -311,7 +311,7 @@ implements Runnable {
                 break;
             }
             case b: {
-                playerArray = World.f();
+                playerArray = World.getPlayers();
                 if (!ItemDefinition.forId(groundItem.getItem().getId()).isStackable()) break;
                 for (GroundItem groundItem2 : linkedList) {
                     if (!groundItem.canStackWith(groundItem2)) continue;
@@ -336,7 +336,7 @@ implements Runnable {
         if (object2 == null || groundItem == null) {
             return false;
         }
-        for (Object object2 : ((Player)object2).eN()) {
+        for (Object object2 : ((Player)object2).getVisibleGroundItems()) {
             if (!object2.equals(groundItem)) continue;
             return true;
         }
@@ -347,7 +347,7 @@ implements Runnable {
         if (object2 == null) {
             return null;
         }
-        for (Object object2 : ((Player)object2).eN()) {
+        for (Object object2 : ((Player)object2).getVisibleGroundItems()) {
             if (((GroundItem)object2).getItem().getId() != n || !((GroundItem)object2).getPosition().equals(position)) continue;
             return object2;
         }
@@ -358,7 +358,7 @@ implements Runnable {
         if (object2 == null) {
             return null;
         }
-        for (Object object2 : ((Player)object2).eN()) {
+        for (Object object2 : ((Player)object2).getVisibleGroundItems()) {
             if (!((GroundItem)object2).getPosition().equals(position)) continue;
             return object2;
         }
@@ -369,11 +369,11 @@ implements Runnable {
         if (player == null) {
             return;
         }
-        for (GroundItem groundItem : player.eN()) {
+        for (GroundItem groundItem : player.getVisibleGroundItems()) {
             Player player2 = player;
             player2.packetSender.sendGroundItemRemove(groundItem);
         }
-        player.eN().clear();
+        player.getVisibleGroundItems().clear();
     }
 
     public final void refreshForPlayer(Player player) {
@@ -384,13 +384,13 @@ implements Runnable {
             Player player2;
             if (groundItem == null || !groundItem.isVisibleTo(player)) continue;
             if (groundItem.getVisibility() == GroundItemVisibility.b) {
-                player.eN().add(groundItem);
+                player.getVisibleGroundItems().add(groundItem);
                 player2 = player;
                 player2.packetSender.sendGroundItemCreate(groundItem);
                 continue;
             }
             if (groundItem.getVisibility() != GroundItemVisibility.a || groundItem.getOwner() == null || !groundItem.getOwner().equals(player)) continue;
-            player.eN().add(groundItem);
+            player.getVisibleGroundItems().add(groundItem);
             player2 = player;
             player2.packetSender.sendGroundItemCreate(groundItem);
         }

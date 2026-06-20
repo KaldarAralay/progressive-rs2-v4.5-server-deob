@@ -15,7 +15,7 @@ public final class ItemSpawnPacketHandler
 implements PacketHandler {
     @Override
     public final void handle(Player player, IncomingPacket incomingPacket) {
-        if (player.dJ()) {
+        if (player.isActionLocked()) {
             return;
         }
         switch (incomingPacket.getOpcode()) {
@@ -25,7 +25,7 @@ implements PacketHandler {
                 if (n < 0 || n > 11883) {
                     return;
                 }
-                if (n == 995 || player.getOpenInterfaceId() != 18890 || ((ItemStack)(object = new ItemStack(n, 1))).getDefinition().z()) break;
+                if (n == 995 || player.getOpenInterfaceId() != 18890 || ((ItemStack)(object = new ItemStack(n, 1))).getDefinition().isUntradeable()) break;
                 if (((ItemStack)object).getDefinition().isMembersOnly() && n != 7999 && n != 8000) {
                     if (player.isMember()) {
                         if (ServerSettings.freeToPlayWorld) {
@@ -37,19 +37,19 @@ implements PacketHandler {
                         return;
                     }
                 }
-                player.dG = n;
-                player.dH = 1;
-                player.dI = GrandExchangeManager.a(n);
+                player.selectedGrandExchangeItemId = n;
+                player.selectedGrandExchangeQuantity = 1;
+                player.selectedGrandExchangeUnitPrice = GrandExchangeManager.getGuidePrice(n);
                 object = player;
-                ((Player)object).packetSender.sendInterfaceItemModel(18938, player.dG);
+                ((Player)object).packetSender.sendInterfaceItemModel(18938, player.selectedGrandExchangeItemId);
                 object = player;
-                ((Player)object).packetSender.sendInterfaceText(GameUtil.j(GrandExchangeManager.a(n)), 18919);
+                ((Player)object).packetSender.sendInterfaceText(GameUtil.formatNumber(GrandExchangeManager.getGuidePrice(n)), 18919);
                 object = player;
-                ((Player)object).packetSender.sendInterfaceText("" + player.dH, 18920);
+                ((Player)object).packetSender.sendInterfaceText("" + player.selectedGrandExchangeQuantity, 18920);
                 object = player;
-                ((Player)object).packetSender.sendInterfaceText(String.valueOf(GameUtil.j(player.dI)) + " coins", 18921);
+                ((Player)object).packetSender.sendInterfaceText(String.valueOf(GameUtil.formatNumber(player.selectedGrandExchangeUnitPrice)) + " coins", 18921);
                 object = player;
-                ((Player)object).packetSender.sendInterfaceText(String.valueOf(GameUtil.j(player.dI * player.dH)) + " coins", 18922);
+                ((Player)object).packetSender.sendInterfaceText(String.valueOf(GameUtil.formatNumber(player.selectedGrandExchangeUnitPrice * player.selectedGrandExchangeQuantity)) + " coins", 18922);
             }
         }
     }

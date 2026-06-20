@@ -19,7 +19,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        if (this.participant.isDead() || !this.participant.bW()) {
+        if (this.participant.isDead() || !this.participant.isRegistered()) {
             this.stop();
             DropPartyBotManager.dropPartyActive = false;
             return;

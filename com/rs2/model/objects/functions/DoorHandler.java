@@ -260,7 +260,7 @@ public final class DoorHandler {
     public static void handleDoorMovement(Player player, int n, int n2, int n3, int n4, int n5, int n6) {
         DoorHandler doorHandler = DoorHandler.getOrCreateDoorState(n, n2, n3, n4);
         if (doorHandler == null) {
-            player.n(false);
+            player.setActionLocked(false);
             return;
         }
         DoorHandler.handleDoor(player, n, n2, n3, n4);

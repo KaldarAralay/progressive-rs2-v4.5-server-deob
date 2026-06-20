@@ -9,19 +9,19 @@ import com.rs2.model.task.TickTask;
 
 final class BarrowsPrayerDrainResetTask
 extends TickTask {
-    private final /* synthetic */ Player a;
-    private final /* synthetic */ int b;
+    private final /* synthetic */ Player player;
+    private final /* synthetic */ int interfaceId;
 
     BarrowsPrayerDrainResetTask(BarrowsPrayerDrainTask barrowsPrayerDrainTask, int n, Player player, int n2) {
-        this.a = player;
-        this.b = n2;
+        this.player = player;
+        this.interfaceId = n2;
         super(3);
     }
 
     @Override
     public final void execute() {
-        Player player = this.a;
-        player.packetSender.sendInterfaceModel(this.b, 200, -1);
+        Player player = this.player;
+        player.packetSender.sendInterfaceModel(this.interfaceId, 200, -1);
         this.stop();
     }
 }

@@ -12,62 +12,62 @@ import com.rs2.util.GameUtil;
 import java.util.ArrayList;
 
 public final class GodBookHandler {
-    public static int a = 3839;
-    public static int b = 3840;
-    public static int c = 3841;
-    public static int d = 3842;
-    public static int e = 3843;
-    public static int f = 3844;
-    private static int g = 3827;
-    private static int h = 3828;
-    private static int i = 3829;
-    private static int j = 3830;
-    private static int k = 3831;
-    private static int l = 3832;
-    private static int m = 3833;
-    private static int n = 3834;
-    private static int o = 3835;
-    private static int p = 3836;
-    private static int q = 3837;
-    private static int r = 3838;
-    private static int s = 1;
-    private static int t = 2;
-    private static int u = 3;
-    private static int v = 4;
-    private static int w = 5;
-    private static int x = 6;
-    private static int y = 7;
-    private static int z = 8;
-    private static int A = 9;
-    private static int B = 10;
-    private static int C = 11;
-    private static int D = 12;
-    private static int[] E = new int[]{s, t, u, v};
-    private static int[] F = new int[]{w, x, y, z};
-    private static int[] G = new int[]{A, B, C, D};
-    private static int H = 1335;
-    private static int I = 1336;
-    private static int J = 1337;
-    private static int K = 1;
-    private static int L = 2;
-    private static int M = 3;
-    private static int N = 4;
-    private static String[] O = new String[]{"In the name of Saradomin,", "Protector of us all,", "I now join you in the eyes of Saradomin."};
-    private static String[] P = new String[]{"Thy cause was false, thy skills did lack;", "See you in Lumbridge when you get back."};
-    private static String[] Q = new String[]{"Go in peace in the name of Saradomin;", "May his glory shine upon you like the sun."};
-    private static String[] R = new String[]{"Walk proud, and show mercy.", "For you carry my name in your heart.", "This is Saradomin's wisdom."};
-    private static String[] S = new String[]{"Two great warriors, joined by hand,", "to spread destruct, on across the land.", "In Zamorak's name, now two are one."};
-    private static String[] T = new String[]{"The weak deserve to die,", "So that the strong may flourish.", "This is the creed of Zamorak."};
-    private static String[] U = new String[]{"May your bloodthirst be never sated.", "and may all your battles be glorious.", "Zamorak bring you strength."};
-    private static String[] V = new String[]{"There is no opinion that cannot be proven true,", "by crushing those who choose to disagree with it.", "Zamorak give me strength!"};
-    private static String[] W = new String[]{"Light and dark, day and night,", "Balance arises from contrast.", "I unify thee in the name of Guthix."};
-    private static String[] X = new String[]{"Thy death was not in vain,", "for it brought some balance to the world.", "May Guthix bring you rest."};
-    private static String[] Y = new String[]{"May you walk the path, and never fall,", "For Guthix walks beside thee on thy journey.", "May Guthix bring you peace."};
-    private static String[] Z = new String[]{"A journey of a single step,", "May take thee over a thousand miles.", "May Guthix bring you balance."};
+    public static int damagedSaradominBookId = 3839;
+    public static int holyBookId = 3840;
+    public static int damagedZamorakBookId = 3841;
+    public static int unholyBookId = 3842;
+    public static int damagedGuthixBookId = 3843;
+    public static int bookOfBalanceId = 3844;
+    private static int saradominPage1Id = 3827;
+    private static int saradominPage2Id = 3828;
+    private static int saradominPage3Id = 3829;
+    private static int saradominPage4Id = 3830;
+    private static int zamorakPage1Id = 3831;
+    private static int zamorakPage2Id = 3832;
+    private static int zamorakPage3Id = 3833;
+    private static int zamorakPage4Id = 3834;
+    private static int guthixPage1Id = 3835;
+    private static int guthixPage2Id = 3836;
+    private static int guthixPage3Id = 3837;
+    private static int guthixPage4Id = 3838;
+    private static int saradominPage1Bit = 1;
+    private static int saradominPage2Bit = 2;
+    private static int saradominPage3Bit = 3;
+    private static int saradominPage4Bit = 4;
+    private static int zamorakPage1Bit = 5;
+    private static int zamorakPage2Bit = 6;
+    private static int zamorakPage3Bit = 7;
+    private static int zamorakPage4Bit = 8;
+    private static int guthixPage1Bit = 9;
+    private static int guthixPage2Bit = 10;
+    private static int guthixPage3Bit = 11;
+    private static int guthixPage4Bit = 12;
+    private static int[] saradominPageBits = new int[]{saradominPage1Bit, saradominPage2Bit, saradominPage3Bit, saradominPage4Bit};
+    private static int[] zamorakPageBits = new int[]{zamorakPage1Bit, zamorakPage2Bit, zamorakPage3Bit, zamorakPage4Bit};
+    private static int[] guthixPageBits = new int[]{guthixPage1Bit, guthixPage2Bit, guthixPage3Bit, guthixPage4Bit};
+    private static int saradominRecitationAnimationId = 1335;
+    private static int zamorakRecitationAnimationId = 1336;
+    private static int guthixRecitationAnimationId = 1337;
+    private static int weddingCeremonyOptionId = 1;
+    private static int lastRitesOptionId = 2;
+    private static int blessingsOptionId = 3;
+    private static int preachOptionId = 4;
+    private static String[] saradominWeddingCeremonyLines = new String[]{"In the name of Saradomin,", "Protector of us all,", "I now join you in the eyes of Saradomin."};
+    private static String[] saradominLastRitesLines = new String[]{"Thy cause was false, thy skills did lack;", "See you in Lumbridge when you get back."};
+    private static String[] saradominBlessingLines = new String[]{"Go in peace in the name of Saradomin;", "May his glory shine upon you like the sun."};
+    private static String[] saradominPreachLines = new String[]{"Walk proud, and show mercy.", "For you carry my name in your heart.", "This is Saradomin's wisdom."};
+    private static String[] zamorakWeddingCeremonyLines = new String[]{"Two great warriors, joined by hand,", "to spread destruct, on across the land.", "In Zamorak's name, now two are one."};
+    private static String[] zamorakLastRitesLines = new String[]{"The weak deserve to die,", "So that the strong may flourish.", "This is the creed of Zamorak."};
+    private static String[] zamorakBlessingLines = new String[]{"May your bloodthirst be never sated.", "and may all your battles be glorious.", "Zamorak bring you strength."};
+    private static String[] zamorakPreachLines = new String[]{"There is no opinion that cannot be proven true,", "by crushing those who choose to disagree with it.", "Zamorak give me strength!"};
+    private static String[] guthixWeddingCeremonyLines = new String[]{"Light and dark, day and night,", "Balance arises from contrast.", "I unify thee in the name of Guthix."};
+    private static String[] guthixLastRitesLines = new String[]{"Thy death was not in vain,", "for it brought some balance to the world.", "May Guthix bring you rest."};
+    private static String[] guthixBlessingLines = new String[]{"May you walk the path, and never fall,", "For Guthix walks beside thee on thy journey.", "May Guthix bring you peace."};
+    private static String[] guthixPreachLines = new String[]{"A journey of a single step,", "May take thee over a thousand miles.", "May Guthix bring you balance."};
 
-    public static boolean a(Player player, int n) {
-        if (n == a || n == c || n == e) {
-            ArrayList arrayList = GodBookHandler.e(player, n);
+    public static boolean showMissingPages(Player player, int n) {
+        if (n == damagedSaradominBookId || n == damagedZamorakBookId || n == damagedGuthixBookId) {
+            ArrayList arrayList = GodBookHandler.getMissingPageNumbers(player, n);
             String string = "";
             int n2 = 0;
             while (n2 < arrayList.size()) {
@@ -83,36 +83,36 @@ public final class GodBookHandler {
         return false;
     }
 
-    private static ArrayList e(Player player, int n) {
+    private static ArrayList getMissingPageNumbers(Player player, int n) {
         ArrayList<Integer> arrayList;
         block7: {
             block8: {
                 block6: {
                     arrayList = new ArrayList<Integer>();
-                    if (n != a) break block6;
+                    if (n != damagedSaradominBookId) break block6;
                     n = 0;
-                    while (n < E.length) {
-                        if ((player.u & GameUtil.b(E[n])) == 0) {
+                    while (n < saradominPageBits.length) {
+                        if ((player.godBookPageFlags & GameUtil.bitFlag(saradominPageBits[n])) == 0) {
                             arrayList.add(n + 1);
                         }
                         ++n;
                     }
                     break block7;
                 }
-                if (n != c) break block8;
+                if (n != damagedZamorakBookId) break block8;
                 n = 0;
-                while (n < F.length) {
-                    if ((player.u & GameUtil.b(F[n])) == 0) {
+                while (n < zamorakPageBits.length) {
+                    if ((player.godBookPageFlags & GameUtil.bitFlag(zamorakPageBits[n])) == 0) {
                         arrayList.add(n + 1);
                     }
                     ++n;
                 }
                 break block7;
             }
-            if (n != e) break block7;
+            if (n != damagedGuthixBookId) break block7;
             n = 0;
-            while (n < G.length) {
-                if ((player.u & GameUtil.b(G[n])) == 0) {
+            while (n < guthixPageBits.length) {
+                if ((player.godBookPageFlags & GameUtil.bitFlag(guthixPageBits[n])) == 0) {
                     arrayList.add(n + 1);
                 }
                 ++n;
@@ -121,58 +121,58 @@ public final class GodBookHandler {
         return arrayList;
     }
 
-    public static boolean a(Player player, int n, int n2) {
-        if (n == a || n2 == a) {
-            if (n == g || n2 == g) {
-                int n3 = E[0];
-                if ((player.u & GameUtil.b(n3)) == 0) {
-                    player.getInventoryManager().removeItem(new ItemStack(g));
+    public static boolean handlePageOnBook(Player player, int n, int n2) {
+        if (n == damagedSaradominBookId || n2 == damagedSaradominBookId) {
+            if (n == saradominPage1Id || n2 == saradominPage1Id) {
+                int n3 = saradominPageBits[0];
+                if ((player.godBookPageFlags & GameUtil.bitFlag(n3)) == 0) {
+                    player.getInventoryManager().removeItem(new ItemStack(saradominPage1Id));
                     Player player2 = player;
                     player2.packetSender.sendGameMessage("You add the page to the book...");
-                    player.u += GameUtil.b(n3);
-                    GodBookHandler.b(player, n, n2);
+                    player.godBookPageFlags += GameUtil.bitFlag(n3);
+                    GodBookHandler.completeBookIfFilled(player, n, n2);
                 } else {
                     Player player3 = player;
                     player3.packetSender.sendGameMessage("The book already has that page.");
                 }
                 return true;
             }
-            if (n == h || n2 == h) {
-                int n4 = E[1];
-                if ((player.u & GameUtil.b(n4)) == 0) {
-                    player.getInventoryManager().removeItem(new ItemStack(h));
+            if (n == saradominPage2Id || n2 == saradominPage2Id) {
+                int n4 = saradominPageBits[1];
+                if ((player.godBookPageFlags & GameUtil.bitFlag(n4)) == 0) {
+                    player.getInventoryManager().removeItem(new ItemStack(saradominPage2Id));
                     Player player4 = player;
                     player4.packetSender.sendGameMessage("You add the page to the book...");
-                    player.u += GameUtil.b(n4);
-                    GodBookHandler.b(player, n, n2);
+                    player.godBookPageFlags += GameUtil.bitFlag(n4);
+                    GodBookHandler.completeBookIfFilled(player, n, n2);
                 } else {
                     Player player5 = player;
                     player5.packetSender.sendGameMessage("The book already has that page.");
                 }
                 return true;
             }
-            if (n == i || n2 == i) {
-                int n5 = E[2];
-                if ((player.u & GameUtil.b(n5)) == 0) {
-                    player.getInventoryManager().removeItem(new ItemStack(i));
+            if (n == saradominPage3Id || n2 == saradominPage3Id) {
+                int n5 = saradominPageBits[2];
+                if ((player.godBookPageFlags & GameUtil.bitFlag(n5)) == 0) {
+                    player.getInventoryManager().removeItem(new ItemStack(saradominPage3Id));
                     Player player6 = player;
                     player6.packetSender.sendGameMessage("You add the page to the book...");
-                    player.u += GameUtil.b(n5);
-                    GodBookHandler.b(player, n, n2);
+                    player.godBookPageFlags += GameUtil.bitFlag(n5);
+                    GodBookHandler.completeBookIfFilled(player, n, n2);
                 } else {
                     Player player7 = player;
                     player7.packetSender.sendGameMessage("The book already has that page.");
                 }
                 return true;
             }
-            if (n == j || n2 == j) {
-                int n6 = E[3];
-                if ((player.u & GameUtil.b(n6)) == 0) {
-                    player.getInventoryManager().removeItem(new ItemStack(j));
+            if (n == saradominPage4Id || n2 == saradominPage4Id) {
+                int n6 = saradominPageBits[3];
+                if ((player.godBookPageFlags & GameUtil.bitFlag(n6)) == 0) {
+                    player.getInventoryManager().removeItem(new ItemStack(saradominPage4Id));
                     Player player8 = player;
                     player8.packetSender.sendGameMessage("You add the page to the book...");
-                    player.u += GameUtil.b(n6);
-                    GodBookHandler.b(player, n, n2);
+                    player.godBookPageFlags += GameUtil.bitFlag(n6);
+                    GodBookHandler.completeBookIfFilled(player, n, n2);
                 } else {
                     Player player9 = player;
                     player9.packetSender.sendGameMessage("The book already has that page.");
@@ -180,57 +180,57 @@ public final class GodBookHandler {
                 return true;
             }
         }
-        if (n == c || n2 == c) {
-            if (n == k || n2 == k) {
-                int n7 = F[0];
-                if ((player.u & GameUtil.b(n7)) == 0) {
-                    player.getInventoryManager().removeItem(new ItemStack(k));
+        if (n == damagedZamorakBookId || n2 == damagedZamorakBookId) {
+            if (n == zamorakPage1Id || n2 == zamorakPage1Id) {
+                int n7 = zamorakPageBits[0];
+                if ((player.godBookPageFlags & GameUtil.bitFlag(n7)) == 0) {
+                    player.getInventoryManager().removeItem(new ItemStack(zamorakPage1Id));
                     Player player10 = player;
                     player10.packetSender.sendGameMessage("You add the page to the book...");
-                    player.u += GameUtil.b(n7);
-                    GodBookHandler.b(player, n, n2);
+                    player.godBookPageFlags += GameUtil.bitFlag(n7);
+                    GodBookHandler.completeBookIfFilled(player, n, n2);
                 } else {
                     Player player11 = player;
                     player11.packetSender.sendGameMessage("The book already has that page.");
                 }
                 return true;
             }
-            if (n == l || n2 == l) {
-                int n8 = F[1];
-                if ((player.u & GameUtil.b(n8)) == 0) {
-                    player.getInventoryManager().removeItem(new ItemStack(l));
+            if (n == zamorakPage2Id || n2 == zamorakPage2Id) {
+                int n8 = zamorakPageBits[1];
+                if ((player.godBookPageFlags & GameUtil.bitFlag(n8)) == 0) {
+                    player.getInventoryManager().removeItem(new ItemStack(zamorakPage2Id));
                     Player player12 = player;
                     player12.packetSender.sendGameMessage("You add the page to the book...");
-                    player.u += GameUtil.b(n8);
-                    GodBookHandler.b(player, n, n2);
+                    player.godBookPageFlags += GameUtil.bitFlag(n8);
+                    GodBookHandler.completeBookIfFilled(player, n, n2);
                 } else {
                     Player player13 = player;
                     player13.packetSender.sendGameMessage("The book already has that page.");
                 }
                 return true;
             }
-            if (n == m || n2 == m) {
-                int n9 = F[2];
-                if ((player.u & GameUtil.b(n9)) == 0) {
-                    player.getInventoryManager().removeItem(new ItemStack(m));
+            if (n == zamorakPage3Id || n2 == zamorakPage3Id) {
+                int n9 = zamorakPageBits[2];
+                if ((player.godBookPageFlags & GameUtil.bitFlag(n9)) == 0) {
+                    player.getInventoryManager().removeItem(new ItemStack(zamorakPage3Id));
                     Player player14 = player;
                     player14.packetSender.sendGameMessage("You add the page to the book...");
-                    player.u += GameUtil.b(n9);
-                    GodBookHandler.b(player, n, n2);
+                    player.godBookPageFlags += GameUtil.bitFlag(n9);
+                    GodBookHandler.completeBookIfFilled(player, n, n2);
                 } else {
                     Player player15 = player;
                     player15.packetSender.sendGameMessage("The book already has that page.");
                 }
                 return true;
             }
-            if (n == GodBookHandler.n || n2 == GodBookHandler.n) {
-                int n10 = F[3];
-                if ((player.u & GameUtil.b(n10)) == 0) {
-                    player.getInventoryManager().removeItem(new ItemStack(GodBookHandler.n));
+            if (n == zamorakPage4Id || n2 == zamorakPage4Id) {
+                int n10 = zamorakPageBits[3];
+                if ((player.godBookPageFlags & GameUtil.bitFlag(n10)) == 0) {
+                    player.getInventoryManager().removeItem(new ItemStack(zamorakPage4Id));
                     Player player16 = player;
                     player16.packetSender.sendGameMessage("You add the page to the book...");
-                    player.u += GameUtil.b(n10);
-                    GodBookHandler.b(player, n, n2);
+                    player.godBookPageFlags += GameUtil.bitFlag(n10);
+                    GodBookHandler.completeBookIfFilled(player, n, n2);
                 } else {
                     Player player17 = player;
                     player17.packetSender.sendGameMessage("The book already has that page.");
@@ -238,57 +238,57 @@ public final class GodBookHandler {
                 return true;
             }
         }
-        if (n == e || n2 == e) {
-            if (n == o || n2 == o) {
-                int n11 = G[0];
-                if ((player.u & GameUtil.b(n11)) == 0) {
-                    player.getInventoryManager().removeItem(new ItemStack(o));
+        if (n == damagedGuthixBookId || n2 == damagedGuthixBookId) {
+            if (n == guthixPage1Id || n2 == guthixPage1Id) {
+                int n11 = guthixPageBits[0];
+                if ((player.godBookPageFlags & GameUtil.bitFlag(n11)) == 0) {
+                    player.getInventoryManager().removeItem(new ItemStack(guthixPage1Id));
                     Player player18 = player;
                     player18.packetSender.sendGameMessage("You add the page to the book...");
-                    player.u += GameUtil.b(n11);
-                    GodBookHandler.b(player, n, n2);
+                    player.godBookPageFlags += GameUtil.bitFlag(n11);
+                    GodBookHandler.completeBookIfFilled(player, n, n2);
                 } else {
                     Player player19 = player;
                     player19.packetSender.sendGameMessage("The book already has that page.");
                 }
                 return true;
             }
-            if (n == p || n2 == p) {
-                int n12 = G[1];
-                if ((player.u & GameUtil.b(n12)) == 0) {
-                    player.getInventoryManager().removeItem(new ItemStack(p));
+            if (n == guthixPage2Id || n2 == guthixPage2Id) {
+                int n12 = guthixPageBits[1];
+                if ((player.godBookPageFlags & GameUtil.bitFlag(n12)) == 0) {
+                    player.getInventoryManager().removeItem(new ItemStack(guthixPage2Id));
                     Player player20 = player;
                     player20.packetSender.sendGameMessage("You add the page to the book...");
-                    player.u += GameUtil.b(n12);
-                    GodBookHandler.b(player, n, n2);
+                    player.godBookPageFlags += GameUtil.bitFlag(n12);
+                    GodBookHandler.completeBookIfFilled(player, n, n2);
                 } else {
                     Player player21 = player;
                     player21.packetSender.sendGameMessage("The book already has that page.");
                 }
                 return true;
             }
-            if (n == q || n2 == q) {
-                int n13 = G[2];
-                if ((player.u & GameUtil.b(n13)) == 0) {
-                    player.getInventoryManager().removeItem(new ItemStack(q));
+            if (n == guthixPage3Id || n2 == guthixPage3Id) {
+                int n13 = guthixPageBits[2];
+                if ((player.godBookPageFlags & GameUtil.bitFlag(n13)) == 0) {
+                    player.getInventoryManager().removeItem(new ItemStack(guthixPage3Id));
                     Player player22 = player;
                     player22.packetSender.sendGameMessage("You add the page to the book...");
-                    player.u += GameUtil.b(n13);
-                    GodBookHandler.b(player, n, n2);
+                    player.godBookPageFlags += GameUtil.bitFlag(n13);
+                    GodBookHandler.completeBookIfFilled(player, n, n2);
                 } else {
                     Player player23 = player;
                     player23.packetSender.sendGameMessage("The book already has that page.");
                 }
                 return true;
             }
-            if (n == r || n2 == r) {
-                int n14 = G[3];
-                if ((player.u & GameUtil.b(n14)) == 0) {
-                    player.getInventoryManager().removeItem(new ItemStack(r));
+            if (n == guthixPage4Id || n2 == guthixPage4Id) {
+                int n14 = guthixPageBits[3];
+                if ((player.godBookPageFlags & GameUtil.bitFlag(n14)) == 0) {
+                    player.getInventoryManager().removeItem(new ItemStack(guthixPage4Id));
                     Player player24 = player;
                     player24.packetSender.sendGameMessage("You add the page to the book...");
-                    player.u += GameUtil.b(n14);
-                    GodBookHandler.b(player, n, n2);
+                    player.godBookPageFlags += GameUtil.bitFlag(n14);
+                    GodBookHandler.completeBookIfFilled(player, n, n2);
                 } else {
                     Player player25 = player;
                     player25.packetSender.sendGameMessage("The book already has that page.");
@@ -299,47 +299,47 @@ public final class GodBookHandler {
         return false;
     }
 
-    private static void b(Player player, int n, int n2) {
+    private static void completeBookIfFilled(Player player, int n, int n2) {
         ArrayList arrayList;
-        if (n == a || n2 == a) {
-            ArrayList arrayList2 = GodBookHandler.e(player, a);
+        if (n == damagedSaradominBookId || n2 == damagedSaradominBookId) {
+            ArrayList arrayList2 = GodBookHandler.getMissingPageNumbers(player, damagedSaradominBookId);
             if (arrayList2.size() == 0) {
-                player.getInventoryManager().removeItem(new ItemStack(a));
-                player.getInventoryManager().addItem(new ItemStack(b));
+                player.getInventoryManager().removeItem(new ItemStack(damagedSaradominBookId));
+                player.getInventoryManager().addItem(new ItemStack(holyBookId));
                 player.packetSender.sendGameMessage("The book is now complete!");
                 return;
             }
-        } else if (n == c || n2 == c) {
-            ArrayList arrayList3 = GodBookHandler.e(player, c);
+        } else if (n == damagedZamorakBookId || n2 == damagedZamorakBookId) {
+            ArrayList arrayList3 = GodBookHandler.getMissingPageNumbers(player, damagedZamorakBookId);
             if (arrayList3.size() == 0) {
-                player.getInventoryManager().removeItem(new ItemStack(c));
-                player.getInventoryManager().addItem(new ItemStack(d));
+                player.getInventoryManager().removeItem(new ItemStack(damagedZamorakBookId));
+                player.getInventoryManager().addItem(new ItemStack(unholyBookId));
                 player.packetSender.sendGameMessage("The book is now complete!");
                 return;
             }
-        } else if ((n == e || n2 == e) && (arrayList = GodBookHandler.e(player, e)).size() == 0) {
-            player.getInventoryManager().removeItem(new ItemStack(e));
-            player.getInventoryManager().addItem(new ItemStack(f));
+        } else if ((n == damagedGuthixBookId || n2 == damagedGuthixBookId) && (arrayList = GodBookHandler.getMissingPageNumbers(player, damagedGuthixBookId)).size() == 0) {
+            player.getInventoryManager().removeItem(new ItemStack(damagedGuthixBookId));
+            player.getInventoryManager().addItem(new ItemStack(bookOfBalanceId));
             player.packetSender.sendGameMessage("The book is now complete!");
         }
     }
 
-    public static void b(Player player, int n) {
-        ArrayList arrayList = GodBookHandler.e(player, n);
+    public static void giveReplacementBook(Player player, int n) {
+        ArrayList arrayList = GodBookHandler.getMissingPageNumbers(player, n);
         if (arrayList.size() == 0) {
-            if (n == a) {
-                n = b;
-            } else if (n == c) {
-                n = d;
-            } else if (n == e) {
-                n = f;
+            if (n == damagedSaradominBookId) {
+                n = holyBookId;
+            } else if (n == damagedZamorakBookId) {
+                n = unholyBookId;
+            } else if (n == damagedGuthixBookId) {
+                n = bookOfBalanceId;
             }
         }
-        player.getInventoryManager().b(new ItemStack(n, 1));
+        player.getInventoryManager().addOrDropItem(new ItemStack(n, 1));
     }
 
-    public static boolean c(Player player, int n) {
-        if (n == b || n == d || n == f) {
+    public static boolean openRecitationDialogue(Player player, int n) {
+        if (n == holyBookId || n == unholyBookId || n == bookOfBalanceId) {
             player.N = n;
             DialogueManager.startDialogue(player, 13001);
             return true;
@@ -347,53 +347,53 @@ public final class GodBookHandler {
         return false;
     }
 
-    public static void d(Player player, int n) {
+    public static void startRecitation(Player player, int n) {
         int n2 = player.N;
         int n3 = -1;
         player.O = 0;
-        if (n2 == b) {
-            n3 = H;
-        } else if (n2 == d) {
-            n3 = I;
-        } else if (n2 == f) {
-            n3 = J;
+        if (n2 == holyBookId) {
+            n3 = saradominRecitationAnimationId;
+        } else if (n2 == unholyBookId) {
+            n3 = zamorakRecitationAnimationId;
+        } else if (n2 == bookOfBalanceId) {
+            n3 = guthixRecitationAnimationId;
         }
         String[] stringArray = null;
-        if (n == K) {
-            if (n2 == b) {
-                stringArray = O;
-            } else if (n2 == d) {
-                stringArray = S;
-            } else if (n2 == f) {
-                stringArray = W;
+        if (n == weddingCeremonyOptionId) {
+            if (n2 == holyBookId) {
+                stringArray = saradominWeddingCeremonyLines;
+            } else if (n2 == unholyBookId) {
+                stringArray = zamorakWeddingCeremonyLines;
+            } else if (n2 == bookOfBalanceId) {
+                stringArray = guthixWeddingCeremonyLines;
             }
-        } else if (n == L) {
-            if (n2 == b) {
-                stringArray = P;
-            } else if (n2 == d) {
-                stringArray = T;
-            } else if (n2 == f) {
-                stringArray = X;
+        } else if (n == lastRitesOptionId) {
+            if (n2 == holyBookId) {
+                stringArray = saradominLastRitesLines;
+            } else if (n2 == unholyBookId) {
+                stringArray = zamorakLastRitesLines;
+            } else if (n2 == bookOfBalanceId) {
+                stringArray = guthixLastRitesLines;
             }
-        } else if (n == M) {
-            if (n2 == b) {
-                stringArray = Q;
-            } else if (n2 == d) {
-                stringArray = U;
-            } else if (n2 == f) {
-                stringArray = Y;
+        } else if (n == blessingsOptionId) {
+            if (n2 == holyBookId) {
+                stringArray = saradominBlessingLines;
+            } else if (n2 == unholyBookId) {
+                stringArray = zamorakBlessingLines;
+            } else if (n2 == bookOfBalanceId) {
+                stringArray = guthixBlessingLines;
             }
-        } else if (n == N) {
-            if (n2 == b) {
-                stringArray = R;
-            } else if (n2 == d) {
-                stringArray = V;
-            } else if (n2 == f) {
-                stringArray = Z;
+        } else if (n == preachOptionId) {
+            if (n2 == holyBookId) {
+                stringArray = saradominPreachLines;
+            } else if (n2 == unholyBookId) {
+                stringArray = zamorakPreachLines;
+            } else if (n2 == bookOfBalanceId) {
+                stringArray = guthixPreachLines;
             }
         }
         String[] stringArray2 = stringArray;
-        player.n(true);
+        player.setActionLocked(true);
         player.getUpdateState().setAnimation(n3, 0);
         CycleEventHandler.getInstance().schedule(player, new GodBookRecitationEvent(player, stringArray2), 2);
     }

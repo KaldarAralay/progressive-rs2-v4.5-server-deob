@@ -30,14 +30,14 @@ extends CycleEvent {
         if (this.manager.growthStages[this.patch.getIndex()] <= 2) {
             int n = this.patch.getIndex();
             this.manager.growthStages[n] = this.manager.growthStages[n] + 1;
-            AllotmentPatchManager.getPlayer(this.manager).getInventoryManager().b(new ItemStack(6055));
+            AllotmentPatchManager.getPlayer(this.manager).getInventoryManager().addOrDropItem(new ItemStack(6055));
         } else {
             this.manager.growthStages[this.patch.getIndex()] = 3;
             cycleEventContainer.stop();
             bl = true;
         }
         AllotmentPatchManager.getPlayer(this.manager).getSkillManager().addExperience(19, 4.0);
-        this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.e();
+        this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.getElapsedMinutes();
         this.manager.refreshConfig();
         if (this.manager.growthStages[this.patch.getIndex()] == 3 && !bl) {
             cycleEventContainer.stop();
@@ -50,8 +50,8 @@ extends CycleEvent {
         AllotmentPatchManager.a(this.manager, this.patch.getIndex());
         Player player = AllotmentPatchManager.getPlayer(this.manager);
         player.packetSender.sendGameMessage("You clear the patch.");
-        AllotmentPatchManager.getPlayer(this.manager).n(false);
-        AllotmentPatchManager.getPlayer(this.manager).aN();
+        AllotmentPatchManager.getPlayer(this.manager).setActionLocked(false);
+        AllotmentPatchManager.getPlayer(this.manager).resetAnimation();
     }
 }
 

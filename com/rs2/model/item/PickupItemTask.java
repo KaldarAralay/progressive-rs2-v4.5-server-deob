@@ -40,7 +40,7 @@ extends TickTask {
                 BotCombatHelper.pickupBotCombatGroundItem(this.b, ((GroundItem)this.b.botLootPickupTargets.get(0)).getItem().getId(), ((GroundItem)this.b.botLootPickupTargets.get(0)).getPosition());
             } else if (this.b.currentBotTask != null) {
                 int n;
-                GameplayHelper.e(this.b);
+                GameplayHelper.shouldReturnToBankForBotTask(this.b);
                 int n2 = n = this.b.isInWilderness() ? 8 : 0;
                 if (this.b.getInventoryManager().getItemAmount(this.b.botFoodItemId) <= n && this.b.currentBotTask.getForcedCombatStyle() != 2 || this.b.botTaskReturnToBankRequested) {
                     this.b.currentBotTask.startWalkToBank(this.b);
@@ -55,14 +55,14 @@ extends TickTask {
         GroundItem groundItem = GroundItemManager.findVisibleItem(this.b, this.d, this.e);
         if (groundItem == null) {
             if (this.b.dropPartyFollower) {
-                if (GameUtil.h(3) == 0 && this.b.currentBotTask != null) {
+                if (GameUtil.randomInt(3) == 0 && this.b.currentBotTask != null) {
                     Position position = this.b.currentBotTask.getRandomTaskAreaPosition();
                     PathFinder.getInstance();
                     PathFinder.findPath(this.b, position.getX(), position.getY(), true, 0, 0);
                 }
             } else if (this.b.currentBotTask != null) {
                 int n;
-                GameplayHelper.e(this.b);
+                GameplayHelper.shouldReturnToBankForBotTask(this.b);
                 int n3 = n = this.b.isInWilderness() ? 8 : 0;
                 if (this.b.getInventoryManager().getItemAmount(this.b.botFoodItemId) <= n && this.b.currentBotTask.getForcedCombatStyle() != 2 || this.b.botTaskReturnToBankRequested) {
                     this.b.currentBotTask.startWalkToBank(this.b);
@@ -77,17 +77,17 @@ extends TickTask {
         if (this.e.getX() == 2822 && this.e.getY() == 3355) {
             bl = true;
         }
-        if (!GameUtil.a(this.b.getPosition(), this.e, 1)) {
+        if (!GameUtil.isWithinDistance(this.b.getPosition(), this.e, 1)) {
             return;
         }
         boolean bl2 = PathReachability.isReachable(this.b, this.e.getX(), this.e.getY(), true, 0, 0);
-        if (!GameUtil.a(this.b.getPosition(), this.e, bl2) && !bl) {
+        if (!GameUtil.hasClearPath(this.b.getPosition(), this.e, bl2) && !bl) {
             return;
         }
-        if (GameUtil.a(this.b.getPosition(), this.e, true) && !this.b.getPosition().equals(this.e)) {
+        if (GameUtil.hasClearPath(this.b.getPosition(), this.e, true) && !this.b.getPosition().equals(this.e)) {
             return;
         }
-        if (this.b.getQuestManager().c(this.d)) {
+        if (this.b.getQuestManager().handleGroundItemInteraction(this.d)) {
             this.stop();
             return;
         }
@@ -112,15 +112,15 @@ extends TickTask {
             return;
         }
         if (this.d == 1419) {
-            if (this.b.aq(this.d)) {
+            if (this.b.ownsItem(this.d)) {
                 Player player = this.b;
                 player.packetSender.sendGameMessage("You already have a scythe, you don't need another one.");
                 this.stop();
                 return;
             }
-            this.b.bJ[3] = 1;
+            this.b.questHookStates[3] = 1;
         }
-        if (this.d >= 5509 && this.d <= 5515 && this.b.aq(this.d)) {
+        if (this.d >= 5509 && this.d <= 5515 && this.b.ownsItem(this.d)) {
             Player player = this.b;
             player.packetSender.sendGameMessage("I already have that pouch!");
             this.stop();

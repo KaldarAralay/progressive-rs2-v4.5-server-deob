@@ -44,7 +44,7 @@ extends CycleEvent {
         Player player = this.player;
         player.packetSender.sendSoundEffect(356, 1, 0);
         this.player.getInventoryManager().addItem(this.item);
-        if (this.item.getId() != 1779 || GameUtil.g(3) == 0) {
+        if (this.item.getId() != 1779 || GameUtil.randomInclusive(3) == 0) {
             int n = SkillActionHelper.getObjectOrientation(this.objectId, this.objectX, this.objectY, this.player.getPosition().getPlane());
             new DynamicObject(ServerSettings.placeholderObjectId, this.objectX, this.objectY, this.player.getPosition().getPlane(), n, 10, this.objectId, 20);
         }
@@ -58,7 +58,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        this.player.n(false);
+        this.player.setActionLocked(false);
     }
 }
 

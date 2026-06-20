@@ -20,11 +20,11 @@ public final class LostCityQuest
 extends QuestScript {
     public LostCityQuest(int n) {
         super(58);
-        super.a(3);
+        super.setQuestPointReward(3);
     }
 
     @Override
-    public final String[] a(Player player, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
             n = player.getSkillManager().getBaseLevel(12);
             int n2 = player.getSkillManager().getBaseLevel(8);
@@ -51,9 +51,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("3 Quest Points", 12150);
         player2 = player;
@@ -75,7 +75,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player object, int n, int n2, int n3, int n4) {
+    public final boolean handleFirstObjectAction(Player object, int n, int n2, int n3, int n4) {
         if (n == 2409 && n2 == 3138 && n3 == 3212 && n4 == 2) {
             if (Npc.findByDefinitionId(654) == null) {
                 GameplayHelper.a((Player)object, new Npc(654), 3138, 3211, 0, -1, false, false);
@@ -83,7 +83,7 @@ extends QuestScript {
             return true;
         }
         if (n == 1292 && n2 == 2860 && n3 == 9734 && n4 == 3) {
-            Object object2 = ItemCombinationHandler.a((Player)object, 8);
+            Object object2 = ItemCombinationHandler.findUsableGatheringTool((Player)object, 8);
             if (object2 == null) {
                 object2 = object;
                 ((Player)object2).packetSender.sendGameMessage("You do not have an axe which you have the woodcutting level to use.");
@@ -104,7 +104,7 @@ extends QuestScript {
         }
         if (n == 2406 && n2 == 3202 && n3 == 3169) {
             if (!(n4 != 4 && n4 != 1 || ((Player)object).getEquipmentManager().getItemIdAtSlot(3) != 772 || ServerSettings.freeToPlayWorld)) {
-                Object object3 = !CacheCoordinateTranslator.a ? new Position(2452, 4473, 0) : new Position(3220, 9593, 0);
+                Object object3 = !CacheCoordinateTranslator.dungeonCoordinateShiftActive ? new Position(2452, 4473, 0) : new Position(3220, 9593, 0);
                 if (((Player)object).getTeleportManager().b((Position)object3) && n4 == 4) {
                     object3 = object;
                     ((Player)object3).packetSender.sendGameMessage("The world starts to shimmer...");
@@ -121,17 +121,17 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2) {
+    public final boolean handleNpcKill(Player player, int n, int n2) {
         if (n == 655 && n2 == 3) {
             player.getDialogueManager().showOneLineStatement("With the Tree Spirit defeated you can now chop the tree.");
-            player.setQuestState(this.b(), 4);
+            player.setQuestState(this.getQuestId(), 4);
             return true;
         }
         return false;
     }
 
     @Override
-    public final boolean a(Player entity, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player entity, int n, int n2, int n3, int n4) {
         if (n == 650 && n4 == 0) {
             if (n2 == 1) {
                 ((Player)entity).getDialogueManager().showNpcOneLineDialogue("Hello there traveller.", 591);
@@ -292,10 +292,10 @@ extends QuestScript {
             }
             if (n2 == 15) {
                 ((Player)entity).getDialogueManager().showOneLineStatement("The leprechaun magically disappears.");
-                ((Player)entity).setQuestState(this.b(), 3);
+                ((Player)entity).setQuestState(this.getQuestId(), 3);
                 entity = Npc.findByDefinitionId(654);
                 ((Npc)entity).setActive(false);
-                World.b((Npc)entity);
+                World.unregisterNpc((Npc)entity);
                 return true;
             }
         }

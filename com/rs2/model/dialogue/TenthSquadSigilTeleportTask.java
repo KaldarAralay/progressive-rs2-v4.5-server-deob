@@ -19,14 +19,14 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        this.a.n(false);
+        this.a.setActionLocked(false);
         Position position = new Position(2980, 3045, 1);
         position.getPlane();
         int n = position.getPlane() + 4 + (this.a.getIndex() << 2);
         this.a.moveTo(new Position(2702, 9173, n));
         Player player = this.a;
         player.packetSender.closeInterfaces();
-        this.a.p(n);
+        this.a.spawnTenthSquadSigilNpcs(n);
         DialogueManager.continueDialogue(this.a, 1412, 1, 0);
         this.stop();
     }

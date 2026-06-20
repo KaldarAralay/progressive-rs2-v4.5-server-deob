@@ -93,7 +93,7 @@ public final class SkillActionHelper {
         if (ServerSettings.randomEventsMode != 0) {
             return false;
         }
-        return GameUtil.g(2000) == 0;
+        return GameUtil.randomInclusive(2000) == 0;
     }
 }
 

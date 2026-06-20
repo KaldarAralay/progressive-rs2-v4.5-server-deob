@@ -21,7 +21,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        this.a.n(false);
+        this.a.setActionLocked(false);
         Npc npc = new Npc(238);
         GameplayHelper.b(this.a, npc, 2780, 3515, 0, 86, false, false);
         DialogueManager.continueDialogue(this.a, 238, 100, 0);

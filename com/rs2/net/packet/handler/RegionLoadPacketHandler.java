@@ -11,7 +11,7 @@ public final class RegionLoadPacketHandler
 implements PacketHandler {
     @Override
     public final void handle(Player player, IncomingPacket incomingPacket) {
-        player.bm();
+        player.refreshRegionState();
     }
 }
 

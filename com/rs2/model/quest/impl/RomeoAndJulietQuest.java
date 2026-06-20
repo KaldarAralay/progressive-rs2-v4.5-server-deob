@@ -15,11 +15,11 @@ public final class RomeoAndJulietQuest
 extends QuestScript {
     public RomeoAndJulietQuest(int n) {
         super(13);
-        super.a(5);
+        super.setQuestPointReward(5);
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player stringArray, int n) {
         if (n == 0) {
             stringArray = new String[]{"I can start this quest by speaking to Romeo in Varrock", "central square by the fountain."};
             return stringArray;
@@ -60,9 +60,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("5 Quest Points", 12150);
         player2 = player;
@@ -84,7 +84,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player object, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player object, int n, int n2, int n3, int n4) {
         if (n == 639) {
             if (n4 == 0) {
                 if (n2 == 1) {
@@ -292,7 +292,7 @@ extends QuestScript {
                 if (n2 == 25) {
                     ((Player)object).getInventoryManager().removeItem(new ItemStack(755, 1));
                     ((Player)object).getDialogueManager().showNpcOneLineDialogue("Father Lawrence?", 591);
-                    ((Player)object).setQuestState(this.b(), 4);
+                    ((Player)object).setQuestState(this.getQuestId(), 4);
                     return true;
                 }
             }
@@ -368,7 +368,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 7) {
-                    this.c((Player)object);
+                    this.awardCompletionRewards((Player)object);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -405,15 +405,15 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 8) {
-                    ((Player)object).getInventoryManager().b(new ItemStack(755, 1));
+                    ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(755, 1));
                     ((Player)object).getDialogueManager().showItemMessage("Juliet gives you a message.", new ItemStack(755, 1));
-                    ((Player)object).setQuestState(this.b(), 3);
+                    ((Player)object).setQuestState(this.getQuestId(), 3);
                     return true;
                 }
             }
             if (n4 >= 2 && n4 < 4) {
-                if (!((Player)object).aq(755) && n2 == 1) {
-                    ((Player)object).getInventoryManager().b(new ItemStack(755, 1));
+                if (!((Player)object).ownsItem(755) && n2 == 1) {
+                    ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(755, 1));
                     ((Player)object).getDialogueManager().showItemMessage("Juliet gives you a message.", new ItemStack(755, 1));
                     ((Player)object).getDialogueManager().setNextDialogueStep(52);
                     return true;
@@ -486,7 +486,7 @@ extends QuestScript {
                 if (n2 == 14) {
                     ((Player)object).getDialogueManager().showNpcFourLineDialogue("Please go to Romeo and make sure he understands.", "Although I love his gormless, lovelorn soppy ways, he", "can be a bit dense sometimes and I don't want to wake", "up in that crypt on my own.", 591);
                     ((Player)object).getInventoryManager().removeItem(new ItemStack(756, 1));
-                    ((Player)object).setQuestState(this.b(), 8);
+                    ((Player)object).setQuestState(this.getQuestId(), 8);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -551,7 +551,7 @@ extends QuestScript {
             }
             if (n2 == 15) {
                 ((Player)object).getDialogueManager().showPlayerTwoLineDialogue("Apart from the strong overtones of death, this is", "turning out to be a real love story.", 591);
-                ((Player)object).setQuestState(this.b(), 5);
+                ((Player)object).setQuestState(this.getQuestId(), 5);
                 ((Player)object).getDialogueManager().finishDialogue();
                 return true;
             }
@@ -584,7 +584,7 @@ extends QuestScript {
                 }
                 if (n2 == 7) {
                     ((Player)object).getDialogueManager().showNpcTwoLineDialogue("Bring them here when you have them. But be careful.", "They are nasty.", 591);
-                    ((Player)object).setQuestState(this.b(), 6);
+                    ((Player)object).setQuestState(this.getQuestId(), 6);
                     return true;
                 }
             }
@@ -621,9 +621,9 @@ extends QuestScript {
                     }
                     if (n2 == 4) {
                         ((Player)object).getInventoryManager().removeItem(new ItemStack(753, 1));
-                        ((Player)object).getInventoryManager().b(new ItemStack(756, 1));
+                        ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(756, 1));
                         ((Player)object).getDialogueManager().showTwoItemMessage("Apothecary gives you a Cadava potion.", "", new ItemStack(-1, 1), new ItemStack(756, 1));
-                        ((Player)object).setQuestState(this.b(), 7);
+                        ((Player)object).setQuestState(this.getQuestId(), 7);
                         return true;
                     }
                 }
@@ -635,8 +635,8 @@ extends QuestScript {
                     player.packetSender.closeInterfaces();
                     return true;
                 }
-                if (!((Player)object).aq(756) && n2 == 1) {
-                    ((Player)object).getInventoryManager().b(new ItemStack(756, 1));
+                if (!((Player)object).ownsItem(756) && n2 == 1) {
+                    ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(756, 1));
                     ((Player)object).getDialogueManager().showTwoItemMessage("Apothecary gives you a Cadava potion.", "", new ItemStack(-1, 1), new ItemStack(756, 1));
                     return true;
                 }

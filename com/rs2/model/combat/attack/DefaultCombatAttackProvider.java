@@ -18,12 +18,12 @@ implements CombatAttackProvider {
     public final CombatAttack[] createAttacks(Entity entity, Entity entity2) {
         if (entity.isPlayer()) {
             Player player = (Player)entity;
-            SpecialAttackDefinition specialAttackDefinition = player.dU();
-            if (player.ec() != null) {
-                return new CombatAttack[]{new MagicCombatAttack(entity, entity2, player.ec())};
+            SpecialAttackDefinition specialAttackDefinition = player.getSpecialAttackDefinition();
+            if (player.getQueuedCombatSpell() != null) {
+                return new CombatAttack[]{new MagicCombatAttack(entity, entity2, player.getQueuedCombatSpell())};
             }
-            if (player.ed() != null && player.ee()) {
-                return new CombatAttack[]{new MagicCombatAttack(entity, entity2, player.ed())};
+            if (player.getAutocastSpell() != null && player.isAutocastEnabled()) {
+                return new CombatAttack[]{new MagicCombatAttack(entity, entity2, player.getAutocastSpell())};
             }
             if (specialAttackDefinition != null && player.isSpecialAttackEnabled()) {
                 return new CombatAttack[]{specialAttackDefinition.createAttack(player, entity2, player.getWeaponProfile())};

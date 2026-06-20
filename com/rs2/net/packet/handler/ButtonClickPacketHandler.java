@@ -54,28 +54,28 @@ implements PacketHandler {
                 var3_6 = var2_3 - 18792;
                 var1_1.es = 0;
                 var1_1.et = var3_6;
-                var1_1.v(0);
+                var1_1.showHiscoreInterface(0);
             }
             if (var2_3 == 18791) {
                 var1_1.es = 0;
                 var1_1.et = 21;
-                var1_1.v(0);
+                var1_1.showHiscoreInterface(0);
             }
             if (var2_3 == 18813) {
                 var1_1.es = 0;
                 var1_1.et = 22;
-                var1_1.v(0);
+                var1_1.showHiscoreInterface(0);
             }
             if (var2_3 == 18884 && var1_1.es > 0) {
                 --var1_1.es;
-                var1_1.v(0);
+                var1_1.showHiscoreInterface(0);
             }
             if (var2_3 == 18883) {
                 ++var1_1.es;
-                var1_1.v(0);
+                var1_1.showHiscoreInterface(0);
             }
             if (var2_3 == 2246) {
-                PartyRoomManager.e(var1_1);
+                PartyRoomManager.depositStagedItemsToChest(var1_1);
             }
             var3_7 = 0;
             while (var3_7 < BankManager.bankTabUpdateTasks.length) {
@@ -137,7 +137,7 @@ implements PacketHandler {
                     var1_1.ak = -1;
                     var5_14 = var1_1;
                     var5_14.packetSender.refreshSidebarInterfaces();
-                    var1_1.f(true);
+                    var1_1.setAppearanceUpdateRequired(true);
                     break;
                 }
                 case 2422: {
@@ -426,11 +426,11 @@ implements PacketHandler {
                     return;
                 }
                 case 8130: {
-                    var1_1.setBankRearrangeMode(BankRearrangeMode.a);
+                    var1_1.setBankRearrangeMode(BankRearrangeMode.SWAP);
                     return;
                 }
                 case 8131: {
-                    var1_1.setBankRearrangeMode(BankRearrangeMode.b);
+                    var1_1.setBankRearrangeMode(BankRearrangeMode.INSERT);
                     return;
                 }
             }
@@ -439,11 +439,11 @@ implements PacketHandler {
                 var1_1.getEquipmentManager().refreshWeaponInterface();
                 return;
             }
-            if (var1_1.getPrayerManager().handleButtonClick(var2_3) || var1_1.dJ()) break block184;
+            if (var1_1.getPrayerManager().handleButtonClick(var2_3) || var1_1.isActionLocked()) break block184;
             switch (var2_3) {
                 case 14175: {
                     if (var1_1.fc() != null) {
-                        var3_8 = BarrowsRepairHandler.b(var1_1.fc());
+                        var3_8 = BarrowsRepairHandler.forItem(var1_1.fc());
                         if (var3_8 != null) {
                             if (var1_1.getInventoryManager().getContainer().containsItem(var1_1.fc().getId())) {
                                 var5_14 = var1_1;
@@ -452,7 +452,7 @@ implements PacketHandler {
                                     var5_14 = var1_1;
                                     var5_14.packetSender.sendGameMessage("Your item disappears because you're an administrator.");
                                 } else {
-                                    GroundItemManager.getInstance().spawn(new GroundItem(new ItemStack(var3_8.a(), 1), var1_1));
+                                    GroundItemManager.getInstance().spawn(new GroundItem(new ItemStack(var3_8.getFullyDegradedItemId(), 1), var1_1));
                                 }
                                 if (!var1_1.getInventoryManager().removeItemFromSlot(var1_1.fc(), var1_1.getSelectedItemSlot())) {
                                     var1_1.getInventoryManager().removeItem(var1_1.fc());
@@ -461,7 +461,7 @@ implements PacketHandler {
                             var1_1.getEquipmentManager().refreshCarriedValue();
                         } else {
                             if (var1_1.fc().getDefinition().getName().toLowerCase().contains("progress hat")) {
-                                var1_1.eF();
+                                var1_1.resetMageTrainingArenaPizazzPoints();
                             }
                             if (var1_1.fc().getDefinition().getName().toLowerCase().contains("clue scroll")) {
                                 var1_1.ar = 0;
@@ -631,15 +631,15 @@ implements PacketHandler {
                     return;
                 }
                 case 3546: {
-                    GameplayHelper.r(var1_1);
+                    GameplayHelper.acceptTradeSecondScreen(var1_1);
                     return;
                 }
                 case 3420: {
-                    GameplayHelper.q(var1_1);
+                    GameplayHelper.acceptTradeFirstScreen(var1_1);
                     return;
                 }
                 case 3651: {
-                    var1_1.f(true);
+                    var1_1.setAppearanceUpdateRequired(true);
                     var1_1.getUpdateState().setUpdateRequired(true);
                     var5_14 = var1_1;
                     var5_14.packetSender.closeInterfaces();
@@ -671,9 +671,9 @@ implements PacketHandler {
             if (RandomEventManager.handleLampButtonClick(var1_1, var2_3) || var1_1.handleSpecialAttackButton(var2_3) || TravelManager.handleGnomeGliderButton(var1_1, var2_3) || CanoeTravelManager.handleBuildButton(var1_1, var2_3)) break block184;
             var4_11 = var2_3;
             var3_9 = var1_1;
-            var4_12 = MysticStaffEnchantment.a(var4_11);
+            var4_12 = MysticStaffEnchantment.forButtonId(var4_11);
             if (var4_12 != null) {
-                if (!var3_9.getInventoryManager().containsItem(var4_12.a())) {
+                if (!var3_9.getInventoryManager().containsItem(var4_12.getBattlestaffItemId())) {
                     var5_14 = var3_9;
                     var5_14.packetSender.sendGameMessage("You need a battlestaff to do this!");
                     v0 = true;
@@ -682,9 +682,9 @@ implements PacketHandler {
                     var5_14.packetSender.sendGameMessage("You don't have enough coins with you!");
                     v0 = true;
                 } else {
-                    var3_9.getInventoryManager().removeItem(new ItemStack(var4_12.a(), 1));
+                    var3_9.getInventoryManager().removeItem(new ItemStack(var4_12.getBattlestaffItemId(), 1));
                     var3_9.getInventoryManager().removeItem(new ItemStack(995, 40000));
-                    var3_9.getInventoryManager().addItem(new ItemStack(var4_12.b(), 1));
+                    var3_9.getInventoryManager().addItem(new ItemStack(var4_12.getMysticStaffItemId(), 1));
                     var5_14 = var3_9;
                     var5_14.packetSender.sendGameMessage("Thormac enchants your staff into a mystic staff.");
                     var5_14 = var3_9;

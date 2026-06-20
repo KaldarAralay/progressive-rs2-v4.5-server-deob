@@ -53,15 +53,15 @@ public final class CoordinateClueHandler {
         player.getInventoryManager().removeItem(new ItemStack(coordinateClue.getClueItemId(), 1));
         switch (coordinateClue.getLevel()) {
             case 1: {
-                player.getInventoryManager().b(new ItemStack(2724, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(2724, 1));
                 break;
             }
             case 2: {
-                player.getInventoryManager().b(new ItemStack(2726, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(2726, 1));
                 break;
             }
             case 3: {
-                player.getInventoryManager().b(new ItemStack(2728, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(2728, 1));
             }
         }
         player.getDialogueManager().a("You've found a casket!", 2724);

@@ -46,7 +46,7 @@ extends TickTask {
                         this.stop();
                         return;
                     }
-                    if (this.c.isDead() || !this.c.bW()) {
+                    if (this.c.isDead() || !this.c.isRegistered()) {
                         CombatManager.stopCombat(this.c);
                         this.stop();
                         return;
@@ -74,13 +74,13 @@ extends TickTask {
                     player.getSkillManager();
                     int n = SkillManager.getLevelForExperience(player.getSkillManager().getExperience()[3]);
                     int n2 = player.getSkillManager().getCurrentLevels()[3];
-                    FoodDefinition foodDefinition = FoodDefinition.a(player.botFoodItemId);
+                    FoodDefinition foodDefinition = FoodDefinition.forItemId(player.botFoodItemId);
                     if (foodDefinition == null) {
                         CombatManager.stopCombat(player);
                         botTaskDefinition.startWalkToBank(player);
                         return;
                     }
-                    int n3 = foodDefinition.a();
+                    int n3 = foodDefinition.getHealAmount();
                     if (n2 + n3 < n) {
                         bl = true;
                     }

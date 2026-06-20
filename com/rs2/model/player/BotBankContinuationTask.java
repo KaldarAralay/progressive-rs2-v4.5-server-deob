@@ -18,8 +18,8 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        if (this.a.az != 4) {
-            GameplayHelper.d(this.a);
+        if (this.a.botMode != 4) {
+            GameplayHelper.startNextBotTask(this.a);
         } else {
             GameplayHelper.c(this.a);
         }

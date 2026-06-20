@@ -19,7 +19,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        GameplayHelper.d(this.bot);
+        GameplayHelper.startNextBotTask(this.bot);
         BotPlayer botPlayer = this.bot;
         CacheArchiveEntry.startTradeOfferTick(botPlayer);
         this.stop();

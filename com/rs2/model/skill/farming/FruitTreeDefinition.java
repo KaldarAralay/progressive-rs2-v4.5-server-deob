@@ -50,25 +50,25 @@ public enum FruitTreeDefinition {
      * WARNING - void declaration
      */
     private FruitTreeDefinition(int n3, int n4, int[] nArray, int n5, double d, double n6222, double n6222, int n6222, int n7, int n8, int n9, int n10, double d2, int n6222, int n11) {
-        void cfr_renamed_8;
-        void var19_15;
-        void cfr_renamed_13;
         void cfr_renamed_7;
+        void var19_15;
+        void cfr_renamed_12;
         void cfr_renamed_6;
+        void cfr_renamed_5;
         this.saplingId = n3;
         this.produceItemId = n4;
         this.requiredLevel = n5;
         this.protectionPayment = (int[])d;
         this.totalGrowthTicks = 960;
-        this.diseaseChance = cfr_renamed_6;
-        this.plantingExperience = cfr_renamed_7;
-        this.harvestExperience = cfr_renamed_13;
+        this.diseaseChance = cfr_renamed_5;
+        this.plantingExperience = cfr_renamed_6;
+        this.harvestExperience = cfr_renamed_12;
         this.configStartStage = n8;
         this.configEndStage = n9;
         this.matureConfigStage = n10;
         this.stumpConfigStage = (int)d2;
         this.healthCheckConfigStage = var19_15;
-        this.healthCheckExperience = cfr_renamed_8;
+        this.healthCheckExperience = cfr_renamed_7;
         this.diseasedConfigOffset = 12;
         this.deadConfigOffset = 18;
     }

@@ -10,13 +10,13 @@ import com.rs2.model.player.Player;
 import com.rs2.util.path.WalkingCollisionMap;
 
 public final class DuelArenaLocationManager {
-    private static PositionRange[] a = new PositionRange[]{new PositionRange(new Position(3367, 3246, 0), new Position(3385, 3256, 0)), new PositionRange(new Position(3336, 3227, 0), new Position(3355, 3237, 0)), new PositionRange(new Position(3367, 3208, 0), new Position(3386, 3218, 0))};
-    private static PositionRange[] b = new PositionRange[]{new PositionRange(new Position(3337, 3245, 0), new Position(3355, 3256, 0)), new PositionRange(new Position(3366, 3227, 0), new Position(3386, 3237, 0)), new PositionRange(new Position(3337, 3207, 0), new Position(3354, 3218, 0))};
+    private static PositionRange[] obstacleArenaStartAreas = new PositionRange[]{new PositionRange(new Position(3367, 3246, 0), new Position(3385, 3256, 0)), new PositionRange(new Position(3336, 3227, 0), new Position(3355, 3237, 0)), new PositionRange(new Position(3367, 3208, 0), new Position(3386, 3218, 0))};
+    private static PositionRange[] standardArenaStartAreas = new PositionRange[]{new PositionRange(new Position(3337, 3245, 0), new Position(3355, 3256, 0)), new PositionRange(new Position(3366, 3227, 0), new Position(3386, 3237, 0)), new PositionRange(new Position(3337, 3207, 0), new Position(3354, 3218, 0))};
 
     public DuelArenaLocationManager(Player player) {
     }
 
-    public static Position a(Position position) {
+    public static Position findAdjacentOpenPosition(Position position) {
         int n = position.getX();
         int n2 = position.getY();
         Position position2 = new Position(n, n2 + 1);
@@ -35,12 +35,12 @@ public final class DuelArenaLocationManager {
         return position5;
     }
 
-    public static Position a() {
+    public static Position randomExitPosition() {
         return GameplayHelper.randomUnblockedPositionInRange(new PositionRange(new Position(3356, 3269, 0), new Position(3379, 3280)));
     }
 
-    public final Position a(boolean bl, int n) {
-        return GameplayHelper.randomUnblockedPositionInRange((bl ? a : b)[n]);
+    public final Position randomStartPosition(boolean bl, int n) {
+        return GameplayHelper.randomUnblockedPositionInRange((bl ? obstacleArenaStartAreas : standardArenaStartAreas)[n]);
     }
 }
 

@@ -96,7 +96,7 @@ public final class SpecialTreePatchManager {
     public final void processGrowth() {
         int n = 0;
         while (n < this.treeIds.length) {
-            long l = Server.e() - this.lastUpdateTicks[n];
+            long l = Server.getElapsedMinutes() - this.lastUpdateTicks[n];
             if (l >= 5L) {
                 if (this.growthStages[n] > 0 && this.growthStages[n] <= 3) {
                     int n2 = (int)(l / 5L);
@@ -105,7 +105,7 @@ public final class SpecialTreePatchManager {
                         if (this.growthStages[n] != 0) {
                             int n4 = n;
                             this.growthStages[n4] = this.growthStages[n4] - 1;
-                            this.lastUpdateTicks[n] = Server.e();
+                            this.lastUpdateTicks[n] = Server.getElapsedMinutes();
                             ++n3;
                             continue;
                         }
@@ -129,7 +129,7 @@ public final class SpecialTreePatchManager {
                                     } else {
                                         int n9 = n;
                                         SpecialTreePatchManager specialTreePatchManager = this;
-                                        if (specialTreePatchManager.patchStates[n9] == 1 && GameUtil.h(2) == 0) {
+                                        if (specialTreePatchManager.patchStates[n9] == 1 && GameUtil.randomInt(2) == 0) {
                                             specialTreePatchManager.patchStates[n9] = 2;
                                         }
                                         if (specialTreePatchManager.patchStates[n9] != 1 && specialTreePatchManager.patchStates[n9] != 2) {
@@ -141,7 +141,7 @@ public final class SpecialTreePatchManager {
                                                 double d = specialTreePatchManager.diseaseChanceMultipliers[n9] * specialTreeDefinition2.getDiseaseChance();
                                                 double d2 = d * 100.0;
                                                 int n10 = (int)d2;
-                                                if (GameUtil.g(100) < n10 && ServerSettings.diseasingEnabled) {
+                                                if (GameUtil.randomInclusive(100) < n10 && ServerSettings.diseasingEnabled) {
                                                     specialTreePatchManager.patchStates[n9] = 1;
                                                 }
                                             }
@@ -179,7 +179,7 @@ public final class SpecialTreePatchManager {
         if (specialTreeDefinition == null) {
             return;
         }
-        long l = Server.e() - this.lastUpdateTicks[n];
+        long l = Server.getElapsedMinutes() - this.lastUpdateTicks[n];
         int n2 = (int)(l / (long)specialTreeDefinition.getGrowthCycleTicks());
         this.growthStages[n] = n2 + 4;
         this.refreshConfig();
@@ -224,7 +224,7 @@ public final class SpecialTreePatchManager {
             n2 = 232;
             n4 = 3;
         }
-        this.player.n(true);
+        this.player.setActionLocked(true);
         Player player = this.player;
         player.packetSender.sendSoundEffect(n2, 1, 0);
         this.player.getUpdateState().setAnimation(n3);
@@ -264,7 +264,7 @@ public final class SpecialTreePatchManager {
         this.player.getUpdateState().setAnimation(2272);
         this.growthStages[((SpecialTreePatch)((Object)object)).getIndex()] = 4;
         this.player.getInventoryManager().removeItem(new ItemStack(n3));
-        this.player.n(true);
+        this.player.setActionLocked(true);
         CycleEventHandler.getInstance().schedule(this.player, new SpecialTreePlantingTask(this, (SpecialTreePatch)((Object)object), n3, specialTreeDefinition), 3);
         return true;
     }
@@ -299,7 +299,7 @@ public final class SpecialTreePatchManager {
             return true;
         }
         this.player.getUpdateState().setAnimation(832);
-        this.player.n(true);
+        this.player.setActionLocked(true);
         int n3 = this.player.nextActionSequence();
         this.player.setActiveCycleEvent(new SpecialTreeHarvestTask(this, n3, (SpecialTreePatch)((Object)object), specialTreeDefinition));
         CycleEventHandler.getInstance().schedule(this.player, this.player.getActiveCycleEvent(), 2);
@@ -330,7 +330,7 @@ public final class SpecialTreePatchManager {
         player.packetSender.sendGameMessage("You pour some " + (n3 == 6034 ? "super" : "") + "compost on the patch.");
         this.player.getUpdateState().setAnimation(2283);
         this.player.getSkillManager().addExperience(19, n3 == 6034 ? 26.0 : 18.0);
-        this.player.n(true);
+        this.player.setActionLocked(true);
         CycleEventHandler.getInstance().schedule(this.player, new SpecialTreeCompostTask(this, specialTreePatch, n3), 7);
         return true;
     }
@@ -375,7 +375,7 @@ public final class SpecialTreePatchManager {
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("You bend down and start to inspect the patch...");
             this.player.getUpdateState().setAnimation(1331);
-            this.player.n(true);
+            this.player.setActionLocked(true);
             CycleEventHandler.getInstance().schedule(this.player, new SpecialTreeInspectTask(this, specialTreePatch, specialTreeGrowthDefinition), 5);
         }
         return true;
@@ -415,22 +415,22 @@ public final class SpecialTreePatchManager {
             ((Player)object).packetSender.sendGameMessage("This plant doesn't need to be resurrected.");
             return true;
         }
-        this.player.a("special1", object.getIndex());
+        this.player.setPendingCropResurrectionTarget("special1", object.getIndex());
         return true;
     }
 
     public final boolean finishResurrection(boolean bl) {
         if (bl) {
-            Object object = SpecialTreeDefinition.forSaplingId(this.treeIds[this.player.ds]);
-            this.patchStates[this.player.ds] = 0;
-            int n = this.growthStages[this.player.ds] - 4;
-            this.lastUpdateTicks[this.player.ds] = Server.e() - (long)(object.getGrowthCycleTicks() * n);
+            Object object = SpecialTreeDefinition.forSaplingId(this.treeIds[this.player.pendingCropResurrectionPatchIndex]);
+            this.patchStates[this.player.pendingCropResurrectionPatchIndex] = 0;
+            int n = this.growthStages[this.player.pendingCropResurrectionPatchIndex] - 4;
+            this.lastUpdateTicks[this.player.pendingCropResurrectionPatchIndex] = Server.getElapsedMinutes() - (long)(object.getGrowthCycleTicks() * n);
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("You succesfully resurrected the crop.");
         } else {
-            this.resetPatch(this.player.ds);
-            this.growthStages[this.player.ds] = 3;
-            this.lastUpdateTicks[this.player.ds] = Server.e();
+            this.resetPatch(this.player.pendingCropResurrectionPatchIndex);
+            this.growthStages[this.player.pendingCropResurrectionPatchIndex] = 3;
+            this.lastUpdateTicks[this.player.pendingCropResurrectionPatchIndex] = Server.getElapsedMinutes();
             Player player = this.player;
             player.packetSender.sendGameMessage("You failed to resurrect the crop.");
         }
@@ -460,7 +460,7 @@ public final class SpecialTreePatchManager {
         this.player.getInventoryManager().removeItem(new ItemStack(n3));
         this.player.getInventoryManager().addItem(new ItemStack(229));
         this.player.getUpdateState().setAnimation(2288);
-        this.player.n(true);
+        this.player.setActionLocked(true);
         this.patchStates[object.getIndex()] = 0;
         CycleEventHandler.getInstance().schedule(this.player, new SpecialTreeCureTask(this), 7);
         return true;

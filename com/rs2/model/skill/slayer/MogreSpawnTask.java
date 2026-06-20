@@ -26,7 +26,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        SlayerManager.getPlayer(this.slayerManager).n(false);
+        SlayerManager.getPlayer(this.slayerManager).setActionLocked(false);
     }
 }
 

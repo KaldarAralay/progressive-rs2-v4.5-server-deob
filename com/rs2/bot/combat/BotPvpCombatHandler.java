@@ -51,7 +51,7 @@ public final class BotPvpCombatHandler {
     static /* synthetic */ void processBotPvpCombatTick(Player player, Player player2) {
         int n;
         if (player.botCombatState != null && player.botEnabled && player.botCombatState.equals("escape")) {
-            BotCombatEscapeHandler.a(player);
+            BotCombatEscapeHandler.tryStartBotCombatEscape(player);
             return;
         }
         if (!player.botEnabled || player.botCombatState != null) {
@@ -61,7 +61,7 @@ public final class BotPvpCombatHandler {
             player.getMovementQueue().setRunning(true);
         }
         player.botOpponentCombatStyle = 0;
-        if (player2.ed() != null) {
+        if (player2.getAutocastSpell() != null) {
             player.botOpponentCombatStyle = MAGIC_COMBAT_STYLE;
         } else {
             String string;
@@ -85,26 +85,26 @@ public final class BotPvpCombatHandler {
                 player.botMagicGearSwapDelayTicks = 0;
             }
         }
-        int n2 = n = GameUtil.b(player.getPosition(), player2.getPosition()) > 1 && GameUtil.a(player.getPosition(), player2.getPosition(), 15) ? 1 : 0;
-        if (player.ed() != null && player.ec() == null && player2 != null && !player2.isDead()) {
-            player.a(player.ed());
+        int n2 = n = GameUtil.getDistance(player.getPosition(), player2.getPosition()) > 1 && GameUtil.isWithinDistance(player.getPosition(), player2.getPosition(), 15) ? 1 : 0;
+        if (player.getAutocastSpell() != null && player.getQueuedCombatSpell() == null && player2 != null && !player2.isDead()) {
+            player.setQueuedCombatSpell(player.getAutocastSpell());
             CombatManager.startCombat(player, player2);
         }
         if (player.botCombatSpell != null && player2 != null && !player2.isDead() && player.botCombatSpell.getRequiredLevel() <= player.getSkillManager().getCurrentLevels()[6] && BotCombatHelper.hasRunesForSpell(player, player.botCombatSpell) && !player2.isMovementLocked() && !player2.isMovementLockImmune() && n != 0 && player2.isMoving()) {
-            player.a(player.botCombatSpell);
+            player.setQueuedCombatSpell(player.botCombatSpell);
             CombatManager.startCombat(player, player2);
         }
         if (12445 < InterfaceDefinition.interfaceCount && player2 != null && !player2.isDead() && player.botActiveCombatStyle == MAGIC_COMBAT_STYLE && player.getSpellbook() == Spellbook.MODERN && SpellDefinition.TELE_BLOCK.getRequiredLevel() <= player.getSkillManager().getCurrentLevels()[6] && BotCombatHelper.hasRunesForSpell(player, SpellDefinition.TELE_BLOCK) && !player2.isTeleblocked()) {
             SpellDefinition spellDefinition = SpellDefinition.TELE_BLOCK;
-            player.a(spellDefinition);
+            player.setQueuedCombatSpell(spellDefinition);
             CombatManager.startCombat(player, player2);
         }
         int n3 = BotCombatHelper.getEscapeCombatLevelMargin(player);
-        if (WildernessBotSettings.b && !player.clanWarsBot && player2.getCombatLevel() > player.getCombatLevel() + n3 && player.getCombatTarget() == player2) {
+        if (WildernessBotSettings.escapeHighLevelAttackersEnabled && !player.clanWarsBot && player2.getCombatLevel() > player.getCombatLevel() + n3 && player.getCombatTarget() == player2) {
             if (player.botThreatEscapeDelayTicks < 3) {
                 ++player.botThreatEscapeDelayTicks;
             } else {
-                BotCombatEscapeHandler.a(player);
+                BotCombatEscapeHandler.tryStartBotCombatEscape(player);
                 player.botThreatEscapeDelayTicks = 0;
             }
         }
@@ -129,7 +129,7 @@ public final class BotPvpCombatHandler {
                 player.botEatDelayTicks = 0;
             }
         }
-        if (n3 != 0 && GameUtil.h(100) < 10) {
+        if (n3 != 0 && GameUtil.randomInt(100) < 10) {
             n3 = 0;
         }
         player2.getSkillManager();
@@ -192,13 +192,13 @@ public final class BotPvpCombatHandler {
                 n7 = 0;
             }
             if (!BotCombatHelper.eatBotFood(player) || player.getInventoryManager().getItemAmount(player.botFoodItemId) <= n7) {
-                BotCombatEscapeHandler.a(player);
+                BotCombatEscapeHandler.tryStartBotCombatEscape(player);
                 return;
             }
             CombatManager.startCombat(player, player2);
             return;
         }
-        if (player.getPoisonDamage() > 0.0 && GameUtil.h(3) == 0) {
+        if (player.getPoisonDamage() > 0.0 && GameUtil.randomInt(3) == 0) {
             BotCombatHelper.drinkAntipoisonPotion(player);
         }
         int n9 = player.getEquipmentManager().getItemIdAtSlot(3);
@@ -207,7 +207,7 @@ public final class BotPvpCombatHandler {
             n3 = ItemDefinition.forId(n9).isStackable() ? 1 : 0;
         }
         if (n3 != 0 && player.getEquipmentManager().getContainer().getItemAmount(n9) <= 2) {
-            BotCombatEscapeHandler.a(player);
+            BotCombatEscapeHandler.tryStartBotCombatEscape(player);
             return;
         }
         if (player.getEquipmentManager().getItemIdAtSlot(13) != 0 || n3 != 0) {

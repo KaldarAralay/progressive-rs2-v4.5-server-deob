@@ -110,7 +110,7 @@ public final class FlowerPatchManager {
     public final void processGrowth() {
         int n = 0;
         while (n < this.cropIds.length) {
-            long l = Server.e() - this.lastUpdateTicks[n];
+            long l = Server.getElapsedMinutes() - this.lastUpdateTicks[n];
             if (l >= 5L) {
                 int n2;
                 if (this.growthStages[n] > 0 && this.growthStages[n] <= 3) {
@@ -120,7 +120,7 @@ public final class FlowerPatchManager {
                         if (this.growthStages[n] == 0) break;
                         int n4 = n;
                         this.growthStages[n4] = this.growthStages[n4] - 1;
-                        this.lastUpdateTicks[n] = Server.e();
+                        this.lastUpdateTicks[n] = Server.getElapsedMinutes();
                         ++n2;
                     }
                 }
@@ -144,7 +144,7 @@ public final class FlowerPatchManager {
                                 } else {
                                     n2 = n;
                                     object = this;
-                                    if (((FlowerPatchManager)object).patchStates[n2] == 2 && GameUtil.h(2) == 0) {
+                                    if (((FlowerPatchManager)object).patchStates[n2] == 2 && GameUtil.randomInt(2) == 0) {
                                         ((FlowerPatchManager)object).patchStates[n2] = 3;
                                     }
                                     if (((FlowerPatchManager)object).patchStates[n2] != 2 && ((FlowerPatchManager)object).patchStates[n2] != 3) {
@@ -158,7 +158,7 @@ public final class FlowerPatchManager {
                                             int n9 = (int)d2;
                                             if (((FlowerPatchManager)object).patchStates[n2] == 1) {
                                                 ((FlowerPatchManager)object).patchStates[n2] = 0;
-                                            } else if (GameUtil.g(100) <= n9 && ServerSettings.diseasingEnabled) {
+                                            } else if (GameUtil.randomInclusive(100) <= n9 && ServerSettings.diseasingEnabled) {
                                                 ((FlowerPatchManager)object).patchStates[n2] = 2;
                                             }
                                         }
@@ -230,7 +230,7 @@ public final class FlowerPatchManager {
         object = this.player;
         ((Player)object).packetSender.sendGameMessage("You water the patch.");
         this.player.getUpdateState().setAnimation(2293);
-        this.player.n(true);
+        this.player.setActionLocked(true);
         CycleEventHandler.getInstance().schedule(this.player, new FlowerWateringTask(this, flowerPatch), 5);
         return true;
     }
@@ -274,7 +274,7 @@ public final class FlowerPatchManager {
             n2 = 232;
             n4 = 3;
         }
-        this.player.n(true);
+        this.player.setActionLocked(true);
         Player player = this.player;
         player.packetSender.sendSoundEffect(n2, 1, 0);
         this.player.getUpdateState().setAnimation(n3);
@@ -310,7 +310,7 @@ public final class FlowerPatchManager {
         player.packetSender.sendSoundEffect(1321, 1, 0);
         this.growthStages[flowerPatch.getIndex()] = 4;
         this.player.getInventoryManager().removeItem(new ItemStack(n3));
-        this.player.n(true);
+        this.player.setActionLocked(true);
         CycleEventHandler.getInstance().schedule(this.player, new FlowerPlantingTask(this, flowerPatch, n3, flowerDefinition), 3);
         return true;
     }
@@ -363,7 +363,7 @@ public final class FlowerPatchManager {
         player.packetSender.sendGameMessage("You pour some " + (n3 == 6034 ? "super" : "") + "compost on the patch.");
         this.player.getUpdateState().setAnimation(2283);
         this.player.getSkillManager().addExperience(19, n3 == 6034 ? 26.0 : 18.0);
-        this.player.n(true);
+        this.player.setActionLocked(true);
         CycleEventHandler.getInstance().schedule(this.player, new FlowerCompostTask(this, flowerPatch, n3), 7);
         return true;
     }
@@ -404,7 +404,7 @@ public final class FlowerPatchManager {
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("You bend down and start to inspect the patch...");
             this.player.getUpdateState().setAnimation(1331);
-            this.player.n(true);
+            this.player.setActionLocked(true);
             CycleEventHandler.getInstance().schedule(this.player, new FlowerInspectTask(this, flowerPatch, flowerGrowthDefinition), 5);
         }
         return true;
@@ -444,22 +444,22 @@ public final class FlowerPatchManager {
             ((Player)object).packetSender.sendGameMessage("This plant doesn't need to be resurrected.");
             return true;
         }
-        this.player.a("flower", object.getIndex());
+        this.player.setPendingCropResurrectionTarget("flower", object.getIndex());
         return true;
     }
 
     public final boolean finishResurrection(boolean bl) {
         if (bl) {
-            Object object = FlowerDefinition.forSeedId(this.cropIds[this.player.ds]);
-            this.patchStates[this.player.ds] = 0;
-            int n = this.growthStages[this.player.ds] - 4;
-            this.lastUpdateTicks[this.player.ds] = Server.e() - (long)(object.getGrowthCycleTicks() * n);
+            Object object = FlowerDefinition.forSeedId(this.cropIds[this.player.pendingCropResurrectionPatchIndex]);
+            this.patchStates[this.player.pendingCropResurrectionPatchIndex] = 0;
+            int n = this.growthStages[this.player.pendingCropResurrectionPatchIndex] - 4;
+            this.lastUpdateTicks[this.player.pendingCropResurrectionPatchIndex] = Server.getElapsedMinutes() - (long)(object.getGrowthCycleTicks() * n);
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("You succesfully resurrected the crop.");
         } else {
-            this.resetPatch(this.player.ds);
-            this.growthStages[this.player.ds] = 3;
-            this.lastUpdateTicks[this.player.ds] = Server.e();
+            this.resetPatch(this.player.pendingCropResurrectionPatchIndex);
+            this.growthStages[this.player.pendingCropResurrectionPatchIndex] = 3;
+            this.lastUpdateTicks[this.player.pendingCropResurrectionPatchIndex] = Server.getElapsedMinutes();
             Player player = this.player;
             player.packetSender.sendGameMessage("You failed to resurrect the crop.");
         }
@@ -490,7 +490,7 @@ public final class FlowerPatchManager {
         this.player.getInventoryManager().addItem(new ItemStack(229));
         this.player.getUpdateState().setAnimation(2288);
         this.patchStates[object.getIndex()] = 0;
-        this.player.n(true);
+        this.player.setActionLocked(true);
         CycleEventHandler.getInstance().schedule(this.player, new FlowerCureTask(this), 7);
         return true;
     }
@@ -512,7 +512,7 @@ public final class FlowerPatchManager {
         }
         this.player.getInventoryManager().removeItem(new ItemStack(6059));
         this.player.getUpdateState().setAnimation(832);
-        this.player.n(true);
+        this.player.setActionLocked(true);
         CycleEventHandler.getInstance().schedule(this.player, new ScarecrowPlantingTask(this, (FlowerPatch)((Object)object)), 2);
         return true;
     }

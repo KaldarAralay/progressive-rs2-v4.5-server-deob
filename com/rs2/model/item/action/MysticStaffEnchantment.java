@@ -6,33 +6,33 @@ package com.rs2.model.item.action;
 import java.util.HashMap;
 
 public enum MysticStaffEnchantment {
-    a(1734, 1397, 1405),
-    b(1735, 1395, 1403),
-    c(1736, 1399, 1407),
-    d(1737, 1393, 1401),
-    e(1738, 3053, 3054),
-    f(15348, 6562, 6563);
+    AIR(1734, 1397, 1405),
+    WATER(1735, 1395, 1403),
+    EARTH(1736, 1399, 1407),
+    FIRE(1737, 1393, 1401),
+    LAVA(1738, 3053, 3054),
+    MUD(15348, 6562, 6563);
 
-    private int g;
-    private int h;
-    private int i;
-    private static HashMap j;
+    private int buttonId;
+    private int battlestaffItemId;
+    private int mysticStaffItemId;
+    private static HashMap byButtonId;
 
     static {
-        j = new HashMap();
+        byButtonId = new HashMap();
         MysticStaffEnchantment[] mysticStaffEnchantmentArray = MysticStaffEnchantment.values();
         int n = mysticStaffEnchantmentArray.length;
         int n2 = 0;
         while (n2 < n) {
             MysticStaffEnchantment mysticStaffEnchantment;
             MysticStaffEnchantment mysticStaffEnchantment2 = mysticStaffEnchantment = mysticStaffEnchantmentArray[n2];
-            j.put(mysticStaffEnchantment2.g, mysticStaffEnchantment);
+            byButtonId.put(mysticStaffEnchantment2.buttonId, mysticStaffEnchantment);
             ++n2;
         }
     }
 
-    public static MysticStaffEnchantment a(int n) {
-        return (MysticStaffEnchantment)((Object)j.get(n));
+    public static MysticStaffEnchantment forButtonId(int n) {
+        return (MysticStaffEnchantment)((Object)byButtonId.get(n));
     }
 
     /*
@@ -42,17 +42,17 @@ public enum MysticStaffEnchantment {
     private MysticStaffEnchantment(int n3) {
         void var5_3;
         void var4_2;
-        this.g = n3;
-        this.h = var4_2;
-        this.i = var5_3;
+        this.buttonId = n3;
+        this.battlestaffItemId = var4_2;
+        this.mysticStaffItemId = var5_3;
     }
 
-    public final int a() {
-        return this.h;
+    public final int getBattlestaffItemId() {
+        return this.battlestaffItemId;
     }
 
-    public final int b() {
-        return this.i;
+    public final int getMysticStaffItemId() {
+        return this.mysticStaffItemId;
     }
 }
 

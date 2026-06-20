@@ -15,7 +15,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        GrandExchangeManager.a();
+        GrandExchangeManager.rollInstantPriceFluctuation();
     }
 }
 

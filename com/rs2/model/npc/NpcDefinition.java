@@ -196,7 +196,7 @@ public final class NpcDefinition {
                     ((NpcDefinition)object).deathAnimationId = npcDefinition.deathAnimationId;
                 }
                 Object object3 = object;
-                World.i()[((NpcDefinition)object3).id] = object;
+                World.getNpcDefinitions()[((NpcDefinition)object3).id] = object;
                 ++n5;
             }
         }
@@ -532,7 +532,7 @@ public final class NpcDefinition {
     }
 
     public static NpcDefinition forId(int n) {
-        NpcDefinition npcDefinition = World.i()[n];
+        NpcDefinition npcDefinition = World.getNpcDefinitions()[n];
         if (npcDefinition == null) {
             npcDefinition = NpcDefinition.createFallback(n);
         }

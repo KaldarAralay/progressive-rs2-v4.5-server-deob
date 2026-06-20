@@ -35,7 +35,7 @@ extends CycleEvent {
     @Override
     public final void onStop() {
         SpecialCropPatchManager.getPlayer(this.manager).getUpdateState().setAnimation(1332);
-        SpecialCropPatchManager.getPlayer(this.manager).n(false);
+        SpecialCropPatchManager.getPlayer(this.manager).setActionLocked(false);
     }
 }
 

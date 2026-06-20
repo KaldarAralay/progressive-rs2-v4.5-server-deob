@@ -27,12 +27,12 @@ extends QuestScript {
 
     public TreeGnomeVillageQuest(int n) {
         super(95);
-        super.a(2);
+        super.setQuestPointReward(2);
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
-        int n2 = stringArray.getQuestState(this.b()) - 5;
+    public final String[] buildQuestJournal(Player stringArray, int n) {
+        int n2 = stringArray.getQuestState(this.getQuestId()) - 5;
         if (n == 0) {
             stringArray = new String[]{"I can start this quest by speaking to Bolren at the center", "of the Tree Gnome maze, West of Port Khazard", "", "I need to be able to defeat a level 112 Warlord"};
             return stringArray;
@@ -50,7 +50,7 @@ extends QuestScript {
             return stringArray;
         }
         if (n >= 5 && n < 19) {
-            stringArray = new String[]{"I need to find the tracker gnomes to get the coordinates:", String.valueOf((n2 & GameUtil.b(1)) == 0 || n2 == 0 ? "" : "@str@") + "Tracker gnome 1", String.valueOf((n2 & GameUtil.b(2)) == 0 || n2 == 0 ? "" : "@str@") + "Tracker gnome 2", String.valueOf((n2 & GameUtil.b(3)) == 0 || n2 == 0 ? "" : "@str@") + "Tracker gnome 3"};
+            stringArray = new String[]{"I need to find the tracker gnomes to get the coordinates:", String.valueOf((n2 & GameUtil.bitFlag(1)) == 0 || n2 == 0 ? "" : "@str@") + "Tracker gnome 1", String.valueOf((n2 & GameUtil.bitFlag(2)) == 0 || n2 == 0 ? "" : "@str@") + "Tracker gnome 2", String.valueOf((n2 & GameUtil.bitFlag(3)) == 0 || n2 == 0 ? "" : "@str@") + "Tracker gnome 3"};
             return stringArray;
         }
         if (n == 19) {
@@ -58,7 +58,7 @@ extends QuestScript {
             return stringArray;
         }
         if (n == 20) {
-            if (!stringArray.aq(587)) {
+            if (!stringArray.ownsItem(587)) {
                 stringArray = new String[]{"I should go search the stronghold for the orb."};
                 return stringArray;
             }
@@ -66,7 +66,7 @@ extends QuestScript {
             return stringArray;
         }
         if (n == 21) {
-            if (!stringArray.aq(588)) {
+            if (!stringArray.ownsItem(588)) {
                 stringArray = new String[]{"I need to find the Khazard warlord and bring back the orbs."};
                 return stringArray;
             }
@@ -85,9 +85,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("2 Quest Points", 12150);
         player2 = player;
@@ -101,7 +101,7 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.sendInterfaceText("", 12155);
         player.getSkillManager().addQuestExperience(0, 11450.0);
-        player.getInventoryManager().b(new ItemStack(589, 1));
+        player.getInventoryManager().addOrDropItem(new ItemStack(589, 1));
         player2 = player;
         player2.packetSender.sendInterfaceModel(InterfaceDefinition.interfaceCount <= 12140 ? 6161 : 12145, 250, 589);
         player2 = player;
@@ -111,7 +111,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleFirstObjectAction(Player player, int n, int n2, int n3, int n4) {
         if (n == 2184 && n2 == 2502 && n3 == 3250) {
             if (player.getPosition().getY() < 3251) {
                 Player player2 = player;
@@ -128,16 +128,16 @@ extends QuestScript {
             ObjectManager.getInstance().addDynamicObject(new DynamicObject(2182, 2506, 3259, 1, 2, 10, 2183, 50), true);
             return true;
         }
-        if (n == 2182 && n2 == 2506 && n3 == 3259 && n4 == 20 && !player.aq(587)) {
+        if (n == 2182 && n2 == 2506 && n3 == 3259 && n4 == 20 && !player.ownsItem(587)) {
             player.getDialogueManager().showTwoLineStatement("You search the chest. Inside you find the gnomes' stolen orb of", "protection.");
-            player.getInventoryManager().b(new ItemStack(587, 1));
+            player.getInventoryManager().addOrDropItem(new ItemStack(587, 1));
             return true;
         }
         return false;
     }
 
     @Override
-    public final boolean a(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
+    public final boolean handleContextDialogue(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
         if (n2 == 2181 && n5 == 2508 && n6 == 3210 && n == 2 && n7 == 19) {
             if (n3 == 1) {
                 player.getDialogueManager().showPlayerTwoLineDialogue("That tracker gnome was a bit vague about the x", "coordinate! What could it be?", 591);
@@ -160,7 +160,7 @@ extends QuestScript {
             }
             if (n3 == 4) {
                 player.getDialogueManager().showThreeLineStatement("The huge spear flies through the air and screams down directly into", "the Khazard stronghold. A deafening crash echoes over the battlefield", "as the front entrance is reduced to rubble.");
-                player.setQuestState(this.b(), 20);
+                player.setQuestState(this.getQuestId(), 20);
                 player.getDialogueManager().finishDialogue();
                 return true;
             }
@@ -197,22 +197,22 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2) {
-        if (n == 477 && n2 == 21 && !player.aq(588)) {
+    public final boolean handleNpcKill(Player player, int n, int n2) {
+        if (n == 477 && n2 == 21 && !player.ownsItem(588)) {
             player.getDialogueManager().showFourLineStatement("As the warlord falls to the ground, a ghostly vapour floats upwards", "from his battle-worn armour. Out of sight you hear a shrill scream in", "the still air of the valley. You search his satchel and find the orbs of", "protection.");
-            player.getInventoryManager().b(new ItemStack(588, 1));
+            player.getInventoryManager().addOrDropItem(new ItemStack(588, 1));
             return true;
         }
         return false;
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2) {
+    public final boolean canAttackNpc(Player player, int n, int n2) {
         if (n == 477) {
             if (n2 != 21) {
                 return false;
             }
-            if (n2 == 21 && player.aq(588)) {
+            if (n2 == 21 && player.ownsItem(588)) {
                 return false;
             }
         }
@@ -220,7 +220,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         if (n == 469) {
             if (n4 == 0) {
                 if (n2 == 1) {
@@ -388,7 +388,7 @@ extends QuestScript {
                 if (n2 == 16) {
                     player.getInventoryManager().removeItem(new ItemStack(587, 1));
                     player.getDialogueManager().showNpcTwoLineDialogue("I will safeguard this orb and pray for your safe return.", "My assistant will guide you out.", 591);
-                    player.setQuestState(this.b(), 21);
+                    player.setQuestState(this.getQuestId(), 21);
                     return true;
                 }
             }
@@ -434,7 +434,7 @@ extends QuestScript {
                 if (n2 == 8 && player.getInventoryManager().containsItem(588)) {
                     player.getInventoryManager().removeItem(new ItemStack(588, 1));
                     player.getDialogueManager().showTwoLineStatement("The gnomes begin to chant. Meanwhile, King Bolren holds the orbs", "of protection out in front of him.");
-                    player.setQuestState(this.b(), 22);
+                    player.setQuestState(this.getQuestId(), 22);
                     return true;
                 }
             }
@@ -470,7 +470,7 @@ extends QuestScript {
                 }
                 if (n2 == 7) {
                     player.getDialogueManager().finishDialogue();
-                    this.c(player);
+                    this.awardCompletionRewards(player);
                     return true;
                 }
             }
@@ -691,7 +691,7 @@ extends QuestScript {
                 if (n2 == 9) {
                     if (n3 == 1) {
                         player.getDialogueManager().showPlayerOneLineDialogue("Ok, I'll gather some wood.", 591);
-                        player.setQuestState(this.b(), 3);
+                        player.setQuestState(this.getQuestId(), 3);
                         player.getDialogueManager().setNextDialogueStep(10);
                         return true;
                     }
@@ -717,7 +717,7 @@ extends QuestScript {
                     if (player.getInventoryManager().containsItemAmount(1511, 6)) {
                         player.getDialogueManager().showPlayerTwoLineDialogue("I have some here.", "@whi@(You give six loads of logs to the commander.)", 591);
                         player.getInventoryManager().removeItem(new ItemStack(1511, 6));
-                        player.setQuestState(this.b(), 4);
+                        player.setQuestState(this.getQuestId(), 4);
                     } else {
                         player.getDialogueManager().showPlayerOneLineDialogue("Sorry, I don't have them yet.", 591);
                         player.getDialogueManager().finishDialogue();
@@ -771,7 +771,7 @@ extends QuestScript {
                 if (n2 == 11) {
                     if (n3 == 2) {
                         player.getDialogueManager().showPlayerOneLineDialogue("I'll try my best.", 591);
-                        player.setQuestState(this.b(), 5);
+                        player.setQuestState(this.getQuestId(), 5);
                         player.getDialogueManager().setNextDialogueStep(12);
                         return true;
                     }
@@ -796,8 +796,8 @@ extends QuestScript {
             }
         }
         if (n == 481 && n4 >= 5 && n4 < 20) {
-            n3 = player.getQuestState(this.b()) - 5;
-            if ((n3 & GameUtil.b(1)) == 0 || n3 == 0) {
+            n3 = player.getQuestState(this.getQuestId()) - 5;
+            if ((n3 & GameUtil.bitFlag(1)) == 0 || n3 == 0) {
                 if (n2 == 1) {
                     player.getDialogueManager().showPlayerTwoLineDialogue("Do you know the coordinates of the Khazard", "stronghold?", 591);
                     return true;
@@ -808,7 +808,7 @@ extends QuestScript {
                 }
                 if (n2 == 3) {
                     player.getDialogueManager().showOneLineStatement("The gnome tells you the @blu@height@bla@ coordinate.");
-                    player.addQuestState(this.b(), GameUtil.b(1));
+                    player.addQuestState(this.getQuestId(), GameUtil.bitFlag(1));
                     return true;
                 }
             }
@@ -827,8 +827,8 @@ extends QuestScript {
             }
         }
         if (n == 482 && n4 >= 5 && n4 < 20) {
-            n3 = player.getQuestState(this.b()) - 5;
-            if ((n3 & GameUtil.b(2)) == 0 || n3 == 0) {
+            n3 = player.getQuestState(this.getQuestId()) - 5;
+            if ((n3 & GameUtil.bitFlag(2)) == 0 || n3 == 0) {
                 if (n2 == 1) {
                     player.getDialogueManager().showPlayerOneLineDialogue("Are you OK?", 591);
                     return true;
@@ -851,7 +851,7 @@ extends QuestScript {
                 }
                 if (n2 == 6) {
                     player.getDialogueManager().showOneLineStatement("The gnome tells you the @blu@y coordinate@bla@.");
-                    player.addQuestState(this.b(), GameUtil.b(2));
+                    player.addQuestState(this.getQuestId(), GameUtil.bitFlag(2));
                     return true;
                 }
             }
@@ -874,7 +874,7 @@ extends QuestScript {
             }
         }
         if (n == 483 && n4 >= 5 && n4 < 20) {
-            n3 = player.getQuestState(this.b()) - 5;
+            n3 = player.getQuestState(this.getQuestId()) - 5;
             if (n2 == 1) {
                 player.getDialogueManager().showPlayerOneLineDialogue("Are you OK?", 591);
                 return true;
@@ -929,8 +929,8 @@ extends QuestScript {
                     string = "My legs and your legs, ha ha ha!";
                 }
                 player.getDialogueManager().showNpcOneLineDialogue(string, 591);
-                if ((n3 & GameUtil.b(3)) == 0 || n3 == 0) {
-                    player.addQuestState(this.b(), GameUtil.b(3));
+                if ((n3 & GameUtil.bitFlag(3)) == 0 || n3 == 0) {
+                    player.addQuestState(this.getQuestId(), GameUtil.bitFlag(3));
                 }
                 return true;
             }

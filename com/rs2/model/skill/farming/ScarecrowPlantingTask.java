@@ -26,15 +26,15 @@ extends CycleEvent {
         player.packetSender.sendGameMessage("You put a scarecrow on the flower patch, and some weeds start to grow around it.");
         this.manager.cropIds[this.patch.getIndex()] = 36;
         this.manager.growthStages[this.patch.getIndex()] = 4;
-        this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.e();
+        this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.getElapsedMinutes();
         cycleEventContainer.stop();
     }
 
     @Override
     public final void onStop() {
         this.manager.refreshConfig();
-        FlowerPatchManager.getPlayer(this.manager).n(false);
-        FlowerPatchManager.getPlayer(this.manager).aN();
+        FlowerPatchManager.getPlayer(this.manager).setActionLocked(false);
+        FlowerPatchManager.getPlayer(this.manager).resetAnimation();
     }
 }
 

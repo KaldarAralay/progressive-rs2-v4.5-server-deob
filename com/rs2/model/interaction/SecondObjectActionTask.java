@@ -62,7 +62,7 @@ extends TickTask {
             return;
         }
         Object object = ObjectDefinition.forId(this.player.getInteractionTargetId());
-        Position position = GameUtil.a(worldObject.getPosition().getX(), worldObject.getPosition().getY(), this.player.getPosition().getX(), this.player.getPosition().getY(), ((ObjectDefinition)object).getWidthForOrientation(worldObject.getOrientation()), ((ObjectDefinition)object).getLengthForOrientation(worldObject.getOrientation()), this.objectPlane);
+        Position position = GameUtil.findReachableInteractionPosition(worldObject.getPosition().getX(), worldObject.getPosition().getY(), this.player.getPosition().getX(), this.player.getPosition().getY(), ((ObjectDefinition)object).getWidthForOrientation(worldObject.getOrientation()), ((ObjectDefinition)object).getLengthForOrientation(worldObject.getOrientation()), this.objectPlane);
         if (position == null) {
             return;
         }
@@ -74,7 +74,7 @@ extends TickTask {
         if (object != null) {
             this.player.getUpdateState().setFacePosition(position.centerForSize(((ObjectDefinition)object).getMaxDimension()));
         }
-        if (this.player.getQuestManager().b(this.objectId, this.objectX, this.objectY)) {
+        if (this.player.getQuestManager().handleSecondObjectAction(this.objectId, this.objectX, this.objectY)) {
             this.stop();
             return;
         }
@@ -87,7 +87,7 @@ extends TickTask {
             return;
         }
         if (ServerSettings.content2007Enabled) {
-            if (GodWarsDungeonManager.c(this.player, this.objectId)) {
+            if (GodWarsDungeonManager.handleSecondObjectAction(this.player, this.objectId)) {
                 this.stop();
                 return;
             }
@@ -103,7 +103,7 @@ extends TickTask {
             this.stop();
             return;
         }
-        if (this.player.getMiningManager().d(this.objectId)) {
+        if (this.player.getMiningManager().prospectRock(this.objectId)) {
             this.stop();
             return;
         }
@@ -112,7 +112,7 @@ extends TickTask {
             return;
         }
         if (this.objectId == 2418 && this.objectX == 2729 && this.objectY == 3470) {
-            PartyRoomManager.c(this.player);
+            PartyRoomManager.openPartyChest(this.player);
             this.stop();
             return;
         }
@@ -122,7 +122,7 @@ extends TickTask {
                 n = this.objectX;
                 n2 = this.objectId;
                 object = this.player;
-                GatheringToolDefinition gatheringToolDefinition = ItemCombinationHandler.a((Player)object, 14);
+                GatheringToolDefinition gatheringToolDefinition = ItemCombinationHandler.findUsableGatheringTool((Player)object, 14);
                 if (gatheringToolDefinition == null) {
                     Object object2 = object;
                     ((Player)object2).packetSender.sendGameMessage("You do not have a pickaxe that you can use.");
@@ -130,9 +130,9 @@ extends TickTask {
                 }
                 if (!SkillActionHelper.checkSkillRequirement((Player)object, 14, 50, "mine here")) break;
                 int n4 = ((Entity)object).nextActionSequence();
-                ((Player)object).aN();
+                ((Player)object).resetAnimation();
                 ((Player)object).N = 0;
-                ((Entity)object).getUpdateState().setAnimation(gatheringToolDefinition.d());
+                ((Entity)object).getUpdateState().setAnimation(gatheringToolDefinition.getGatherAnimationId());
                 Object object3 = object;
                 ((Player)object3).packetSender.sendSoundEffect(432, 1, 0);
                 ((Entity)object).setActiveCycleEvent(new MiningShortcutTask((Player)object, n4, n, n3, n2, gatheringToolDefinition));
@@ -141,13 +141,13 @@ extends TickTask {
             }
             case 2114: {
                 object = this.player;
-                if (((Player)object).fl() == 0) {
+                if (((Player)object).getCoalTruckCoalCount() == 0) {
                     Object object4 = object;
                     ((Player)object4).packetSender.sendGameMessage("There is no coal left in the truck.");
                     break;
                 }
                 Object object5 = object;
-                ((Player)object5).packetSender.sendGameMessage("The truck contains " + ((Player)object).fl() + " pieces of coal.");
+                ((Player)object5).packetSender.sendGameMessage("The truck contains " + ((Player)object).getCoalTruckCoalCount() + " pieces of coal.");
                 break;
             }
             case 3194: {
@@ -155,32 +155,32 @@ extends TickTask {
                 break;
             }
             case 8930: {
-                AttackStyleDefinition.a(this.player, new Position(2545, 10143, 0));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(2545, 10143, 0));
                 break;
             }
             case 10177: {
-                AttackStyleDefinition.a(this.player, new Position(2544, 3741, 0));
+                AttackStyleDefinition.startDelayedObjectMove(this.player, new Position(2544, 3741, 0));
                 break;
             }
             case 3433: {
-                AttackStyleDefinition.a(this.player, this.objectId, 3432, worldObject);
+                AttackStyleDefinition.toggleObjectAfterAnimation(this.player, this.objectId, 3432, worldObject);
                 break;
             }
             case 1570: {
-                AttackStyleDefinition.a(this.player, this.objectId, 1568, worldObject);
+                AttackStyleDefinition.toggleObjectAfterAnimation(this.player, this.objectId, 1568, worldObject);
                 break;
             }
             case 1739: 
             case 4569: 
             case 12537: {
-                AttackStyleDefinition.b(this.player, "up");
+                AttackStyleDefinition.climbOffsetLadder(this.player, "up");
                 break;
             }
             case 1748: 
             case 2884: 
             case 8745: 
             case 12965: {
-                AttackStyleDefinition.a(this.player, "up");
+                AttackStyleDefinition.climbOneFloorAtCurrentTile(this.player, "up");
                 break;
             }
             case 2781: 

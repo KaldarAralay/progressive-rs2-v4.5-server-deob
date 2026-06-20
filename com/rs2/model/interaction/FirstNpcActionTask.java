@@ -73,7 +73,7 @@ extends TickTask {
         }
         if (this.npc.getNpcId() == 3103) {
             this.npc.setInteractionTarget(this.player);
-            MageTrainingArenaRewardShop.a(this.player);
+            MageTrainingArenaRewardShop.openRewardShop(this.player);
             this.stop();
             return;
         }
@@ -84,7 +84,7 @@ extends TickTask {
             this.stop();
             return;
         }
-        if (this.npc.getNpcId() != 767 && this.npc.getNpcId() != 249 && this.npc.getNpcId() != 221 && !GameUtil.a(this.player.getPosition(), this.npc.getPosition(), true)) {
+        if (this.npc.getNpcId() != 767 && this.npc.getNpcId() != 249 && this.npc.getNpcId() != 221 && !GameUtil.hasClearPath(this.player.getPosition(), this.npc.getPosition(), true)) {
             return;
         }
         this.npc.setInteractionTarget(this.player);
@@ -118,7 +118,7 @@ extends TickTask {
             this.stop();
             return;
         }
-        if (this.player.getQuestManager().b(this.player.getInteractionTargetId())) {
+        if (this.player.getQuestManager().handleFirstNpcAction(this.player.getInteractionTargetId())) {
             this.stop();
             return;
         }

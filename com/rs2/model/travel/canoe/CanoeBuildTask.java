@@ -40,7 +40,7 @@ extends CycleEvent {
         this.player.U = object.configValue;
         object = this.player;
         ((Player)object).packetSender.sendSoundEffect(473, 1, 0);
-        this.player.getUpdateState().setAnimation(this.gatheringTool.e(), 0);
+        this.player.getUpdateState().setAnimation(this.gatheringTool.getCanoeAnimationId(), 0);
         cycleEventContainer.stop();
     }
 

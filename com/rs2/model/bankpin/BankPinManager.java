@@ -63,7 +63,7 @@ public class BankPinManager {
                     var2_5.packetSender.sendSoundEffect(1827, 1, 0);
                     var2_6 = this.decodeDigitButton(var1_1);
                     var1_2 = this;
-                    var1_2.player.k(var2_6, var1_2.currentDigitIndex);
+                    var1_2.player.setBankPinEntryDigit(var2_6, var1_2.currentDigitIndex);
                     if (var1_2.currentDigitIndex + 1 >= 4) ** GOTO lbl25
                     var1_2.setCurrentDigitIndex(var1_2.currentDigitIndex + 1);
                     ** GOTO lbl61
@@ -79,7 +79,7 @@ lbl25:
 lbl31:
                         // 1 sources
 
-                        if (var2_7.currentPin[var3_10] == var2_7.player.ff()[var3_10]) ** GOTO lbl34
+                        if (var2_7.currentPin[var3_10] == var2_7.player.getBankPinEntryDigits()[var3_10]) ** GOTO lbl34
                         v0 = false;
                         ** GOTO lbl37
 lbl34:
@@ -96,7 +96,7 @@ lbl37:
                         var2_7.packetSender.sendGameMessage("You've entered an incorrect pin, please try again.");
                         var1_2.resetPinEntryInterface();
                         var1_2.setCurrentDigitIndex(0);
-                        var1_2.player.fe();
+                        var1_2.player.resetBankPinEntryDigits();
                         var2_7 = var1_2.player;
                         var2_7.packetSender.sendSoundEffect(1828, 1, 0);
                     } else {
@@ -185,14 +185,14 @@ lbl62:
             player = this.player;
             player.packetSender.sendInterfaceText("*", n2 + 14913);
             player = this.player;
-            player.packetSender.sendInterfaceText("Click the " + GameUtil.k(n2 + 2) + " digit...", 15313);
+            player.packetSender.sendInterfaceText("Click the " + GameUtil.getOrdinalWord(n2 + 2) + " digit...", 15313);
             ++n2;
         }
         BankPinManager.shuffleDigitButtons(this.digitButtonIds);
         n2 = 0;
         while (n2 < this.digitButtonIds.length) {
             player = this.player;
-            player.packetSender.sendInterfacePosition(this.digitButtonIds[n2], GameUtil.g(47), -GameUtil.g(42));
+            player.packetSender.sendInterfacePosition(this.digitButtonIds[n2], GameUtil.randomInclusive(47), -GameUtil.randomInclusive(42));
             player = this.player;
             player.packetSender.sendInterfaceText(String.valueOf(n2), this.digitButtonIds[n2]);
             ++n2;
@@ -242,10 +242,10 @@ lbl62:
     }
 
     private int getPendingPinDaysElapsed() {
-        if (GameUtil.c() == this.pinAppendYear) {
-            return GameUtil.b() - this.pinAppendDate;
+        if (GameUtil.getCurrentYear() == this.pinAppendYear) {
+            return GameUtil.getDayOfYear() - this.pinAppendDate;
         }
-        return 365 - this.pinAppendDate + GameUtil.b();
+        return 365 - this.pinAppendDate + GameUtil.getDayOfYear();
     }
 
     private void resetPinEntryInterface() {
@@ -255,7 +255,7 @@ lbl62:
         int n = bankPinManager.getPendingPinDaysElapsed();
         player.packetSender.sendInterfaceText(bankPinManager.changingPin ? "You bank pin will change in " + (7 - n) + " days." : (bankPinManager.deletingPin ? "You bank pin will be deleted in " + (7 - n) + " days." : (bankPinManager.hasPin() ? "Your bank pin is set and up to date." : "You do not have a bank pin.")), 14923);
         Player player2 = this.player;
-        player2.packetSender.sendInterfaceText("Click the " + GameUtil.k(1) + " digit...", 15313);
+        player2.packetSender.sendInterfaceText("Click the " + GameUtil.getOrdinalWord(1) + " digit...", 15313);
         int n2 = 0;
         while (n2 < 4) {
             player2 = this.player;
@@ -272,15 +272,15 @@ lbl62:
 
     public final void requestPinChange() {
         this.changingPin = true;
-        this.pinAppendYear = GameUtil.c();
-        this.pinAppendDate = GameUtil.b();
+        this.pinAppendYear = GameUtil.getCurrentYear();
+        this.pinAppendDate = GameUtil.getDayOfYear();
     }
 
     public final void requestPinDeletion() {
         this.clearPendingPinChange();
         this.deletingPin = true;
-        this.pinAppendYear = GameUtil.c();
-        this.pinAppendDate = GameUtil.b();
+        this.pinAppendYear = GameUtil.getCurrentYear();
+        this.pinAppendDate = GameUtil.getDayOfYear();
     }
 
     public final void clearPendingPinChange() {
@@ -552,7 +552,7 @@ lbl62:
                                     string = String.valueOf(string) + "s";
                                 }
                             }
-                            string5 = String.valueOf(string5) + " @dbl@" + GameUtil.b(string) + "@bla@" + string2;
+                            string5 = String.valueOf(string5) + " @dbl@" + GameUtil.capitalizeWords(string) + "@bla@" + string2;
                             player.getDialogueManager().showItemMessage(String.valueOf(string3) + string4 + string5, (ItemStack)object3);
                             return true;
                         }

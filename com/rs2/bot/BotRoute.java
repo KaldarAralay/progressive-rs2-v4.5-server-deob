@@ -45,8 +45,8 @@ public class BotRoute {
             return;
         }
         if (player.getQuestState(29) != 1) {
-            Object object = QuestDefinition.b(29);
-            object = ((QuestDefinition)object).c();
+            Object object = QuestDefinition.forId(29);
+            object = ((QuestDefinition)object).getName();
             player.packetSender.sendGameMessage("You need to complete " + (String)object + " to do this.");
             return;
         }
@@ -71,7 +71,7 @@ public class BotRoute {
         while (n2 < this.waypoints.length - 1) {
             Position position = this.waypoints[n2];
             Position position2 = this.waypoints[n2 + 1];
-            n += GameUtil.b(position, position2);
+            n += GameUtil.getDistance(position, position2);
             ++n2;
         }
         return n;

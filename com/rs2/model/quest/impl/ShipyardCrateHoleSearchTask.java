@@ -18,7 +18,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        this.a.n(false);
+        this.a.setActionLocked(false);
         this.a.getDialogueManager().showTwoLineStatement("You find a hole in the floor under the crate! All you can see is the", "faint glimmer of light from extremely far below.");
         this.stop();
     }

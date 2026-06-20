@@ -25,7 +25,7 @@ extends CycleEvent {
         this.d = npc;
         this.e = stringArray;
         this.f = n;
-        this.c = GameUtil.c(player.getUsername());
+        this.c = GameUtil.formatDisplayName(player.getUsername());
     }
 
     @Override

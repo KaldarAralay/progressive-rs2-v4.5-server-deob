@@ -33,7 +33,7 @@ extends CycleEvent {
         if (ThievingObjectHandler.getRandom().nextInt(30) < 5) {
             Player player = this.player;
             player.packetSender.sendGameMessage("But fail to pick it.");
-            this.player.n(false);
+            this.player.setActionLocked(false);
             cycleEventContainer.stop();
             return;
         }
@@ -48,8 +48,8 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        this.player.n(false);
-        this.player.aN();
+        this.player.setActionLocked(false);
+        this.player.resetAnimation();
     }
 }
 

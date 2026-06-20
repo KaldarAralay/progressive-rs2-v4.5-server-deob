@@ -43,22 +43,22 @@ public final class BotCombatHelper {
     private static RectangularArea[] hotzonePvpSearchAreas = new RectangularArea[]{new RectangularArea(3225, 3521, 3275, 3551), new RectangularArea(3068, 3521, 3103, 3551)};
 
     public static void disableBotCombatPrayers(Player player) {
-        if (player.cfr_renamed_0()[10]) {
+        if (player.getActivePrayers()[10]) {
             player.getPrayerManager().togglePrayer(10);
         }
-        if (player.cfr_renamed_0()[8]) {
+        if (player.getActivePrayers()[8]) {
             player.getPrayerManager().togglePrayer(8);
         }
-        if (player.cfr_renamed_0()[14]) {
+        if (player.getActivePrayers()[14]) {
             player.getPrayerManager().togglePrayer(14);
         }
-        if (player.cfr_renamed_0()[13]) {
+        if (player.getActivePrayers()[13]) {
             player.getPrayerManager().togglePrayer(13);
         }
-        if (player.cfr_renamed_0()[12]) {
+        if (player.getActivePrayers()[12]) {
             player.getPrayerManager().togglePrayer(12);
         }
-        if (player.cfr_renamed_0()[17]) {
+        if (player.getActivePrayers()[17]) {
             player.getPrayerManager().togglePrayer(17);
         }
     }
@@ -103,7 +103,7 @@ public final class BotCombatHelper {
 
     public static void advanceBotEscapeWaypoints(Player player, Position[] positionArray) {
         Position position = positionArray[player.botPathWaypointIndex];
-        if (GameUtil.a(player.getPosition(), position, 1)) {
+        if (GameUtil.isWithinDistance(player.getPosition(), position, 1)) {
             if (player.botPathWaypointIndex == positionArray.length - 1) {
                 player.botEscapeRouteName = "";
                 player.botPathWaypointIndex = -1;
@@ -133,17 +133,17 @@ public final class BotCombatHelper {
         if (player.botLootSellItems.size() > 0) {
             int n;
             if (player.currentBotTask == null) {
-                n = GameUtil.h(3) == 0 ? 151 : 50;
+                n = GameUtil.randomInt(3) == 0 ? 151 : 50;
             } else {
                 BotTaskDefinition botTaskDefinition = player.currentBotTask;
-                int n2 = GameUtil.h(botTaskDefinition.lootSellShopIds.size());
+                int n2 = GameUtil.randomInt(botTaskDefinition.lootSellShopIds.size());
                 n = (Integer)botTaskDefinition.lootSellShopIds.get(n2);
             }
-            ShopManager.a(player, n);
+            ShopManager.openShop(player, n);
             for (ItemStack itemStack : player.botLootSellItems) {
-                int n3 = GrandExchangeManager.a(itemStack.getId());
+                int n3 = GrandExchangeManager.getGuidePrice(itemStack.getId());
                 if (n3 >= 10000) continue;
-                ShopManager.b(player, itemStack);
+                ShopManager.sellItemStack(player, itemStack);
             }
             player.botLootSellItems.clear();
             player.botLootSellGroundItems.clear();
@@ -188,7 +188,7 @@ public final class BotCombatHelper {
                     if (n2 != 0) continue;
                 }
             }
-            n2 = GrandExchangeManager.a(itemStack.getId());
+            n2 = GrandExchangeManager.getGuidePrice(itemStack.getId());
             int n5 = n = player.currentBotTask == null ? 1000 : 0;
             if (groundItem2.getItem().getDefinition().isStackable() && player.getInventoryManager().containsItem(groundItem2.getItem().getId()) || groundItem2.getItem().getDefinition().isStackable() && player.getInventoryManager().containsItem(groundItem2.getItem().getId())) {
                 player.botLootPickupTargets.add(groundItem);
@@ -353,7 +353,7 @@ public final class BotCombatHelper {
             ItemStack itemStack = itemStackArray[n3];
             ++n;
             if (itemStack != null && itemStack.getId() == player.botFoodItemId) {
-                player.getFoodHandler().a(itemStack.getId(), n - 1);
+                player.getFoodHandler().eatFood(itemStack.getId(), n - 1);
                 return true;
             }
             ++n3;
@@ -370,10 +370,10 @@ public final class BotCombatHelper {
         while (n3 < n2) {
             ItemStack itemStack = itemStackArray[n3];
             ++n;
-            if (itemStack != null && player.getPotionHandler().a(itemStack.getId())) {
-                while (0 < PotionHandler.a[player.getPotionHandler().c].d().length) {
-                    if (PotionHandler.a[player.getPotionHandler().c].d()[0] == 2) {
-                        player.getPotionHandler().a(itemStack.getId(), n - 1);
+            if (itemStack != null && player.getPotionHandler().selectPotionForItemId(itemStack.getId())) {
+                while (0 < PotionHandler.definitions[player.getPotionHandler().selectedDefinitionIndex].getSkillIds().length) {
+                    if (PotionHandler.definitions[player.getPotionHandler().selectedDefinitionIndex].getSkillIds()[0] == 2) {
+                        player.getPotionHandler().drinkPotion(itemStack.getId(), n - 1);
                         return true;
                     }
                     ++n;
@@ -409,11 +409,11 @@ public final class BotCombatHelper {
 
     private static void updateProtectionPrayerForStyle(Player player, Player player2, boolean bl) {
         int n = 0;
-        if (player.botActiveCombatStyle == 0 && player2.cfr_renamed_0()[14]) {
+        if (player.botActiveCombatStyle == 0 && player2.getActivePrayers()[14]) {
             n = 1;
-        } else if (player.botActiveCombatStyle == BotPvpCombatHandler.RANGED_COMBAT_STYLE && player2.cfr_renamed_0()[13]) {
+        } else if (player.botActiveCombatStyle == BotPvpCombatHandler.RANGED_COMBAT_STYLE && player2.getActivePrayers()[13]) {
             n = 1;
-        } else if (player.botActiveCombatStyle == BotPvpCombatHandler.MAGIC_COMBAT_STYLE && player2.cfr_renamed_0()[12]) {
+        } else if (player.botActiveCombatStyle == BotPvpCombatHandler.MAGIC_COMBAT_STYLE && player2.getActivePrayers()[12]) {
             n = 1;
         }
         boolean bl2 = true;
@@ -421,7 +421,7 @@ public final class BotCombatHelper {
             bl2 = false;
         }
         if (bl2) {
-            if (player.botOpponentCombatStyle == 0 && !player.cfr_renamed_0()[14]) {
+            if (player.botOpponentCombatStyle == 0 && !player.getActivePrayers()[14]) {
                 Player player3 = player2;
                 player2 = player;
                 n = 1;
@@ -431,7 +431,7 @@ public final class BotCombatHelper {
                 if (player3.isMoving() && player3.isRunningMovement()) {
                     n += 2;
                 }
-                if (GameUtil.a(player2.getPosition(), player3.getPosition(), n)) {
+                if (GameUtil.isWithinDistance(player2.getPosition(), player3.getPosition(), n)) {
                     if (player.botQueuedPrayerId != 14) {
                         player.botQueuedPrayerId = 14;
                         player.botPrayerSwitchDelayTicks = 0;
@@ -446,7 +446,7 @@ public final class BotCombatHelper {
                     return;
                 }
             }
-            if (player.botOpponentCombatStyle == BotPvpCombatHandler.RANGED_COMBAT_STYLE && !player.cfr_renamed_0()[13]) {
+            if (player.botOpponentCombatStyle == BotPvpCombatHandler.RANGED_COMBAT_STYLE && !player.getActivePrayers()[13]) {
                 if (player.botQueuedPrayerId != 13) {
                     player.botQueuedPrayerId = 13;
                     player.botPrayerSwitchDelayTicks = 0;
@@ -460,7 +460,7 @@ public final class BotCombatHelper {
                 player.botPrayerSwitchDelayTicks = 0;
                 return;
             }
-            if (player.botOpponentCombatStyle == BotPvpCombatHandler.MAGIC_COMBAT_STYLE && !player.cfr_renamed_0()[12]) {
+            if (player.botOpponentCombatStyle == BotPvpCombatHandler.MAGIC_COMBAT_STYLE && !player.getActivePrayers()[12]) {
                 if (player.botQueuedPrayerId != 12) {
                     player.botQueuedPrayerId = 12;
                     player.botPrayerSwitchDelayTicks = 0;
@@ -475,7 +475,7 @@ public final class BotCombatHelper {
                 return;
             }
         } else {
-            if (player.botOpponentCombatStyle == 0 && player.cfr_renamed_0()[14]) {
+            if (player.botOpponentCombatStyle == 0 && player.getActivePrayers()[14]) {
                 if (player.botQueuedPrayerId != 14) {
                     player.botQueuedPrayerId = 14;
                     player.botPrayerSwitchDelayTicks = 0;
@@ -489,7 +489,7 @@ public final class BotCombatHelper {
                 player.botPrayerSwitchDelayTicks = 0;
                 return;
             }
-            if (player.botOpponentCombatStyle == BotPvpCombatHandler.RANGED_COMBAT_STYLE && player.cfr_renamed_0()[13]) {
+            if (player.botOpponentCombatStyle == BotPvpCombatHandler.RANGED_COMBAT_STYLE && player.getActivePrayers()[13]) {
                 if (player.botQueuedPrayerId != 13) {
                     player.botQueuedPrayerId = 13;
                     player.botPrayerSwitchDelayTicks = 0;
@@ -503,7 +503,7 @@ public final class BotCombatHelper {
                 player.botPrayerSwitchDelayTicks = 0;
                 return;
             }
-            if (player.botOpponentCombatStyle == BotPvpCombatHandler.MAGIC_COMBAT_STYLE && player.cfr_renamed_0()[12]) {
+            if (player.botOpponentCombatStyle == BotPvpCombatHandler.MAGIC_COMBAT_STYLE && player.getActivePrayers()[12]) {
                 if (player.botQueuedPrayerId != 12) {
                     player.botQueuedPrayerId = 12;
                     player.botPrayerSwitchDelayTicks = 0;
@@ -520,7 +520,7 @@ public final class BotCombatHelper {
     }
 
     public static void toggleProtectionPrayerForOpponentStyle(Player player) {
-        if (player.botOpponentCombatStyle == 0 && !player.cfr_renamed_0()[14]) {
+        if (player.botOpponentCombatStyle == 0 && !player.getActivePrayers()[14]) {
             if (player.botQueuedPrayerId != 14) {
                 player.botQueuedPrayerId = 14;
                 player.botPrayerSwitchDelayTicks = 0;
@@ -534,7 +534,7 @@ public final class BotCombatHelper {
             player.botPrayerSwitchDelayTicks = 0;
             return;
         }
-        if (player.botOpponentCombatStyle == BotPvpCombatHandler.RANGED_COMBAT_STYLE && !player.cfr_renamed_0()[13]) {
+        if (player.botOpponentCombatStyle == BotPvpCombatHandler.RANGED_COMBAT_STYLE && !player.getActivePrayers()[13]) {
             if (player.botQueuedPrayerId != 13) {
                 player.botQueuedPrayerId = 13;
                 player.botPrayerSwitchDelayTicks = 0;
@@ -548,7 +548,7 @@ public final class BotCombatHelper {
             player.botPrayerSwitchDelayTicks = 0;
             return;
         }
-        if (player.botOpponentCombatStyle == BotPvpCombatHandler.MAGIC_COMBAT_STYLE && !player.cfr_renamed_0()[12]) {
+        if (player.botOpponentCombatStyle == BotPvpCombatHandler.MAGIC_COMBAT_STYLE && !player.getActivePrayers()[12]) {
             if (player.botQueuedPrayerId != 12) {
                 player.botQueuedPrayerId = 12;
                 player.botPrayerSwitchDelayTicks = 0;
@@ -574,7 +574,7 @@ public final class BotCombatHelper {
             } else if (!BotCombatHelper.isFreeToPlayWorld()) {
                 player.getSkillManager();
                 if (SkillManager.getLevelForExperience(player.getSkillManager().getExperience()[5]) >= 52 && !player.botCombatEscapeActive && ServerSettings.cacheVersion >= 336) {
-                    if (!player.cfr_renamed_0()[17]) {
+                    if (!player.getActivePrayers()[17]) {
                         player.getPrayerManager().togglePrayer(17);
                     }
                 } else {
@@ -586,7 +586,7 @@ public final class BotCombatHelper {
         }
         if (player.botActiveCombatStyle == 0 && bl) {
             player.getSkillManager();
-            if (SkillManager.getLevelForExperience(player.getSkillManager().getExperience()[5]) >= 31 && !player.cfr_renamed_0()[10]) {
+            if (SkillManager.getLevelForExperience(player.getSkillManager().getExperience()[5]) >= 31 && !player.getActivePrayers()[10]) {
                 player.getPrayerManager().togglePrayer(10);
             }
         }
@@ -596,7 +596,7 @@ public final class BotCombatHelper {
         return true;
     }
 
-    public static void k(Player player) {
+    public static void stopBotCombatTick(Player player) {
         if (player.botCombatTickTask != null && player.botCombatTickTask.isActive()) {
             player.botCombatTickTask.stop();
         }
@@ -625,7 +625,7 @@ public final class BotCombatHelper {
             n5 = 3895;
         }
         player.botWildernessMaxY = n5;
-        if (ServerSettings.hotzonesForWildyBotsEnabled && (n = GameUtil.h(hotzonePvpSearchAreas.length + 1)) < hotzonePvpSearchAreas.length) {
+        if (ServerSettings.hotzonesForWildyBotsEnabled && (n = GameUtil.randomInt(hotzonePvpSearchAreas.length + 1)) < hotzonePvpSearchAreas.length) {
             RectangularArea rectangularArea = hotzonePvpSearchAreas[n];
             n2 = rectangularArea.getMinX();
             n4 = rectangularArea.getMinY();
@@ -633,12 +633,12 @@ public final class BotCombatHelper {
             n5 = rectangularArea.getMaxY();
         }
         n = n3 - n2;
-        n3 = n2 + GameUtil.h(n);
-        int n6 = n4 + GameUtil.h(n5 -= n4);
+        n3 = n2 + GameUtil.randomInt(n);
+        int n6 = n4 + GameUtil.randomInt(n5 -= n4);
         boolean bl = true;
         while (bl) {
-            n3 = n2 + GameUtil.h(n);
-            n6 = n4 + GameUtil.h(n5);
+            n3 = n2 + GameUtil.randomInt(n);
+            n6 = n4 + GameUtil.randomInt(n5);
             boolean bl2 = true;
             if (ServerSettings.freeToPlayWorld && BotCombatHelper.isPositionInAnyArea(new Position(n3, n6), freeToPlayBlockedPvpSearchAreas)) {
                 bl2 = false;
@@ -655,17 +655,17 @@ public final class BotCombatHelper {
     static boolean isTargetLootWorthRisk(Player player, Player player2) {
         int n;
         ItemStack itemStack2;
-        if (player.F) {
+        if (player.skulled) {
             return true;
         }
-        if (player.q != null && player2.q == null && player.isInMultiCombatArea() && player2.isInMultiCombatArea()) {
+        if (player.currentGroup != null && player2.currentGroup == null && player.isInMultiCombatArea() && player2.isInMultiCombatArea()) {
             return true;
         }
         double d = player2.getCombatLevel() > player.getCombatLevel() + 5 ? 0.3 : 0.2;
         int n2 = 0;
-        for (ItemStack itemStack2 : player2.a(player2.getEquipmentManager().getContainer().getItems())) {
+        for (ItemStack itemStack2 : player2.getUnprotectedItems(player2.getEquipmentManager().getContainer().getItems())) {
             if (itemStack2 == null) continue;
-            n = GrandExchangeManager.a(itemStack2.getId());
+            n = GrandExchangeManager.getGuidePrice(itemStack2.getId());
             int n3 = n * itemStack2.getAmount();
             n2 += n3;
         }
@@ -678,7 +678,7 @@ public final class BotCombatHelper {
         while (n4 < n) {
             itemStack2 = itemStackArray[n4];
             if (itemStack2 != null) {
-                int n5 = GrandExchangeManager.a(itemStack2.getId());
+                int n5 = GrandExchangeManager.getGuidePrice(itemStack2.getId());
                 n2 += (n5 *= itemStack2.getAmount());
             }
             ++n4;
@@ -689,7 +689,7 @@ public final class BotCombatHelper {
         while (n4 < n) {
             itemStack2 = itemStackArray[n4];
             if (itemStack2 != null) {
-                int n6 = GrandExchangeManager.a(itemStack2.getId());
+                int n6 = GrandExchangeManager.getGuidePrice(itemStack2.getId());
                 n2 += (n6 *= itemStack2.getAmount());
             }
             ++n4;
@@ -748,7 +748,7 @@ public final class BotCombatHelper {
             if (((ArrayList)object).size() == 0) {
                 return -1;
             }
-            n = (Integer)((ArrayList)object).get(GameUtil.h(((ArrayList)object).size()));
+            n = (Integer)((ArrayList)object).get(GameUtil.randomInt(((ArrayList)object).size()));
         }
         return n;
     }
@@ -796,8 +796,8 @@ public final class BotCombatHelper {
     }
 
     public static void grantBotSpellRunes(Player player, SpellDefinition object, int n) {
-        if (player.az == 4 || BotPlayer.defaultProgressiveBotNames.contains(player.getUsername().toLowerCase())) {
-            String string = "CRITICAL BUG, REPORT! BotUtil " + player.getUsername() + " " + player.az + " " + player.currentBotTaskIndex + " " + player.currentBotTaskTypeId + " " + player.currentBotTask;
+        if (player.botMode == 4 || BotPlayer.defaultProgressiveBotNames.contains(player.getUsername().toLowerCase())) {
+            String string = "CRITICAL BUG, REPORT! BotUtil " + player.getUsername() + " " + player.botMode + " " + player.currentBotTaskIndex + " " + player.currentBotTaskTypeId + " " + player.currentBotTask;
             System.out.println(string);
             GameplayHelper.a(string, "errors");
             return;
@@ -850,12 +850,12 @@ public final class BotCombatHelper {
         int n4 = position.getY();
         Vector2f vector2f = new Vector2f(n3 - n, n4 - n2);
         vector2f.normalize();
-        int n5 = GameUtil.b(position2, position);
+        int n5 = GameUtil.getDistance(position2, position);
         n5 = n5 > 20 ? 20 : n5;
         int n6 = (int)((float)n5 * vector2f.getX());
         n4 = (int)((float)n5 * vector2f.getY());
-        n6 = n + n6 - 1 + GameUtil.g(2);
-        n4 = n2 + n4 - 1 + GameUtil.g(2);
+        n6 = n + n6 - 1 + GameUtil.randomInclusive(2);
+        n4 = n2 + n4 - 1 + GameUtil.randomInclusive(2);
         boolean bl = false;
         if (WalkingCollisionMap.getTileFlags(n6, n4, 0) != 0) {
             bl = true;
@@ -863,7 +863,7 @@ public final class BotCombatHelper {
         while (bl && n5 > 1) {
             n6 = (int)((float)(--n5) * vector2f.getX());
             n4 = (int)((float)n5 * vector2f.getY());
-            bl = WalkingCollisionMap.getTileFlags(n6 = n + n6 - 1 + GameUtil.g(2), n4 = n2 + n4 - 1 + GameUtil.g(2), 0) != 0;
+            bl = WalkingCollisionMap.getTileFlags(n6 = n + n6 - 1 + GameUtil.randomInclusive(2), n4 = n2 + n4 - 1 + GameUtil.randomInclusive(2), 0) != 0;
         }
         if (!player.isMovementLocked()) {
             PathFinder.getInstance();
@@ -880,8 +880,8 @@ public final class BotCombatHelper {
             if (player.getCombatLevel() >= 20) {
                 n = 15;
             }
-            if (player.q != null) {
-                n *= player.q.b.size();
+            if (player.currentGroup != null) {
+                n *= player.currentGroup.members.size();
             }
         }
         return n;
@@ -895,7 +895,7 @@ public final class BotCombatHelper {
         if (player.getMovementTarget() == null) {
             return false;
         }
-        return player.q == null || !player.getMovementTarget().isPlayer() || !player.q.a(player2 = (Player)player.getMovementTarget());
+        return player.currentGroup == null || !player.getMovementTarget().isPlayer() || !player.currentGroup.containsMember(player2 = (Player)player.getMovementTarget());
     }
 
     public static boolean drinkAntipoisonPotion(Player player) {
@@ -909,8 +909,8 @@ public final class BotCombatHelper {
         while (n3 < n2) {
             ItemStack itemStack = itemStackArray[n3];
             ++n;
-            if (itemStack != null && player.getPotionHandler().a(itemStack.getId()) && PotionHandler.a[player.getPotionHandler().c].a()) {
-                player.getPotionHandler().a(itemStack.getId(), n - 1);
+            if (itemStack != null && player.getPotionHandler().selectPotionForItemId(itemStack.getId()) && PotionHandler.definitions[player.getPotionHandler().selectedDefinitionIndex].isAntipoison()) {
+                player.getPotionHandler().drinkPotion(itemStack.getId(), n - 1);
                 return true;
             }
             ++n3;
@@ -958,43 +958,43 @@ public final class BotCombatHelper {
         if (player.botCombatEscapeActive || player2.botCombatEscapeActive) {
             return false;
         }
-        if (player.q != null) {
-            if (player2.q != null) {
+        if (player.currentGroup != null) {
+            if (player2.currentGroup != null) {
                 return false;
             }
-            if (!player.q.a()) {
-                Player player3 = player.q.a;
+            if (!player.currentGroup.isFull()) {
+                Player player3 = player.currentGroup.leader;
                 if (!player3.botEnabled) {
                     return false;
                 }
                 if (Math.abs(player3.getCombatLevel() - player2.getCombatLevel()) > 2) {
                     return false;
                 }
-                player.q.c(player2);
-                player.q.b();
+                player.currentGroup.addMember(player2);
+                player.currentGroup.refreshGroupFollowChain();
             }
             return true;
         }
-        if (player2.q != null) {
-            if (player.q != null) {
+        if (player2.currentGroup != null) {
+            if (player.currentGroup != null) {
                 return false;
             }
-            if (!player2.q.a()) {
-                Player player4 = player2.q.a;
-                if (!player4.de) {
+            if (!player2.currentGroup.isFull()) {
+                Player player4 = player2.currentGroup.leader;
+                if (!player4.isBot) {
                     return false;
                 }
                 if (Math.abs(player4.getCombatLevel() - player.getCombatLevel()) > 2) {
                     return false;
                 }
-                player2.q.c(player);
-                player2.q.b();
+                player2.currentGroup.addMember(player);
+                player2.currentGroup.refreshGroupFollowChain();
             }
             return true;
         }
         if (Math.abs(player.getCombatLevel() - player2.getCombatLevel()) <= 2) {
             PlayerGroup playerGroup = new PlayerGroup(player, player2);
-            playerGroup.b();
+            playerGroup.refreshGroupFollowChain();
             return true;
         }
         return true;
@@ -1011,11 +1011,11 @@ public final class BotCombatHelper {
         if (player.botCombatEscapeActive) {
             return false;
         }
-        if (player.q != null) {
+        if (player.currentGroup != null) {
             return false;
         }
-        if (player2.q != null && !player2.q.a()) {
-            player2 = player2.q.a;
+        if (player2.currentGroup != null && !player2.currentGroup.isFull()) {
+            player2 = player2.currentGroup.leader;
             return Math.abs(player2.getCombatLevel() - player.getCombatLevel()) <= n;
         }
         return Math.abs(player.getCombatLevel() - player2.getCombatLevel()) <= n;

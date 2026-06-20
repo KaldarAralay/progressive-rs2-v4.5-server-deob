@@ -14,7 +14,7 @@ public class DelayTimer {
         DelayTimer delayTimer = this;
         this.b = n2;
         delayTimer = this;
-        this.a = World.b;
+        this.a = World.tickCount;
     }
 
     public final int getDelayTicks() {
@@ -26,15 +26,15 @@ public class DelayTimer {
     }
 
     public final void reset() {
-        this.a = World.b;
+        this.a = World.tickCount;
     }
 
     public final boolean hasElapsed() {
-        return World.b - this.a >= this.b;
+        return World.tickCount - this.a >= this.b;
     }
 
     public final int getRemainingTicks() {
-        return this.b - (World.b - this.a);
+        return this.b - (World.tickCount - this.a);
     }
 }
 

@@ -13,49 +13,49 @@ public enum PieRecipe {
     e(2136, 2876, 3226, 2315, 7202, 7204, 7206, 85, 240.0, true, 0, 0, 0),
     f(5504, 5982, 1955, 2315, 7212, 7214, 7216, 95, 260.0, true, 0, 0, 0);
 
-    private int g;
-    private int h;
-    private int i;
-    private int j;
-    private int k;
-    private int l;
-    private int m;
-    private int n;
-    private double o;
-    private boolean p;
-    private int q;
-    private int r;
-    private int s;
-    private static HashMap t;
-    private static HashMap u;
-    private static HashMap v;
+    private int firstIngredientItemId;
+    private int secondIngredientItemId;
+    private int thirdIngredientItemId;
+    private int pieShellItemId;
+    private int firstStagePieItemId;
+    private int secondStagePieItemId;
+    private int rawPieItemId;
+    private int requiredLevel;
+    private double experience;
+    private boolean putIntoMessage;
+    private int firstStageReturnedItemId;
+    private int secondStageReturnedItemId;
+    private int thirdStageReturnedItemId;
+    private static HashMap recipesByFirstIngredientItemId;
+    private static HashMap recipesByFirstStagePieItemId;
+    private static HashMap recipesBySecondStagePieItemId;
 
     static {
-        t = new HashMap();
-        u = new HashMap();
-        v = new HashMap();
+        recipesByFirstIngredientItemId = new HashMap();
+        recipesByFirstStagePieItemId = new HashMap();
+        recipesBySecondStagePieItemId = new HashMap();
         PieRecipe[] pieRecipeArray = PieRecipe.values();
         int n = pieRecipeArray.length;
         int n2 = 0;
         while (n2 < n) {
             PieRecipe pieRecipe = pieRecipeArray[n2];
-            t.put(pieRecipe.g, pieRecipe);
-            u.put(pieRecipe.k, pieRecipe);
-            v.put(pieRecipe.l, pieRecipe);
+            recipesByFirstIngredientItemId.put(pieRecipe.firstIngredientItemId, pieRecipe);
+            recipesByFirstStagePieItemId.put(pieRecipe.firstStagePieItemId, pieRecipe);
+            recipesBySecondStagePieItemId.put(pieRecipe.secondStagePieItemId, pieRecipe);
             ++n2;
         }
     }
 
-    public static PieRecipe a(int n) {
-        return (PieRecipe)((Object)t.get(n));
+    public static PieRecipe forFirstIngredientItemId(int n) {
+        return (PieRecipe)((Object)recipesByFirstIngredientItemId.get(n));
     }
 
-    public static PieRecipe b(int n) {
-        return (PieRecipe)((Object)u.get(n));
+    public static PieRecipe forFirstStagePieItemId(int n) {
+        return (PieRecipe)((Object)recipesByFirstStagePieItemId.get(n));
     }
 
-    public static PieRecipe c(int n) {
-        return (PieRecipe)((Object)v.get(n));
+    public static PieRecipe forSecondStagePieItemId(int n) {
+        return (PieRecipe)((Object)recipesBySecondStagePieItemId.get(n));
     }
 
     /*
@@ -65,71 +65,71 @@ public enum PieRecipe {
     private PieRecipe(int n3, int n4, int n5, int n6, int n7, int n8, double d, boolean bl, int n22, int n9, int n10) {
         void var15_12;
         void var10_8;
-        this.g = n3;
-        this.h = n4;
-        this.i = n5;
-        this.j = 2315;
-        this.k = n7;
-        this.l = n8;
-        this.m = (int)d;
-        this.n = var10_8;
-        this.o = (double)bl;
-        this.p = true;
-        this.q = n10;
-        this.r = var15_12;
-        this.s = 0;
+        this.firstIngredientItemId = n3;
+        this.secondIngredientItemId = n4;
+        this.thirdIngredientItemId = n5;
+        this.pieShellItemId = 2315;
+        this.firstStagePieItemId = n7;
+        this.secondStagePieItemId = n8;
+        this.rawPieItemId = (int)d;
+        this.requiredLevel = var10_8;
+        this.experience = (double)bl;
+        this.putIntoMessage = true;
+        this.firstStageReturnedItemId = n10;
+        this.secondStageReturnedItemId = var15_12;
+        this.thirdStageReturnedItemId = 0;
     }
 
-    public final int a() {
-        return this.g;
+    public final int getFirstIngredientItemId() {
+        return this.firstIngredientItemId;
     }
 
-    public final int b() {
-        return this.h;
+    public final int getSecondIngredientItemId() {
+        return this.secondIngredientItemId;
     }
 
-    public final int c() {
-        return this.i;
+    public final int getThirdIngredientItemId() {
+        return this.thirdIngredientItemId;
     }
 
-    public final int d() {
-        return this.k;
+    public final int getFirstStagePieItemId() {
+        return this.firstStagePieItemId;
     }
 
-    public final int e() {
-        return this.l;
+    public final int getSecondStagePieItemId() {
+        return this.secondStagePieItemId;
     }
 
-    public final int f() {
-        return this.j;
+    public final int getPieShellItemId() {
+        return this.pieShellItemId;
     }
 
-    public final int g() {
-        return this.m;
+    public final int getRawPieItemId() {
+        return this.rawPieItemId;
     }
 
-    public final int h() {
-        return this.n;
+    public final int getRequiredLevel() {
+        return this.requiredLevel;
     }
 
-    public final double i() {
-        return this.o;
+    public final double getExperience() {
+        return this.experience;
     }
 
-    public final boolean j() {
-        return this.p;
+    public final boolean usesPutIntoMessage() {
+        return this.putIntoMessage;
     }
 
-    public final int k() {
-        return this.q;
+    public final int getFirstStageReturnedItemId() {
+        return this.firstStageReturnedItemId;
     }
 
-    public final int l() {
-        return this.r;
+    public final int getSecondStageReturnedItemId() {
+        return this.secondStageReturnedItemId;
     }
 
-    public final int m() {
-        return this.s;
+    public final int getThirdStageReturnedItemId() {
+        return this.thirdStageReturnedItemId;
     }
 }
 

@@ -20,11 +20,11 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        if (this.a.isDead() || !this.a.bW() || !this.a.currentBotTask.usesEscapeMonitor) {
+        if (this.a.isDead() || !this.a.isRegistered() || !this.a.currentBotTask.usesEscapeMonitor) {
             this.stop();
             return;
         }
-        if (this.a.getInventoryManager().getItemAmount(451) >= 8 && this.a.botTaskState.equals("do task") && GameUtil.h(3) == 0) {
+        if (this.a.getInventoryManager().getItemAmount(451) >= 8 && this.a.botTaskState.equals("do task") && GameUtil.randomInt(3) == 0) {
             this.a.currentBotTask.startWalkToBank(this.a);
             return;
         }
@@ -33,7 +33,7 @@ extends TickTask {
             return;
         }
         if (!this.a.getRecentCombatTimer().hasElapsed()) {
-            BotCombatEscapeHandler.a(this.a);
+            BotCombatEscapeHandler.tryStartBotCombatEscape(this.a);
             this.a.botTaskState = "escape";
         }
     }

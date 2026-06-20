@@ -104,7 +104,7 @@ public class PluginManager {
                 Object object;
                 try {
                     object = (PlayerPlugin)((Class)iterator.next()).newInstance();
-                    player.a((PlayerPlugin)object);
+                    player.addPlayerPlugin((PlayerPlugin)object);
                 }
                 catch (InstantiationException instantiationException) {
                     object = instantiationException;

@@ -7,31 +7,31 @@ import com.rs2.model.item.ItemStack;
 import com.rs2.model.player.Player;
 
 public final class DyeMixingHandler {
-    private static int a = 1763;
-    private static int b = 1765;
-    private static int c = 1767;
-    private static int d = 1769;
-    private static int e = 1771;
-    private static int f = 1773;
+    private static int redDyeId = 1763;
+    private static int yellowDyeId = 1765;
+    private static int blueDyeId = 1767;
+    private static int orangeDyeId = 1769;
+    private static int greenDyeId = 1771;
+    private static int purpleDyeId = 1773;
 
-    public static boolean a(Player player, int n, int n2) {
+    public static boolean mixDyes(Player player, int n, int n2) {
         boolean bl;
-        if (n == a && n2 == b || n == b && n2 == a) {
+        if (n == redDyeId && n2 == yellowDyeId || n == yellowDyeId && n2 == redDyeId) {
             player.getInventoryManager().removeItem(new ItemStack(n, 1));
             player.getInventoryManager().removeItem(new ItemStack(n2, 1));
-            player.getInventoryManager().addItem(new ItemStack(d, 1));
+            player.getInventoryManager().addItem(new ItemStack(orangeDyeId, 1));
             player.packetSender.sendGameMessage("You mix the two dyes and make an orange one.");
             bl = true;
-        } else if (n == c && n2 == b || n == b && n2 == c) {
+        } else if (n == blueDyeId && n2 == yellowDyeId || n == yellowDyeId && n2 == blueDyeId) {
             player.getInventoryManager().removeItem(new ItemStack(n, 1));
             player.getInventoryManager().removeItem(new ItemStack(n2, 1));
-            player.getInventoryManager().addItem(new ItemStack(e, 1));
+            player.getInventoryManager().addItem(new ItemStack(greenDyeId, 1));
             player.packetSender.sendGameMessage("You mix the two dyes and make a green one.");
             bl = true;
-        } else if (n == c && n2 == a || n == a && n2 == c) {
+        } else if (n == blueDyeId && n2 == redDyeId || n == redDyeId && n2 == blueDyeId) {
             player.getInventoryManager().removeItem(new ItemStack(n, 1));
             player.getInventoryManager().removeItem(new ItemStack(n2, 1));
-            player.getInventoryManager().addItem(new ItemStack(f, 1));
+            player.getInventoryManager().addItem(new ItemStack(purpleDyeId, 1));
             player.packetSender.sendGameMessage("You mix the two dyes and make a purple one.");
             bl = true;
         } else {

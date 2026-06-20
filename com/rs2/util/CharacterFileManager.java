@@ -74,12 +74,12 @@ public final class CharacterFileManager {
     public static ArrayList liveHiscoreRecords = new ArrayList();
 
     public static boolean savePlayer(Player player) {
-        if (player.de) {
-            if (player.az != 4) {
+        if (player.isBot) {
+            if (player.botMode != 4) {
                 return true;
             }
             if (ServerSettings.mysqlHiscoresEnabled) {
-                HiscoresDatabase.a(player);
+                HiscoresDatabase.savePlayer(player);
             }
         }
         if (System.currentTimeMillis() - player.ck < 50L) {
@@ -109,7 +109,7 @@ public final class CharacterFileManager {
      * Enabled aggressive exception aggregation
      */
     private static void writePlayerFile(Player object) {
-        if (((Player)object).de && ((Player)object).az != 4) {
+        if (((Player)object).isBot && ((Player)object).botMode != 4) {
             return;
         }
         try {
@@ -254,24 +254,24 @@ public final class CharacterFileManager {
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ((DataOutputStream)object3).writeShort(30);
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ((DataOutputStream)object3).writeUTF(((Player)object).getUsername());
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ((DataOutputStream)object3).writeUTF(((Player)object).getPassword());
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ((DataOutputStream)object3).writeUTF(((Player)object).bs());
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ((DataOutputStream)object3).writeUTF(((Player)object).getHostAddress());
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ((DataOutputStream)object3).writeInt(((Player)object).getPlayerRights());
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ((DataOutputStream)object3).writeUTF("");
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ((DataOutputStream)object3).writeUTF(((Player)object).bo());
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ((DataOutputStream)object3).writeUTF(((Player)object).dl());
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ((DataOutputStream)object3).writeUTF(((Player)object).getProfileString1());
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ((DataOutputStream)object3).writeUTF(((Player)object).getProfileString2());
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ((DataOutputStream)object3).writeLong(System.currentTimeMillis());
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            long l = ((Player)object).ba();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            long l = ((Player)object).getTotalPlaytimeMillis();
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             n3 = (int)(l / 1000L / 60L / 60L);
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             if (n3 >= 100000) {
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ((DataOutputStream)object3).writeLong(((Player)object).ej);
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ((Player)object).i("Couldn't save playing time, prev: " + ((Player)object).ej + " login: " + ((Player)object).ei + " current: " + System.currentTimeMillis());
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             } else {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ((DataOutputStream)object3).writeLong(((Player)object).ba());
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ((DataOutputStream)object3).writeLong(((Player)object).getTotalPlaytimeMillis());
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             }
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ((DataOutputStream)object3).writeLong(((Player)object).eg);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ((DataOutputStream)object3).writeBoolean(((Player)object).ef);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ((DataOutputStream)object3).writeBoolean(((Player)object).eg());
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ((DataOutputStream)object3).writeInt(((Player)object).dm());
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ((DataOutputStream)object3).writeBoolean(((Player)object).loginRestrictionExempt);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ((DataOutputStream)object3).writeBoolean(((Player)object).hasMemberFlag());
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ((DataOutputStream)object3).writeInt(((Player)object).getDonatorPoints());
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             if (((Player)object).z == null) {
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ((DataOutputStream)object3).writeInt(((Entity)object).getPosition().getX());
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ((DataOutputStream)object3).writeInt(((Entity)object).getPosition().getY());
@@ -292,7 +292,7 @@ public final class CharacterFileManager {
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ((DataOutputStream)object3).writeInt(((Player)object).ea);
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ((DataOutputStream)object3).writeInt(((Player)object).eb);
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ((DataOutputStream)object3).writeInt(((Player)object).ec);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ((DataOutputStream)object3).writeInt(((Player)object).dS);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ((DataOutputStream)object3).writeInt(((Player)object).legacyQuestPoints);
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ((DataOutputStream)object3).writeBoolean(((Player)object).isAutoRetaliate());
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ((DataOutputStream)object3).writeInt(((Player)object).getFightMode());
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ((DataOutputStream)object3).writeInt(((Player)object).getBrightness());
@@ -310,7 +310,7 @@ public final class CharacterFileManager {
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ((DataOutputStream)object3).writeInt(((Player)object).getBindingNecklaceCharge());
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ((DataOutputStream)object3).writeInt(((Player)object).getRingOfForgingLife());
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ((DataOutputStream)object3).writeInt(((Player)object).getRingOfRecoilLife());
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ((DataOutputStream)object3).writeInt(((Player)object).dZ());
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ((DataOutputStream)object3).writeInt(((Player)object).getSkullTimer());
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ((DataOutputStream)object3).writeShort(((Player)object).getRunEnergyRaw());
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ((DataOutputStream)object3).writeBoolean(((Entity)object).getMovementQueue().isRunning());
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             n3 = 0;
@@ -405,9 +405,9 @@ public final class CharacterFileManager {
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ++n3;
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             }
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             n3 = 0;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            while (n3 < ((Player)object).cT().length) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ((DataOutputStream)object3).writeInt(((Player)object).cT()[n3]);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ((DataOutputStream)object3).writeInt(((Player)object).cU()[n3]);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            while (n3 < ((Player)object).getQueuedLoginItemIds().length) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ((DataOutputStream)object3).writeInt(((Player)object).getQueuedLoginItemIds()[n3]);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ((DataOutputStream)object3).writeInt(((Player)object).getQueuedLoginItemAmounts()[n3]);
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ++n3;
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             }
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ((DataOutputStream)object3).writeInt(((Player)object).eA());
@@ -415,11 +415,11 @@ public final class CharacterFileManager {
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ((DataOutputStream)object3).writeLong(((Player)object).getBanExpires());
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             n3 = 0;
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             while (n3 < 6) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ((DataOutputStream)object3).writeBoolean(((Player)object).au(n3));
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ((DataOutputStream)object3).writeBoolean(((Player)object).isBarrowsBrotherKilled(n3));
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ++n3;
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ((DataOutputStream)object3).writeInt(((Player)object).eT());
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ((DataOutputStream)object3).writeInt(((Player)object).eU());
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ((DataOutputStream)object3).writeInt(((Player)object).getBarrowsKillCount());
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ((DataOutputStream)object3).writeInt(((Player)object).getBarrowsTargetBrotherIndex());
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ((DataOutputStream)object3).writeInt(((Entity)object).getPoisonImmunityTimer().getRemainingTicks());
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ((DataOutputStream)object3).writeInt(((Entity)object).getAntifireTimer().getRemainingTicks());
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ((DataOutputStream)object3).writeInt(((Entity)object).getTeleblockTimer().getRemainingTicks());
@@ -1137,40 +1137,40 @@ public final class CharacterFileManager {
                 n5 += 1;
             }
             n5 = 0;
-            while (n5 < QuestDefinition.b) {
+            while (n5 < QuestDefinition.questStateCapacity) {
                 ((DataOutputStream)object3).writeInt(((Player)object).getQuestState(n5, true));
                 n5 += 1;
             }
             ((DataOutputStream)object3).writeByte(((Player)object).dv);
             ((DataOutputStream)object3).writeByte(((Player)object).bO);
             ((DataOutputStream)object3).writeBoolean(((Player)object).D);
-            ((DataOutputStream)object3).writeByte(((Player)object).fl());
-            if (!((Player)object).eK()) {
+            ((DataOutputStream)object3).writeByte(((Player)object).getCoalTruckCoalCount());
+            if (!((Player)object).ownsClueScroll()) {
                 ((Player)object).ar = 0;
             }
             ((DataOutputStream)object3).writeByte(((Player)object).ar);
             n5 = PuzzleBoxHandler.isCluePuzzleSolved((Player)object) ? 1 : 0;
-            if (!((Player)object).eM()) {
+            if (!((Player)object).ownsCluePuzzleBox()) {
                 n5 = 0;
             }
             ((DataOutputStream)object3).writeBoolean(n5 != 0);
             ((DataOutputStream)object3).writeByte(((Player)object).ee);
-            ((DataOutputStream)object3).writeInt(((Player)object).fh());
-            ((DataOutputStream)object3).writeBoolean(((Player)object).bQ);
-            ((DataOutputStream)object3).writeBoolean(((Player)object).bU);
+            ((DataOutputStream)object3).writeInt(((Player)object).getBossPetUnlockFlags());
+            ((DataOutputStream)object3).writeBoolean(((Player)object).barrowsDoorPuzzleSolved);
+            ((DataOutputStream)object3).writeBoolean(((Player)object).barrowsChestOpened);
             ((DataOutputStream)object3).writeInt(((Player)object).ep[452]);
             Object object4 = object;
             ((DataOutputStream)object3).writeByte(((Player)object4).flourMillHopperGrainCount);
             ((DataOutputStream)object3).writeInt(((Player)object).ep[FlourMillHandler.flourBinConfigId]);
             ((DataOutputStream)object3).writeInt(((Player)object).bK);
             n2 = 0;
-            while (n2 < QuestDefinition.b) {
-                ((DataOutputStream)object3).writeInt(((Player)object).bI[n2]);
+            while (n2 < QuestDefinition.questStateCapacity) {
+                ((DataOutputStream)object3).writeInt(((Player)object).questProgressFlags[n2]);
                 ++n2;
             }
             n2 = 0;
             while (n2 < 100) {
-                ((DataOutputStream)object3).writeInt(((Player)object).bJ[n2]);
+                ((DataOutputStream)object3).writeInt(((Player)object).questHookStates[n2]);
                 ++n2;
             }
             ((DataOutputStream)object3).writeByte(((Player)object).getPublicChatMode());
@@ -1183,91 +1183,91 @@ public final class CharacterFileManager {
             ((Player)object).ck = System.currentTimeMillis();
             object4 = object;
             ((DataOutputStream)object3).writeUTF("");
-            ((DataOutputStream)object3).writeInt(((Player)object).cm);
-            ((DataOutputStream)object3).writeInt(((Player)object).dK);
-            ((DataOutputStream)object3).writeInt(((Player)object).dM);
-            ((DataOutputStream)object3).writeInt(((Player)object).dL);
-            ((DataOutputStream)object3).writeByte(((Player)object).dN);
+            ((DataOutputStream)object3).writeInt(((Player)object).familyCrestGauntletItemId);
+            ((DataOutputStream)object3).writeInt(((Player)object).mageArenaFlamesOfZamorakCastsRemaining);
+            ((DataOutputStream)object3).writeInt(((Player)object).mageArenaSaradominStrikeCastsRemaining);
+            ((DataOutputStream)object3).writeInt(((Player)object).mageArenaClawsOfGuthixCastsRemaining);
+            ((DataOutputStream)object3).writeByte(((Player)object).mageArenaProgressStage);
             n2 = 0;
             while (n2 < 6) {
-                ((DataOutputStream)object3).writeBoolean(((Player)object).dw[n2]);
+                ((DataOutputStream)object3).writeBoolean(((Player)object).grandExchangeSellOfferFlags[n2]);
                 ++n2;
             }
             n2 = 0;
             while (n2 < 6) {
-                ((DataOutputStream)object3).writeInt(((Player)object).dx[n2]);
+                ((DataOutputStream)object3).writeInt(((Player)object).grandExchangeItemIds[n2]);
                 ++n2;
             }
             n2 = 0;
             while (n2 < 6) {
-                ((DataOutputStream)object3).writeInt(((Player)object).dy[n2]);
+                ((DataOutputStream)object3).writeInt(((Player)object).grandExchangeQuantities[n2]);
                 ++n2;
             }
             n2 = 0;
             while (n2 < 6) {
-                ((DataOutputStream)object3).writeInt(((Player)object).dz[n2]);
+                ((DataOutputStream)object3).writeInt(((Player)object).grandExchangeUnitPrices[n2]);
                 ++n2;
             }
             n2 = 0;
             while (n2 < 6) {
-                ((DataOutputStream)object3).writeBoolean(((Player)object).dA[n2]);
+                ((DataOutputStream)object3).writeBoolean(((Player)object).grandExchangeCancelledFlags[n2]);
                 ++n2;
             }
             n2 = 0;
             while (n2 < 6) {
-                ((DataOutputStream)object3).writeInt(((Player)object).dB[n2]);
+                ((DataOutputStream)object3).writeInt(((Player)object).grandExchangeCompletedQuantities[n2]);
                 ++n2;
             }
             n2 = 0;
             while (n2 < 6) {
-                ((DataOutputStream)object3).writeInt(((Player)object).dC[n2]);
+                ((DataOutputStream)object3).writeInt(((Player)object).grandExchangeTotalPrices[n2]);
                 ++n2;
             }
             n2 = 0;
             while (n2 < 6) {
-                ((DataOutputStream)object3).writeInt(((Player)object).dD[n2]);
+                ((DataOutputStream)object3).writeInt(((Player)object).grandExchangePrimaryCollectAmounts[n2]);
                 ++n2;
             }
             n2 = 0;
             while (n2 < 6) {
-                ((DataOutputStream)object3).writeInt(((Player)object).dE[n2]);
+                ((DataOutputStream)object3).writeInt(((Player)object).grandExchangeSecondaryCollectAmounts[n2]);
                 ++n2;
             }
             n2 = 0;
             while (n2 < 6) {
-                ((DataOutputStream)object3).writeBoolean(((Player)object).dF[n2]);
+                ((DataOutputStream)object3).writeBoolean(((Player)object).grandExchangeFinishMessagePending[n2]);
                 ++n2;
             }
-            ((DataOutputStream)object3).writeInt(((Player)object).getTelekineticTheatreController().a);
-            ((DataOutputStream)object3).writeInt(((Player)object).getEnchantmentChamberController().a);
-            ((DataOutputStream)object3).writeInt(((Player)object).getAlchemistPlaygroundController().a);
-            ((DataOutputStream)object3).writeInt(((Player)object).getCreatureGraveyardController().a);
-            ((DataOutputStream)object3).writeBoolean(((Player)object).df);
-            ((DataOutputStream)object3).writeByte(((Player)object).getTelekineticTheatreController().b);
-            ((DataOutputStream)object3).writeBoolean(((Player)object).getTelekineticTheatreController().c);
-            ((DataOutputStream)object3).writeByte(((Player)object).getTelekineticTheatreController().d);
-            ((DataOutputStream)object3).writeInt(((Player)object).bS);
+            ((DataOutputStream)object3).writeInt(((Player)object).getTelekineticTheatreController().pizazzPoints);
+            ((DataOutputStream)object3).writeInt(((Player)object).getEnchantmentChamberController().pizazzPoints);
+            ((DataOutputStream)object3).writeInt(((Player)object).getAlchemistPlaygroundController().pizazzPoints);
+            ((DataOutputStream)object3).writeInt(((Player)object).getCreatureGraveyardController().pizazzPoints);
+            ((DataOutputStream)object3).writeBoolean(((Player)object).bonesToPeachesUnlocked);
+            ((DataOutputStream)object3).writeByte(((Player)object).getTelekineticTheatreController().mazeIndex);
+            ((DataOutputStream)object3).writeBoolean(((Player)object).getTelekineticTheatreController().mazeSolved);
+            ((DataOutputStream)object3).writeByte(((Player)object).getTelekineticTheatreController().consecutiveMazesSolved);
+            ((DataOutputStream)object3).writeInt(((Player)object).barrowsRewardPotential);
             ((DataOutputStream)object3).writeByte(((Player)object).gameMode);
-            ((DataOutputStream)object3).writeInt(((Player)object).ed);
-            ((DataOutputStream)object3).writeLong(((Player)object).o);
-            ((DataOutputStream)object3).writeInt(((Player)object).ep[GodWarsDungeonManager.a]);
+            ((DataOutputStream)object3).writeInt(((Player)object).barrowsRunsCompleted);
+            ((DataOutputStream)object3).writeLong(((Player)object).godWarsLastAltarBlessingMillis);
+            ((DataOutputStream)object3).writeInt(((Player)object).ep[GodWarsDungeonManager.ropeShortcutConfigId]);
             n2 = 0;
-            while (n2 < ((Player)object).m.length) {
-                ((DataOutputStream)object3).writeInt(((Player)object).m[n2]);
+            while (n2 < ((Player)object).godWarsKillCounts.length) {
+                ((DataOutputStream)object3).writeInt(((Player)object).godWarsKillCounts[n2]);
                 ++n2;
             }
-            ((DataOutputStream)object3).writeByte(((Player)object).w);
-            ((DataOutputStream)object3).writeLong(((Player)object).cc);
+            ((DataOutputStream)object3).writeByte(((Player)object).craftingThreadUseCount);
+            ((DataOutputStream)object3).writeLong(((Player)object).membershipExpiresMillis);
             ((DataOutputStream)object3).writeByte(((Player)object).l);
             ((DataOutputStream)object3).writeInt(((Player)object).ep[33]);
             ((DataOutputStream)object3).writeShort(ServerSettings.cacheVersion);
-            ((DataOutputStream)object3).writeInt(((Player)object).u);
-            ((DataOutputStream)object3).writeBoolean(((Player)object).eF);
-            ((DataOutputStream)object3).writeBoolean(((Player)object).eG);
-            ((DataOutputStream)object3).writeInt(((Player)object).eE);
+            ((DataOutputStream)object3).writeInt(((Player)object).godBookPageFlags);
+            ((DataOutputStream)object3).writeBoolean(((Player)object).swampCaveRopeAttached);
+            ((DataOutputStream)object3).writeBoolean(((Player)object).lampOilStillFilled);
+            ((DataOutputStream)object3).writeInt(((Player)object).enterTheAbyssMiniquestState);
             ((DataOutputStream)object3).writeBoolean(((Player)object).botEnabled);
             if (((Player)object).botEnabled) {
-                ((DataOutputStream)object3).writeByte(((Player)object).az);
+                ((DataOutputStream)object3).writeByte(((Player)object).botMode);
                 n2 = -1;
                 n = -1;
                 if (((Player)object).currentBotTask != null) {
@@ -1410,11 +1410,11 @@ public final class CharacterFileManager {
                             object3 = object;
                             ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object3).playerRights);
                             object4 = object;
-                            ((DataOutputStream)object2).writeUTF(((CharacterFileRecord)object4).f);
+                            ((DataOutputStream)object2).writeUTF(((CharacterFileRecord)object4).legacyProfileString);
                             object4 = object;
-                            ((DataOutputStream)object2).writeUTF(((CharacterFileRecord)object4).g);
+                            ((DataOutputStream)object2).writeUTF(((CharacterFileRecord)object4).profileString1);
                             object4 = object;
-                            ((DataOutputStream)object2).writeUTF(((CharacterFileRecord)object4).h);
+                            ((DataOutputStream)object2).writeUTF(((CharacterFileRecord)object4).profileString2);
                             object4 = object;
                             ((DataOutputStream)object2).writeLong(((CharacterFileRecord)object4).lastSavedMillis);
                             object4 = object;
@@ -1422,7 +1422,7 @@ public final class CharacterFileManager {
                             object4 = object;
                             ((DataOutputStream)object2).writeLong(((CharacterFileRecord)object4).createdAtMillis);
                             object4 = object;
-                            ((DataOutputStream)object2).writeBoolean(((CharacterFileRecord)object4).l);
+                            ((DataOutputStream)object2).writeBoolean(((CharacterFileRecord)object4).loginRestrictionExempt);
                             object3 = object;
                             ((DataOutputStream)object2).writeBoolean(((CharacterFileRecord)object3).memberFlag);
                             object4 = object;
@@ -1456,7 +1456,7 @@ public final class CharacterFileManager {
                             object4 = object;
                             ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object4).duelLosses);
                             object4 = object;
-                            ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object4).E);
+                            ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object4).legacyQuestPoints);
                             object4 = object;
                             ((DataOutputStream)object2).writeBoolean(((CharacterFileRecord)object4).autoRetaliate);
                             object4 = object;
@@ -1937,7 +1937,7 @@ public final class CharacterFileManager {
                 ++n6;
             }
             n6 = 0;
-            while (n6 < QuestDefinition.b) {
+            while (n6 < QuestDefinition.questStateCapacity) {
                 ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).questProgress[n6]);
                 ++n6;
             }
@@ -1963,7 +1963,7 @@ public final class CharacterFileManager {
             ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).configStates[FlourMillHandler.flourBinConfigId]);
             ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).questRandomSeed);
             int n7 = 0;
-            while (n7 < QuestDefinition.b) {
+            while (n7 < QuestDefinition.questStateCapacity) {
                 ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).questBitFlags[n7]);
                 ++n7;
             }
@@ -1980,12 +1980,12 @@ public final class CharacterFileManager {
             ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).cm);
             ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).cn);
             Object object9 = object;
-            ((DataOutputStream)object2).writeUTF(((CharacterFileRecord)object9).d);
-            ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).co);
-            ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).cp);
-            ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).cq);
-            ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).cr);
-            ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).cs);
+            ((DataOutputStream)object2).writeUTF(((CharacterFileRecord)object9).reservedVersion11String);
+            ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).familyCrestGauntletItemId);
+            ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).mageArenaFlamesOfZamorakCastsRemaining);
+            ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).mageArenaSaradominStrikeCastsRemaining);
+            ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).mageArenaClawsOfGuthixCastsRemaining);
+            ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).mageArenaProgressStage);
             int n8 = 0;
             while (n8 < 6) {
                 ((DataOutputStream)object2).writeBoolean(((CharacterFileRecord)object).grandExchangeSellOfferFlags[n8]);
@@ -2036,101 +2036,101 @@ public final class CharacterFileManager {
                 ((DataOutputStream)object2).writeBoolean(((CharacterFileRecord)object).grandExchangeFinishMessagePending[n8]);
                 ++n8;
             }
-            ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).ct);
-            ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).cu);
-            ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).cv);
-            ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).cw);
-            ((DataOutputStream)object2).writeBoolean(((CharacterFileRecord)object).cx);
-            ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).cy);
-            ((DataOutputStream)object2).writeBoolean(((CharacterFileRecord)object).cz);
-            ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).cA);
-            ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).bU);
-            ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).cC);
-            ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).cD);
-            ((DataOutputStream)object2).writeLong(((CharacterFileRecord)object).dv);
-            ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).configStates[GodWarsDungeonManager.a]);
+            ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).telekineticPizazzPoints);
+            ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).enchantmentPizazzPoints);
+            ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).alchemistPizazzPoints);
+            ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).graveyardPizazzPoints);
+            ((DataOutputStream)object2).writeBoolean(((CharacterFileRecord)object).bonesToPeachesUnlocked);
+            ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).telekineticMazeIndex);
+            ((DataOutputStream)object2).writeBoolean(((CharacterFileRecord)object).telekineticMazeSolved);
+            ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).telekineticConsecutiveMazesSolved);
+            ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).barrowsRewardPotential);
+            ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).gameMode);
+            ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).barrowsRunsCompleted);
+            ((DataOutputStream)object2).writeLong(((CharacterFileRecord)object).godWarsLastAltarBlessingMillis);
+            ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).configStates[GodWarsDungeonManager.ropeShortcutConfigId]);
             n8 = 0;
-            while (n8 < ((CharacterFileRecord)object).du.length) {
-                ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).du[n8]);
+            while (n8 < ((CharacterFileRecord)object).godWarsKillCounts.length) {
+                ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).godWarsKillCounts[n8]);
                 ++n8;
             }
-            ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).dw);
-            ((DataOutputStream)object2).writeLong(((CharacterFileRecord)object).dy);
+            ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).craftingThreadUseCount);
+            ((DataOutputStream)object2).writeLong(((CharacterFileRecord)object).membershipExpiresMillis);
             ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).dx);
             ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).configStates[33]);
-            ((DataOutputStream)object2).writeShort(((CharacterFileRecord)object).dz);
-            ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).dA);
-            ((DataOutputStream)object2).writeBoolean(((CharacterFileRecord)object).dB);
-            ((DataOutputStream)object2).writeBoolean(((CharacterFileRecord)object).dC);
-            ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).dD);
-            ((DataOutputStream)object2).writeBoolean(((CharacterFileRecord)object).dr);
-            if (((CharacterFileRecord)object).dr) {
-                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).dq);
-                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).dp);
-                ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).cfr_renamed_0);
-                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).dn);
-                ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).dm);
-                ((DataOutputStream)object2).writeUTF(((CharacterFileRecord)object).dl);
+            ((DataOutputStream)object2).writeShort(((CharacterFileRecord)object).savedCacheVersion);
+            ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).godBookPageFlags);
+            ((DataOutputStream)object2).writeBoolean(((CharacterFileRecord)object).swampCaveRopeAttached);
+            ((DataOutputStream)object2).writeBoolean(((CharacterFileRecord)object).lampOilStillFilled);
+            ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).enterTheAbyssMiniquestState);
+            ((DataOutputStream)object2).writeBoolean(((CharacterFileRecord)object).botEnabled);
+            if (((CharacterFileRecord)object).botEnabled) {
+                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).botMode);
+                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).currentBotTaskTypeId);
+                ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).currentBotTaskIndex);
+                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).deferredBotTaskTypeId);
+                ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).deferredBotTaskIndex);
+                ((DataOutputStream)object2).writeUTF(((CharacterFileRecord)object).botTaskState);
                 n8 = 0;
-                if (((CharacterFileRecord)object).dk != null) {
-                    n8 = ((CharacterFileRecord)object).dk.length;
+                if (((CharacterFileRecord)object).botTaskRequiredItems != null) {
+                    n8 = ((CharacterFileRecord)object).botTaskRequiredItems.length;
                 }
                 ((DataOutputStream)object2).writeByte(n8);
                 int n9 = 0;
                 while (n9 < n8) {
-                    ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).dk[n9].getId());
-                    ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).dk[n9].getAmount());
+                    ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).botTaskRequiredItems[n9].getId());
+                    ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).botTaskRequiredItems[n9].getAmount());
                     ++n9;
                 }
-                ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).dj);
-                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).di);
-                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).dh);
-                ((DataOutputStream)object2).writeBoolean(((CharacterFileRecord)object).dg);
-                ((DataOutputStream)object2).writeLong(((CharacterFileRecord)object).df);
-                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).de);
-                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).dd);
-                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).dc);
-                ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).db);
-                ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).da);
-                ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).cZ);
-                ((DataOutputStream)object2).writeBoolean(((CharacterFileRecord)object).cY);
-                ((DataOutputStream)object2).writeBoolean(((CharacterFileRecord)object).cX);
-                ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).cW);
-                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).cV);
-                ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).cU);
-                ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).cT);
-                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).cS.size());
+                ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).botFoodItemId);
+                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).botPathSegmentIndex);
+                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).botPathWaypointIndex);
+                ((DataOutputStream)object2).writeBoolean(((CharacterFileRecord)object).savedWorldRouteReversed);
+                ((DataOutputStream)object2).writeLong(((CharacterFileRecord)object).botTaskSavedElapsedMillis);
+                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).botTaskDurationMinutes);
+                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).savedWorldRouteIndex);
+                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).tradeAdvertMode);
+                ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).botAdvertItemId);
+                ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).tradeAdvertQuantityRemaining);
+                ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).tradeAdvertUnitPrice);
+                ((DataOutputStream)object2).writeBoolean(((CharacterFileRecord)object).tradeAdvertScam);
+                ((DataOutputStream)object2).writeBoolean(((CharacterFileRecord)object).tradeAdvertVariableQuantity);
+                ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).tradeAdvertLastOfferAmount);
+                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).botShopBuyMode);
+                ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).botTaskItemId);
+                ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).botShopItemAmount);
+                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).botShopSellItemIds.size());
                 n9 = 0;
-                while (n9 < ((CharacterFileRecord)object).cS.size()) {
-                    ((DataOutputStream)object2).writeInt((Integer)((CharacterFileRecord)object).cS.get(n9));
+                while (n9 < ((CharacterFileRecord)object).botShopSellItemIds.size()) {
+                    ((DataOutputStream)object2).writeInt((Integer)((CharacterFileRecord)object).botShopSellItemIds.get(n9));
                     ++n9;
                 }
-                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).cR.size());
+                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).botCombatLoadoutItemIds.size());
                 n9 = 0;
-                while (n9 < ((CharacterFileRecord)object).cR.size()) {
-                    ((DataOutputStream)object2).writeInt((Integer)((CharacterFileRecord)object).cR.get(n9));
+                while (n9 < ((CharacterFileRecord)object).botCombatLoadoutItemIds.size()) {
+                    ((DataOutputStream)object2).writeInt((Integer)((CharacterFileRecord)object).botCombatLoadoutItemIds.get(n9));
                     ++n9;
                 }
-                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).cQ);
-                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).cP);
-                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).cO);
+                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).botCombatStyle);
+                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).botSkillTargetSkillId);
+                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).botSkillTargetLevel);
                 ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).cN);
                 ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).cM);
                 ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).cL);
                 ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).cK);
-                ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).cJ);
-                ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).cI);
+                ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).botCompletionItemId);
+                ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).botCompletionItemAmount);
                 ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).cH);
                 ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).cG);
                 ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).cF);
                 ((DataOutputStream)object2).writeInt(((CharacterFileRecord)object).cE);
-                ((DataOutputStream)object2).writeBoolean(((CharacterFileRecord)object).ds);
+                ((DataOutputStream)object2).writeBoolean(((CharacterFileRecord)object).botTaskReturnToBankRequested);
                 ((DataOutputStream)object2).writeBoolean(false);
                 ((DataOutputStream)object2).writeBoolean(false);
                 ((DataOutputStream)object2).writeBoolean(false);
                 ((DataOutputStream)object2).writeBoolean(false);
                 ((DataOutputStream)object2).writeBoolean(false);
-                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).dt);
+                ((DataOutputStream)object2).writeByte(((CharacterFileRecord)object).botElementalSpellIndex);
                 ((DataOutputStream)object2).writeByte(0);
                 ((DataOutputStream)object2).writeByte(0);
                 ((DataOutputStream)object2).writeByte(0);
@@ -2174,9 +2174,9 @@ public final class CharacterFileManager {
      * WARNING - Removed try catching itself - possible behaviour change.
      */
     public static void saveAllPlayers() {
-        Player[] playerArray = World.f();
+        Player[] playerArray = World.getPlayers();
         synchronized (playerArray) {
-            Object object = World.f();
+            Object object = World.getPlayers();
             Player[] playerArray2 = object;
             int n = ((Player[])object).length;
             int n2 = 0;
@@ -2861,7 +2861,7 @@ public final class CharacterFileManager {
                         ++n6;
                     }
                     n6 = 0;
-                    while (n6 < QuestDefinition.b) {
+                    while (n6 < QuestDefinition.questStateCapacity) {
                         try {
                             ((DataInputStream)object2).readInt();
                         }
@@ -2896,7 +2896,7 @@ public final class CharacterFileManager {
                     }
                     if (s >= 7) {
                         n6 = 0;
-                        while (n6 < QuestDefinition.b) {
+                        while (n6 < QuestDefinition.questStateCapacity) {
                             try {
                                 ((DataInputStream)object2).readInt();
                             }
@@ -3170,7 +3170,7 @@ public final class CharacterFileManager {
 
     public static void refreshLiveHiscoreRecord(Player object) {
         CharacterFileRecord characterFileRecord2;
-        if (((Player)object).de && ((Player)object).az != 4) {
+        if (((Player)object).isBot && ((Player)object).botMode != 4) {
             return;
         }
         int n = 0;
@@ -3229,13 +3229,13 @@ public final class CharacterFileManager {
                     ((CharacterFileRecord)object2).playerRights = 0;
                     String string2 = dataInputStream.readUTF();
                     object3 = object2;
-                    ((CharacterFileRecord)object2).f = string2;
+                    ((CharacterFileRecord)object2).legacyProfileString = string2;
                     string2 = dataInputStream.readUTF();
                     object3 = object2;
-                    ((CharacterFileRecord)object2).g = string2;
+                    ((CharacterFileRecord)object2).profileString1 = string2;
                     string2 = dataInputStream.readUTF();
                     object3 = object2;
-                    ((CharacterFileRecord)object2).h = string2;
+                    ((CharacterFileRecord)object2).profileString2 = string2;
                     long l = dataInputStream.readLong();
                     object3 = object2;
                     ((CharacterFileRecord)object2).lastSavedMillis = l;
@@ -3247,7 +3247,7 @@ public final class CharacterFileManager {
                     ((CharacterFileRecord)object2).createdAtMillis = l;
                     int n4 = dataInputStream.readBoolean();
                     object3 = object2;
-                    ((CharacterFileRecord)object2).l = n4;
+                    ((CharacterFileRecord)object2).loginRestrictionExempt = n4;
                     n4 = dataInputStream.readBoolean();
                     object3 = object2;
                     ((CharacterFileRecord)object2).memberFlag = n4;
@@ -3298,7 +3298,7 @@ public final class CharacterFileManager {
                     ((CharacterFileRecord)object2).duelLosses = n4;
                     n4 = dataInputStream.readInt();
                     object3 = object2;
-                    ((CharacterFileRecord)object2).E = n4;
+                    ((CharacterFileRecord)object2).legacyQuestPoints = n4;
                     n4 = dataInputStream.readBoolean() ? 1 : 0;
                     object3 = object2;
                     ((CharacterFileRecord)object2).autoRetaliate = n4;
@@ -3856,7 +3856,7 @@ public final class CharacterFileManager {
                         ++n5;
                     }
                     n5 = 0;
-                    while (n5 < QuestDefinition.b) {
+                    while (n5 < QuestDefinition.questStateCapacity) {
                         try {
                             ((CharacterFileRecord)object2).questProgress[n5] = dataInputStream.readInt();
                         }
@@ -3902,7 +3902,7 @@ public final class CharacterFileManager {
                     }
                     if (s >= 7) {
                         n5 = 0;
-                        while (n5 < QuestDefinition.b) {
+                        while (n5 < QuestDefinition.questStateCapacity) {
                             try {
                                 ((CharacterFileRecord)object2).questBitFlags[n5] = dataInputStream.readInt();
                             }
@@ -3934,16 +3934,16 @@ public final class CharacterFileManager {
                     if (s >= 11) {
                         String string4 = dataInputStream.readUTF();
                         object9 = object2;
-                        ((CharacterFileRecord)object2).d = string4;
+                        ((CharacterFileRecord)object2).reservedVersion11String = string4;
                     }
                     if (s >= 12) {
-                        ((CharacterFileRecord)object2).co = dataInputStream.readInt();
+                        ((CharacterFileRecord)object2).familyCrestGauntletItemId = dataInputStream.readInt();
                     }
                     if (s >= 13) {
-                        ((CharacterFileRecord)object2).cp = dataInputStream.readInt();
-                        ((CharacterFileRecord)object2).cq = dataInputStream.readInt();
-                        ((CharacterFileRecord)object2).cr = dataInputStream.readInt();
-                        ((CharacterFileRecord)object2).cs = dataInputStream.readByte();
+                        ((CharacterFileRecord)object2).mageArenaFlamesOfZamorakCastsRemaining = dataInputStream.readInt();
+                        ((CharacterFileRecord)object2).mageArenaSaradominStrikeCastsRemaining = dataInputStream.readInt();
+                        ((CharacterFileRecord)object2).mageArenaClawsOfGuthixCastsRemaining = dataInputStream.readInt();
+                        ((CharacterFileRecord)object2).mageArenaProgressStage = dataInputStream.readByte();
                     }
                     if (s >= 14) {
                         n5 = 0;
@@ -3998,127 +3998,127 @@ public final class CharacterFileManager {
                         }
                     }
                     if (s >= 15) {
-                        ((CharacterFileRecord)object2).ct = dataInputStream.readInt();
-                        ((CharacterFileRecord)object2).cu = dataInputStream.readInt();
-                        ((CharacterFileRecord)object2).cv = dataInputStream.readInt();
-                        ((CharacterFileRecord)object2).cw = dataInputStream.readInt();
-                        ((CharacterFileRecord)object2).cx = dataInputStream.readBoolean();
-                        ((CharacterFileRecord)object2).cy = dataInputStream.readByte();
-                        ((CharacterFileRecord)object2).cz = dataInputStream.readBoolean();
-                        ((CharacterFileRecord)object2).cA = dataInputStream.readByte();
+                        ((CharacterFileRecord)object2).telekineticPizazzPoints = dataInputStream.readInt();
+                        ((CharacterFileRecord)object2).enchantmentPizazzPoints = dataInputStream.readInt();
+                        ((CharacterFileRecord)object2).alchemistPizazzPoints = dataInputStream.readInt();
+                        ((CharacterFileRecord)object2).graveyardPizazzPoints = dataInputStream.readInt();
+                        ((CharacterFileRecord)object2).bonesToPeachesUnlocked = dataInputStream.readBoolean();
+                        ((CharacterFileRecord)object2).telekineticMazeIndex = dataInputStream.readByte();
+                        ((CharacterFileRecord)object2).telekineticMazeSolved = dataInputStream.readBoolean();
+                        ((CharacterFileRecord)object2).telekineticConsecutiveMazesSolved = dataInputStream.readByte();
                     }
                     if (s >= 16) {
-                        ((CharacterFileRecord)object2).bU = dataInputStream.readInt();
+                        ((CharacterFileRecord)object2).barrowsRewardPotential = dataInputStream.readInt();
                     }
                     if (s >= 18) {
-                        ((CharacterFileRecord)object2).cC = dataInputStream.readByte();
+                        ((CharacterFileRecord)object2).gameMode = dataInputStream.readByte();
                     }
                     if (s >= 19) {
-                        ((CharacterFileRecord)object2).cD = dataInputStream.readInt();
+                        ((CharacterFileRecord)object2).barrowsRunsCompleted = dataInputStream.readInt();
                     }
                     if (s >= 21) {
-                        ((CharacterFileRecord)object2).dv = dataInputStream.readLong();
-                        ((CharacterFileRecord)object2).configStates[GodWarsDungeonManager.a] = dataInputStream.readInt();
+                        ((CharacterFileRecord)object2).godWarsLastAltarBlessingMillis = dataInputStream.readLong();
+                        ((CharacterFileRecord)object2).configStates[GodWarsDungeonManager.ropeShortcutConfigId] = dataInputStream.readInt();
                         n5 = 0;
-                        while (n5 < ((CharacterFileRecord)object2).du.length) {
-                            ((CharacterFileRecord)object2).du[n5] = dataInputStream.readInt();
+                        while (n5 < ((CharacterFileRecord)object2).godWarsKillCounts.length) {
+                            ((CharacterFileRecord)object2).godWarsKillCounts[n5] = dataInputStream.readInt();
                             ++n5;
                         }
                     }
                     if (s >= 22) {
-                        ((CharacterFileRecord)object2).dw = dataInputStream.readByte();
+                        ((CharacterFileRecord)object2).craftingThreadUseCount = dataInputStream.readByte();
                     }
                     if (s >= 24) {
-                        ((CharacterFileRecord)object2).dy = dataInputStream.readLong();
+                        ((CharacterFileRecord)object2).membershipExpiresMillis = dataInputStream.readLong();
                         ((CharacterFileRecord)object2).dx = dataInputStream.readByte();
                     }
                     if (s >= 25) {
                         ((CharacterFileRecord)object2).configStates[33] = dataInputStream.readInt();
                     }
                     if (s >= 26) {
-                        ((CharacterFileRecord)object2).dz = dataInputStream.readUnsignedShort();
+                        ((CharacterFileRecord)object2).savedCacheVersion = dataInputStream.readUnsignedShort();
                     }
                     if (s >= 29) {
-                        ((CharacterFileRecord)object2).dA = dataInputStream.readInt();
+                        ((CharacterFileRecord)object2).godBookPageFlags = dataInputStream.readInt();
                     }
                     if (s >= 30) {
-                        ((CharacterFileRecord)object2).dB = dataInputStream.readBoolean();
-                        ((CharacterFileRecord)object2).dC = dataInputStream.readBoolean();
-                        ((CharacterFileRecord)object2).dD = dataInputStream.readInt();
+                        ((CharacterFileRecord)object2).swampCaveRopeAttached = dataInputStream.readBoolean();
+                        ((CharacterFileRecord)object2).lampOilStillFilled = dataInputStream.readBoolean();
+                        ((CharacterFileRecord)object2).enterTheAbyssMiniquestState = dataInputStream.readInt();
                     }
                     if (s >= 20) {
                         n5 = dataInputStream.readBoolean() ? 1 : 0;
-                        ((CharacterFileRecord)object2).dr = n5;
+                        ((CharacterFileRecord)object2).botEnabled = n5;
                         if (n5 != 0) {
-                            ((CharacterFileRecord)object2).dq = dataInputStream.readByte();
-                            ((CharacterFileRecord)object2).dp = dataInputStream.readByte();
-                            ((CharacterFileRecord)object2).cfr_renamed_0 = dataInputStream.readInt();
-                            ((CharacterFileRecord)object2).dn = dataInputStream.readByte();
-                            ((CharacterFileRecord)object2).dm = dataInputStream.readInt();
-                            ((CharacterFileRecord)object2).dl = dataInputStream.readUTF();
+                            ((CharacterFileRecord)object2).botMode = dataInputStream.readByte();
+                            ((CharacterFileRecord)object2).currentBotTaskTypeId = dataInputStream.readByte();
+                            ((CharacterFileRecord)object2).currentBotTaskIndex = dataInputStream.readInt();
+                            ((CharacterFileRecord)object2).deferredBotTaskTypeId = dataInputStream.readByte();
+                            ((CharacterFileRecord)object2).deferredBotTaskIndex = dataInputStream.readInt();
+                            ((CharacterFileRecord)object2).botTaskState = dataInputStream.readUTF();
                             byte by2 = dataInputStream.readByte();
                             n2 = by2;
                             if (by2 > 0) {
-                                ((CharacterFileRecord)object2).dk = new ItemStack[n2];
+                                ((CharacterFileRecord)object2).botTaskRequiredItems = new ItemStack[n2];
                                 int n19 = 0;
                                 while (n19 < n2) {
                                     n3 = dataInputStream.readInt();
                                     n = dataInputStream.readInt();
-                                    ((CharacterFileRecord)object2).dk[n19] = new ItemStack(n3, n);
+                                    ((CharacterFileRecord)object2).botTaskRequiredItems[n19] = new ItemStack(n3, n);
                                     ++n19;
                                 }
                             }
-                            ((CharacterFileRecord)object2).dj = dataInputStream.readInt();
-                            ((CharacterFileRecord)object2).di = dataInputStream.readByte();
-                            ((CharacterFileRecord)object2).dh = dataInputStream.readByte();
-                            ((CharacterFileRecord)object2).dg = dataInputStream.readBoolean();
-                            ((CharacterFileRecord)object2).df = dataInputStream.readLong();
-                            ((CharacterFileRecord)object2).de = dataInputStream.readByte();
-                            ((CharacterFileRecord)object2).dd = dataInputStream.readByte();
-                            ((CharacterFileRecord)object2).dc = dataInputStream.readByte();
-                            ((CharacterFileRecord)object2).db = dataInputStream.readInt();
-                            ((CharacterFileRecord)object2).da = dataInputStream.readInt();
-                            ((CharacterFileRecord)object2).cZ = dataInputStream.readInt();
-                            ((CharacterFileRecord)object2).cY = dataInputStream.readBoolean();
-                            ((CharacterFileRecord)object2).cX = dataInputStream.readBoolean();
-                            ((CharacterFileRecord)object2).cW = dataInputStream.readInt();
-                            ((CharacterFileRecord)object2).cV = dataInputStream.readByte();
-                            ((CharacterFileRecord)object2).cU = dataInputStream.readInt();
-                            ((CharacterFileRecord)object2).cT = dataInputStream.readInt();
+                            ((CharacterFileRecord)object2).botFoodItemId = dataInputStream.readInt();
+                            ((CharacterFileRecord)object2).botPathSegmentIndex = dataInputStream.readByte();
+                            ((CharacterFileRecord)object2).botPathWaypointIndex = dataInputStream.readByte();
+                            ((CharacterFileRecord)object2).savedWorldRouteReversed = dataInputStream.readBoolean();
+                            ((CharacterFileRecord)object2).botTaskSavedElapsedMillis = dataInputStream.readLong();
+                            ((CharacterFileRecord)object2).botTaskDurationMinutes = dataInputStream.readByte();
+                            ((CharacterFileRecord)object2).savedWorldRouteIndex = dataInputStream.readByte();
+                            ((CharacterFileRecord)object2).tradeAdvertMode = dataInputStream.readByte();
+                            ((CharacterFileRecord)object2).botAdvertItemId = dataInputStream.readInt();
+                            ((CharacterFileRecord)object2).tradeAdvertQuantityRemaining = dataInputStream.readInt();
+                            ((CharacterFileRecord)object2).tradeAdvertUnitPrice = dataInputStream.readInt();
+                            ((CharacterFileRecord)object2).tradeAdvertScam = dataInputStream.readBoolean();
+                            ((CharacterFileRecord)object2).tradeAdvertVariableQuantity = dataInputStream.readBoolean();
+                            ((CharacterFileRecord)object2).tradeAdvertLastOfferAmount = dataInputStream.readInt();
+                            ((CharacterFileRecord)object2).botShopBuyMode = dataInputStream.readByte();
+                            ((CharacterFileRecord)object2).botTaskItemId = dataInputStream.readInt();
+                            ((CharacterFileRecord)object2).botShopItemAmount = dataInputStream.readInt();
                             byte by3 = dataInputStream.readByte();
                             n3 = 0;
                             while (n3 < by3) {
                                 n = dataInputStream.readInt();
-                                ((CharacterFileRecord)object2).cS.add(n);
+                                ((CharacterFileRecord)object2).botShopSellItemIds.add(n);
                                 ++n3;
                             }
                             n3 = dataInputStream.readByte();
                             n = 0;
                             while (n < n3) {
                                 int n20 = dataInputStream.readInt();
-                                ((CharacterFileRecord)object2).cR.add(n20);
+                                ((CharacterFileRecord)object2).botCombatLoadoutItemIds.add(n20);
                                 ++n;
                             }
-                            ((CharacterFileRecord)object2).cQ = dataInputStream.readByte();
-                            ((CharacterFileRecord)object2).cP = dataInputStream.readByte();
-                            ((CharacterFileRecord)object2).cO = dataInputStream.readByte();
+                            ((CharacterFileRecord)object2).botCombatStyle = dataInputStream.readByte();
+                            ((CharacterFileRecord)object2).botSkillTargetSkillId = dataInputStream.readByte();
+                            ((CharacterFileRecord)object2).botSkillTargetLevel = dataInputStream.readByte();
                             ((CharacterFileRecord)object2).cN = dataInputStream.readByte();
                             ((CharacterFileRecord)object2).cM = dataInputStream.readByte();
                             ((CharacterFileRecord)object2).cL = dataInputStream.readByte();
                             ((CharacterFileRecord)object2).cK = dataInputStream.readByte();
-                            ((CharacterFileRecord)object2).cJ = dataInputStream.readInt();
-                            ((CharacterFileRecord)object2).cI = dataInputStream.readInt();
+                            ((CharacterFileRecord)object2).botCompletionItemId = dataInputStream.readInt();
+                            ((CharacterFileRecord)object2).botCompletionItemAmount = dataInputStream.readInt();
                             ((CharacterFileRecord)object2).cH = dataInputStream.readInt();
                             ((CharacterFileRecord)object2).cG = dataInputStream.readInt();
                             ((CharacterFileRecord)object2).cF = dataInputStream.readInt();
                             ((CharacterFileRecord)object2).cE = dataInputStream.readInt();
-                            ((CharacterFileRecord)object2).ds = dataInputStream.readBoolean();
+                            ((CharacterFileRecord)object2).botTaskReturnToBankRequested = dataInputStream.readBoolean();
                             dataInputStream.readBoolean();
                             dataInputStream.readBoolean();
                             dataInputStream.readBoolean();
                             dataInputStream.readBoolean();
                             dataInputStream.readBoolean();
-                            ((CharacterFileRecord)object2).dt = dataInputStream.readByte();
+                            ((CharacterFileRecord)object2).botElementalSpellIndex = dataInputStream.readByte();
                             dataInputStream.readByte();
                             dataInputStream.readByte();
                             dataInputStream.readByte();
@@ -4158,8 +4158,8 @@ public final class CharacterFileManager {
     public static void loadPlayerFromFile(String var0, Player var1_1) {
         var2_2 = new File(String.valueOf(var0) + var1_1.getUsername() + ".dat");
         if (!var2_2.exists()) {
-            if (Server.f() != null) {
-                Server.f().a(var1_1);
+            if (Server.getInstance() != null) {
+                Server.getInstance().queueLogin(var1_1);
             }
             return;
         }
@@ -4182,14 +4182,14 @@ public final class CharacterFileManager {
             var2_2.readInt();
             var1_1.setPlayerRights(0);
             var2_2.readUTF();
-            var1_1.b(var2_2.readUTF());
-            var1_1.g(var2_2.readUTF());
+            var1_1.setProfileString1(var2_2.readUTF());
+            var1_1.setProfileString2(var2_2.readUTF());
             var1_1.eh = var2_2.readLong();
             var1_1.ej = var2_2.readLong();
             var1_1.eg = var2_2.readLong();
-            var1_1.ef = var2_2.readBoolean();
-            var1_1.w(var2_2.readBoolean());
-            var1_1.T(var2_2.readInt());
+            var1_1.loginRestrictionExempt = var2_2.readBoolean();
+            var1_1.setMemberFlag(var2_2.readBoolean());
+            var1_1.setDonatorPoints(var2_2.readInt());
             var1_1.getPosition().setX(var2_2.readInt());
             var1_1.getPosition().setPreviousX(var1_1.getPosition().getX());
             var1_1.getPosition().setY(var2_2.readInt());
@@ -4206,7 +4206,7 @@ public final class CharacterFileManager {
             var1_1.ea = var2_2.readInt();
             var1_1.eb = var2_2.readInt();
             var1_1.ec = var2_2.readInt();
-            var1_1.dS = var2_2.readInt();
+            var1_1.legacyQuestPoints = var2_2.readInt();
             var1_1.setAutoRetaliate(var2_2.readBoolean());
             var1_1.setFightMode(var2_2.readInt());
             var1_1.setBrightness(var2_2.readInt());
@@ -4226,7 +4226,7 @@ public final class CharacterFileManager {
             var1_1.setRingOfRecoilLife(var2_2.readInt());
             var4_5 = var2_2.readInt();
             if (var4_5 > 0) {
-                var1_1.b(var1_1, var4_5);
+                var1_1.addPvpCombatReference(var1_1, var4_5);
             }
             if (var3_3 <= 26) {
                 var8_6 = var2_2.readDouble();
@@ -4361,9 +4361,9 @@ public final class CharacterFileManager {
                                             ++var8_7;
                                         }
                                         var8_7 = 0;
-                                        while (var8_7 < var1_1.cT().length) {
-                                            var1_1.cT()[var8_7] = var2_2.readInt();
-                                            var1_1.cU()[var8_7] = var2_2.readInt();
+                                        while (var8_7 < var1_1.getQueuedLoginItemIds().length) {
+                                            var1_1.getQueuedLoginItemIds()[var8_7] = var2_2.readInt();
+                                            var1_1.getQueuedLoginItemAmounts()[var8_7] = var2_2.readInt();
                                             ++var8_7;
                                         }
                                         var1_1.ap(var2_2.readInt());
@@ -4371,11 +4371,11 @@ public final class CharacterFileManager {
                                         var1_1.setBanExpires(var2_2.readLong());
                                         var8_7 = 0;
                                         while (var8_7 < 6) {
-                                            var1_1.b(var8_7, var2_2.readBoolean());
+                                            var1_1.setBarrowsBrotherKilled(var8_7, var2_2.readBoolean());
                                             ++var8_7;
                                         }
-                                        var1_1.av(var2_2.readInt());
-                                        var1_1.aw(var2_2.readInt());
+                                        var1_1.setBarrowsKillCount(var2_2.readInt());
+                                        var1_1.setBarrowsTargetBrotherIndex(var2_2.readInt());
                                         var8_7 = var2_2.readInt();
                                         var1_1.getPoisonImmunityTimer().setDelayTicks(var8_7);
                                         var1_1.getPoisonImmunityTimer().reset();
@@ -5167,7 +5167,7 @@ lbl773:
                 ++var8_7;
             }
             var8_7 = 0;
-            while (var8_7 < QuestDefinition.b) {
+            while (var8_7 < QuestDefinition.questStateCapacity) {
                 try {
                     var1_1.setQuestState(var8_7, var2_2.readInt());
                 }
@@ -5179,17 +5179,17 @@ lbl773:
             var1_1.dv = var2_2.readByte();
             var1_1.bO = var2_2.readByte();
             var1_1.D = var2_2.readBoolean();
-            var1_1.aE(var2_2.readByte());
+            var1_1.setCoalTruckCoalCount(var2_2.readByte());
             var1_1.ar = var2_2.readByte();
             var1_1.en = var2_2.readBoolean();
             if (var3_3 >= 2) {
                 var1_1.ee = var2_2.readByte();
                 if (var3_3 >= 3) {
-                    var1_1.aC(var2_2.readInt());
+                    var1_1.setBossPetUnlockFlags(var2_2.readInt());
                 }
                 if (var3_3 >= 4) {
-                    var1_1.bQ = var2_2.readBoolean();
-                    var1_1.bU = var2_2.readBoolean();
+                    var1_1.barrowsDoorPuzzleSolved = var2_2.readBoolean();
+                    var1_1.barrowsChestOpened = var2_2.readBoolean();
                     var1_1.ep[452] = var2_2.readInt();
                 }
                 if (var3_3 >= 5) {
@@ -5203,22 +5203,22 @@ lbl773:
                 }
                 if (var3_3 >= 7) {
                     var8_7 = 0;
-                    while (var8_7 < QuestDefinition.b) {
+                    while (var8_7 < QuestDefinition.questStateCapacity) {
                         try {
-                            var1_1.bI[var8_7] = var2_2.readInt();
+                            var1_1.questProgressFlags[var8_7] = var2_2.readInt();
                         }
                         catch (IOException v7) {
-                            var1_1.bI[var8_7] = 0;
+                            var1_1.questProgressFlags[var8_7] = 0;
                         }
                         ++var8_7;
                     }
                     var8_7 = 0;
                     while (var8_7 < 100) {
                         try {
-                            var1_1.bJ[var8_7] = var2_2.readInt();
+                            var1_1.questHookStates[var8_7] = var2_2.readInt();
                         }
                         catch (IOException v8) {
-                            var1_1.bJ[var8_7] = 0;
+                            var1_1.questHookStates[var8_7] = 0;
                         }
                         ++var8_7;
                     }
@@ -5237,118 +5237,118 @@ lbl773:
                     var1_1.bZ = var2_2.readInt();
                 }
                 if (var3_3 >= 11) {
-                    var1_1.cb = var2_2.readUTF();
+                    var1_1.reservedVersion11String = var2_2.readUTF();
                 }
                 if (var3_3 >= 12) {
-                    var1_1.cm = var2_2.readInt();
+                    var1_1.familyCrestGauntletItemId = var2_2.readInt();
                 }
                 if (var3_3 >= 13) {
-                    var1_1.dK = var2_2.readInt();
-                    var1_1.dM = var2_2.readInt();
-                    var1_1.dL = var2_2.readInt();
-                    var1_1.dN = var2_2.readByte();
+                    var1_1.mageArenaFlamesOfZamorakCastsRemaining = var2_2.readInt();
+                    var1_1.mageArenaSaradominStrikeCastsRemaining = var2_2.readInt();
+                    var1_1.mageArenaClawsOfGuthixCastsRemaining = var2_2.readInt();
+                    var1_1.mageArenaProgressStage = var2_2.readByte();
                 }
                 if (var3_3 >= 14) {
                     var8_7 = 0;
                     while (var8_7 < 6) {
-                        var1_1.dw[var8_7] = var2_2.readBoolean();
+                        var1_1.grandExchangeSellOfferFlags[var8_7] = var2_2.readBoolean();
                         ++var8_7;
                     }
                     var8_7 = 0;
                     while (var8_7 < 6) {
-                        var1_1.dx[var8_7] = var2_2.readInt();
+                        var1_1.grandExchangeItemIds[var8_7] = var2_2.readInt();
                         ++var8_7;
                     }
                     var8_7 = 0;
                     while (var8_7 < 6) {
-                        var1_1.dy[var8_7] = var2_2.readInt();
+                        var1_1.grandExchangeQuantities[var8_7] = var2_2.readInt();
                         ++var8_7;
                     }
                     var8_7 = 0;
                     while (var8_7 < 6) {
-                        var1_1.dz[var8_7] = var2_2.readInt();
+                        var1_1.grandExchangeUnitPrices[var8_7] = var2_2.readInt();
                         ++var8_7;
                     }
                     var8_7 = 0;
                     while (var8_7 < 6) {
-                        var1_1.dA[var8_7] = var2_2.readBoolean();
+                        var1_1.grandExchangeCancelledFlags[var8_7] = var2_2.readBoolean();
                         ++var8_7;
                     }
                     var8_7 = 0;
                     while (var8_7 < 6) {
-                        var1_1.dB[var8_7] = var2_2.readInt();
+                        var1_1.grandExchangeCompletedQuantities[var8_7] = var2_2.readInt();
                         ++var8_7;
                     }
                     var8_7 = 0;
                     while (var8_7 < 6) {
-                        var1_1.dC[var8_7] = var2_2.readInt();
+                        var1_1.grandExchangeTotalPrices[var8_7] = var2_2.readInt();
                         ++var8_7;
                     }
                     var8_7 = 0;
                     while (var8_7 < 6) {
-                        var1_1.dD[var8_7] = var2_2.readInt();
+                        var1_1.grandExchangePrimaryCollectAmounts[var8_7] = var2_2.readInt();
                         ++var8_7;
                     }
                     var8_7 = 0;
                     while (var8_7 < 6) {
-                        var1_1.dE[var8_7] = var2_2.readInt();
+                        var1_1.grandExchangeSecondaryCollectAmounts[var8_7] = var2_2.readInt();
                         ++var8_7;
                     }
                     var8_7 = 0;
                     while (var8_7 < 6) {
-                        var1_1.dF[var8_7] = var2_2.readBoolean();
+                        var1_1.grandExchangeFinishMessagePending[var8_7] = var2_2.readBoolean();
                         ++var8_7;
                     }
                 }
                 if (var3_3 >= 15) {
-                    var1_1.getTelekineticTheatreController().a = var2_2.readInt();
-                    var1_1.getEnchantmentChamberController().a = var2_2.readInt();
-                    var1_1.getAlchemistPlaygroundController().a = var2_2.readInt();
-                    var1_1.getCreatureGraveyardController().a = var2_2.readInt();
-                    var1_1.df = var2_2.readBoolean();
-                    var1_1.getTelekineticTheatreController().b = var2_2.readByte();
-                    var1_1.getTelekineticTheatreController().c = var2_2.readBoolean();
-                    var1_1.getTelekineticTheatreController().d = var2_2.readByte();
+                    var1_1.getTelekineticTheatreController().pizazzPoints = var2_2.readInt();
+                    var1_1.getEnchantmentChamberController().pizazzPoints = var2_2.readInt();
+                    var1_1.getAlchemistPlaygroundController().pizazzPoints = var2_2.readInt();
+                    var1_1.getCreatureGraveyardController().pizazzPoints = var2_2.readInt();
+                    var1_1.bonesToPeachesUnlocked = var2_2.readBoolean();
+                    var1_1.getTelekineticTheatreController().mazeIndex = var2_2.readByte();
+                    var1_1.getTelekineticTheatreController().mazeSolved = var2_2.readBoolean();
+                    var1_1.getTelekineticTheatreController().consecutiveMazesSolved = var2_2.readByte();
                 }
                 if (var3_3 >= 16) {
-                    var1_1.bS = var2_2.readInt();
+                    var1_1.barrowsRewardPotential = var2_2.readInt();
                 }
                 if (var3_3 >= 18) {
                     var1_1.gameMode = var2_2.readByte();
                 }
                 if (var3_3 >= 19) {
-                    var1_1.ed = var2_2.readInt();
+                    var1_1.barrowsRunsCompleted = var2_2.readInt();
                 }
                 if (var3_3 >= 21) {
-                    var1_1.o = var2_2.readLong();
-                    var1_1.ep[GodWarsDungeonManager.a] = var2_2.readInt();
+                    var1_1.godWarsLastAltarBlessingMillis = var2_2.readLong();
+                    var1_1.ep[GodWarsDungeonManager.ropeShortcutConfigId] = var2_2.readInt();
                     var8_7 = 0;
-                    while (var8_7 < var1_1.m.length) {
-                        var1_1.m[var8_7] = var2_2.readInt();
+                    while (var8_7 < var1_1.godWarsKillCounts.length) {
+                        var1_1.godWarsKillCounts[var8_7] = var2_2.readInt();
                         ++var8_7;
                     }
                 }
                 if (var3_3 >= 22) {
-                    var1_1.w = var2_2.readByte();
+                    var1_1.craftingThreadUseCount = var2_2.readByte();
                 }
                 if (var3_3 >= 24) {
-                    var1_1.cc = var2_2.readLong();
+                    var1_1.membershipExpiresMillis = var2_2.readLong();
                     var1_1.l = var2_2.readByte();
                 }
                 if (var3_3 >= 25) {
                     var1_1.ep[33] = var2_2.readInt();
                 }
                 if (var3_3 >= 26) {
-                    var1_1.eD = var2_2.readUnsignedShort();
-                    CacheCoordinateTranslator.a(var1_1);
+                    var1_1.savedCacheVersion = var2_2.readUnsignedShort();
+                    CacheCoordinateTranslator.translateSavedDungeonPosition(var1_1);
                 }
                 if (var3_3 >= 29) {
-                    var1_1.u = var2_2.readInt();
+                    var1_1.godBookPageFlags = var2_2.readInt();
                 }
                 if (var3_3 >= 30) {
-                    var1_1.eF = var2_2.readBoolean();
-                    var1_1.eG = var2_2.readBoolean();
-                    var1_1.eE = var2_2.readInt();
+                    var1_1.swampCaveRopeAttached = var2_2.readBoolean();
+                    var1_1.lampOilStillFilled = var2_2.readBoolean();
+                    var1_1.enterTheAbyssMiniquestState = var2_2.readInt();
                 }
                 if (var3_3 >= 20) {
                     v9 = var2_2.readBoolean();
@@ -5446,8 +5446,8 @@ lbl773:
                 GameplayHelper.a(String.valueOf(System.currentTimeMillis()) + "\u00a7" + var1_1.getUsername() + "\u00a7" + var1_1.eh, "restored");
             }
             var2_2.close();
-            if (Server.f() != null) {
-                Server.f().a(var1_1);
+            if (Server.getInstance() != null) {
+                Server.getInstance().queueLogin(var1_1);
             }
             return;
         }

@@ -37,14 +37,14 @@ implements DatabaseCallback {
      */
     private boolean processUidLookupResult(ResultSet object) {
         if (!object.next()) {
-            this.player.A(3);
-            this.player.bn();
+            this.player.setLoginResponseCode(3);
+            this.player.sendLoginResponse();
             return false;
         }
         try {
             int n = object.getInt("uid");
             this.player.setReferenceId(n);
-            Player[] playerArray = World.f();
+            Player[] playerArray = World.getPlayers();
             int n2 = playerArray.length;
             int n3 = 0;
             while (true) {
@@ -53,9 +53,9 @@ implements DatabaseCallback {
                     break;
                 }
                 Player player = playerArray[n3];
-                if (player != null && this.player.dS() == player.dS()) {
-                    this.player.A(5);
-                    this.player.bn();
+                if (player != null && this.player.getNameHash() == player.getNameHash()) {
+                    this.player.setLoginResponseCode(5);
+                    this.player.sendLoginResponse();
                     player.disconnect();
                     return false;
                 }
@@ -73,20 +73,20 @@ implements DatabaseCallback {
         DatabaseService.getInstance().submit(playerLoadQueryFactory.createContainerLoadQuery(2), playerLoadQueryFactory.createEquipmentLoadCallback());
         DatabaseService.getInstance().submit(new PlayerContactsLoadQuery(this, "SELECT `contact`, `ignore`, `slot` FROM prs06_contacts WHERE `player_id` = ?", this.player), playerLoadQueryFactory.createContactsLoadCallback());
         DatabaseService.getInstance().submit(new PlayerSkillsLoadQuery(this, "SELECT  `id`,  `player_id`,  `cur_attack`,  `cur_defence`,  `cur_strength`,  `cur_hitpoints`,  `cur_ranged`,  `cur_prayer`,  `cur_magic`,  `cur_cooking`,  `cur_woodcutting`,  `cur_fletching`,  `cur_fishing`,  `cur_firemaking`,  `cur_crafting`,  `cur_smithing`,  `cur_mining`,  `cur_herblore`,  `cur_agility`,  `cur_thieving`,  `cur_slayer`,  `cur_farming`,  `cur_runecrafting`,  `exp_attack`,  `exp_defence`,  `exp_strength`,  `exp_hitpoints`,  `exp_ranged`,  `exp_prayer`,  `exp_magic`,  `exp_cooking`,  `exp_woodcutting`,  `exp_fletching`,  `exp_fishing`,  `exp_firemaking`,  `exp_crafting`,  `exp_smithing`,  `exp_mining`,  `exp_herblore`,  `exp_agility`,  `exp_thieving`,  `exp_slayer`,  `exp_farming`,  `exp_runecrafting` FROM `prs06_main`.`prs06_skills` WHERE player_id = ? LIMIT 1", this.player), playerLoadQueryFactory.createSkillsLoadCallback());
-        if (this.player.eQ()) {
-            this.player.A(4);
-            this.player.bn();
+        if (this.player.isBanned()) {
+            this.player.setLoginResponseCode(4);
+            this.player.sendLoginResponse();
             return false;
         }
-        Server.f().a(this.player);
+        Server.getInstance().queueLogin(this.player);
         DatabaseService.getInstance().submit(new PlayerWorldUpdateQuery(this, "UPDATE `prs06_users` SET `world`=? WHERE `uid` = ?", this.player), null);
         return true;
     }
 
     @Override
     public final void onException(Exception exception) {
-        this.player.A(11);
-        this.player.bn();
+        this.player.setLoginResponseCode(11);
+        this.player.sendLoginResponse();
         exception.printStackTrace();
     }
 }

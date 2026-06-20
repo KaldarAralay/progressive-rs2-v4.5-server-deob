@@ -9,16 +9,16 @@ import com.rs2.model.task.TickTask;
 
 final class CutsceneStepTask
 extends TickTask {
-    private final /* synthetic */ CutsceneStep a;
+    private final /* synthetic */ CutsceneStep step;
 
     CutsceneStepTask(Cutscene cutscene, int n, CutsceneStep cutsceneStep) {
-        this.a = cutsceneStep;
+        this.step = cutsceneStep;
         super(n);
     }
 
     @Override
     public final void execute() {
-        this.a.a();
+        this.step.executeStep();
         this.stop();
     }
 }

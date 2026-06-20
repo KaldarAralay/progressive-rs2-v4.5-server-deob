@@ -26,25 +26,25 @@ extends CycleEvent {
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
         if (!this.b) {
-            this.a.n(false);
+            this.a.setActionLocked(false);
         }
         this.a.getMovementQueue().clear();
         if (!this.c.bB) {
-            if (this.c.de && this.c.botCombatState != null && (this.c.botCombatState.startsWith("escape") || this.c.botCombatState.equals("tele") || this.c.botCombatState.equals("died"))) {
+            if (this.c.isBot && this.c.botCombatState != null && (this.c.botCombatState.startsWith("escape") || this.c.botCombatState.equals("tele") || this.c.botCombatState.equals("died"))) {
                 if (!this.c.botCombatState.equals("died") && !this.c.clanWarsBot) {
                     BotCombatHelper.sellBotLootItems(this.c);
                 }
                 if (this.c.clanWarsBot) {
                     ClanWarsBotManager.hideClanWarsBot(this.c);
-                } else if (this.c.az == 4) {
+                } else if (this.c.botMode == 4) {
                     GameplayHelper.c(this.c);
                 } else {
-                    BotCombatLoadoutManager.a(this.c);
+                    BotCombatLoadoutManager.startCombatLoadoutBot(this.c);
                 }
             }
             if (this.c.currentBotTask != null && this.c.botCombatState != null && (this.c.botCombatState.equals("died") || this.c.botCombatState.startsWith("escape") || this.c.botCombatState.equals("tele"))) {
-                if (this.c.az != 4) {
-                    GameplayHelper.d(this.c);
+                if (this.c.botMode != 4) {
+                    GameplayHelper.startNextBotTask(this.c);
                 } else {
                     GameplayHelper.c(this.c);
                 }
@@ -52,7 +52,7 @@ extends CycleEvent {
             if (this.c.currentBotRoute != null) {
                 this.c.dm = false;
                 if (!this.c.dn) {
-                    this.c.bk();
+                    this.c.continueBotRoute();
                 }
             }
         }

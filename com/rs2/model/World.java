@@ -32,22 +32,22 @@ import java.util.LinkedList;
 import java.util.concurrent.Executors;
 
 public final class World {
-    public static final Player[] a = new Player[ServerSettings.maxPlayers];
-    private static Npc[] c = new Npc[20000];
-    private static TaskScheduler d = new TaskScheduler();
-    private static NpcDefinition[] e = new NpcDefinition[6433];
-    public static int b = 0;
-    private static final World f;
-    private WorldObjectRegionIndex g = new WorldObjectRegionIndex();
+    public static final Player[] players = new Player[ServerSettings.maxPlayers];
+    private static Npc[] npcs = new Npc[20000];
+    private static TaskScheduler taskScheduler = new TaskScheduler();
+    private static NpcDefinition[] npcDefinitions = new NpcDefinition[6433];
+    public static int tickCount = 0;
+    private static final World instance;
+    private WorldObjectRegionIndex objectRegionIndex = new WorldObjectRegionIndex();
 
     static {
         int n = Runtime.getRuntime().availableProcessors();
         Executors.newFixedThreadPool(n);
-        f = new World();
+        instance = new World();
     }
 
-    public static void a(Player object) {
-        if (!((Player)object).de) {
+    public static void logoutBotAndScheduleRelogin(Player object) {
+        if (!((Player)object).isBot) {
             return;
         }
         String string = ((Player)object).getUsername();
@@ -55,26 +55,26 @@ public final class World {
         player.packetSender.sendLogout();
         ((Player)object).disconnect();
         object = new BotReloginTask(30, string);
-        d.schedule((TickTask)object);
+        taskScheduler.schedule((TickTask)object);
     }
 
     public static synchronized void processTick() {
         Object object;
         Object object2;
         Object object3;
-        ++b;
+        ++tickCount;
         ProfilerTimer profilerTimer = ProfilerRegistry.getTimer("executeTicks");
         Object object4 = new LinkedList();
-        object4.addAll(d.getTasks());
+        object4.addAll(taskScheduler.getTasks());
         object4 = object4.iterator();
-        d.getTasks().clear();
+        taskScheduler.getTasks().clear();
         profilerTimer.start();
         while (object4.hasNext()) {
             object3 = (TickTask)object4.next();
             try {
                 ((TickTask)object3).tick();
                 if (!((TickTask)object3).isActive()) continue;
-                d.getTasks().add(object3);
+                taskScheduler.getTasks().add(object3);
             }
             catch (Exception exception) {
                 object2 = exception;
@@ -99,8 +99,8 @@ public final class World {
         profilerTimer = ProfilerRegistry.getTimer("processPlayerLogic");
         profilerTimer.start();
         object3 = new ArrayList<String>();
-        Entity[] entityArray = a;
-        int n = a.length;
+        Entity[] entityArray = players;
+        int n = players.length;
         int n2 = 0;
         while (n2 < n) {
             object2 = entityArray[n2];
@@ -113,7 +113,7 @@ public final class World {
                 } else {
                     ((ArrayList)object3).add(((Player)object2).getUsername());
                     try {
-                        ((Player)object2).bc();
+                        ((Player)object2).process();
                     }
                     catch (Exception exception) {
                         object = exception;
@@ -127,8 +127,8 @@ public final class World {
         profilerTimer.stop();
         profilerTimer = ProfilerRegistry.getTimer("processNPCLogic");
         profilerTimer.start();
-        entityArray = c;
-        n = c.length;
+        entityArray = npcs;
+        n = npcs.length;
         n2 = 0;
         while (n2 < n) {
             object2 = entityArray[n2];
@@ -139,7 +139,7 @@ public final class World {
                 catch (Exception exception) {
                     object = exception;
                     exception.printStackTrace();
-                    World.b((Npc)object2);
+                    World.unregisterNpc((Npc)object2);
                 }
             }
             ++n2;
@@ -148,8 +148,8 @@ public final class World {
         CycleEventHandler.getInstance().process();
         profilerTimer = ProfilerRegistry.getTimer("processMovement");
         profilerTimer.start();
-        entityArray = a;
-        n = a.length;
+        entityArray = players;
+        n = players.length;
         n2 = 0;
         while (n2 < n) {
             object2 = entityArray[n2];
@@ -158,8 +158,8 @@ public final class World {
             }
             ++n2;
         }
-        entityArray = c;
-        n = c.length;
+        entityArray = npcs;
+        n = npcs.length;
         n2 = 0;
         while (n2 < n) {
             object2 = entityArray[n2];
@@ -171,8 +171,8 @@ public final class World {
         profilerTimer.stop();
         profilerTimer = ProfilerRegistry.getTimer("updatePlayers");
         profilerTimer.start();
-        entityArray = a;
-        n = a.length;
+        entityArray = players;
+        n = players.length;
         n2 = 0;
         while (n2 < n) {
             object2 = entityArray[n2];
@@ -192,8 +192,8 @@ public final class World {
         profilerTimer.stop();
         profilerTimer = ProfilerRegistry.getTimer("resetPlayers");
         profilerTimer.start();
-        entityArray = a;
-        n = a.length;
+        entityArray = players;
+        n = players.length;
         n2 = 0;
         while (n2 < n) {
             object2 = entityArray[n2];
@@ -203,9 +203,9 @@ public final class World {
                     ((Entity)object3).getUpdateState().reset();
                     ((Entity)object3).setWalkDirection(-1);
                     ((Entity)object3).setRunDirection(-1);
-                    ((Player)object3).f(false);
-                    ((Player)object3).g(false);
-                    ((Player)object3).e(false);
+                    ((Player)object3).setAppearanceUpdateRequired(false);
+                    ((Player)object3).setTeleportPlacementUpdateRequired(false);
+                    ((Player)object3).setTeleporting(false);
                     ((Player)object3).setPublicChatPayload(null);
                 }
                 catch (Exception exception) {
@@ -219,8 +219,8 @@ public final class World {
         profilerTimer.stop();
         profilerTimer = ProfilerRegistry.getTimer("resetNPCs");
         profilerTimer.start();
-        entityArray = c;
-        n = c.length;
+        entityArray = npcs;
+        n = npcs.length;
         n2 = 0;
         while (n2 < n) {
             object2 = entityArray[n2];
@@ -231,7 +231,7 @@ public final class World {
                 catch (Exception exception) {
                     object = exception;
                     exception.printStackTrace();
-                    World.b((Npc)object2);
+                    World.unregisterNpc((Npc)object2);
                 }
             }
             ++n2;
@@ -239,11 +239,11 @@ public final class World {
         profilerTimer.stop();
     }
 
-    public static synchronized void b(Player player) {
+    public static synchronized void registerPlayer(Player player) {
         int n = 1;
-        while (n < a.length) {
-            if (a[n] == null) {
-                World.a[n] = player;
+        while (n < players.length) {
+            if (players[n] == null) {
+                World.players[n] = player;
                 player.setIndex(n);
                 player.setEncodedIndex(n + 32768);
                 player.setSize(1);
@@ -254,14 +254,14 @@ public final class World {
         throw new IllegalStateException("Server is full!");
     }
 
-    public static synchronized void a(Npc npc) {
+    public static synchronized void registerNpc(Npc npc) {
         int n = 1;
-        while (n < c.length) {
-            if (c[n] == null) {
-                World.c[n] = npc;
+        while (n < npcs.length) {
+            if (npcs[n] == null) {
+                World.npcs[n] = npc;
                 npc.setIndex(n);
                 npc.setEncodedIndex(n);
-                npc.setSize(e[npc.getNpcId()].getSize());
+                npc.setSize(npcDefinitions[npc.getNpcId()].getSize());
                 int[] nArray = Npc.combatTransformNpcIds;
                 int n2 = Npc.combatTransformNpcIds.length;
                 int n3 = 0;
@@ -324,16 +324,16 @@ public final class World {
         throw new IllegalStateException("Server is full!");
     }
 
-    public static synchronized void c(Player object) {
+    public static synchronized void unregisterPlayer(Player object) {
         try {
             CharacterFileManager.savePlayer((Player)object);
-            ((Player)object).j(false);
+            ((Player)object).setRegistered(false);
             ((Player)object).setConnectionState(PlayerConnectionState.f);
             if (((Entity)object).getIndex() == -1) {
                 return;
             }
             object.ad();
-            World.a[((Entity)object).getIndex()] = null;
+            World.players[((Entity)object).getIndex()] = null;
             ((Entity)object).setIndex(-1);
             return;
         }
@@ -344,19 +344,19 @@ public final class World {
         }
     }
 
-    public static synchronized void b(Npc npc) {
+    public static synchronized void unregisterNpc(Npc npc) {
         if (npc.getIndex() == -1) {
             return;
         }
         npc.ad();
-        World.c[npc.getIndex()] = null;
+        World.npcs[npc.getIndex()] = null;
         npc.setIndex(-1);
     }
 
-    public static int b() {
+    public static int getPlayerCount() {
         int n = 0;
-        Player[] playerArray = a;
-        int n2 = a.length;
+        Player[] playerArray = players;
+        int n2 = players.length;
         int n3 = 0;
         while (n3 < n2) {
             Player player = playerArray[n3];
@@ -368,14 +368,14 @@ public final class World {
         return n;
     }
 
-    public static int c() {
+    public static int getNonBotPlayerCount() {
         int n = 0;
-        Player[] playerArray = a;
-        int n2 = a.length;
+        Player[] playerArray = players;
+        int n2 = players.length;
         int n3 = 0;
         while (n3 < n2) {
             Player player = playerArray[n3];
-            if (player != null && !player.de) {
+            if (player != null && !player.isBot) {
                 ++n;
             }
             ++n3;
@@ -383,13 +383,13 @@ public final class World {
         return n;
     }
 
-    public static boolean c(Npc npc) {
-        Player[] playerArray = a;
-        int n = a.length;
+    public static boolean hasNearbyNonBotPlayer(Npc npc) {
+        Player[] playerArray = players;
+        int n = players.length;
         int n2 = 0;
         while (n2 < n) {
             Player player = playerArray[n2];
-            if (player != null && !player.de && GameUtil.b(npc.getPosition(), player.getPosition()) <= 32) {
+            if (player != null && !player.isBot && GameUtil.getDistance(npc.getPosition(), player.getPosition()) <= 32) {
                 return true;
             }
             ++n2;
@@ -397,10 +397,10 @@ public final class World {
         return false;
     }
 
-    public static int d() {
+    public static int getAdminCount() {
         int n = 0;
-        Player[] playerArray = a;
-        int n2 = a.length;
+        Player[] playerArray = players;
+        int n2 = players.length;
         int n3 = 0;
         while (n3 < n2) {
             Player player = playerArray[n3];
@@ -412,10 +412,10 @@ public final class World {
         return n;
     }
 
-    public static int e() {
+    public static int getModeratorCount() {
         int n = 0;
-        Player[] playerArray = a;
-        int n2 = a.length;
+        Player[] playerArray = players;
+        int n2 = players.length;
         int n3 = 0;
         while (n3 < n2) {
             Player player = playerArray[n3];
@@ -427,14 +427,14 @@ public final class World {
         return n;
     }
 
-    public static Player a(String object) {
+    public static Player findPlayerByUsername(String object) {
         long l = TextUtil.encodeNameHash((String)object);
-        Player[] playerArray = a;
-        int n = a.length;
+        Player[] playerArray = players;
+        int n = players.length;
         int n2 = 0;
         while (n2 < n) {
             object = playerArray[n2];
-            if (object != null && ((Player)object).dS() == l) {
+            if (object != null && ((Player)object).getNameHash() == l) {
                 return object;
             }
             ++n2;
@@ -442,53 +442,53 @@ public final class World {
         return null;
     }
 
-    public static void a(boolean bl) {
-        Player[] playerArray = a;
-        int n = a.length;
+    public static void logoutBotsAndScheduleShutdown(boolean bl) {
+        Player[] playerArray = players;
+        int n = players.length;
         int n2 = 0;
         while (n2 < n) {
             Player player = playerArray[n2];
-            if (player != null && player.de) {
+            if (player != null && player.isBot) {
                 Player player2 = player;
                 player2.packetSender.sendLogout();
                 player.disconnect();
             }
             ++n2;
         }
-        Server.a(true);
+        Server.scheduleShutdown(true);
     }
 
     public static void scheduleTickTask(TickTask tickTask) {
-        d.schedule(tickTask);
+        taskScheduler.schedule(tickTask);
     }
 
-    public static Player[] f() {
-        return a;
+    public static Player[] getPlayers() {
+        return players;
     }
 
-    public static Npc[] g() {
-        return c;
+    public static Npc[] getNpcs() {
+        return npcs;
     }
 
     public static TaskScheduler getTaskScheduler() {
-        return d;
+        return taskScheduler;
     }
 
-    public static NpcDefinition[] i() {
-        return e;
+    public static NpcDefinition[] getNpcDefinitions() {
+        return npcDefinitions;
     }
 
-    public static World j() {
-        return f;
+    public static World getInstance() {
+        return instance;
     }
 
-    public final WorldObjectRegionIndex k() {
-        return this.g;
+    public final WorldObjectRegionIndex getObjectRegionIndex() {
+        return this.objectRegionIndex;
     }
 
-    public static void a(GraphicEffect graphicEffect, Position position) {
-        Player[] playerArray = a;
-        int n = a.length;
+    public static void sendStillGraphicToNearbyPlayers(GraphicEffect graphicEffect, Position position) {
+        Player[] playerArray = players;
+        int n = players.length;
         int n2 = 0;
         while (n2 < n) {
             Object object = playerArray[n2];

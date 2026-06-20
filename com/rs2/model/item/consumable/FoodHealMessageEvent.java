@@ -10,16 +10,16 @@ import com.rs2.model.task.CycleEventContainer;
 
 final class FoodHealMessageEvent
 extends CycleEvent {
-    private /* synthetic */ FoodHandler a;
+    private /* synthetic */ FoodHandler foodHandler;
 
     FoodHealMessageEvent(FoodHandler foodHandler) {
-        this.a = foodHandler;
+        this.foodHandler = foodHandler;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        if (this.a.a.getSkillManager().getBaseLevel(3) < this.a.a.getSkillManager().getBaseLevel(3)) {
-            Player player = this.a.a;
+        if (this.foodHandler.player.getSkillManager().getBaseLevel(3) < this.foodHandler.player.getSkillManager().getBaseLevel(3)) {
+            Player player = this.foodHandler.player;
             player.packetSender.sendGameMessage("It heals some health.");
         }
         cycleEventContainer.stop();

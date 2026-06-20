@@ -23,23 +23,23 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        if (this.player.isDead() || !this.player.bW() || !this.player.currentBotTask.usesCustomTaskAction || !this.player.botTaskState.equals("do task")) {
+        if (this.player.isDead() || !this.player.isRegistered() || !this.player.currentBotTask.usesCustomTaskAction || !this.player.botTaskState.equals("do task")) {
             this.stop();
             return;
         }
         if (this.player.getOpenInterfaceId() == 3824) {
             if (this.player.N <= 0) {
                 if (this.player.botShopBuyMode == 1) {
-                    ShopManager.a(this.player, this.shopItem);
+                    ShopManager.buyItemStack(this.player, this.shopItem);
                     return;
                 }
-                ShopManager.b(this.player, this.shopItem);
+                ShopManager.sellItemStack(this.player, this.shopItem);
                 return;
             }
             --this.player.N;
             return;
         }
-        this.player.N = 3 + GameUtil.h(3);
+        this.player.N = 3 + GameUtil.randomInt(3);
         this.player.botInteractionOption = 2;
         this.player.interactWithBotNpcTargets(this.player.botInteractionTargetIds);
     }

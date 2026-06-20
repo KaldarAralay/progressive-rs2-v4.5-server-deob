@@ -23,7 +23,7 @@ public enum JewelleryDefinition {
         void var18_13;
         void var15_11;
         void var11_8;
-        void cfr_renamed_5;
+        void cfr_renamed_4;
         void var7_5;
         void var4_2;
         this.recipeData[0] = (int)d;
@@ -31,7 +31,7 @@ public enum JewelleryDefinition {
         this.recipeData[2] = n3;
         this.recipeData[3] = var7_5;
         this.recipeData[4] = n4;
-        this.recipeData[5] = cfr_renamed_5;
+        this.recipeData[5] = cfr_renamed_4;
         this.recipeData[6] = var11_8;
         this.recipeData[7] = n6;
         this.recipeData[8] = (int)d3;

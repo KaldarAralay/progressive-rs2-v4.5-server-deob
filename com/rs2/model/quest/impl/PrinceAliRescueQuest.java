@@ -15,11 +15,11 @@ public final class PrinceAliRescueQuest
 extends QuestScript {
     public PrinceAliRescueQuest(int n) {
         super(11);
-        super.a(3);
+        super.setQuestPointReward(3);
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player stringArray, int n) {
         if (n == 0) {
             stringArray = new String[]{"I can start this quest by speaking to Hassan at the palace", "in Al-Kharid."};
             return stringArray;
@@ -64,9 +64,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("3 Quest Points", 12150);
         player2 = player;
@@ -79,7 +79,7 @@ extends QuestScript {
         player2.packetSender.sendInterfaceText("", 12154);
         player2 = player;
         player2.packetSender.sendInterfaceText("", 12155);
-        player.getInventoryManager().b(new ItemStack(995, 700));
+        player.getInventoryManager().addOrDropItem(new ItemStack(995, 700));
         player2 = player;
         player2.packetSender.sendInterfaceModel(InterfaceDefinition.interfaceCount <= 12140 ? 6161 : 12145, 250, 995);
         player2 = player;
@@ -93,7 +93,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleFirstObjectAction(Player player, int n, int n2, int n3, int n4) {
         if (n == 2881 && n2 == 3123 && n3 == 3243) {
             if (player.getInventoryManager().containsItem(2418) && n4 == 8 || n4 == 9) {
                 Npc npc;
@@ -118,7 +118,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2, int n3) {
+    public final boolean handleItemOnItem(Player player, int n, int n2, int n3) {
         if (n3 != 0 && (n == 1765 && n2 == 2421 || n == 2421 && n2 == 1765)) {
             player.getInventoryManager().removeItem(new ItemStack(n, 1));
             player.getInventoryManager().removeItem(new ItemStack(n2, 1));
@@ -130,7 +130,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean d(Player player, int n, int n2, int n3) {
+    public final boolean handleItemOnNpc(Player player, int n, int n2, int n3) {
         if (n3 == 8 && n2 == 954 && n == 919) {
             DialogueManager.continueDialogue(player, 919, 100, 0);
             return true;
@@ -139,7 +139,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         if (n == 923) {
             if (n4 == 0) {
                 if (n2 == 1) {
@@ -173,7 +173,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 2) {
-                    this.c(player);
+                    this.awardCompletionRewards(player);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -192,7 +192,7 @@ extends QuestScript {
                 }
                 if (n2 == 2) {
                     player.getDialogueManager().showNpcThreeLineDialogue("Our prince is captive by the Lady Keli. We just need", "to make the rescue. There are two things we need", "you to do.", 591);
-                    player.setQuestState(this.b(), 3);
+                    player.setQuestState(this.getQuestId(), 3);
                     return true;
                 }
                 if (n2 == 3) {
@@ -292,7 +292,7 @@ extends QuestScript {
                     player.getInventoryManager().removeItem(new ItemStack(2423, 1));
                     player.getInventoryManager().removeItem(new ItemStack(2349, 1));
                     player.getDialogueManager().showOneLineStatement("Osman takes the key imprint and the bronze bar.");
-                    player.setQuestState(this.b(), 5);
+                    player.setQuestState(this.getQuestId(), 5);
                     return true;
                 }
             }
@@ -330,7 +330,7 @@ extends QuestScript {
                 }
                 if (n2 == 2) {
                     player.getDialogueManager().showNpcTwoLineDialogue("Your employment is known to me. Now, do you know", "all that we need to make the break?", 591);
-                    player.setQuestState(this.b(), 4);
+                    player.setQuestState(this.getQuestId(), 4);
                     return true;
                 }
                 if (n2 == 3) {
@@ -448,7 +448,7 @@ extends QuestScript {
                 }
             }
             if (n4 == 5) {
-                if (!player.aq(2418)) {
+                if (!player.ownsItem(2418)) {
                     if (n2 == 1) {
                         player.getDialogueManager().showNpcTwoLineDialogue("My father sent this key for you.", "Be careful not to lose it.", 591);
                         return true;
@@ -458,10 +458,10 @@ extends QuestScript {
                         return true;
                     }
                     if (n2 == 3) {
-                        player.getInventoryManager().b(new ItemStack(2418, 1));
+                        player.getInventoryManager().addOrDropItem(new ItemStack(2418, 1));
                         if (PrinceAliRescueQuest.e(player)) {
                             player.getDialogueManager().showNpcThreeLineDialogue("Good, you have all the basic equipment. Next to deal", "with the guard on the door. He is talkative, try to find", "a weakness in him.", 591);
-                            player.setQuestState(this.b(), 6);
+                            player.setQuestState(this.getQuestId(), 6);
                         } else {
                             player.getDialogueManager().showNpcTwoLineDialogue("Come back to me when you have the rest of the", "items we need.", 591);
                         }
@@ -471,7 +471,7 @@ extends QuestScript {
                 } else if (n2 == 1) {
                     if (PrinceAliRescueQuest.e(player)) {
                         player.getDialogueManager().showNpcThreeLineDialogue("Good, you have all the basic equipment. Next to deal", "with the guard on the door. He is talkative, try to find", "a weakness in him.", 591);
-                        player.setQuestState(this.b(), 6);
+                        player.setQuestState(this.getQuestId(), 6);
                     } else {
                         player.getDialogueManager().showNpcTwoLineDialogue("Come back to me when you have the rest of the", "items we need.", 591);
                     }
@@ -479,21 +479,21 @@ extends QuestScript {
                     return true;
                 }
             }
-            if (n4 == 6 && !player.aq(2418)) {
+            if (n4 == 6 && !player.ownsItem(2418)) {
                 if (n2 == 1) {
                     player.getDialogueManager().showOneLineStatement("Leela gives you a copy of the key to the prince's door.");
                     return true;
                 }
                 if (n2 == 2) {
                     player.getDialogueManager().showNpcOneLineDialogue("Do not lose the key this time.", 591);
-                    player.getInventoryManager().b(new ItemStack(2418, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(2418, 1));
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
             }
         }
         if (n == 918 && n4 >= 4 && n4 < 9) {
-            if (n2 < 111 && (player.aq(2421) || player.aq(2419))) {
+            if (n2 < 111 && (player.ownsItem(2421) || player.ownsItem(2419))) {
                 return false;
             }
             if (n2 == 1) {
@@ -564,7 +564,7 @@ extends QuestScript {
             }
             if (n2 == 110 && player.getInventoryManager().containsItemAmount(1759, 3)) {
                 player.getInventoryManager().removeItem(new ItemStack(1759, 3));
-                player.getInventoryManager().b(new ItemStack(2421, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(2421, 1));
                 player.getDialogueManager().showNpcTwoLineDialogue("Here you go, how's that for a quick effort?", "Not bad I think!", 591);
                 player.getDialogueManager().setNextDialogueStep(111);
                 return true;
@@ -580,7 +580,7 @@ extends QuestScript {
             }
         }
         if (n == 922 && n4 >= 4 && n4 < 9) {
-            if (n2 != 109 && player.aq(2424)) {
+            if (n2 != 109 && player.ownsItem(2424)) {
                 return false;
             }
             if (n2 == 1) {
@@ -641,7 +641,7 @@ extends QuestScript {
                 player.getInventoryManager().removeItem(new ItemStack(1951, 1));
                 player.getInventoryManager().removeItem(new ItemStack(1933, 1));
                 player.getInventoryManager().removeItem(new ItemStack(1929, 1));
-                player.getInventoryManager().b(new ItemStack(2424, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(2424, 1));
                 player.getDialogueManager().showOneLineStatement("Aggie hands you the skin paste.");
                 player.getDialogueManager().setNextDialogueStep(123);
                 return true;
@@ -654,7 +654,7 @@ extends QuestScript {
         }
         if (n == 919) {
             if (n4 == 4) {
-                if (n2 != 25 && player.aq(2423)) {
+                if (n2 != 25 && player.ownsItem(2423)) {
                     return false;
                 }
                 if (n2 == 1) {
@@ -802,7 +802,7 @@ extends QuestScript {
                 }
                 if (n2 == 24 && player.getInventoryManager().containsItemAmount(1761, 1)) {
                     player.getInventoryManager().removeItem(new ItemStack(1761, 1));
-                    player.getInventoryManager().b(new ItemStack(2423, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(2423, 1));
                     player.getDialogueManager().showPlayerOneLineDialogue("Thank you so much, you are too kind, o great Keli.", 591);
                     return true;
                 }
@@ -856,7 +856,7 @@ extends QuestScript {
                 if (n2 == 5 && player.getInventoryManager().containsItemAmount(1917, 1)) {
                     player.getInventoryManager().removeItem(new ItemStack(1917, 1));
                     player.getDialogueManager().showOneLineStatement("You hand a beer to the guard, he drinks it in seconds.");
-                    player.setQuestState(this.b(), 7);
+                    player.setQuestState(this.getQuestId(), 7);
                     player.getDialogueManager().setNextDialogueStep(1);
                     return true;
                 }
@@ -885,7 +885,7 @@ extends QuestScript {
                 if (n2 == 6 && player.getInventoryManager().containsItemAmount(1917, 2)) {
                     player.getInventoryManager().removeItem(new ItemStack(1917, 2));
                     player.getDialogueManager().showTwoLineStatement("You hand two more beers to the guard.", "He takes a sip of one, and then he drinks them both.");
-                    player.setQuestState(this.b(), 8);
+                    player.setQuestState(this.getQuestId(), 8);
                     player.getDialogueManager().setNextDialogueStep(1);
                     return true;
                 }
@@ -937,7 +937,7 @@ extends QuestScript {
                         npc.transformToNpcId(921, 100);
                         player.getDialogueManager().setDialogueNpcId(921);
                         player.getDialogueManager().showNpcTwoLineDialogue("Thank you my friend, I must leave you now. My", "father will pay you well for this.", 591);
-                        player.setQuestState(this.b(), 9);
+                        player.setQuestState(this.getQuestId(), 9);
                     }
                     return true;
                 }

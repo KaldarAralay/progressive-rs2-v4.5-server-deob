@@ -30,7 +30,7 @@ extends TickTask {
         GameplayHelper.b(this.a, (Npc)entity, 2484, 9864, 0, -1, false, false);
         ((Npc)entity).queueScriptedPath(new Position[]{new Position(2490, 9864, 0)});
         this.a.setInteractionTarget(entity);
-        this.a.n(false);
+        this.a.setActionLocked(false);
         this.stop();
     }
 }

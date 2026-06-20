@@ -13,11 +13,11 @@ public final class GoblinDiplomacyQuest
 extends QuestScript {
     public GoblinDiplomacyQuest(int n) {
         super(7);
-        super.a(5);
+        super.setQuestPointReward(5);
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player stringArray, int n) {
         if (n == 0) {
             stringArray = new String[]{"I can start this quest by speaking to Generals Wartface", "and Bentnoze in the Goblin Village.", "There are no requirements for this quest."};
             return stringArray;
@@ -46,9 +46,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("5 Quest Points", 12150);
         player2 = player;
@@ -62,7 +62,7 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.sendInterfaceText("", 12155);
         player.getSkillManager().addQuestExperience(12, 200.0);
-        player.getInventoryManager().b(new ItemStack(2357, 1));
+        player.getInventoryManager().addOrDropItem(new ItemStack(2357, 1));
         player2 = player;
         player2.packetSender.sendInterfaceModel(InterfaceDefinition.interfaceCount <= 12140 ? 6161 : 12145, 250, 288);
         player2 = player;
@@ -72,7 +72,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2, int n3) {
+    public final boolean handleItemOnItem(Player player, int n, int n2, int n3) {
         if (n3 == 1) {
             return false;
         }
@@ -96,9 +96,9 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         if (n2 == 1) {
-            player.pendingGameMode = GameUtil.h(4);
+            player.pendingGameMode = GameUtil.randomInt(4);
         }
         int n5 = player.pendingGameMode;
         if (n == 296 || n == 297) {
@@ -115,7 +115,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 2) {
-                    this.c(player);
+                    this.awardCompletionRewards(player);
                     player.getDialogueManager().markDialogueInactive();
                     return true;
                 }
@@ -276,7 +276,7 @@ extends QuestScript {
                     player.getDialogueManager().setDialogueNpcId(297);
                     player.getDialogueManager().showNpcOneLineDialogue("No I don't like that much.", 591);
                     player.getInventoryManager().removeItem(new ItemStack(286, 1));
-                    player.setQuestState(this.b(), 3);
+                    player.setQuestState(this.getQuestId(), 3);
                     return true;
                 }
                 player.getDialogueManager().finishDialogue();
@@ -308,7 +308,7 @@ extends QuestScript {
                     player.getDialogueManager().setDialogueNpcId(296);
                     player.getDialogueManager().showNpcOneLineDialogue("That not right. Not goblin colour at all.", 591);
                     player.getInventoryManager().removeItem(new ItemStack(287, 1));
-                    player.setQuestState(this.b(), 4);
+                    player.setQuestState(this.getQuestId(), 4);
                     return true;
                 }
                 player.getDialogueManager().finishDialogue();
@@ -339,7 +339,7 @@ extends QuestScript {
                     player.getDialogueManager().setDialogueNpcId(297);
                     player.getDialogueManager().showNpcTwoLineDialogue("That colour quite nice. Me can see myself wearing", "that", 591);
                     player.getInventoryManager().removeItem(new ItemStack(288, 1));
-                    player.setQuestState(this.b(), 5);
+                    player.setQuestState(this.getQuestId(), 5);
                     return true;
                 }
                 player.getDialogueManager().finishDialogue();

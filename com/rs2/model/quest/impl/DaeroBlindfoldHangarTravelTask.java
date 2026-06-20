@@ -21,7 +21,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        this.a.n(false);
+        this.a.setActionLocked(false);
         this.a.setQuestState(this.b, 6);
         this.a.moveTo(new Position(2585, 4516, 0));
         Player player = this.a;

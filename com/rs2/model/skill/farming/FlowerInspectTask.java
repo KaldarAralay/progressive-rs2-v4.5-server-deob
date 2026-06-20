@@ -31,7 +31,7 @@ extends CycleEvent {
     @Override
     public final void onStop() {
         FlowerPatchManager.getPlayer(this.manager).getUpdateState().setAnimation(1332);
-        FlowerPatchManager.getPlayer(this.manager).n(false);
+        FlowerPatchManager.getPlayer(this.manager).setActionLocked(false);
     }
 }
 

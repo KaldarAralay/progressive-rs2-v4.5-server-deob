@@ -25,11 +25,11 @@ extends QuestScript {
 
     public WitchsHouseQuest(int n) {
         super(103);
-        super.a(4);
+        super.setQuestPointReward(4);
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player stringArray, int n) {
         if (n == 0) {
             stringArray = new String[]{"I can start this quest by speaking to the little boy", "standing by the long garden just north of taverley", "I must be able to defeat a level 53 enemy"};
             return stringArray;
@@ -54,9 +54,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("4 Quest Points", 12150);
         player2 = player;
@@ -79,36 +79,36 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
-        if (n2 == 2867 && n5 == 2900 && n6 == 3474 && n == 1 && n7 != 0 && !player.aq(2409)) {
+    public final boolean handleContextDialogue(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
+        if (n2 == 2867 && n5 == 2900 && n6 == 3474 && n == 1 && n7 != 0 && !player.ownsItem(2409)) {
             if (n3 == 1) {
                 player.getDialogueManager().showOneLineStatement("You find a key hidden under the flower pot.");
                 return true;
             }
             if (n3 == 2) {
-                player.getInventoryManager().b(new ItemStack(2409, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(2409, 1));
                 player.getDialogueManager().finishDialogue();
                 return false;
             }
         }
-        if (n2 == 2869 && n5 == 2898 && n6 == 9873 && n == 1 && !player.aq(2410)) {
+        if (n2 == 2869 && n5 == 2898 && n6 == 9873 && n == 1 && !player.ownsItem(2410)) {
             if (n3 == 1) {
                 player.getDialogueManager().showOneLineStatement("You find a magnet in the cupboard.");
                 return true;
             }
             if (n3 == 2) {
-                player.getInventoryManager().b(new ItemStack(2410, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(2410, 1));
                 player.getDialogueManager().finishDialogue();
                 return false;
             }
         }
-        if (n2 == 2864 && n5 == 2909 && n6 == 3470 && n == 2 && !player.aq(2411)) {
+        if (n2 == 2864 && n5 == 2909 && n6 == 3470 && n == 2 && !player.ownsItem(2411)) {
             if (n3 == 1) {
                 player.getDialogueManager().showTwoLineStatement("You search for the secret compartment mentioned in the diary.", "Inside it you find a small key. You take the key.");
                 return true;
             }
             if (n3 == 2) {
-                player.getInventoryManager().b(new ItemStack(2411, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(2411, 1));
                 player.getDialogueManager().finishDialogue();
                 return false;
             }
@@ -117,7 +117,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleFirstObjectAction(Player player, int n, int n2, int n3, int n4) {
         if (n == 2861 && n2 == 2901 && n3 == 3473) {
             if (player.getInventoryManager().containsItem(2409) || player.getPosition().getX() >= 2901) {
                 Player player2 = player;
@@ -176,7 +176,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3) {
+    public final boolean handleItemOnObject(Player player, int n, int n2, int n3) {
         if (n == 1985 && n2 == 2870) {
             if (n3 < 3) {
                 return false;
@@ -208,7 +208,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean d(Player player, int n, int n2, int n3) {
+    public final boolean handleItemOnNpc(Player player, int n, int n2, int n3) {
         if (n2 == 2410 && n == 901) {
             Entity entity = player;
             if (entity.H.getNpcId() == 901) {
@@ -226,7 +226,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Entity entity, Entity entity2, int n) {
+    public final boolean handleCombatDeath(Entity entity, Entity entity2, int n) {
         if (entity2.isNpc() && entity.isPlayer()) {
             entity = (Player)entity;
             if (((Npc)(entity2 = (Npc)entity2)).getNpcId() == 897) {
@@ -267,20 +267,20 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2) {
+    public final boolean handleNpcKill(Player player, int n, int n2) {
         if (n == 900) {
             Player player2 = player;
             player2.packetSender.sendGameMessage("You finally kill the shapeshifter once and for all.");
-            player.setQuestState(this.b(), 4);
+            player.setQuestState(this.getQuestId(), 4);
             return true;
         }
         return false;
     }
 
     @Override
-    public final boolean c(Player player, int n, int n2) {
+    public final boolean handleGroundItemInteraction(Player player, int n, int n2) {
         if (n == 2407) {
-            if (player.getQuestState(this.b()) == 4 && !player.aq(2407)) {
+            if (player.getQuestState(this.getQuestId()) == 4 && !player.ownsItem(2407)) {
                 return false;
             }
             player.packetSender.sendGameMessage("You have to defeat the witches experiment first.");
@@ -290,7 +290,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n) {
+    public final boolean handleMovementStep(Player player, int n) {
         if (player.eq == 896) {
             return true;
         }
@@ -347,13 +347,13 @@ extends QuestScript {
         player3.packetSender.setInterfaceHiddenFlag(player.X == 0 ? 1 : 0, 840);
         player3 = player;
         player3.packetSender.setInterfaceHiddenFlag(player.X == this.b ? 1 : 0, 842);
-        if (player.getQuestState(this.b()) == 2 && n == 3) {
-            player.setQuestState(this.b(), 3);
+        if (player.getQuestState(this.getQuestId()) == 2 && n == 3) {
+            player.setQuestState(this.getQuestId(), 3);
         }
     }
 
     @Override
-    public final boolean e(Player player, int n, int n2) {
+    public final boolean handleButtonClick(Player player, int n, int n2) {
         if (player.W == 2408) {
             if (n == 841 && player.X < this.b) {
                 ++player.X;
@@ -370,7 +370,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean c(Player player, int n, int n2, int n3) {
+    public final boolean handleInventoryItemFirstOption(Player player, int n, int n2, int n3) {
         if (n == 3214 && n2 == 2408) {
             this.e(player, 0);
             player.W = n2;
@@ -382,7 +382,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         if (n == 895) {
             if (n4 == 0) {
                 if (n2 == 1) {
@@ -449,7 +449,7 @@ extends QuestScript {
                 if (n2 == 4) {
                     player.getInventoryManager().removeItem(new ItemStack(2407, 1));
                     player.getDialogueManager().finishDialogue();
-                    this.c(player);
+                    this.awardCompletionRewards(player);
                     return true;
                 }
             }

@@ -39,7 +39,7 @@ extends CycleEvent {
             SpecialTreePatchManager.getPlayer(this.manager).getSkillManager().addExperience(19, this.definition.getHealthCheckExperience());
             this.manager.patchStates[this.patch.getIndex()] = 0;
             this.manager.f[this.patch.getIndex()] = this.definition == SpecialTreeDefinition.CALQUAT;
-            this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.e() - (long)this.definition.getTotalGrowthTicks();
+            this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.getElapsedMinutes() - (long)this.definition.getTotalGrowthTicks();
             this.manager.recalculateRegrowthStage(this.patch.getIndex());
             cycleEventContainer.stop();
             return;
@@ -56,8 +56,8 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        SpecialTreePatchManager.getPlayer(this.manager).n(false);
-        SpecialTreePatchManager.getPlayer(this.manager).aN();
+        SpecialTreePatchManager.getPlayer(this.manager).setActionLocked(false);
+        SpecialTreePatchManager.getPlayer(this.manager).resetAnimation();
     }
 }
 

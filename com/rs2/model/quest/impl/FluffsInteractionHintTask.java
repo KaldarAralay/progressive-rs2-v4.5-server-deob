@@ -29,7 +29,7 @@ extends TickTask {
         if (this.a == 5) {
             this.b.getDialogueManager().showTwoLineStatement("The cat seems afraid to leave.", "In the distance you can hear kittens mewing...");
         }
-        this.b.n(false);
+        this.b.setActionLocked(false);
         this.stop();
     }
 }

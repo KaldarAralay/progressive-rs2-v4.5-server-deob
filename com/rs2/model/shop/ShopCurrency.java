@@ -4,8 +4,8 @@
 package com.rs2.model.shop;
 
 enum ShopCurrency {
-    a,
-    b;
+    ITEM_CURRENCY,
+    DONATOR_POINTS;
 
 }
 

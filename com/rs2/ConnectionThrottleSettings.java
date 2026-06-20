@@ -4,6 +4,6 @@
 package com.rs2;
 
 public final class ConnectionThrottleSettings {
-    public static boolean a = true;
+    public static boolean connectionsEnabled = true;
 }
 

@@ -67,7 +67,6 @@ import com.rs2.model.skill.crafting.armor.RedDragonhideRecipe;
 import com.rs2.model.skill.crafting.armor.SnakeskinAccessoryCrafting;
 import com.rs2.model.skill.crafting.armor.SnakeskinArmorCrafting;
 import com.rs2.model.skill.crafting.armor.SplitbarkCrafting;
-import com.rs2.model.skill.magic.SpellDefinition;
 import com.rs2.model.skill.magic.Spellbook;
 import com.rs2.model.skill.runecrafting.CombinationRuneDefinition;
 import com.rs2.model.skill.runecrafting.EssencePouchDefinition;
@@ -104,20 +103,20 @@ import org.joda.time.Hours;
 import org.joda.time.base.AbstractDateTime;
 
 public class GameplayHelper {
-    private int b;
-    private int[] c;
+    private int tradeAdvertItemId;
+    private int[] tradeAdvertQuantityOptions;
     public static int a;
 
     public static void a(Player player) {
-        if (player.az == 4) {
+        if (player.botMode == 4) {
             if (player.botEscapeLogoutTask != null && player.botEscapeLogoutTask.isActive()) {
                 player.botEscapeLogoutTask.stop();
             }
             if (player.botCombatTickTask != null && player.botCombatTickTask.isActive()) {
                 player.botCombatTickTask.stop();
             }
-            if (player.r != null) {
-                player.r.d(player);
+            if (player.pendingGroupCleanup != null) {
+                player.pendingGroupCleanup.finishDeferredRemoval(player);
             }
             player.botLootSellItems.clear();
             player.botLootSellGroundItems.clear();
@@ -136,7 +135,7 @@ public class GameplayHelper {
             player.setAutoRetaliate(true);
             player.botFoodDepleted = false;
             player.botStrengthPotionDepleted = false;
-            player.b((SpellDefinition)null);
+            player.setAutocastSpell(null);
             player.getPrayerManager().deactivateAll();
             player.botCombatState = null;
             return;
@@ -147,8 +146,8 @@ public class GameplayHelper {
         if (player.botCombatTickTask != null && player.botCombatTickTask.isActive()) {
             player.botCombatTickTask.stop();
         }
-        if (player.r != null) {
-            player.r.d(player);
+        if (player.pendingGroupCleanup != null) {
+            player.pendingGroupCleanup.finishDeferredRemoval(player);
         }
         player.botEatDelayTicks = 0;
         player.botWeaponSwapDelayTicks = 0;
@@ -174,14 +173,14 @@ public class GameplayHelper {
         player.botCombatSpell = null;
         player.botMagicPenaltyGearUnequipped = false;
         player.setAutoRetaliate(true);
-        player.dY();
+        player.clearPvpCombatReferences();
         player.getRecentCombatTimer().setDelayTicks(0);
         player.getRecentCombatTimer().reset();
         player.getSingleCombatTimer().setDelayTicks(0);
         player.getSingleCombatTimer().reset();
         player.botFoodDepleted = false;
         player.botStrengthPotionDepleted = false;
-        player.b((SpellDefinition)null);
+        player.setAutocastSpell(null);
         player.getMovementQueue().setRunning(false);
         player.setRunEnergyPercent(100);
         player.setSpecialEnergy(100);
@@ -214,28 +213,28 @@ public class GameplayHelper {
         boolean bl3 = false;
         if (bl) {
             if (BotTaskDefinition.cookingTasks.contains(player.currentBotTask)) {
-                if (!BotTaskPlanner.f(player)) {
+                if (!BotTaskPlanner.prepareCookingTaskRequirements(player)) {
                     bl3 = false;
                 } else {
                     object = player.currentBotTask;
                     bl3 = true;
                 }
             } else if (BotTaskDefinition.spinningTasks.contains(player.currentBotTask)) {
-                if (!BotTaskPlanner.g(player)) {
+                if (!BotTaskPlanner.prepareSpinningTaskRequirements(player)) {
                     bl3 = false;
                 } else {
                     object = player.currentBotTask;
                     bl3 = true;
                 }
             } else if (BotTaskDefinition.tanningTasks.contains(player.currentBotTask)) {
-                if (!BotTaskPlanner.a(player, false)) {
+                if (!BotTaskPlanner.prepareTanningTaskRequirements(player, false)) {
                     bl3 = false;
                 } else {
                     object = player.currentBotTask;
                     bl3 = true;
                 }
             } else if (BotTaskDefinition.leatherCraftingTasks.contains(player.currentBotTask)) {
-                if (!BotTaskPlanner.h(player)) {
+                if (!BotTaskPlanner.prepareLeatherCraftingTaskRequirements(player)) {
                     bl3 = false;
                 } else {
                     object = player.currentBotTask;
@@ -247,8 +246,8 @@ public class GameplayHelper {
                             player.deferredBotTask = object;
                             object = (BotTaskDefinition)BotTaskDefinition.brassKeyTasks.get(0);
                             bl2 = true;
-                        } else if ((object2 = BotTaskPlanner.a(player, ((ItemStack)((ArrayList)object2).get(0)).getId(), ((ItemStack)((ArrayList)object2).get(0)).getAmount())) != null) {
-                            BotTaskPlanner.b(player);
+                        } else if ((object2 = BotTaskPlanner.selectShopPurchaseTask(player, ((ItemStack)((ArrayList)object2).get(0)).getId(), ((ItemStack)((ArrayList)object2).get(0)).getAmount())) != null) {
+                            BotTaskPlanner.resetBotTaskGoals(player);
                             player.deferredBotTask = object;
                             object = object2;
                             bl2 = true;
@@ -261,14 +260,14 @@ public class GameplayHelper {
                     }
                 }
             } else if (BotTaskDefinition.smeltingTasks.contains(player.currentBotTask)) {
-                if (!BotTaskPlanner.i(player)) {
+                if (!BotTaskPlanner.hasSmeltingTaskMaterial(player)) {
                     bl3 = false;
                 } else {
                     object = player.currentBotTask;
                     bl3 = true;
                 }
             } else if (BotTaskDefinition.smithingTasks.contains(player.currentBotTask)) {
-                if (!BotTaskPlanner.j(player)) {
+                if (!BotTaskPlanner.prepareSmithingTaskRequirements(player)) {
                     bl3 = false;
                 } else {
                     object = player.currentBotTask;
@@ -287,7 +286,7 @@ public class GameplayHelper {
                 bl2 = false;
                 boolean bl4 = false;
                 if (BotTaskDefinition.woodcuttingTasks.contains(player2.currentBotTask) || BotTaskDefinition.smithingTasks.contains(player2.currentBotTask) || BotTaskDefinition.combatTasks.contains(player2.currentBotTask) || player2.currentBotTask == BotTaskDefinition.moneyMakingTasks.get(1) || BotTaskDefinition.leatherCraftingTasks.contains(player2.currentBotTask)) {
-                    BotTaskPlanner.d(player2);
+                    BotTaskPlanner.populateBotShopSellItemIds(player2);
                     if (player2.botShopSellItemIds.size() != 0) {
                         bl4 = true;
                     }
@@ -324,7 +323,7 @@ public class GameplayHelper {
                     ((ArrayList)object).addAll(BotTaskDefinition.moneyMakingTasks);
                     ((ArrayList)object).addAll(BotTaskDefinition.runecraftingTasks);
                     ((ArrayList)object).addAll(BotTaskDefinition.sheepShearingTasks);
-                    if (BotTaskPlanner.a(player2, true)) {
+                    if (BotTaskPlanner.prepareTanningTaskRequirements(player2, true)) {
                         ((ArrayList)object).addAll(BotTaskDefinition.tanningTasks);
                     }
                 }
@@ -340,7 +339,7 @@ public class GameplayHelper {
                     ((ArrayList)object).addAll(BotTaskDefinition.moneyMakingTasks);
                     ((ArrayList)object).addAll(BotTaskDefinition.runecraftingTasks);
                     ((ArrayList)object).addAll(BotTaskDefinition.sheepShearingTasks);
-                    if (BotTaskPlanner.a(player2, true)) {
+                    if (BotTaskPlanner.prepareTanningTaskRequirements(player2, true)) {
                         ((ArrayList)object).addAll(BotTaskDefinition.tanningTasks);
                     }
                     botTaskDefinition = GameplayHelper.a(player2, (ArrayList)object, false);
@@ -354,8 +353,8 @@ public class GameplayHelper {
                     player.deferredBotTask = object;
                     object = (BotTaskDefinition)BotTaskDefinition.brassKeyTasks.get(0);
                     bl2 = true;
-                } else if ((object3 = BotTaskPlanner.a(player, ((ItemStack)((ArrayList)object3).get(0)).getId(), ((ItemStack)((ArrayList)object3).get(0)).getAmount())) != null) {
-                    BotTaskPlanner.b(player);
+                } else if ((object3 = BotTaskPlanner.selectShopPurchaseTask(player, ((ItemStack)((ArrayList)object3).get(0)).getId(), ((ItemStack)((ArrayList)object3).get(0)).getAmount())) != null) {
+                    BotTaskPlanner.resetBotTaskGoals(player);
                     player.deferredBotTask = object;
                     object = object3;
                     bl2 = true;
@@ -364,41 +363,41 @@ public class GameplayHelper {
                 }
             }
             if (BotTaskDefinition.cookingTasks.contains(object)) {
-                if (!BotTaskPlanner.f(player)) {
+                if (!BotTaskPlanner.prepareCookingTaskRequirements(player)) {
                     Object var4_10 = null;
                     object3 = player;
                     player.currentBotTask = var4_10;
                     bl2 = false;
                 }
             } else if (BotTaskDefinition.spinningTasks.contains(object)) {
-                if (!BotTaskPlanner.g(player)) {
+                if (!BotTaskPlanner.prepareSpinningTaskRequirements(player)) {
                     Object var4_11 = null;
                     object3 = player;
                     player.currentBotTask = var4_11;
                     bl2 = false;
                 }
             } else if (BotTaskDefinition.tanningTasks.contains(object)) {
-                if (!BotTaskPlanner.a(player, false)) {
+                if (!BotTaskPlanner.prepareTanningTaskRequirements(player, false)) {
                     Object var4_12 = null;
                     object3 = player;
                     player.currentBotTask = var4_12;
                     bl2 = false;
                 }
             } else if (BotTaskDefinition.leatherCraftingTasks.contains(object)) {
-                if (!BotTaskPlanner.h(player)) {
+                if (!BotTaskPlanner.prepareLeatherCraftingTaskRequirements(player)) {
                     Object var4_13 = null;
                     object3 = player;
                     player.currentBotTask = var4_13;
                     bl2 = false;
                 }
             } else if (BotTaskDefinition.smeltingTasks.contains(object)) {
-                if (!BotTaskPlanner.i(player)) {
+                if (!BotTaskPlanner.hasSmeltingTaskMaterial(player)) {
                     Object var4_14 = null;
                     object3 = player;
                     player.currentBotTask = var4_14;
                     bl2 = false;
                 }
-            } else if (BotTaskDefinition.smithingTasks.contains(object) && !BotTaskPlanner.j(player)) {
+            } else if (BotTaskDefinition.smithingTasks.contains(object) && !BotTaskPlanner.prepareSmithingTaskRequirements(player)) {
                 Object var4_15 = null;
                 object3 = player;
                 player.currentBotTask = var4_15;
@@ -411,15 +410,15 @@ public class GameplayHelper {
         BotTaskDefinition botTaskDefinition = object;
         Player player3 = player;
         player.currentBotTask = botTaskDefinition;
-        BotTaskPlanner.c(player);
+        BotTaskPlanner.configureCurrentBotTaskGoals(player);
         if (player.botShopSellItemIds.size() == 0) {
-            BotTaskPlanner.e(player);
+            BotTaskPlanner.prepareDeferredUpgradePurchase(player);
         }
         player.botEnabled = true;
         player.currentBotTask.startTask(player);
         player.botTaskStartTimeMillis = System.currentTimeMillis();
         player.botTaskSavedElapsedMillis = 0L;
-        player.botTaskDurationMinutes = n = 30 + GameUtil.h(60);
+        player.botTaskDurationMinutes = n = 30 + GameUtil.randomInt(60);
         if (player.currentBotTask.usesEscapeMonitor) {
             player.currentBotTask.startEscapeMonitor(player);
         }
@@ -429,7 +428,7 @@ public class GameplayHelper {
         GameplayHelper.a(player, false);
     }
 
-    public static void d(Player player) {
+    public static void startNextBotTask(Player player) {
         Object object;
         Object object2;
         Object object3;
@@ -439,7 +438,7 @@ public class GameplayHelper {
             double d = 0.0;
             object2 = ((Player)object3).currentBotTask;
             object = new ArrayList<BotTaskDefinition>();
-            for (BotTaskDefinition botTaskDefinition : ((Player)object3).az == 2 ? BotTaskDefinition.tradeAdvertTaskPool : BotTaskDefinition.progressiveTaskPool) {
+            for (BotTaskDefinition botTaskDefinition : ((Player)object3).botMode == 2 ? BotTaskDefinition.tradeAdvertTaskPool : BotTaskDefinition.progressiveTaskPool) {
                 if (object2 != null && botTaskDefinition == object2) continue;
                 ((ArrayList)object).add(botTaskDefinition);
                 d += (double)botTaskDefinition.selectionWeight;
@@ -471,8 +470,8 @@ public class GameplayHelper {
         }
         ((BotTaskDefinition)object3).startTask(player);
         player.botTaskStartTimeMillis = System.currentTimeMillis();
-        int n = player.az == 2 ? 16 : 106;
-        player.botTaskDurationMinutes = n = 15 + GameUtil.h(n);
+        int n = player.botMode == 2 ? 16 : 106;
+        player.botTaskDurationMinutes = n = 15 + GameUtil.randomInt(n);
         if (player.currentBotTask.usesEscapeMonitor) {
             player.currentBotTask.startEscapeMonitor(player);
         }
@@ -488,7 +487,7 @@ public class GameplayHelper {
         DropPartyBotManager.dropPartyParticipants.clear();
         BotTaskDefinition.dropPartyBotJoinIndex = 0;
         DropPartyBotManager.dropPartyActive = true;
-        int n = GameUtil.h(BotTaskDefinition.dropPartyTaskPool.size());
+        int n = GameUtil.randomInt(BotTaskDefinition.dropPartyTaskPool.size());
         Object object = (BotTaskDefinition)BotTaskDefinition.dropPartyTaskPool.get(n);
         object = new DropPartyBotJoinTask(1, (BotTaskDefinition)object);
         World.getTaskScheduler().schedule((TickTask)object);
@@ -499,7 +498,7 @@ public class GameplayHelper {
             return;
         }
         ClanWarsBotManager.clanWarsEventActive = true;
-        ClanWarsBotManager.clanWarsBaseCombatLevel = 35 + GameUtil.h(45);
+        ClanWarsBotManager.clanWarsBaseCombatLevel = 35 + GameUtil.randomInt(45);
         ClanWarsBotManager.chooseClanWarsTeamTags();
         ClanWarsBotManager.chooseClanWarsTeamCapes();
         ClanWarsBotManager.startClanWarsCombatants();
@@ -507,14 +506,14 @@ public class GameplayHelper {
         World.getTaskScheduler().schedule(clanWarsBotManagerTickTask);
     }
 
-    public static boolean e(Player player) {
-        if (player.az != 4) {
-            if (System.currentTimeMillis() >= player.botTaskStartTimeMillis + (long)GameUtil.l(player.botTaskDurationMinutes)) {
+    public static boolean shouldReturnToBankForBotTask(Player player) {
+        if (player.botMode != 4) {
+            if (System.currentTimeMillis() >= player.botTaskStartTimeMillis + (long)GameUtil.minutesToMillis(player.botTaskDurationMinutes)) {
                 player.botTaskReturnToBankRequested = true;
                 return true;
             }
         } else {
-            if (player.botTaskSavedElapsedMillis + player.getBotTaskRuntimeMillis() >= (long)GameUtil.l(player.botTaskDurationMinutes)) {
+            if (player.botTaskSavedElapsedMillis + player.getBotTaskRuntimeMillis() >= (long)GameUtil.minutesToMillis(player.botTaskDurationMinutes)) {
                 player.botTaskReturnToBankRequested = true;
                 return true;
             }
@@ -522,7 +521,7 @@ public class GameplayHelper {
                 player.botTaskReturnToBankRequested = true;
                 return true;
             }
-            if (player.botCompletionItemId != -1 && player.i(player.botCompletionItemId, player.botCompletionItemAmount)) {
+            if (player.botCompletionItemId != -1 && player.ownsItemAmount(player.botCompletionItemId, player.botCompletionItemAmount)) {
                 player.botTaskReturnToBankRequested = true;
                 return true;
             }
@@ -533,26 +532,26 @@ public class GameplayHelper {
     public static void a(Player player, int n) {
         player.botCombatStyle = n;
         if (n == -1) {
-            BotCombatLoadoutManager.a(player, true);
+            BotCombatLoadoutManager.selectCombatStyleFromStats(player, true);
             n = player.botCombatStyle;
         }
         if (n == 0) {
             player.botActiveCombatStyle = player.botPrimaryCombatStyle = 0;
-            BotCombatLoadoutManager.e(player);
-            BotCombatLoadoutManager.d(player);
+            BotCombatLoadoutManager.prepareMeleeLoadout(player);
+            BotCombatLoadoutManager.equipGlovesAndBoots(player);
         } else if (n == 2) {
             player.botActiveCombatStyle = player.botPrimaryCombatStyle = BotPvpCombatHandler.MAGIC_COMBAT_STYLE;
-            BotCombatLoadoutManager.g(player);
+            BotCombatLoadoutManager.prepareMagicLoadout(player);
         } else if (n == 1) {
             player.botActiveCombatStyle = player.botPrimaryCombatStyle = BotPvpCombatHandler.RANGED_COMBAT_STYLE;
-            BotCombatLoadoutManager.f(player);
-            int n2 = player.getSkillManager().getCurrentLevels()[4] >= 40 ? 1731 : (n = GameUtil.h(3) == 0 ? 1478 : 1729);
-            if (!BotCombatHelper.isFreeToPlayWorld() && player.getCombatLevel() >= 60 && GameUtil.h(2) == 0) {
+            BotCombatLoadoutManager.prepareRangedLoadout(player);
+            int n2 = player.getSkillManager().getCurrentLevels()[4] >= 40 ? 1731 : (n = GameUtil.randomInt(3) == 0 ? 1478 : 1729);
+            if (!BotCombatHelper.isFreeToPlayWorld() && player.getCombatLevel() >= 60 && GameUtil.randomInt(2) == 0) {
                 n = 1712;
             }
             player.getEquipmentManager().getContainer().setItem(2, new ItemStack(n));
         }
-        BotCombatLoadoutManager.c(player);
+        BotCombatLoadoutManager.equipRandomCape(player);
     }
 
     /*
@@ -569,7 +568,7 @@ public class GameplayHelper {
                 BotTaskDefinition botTaskDefinition4 = (BotTaskDefinition)iterator2.next();
                 if (!botTaskDefinition4.isAvailableFor((Player)object2, false)) continue;
                 botTaskDefinition = botTaskDefinition4;
-                int d2 = GameUtil.b(((Entity)object2).getPosition(), botTaskDefinition.startPosition);
+                int d2 = GameUtil.getDistance(((Entity)object2).getPosition(), botTaskDefinition.startPosition);
                 if (d2 >= n) continue;
                 n = d2;
                 botTaskDefinition3 = botTaskDefinition4;
@@ -604,32 +603,32 @@ public class GameplayHelper {
         player.botTaskDurationMinutes = 15;
         player.botTaskSavedElapsedMillis = 0L;
         BotRoute botRoute = botTaskDefinition.taskRoute != null ? new BotRoute(new Position[]{botTaskDefinition.taskRoute.waypoints[0], botTaskDefinition.startPosition}) : new BotRoute(new Position[]{botTaskDefinition.taskRouteSegments[0].waypoints[0], botTaskDefinition.startPosition});
-        int n = GameUtil.b(player.getPosition(), botRoute.getStartPosition());
-        int n2 = GameUtil.b(player.getPosition(), botTaskDefinition.startPosition);
+        int n = GameUtil.getDistance(player.getPosition(), botRoute.getStartPosition());
+        int n2 = GameUtil.getDistance(player.getPosition(), botTaskDefinition.startPosition);
         if (n2 <= n) {
             botRoute = new BotRoute(new Position[]{botTaskDefinition.startPosition});
         }
         player.currentBotRoute = botRoute;
         player.botPathWaypointIndex = 0;
-        player.bk();
+        player.continueBotRoute();
     }
 
     public GameplayHelper(int n, int[] nArray) {
-        this.b = n;
-        this.c = nArray;
+        this.tradeAdvertItemId = n;
+        this.tradeAdvertQuantityOptions = nArray;
     }
 
-    public int c() {
-        return this.b;
+    public int getTradeAdvertItemId() {
+        return this.tradeAdvertItemId;
     }
 
-    public int[] d() {
-        return this.c;
+    public int[] getTradeAdvertQuantityOptions() {
+        return this.tradeAdvertQuantityOptions;
     }
 
-    public int a(int n) {
+    public int getPreviousTradeAdvertQuantityOption(int n) {
         if (n > 0) {
-            return this.c[n - 1];
+            return this.tradeAdvertQuantityOptions[n - 1];
         }
         return -1;
     }
@@ -859,7 +858,7 @@ public class GameplayHelper {
 
     public static boolean b(Player player, int n) {
         if ((n = GameplayHelper.c(n)) >= 0) {
-            ShopManager.a(player, n);
+            ShopManager.openShop(player, n);
             return true;
         }
         return false;
@@ -891,12 +890,12 @@ public class GameplayHelper {
             GameplayHelper.c(player2, 201);
         } else if (player2.isInBarrows()) {
             Player player6;
-            if (player2.ci != player2.eT()) {
+            if (player2.ci != player2.getBarrowsKillCount()) {
                 player6 = player2;
-                player6.packetSender.sendInterfaceText("Kill count: " + player2.eT(), 4536);
-                player2.ci = player2.eT();
+                player6.packetSender.sendInterfaceText("Kill count: " + player2.getBarrowsKillCount(), 4536);
+                player2.ci = player2.getBarrowsKillCount();
             }
-            BarrowsManager.b(player2);
+            BarrowsManager.ensurePrayerDrainTask(player2);
             if (GameplayHelper.c(player2, 4535)) {
                 player6 = player2;
                 player6.packetSender.sendPlayerOption("null", 1, false);
@@ -906,7 +905,7 @@ public class GameplayHelper {
         } else {
             Object object = player2;
             if (((Entity)object).isInArea(2816, 2943, 5248, 5375)) {
-                GodWarsDungeonManager.a(player2);
+                GodWarsDungeonManager.refreshKillCountOverlay(player2);
                 if (GameplayHelper.c(player2, 19556)) {
                     object = player2;
                     ((Player)object).packetSender.sendPlayerOption("null", 1, false);
@@ -922,11 +921,11 @@ public class GameplayHelper {
                     object = player2;
                     if (((Entity)object).isInArea(3136, 3263, 9536, 9599)) {
                         int n = -1;
-                        if (player2.eI() == 0) {
+                        if (player2.getActiveCaveLightLevel() == 0) {
                             n = 12414;
-                        } else if (player2.eI() == 1) {
+                        } else if (player2.getActiveCaveLightLevel() == 1) {
                             n = 12418;
-                        } else if (player2.eI() == 2) {
+                        } else if (player2.getActiveCaveLightLevel() == 2) {
                             n = 12416;
                         }
                         if (n != -1 && GameplayHelper.c(player2, n)) {
@@ -957,17 +956,17 @@ public class GameplayHelper {
             Player player9 = player2;
             player9.packetSender.sendMultiwayAreaState(false);
         }
-        if (player.getAlchemistPlaygroundController().b()) {
-            player.getAlchemistPlaygroundController().c();
+        if (player.getAlchemistPlaygroundController().isInsidePlayground()) {
+            player.getAlchemistPlaygroundController().refreshPizazzInterface();
         }
-        if (player.getEnchantmentChamberController().c()) {
-            player.getEnchantmentChamberController().d();
+        if (player.getEnchantmentChamberController().isInsideChamber()) {
+            player.getEnchantmentChamberController().refreshPizazzInterface();
         }
-        if (player.getTelekineticTheatreController().g()) {
-            player.getTelekineticTheatreController().a();
+        if (player.getTelekineticTheatreController().isInsideTheatre()) {
+            player.getTelekineticTheatreController().refreshPizazzInterface();
         }
-        if (player.getCreatureGraveyardController().a()) {
-            player.getCreatureGraveyardController().c();
+        if (player.getCreatureGraveyardController().isInsideGraveyard()) {
+            player.getCreatureGraveyardController().refreshPizazzInterface();
         }
     }
 
@@ -983,7 +982,7 @@ public class GameplayHelper {
         if (player.dT() == n) {
             return false;
         }
-        if (player.bU && n == 4535) {
+        if (player.barrowsChestOpened && n == 4535) {
             return true;
         }
         player.af(n);
@@ -992,9 +991,9 @@ public class GameplayHelper {
     }
 
     public static Position randomUnblockedPositionInRange(PositionRange positionRange) {
-        Position position = new Position(positionRange.getMinPosition().getX() + GameUtil.g(positionRange.getMaxPosition().getX() - positionRange.getMinPosition().getX()), positionRange.getMinPosition().getY() + GameUtil.g(positionRange.getMaxPosition().getY() - positionRange.getMinPosition().getY()), positionRange.getMinPosition().getPlane());
+        Position position = new Position(positionRange.getMinPosition().getX() + GameUtil.randomInclusive(positionRange.getMaxPosition().getX() - positionRange.getMinPosition().getX()), positionRange.getMinPosition().getY() + GameUtil.randomInclusive(positionRange.getMaxPosition().getY() - positionRange.getMinPosition().getY()), positionRange.getMinPosition().getPlane());
         while (WalkingCollisionMap.getTileFlags(position.getX(), position.getY(), position.getPlane()) != 0) {
-            position = new Position(positionRange.getMinPosition().getX() + GameUtil.g(positionRange.getMaxPosition().getX() - positionRange.getMinPosition().getX()), positionRange.getMinPosition().getY() + GameUtil.g(positionRange.getMaxPosition().getY() - positionRange.getMinPosition().getY()), positionRange.getMinPosition().getPlane());
+            position = new Position(positionRange.getMinPosition().getX() + GameUtil.randomInclusive(positionRange.getMaxPosition().getX() - positionRange.getMinPosition().getX()), positionRange.getMinPosition().getY() + GameUtil.randomInclusive(positionRange.getMaxPosition().getY() - positionRange.getMinPosition().getY()), positionRange.getMinPosition().getPlane());
         }
         return position;
     }
@@ -1550,7 +1549,7 @@ public class GameplayHelper {
                     player2.getDialogueManager().showOneLineStatement("You need a agility level of 20 to do that.");
                     return true;
                 }
-                AgilityObstacleHandler.startAgilityMovement(player2, GameUtil.g(5) == 0 ? 7 : 0, n6 < 2600 ? 5 : -5, 0, -1, 762, -1, 3, "You walk carefully across the slippery log...", "...You make it safely to the other side.");
+                AgilityObstacleHandler.startAgilityMovement(player2, GameUtil.randomInclusive(5) == 0 ? 7 : 0, n6 < 2600 ? 5 : -5, 0, -1, 762, -1, 3, "You walk carefully across the slippery log...", "...You make it safely to the other side.");
                 return true;
             }
             case 9330: {
@@ -1767,7 +1766,7 @@ public class GameplayHelper {
                 player.getInventoryManager().addItem(new ItemStack(1931));
                 player2 = player;
                 player2.packetSender.sendGameMessage("You put the water on the flour and make it into a bread dough");
-                player.getInventoryManager().b(new ItemStack(2307));
+                player.getInventoryManager().addOrDropItem(new ItemStack(2307));
                 player2 = player;
                 player2.packetSender.closeInterfaces();
                 return true;
@@ -1783,7 +1782,7 @@ public class GameplayHelper {
                 player.getInventoryManager().addItem(new ItemStack(1931));
                 player2 = player;
                 player2.packetSender.sendGameMessage("You put the water on the flour and make it into a pastry dough");
-                player.getInventoryManager().b(new ItemStack(1953));
+                player.getInventoryManager().addOrDropItem(new ItemStack(1953));
                 player2 = player;
                 player2.packetSender.closeInterfaces();
                 return true;
@@ -1799,7 +1798,7 @@ public class GameplayHelper {
                 player.getInventoryManager().addItem(new ItemStack(1931));
                 player2 = player;
                 player2.packetSender.sendGameMessage("You put the water on the flour and make it into a pizza base");
-                player.getInventoryManager().b(new ItemStack(2283));
+                player.getInventoryManager().addOrDropItem(new ItemStack(2283));
                 player2 = player;
                 player2.packetSender.closeInterfaces();
                 return true;
@@ -1815,7 +1814,7 @@ public class GameplayHelper {
                 player.getInventoryManager().addItem(new ItemStack(1931));
                 player2 = player;
                 player2.packetSender.sendGameMessage("You put the water on the flour and make it into a pitta dough");
-                player.getInventoryManager().b(new ItemStack(1863));
+                player.getInventoryManager().addOrDropItem(new ItemStack(1863));
                 player2 = player;
                 player2.packetSender.closeInterfaces();
                 return true;
@@ -1844,7 +1843,7 @@ public class GameplayHelper {
                 Player player3 = player;
                 player3.packetSender.sendGameMessage("You attach the steel studs to the hard leather body");
                 if (player.getInventoryManager().removeItemFromSlot(new ItemStack(2370), n3)) {
-                    player.getInventoryManager().a(new ItemStack(1133), n3);
+                    player.getInventoryManager().setItemInSlot(new ItemStack(1133), n3);
                 } else if (player.getInventoryManager().removeItem(new ItemStack(2370))) {
                     player.getInventoryManager().addItem(new ItemStack(1133));
                 }
@@ -1854,7 +1853,7 @@ public class GameplayHelper {
                 Player player4 = player;
                 player4.packetSender.sendGameMessage("You attach the steel studs to the leather chaps");
                 if (player.getInventoryManager().removeItemFromSlot(new ItemStack(2370), n3)) {
-                    player.getInventoryManager().a(new ItemStack(1097), n3);
+                    player.getInventoryManager().setItemInSlot(new ItemStack(1097), n3);
                 } else if (player.getInventoryManager().removeItem(new ItemStack(2370))) {
                     player.getInventoryManager().addItem(new ItemStack(1097));
                 }
@@ -2252,8 +2251,8 @@ public class GameplayHelper {
             return true;
         }
         if (player.getQuestState(14) != 1) {
-            Object object = QuestDefinition.b(14);
-            String string = ((QuestDefinition)object).c();
+            Object object = QuestDefinition.forId(14);
+            String string = ((QuestDefinition)object).getName();
             object = player;
             ((Player)object).packetSender.sendGameMessage("You need to complete " + string + " to do this.");
             return true;
@@ -2292,7 +2291,7 @@ public class GameplayHelper {
         } else {
             int n5 = 0;
             while (n5 < n3) {
-                if (GameUtil.g(1) == 0) {
+                if (GameUtil.randomInclusive(1) == 0) {
                     ++n4;
                 }
                 ++n5;
@@ -2307,7 +2306,7 @@ public class GameplayHelper {
         }
         if (player.getBindingNecklaceCharge() <= 0) {
             player.setBindingNecklaceCharge(15);
-            player.getEquipmentManager().a(5521, 2);
+            player.getEquipmentManager().replaceSlotItem(5521, 2);
             Player player7 = player;
             player7.packetSender.sendGameMessage("Your binding necklace crumble into dust.");
         }
@@ -2328,8 +2327,8 @@ public class GameplayHelper {
             return true;
         }
         if (player.getQuestState(14) != 1) {
-            Object object = QuestDefinition.b(14);
-            object = ((QuestDefinition)object).c();
+            Object object = QuestDefinition.forId(14);
+            object = ((QuestDefinition)object).getName();
             Player player3 = player;
             player3.packetSender.sendGameMessage("You need to complete " + (String)object + " to do this.");
             return true;
@@ -2391,7 +2390,7 @@ public class GameplayHelper {
         entity = (Player)entity;
         int n2 = n;
         boolean bl = true;
-        if (((Player)entity).aq(n)) {
+        if (((Player)entity).ownsItem(n)) {
             bl = false;
         }
         while (!bl) {
@@ -2399,7 +2398,7 @@ public class GameplayHelper {
             n = n2;
             EssencePouchDefinition essencePouchDefinition2 = EssencePouchDefinition.forItemOrIndex(n);
             int n3 = n = essencePouchDefinition2 != null && (n == essencePouchDefinition2.getItemId() || n == essencePouchDefinition2.getDegradedItemId()) && essencePouchDefinition2.getPouchIndex() != 3 && (essencePouchDefinition = EssencePouchDefinition.forItemOrIndex(essencePouchDefinition2.getPouchIndex() + 1)) != null && essencePouchDefinition.getPouchIndex() == essencePouchDefinition2.getPouchIndex() + 1 ? essencePouchDefinition.getItemId() : -1;
-            if (!((Player)entity).aq(n) || n == -1) {
+            if (!((Player)entity).ownsItem(n) || n == -1) {
                 bl = true;
                 continue;
             }
@@ -2434,8 +2433,8 @@ public class GameplayHelper {
             return true;
         }
         if (player.getQuestState(14) != 1) {
-            object = QuestDefinition.b(14);
-            object = ((QuestDefinition)object).c();
+            object = QuestDefinition.forId(14);
+            object = ((QuestDefinition)object).getName();
             player.packetSender.sendGameMessage("You need to complete " + (String)object + " to do this.");
             return true;
         }
@@ -2493,7 +2492,7 @@ public class GameplayHelper {
                 CacheArchive.giveChallengeQuestionAnswerItem(player, anagramClue.getClueItemId());
             }
         } else if (anagramClue.getFollowupType() == "Puzzle") {
-            if (PuzzleBoxHandler.isCluePuzzleSolved(player) && player.eM()) {
+            if (PuzzleBoxHandler.isCluePuzzleSolved(player) && player.ownsCluePuzzleBox()) {
                 DialogueManager.a(player, 10009, 2);
                 player.V = new ItemStack[4];
                 player.V[0] = new ItemStack(anagramClue.getClueItemId(), 1);
@@ -2501,7 +2500,7 @@ public class GameplayHelper {
                 player.V[2] = new ItemStack(3571, 1);
                 player.V[3] = new ItemStack(3565, 1);
                 player.at = anagramClue.getLevel();
-            } else if (player.eM()) {
+            } else if (player.ownsCluePuzzleBox()) {
                 player.getDialogueManager().showNpcOneLineDialogue("The puzzle doesn't seem to be complete yet.", 588);
             } else {
                 player.getDialogueManager().showNpcOneLineDialogue("Hello, Solve this puzzle for me please.", 588);
@@ -2533,14 +2532,14 @@ public class GameplayHelper {
         player2.ap = 0;
         player2.aq = 0;
         player2 = player;
-        double d = -32.0 + (double)player2.ao / 5.7 + (double)GameUtil.g((int)(32.0 + (double)player2.ao / 5.7 + 28.0 + (double)player2.ao / 5.7));
+        double d = -32.0 + (double)player2.ao / 5.7 + (double)GameUtil.randomInclusive((int)(32.0 + (double)player2.ao / 5.7 + 28.0 + (double)player2.ao / 5.7));
         int n = (int)(28.0 + (double)player2.ao / 5.7 - d);
         int n2 = Math.abs((int)(d + 32.0 + (double)player2.ao / 5.7));
-        n = GameUtil.g(1) == 0 ? GameUtil.g(n2) << 1 : -GameUtil.g(n) << 1;
-        double d2 = -10.175438596491228 + (double)GameUtil.g(17);
+        n = GameUtil.randomInclusive(1) == 0 ? GameUtil.randomInclusive(n2) << 1 : -GameUtil.randomInclusive(n) << 1;
+        double d2 = -10.175438596491228 + (double)GameUtil.randomInclusive(17);
         n2 = (int)(7.017543859649122 - d2);
         int n3 = Math.abs((int)(d2 + 10.175438596491228));
-        n2 = GameUtil.g(1) == 0 ? GameUtil.g(n3) : -GameUtil.g(n2);
+        n2 = GameUtil.randomInclusive(1) == 0 ? GameUtil.randomInclusive(n3) : -GameUtil.randomInclusive(n2);
         player2.aq = (int)((double)player2.aq + (double)n2 * 5.7);
         player2.ap = (int)((double)player2.ap + d2 * 5.7);
         player2.an += n;
@@ -2831,7 +2830,7 @@ public class GameplayHelper {
                         }
                         if (n9 == 3806 || n9 == 3809 || ServerSettings.skipUndefinedNpcSpawns) break block9;
                     }
-                    if (CacheCoordinateTranslator.a && CacheCoordinateTranslator.a(n7, n6)) {
+                    if (CacheCoordinateTranslator.dungeonCoordinateShiftActive && CacheCoordinateTranslator.isDungeonCoordinateShiftSourceRegion(n7, n6)) {
                         n7 += 768;
                         n6 += 5120;
                     }
@@ -2879,7 +2878,7 @@ public class GameplayHelper {
             npc.queueSequenceAdvancePath(npc.scriptedPathStage);
             npc.setScriptedMovementEnabled(true);
         }
-        World.a(npc);
+        World.registerNpc(npc);
     }
 
     public static void a(Npc npc, int n, int n2, int n3, int n4) {
@@ -2892,7 +2891,7 @@ public class GameplayHelper {
         npc.setFacingDirection(n4);
         npc.setSpawnX(n);
         npc.setSpawnY(n2);
-        World.a(npc);
+        World.registerNpc(npc);
     }
 
     public static void a(Player player, Position object, Npc npc, boolean bl, boolean bl2) {
@@ -2901,7 +2900,7 @@ public class GameplayHelper {
         npc.setMovementMode(NpcMovementMode.STATIONARY);
         npc.setSpawnX(((Position)object).getX());
         npc.setSpawnY(((Position)object).getY());
-        World.a(npc);
+        World.registerNpc(npc);
         Npc npc2 = npc;
         object = player;
         player.H = npc2;
@@ -2935,7 +2934,7 @@ public class GameplayHelper {
         npc.setMovementMode(NpcMovementMode.STATIONARY);
         npc.setSpawnX(n);
         npc.setSpawnY(n2);
-        World.a(npc);
+        World.registerNpc(npc);
         Npc npc2 = npc;
         Player player2 = player;
         player.H = npc2;
@@ -2964,7 +2963,7 @@ public class GameplayHelper {
         npc.setSpawnY(n2);
         npc.setSpawnMinPosition(new Position(n - npc.getDefinition().getSpawnRadius(), n2 - npc.getDefinition().getSpawnRadius()));
         npc.setSpawnMaxPosition(new Position(n + npc.getDefinition().getSpawnRadius(), n2 + npc.getDefinition().getSpawnRadius()));
-        World.a(npc);
+        World.registerNpc(npc);
         npc.getUpdateState().setAnimation(n4);
         npc.getUpdateState().setFacePosition(player.getPosition());
         if (npc.getNpcId() == 77) {
@@ -2979,7 +2978,7 @@ public class GameplayHelper {
         npc.setSpawnY(n2);
         npc.setRemovalDelayTicks(n4);
         npc.setFaceEntityUpdateDisabled(true);
-        World.a(npc);
+        World.registerNpc(npc);
     }
 
     public static boolean b(Player player, Npc npc, int n, int n2, int n3, int n4, boolean bl, boolean bl2) {
@@ -2990,7 +2989,7 @@ public class GameplayHelper {
                 player2 = player;
                 player2.H.setActive(false);
                 player2 = player;
-                World.b(player2.H);
+                World.unregisterNpc(player2.H);
             }
         }
         npc.a(new Position(n, n2, n3));
@@ -3000,7 +2999,7 @@ public class GameplayHelper {
         npc.setSpawnY(n2);
         npc.setSpawnMinPosition(new Position(n - npc.getDefinition().getSpawnRadius(), n2 - npc.getDefinition().getSpawnRadius()));
         npc.setSpawnMaxPosition(new Position(n + npc.getDefinition().getSpawnRadius(), n2 + npc.getDefinition().getSpawnRadius()));
-        World.a(npc);
+        World.registerNpc(npc);
         Npc npc2 = npc;
         player2 = player;
         player.H = npc2;
@@ -3030,7 +3029,7 @@ public class GameplayHelper {
         npc.setSpawnY(n2);
         npc.setSpawnMinPosition(new Position(n - npc.getDefinition().getSpawnRadius(), n2 - npc.getDefinition().getSpawnRadius()));
         npc.setSpawnMaxPosition(new Position(n + npc.getDefinition().getSpawnRadius(), n2 + npc.getDefinition().getSpawnRadius()));
-        World.a(npc);
+        World.registerNpc(npc);
         Npc npc2 = npc;
         Player player2 = player;
         player.H = npc2;
@@ -3065,7 +3064,7 @@ public class GameplayHelper {
         npc.setSpawnX(position.getX());
         npc.setSpawnY(position.getY());
         npc.setRespawnEnabled(false);
-        World.a(npc);
+        World.registerNpc(npc);
         if (entity != null) {
             npc.setMovementTarget(entity);
             CombatManager.startCombat(npc, entity);
@@ -3082,7 +3081,7 @@ public class GameplayHelper {
         }
         npc.setActive(false);
         EntityTargetMovement.clearMovementTarget(npc);
-        World.b(npc);
+        World.unregisterNpc(npc);
     }
 
     /*
@@ -3092,17 +3091,17 @@ public class GameplayHelper {
         PacketWriter packetWriter;
         Object object;
         Npc npc;
-        if (player.de) {
+        if (player.isBot) {
             return;
         }
         PacketWriter packetWriter2 = PacketBuffer.allocateWriter(8192);
         PacketWriter packetWriter3 = PacketBuffer.allocateWriter(4096);
         packetWriter2.startVariableShortPacket(player.getOutboundCipher(), 65);
         packetWriter2.setAccessMode(AccessMode.BIT_ACCESS);
-        List list = player.bG();
+        List list = player.getLocalNpcs();
         synchronized (list) {
-            packetWriter2.writeBits(8, player.bG().size());
-            Iterator iterator = player.bG().iterator();
+            packetWriter2.writeBits(8, player.getLocalNpcs().size());
+            Iterator iterator = player.getLocalNpcs().iterator();
             while (iterator.hasNext()) {
                 npc = (Npc)iterator.next();
                 if (npc.isActive() && npc.getPosition().isWithinViewport(player.getPosition()) && !npc.b) {
@@ -3135,20 +3134,20 @@ public class GameplayHelper {
         }
         int n = 0;
         int n2 = 0;
-        while (n2 < World.g().length) {
+        while (n2 < World.getNpcs().length) {
             if (n > 15) break;
-            npc = World.g()[n2];
+            npc = World.getNpcs()[n2];
             if (npc != null && npc.isActive()) {
-                List list2 = player.bG();
+                List list2 = player.getLocalNpcs();
                 synchronized (list2) {
-                    if (!player.bG().contains(npc) && npc.getPosition().isWithinViewport(player.getPosition())) {
+                    if (!player.getLocalNpcs().contains(npc) && npc.getPosition().isWithinViewport(player.getPosition())) {
                         ++n;
-                        player.bG().add(npc);
+                        player.getLocalNpcs().add(npc);
                         Npc npc2 = npc;
                         object = player;
                         packetWriter = packetWriter2;
                         packetWriter.writeBits(14, npc2.getIndex());
-                        object = GameUtil.a(((Entity)object).getPosition(), npc2.getPosition());
+                        object = GameUtil.getDelta(((Entity)object).getPosition(), npc2.getPosition());
                         packetWriter.writeBits(5, ((Position)object).getY());
                         packetWriter.writeBits(5, ((Position)object).getX());
                         packetWriter.writeBits(1, 0);
@@ -3262,7 +3261,7 @@ public class GameplayHelper {
     }
 
     public static void m(Player player) {
-        if (player.fl() == 0) {
+        if (player.getCoalTruckCoalCount() == 0) {
             player.packetSender.sendGameMessage("There is no coal left in the truck.");
             return;
         }
@@ -3271,9 +3270,9 @@ public class GameplayHelper {
             player.packetSender.sendGameMessage("Not enough space in your inventory.");
             return;
         }
-        n = player.fl() < n ? player.fl() : n;
+        n = player.getCoalTruckCoalCount() < n ? player.getCoalTruckCoalCount() : n;
         player.getInventoryManager().addItem(new ItemStack(453, n));
-        player.aE(player.fl() - n);
+        player.setCoalTruckCoalCount(player.getCoalTruckCoalCount() - n);
     }
 
     public static void n(Player player) {
@@ -3318,11 +3317,11 @@ public class GameplayHelper {
                     Object object = new ItemStack(n4, n5);
                     if (!ServerSettings.freeToPlayWorld || !((ItemStack)object).getDefinition().isMembersOnly()) {
                         n10 = (int)((double)n10 * ServerSettings.itemRespawnDelayMultiplier);
-                        if (CacheCoordinateTranslator.a && CacheCoordinateTranslator.a(n7, n8)) {
+                        if (CacheCoordinateTranslator.dungeonCoordinateShiftActive && CacheCoordinateTranslator.isDungeonCoordinateShiftSourceRegion(n7, n8)) {
                             n7 += 768;
                             n8 += 5120;
                         }
-                        object = new GroundItem((ItemStack)object, new Position(n7, n8, n9), (int)GameUtil.b((long)n10), true);
+                        object = new GroundItem((ItemStack)object, new Position(n7, n8, n9), (int)GameUtil.secondsToTicks(n10), true);
                         GroundItemManager.getInstance().spawn((GroundItem)object);
                     }
                 }
@@ -3337,7 +3336,7 @@ public class GameplayHelper {
         }
     }
 
-    public static void a(Player player, Player player2) {
+    public static void refreshTradeOfferInterfaces(Player player, Player player2) {
         Player player3 = player;
         player3.packetSender.sendItemContainer(3322, player.getInventoryManager().getContainer().getRawItems());
         player3 = player2;
@@ -3356,7 +3355,7 @@ public class GameplayHelper {
         player3.packetSender.sendInterfaceText("Trading With: " + player.getUsername(), 3417);
     }
 
-    public static void b(Player player, Player player2) {
+    public static void handleTradeRequest(Player player, Player player2) {
         if (player.getQuestState(0) != 1) {
             player.pendingTradeTarget = null;
             return;
@@ -3379,20 +3378,20 @@ public class GameplayHelper {
             player.pendingTradeTarget = null;
             return;
         }
-        if (player2.eW() != player) {
+        if (player2.getTradeRequestTarget() != player) {
             Player player6 = player;
             player6.packetSender.sendGameMessage("Sending trade offer...");
             player6 = player2;
             player6.packetSender.sendGameMessage(TextUtil.capitalizeFirst(player.getUsername()) + ":tradereq:");
-            player.a(TradeState.b);
-            player.b(player2);
-            if (player2.de) {
+            player.setTradeState(TradeState.REQUEST_SENT);
+            player.setTradeRequestTarget(player2);
+            if (player2.isBot) {
                 player2.pendingTradeTarget = player;
                 return;
             }
         } else {
-            player.a(TradeState.d);
-            player2.a(TradeState.d);
+            player.setTradeState(TradeState.OFFER_SCREEN);
+            player2.setTradeState(TradeState.OFFER_SCREEN);
             Player player7 = player2;
             Player player8 = player;
             if (player8.botEnabled) {
@@ -3411,19 +3410,19 @@ public class GameplayHelper {
             player9.packetSender.sendInterfaceText("", 3431);
             player9 = player7;
             player9.packetSender.sendInterfaceText("", 3431);
-            GameplayHelper.a(player8, player7);
+            GameplayHelper.refreshTradeOfferInterfaces(player8, player7);
             player8.setTradePartner(player7);
             player7.setTradePartner(player8);
             player9 = player8;
             player9.packetSender.showInterfaceWithInventory(3323, 3321);
             player9 = player7;
             player9.packetSender.showInterfaceWithInventory(3323, 3321);
-            player.b((Player)null);
-            player2.b((Player)null);
+            player.setTradeRequestTarget(null);
+            player2.setTradeRequestTarget(null);
         }
     }
 
-    public static void o(Player player) {
+    public static void declineTrade(Player player) {
         if (player.getTradePartner() == null) {
             player.pendingTradeTarget = null;
             return;
@@ -3437,10 +3436,10 @@ public class GameplayHelper {
         player3.packetSender.closeInterfaces();
         player3 = player2;
         player3.packetSender.closeInterfaces();
-        player.a(TradeState.a);
-        player2.a(TradeState.a);
-        GameplayHelper.p(player2);
-        GameplayHelper.p(player);
+        player.setTradeState(TradeState.NONE);
+        player2.setTradeState(TradeState.NONE);
+        GameplayHelper.returnTradeOfferItems(player2);
+        GameplayHelper.returnTradeOfferItems(player);
         player.setTradePartner(null);
         player2.setTradePartner(null);
         if (player.botEnabled) {
@@ -3455,7 +3454,7 @@ public class GameplayHelper {
         CharacterFileManager.savePlayer(player3);
     }
 
-    public static void p(Player player) {
+    public static void returnTradeOfferItems(Player player) {
         int n = 0;
         while (n < 28) {
             ItemStack itemStack;
@@ -3468,10 +3467,10 @@ public class GameplayHelper {
         player.getTradeOfferContainer().clear();
     }
 
-    public static void b(Player player, int n, int n2, int n3) {
+    public static void addTradeOfferItem(Player player, int n, int n2, int n3) {
         Object object;
         Player player2 = (Player)player.getTradePartner();
-        if (player.getTradeState().equals((Object)TradeState.e)) {
+        if (player.getTradeState().equals((Object)TradeState.CONFIRM_SCREEN)) {
             return;
         }
         if (n2 == -1 || player2 == null) {
@@ -3486,7 +3485,7 @@ public class GameplayHelper {
             return;
         }
         ItemStack itemStack2 = new ItemStack(n2);
-        if (itemStack2.getDefinition().z()) {
+        if (itemStack2.getDefinition().isUntradeable()) {
             if (player.getPlayerRights() < 2) {
                 Player player3 = player;
                 player3.packetSender.sendGameMessage("You cannot trade that item.");
@@ -3516,18 +3515,18 @@ public class GameplayHelper {
             object = player.getTradeOfferContainer();
             ((ItemContainer)object).add(itemStack3, -1);
         }
-        GameplayHelper.a(player, player2);
-        player.a(TradeState.d);
-        player2.a(TradeState.d);
+        GameplayHelper.refreshTradeOfferInterfaces(player, player2);
+        player.setTradeState(TradeState.OFFER_SCREEN);
+        player2.setTradeState(TradeState.OFFER_SCREEN);
         object = player;
         ((Player)object).packetSender.sendInterfaceText("", 3431);
         object = player2;
         ((Player)object).packetSender.sendInterfaceText("", 3431);
     }
 
-    public static void c(Player player, int n, int n2, int n3) {
+    public static void removeTradeOfferItem(Player player, int n, int n2, int n3) {
         Player player2 = (Player)player.getTradePartner();
-        if (player.getTradeState().equals((Object)TradeState.e)) {
+        if (player.getTradeState().equals((Object)TradeState.CONFIRM_SCREEN)) {
             return;
         }
         if (n2 == -1 || player2 == null) {
@@ -3543,19 +3542,19 @@ public class GameplayHelper {
         }
         n = player.getTradeOfferContainer().removeFromSlot(new ItemStack(n2, n4), n);
         player.getInventoryManager().addItem(new ItemStack(itemStack.getId(), n));
-        GameplayHelper.a(player, player2);
-        player.a(TradeState.d);
-        player2.a(TradeState.d);
+        GameplayHelper.refreshTradeOfferInterfaces(player, player2);
+        player.setTradeState(TradeState.OFFER_SCREEN);
+        player2.setTradeState(TradeState.OFFER_SCREEN);
         player.packetSender.sendInterfaceText("", 3431);
         player = player2;
         player.packetSender.sendInterfaceText("", 3431);
     }
 
-    public static void q(Player player) {
+    public static void acceptTradeFirstScreen(Player player) {
         ItemStack itemStack;
         Player player2 = (Player)player.getTradePartner();
-        player.a(TradeState.c);
-        if (!player2.getTradeState().equals((Object)TradeState.c)) {
+        player.setTradeState(TradeState.ACCEPTED);
+        if (!player2.getTradeState().equals((Object)TradeState.ACCEPTED)) {
             Player player3 = player;
             player3.packetSender.sendInterfaceText("Waiting for other player...", 3431);
             player3 = player2;
@@ -3598,28 +3597,28 @@ public class GameplayHelper {
             player5.packetSender.sendInterfaceText("You don't have enough inventory space for this trade.", 3431);
             return;
         }
-        GameplayHelper.a(player, player2);
+        GameplayHelper.refreshTradeOfferInterfaces(player, player2);
         Player player6 = player;
         player6.packetSender.showInterfaceWithInventory(3443, 3213);
         player6 = player2;
         player6.packetSender.showInterfaceWithInventory(3443, 3213);
-        player.a(TradeState.e);
-        player2.a(TradeState.e);
+        player.setTradeState(TradeState.CONFIRM_SCREEN);
+        player2.setTradeState(TradeState.CONFIRM_SCREEN);
         player6 = player;
         player6.packetSender.sendInterfaceText("Are you sure you want to accept this trade?", 3535);
         player6 = player2;
         player6.packetSender.sendInterfaceText("Are you sure you want to accept this trade?", 3535);
-        GameplayHelper.s(player);
-        GameplayHelper.s(player2);
+        GameplayHelper.refreshTradeConfirmationSummary(player);
+        GameplayHelper.refreshTradeConfirmationSummary(player2);
     }
 
-    public static void r(Player player) {
-        if (!player.getTradeState().equals((Object)TradeState.e)) {
+    public static void acceptTradeSecondScreen(Player player) {
+        if (!player.getTradeState().equals((Object)TradeState.CONFIRM_SCREEN)) {
             return;
         }
         Player player2 = (Player)player.getTradePartner();
-        player.a(TradeState.c);
-        if (!player2.getTradeState().equals((Object)TradeState.c)) {
+        player.setTradeState(TradeState.ACCEPTED);
+        if (!player2.getTradeState().equals((Object)TradeState.ACCEPTED)) {
             Player player3 = player;
             player3.packetSender.sendInterfaceText("Waiting for other player...", 3535);
             player3 = player2;
@@ -3648,8 +3647,8 @@ public class GameplayHelper {
             }
             bl += 1;
         }
-        player.a(TradeState.a);
-        player2.a(TradeState.a);
+        player.setTradeState(TradeState.NONE);
+        player2.setTradeState(TradeState.NONE);
         object = player;
         object.packetSender.sendGameMessage("You accept the trade.");
         object = player2;
@@ -3680,7 +3679,7 @@ public class GameplayHelper {
         }
     }
 
-    private static void s(Player player) {
+    private static void refreshTradeConfirmationSummary(Player player) {
         int n;
         Player player2 = (Player)player.getTradePartner();
         StringBuilder stringBuilder = new StringBuilder();
@@ -3711,7 +3710,7 @@ public class GameplayHelper {
         for (ItemStack itemStack : arrayList) {
             if (itemStack == null) continue;
             bl = false;
-            String string = itemStack.getAmount() >= 1000 && itemStack.getAmount() < 1000000 ? "@cya@" + itemStack.getAmount() / 1000 + "K @whi@(" + GameUtil.j(itemStack.getAmount()) + ")" : (itemStack.getAmount() >= 1000000 ? "@gre@" + itemStack.getAmount() / 1000000 + " million @whi@(" + GameUtil.j(itemStack.getAmount()) + ")" : "" + itemStack.getAmount());
+            String string = itemStack.getAmount() >= 1000 && itemStack.getAmount() < 1000000 ? "@cya@" + itemStack.getAmount() / 1000 + "K @whi@(" + GameUtil.formatNumber(itemStack.getAmount()) + ")" : (itemStack.getAmount() >= 1000000 ? "@gre@" + itemStack.getAmount() / 1000000 + " million @whi@(" + GameUtil.formatNumber(itemStack.getAmount()) + ")" : "" + itemStack.getAmount());
             stringBuilder.append(itemStack.getDefinition().getName());
             stringBuilder.append(" x ");
             stringBuilder.append(string);
@@ -3753,7 +3752,7 @@ public class GameplayHelper {
         for (ItemStack itemStack : arrayList2) {
             if (itemStack == null) continue;
             bl2 = false;
-            String string = itemStack.getAmount() >= 1000 && itemStack.getAmount() < 1000000 ? "@cya@" + itemStack.getAmount() / 1000 + "K @whi@(" + GameUtil.j(itemStack.getAmount()) + ")" : (itemStack.getAmount() >= 1000000 ? "@gre@" + itemStack.getAmount() / 1000000 + " million @whi@(" + GameUtil.j(itemStack.getAmount()) + ")" : "" + itemStack.getAmount());
+            String string = itemStack.getAmount() >= 1000 && itemStack.getAmount() < 1000000 ? "@cya@" + itemStack.getAmount() / 1000 + "K @whi@(" + GameUtil.formatNumber(itemStack.getAmount()) + ")" : (itemStack.getAmount() >= 1000000 ? "@gre@" + itemStack.getAmount() / 1000000 + " million @whi@(" + GameUtil.formatNumber(itemStack.getAmount()) + ")" : "" + itemStack.getAmount());
             stringBuilder.append(itemStack.getDefinition().getName());
             stringBuilder.append(" x ");
             stringBuilder.append(string);
@@ -3766,27 +3765,27 @@ public class GameplayHelper {
         player4.packetSender.sendInterfaceText(stringBuilder.toString(), 3558);
     }
 
-    public static int f(int n) {
-        CaveLightSourceDefinition caveLightSourceDefinition = CaveLightSourceDefinition.a(n);
+    public static int getCaveLightLevelForItemId(int n) {
+        CaveLightSourceDefinition caveLightSourceDefinition = CaveLightSourceDefinition.forItemId(n);
         if (caveLightSourceDefinition == null) {
             return 0;
         }
-        if (caveLightSourceDefinition.b() == n) {
+        if (caveLightSourceDefinition.getUnlitItemId() == n) {
             return 0;
         }
-        return caveLightSourceDefinition.d();
+        return caveLightSourceDefinition.getLightLevel();
     }
 
-    public static boolean a(Player player, int n, boolean bl) {
-        CaveLightSourceDefinition caveLightSourceDefinition = CaveLightSourceDefinition.a(n);
+    public static boolean extinguishCaveLightSource(Player player, int n, boolean bl) {
+        CaveLightSourceDefinition caveLightSourceDefinition = CaveLightSourceDefinition.forItemId(n);
         if (caveLightSourceDefinition == null || !player.getInventoryManager().containsItem(n)) {
             return false;
         }
-        if (caveLightSourceDefinition.c() != n) {
+        if (caveLightSourceDefinition.getLitItemId() != n) {
             return false;
         }
         player.getInventoryManager().removeItem(new ItemStack(n, 1));
-        player.getInventoryManager().addItem(new ItemStack(caveLightSourceDefinition.b(), 1));
+        player.getInventoryManager().addItem(new ItemStack(caveLightSourceDefinition.getUnlitItemId(), 1));
         ItemDefinition itemDefinition = ItemDefinition.forId(n);
         if (bl) {
             player.packetSender.sendGameMessage("You extinguish the " + itemDefinition.getName().toLowerCase() + ".");
@@ -3804,7 +3803,7 @@ public class GameplayHelper {
         int n = player.getTeleportManager().b(position);
         if (player.botEnabled && n == 0 && player.botCombatState.startsWith("escape")) {
             player.botCombatState = "tele";
-            BotCombatEscapeHandler.c(player);
+            BotCombatEscapeHandler.startBotCombatWalkingEscape(player);
         } else if (player.botEnabled && n == 0 && player.botCombatState.equals("tele")) {
             player.botCombatState = "run";
         }
@@ -3813,8 +3812,8 @@ public class GameplayHelper {
         }
         player2 = player;
         if (player.interfaceAction.equals("operate")) {
-            if (player.getEquipmentManager().b(new ItemStack(player.getSelectedItemId())) && (n = GameplayHelper.getNextDegradedJewelryItemId(player.getSelectedItemId())) > 0) {
-                player.getEquipmentManager().b(n, player.getSelectedItemSlot());
+            if (player.getEquipmentManager().removeItem(new ItemStack(player.getSelectedItemId())) && (n = GameplayHelper.getNextDegradedJewelryItemId(player.getSelectedItemId())) > 0) {
+                player.getEquipmentManager().setSlotItem(n, player.getSelectedItemSlot());
             }
         } else if (player.getInventoryManager().removeItem(new ItemStack(player.getSelectedItemId())) && (n = GameplayHelper.getNextDegradedJewelryItemId(player.getSelectedItemId())) > 0) {
             player.getInventoryManager().addItem(new ItemStack(n));

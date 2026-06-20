@@ -27,8 +27,8 @@ extends TickTask {
     public final void execute() {
         Player player = this.c;
         player.packetSender.sendGameMessage("... and some food!");
-        this.c.getInventoryManager().b(new ItemStack(1897, 1));
-        this.c.getInventoryManager().b(new ItemStack(2003, 1));
+        this.c.getInventoryManager().addOrDropItem(new ItemStack(1897, 1));
+        this.c.getInventoryManager().addOrDropItem(new ItemStack(2003, 1));
         World.getTaskScheduler().schedule(this.b);
         this.stop();
     }

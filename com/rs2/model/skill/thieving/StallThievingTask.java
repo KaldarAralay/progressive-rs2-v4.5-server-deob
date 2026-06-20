@@ -43,7 +43,7 @@ extends CycleEvent {
             player.packetSender.sendGameMessage("Too late, the items are gone.");
             return;
         }
-        this.player.getInventoryManager().b(this.reward);
+        this.player.getInventoryManager().addOrDropItem(this.reward);
         Player player = this.player;
         player.packetSender.sendGameMessage("You successfully stole a " + this.reward.getDefinition().getName().toLowerCase() + ".");
         this.player.getSkillManager().addExperience(17, this.stallDefinition.getExperience());
@@ -57,7 +57,7 @@ extends CycleEvent {
     @Override
     public final void onStop() {
         this.player.x(false);
-        this.player.n(false);
+        this.player.setActionLocked(false);
     }
 }
 

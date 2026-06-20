@@ -16,20 +16,20 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        AlchemistPlaygroundController.e();
-        AlchemistPlaygroundController.f();
-        int n = AlchemistPlaygroundController.g()[AlchemistPlaygroundController.b.nextInt(AlchemistPlaygroundController.g().length)];
-        while (n == AlchemistPlaygroundController.c) {
-            n = AlchemistPlaygroundController.g()[AlchemistPlaygroundController.b.nextInt(AlchemistPlaygroundController.g().length)];
+        AlchemistPlaygroundController.rotateCupboardObjectIds();
+        AlchemistPlaygroundController.randomizeAlchemyItemValues();
+        int n = AlchemistPlaygroundController.getAlchemyItemIds()[AlchemistPlaygroundController.random.nextInt(AlchemistPlaygroundController.getAlchemyItemIds().length)];
+        while (n == AlchemistPlaygroundController.currentFreeAlchemyItemId) {
+            n = AlchemistPlaygroundController.getAlchemyItemIds()[AlchemistPlaygroundController.random.nextInt(AlchemistPlaygroundController.getAlchemyItemIds().length)];
         }
-        AlchemistPlaygroundController.c = n;
-        Player[] playerArray = World.f();
+        AlchemistPlaygroundController.currentFreeAlchemyItemId = n;
+        Player[] playerArray = World.getPlayers();
         int n2 = playerArray.length;
         int n3 = 0;
         while (n3 < n2) {
             Player player = playerArray[n3];
-            if (player != null && player.getAlchemistPlaygroundController().b()) {
-                player.getAlchemistPlaygroundController().d();
+            if (player != null && player.getAlchemistPlaygroundController().isInsidePlayground()) {
+                player.getAlchemistPlaygroundController().refreshFreeAlchemyItemIndicator();
             }
             ++n3;
         }

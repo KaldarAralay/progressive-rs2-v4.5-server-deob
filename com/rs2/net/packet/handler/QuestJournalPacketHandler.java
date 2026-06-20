@@ -11,7 +11,7 @@ public final class QuestJournalPacketHandler
 implements PacketHandler {
     @Override
     public final void handle(Player player, IncomingPacket incomingPacket) {
-        if (player.getQuestManager().c()) {
+        if (player.getQuestManager().refreshQuestJournalStatuses()) {
             return;
         }
     }

@@ -14,21 +14,21 @@ import com.rs2.util.GameUtil;
 
 final class SpinningPlateResultEvent
 extends CycleEvent {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
     SpinningPlateResultEvent(Player player) {
-        this.a = player;
+        this.player = player;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        this.a.n(false);
-        if (GameUtil.h(3) == 0) {
-            this.a.getUpdateState().setAnimation(SpinningPlateHandler.a(), 0);
-            this.a.getInventoryManager().removeItem(new ItemStack(SpinningPlateHandler.b(), 1));
-            CycleEventHandler.getInstance().schedule(this.a, new BrokenPlateDropEvent(this, this.a), 1);
+        this.player.setActionLocked(false);
+        if (GameUtil.randomInt(3) == 0) {
+            this.player.getUpdateState().setAnimation(SpinningPlateHandler.getBreakPlateAnimationId(), 0);
+            this.player.getInventoryManager().removeItem(new ItemStack(SpinningPlateHandler.getSpinningPlateItemId(), 1));
+            CycleEventHandler.getInstance().schedule(this.player, new BrokenPlateDropEvent(this, this.player), 1);
         } else {
-            this.a.getUpdateState().setAnimation(SpinningPlateHandler.d(), 0);
+            this.player.getUpdateState().setAnimation(SpinningPlateHandler.getCatchPlateAnimationId(), 0);
         }
         cycleEventContainer.stop();
     }

@@ -21,7 +21,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        this.a.n(false);
+        this.a.setActionLocked(false);
         if (this.b >= 8) {
             this.a.moveTo(new Position(2649, 4516, 0));
         } else {

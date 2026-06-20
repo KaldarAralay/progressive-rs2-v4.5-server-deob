@@ -11,37 +11,37 @@ import com.rs2.model.task.TickTask;
 
 final class ShopRestockTask
 extends TickTask {
-    private final /* synthetic */ ShopDefinition a;
-    private final /* synthetic */ int b;
-    private final /* synthetic */ int c;
+    private final /* synthetic */ ShopDefinition shopDefinition;
+    private final /* synthetic */ int itemId;
+    private final /* synthetic */ int slotIndex;
 
     ShopRestockTask(int n, ShopDefinition shopDefinition, int n2, int n3) {
-        this.a = shopDefinition;
-        this.b = n2;
-        this.c = n3;
+        this.shopDefinition = shopDefinition;
+        this.itemId = n2;
+        this.slotIndex = n3;
         super(n);
     }
 
     @Override
     public final void execute() {
-        if (this.a.j().containsItem(this.b)) {
-            int n = this.a.j().findFlatItem(this.b).getAmount();
-            int n2 = this.a.k().findFlatItem(this.b).getAmount();
+        if (this.shopDefinition.getOriginalStock().containsItem(this.itemId)) {
+            int n = this.shopDefinition.getOriginalStock().findFlatItem(this.itemId).getAmount();
+            int n2 = this.shopDefinition.getStock().findFlatItem(this.itemId).getAmount();
             if (n2 < n) {
-                ItemStack itemStack = new ItemStack(this.b);
-                ItemContainer itemContainer = this.a.k();
+                ItemStack itemStack = new ItemStack(this.itemId);
+                ItemContainer itemContainer = this.shopDefinition.getStock();
                 itemContainer.add(itemStack, -1);
             } else if (n2 > n) {
-                this.a.k().removeKeepingPlaceholder(new ItemStack(this.b));
+                this.shopDefinition.getStock().removeKeepingPlaceholder(new ItemStack(this.itemId));
             }
         } else {
-            int n = ShopManager.a(this.a, this.b);
-            if (this.a.k().containsItem(this.b) && n == this.c) {
-                this.a.k().remove(new ItemStack(this.b));
+            int n = ShopManager.indexOfStockItem(this.shopDefinition, this.itemId);
+            if (this.shopDefinition.getStock().containsItem(this.itemId) && n == this.slotIndex) {
+                this.shopDefinition.getStock().remove(new ItemStack(this.itemId));
             }
         }
-        ShopManager.a(this.a.f());
-        if (!ShopManager.a(this.a, this.b, this.c)) {
+        ShopManager.refreshShopForPlayers(this.shopDefinition.getShopId());
+        if (!ShopManager.needsRestock(this.shopDefinition, this.itemId, this.slotIndex)) {
             this.stop();
         }
     }

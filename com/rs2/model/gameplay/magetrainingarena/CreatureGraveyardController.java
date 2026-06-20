@@ -20,17 +20,17 @@ import com.rs2.util.TextUtil;
 import java.util.Random;
 
 public final class CreatureGraveyardController {
-    private static Position[] b = new Position[]{new Position(3364, 9640, 1), new Position(3363, 9641, 1), new Position(3362, 9640, 1), new Position(3363, 9639, 1)};
-    private Player c;
-    private static Random d = new Random();
-    private static int[] e = new int[]{555, 557, 560, 561, 565};
-    public int a;
+    private static Position[] entryPositions = new Position[]{new Position(3364, 9640, 1), new Position(3363, 9641, 1), new Position(3362, 9640, 1), new Position(3363, 9639, 1)};
+    private Player player;
+    private static Random random = new Random();
+    private static int[] fruitChuteRewardRuneItemIds = new int[]{555, 557, 560, 561, 565};
+    public int pizazzPoints;
 
     public CreatureGraveyardController(Player player) {
-        this.c = player;
+        this.player = player;
     }
 
-    private static int a(int n) {
+    private static int getFruitYieldForBoneItemId(int n) {
         switch (n) {
             case 6904: {
                 return 1;
@@ -48,100 +48,100 @@ public final class CreatureGraveyardController {
         return 0;
     }
 
-    public final boolean a() {
-        int n = this.c.getPosition().getX();
-        int n2 = this.c.getPosition().getY();
-        return this.c.getPosition().getPlane() == 1 && n >= 3340 && n <= 3390 && n2 >= 9610 && n2 <= 9670;
+    public final boolean isInsideGraveyard() {
+        int n = this.player.getPosition().getX();
+        int n2 = this.player.getPosition().getY();
+        return this.player.getPosition().getPlane() == 1 && n >= 3340 && n <= 3390 && n2 >= 9610 && n2 <= 9670;
     }
 
-    public final void b() {
-        this.a -= 10;
-        if (this.a < 0) {
-            this.a = 0;
+    public final void handleGraveyardDeath() {
+        this.pizazzPoints -= 10;
+        if (this.pizazzPoints < 0) {
+            this.pizazzPoints = 0;
         }
-        this.c.moveTo(MageTrainingArenaLobby.a);
-        this.e();
+        this.player.moveTo(MageTrainingArenaLobby.LOBBY_POSITION);
+        this.clearGraveyardItems();
     }
 
-    public final void c() {
-        Player player = this.c;
+    public final void refreshPizazzInterface() {
+        Player player = this.player;
         player.packetSender.showWalkableInterface(15931);
-        player = this.c;
-        player.packetSender.sendInterfaceText("" + this.a, 15935);
+        player = this.player;
+        player.packetSender.sendInterfaceText("" + this.pizazzPoints, 15935);
     }
 
-    public static void d() {
+    public static void startFallingBoneHazards() {
         World.scheduleTickTask(new CreatureGraveyardHazardTask(20));
     }
 
-    public final boolean a(boolean bl) {
+    public final boolean convertBonesToFruit(boolean bl) {
         int player = bl ? 6883 : 1963;
-        int[] nArray = new int[]{this.c.getInventoryManager().getItemAmount(6904), this.c.getInventoryManager().getItemAmount(6905), this.c.getInventoryManager().getItemAmount(6906), this.c.getInventoryManager().getItemAmount(6907)};
+        int[] nArray = new int[]{this.player.getInventoryManager().getItemAmount(6904), this.player.getInventoryManager().getItemAmount(6905), this.player.getInventoryManager().getItemAmount(6906), this.player.getInventoryManager().getItemAmount(6907)};
         if (nArray[0] == 0 && nArray[1] == 0 && nArray[2] == 0 && nArray[3] == 0) {
-            Player player2 = this.c;
+            Player player2 = this.player;
             player2.packetSender.sendGameMessage("You don't have any bones to convert into fruits.");
             return false;
         }
-        this.c.getInventoryManager().removeItem(new ItemStack(6904, nArray[0]));
-        this.c.getInventoryManager().removeItem(new ItemStack(6905, nArray[1]));
-        this.c.getInventoryManager().removeItem(new ItemStack(6906, nArray[2]));
-        this.c.getInventoryManager().removeItem(new ItemStack(6907, nArray[3]));
-        this.c.getInventoryManager().d(new ItemStack(player, nArray[0] * CreatureGraveyardController.a(6904)));
-        this.c.getInventoryManager().d(new ItemStack(player, nArray[1] * CreatureGraveyardController.a(6905)));
-        this.c.getInventoryManager().d(new ItemStack(player, nArray[2] * CreatureGraveyardController.a(6906)));
-        this.c.getInventoryManager().d(new ItemStack(player, nArray[3] * CreatureGraveyardController.a(6907)));
+        this.player.getInventoryManager().removeItem(new ItemStack(6904, nArray[0]));
+        this.player.getInventoryManager().removeItem(new ItemStack(6905, nArray[1]));
+        this.player.getInventoryManager().removeItem(new ItemStack(6906, nArray[2]));
+        this.player.getInventoryManager().removeItem(new ItemStack(6907, nArray[3]));
+        this.player.getInventoryManager().d(new ItemStack(player, nArray[0] * CreatureGraveyardController.getFruitYieldForBoneItemId(6904)));
+        this.player.getInventoryManager().d(new ItemStack(player, nArray[1] * CreatureGraveyardController.getFruitYieldForBoneItemId(6905)));
+        this.player.getInventoryManager().d(new ItemStack(player, nArray[2] * CreatureGraveyardController.getFruitYieldForBoneItemId(6906)));
+        this.player.getInventoryManager().d(new ItemStack(player, nArray[3] * CreatureGraveyardController.getFruitYieldForBoneItemId(6907)));
         return true;
     }
 
-    private void e() {
-        this.c.getInventoryManager().removeItem(new ItemStack(6883, this.c.getInventoryManager().getItemAmount(6883)));
-        this.c.getInventoryManager().removeItem(new ItemStack(1963, this.c.getInventoryManager().getItemAmount(1963)));
-        this.c.getInventoryManager().removeItem(new ItemStack(6904, this.c.getInventoryManager().getItemAmount(6904)));
-        this.c.getInventoryManager().removeItem(new ItemStack(6905, this.c.getInventoryManager().getItemAmount(6905)));
-        this.c.getInventoryManager().removeItem(new ItemStack(6906, this.c.getInventoryManager().getItemAmount(6906)));
-        this.c.getInventoryManager().removeItem(new ItemStack(6907, this.c.getInventoryManager().getItemAmount(6907)));
+    private void clearGraveyardItems() {
+        this.player.getInventoryManager().removeItem(new ItemStack(6883, this.player.getInventoryManager().getItemAmount(6883)));
+        this.player.getInventoryManager().removeItem(new ItemStack(1963, this.player.getInventoryManager().getItemAmount(1963)));
+        this.player.getInventoryManager().removeItem(new ItemStack(6904, this.player.getInventoryManager().getItemAmount(6904)));
+        this.player.getInventoryManager().removeItem(new ItemStack(6905, this.player.getInventoryManager().getItemAmount(6905)));
+        this.player.getInventoryManager().removeItem(new ItemStack(6906, this.player.getInventoryManager().getItemAmount(6906)));
+        this.player.getInventoryManager().removeItem(new ItemStack(6907, this.player.getInventoryManager().getItemAmount(6907)));
     }
 
-    private void f() {
+    private void depositFruitChute() {
         int n;
-        int n2 = this.c.getInventoryManager().getItemAmount(1963);
-        if (n2 + (n = this.c.getInventoryManager().getItemAmount(6883)) == 0) {
-            Player player = this.c;
+        int n2 = this.player.getInventoryManager().getItemAmount(1963);
+        if (n2 + (n = this.player.getInventoryManager().getItemAmount(6883)) == 0) {
+            Player player = this.player;
             player.packetSender.sendGameMessage("You have no fruit to put in the fruit chute.");
             return;
         }
         int n3 = (n2 + n) / 16;
-        if (this.c.eH()) {
-            this.a += n3;
+        if (this.player.hasActiveProgressHat()) {
+            this.pizazzPoints += n3;
         }
-        if (this.a > 4000) {
-            this.a = 4000;
+        if (this.pizazzPoints > 4000) {
+            this.pizazzPoints = 4000;
         }
-        Player player = this.c;
+        Player player = this.player;
         player.packetSender.sendGameMessage("You've put " + (n2 + n) + " in the food chute and receive " + n3 + " points");
-        this.c.getUpdateState().setAnimation(832);
-        this.e();
+        this.player.getUpdateState().setAnimation(832);
+        this.clearGraveyardItems();
         if (n3 >= 0) {
-            this.c.getSkillManager().addExperience(6, 25.0);
-            n2 = GameUtil.h(2) + 1;
-            n = e[d.nextInt(e.length)];
+            this.player.getSkillManager().addExperience(6, 25.0);
+            n2 = GameUtil.randomInt(2) + 1;
+            n = fruitChuteRewardRuneItemIds[random.nextInt(fruitChuteRewardRuneItemIds.length)];
             ItemStack itemStack = new ItemStack(n, n2);
-            this.c.getInventoryManager().b(itemStack);
+            this.player.getInventoryManager().addOrDropItem(itemStack);
             String string = "";
             string = n2 == 1 ? String.valueOf(string) + TextUtil.prependIndefiniteArticle(itemStack.getDefinition().getName()) : String.valueOf(string) + n2 + " " + itemStack.getDefinition().getName() + "s";
-            this.c.getDialogueManager().showTwoLineStatement("Congratulations - you've been awarded " + string + " and extra", "magic XP.");
+            this.player.getDialogueManager().showTwoLineStatement("Congratulations - you've been awarded " + string + " and extra", "magic XP.");
         }
     }
 
-    public final boolean a(int n, int n2, int n3, int n4) {
+    public final boolean handleObjectAction(int n, int n2, int n3, int n4) {
         if (n >= 10725 && n <= 10728) {
             int n5;
-            if (this.c.getInventoryManager().getContainer().getFreeSlots() <= 0) {
-                Player player = this.c;
+            if (this.player.getInventoryManager().getContainer().getFreeSlots() <= 0) {
+                Player player = this.player;
                 player.packetSender.sendGameMessage("Not enough space in your inventory.");
                 return true;
             }
-            if (GameUtil.g(5) == 0) {
+            if (GameUtil.randomInclusive(5) == 0) {
                 int n6 = n4;
                 n4 = n3;
                 n3 = n2;
@@ -152,10 +152,10 @@ public final class CreatureGraveyardController {
                     new DynamicObject(n2 - 1, n3, n4, n6, loadedWorldObject.getOrientation(), loadedWorldObject.getType(), n2, 20);
                 }
             }
-            if (GameUtil.g(3) == 0) {
-                this.c.applyDirectHit(2, HitType.NORMAL);
+            if (GameUtil.randomInclusive(3) == 0) {
+                this.player.applyDirectHit(2, HitType.NORMAL);
             }
-            InventoryManager inventoryManager = this.c.getInventoryManager();
+            InventoryManager inventoryManager = this.player.getInventoryManager();
             n2 = n;
             switch (n2) {
                 case 10725: {
@@ -179,16 +179,16 @@ public final class CreatureGraveyardController {
                 }
             }
             inventoryManager.addItem(new ItemStack(n5));
-            this.c.getUpdateState().setAnimation(832);
+            this.player.getUpdateState().setAnimation(832);
             return true;
         }
-        if (n == 10782 && this.a()) {
+        if (n == 10782 && this.isInsideGraveyard()) {
             CreatureGraveyardController creatureGraveyardController = this;
-            creatureGraveyardController.c.moveTo(MageTrainingArenaLobby.a);
-            Player player = creatureGraveyardController.c;
+            creatureGraveyardController.player.moveTo(MageTrainingArenaLobby.LOBBY_POSITION);
+            Player player = creatureGraveyardController.player;
             player.packetSender.sendGameMessage("You've left the Creature Graveyard.");
-            creatureGraveyardController.e();
-            player = creatureGraveyardController.c;
+            creatureGraveyardController.clearGraveyardItems();
+            player = creatureGraveyardController.player;
             player.packetSender.showWalkableInterface(-1);
             return true;
         }
@@ -196,24 +196,24 @@ public final class CreatureGraveyardController {
             CreatureGraveyardController creatureGraveyardController = this;
             Random random = new Random();
             n4 = random.nextInt(4);
-            if (creatureGraveyardController.c.getSkillManager().getCurrentLevels()[6] < 15) {
-                Player player = creatureGraveyardController.c;
+            if (creatureGraveyardController.player.getSkillManager().getCurrentLevels()[6] < 15) {
+                Player player = creatureGraveyardController.player;
                 player.packetSender.sendGameMessage("You need a magic level of 21 to enter here.");
             } else {
-                creatureGraveyardController.c.moveTo(b[n4]);
-                Player player = creatureGraveyardController.c;
+                creatureGraveyardController.player.moveTo(entryPositions[n4]);
+                Player player = creatureGraveyardController.player;
                 player.packetSender.sendGameMessage("You've entered the Creature Graveyard.");
             }
             return true;
         }
         if (n == 10735) {
-            this.f();
+            this.depositFruitChute();
             return true;
         }
         return false;
     }
 
-    public static boolean a(DynamicObject dynamicObject) {
+    public static boolean advanceBonePileRespawnStage(DynamicObject dynamicObject) {
         if (dynamicObject == null) {
             return false;
         }

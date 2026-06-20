@@ -31,7 +31,7 @@ extends CycleEvent {
     @Override
     public final void onStop() {
         AllotmentPatchManager.getPlayer(this.manager).getUpdateState().setAnimation(1332);
-        AllotmentPatchManager.getPlayer(this.manager).n(false);
+        AllotmentPatchManager.getPlayer(this.manager).setActionLocked(false);
     }
 }
 

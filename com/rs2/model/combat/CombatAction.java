@@ -55,7 +55,7 @@ public class CombatAction {
         String string;
         String string2;
         block9: {
-            if (player == null || player.isStunned() || !player.getSkillManager().f(2200)) {
+            if (player == null || player.isStunned() || !player.getSkillManager().tryStartActionDelay(2200)) {
                 return true;
             }
             string2 = npc.getDefinition().getName().toLowerCase();
@@ -101,11 +101,11 @@ public class CombatAction {
         }
         int bl = ((PickpocketDefinition)((Object)string)).getSuccessChanceLow();
         n = ((PickpocketDefinition)((Object)string)).getSuccessChanceHigh();
-        boolean bl2 = GameUtil.b(bl, n, player.getSkillManager().getCurrentLevels()[17]);
-        ItemStack itemStack = ((PickpocketDefinition)((Object)string)).getRareRewards() != null && GameUtil.g(30) == 0 ? ((PickpocketDefinition)((Object)string)).getRareRewards()[GameUtil.f(((PickpocketDefinition)((Object)string)).getRareRewards().length)] : ((PickpocketDefinition)((Object)string)).getCommonRewards()[GameUtil.f(((PickpocketDefinition)((Object)string)).getCommonRewards().length)];
+        boolean bl2 = GameUtil.rollLevelScaledChance(bl, n, player.getSkillManager().getCurrentLevels()[17]);
+        ItemStack itemStack = ((PickpocketDefinition)((Object)string)).getRareRewards() != null && GameUtil.randomInclusive(30) == 0 ? ((PickpocketDefinition)((Object)string)).getRareRewards()[GameUtil.randomExclusive(((PickpocketDefinition)((Object)string)).getRareRewards().length)] : ((PickpocketDefinition)((Object)string)).getCommonRewards()[GameUtil.randomExclusive(((PickpocketDefinition)((Object)string)).getCommonRewards().length)];
         itemStack = new ItemStack(itemStack.getId(), itemStack.getAmount());
-        n2 = GameUtil.b(((PickpocketDefinition)((Object)string)).getMinDamage(), ((PickpocketDefinition)((Object)string)).getMaxDamage());
-        player.n(true);
+        n2 = GameUtil.randomBetweenInclusive(((PickpocketDefinition)((Object)string)).getMinDamage(), ((PickpocketDefinition)((Object)string)).getMaxDamage());
+        player.setActionLocked(true);
         player.getUpdateState().setAnimation(881);
         object2 = player;
         object2.packetSender.sendGameMessage("You attempt to pick the " + string2 + "'s pocket.");
@@ -143,7 +143,7 @@ public class CombatAction {
             if (this.attacker.isNpc() && this.hitDefinition.getAttackStyle().getCombatType() == CombatType.MELEE) {
                 this.damage = CombatManager.calculateMeleeMaxHit(this.getAttacker(), null);
             }
-            this.damage = GameUtil.g(this.damage);
+            this.damage = GameUtil.randomInclusive(this.damage);
         }
         if (this.hitDefinition.getMinimumDamage() != -1 && this.damage < this.hitDefinition.getMinimumDamage()) {
             this.damage = this.hitDefinition.getMinimumDamage();
@@ -154,20 +154,20 @@ public class CombatAction {
             double d3;
             CombatAction combatAction = this;
             this.hitSuccessful = true;
-            if (combatAction.attacker != null && GameUtil.g(4) == 0) {
-                if (combatAction.attacker.isPlayer() && ((Player)combatAction.attacker).dP() || combatAction.attacker.isNpc() && ((Npc)combatAction.attacker).getDefinition().getId() == 2027) {
+            if (combatAction.attacker != null && GameUtil.randomInclusive(4) == 0) {
+                if (combatAction.attacker.isPlayer() && ((Player)combatAction.attacker).isGuthanSetEffectActive() || combatAction.attacker.isNpc() && ((Npc)combatAction.attacker).getDefinition().getId() == 2027) {
                     combatAction.hitDefinition.setSpecialEffectId(7);
-                } else if (combatAction.attacker.isPlayer() && ((Player)combatAction.attacker).dO() || combatAction.attacker.isNpc() && ((Npc)combatAction.attacker).getDefinition().getId() == 2029) {
+                } else if (combatAction.attacker.isPlayer() && ((Player)combatAction.attacker).isToragSetEffectActive() || combatAction.attacker.isNpc() && ((Npc)combatAction.attacker).getDefinition().getId() == 2029) {
                     combatAction.hitDefinition.setSpecialEffectId(8);
-                } else if (combatAction.attacker.isPlayer() && ((Player)combatAction.attacker).dM() || combatAction.attacker.isNpc() && ((Npc)combatAction.attacker).getDefinition().getId() == 2025) {
+                } else if (combatAction.attacker.isPlayer() && ((Player)combatAction.attacker).isAhrimSetEffectActive() || combatAction.attacker.isNpc() && ((Npc)combatAction.attacker).getDefinition().getId() == 2025) {
                     combatAction.hitDefinition.setSpecialEffectId(9);
-                } else if (combatAction.attacker.isPlayer() && ((Player)combatAction.attacker).dN() || combatAction.attacker.isNpc() && ((Npc)combatAction.attacker).getDefinition().getId() == 2028) {
+                } else if (combatAction.attacker.isPlayer() && ((Player)combatAction.attacker).isKarilSetEffectActive() || combatAction.attacker.isNpc() && ((Npc)combatAction.attacker).getDefinition().getId() == 2028) {
                     combatAction.hitDefinition.setSpecialEffectId(10);
-                } else if (combatAction.attacker.isPlayer() && ((Player)combatAction.attacker).dQ() || combatAction.attacker.isNpc() && ((Npc)combatAction.attacker).getDefinition().getId() == 2030) {
+                } else if (combatAction.attacker.isPlayer() && ((Player)combatAction.attacker).isVeracSetEffectActive() || combatAction.attacker.isNpc() && ((Npc)combatAction.attacker).getDefinition().getId() == 2030) {
                     combatAction.hitDefinition.setSpecialEffectId(11);
                 }
             }
-            if (combatAction.attacker != null && (combatAction.attacker.isPlayer() && ((Player)combatAction.attacker).dL() || combatAction.attacker.isNpc() && ((Npc)combatAction.attacker).getDefinition().getId() == 2026)) {
+            if (combatAction.attacker != null && (combatAction.attacker.isPlayer() && ((Player)combatAction.attacker).isDharokSetEffectActive() || combatAction.attacker.isNpc() && ((Npc)combatAction.attacker).getDefinition().getId() == 2026)) {
                 d3 = combatAction.attacker.getMaxHitpoints();
                 d2 = combatAction.attacker.getCurrentHitpoints();
                 d = 1.0 + (d3 - d2) / 100.0 * (d3 / 100.0);
@@ -451,7 +451,7 @@ public class CombatAction {
                                 }
                             }
                         }
-                        if ((n6 = GameUtil.h(n4 + 1) - n5) < 0) {
+                        if ((n6 = GameUtil.randomInt(n4 + 1) - n5) < 0) {
                             n6 = 0;
                         }
                         n3 = n6;
@@ -459,8 +459,8 @@ public class CombatAction {
                     n2 = n3;
                 } else {
                     Player player = (Player)combatAction.target;
-                    if (player.cfr_renamed_0()[12]) {
-                        n2 = GameUtil.h(21);
+                    if (player.getActivePrayers()[12]) {
+                        n2 = GameUtil.randomInt(21);
                     }
                 }
                 if (n2 != -1) {
@@ -493,7 +493,7 @@ public class CombatAction {
         this.delay = this.hitDefinition.calculateDelay(this.attacker != null ? this.attacker.getPosition() : null, this.target.getPosition());
         CombatManager.getInstance().queueAction(this);
         if (this.target != null && this.attacker != null) {
-            n = this.attacker.isPlayer() ? ((Player)this.attacker).getQuestManager().b(this.attacker, this.target) : ((Player)this.target).getQuestManager().b(this.attacker, this.target);
+            n = this.attacker.isPlayer() ? ((Player)this.attacker).getQuestManager().getQuestDamageOverride(this.attacker, this.target) : ((Player)this.target).getQuestManager().getQuestDamageOverride(this.attacker, this.target);
             if (this.attacker.isInMageArena() && this.hitDefinition.getAttackStyle().getCombatType() != CombatType.MAGIC) {
                 n = 0;
             }
@@ -514,23 +514,23 @@ public class CombatAction {
             }
             if (this.attacker.isPlayer()) {
                 entity = (Player)this.getAttacker();
-                if (this.hitDefinition.getSpell() == SpellDefinition.SARADOMIN_STRIKE && ((Player)entity).dM > 0) {
-                    --((Player)entity).dM;
-                    if (((Player)entity).dM == 0) {
+                if (this.hitDefinition.getSpell() == SpellDefinition.SARADOMIN_STRIKE && ((Player)entity).mageArenaSaradominStrikeCastsRemaining > 0) {
+                    --((Player)entity).mageArenaSaradominStrikeCastsRemaining;
+                    if (((Player)entity).mageArenaSaradominStrikeCastsRemaining == 0) {
                         entity2 = entity;
                         ((Player)entity2).packetSender.sendGameMessage("You can now cast Saradomin Strike outside the Arena.");
                     }
                 }
-                if (this.hitDefinition.getSpell() == SpellDefinition.FLAMES_OF_ZAMORAK && ((Player)entity).dK > 0) {
-                    --((Player)entity).dK;
-                    if (((Player)entity).dK == 0) {
+                if (this.hitDefinition.getSpell() == SpellDefinition.FLAMES_OF_ZAMORAK && ((Player)entity).mageArenaFlamesOfZamorakCastsRemaining > 0) {
+                    --((Player)entity).mageArenaFlamesOfZamorakCastsRemaining;
+                    if (((Player)entity).mageArenaFlamesOfZamorakCastsRemaining == 0) {
                         entity2 = entity;
                         ((Player)entity2).packetSender.sendGameMessage("You can now cast Flames of Zamorak outside the Arena.");
                     }
                 }
-                if (this.hitDefinition.getSpell() == SpellDefinition.CLAWS_OF_GUTHIX && ((Player)entity).dL > 0) {
-                    --((Player)entity).dL;
-                    if (((Player)entity).dL == 0) {
+                if (this.hitDefinition.getSpell() == SpellDefinition.CLAWS_OF_GUTHIX && ((Player)entity).mageArenaClawsOfGuthixCastsRemaining > 0) {
+                    --((Player)entity).mageArenaClawsOfGuthixCastsRemaining;
+                    if (((Player)entity).mageArenaClawsOfGuthixCastsRemaining == 0) {
                         entity2 = entity;
                         ((Player)entity2).packetSender.sendGameMessage("You can now cast Claws of Guthix outside the Arena.");
                     }
@@ -565,13 +565,13 @@ public class CombatAction {
                 if (player.getRingOfRecoilLife() <= 0) {
                     entity2 = player;
                     ((Player)entity2).packetSender.sendGameMessage("Your ring shatters!");
-                    player.getEquipmentManager().c(12, 1);
+                    player.getEquipmentManager().consumeSlotItemAmount(12, 1);
                     player.setRingOfRecoilLife(40);
                 }
             }
         }
         if (this.attacker != null && this.attacker.isPlayer()) {
-            DegradableEquipmentHandler.a((Player)this.attacker);
+            DegradableEquipmentHandler.degradeEquipmentAfterCombat((Player)this.attacker);
         }
     }
 
@@ -597,7 +597,7 @@ public class CombatAction {
                     ((Player)object4).packetSender.sendSoundEffect(69, 1, 0);
                 } else {
                     object4 = object2;
-                    ((Player)object4).packetSender.sendSoundEffect(((Player)object2).dW(), 1, 0);
+                    ((Player)object4).packetSender.sendSoundEffect(((Player)object2).getBlockSoundId(), 1, 0);
                 }
                 if (this.hitDefinition.getAttackStyle() != null && this.hitDefinition.getAttackStyle().getCombatType() == CombatType.MAGIC) {
                     object4 = object2;
@@ -605,7 +605,7 @@ public class CombatAction {
                 }
                 if (this.attacker != null && this.attacker.isPlayer()) {
                     object4 = object = (Player)this.getAttacker();
-                    ((Player)object).packetSender.sendSoundEffect(((Player)object2).dW(), 1, 0);
+                    ((Player)object).packetSender.sendSoundEffect(((Player)object2).getBlockSoundId(), 1, 0);
                     if (this.hitDefinition.getAttackStyle() != null && this.hitDefinition.getAttackStyle().getCombatType() == CombatType.MAGIC) {
                         object4 = object;
                         ((Player)object4).packetSender.sendSoundEffect(this.hitDefinition.getImpactSoundId(), 1, 0);
@@ -666,7 +666,7 @@ public class CombatAction {
         Object object;
         Object object2;
         Object object32;
-        if (this.hitDefinition.getDroppedAmmunition() != null && this.attacker != null && this.attacker.isPlayer() && this.hitDefinition.getChainedTargets().isEmpty() && ((Player)(object32 = (Player)this.attacker)).dK() && GameUtil.h(5) > 0) {
+        if (this.hitDefinition.getDroppedAmmunition() != null && this.attacker != null && this.attacker.isPlayer() && this.hitDefinition.getChainedTargets().isEmpty() && ((Player)(object32 = (Player)this.attacker)).isAmmunitionDropsEnabled() && GameUtil.randomInt(5) > 0) {
             object2 = new GroundItem(new ItemStack(this.hitDefinition.getDroppedAmmunition().getId(), this.hitDefinition.getDroppedAmmunition().getAmount()), (Entity)object32, this.target.getPosition().copy());
             GroundItemManager.getInstance().spawn((GroundItem)object2);
         }
@@ -707,8 +707,8 @@ public class CombatAction {
             }
         }
         if (this.hitDefinition.getSpell() != null && this.hitDefinition.getSpell() == SpellDefinition.MELZAR_CABBAGE_SPELL) {
-            int n = 2927 + GameUtil.h(3);
-            int n2 = 9648 + GameUtil.h(3);
+            int n = 2927 + GameUtil.randomInt(3);
+            int n2 = 9648 + GameUtil.randomInt(3);
             GroundItemManager.getInstance().spawn(new GroundItem(new ItemStack(1965, 1), this.attacker, this.target, new Position(n, n2, 0)));
             if (this.target.isPlayer()) {
                 Player player = (Player)this.target;
@@ -812,7 +812,7 @@ public class CombatAction {
                 if (player.getEquipmentManager().getItemIdAtSlot(5) == 11283 || player2.getEquipmentManager().getItemIdAtSlot(5) == 11284 || player2.getEquipmentManager().getItemIdAtSlot(5) == 2890) {
                     object = player;
                     ((Player)object).packetSender.sendGameMessage("Your shield absorbs most of the wyvern's icy breath!");
-                    this.damage = GameUtil.h(11);
+                    this.damage = GameUtil.randomInt(11);
                 }
             }
             if ((this.hitDefinition.getAttackStyle().getXpMode() == AttackXpMode.DRAGONFIRE || this.hitDefinition.getAttackStyle().getXpMode() == AttackXpMode.DRAGONFIRE_FAR || this.hitDefinition.getAttackStyle().getXpMode() == AttackXpMode.KBD_SPECIAL) && this.target.isNpc()) {
@@ -912,7 +912,7 @@ public class CombatAction {
             }
             damageContribution.addDamage(this.damage);
             this.target.getDamageContributions().add(damageContribution);
-            if (this.attacker.isPlayer() && (player = (Player)this.attacker).cfr_renamed_0()[17] && this.target.isPlayer()) {
+            if (this.attacker.isPlayer() && (player = (Player)this.attacker).getActivePrayers()[17] && this.target.isPlayer()) {
                 PrayerManager.drainPrayerForSmite((Player)this.target, this.damage);
             }
         }
@@ -922,13 +922,13 @@ public class CombatAction {
             Player player = (Player)this.target;
             if (n4 > 0 && n4 < (n7 = (int)Math.ceil((double)this.target.getMaxHitpoints() * 0.1))) {
                 ItemStack itemStack;
-                if (player.cfr_renamed_0()[16]) {
+                if (player.getActivePrayers()[16]) {
                     PrayerManager.triggerRedemption(player, this.target, n4);
                 }
                 if ((itemStack = player.getEquipmentManager().getContainer().getItemAt(12)) != null && itemStack.getId() == 2570 && player.getTeleportManager().b(TeleportManager.a)) {
                     Player player3 = player;
                     player3.packetSender.sendGameMessage("Your ring shatters!");
-                    player.getEquipmentManager().c(12, 1);
+                    player.getEquipmentManager().consumeSlotItemAmount(12, 1);
                 }
             }
         }

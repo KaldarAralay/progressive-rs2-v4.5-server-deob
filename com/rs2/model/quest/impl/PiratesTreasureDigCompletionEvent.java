@@ -28,13 +28,13 @@ extends CycleEvent {
         }
         Player player = this.b;
         player.packetSender.sendGameMessage("and find the treasure.");
-        this.a.c(this.b);
+        this.a.awardCompletionRewards(this.b);
         cycleEventContainer.stop();
     }
 
     @Override
     public final void onStop() {
-        this.b.aN();
+        this.b.resetAnimation();
     }
 }
 

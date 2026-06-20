@@ -20,9 +20,9 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        this.b.n(false);
+        this.b.setActionLocked(false);
         GertrudeRewardFoodTask gertrudeRewardFoodTask = this.a;
-        gertrudeRewardFoodTask.a.c(this.b);
+        gertrudeRewardFoodTask.a.awardCompletionRewards(this.b);
         this.stop();
     }
 }

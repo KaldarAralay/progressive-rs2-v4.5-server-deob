@@ -16,19 +16,19 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        EnchantmentChamberController.b(EnchantmentChamberController.e()[EnchantmentChamberController.b.nextInt(EnchantmentChamberController.e().length)]);
-        Player[] playerArray = World.f();
+        EnchantmentChamberController.setCurrentBonusColor(EnchantmentChamberController.getBonusColorNames()[EnchantmentChamberController.random.nextInt(EnchantmentChamberController.getBonusColorNames().length)]);
+        Player[] playerArray = World.getPlayers();
         int n = playerArray.length;
         int n2 = 0;
         while (n2 < n) {
             Player player = playerArray[n2];
-            if (player != null && player.getEnchantmentChamberController().c()) {
-                player.getEnchantmentChamberController().a(EnchantmentChamberController.f());
+            if (player != null && player.getEnchantmentChamberController().isInsideChamber()) {
+                player.getEnchantmentChamberController().refreshBonusColorIndicator(EnchantmentChamberController.getCurrentBonusColor());
             }
             ++n2;
         }
-        if (EnchantmentChamberController.a() != null) {
-            EnchantmentChamberController.a().getUpdateState().setForcedTextAndMarkUpdated("The color shape is now " + EnchantmentChamberController.f() + "!");
+        if (EnchantmentChamberController.findEnchantmentGuardianNpc() != null) {
+            EnchantmentChamberController.findEnchantmentGuardianNpc().getUpdateState().setForcedTextAndMarkUpdated("The color shape is now " + EnchantmentChamberController.getCurrentBonusColor() + "!");
         }
     }
 }

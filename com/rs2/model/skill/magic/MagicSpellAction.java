@@ -183,7 +183,7 @@ extends CycleEvent {
         boolean bl2;
         Object[] objectArray;
         if (!(this.player.isCurrentActionSequence(this.d) && this.validateRequirements() && this.prepareCast())) {
-            this.player.aS();
+            this.player.clearPendingCropResurrectionTarget();
             this.onStop();
             return;
         }
@@ -216,7 +216,7 @@ extends CycleEvent {
             bl = false;
             while (bl < bl2) {
                 object = objectArray[bl];
-                this.player.getInventoryManager().b((ItemStack)object);
+                this.player.getInventoryManager().addOrDropItem((ItemStack)object);
                 bl += 1;
             }
         }
@@ -225,27 +225,27 @@ extends CycleEvent {
             double d = ((MagicSpellAction)object).player.getSkillManager().getCurrentLevels()[6];
             double d2 = d - 78.0;
             double d3 = 50.0 + 25.0 * (d2 / 21.0);
-            boolean bl3 = bl = (double)GameUtil.h(100) <= d3;
-            if (((MagicSpellAction)object).player.dt.equals("allotment")) {
+            boolean bl3 = bl = (double)GameUtil.randomInt(100) <= d3;
+            if (((MagicSpellAction)object).player.pendingCropResurrectionPatchType.equals("allotment")) {
                 ((MagicSpellAction)object).player.getAllotmentPatchManager().finishResurrection(bl);
-            } else if (((MagicSpellAction)object).player.dt.equals("herb")) {
+            } else if (((MagicSpellAction)object).player.pendingCropResurrectionPatchType.equals("herb")) {
                 ((MagicSpellAction)object).player.getHerbPatchManager().finishResurrection(bl);
-            } else if (((MagicSpellAction)object).player.dt.equals("flower")) {
+            } else if (((MagicSpellAction)object).player.pendingCropResurrectionPatchType.equals("flower")) {
                 ((MagicSpellAction)object).player.getFlowerPatchManager().finishResurrection(bl);
-            } else if (((MagicSpellAction)object).player.dt.equals("bush")) {
+            } else if (((MagicSpellAction)object).player.pendingCropResurrectionPatchType.equals("bush")) {
                 ((MagicSpellAction)object).player.getBushPatchManager().finishResurrection(bl);
-            } else if (((MagicSpellAction)object).player.dt.equals("fruittree")) {
+            } else if (((MagicSpellAction)object).player.pendingCropResurrectionPatchType.equals("fruittree")) {
                 ((MagicSpellAction)object).player.getFruitTreePatchManager().finishResurrection(bl);
-            } else if (((MagicSpellAction)object).player.dt.equals("hops")) {
+            } else if (((MagicSpellAction)object).player.pendingCropResurrectionPatchType.equals("hops")) {
                 ((MagicSpellAction)object).player.getHopsPatchManager().finishResurrection(bl);
-            } else if (((MagicSpellAction)object).player.dt.equals("special1")) {
+            } else if (((MagicSpellAction)object).player.pendingCropResurrectionPatchType.equals("special1")) {
                 ((MagicSpellAction)object).player.getSpecialTreePatchManager().finishResurrection(bl);
-            } else if (((MagicSpellAction)object).player.dt.equals("special2")) {
+            } else if (((MagicSpellAction)object).player.pendingCropResurrectionPatchType.equals("special2")) {
                 ((MagicSpellAction)object).player.getSpecialCropPatchManager().finishResurrection(bl);
-            } else if (((MagicSpellAction)object).player.dt.equals("tree")) {
+            } else if (((MagicSpellAction)object).player.pendingCropResurrectionPatchType.equals("tree")) {
                 ((MagicSpellAction)object).player.getTreePatchManager().finishResurrection(bl);
             }
-            ((MagicSpellAction)object).player.aS();
+            ((MagicSpellAction)object).player.clearPendingCropResurrectionTarget();
         }
     }
 
@@ -286,7 +286,7 @@ extends CycleEvent {
                 n2 = n3;
                 n = n5;
                 object = player;
-                if ((((Player)object).getAllotmentPatchManager().startResurrection(n, n2) ? true : (((Player)object).getFlowerPatchManager().startResurrection(n, n2) ? true : (((Player)object).getHerbPatchManager().startResurrection(n, n2) ? true : (((Player)object).getHopsPatchManager().startResurrection(n, n2) ? true : (((Player)object).getBushPatchManager().startResurrection(n, n2) ? true : (((Player)object).getTreePatchManager().startResurrection(n, n2) ? true : (((Player)object).getFruitTreePatchManager().startResurrection(n, n2) ? true : (((Player)object).getSpecialTreePatchManager().startResurrection(n, n2) ? true : ((Player)object).getSpecialCropPatchManager().startResurrection(n, n2))))))))) && player.ds != -1) {
+                if ((((Player)object).getAllotmentPatchManager().startResurrection(n, n2) ? true : (((Player)object).getFlowerPatchManager().startResurrection(n, n2) ? true : (((Player)object).getHerbPatchManager().startResurrection(n, n2) ? true : (((Player)object).getHopsPatchManager().startResurrection(n, n2) ? true : (((Player)object).getBushPatchManager().startResurrection(n, n2) ? true : (((Player)object).getTreePatchManager().startResurrection(n, n2) ? true : (((Player)object).getFruitTreePatchManager().startResurrection(n, n2) ? true : (((Player)object).getSpecialTreePatchManager().startResurrection(n, n2) ? true : ((Player)object).getSpecialCropPatchManager().startResurrection(n, n2))))))))) && player.pendingCropResurrectionPatchIndex != -1) {
                     super.executeImmediateCast();
                     return true;
                 }
@@ -421,16 +421,16 @@ extends CycleEvent {
             return false;
         }
         if (Spellbook.getAutocastSpellForButtonId(player, n) != null && n != 349) {
-            player.b(Spellbook.getAutocastSpellForButtonId(player, n));
+            player.setAutocastSpell(Spellbook.getAutocastSpellForButtonId(player, n));
             return true;
         }
         switch (n) {
             case 349: {
-                if (player.ee()) {
+                if (player.isAutocastEnabled()) {
                     return true;
                 }
-                if (player.ed() != null) {
-                    player.v(!player.ee());
+                if (player.getAutocastSpell() != null) {
+                    player.setAutocastEnabled(!player.isAutocastEnabled());
                 } else {
                     player.packetSender.sendGameMessage("You haven't selected a spell to autocast!");
                 }
@@ -465,7 +465,7 @@ extends CycleEvent {
      * Unable to fully structure code
      */
     public final boolean castSuperheatItem(int var1_1) {
-        if (!this.player.getSkillManager().f(1200)) {
+        if (!this.player.getSkillManager().tryStartActionDelay(1200)) {
             return false;
         }
         var4_6 = MagicSpellAction.superheatItemTable;
@@ -524,7 +524,7 @@ extends CycleEvent {
     }
 
     public final boolean castNecromancyReanimation(int n, int n2) {
-        if (!this.player.getSkillManager().f(1200)) {
+        if (!this.player.getSkillManager().tryStartActionDelay(1200)) {
             return false;
         }
         if (n != necromancyReanimationTable[n2][0]) {
@@ -541,17 +541,17 @@ extends CycleEvent {
                 return false;
             }
         }
-        this.player.n(true);
+        this.player.setActionLocked(true);
         object = new NecromancyReanimateTask(this, 2, n2);
         World.getTaskScheduler().schedule((TickTask)object);
         return true;
     }
 
     public final boolean castEnchantJewelry(int n, int n2) {
-        if (!this.player.getSkillManager().f(1200)) {
+        if (!this.player.getSkillManager().tryStartActionDelay(1200)) {
             return false;
         }
-        if (!this.player.getEnchantmentChamberController().c()) {
+        if (!this.player.getEnchantmentChamberController().isInsideChamber()) {
             int n3;
             if (n == enchantJewelryTable[n2][0]) {
                 n3 = 0;
@@ -589,12 +589,12 @@ extends CycleEvent {
             packetSender.sendGameMessage(stringBuilder.append(ItemService.getItemName(enchantJewelryTable[n2][n3])).append(".").toString());
         } else {
             this.player.getEnchantmentChamberController();
-            if (!EnchantmentChamberController.b(n)) {
+            if (!EnchantmentChamberController.isEnchantableChamberItem(n)) {
                 Player player = this.player;
                 player.packetSender.sendGameMessage("You cannot enchant this item with this spell.");
                 return false;
             }
-            this.player.getEnchantmentChamberController().a(n2, n);
+            this.player.getEnchantmentChamberController().enchantChamberItem(n2, n);
         }
         Player player = this.player;
         player.packetSender.selectMagicSidebarTab(6);
@@ -602,15 +602,15 @@ extends CycleEvent {
     }
 
     public final boolean castBonesToFruit(boolean bl) {
-        if (!this.player.getSkillManager().f(1200)) {
+        if (!this.player.getSkillManager().tryStartActionDelay(1200)) {
             return false;
         }
-        if (bl && !this.player.df) {
+        if (bl && !this.player.bonesToPeachesUnlocked) {
             Player player = this.player;
             player.packetSender.sendGameMessage("You need to unlock this spell at Mage Training Arena!");
             return false;
         }
-        if (!this.player.getCreatureGraveyardController().a()) {
+        if (!this.player.getCreatureGraveyardController().isInsideGraveyard()) {
             int player = bl ? 6883 : 1963;
             boolean bl2 = false;
             ItemStack[] itemStackArray = this.player.getInventoryManager().getContainer().getItems();
@@ -630,14 +630,14 @@ extends CycleEvent {
                 player2.packetSender.sendGameMessage("You don't have any bones to convert into fruits.");
                 return false;
             }
-        } else if (!this.player.getCreatureGraveyardController().a(bl)) {
+        } else if (!this.player.getCreatureGraveyardController().convertBonesToFruit(bl)) {
             return false;
         }
         return true;
     }
 
     public static boolean sendTeleotherRequest(Player player, Player player2, TeleotherDestination teleotherDestination) {
-        if (!player.getSkillManager().f(1200)) {
+        if (!player.getSkillManager().tryStartActionDelay(1200)) {
             return false;
         }
         if (player.gameMode != 0) {
@@ -687,20 +687,20 @@ extends CycleEvent {
         block15: {
             block14: {
                 block13: {
-                    if (!player.getSkillManager().f(n4)) {
+                    if (!player.getSkillManager().tryStartActionDelay(n4)) {
                         return false;
                     }
-                    if (player.getAlchemistPlaygroundController().b()) {
+                    if (player.getAlchemistPlaygroundController().isInsidePlayground()) {
                         player.getAlchemistPlaygroundController();
-                        if (!AlchemistPlaygroundController.a(n)) {
+                        if (!AlchemistPlaygroundController.isAlchemistItem(n)) {
                             Player player2 = player;
                             player2.packetSender.sendGameMessage("You can't alch this item here.");
                             return false;
                         }
                     }
-                    if (!new ItemStack(n).getDefinition().z()) break block13;
+                    if (!new ItemStack(n).getDefinition().isUntradeable()) break block13;
                     player.getAlchemistPlaygroundController();
-                    if (!AlchemistPlaygroundController.a(n)) break block14;
+                    if (!AlchemistPlaygroundController.isAlchemistItem(n)) break block14;
                 }
                 if (n != 995) break block15;
             }
@@ -730,13 +730,13 @@ extends CycleEvent {
         player5.packetSender.lockPlayerForTicks(2);
         player5 = player;
         player5.packetSender.selectMagicSidebarTab(6);
-        if (!player.getAlchemistPlaygroundController().b()) {
+        if (!player.getAlchemistPlaygroundController().isInsidePlayground()) {
             player.getInventoryManager().removeItem(new ItemStack(n, 1));
             if (n3 > 0) {
                 player.getInventoryManager().addItem(new ItemStack(995, n3));
             }
         } else {
-            player.getAlchemistPlaygroundController().b(n);
+            player.getAlchemistPlaygroundController().alchemizeItem(n);
         }
         return true;
     }

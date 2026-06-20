@@ -206,12 +206,12 @@ public final class TreasureTrailManager {
     }
 
     public static void advanceOrCompleteTrail(Player player, int n, String string, boolean bl, String string2) {
-        Npc npc = World.g()[player.getInteractionTargetIndex()];
+        Npc npc = World.getNpcs()[player.getInteractionTargetIndex()];
         player.getDialogueManager().setDialogueNpcId(npc != null ? npc.getNpcId() : 0);
         player.av = new ItemStack[25];
         switch (n) {
             case 1: {
-                if (player.ar > 0 && GameUtil.g(6) == 0 || player.ar >= 3) {
+                if (player.ar > 0 && GameUtil.randomInclusive(6) == 0 || player.ar >= 3) {
                     if (bl) {
                         DialogueManager.a(player, 10009, 1);
                         player.getDialogueManager().showNpcOneLineDialogue(string2, 588);
@@ -226,7 +226,7 @@ public final class TreasureTrailManager {
                 return;
             }
             case 2: {
-                if (player.ar >= 2 && GameUtil.g(6) == 0 || player.ar >= 4) {
+                if (player.ar >= 2 && GameUtil.randomInclusive(6) == 0 || player.ar >= 4) {
                     if (bl) {
                         DialogueManager.a(player, 10009, 1);
                         player.getDialogueManager().showNpcOneLineDialogue(string2, 588);
@@ -241,7 +241,7 @@ public final class TreasureTrailManager {
                 return;
             }
             case 3: {
-                if (player.ar >= 3 && GameUtil.g(6) == 0 || player.ar >= 5) {
+                if (player.ar >= 3 && GameUtil.randomInclusive(6) == 0 || player.ar >= 5) {
                     if (bl) {
                         DialogueManager.a(player, 10009, 1);
                         player.getDialogueManager().showNpcOneLineDialogue(string2, 588);
@@ -275,7 +275,7 @@ public final class TreasureTrailManager {
                 return;
             }
         }
-        player.getInventoryManager().b(new ItemStack(TreasureTrailManager.randomClueItemForLevel(n), 1));
+        player.getInventoryManager().addOrDropItem(new ItemStack(TreasureTrailManager.randomClueItemForLevel(n), 1));
         String string = player.ar > 1 ? "steps" : "step";
         Player player2 = player;
         player2.packetSender.sendGameMessage("You have completed " + player.ar + " " + string + " so far.");
@@ -323,8 +323,8 @@ public final class TreasureTrailManager {
         while (n4 < itemStackArray.length) {
             object[n4] = itemStackArray[n4].getId();
             nArray[n4] = itemStackArray[n4].getAmount();
-            player.getInventoryManager().b(new ItemStack(object[n4], nArray[n4]));
-            int n5 = GrandExchangeManager.a(object[n4]);
+            player.getInventoryManager().addOrDropItem(new ItemStack(object[n4], nArray[n4]));
+            int n5 = GrandExchangeManager.getGuidePrice(object[n4]);
             n3 += n5 * nArray[n4];
             ++n4;
         }
@@ -333,7 +333,7 @@ public final class TreasureTrailManager {
         player2.packetSender.sendGameMessage("Well done, you've completed the Treasure Trail! (" + player.ar + " " + (player.ar < 2 ? "step" : "steps") + ")");
         Player player3 = player;
         object = player3;
-        player3.packetSender.sendGameMessage("Your treasure is worth around " + GameUtil.j(n3) + " coins!");
+        player3.packetSender.sendGameMessage("Your treasure is worth around " + GameUtil.formatNumber(n3) + " coins!");
         player.ar = 0;
         player.av = new ItemStack[25];
         Player player4 = player;
@@ -358,18 +358,18 @@ public final class TreasureTrailManager {
         } else if (n == 3) {
             n3 = 4;
         }
-        n3 += GameUtil.h(3);
+        n3 += GameUtil.randomInt(3);
         int n4 = 0;
         while (n4 < n3) {
             n2 = n;
             ItemStack[] itemStackArray2 = itemStackArray;
             ItemStack[] itemStackArray3 = null;
             if (n2 == 1) {
-                itemStackArray3 = NpcDropManager.a((Entity)itemStackArray2, 6420, false);
+                itemStackArray3 = NpcDropManager.rollDrops((Entity)itemStackArray2, 6420, false);
             } else if (n2 == 2) {
-                itemStackArray3 = NpcDropManager.a((Entity)itemStackArray2, 6421, false);
+                itemStackArray3 = NpcDropManager.rollDrops((Entity)itemStackArray2, 6421, false);
             } else if (n2 == 3) {
-                itemStackArray3 = NpcDropManager.a((Entity)itemStackArray2, 6422, false);
+                itemStackArray3 = NpcDropManager.rollDrops((Entity)itemStackArray2, 6422, false);
             }
             itemStackArray2 = itemStackArray3;
             n2 = 0;
@@ -442,7 +442,7 @@ public final class TreasureTrailManager {
                     if (!ItemDefinition.isDefined(n)) continue;
                     arrayList.add(n);
                 }
-                return (Integer)arrayList.get(GameUtil.g(arrayList.size() - 1));
+                return (Integer)arrayList.get(GameUtil.randomInclusive(arrayList.size() - 1));
             }
             case 2: {
                 ((ArrayList)((Object)iterator)).add(GameplayHelper.e(2));
@@ -456,7 +456,7 @@ public final class TreasureTrailManager {
                     if (!ItemDefinition.isDefined(n)) continue;
                     arrayList.add(n);
                 }
-                return (Integer)arrayList.get(GameUtil.g(arrayList.size() - 1));
+                return (Integer)arrayList.get(GameUtil.randomInclusive(arrayList.size() - 1));
             }
             case 3: {
                 ((ArrayList)((Object)iterator)).add(GameplayHelper.e(3));
@@ -471,7 +471,7 @@ public final class TreasureTrailManager {
                     if (!ItemDefinition.isDefined(n)) continue;
                     arrayList.add(n);
                 }
-                return (Integer)arrayList.get(GameUtil.g(arrayList.size() - 1));
+                return (Integer)arrayList.get(GameUtil.randomInclusive(arrayList.size() - 1));
             }
         }
         return -1;

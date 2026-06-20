@@ -34,11 +34,11 @@ extends CycleEvent {
         }
         FlowerPatchManager.a(this.manager, this.patch.getIndex());
         this.manager.growthStages[this.patch.getIndex()] = 3;
-        this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.e();
+        this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.getElapsedMinutes();
         FlowerPatchManager.getPlayer(this.manager).getUpdateState().setAnimation(830);
         Player player = FlowerPatchManager.getPlayer(this.manager);
         player.packetSender.sendGameMessage("You harvest the crop.");
-        FlowerPatchManager.getPlayer(this.manager).getInventoryManager().b(new ItemStack(this.definition.getProduceItemId(), this.definition.getProduceItemId() == 1973 || this.definition.getProduceItemId() == 225 ? 3 : 1));
+        FlowerPatchManager.getPlayer(this.manager).getInventoryManager().addOrDropItem(new ItemStack(this.definition.getProduceItemId(), this.definition.getProduceItemId() == 1973 || this.definition.getProduceItemId() == 225 ? 3 : 1));
         FlowerPatchManager.getPlayer(this.manager).getSkillManager().addExperience(19, this.definition.getHarvestExperience());
         cycleEventContainer.stop();
     }
@@ -46,7 +46,7 @@ extends CycleEvent {
     @Override
     public final void onStop() {
         this.manager.refreshConfig();
-        FlowerPatchManager.getPlayer(this.manager).aN();
+        FlowerPatchManager.getPlayer(this.manager).resetAnimation();
     }
 }
 

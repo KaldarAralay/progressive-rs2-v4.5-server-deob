@@ -21,7 +21,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        if (this.player.isDead() || !this.player.bW() || !this.player.currentBotTask.usesCustomTaskAction || !this.player.botTaskState.equals("do task")) {
+        if (this.player.isDead() || !this.player.isRegistered() || !this.player.currentBotTask.usesCustomTaskAction || !this.player.botTaskState.equals("do task")) {
             this.stop();
             return;
         }
@@ -29,7 +29,7 @@ extends TickTask {
             if (this.player.N <= 0) {
                 if (this.player.botShopBuyMode == 1) {
                     ItemStack itemStack = new ItemStack(this.player.botTaskItemId, this.player.botShopItemAmount);
-                    ShopManager.a(this.player, itemStack);
+                    ShopManager.buyItemStack(this.player, itemStack);
                     return;
                 }
                 if (this.player.botShopSellItemIds.size() != 0) {
@@ -39,20 +39,20 @@ extends TickTask {
                     while (n2 < n) {
                         ItemStack itemStack = itemStackArray[n2];
                         if (itemStack != null && this.player.botShopSellItemIds.contains(itemStack.getDefinition().getUnnotedId())) {
-                            ShopManager.b(this.player, itemStack);
+                            ShopManager.sellItemStack(this.player, itemStack);
                         }
                         ++n2;
                     }
                     return;
                 }
                 ItemStack itemStack = new ItemStack(this.player.botTaskItemId, this.player.botShopItemAmount);
-                ShopManager.b(this.player, itemStack);
+                ShopManager.sellItemStack(this.player, itemStack);
                 return;
             }
             --this.player.N;
             return;
         }
-        this.player.N = 3 + GameUtil.h(3);
+        this.player.N = 3 + GameUtil.randomInt(3);
         this.player.botInteractionOption = 2;
         this.player.interactWithBotNpcTargets(this.player.botInteractionTargetIds);
     }

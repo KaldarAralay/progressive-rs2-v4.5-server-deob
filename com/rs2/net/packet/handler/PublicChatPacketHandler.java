@@ -20,7 +20,7 @@ implements PacketHandler {
         byte[] byArray = ((IncomingPacket)object).getReader().readBytesReverse(n3, ByteTransform.ADD);
         object = byArray;
         String string = ChatTextCodec.decode(byArray, n3);
-        if (player.eP()) {
+        if (player.isMuted()) {
             object = player;
             ((Player)object).packetSender.sendGameMessage("You are muted and cannot talk. Mute expires in: " + (GameplayHelper.b(System.currentTimeMillis(), player.getMuteExpires()) + 1) + " hours.");
             return;
@@ -32,14 +32,14 @@ implements PacketHandler {
         player.setPublicChatColor(n2);
         player.setPublicChatPayload((byte[])object);
         player.flagAppearanceUpdate(true);
-        if (!player.de) {
+        if (!player.isBot) {
             player.ey = object = string.replaceAll("\\s+$", "");
             if (player.getMovementTarget() != null) {
                 if (!player.getMovementTarget().isPlayer()) {
                     return;
                 }
                 Player player2 = (Player)player.getMovementTarget();
-                if (!player2.de) {
+                if (!player2.isBot) {
                     return;
                 }
                 player2.botPvpChatMessage = object;

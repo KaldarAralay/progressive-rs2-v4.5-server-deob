@@ -14,35 +14,35 @@ extends DuelRule {
     }
 
     @Override
-    public final void a(Player player, boolean bl) {
+    public final void toggleForPlayer(Player player, boolean bl) {
         boolean bl2;
         boolean bl3 = bl;
         Player player2 = player;
         Object object = this;
-        if (a.a(player2) && c.a(player2)) {
+        if (NO_RANGED.isEnabledFor(player2) && NO_MAGIC.isEnabledFor(player2)) {
             if (bl3) {
                 object = player2;
                 ((Player)object).packetSender.sendGameMessage("You can't have no ranged, no melee and no magic - how would you fight?");
             }
             bl2 = false;
         } else {
-            if (!object.a(player2)) {
-                if (player2.getDuelSession().b() == CombatType.MELEE) {
-                    player2.getDuelSession().j().add(new ItemStack(player2.getEquipmentManager().getItemIdAtSlot(3)));
+            if (!object.isEnabledFor(player2)) {
+                if (player2.getDuelSession().getCurrentCombatType() == CombatType.MELEE) {
+                    player2.getDuelSession().getEquipmentToRemove().add(new ItemStack(player2.getEquipmentManager().getItemIdAtSlot(3)));
                 }
-            } else if (player2.getDuelSession().b() == CombatType.MELEE) {
-                player2.getDuelSession().j().remove(new ItemStack(player2.getEquipmentManager().getItemIdAtSlot(3)));
+            } else if (player2.getDuelSession().getCurrentCombatType() == CombatType.MELEE) {
+                player2.getDuelSession().getEquipmentToRemove().remove(new ItemStack(player2.getEquipmentManager().getItemIdAtSlot(3)));
             }
             bl2 = true;
         }
         if (bl2) {
-            player.getDuelInterfaceManager().a(this.w, "Players cannot use melee");
+            player.getDuelInterfaceManager().toggleRule(this.ruleIndex, "Players cannot use melee");
         }
     }
 
     @Override
-    public final boolean a(Player player) {
-        return player.getDuelSession().k()[this.w];
+    public final boolean isEnabledFor(Player player) {
+        return player.getDuelSession().getEnabledRules()[this.ruleIndex];
     }
 }
 

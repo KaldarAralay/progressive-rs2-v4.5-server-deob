@@ -19,7 +19,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        this.a.getInventoryManager().b(new ItemStack(275, 1));
+        this.a.getInventoryManager().addOrDropItem(new ItemStack(275, 1));
         Player player = this.a;
         player.packetSender.sendGameMessage("...and find a small key.");
         this.stop();

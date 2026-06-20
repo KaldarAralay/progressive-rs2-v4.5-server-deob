@@ -38,7 +38,7 @@ extends CycleEvent {
             FruitTreePatchManager.getPlayer(this.manager).getSkillManager().addExperience(19, this.definition.getHealthCheckExperience());
             this.manager.patchStates[this.patch.getIndex()] = 0;
             this.manager.f[this.patch.getIndex()] = false;
-            this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.e() - (long)this.definition.getTotalGrowthTicks();
+            this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.getElapsedMinutes() - (long)this.definition.getTotalGrowthTicks();
             this.manager.recalculateRegrowthStage(this.patch.getIndex());
             cycleEventContainer.stop();
             return;
@@ -47,7 +47,7 @@ extends CycleEvent {
         ((Player)object).packetSender.sendGameMessage("You harvest the crop, and pick a fruit.");
         FruitTreePatchManager.getPlayer(this.manager).getInventoryManager().addItem(new ItemStack(this.definition.getProduceItemId()));
         FruitTreePatchManager.getPlayer(this.manager).getSkillManager().addExperience(19, this.definition.getHarvestExperience());
-        this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.e();
+        this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.getElapsedMinutes();
         int n = this.definition.getTotalGrowthTicks() - this.definition.getGrowthCycleTicks() * (this.definition.getGrowthStageCount() + 5 - this.manager.growthStages[this.patch.getIndex()]);
         int n2 = this.patch.getIndex();
         object = this.manager;

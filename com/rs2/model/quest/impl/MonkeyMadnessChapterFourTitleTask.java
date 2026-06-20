@@ -21,11 +21,11 @@ extends TickTask {
     @Override
     public final void execute() {
         Player player;
-        this.b.n(false);
+        this.b.setActionLocked(false);
         Player player2 = this.b;
         player2.packetSender.resetCamera();
         this.b.moveTo(this.b.z);
-        this.b.aK();
+        this.b.clearTemporaryCutsceneNpcs();
         this.b.z = null;
         player2 = player = this.b;
         player.packetSender.sendInterfaceText("", 3026);

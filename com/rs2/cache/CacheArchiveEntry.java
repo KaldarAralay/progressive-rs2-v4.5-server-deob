@@ -34,7 +34,7 @@ public class CacheArchiveEntry {
             bl2 = false;
         }
         if (!bl && bl2) {
-            GrandExchangeOffer.a(((Player)object).botAdvertItemId, ((Player)object).tradeAdvertAcceptedQuantity, ((Player)object).tradeAdvertUnitPrice);
+            GrandExchangeOffer.recordPriceSample(((Player)object).botAdvertItemId, ((Player)object).tradeAdvertAcceptedQuantity, ((Player)object).tradeAdvertUnitPrice);
         }
         ((Player)object).tradeAdvertQuantityRemaining -= ((Player)object).tradeAdvertAcceptedQuantity;
         BotTradeAdvertManager.updateTradeAdvertMessage((Player)object);

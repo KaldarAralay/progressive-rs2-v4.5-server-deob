@@ -31,7 +31,7 @@ extends CycleEvent {
         if (this.manager.growthStages[this.patch.getIndex()] <= 2) {
             int n = this.patch.getIndex();
             this.manager.growthStages[n] = this.manager.growthStages[n] + 1;
-            TreePatchManager.getPlayer(this.manager).getInventoryManager().b(new ItemStack(6055));
+            TreePatchManager.getPlayer(this.manager).getInventoryManager().addOrDropItem(new ItemStack(6055));
         } else if (this.manager.patchStates[this.patch.getIndex()] != 7) {
             this.manager.growthStages[this.patch.getIndex()] = 3;
             bl = true;
@@ -39,11 +39,11 @@ extends CycleEvent {
         }
         if (this.manager.patchStates[this.patch.getIndex()] == 7) {
             FarmedTreeDefinition farmedTreeDefinition = FarmedTreeDefinition.forSaplingId(this.manager.treeIds[this.patch.getIndex()]);
-            TreePatchManager.getPlayer(this.manager).getInventoryManager().b(new ItemStack(farmedTreeDefinition.getRootItemId()));
+            TreePatchManager.getPlayer(this.manager).getInventoryManager().addOrDropItem(new ItemStack(farmedTreeDefinition.getRootItemId()));
             this.manager.growthStages[this.patch.getIndex()] = 3;
         }
         TreePatchManager.getPlayer(this.manager).getSkillManager().addExperience(19, 4.0);
-        this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.e();
+        this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.getElapsedMinutes();
         this.manager.refreshConfig();
         if (this.manager.growthStages[this.patch.getIndex()] == 3 && !bl) {
             cycleEventContainer.stop();
@@ -56,8 +56,8 @@ extends CycleEvent {
         this.manager.resetPatch(this.patch.getIndex());
         Player player = TreePatchManager.getPlayer(this.manager);
         player.packetSender.sendGameMessage("You clear the patch.");
-        TreePatchManager.getPlayer(this.manager).n(false);
-        TreePatchManager.getPlayer(this.manager).aN();
+        TreePatchManager.getPlayer(this.manager).setActionLocked(false);
+        TreePatchManager.getPlayer(this.manager).resetAnimation();
     }
 }
 

@@ -13,7 +13,7 @@ public enum RunecraftingAltarDefinition {
     EARTH_ALTAR(1440, 5535, 2455, new Position(3304, 3474, 0), 2481, 2468, new Position(2655, 4830, 0), 32.5, false),
     FIRE_ALTAR(1442, 5537, 2456, new Position(3312, 3253, 0), 2482, 2469, new Position(2574, 4849, 0), 35.0, false),
     BODY_ALTAR(1446, 5533, 2457, new Position(3051, 3445, 0), 2483, 2470, new Position(2523, 4826, 0), 37.5, false),
-    COSMIC_ALTAR(1454, 5539, 2458, CacheCoordinateTranslator.a ? new Position(3175, 9499, 0) : new Position(2407, 4379, 0), 2484, 2471, new Position(2142, 4813, 0), 40.0, true),
+    COSMIC_ALTAR(1454, 5539, 2458, CacheCoordinateTranslator.dungeonCoordinateShiftActive ? new Position(3175, 9499, 0) : new Position(2407, 4379, 0), 2484, 2471, new Position(2142, 4813, 0), 40.0, true),
     CHAOS_ALTAR(1452, 5543, 2461, new Position(3062, 3591, 0), 2487, 2474, new Position(2275, 4847, 3), 42.5, true),
     NATURE_ALTAR(1462, 5541, 2460, new Position(2868, 3017, 0), 2486, 2473, new Position(2400, 4835, 0), 45.0, true),
     LAW_ALTAR(1458, 5545, 2459, new Position(2859, 3379, 0), 2485, 2472, new Position(2464, 4818, 0), 47.5, true),

@@ -13,13 +13,13 @@ public final class BlackKnightsFortressQuest
 extends QuestScript {
     public BlackKnightsFortressQuest(int n) {
         super(1);
-        super.a(3);
+        super.setQuestPointReward(3);
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player stringArray, int n) {
         if (n == 0) {
-            stringArray = new String[]{"I can start this quest by speaking to Sir Amik Varze at the", "White Knights' Castle in Falador.", String.valueOf(stringArray.dA() >= 12 ? "@str@" : "") + "I have a total of at least 12 Quest Points", "I would have an advantage if I could fight Level 33 Knights", "and if I had a smithing level of 26."};
+            stringArray = new String[]{"I can start this quest by speaking to Sir Amik Varze at the", "White Knights' Castle in Falador.", String.valueOf(stringArray.getQuestPoints() >= 12 ? "@str@" : "") + "I have a total of at least 12 Quest Points", "I would have an advantage if I could fight Level 33 Knights", "and if I had a smithing level of 26."};
             return stringArray;
         }
         if (n == 2) {
@@ -42,9 +42,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("3 Quest Points", 12150);
         player2 = player;
@@ -57,7 +57,7 @@ extends QuestScript {
         player2.packetSender.sendInterfaceText("", 12154);
         player2 = player;
         player2.packetSender.sendInterfaceText("", 12155);
-        player.getInventoryManager().b(new ItemStack(995, 2500));
+        player.getInventoryManager().addOrDropItem(new ItemStack(995, 2500));
         player2 = player;
         player2.packetSender.sendInterfaceModel(InterfaceDefinition.interfaceCount <= 12140 ? 6161 : 12145, 250, 1965);
         player2 = player;
@@ -67,7 +67,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleFirstObjectAction(Player player, int n, int n2, int n3, int n4) {
         if (n == 73 && n2 == 3007 && n3 == 3516 || n == 74 && n2 == 3007 && n3 == 3515) {
             Player player2 = player;
             player2.packetSender.sendGameMessage("It is locked.");
@@ -142,11 +142,11 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3) {
+    public final boolean handleItemOnObject(Player player, int n, int n2, int n3) {
         if (n == 1965 && n2 == 2336) {
             if (n3 == 3) {
                 player.getInventoryManager().removeItem(new ItemStack(1965, 1));
-                player.setQuestState(this.b(), 4);
+                player.setQuestState(this.getQuestId(), 4);
                 DialogueManager.continueDialogue(player, 611, 100, 0);
             } else {
                 player.packetSender.sendGameMessage("You have no reason to do this.");
@@ -157,10 +157,10 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         if (n == 608) {
             if (n4 == 0) {
-                if (player.dA() < 12) {
+                if (player.getQuestPoints() < 12) {
                     return false;
                 }
                 if (n2 == 1) {
@@ -288,7 +288,7 @@ extends QuestScript {
                 }
                 if (n2 == 6) {
                     player.getDialogueManager().finishDialogue();
-                    this.c(player);
+                    this.awardCompletionRewards(player);
                     return true;
                 }
             }
@@ -363,7 +363,7 @@ extends QuestScript {
             if (n2 == 208) {
                 player.getDialogueManager().setDialogueNpcId(612);
                 player.getDialogueManager().showNpcOneLineDialogue("Yeth, Mithtreth.", 591);
-                player.setQuestState(this.b(), 3);
+                player.setQuestState(this.getQuestId(), 3);
                 player.getDialogueManager().finishDialogue();
                 return true;
             }

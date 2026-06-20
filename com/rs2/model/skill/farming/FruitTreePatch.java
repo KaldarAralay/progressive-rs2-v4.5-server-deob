@@ -9,10 +9,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum FruitTreePatch {
-    a(0, new Position[]{new Position(2764, 3212), new Position(2765, 3213)}, 2330),
-    b(1, new Position[]{new Position(2860, 3433), new Position(2861, 3434)}, 2331),
-    c(2, new Position[]{new Position(2475, 3445), new Position(2476, 3446)}, 2343),
-    d(3, new Position[]{new Position(2489, 3179), new Position(2890, 3180)}, 2344);
+    BRIMHAVEN(0, new Position[]{new Position(2764, 3212), new Position(2765, 3213)}, 2330),
+    CATHERBY(1, new Position[]{new Position(2860, 3433), new Position(2861, 3434)}, 2331),
+    GNOME_STRONGHOLD(2, new Position[]{new Position(2475, 3445), new Position(2476, 3446)}, 2343),
+    TREE_GNOME_VILLAGE(3, new Position[]{new Position(2489, 3179), new Position(2890, 3180)}, 2344);
 
     private int index;
     private Position[] bounds;
@@ -55,7 +55,7 @@ public enum FruitTreePatch {
             FruitTreePatch fruitTreePatch;
             FruitTreePatch fruitTreePatch2 = fruitTreePatch = fruitTreePatchArray[n2];
             fruitTreePatch2 = fruitTreePatch;
-            if (FarmingPatchUtils.a(fruitTreePatch.bounds[0], fruitTreePatch2.bounds[1], position)) {
+            if (FarmingPatchUtils.containsPosition(fruitTreePatch.bounds[0], fruitTreePatch2.bounds[1], position)) {
                 return fruitTreePatch;
             }
             ++n2;

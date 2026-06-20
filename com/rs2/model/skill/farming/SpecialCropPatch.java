@@ -7,9 +7,9 @@ import com.rs2.model.Position;
 import com.rs2.model.skill.farming.FarmingPatchUtils;
 
 public enum SpecialCropPatch {
-    a(0, new Position[]{new Position(3086, 3354), new Position(3087, 3355)}, 5281),
-    b(2, new Position[]{new Position(3315, 3202), new Position(3316, 3203)}, 5280),
-    c(3, new Position[]{new Position(3451, 3472), new Position(3452, 3473)}, 5282);
+    BELLADONNA(0, new Position[]{new Position(3086, 3354), new Position(3087, 3355)}, 5281),
+    CACTUS(2, new Position[]{new Position(3315, 3202), new Position(3316, 3203)}, 5280),
+    MUSHROOM(3, new Position[]{new Position(3451, 3472), new Position(3452, 3473)}, 5282);
 
     private int index;
     private Position[] bounds;
@@ -35,7 +35,7 @@ public enum SpecialCropPatch {
             SpecialCropPatch specialCropPatch;
             SpecialCropPatch specialCropPatch2 = specialCropPatch = specialCropPatchArray[n2];
             specialCropPatch2 = specialCropPatch;
-            if (FarmingPatchUtils.a(specialCropPatch.bounds[0], specialCropPatch2.bounds[1], position)) {
+            if (FarmingPatchUtils.containsPosition(specialCropPatch.bounds[0], specialCropPatch2.bounds[1], position)) {
                 return specialCropPatch;
             }
             ++n2;

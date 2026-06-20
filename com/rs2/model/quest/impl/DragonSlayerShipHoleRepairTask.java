@@ -34,7 +34,7 @@ extends TickTask {
         if ((this.a & 2) == 0) {
             n = 2;
         }
-        this.b.n(false);
+        this.b.setActionLocked(false);
         this.b.getInventoryManager().removeItem(new ItemStack(960, 1));
         this.b.getInventoryManager().removeItem(new ItemStack(1539, 30));
         if (n == 2) {

@@ -18,7 +18,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        GameplayHelper.d(this.player);
+        GameplayHelper.startNextBotTask(this.player);
         this.stop();
     }
 }

@@ -6,16 +6,16 @@ package com.rs2.model.gameplay.barrows;
 import com.rs2.util.RectangularArea;
 
 public final class BarrowsTunnelRoom {
-    int a;
-    int[] b;
-    int[] c;
-    RectangularArea d;
+    int roomId;
+    int[] connectedRoomIds;
+    int[] doorBitIndexes;
+    RectangularArea roomBounds;
 
     BarrowsTunnelRoom(int n, int[] nArray, int[] nArray2, RectangularArea rectangularArea) {
-        this.a = n;
-        this.b = nArray;
-        this.c = nArray2;
-        this.d = rectangularArea;
+        this.roomId = n;
+        this.connectedRoomIds = nArray;
+        this.doorBitIndexes = nArray2;
+        this.roomBounds = rectangularArea;
     }
 }
 

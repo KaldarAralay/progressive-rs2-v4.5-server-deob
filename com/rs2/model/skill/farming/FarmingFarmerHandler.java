@@ -177,13 +177,13 @@ public final class FarmingFarmerHandler {
         player.getDialogueManager().showNpcTwoLineDialogue("There you go, I have chopped down your tree but I am ", "keeping the logs and roots as compensation.", 595);
         player.getTreePatchManager().resetPatch(n2);
         player.getTreePatchManager().growthStages[n2] = 3;
-        player.getTreePatchManager().lastUpdateTicks[n2] = Server.e();
+        player.getTreePatchManager().lastUpdateTicks[n2] = Server.getElapsedMinutes();
         player.getTreePatchManager().refreshConfig();
         player.getDialogueManager().finishDialogue();
     }
 
     public static void showRandomFarmingAdvice(Player player) {
-        player.getDialogueManager().showNpcDialogue(adviceMessages[GameUtil.g(9)], 588);
+        player.getDialogueManager().showNpcDialogue(adviceMessages[GameUtil.randomInclusive(9)], 588);
         player.getDialogueManager().finishDialogue();
     }
 

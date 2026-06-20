@@ -34,7 +34,7 @@ public final class PickableObjectHandler {
         ItemStack itemStack = new ItemStack(n4);
         object = itemStack;
         String string = itemStack.getDefinition().getName().toLowerCase();
-        if (!player.getInventoryManager().e((ItemStack)object)) {
+        if (!player.getInventoryManager().canAddItem((ItemStack)object)) {
             if (player.botEnabled) {
                 player.currentBotTask.startWalkToBank(player);
             }
@@ -42,7 +42,7 @@ public final class PickableObjectHandler {
         }
         player.nextActionSequence();
         player.getUpdateState().setAnimation(827);
-        player.n(true);
+        player.setActionLocked(true);
         player.setActiveCycleEvent(new PickableObjectEvent(n, n2, n3, player, (ItemStack)object, string));
         CycleEventHandler.getInstance().schedule(player, player.getActiveCycleEvent(), 2);
         return true;

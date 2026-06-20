@@ -50,11 +50,11 @@ extends QuestScript {
 
     public GrandTreeQuest(int n) {
         super(46);
-        super.a(5);
+        super.setQuestPointReward(5);
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player stringArray, int n) {
         if (n == 0) {
             int n2 = stringArray.getSkillManager().getBaseLevel(16);
             String[] stringArray2 = new String[]{"I can start the quest at the Grand Tree in the Gnome", "Stronghold by speaking to King Narnode Shareen.", "", "I must have:", String.valueOf(n2 >= 25 ? "@str@" : "") + "Level 25 Agility.", "High enough combat to defeat a level 172 demon."};
@@ -85,7 +85,7 @@ extends QuestScript {
             return stringArray;
         }
         if (n == 8) {
-            if (!stringArray.aq(785)) {
+            if (!stringArray.ownsItem(785)) {
                 stringArray = new String[]{"I should search Glough's home to find out what he's", "up to."};
                 return stringArray;
             }
@@ -97,7 +97,7 @@ extends QuestScript {
             return stringArray;
         }
         if (n == 10 || n == 11) {
-            if (!stringArray.aq(787)) {
+            if (!stringArray.ownsItem(787)) {
                 stringArray = new String[]{"I should go check the Karamja Shipyard east of Shilo", "Village. I might need a password: Ka-Lu-Min"};
                 return stringArray;
             }
@@ -105,11 +105,11 @@ extends QuestScript {
             return stringArray;
         }
         if (n == 12) {
-            if (stringArray.aq(794)) {
+            if (stringArray.ownsItem(794)) {
                 stringArray = new String[]{"I should go show the invasion plans to King."};
                 return stringArray;
             }
-            if (!stringArray.aq(788)) {
+            if (!stringArray.ownsItem(788)) {
                 stringArray = new String[]{"I should go look for a key for Glough's chest.", "Charlie told me Anita should have the key.", "Anita lives west of the toad swamp."};
                 return stringArray;
             }
@@ -129,7 +129,7 @@ extends QuestScript {
             return stringArray;
         }
         if (n == 16) {
-            if (!stringArray.aq(793)) {
+            if (!stringArray.ownsItem(793)) {
                 stringArray = new String[]{"I should search for Daconia rock from the roots of", "the Grand Tree."};
                 return stringArray;
             }
@@ -148,9 +148,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("5 Quest Points", 12150);
         player2 = player;
@@ -175,8 +175,8 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, Position position, int n2) {
-        if (n == 674 && n2 == 11 && !player.aq(787)) {
+    public final boolean handleNpcDeathDrop(Player player, int n, Position position, int n2) {
+        if (n == 674 && n2 == 11 && !player.ownsItem(787)) {
             GroundItem groundItem = new GroundItem(new ItemStack(787, 1), player, position);
             GroundItemManager.getInstance().spawn(groundItem);
             player.packetSender.sendGameMessage("The foreman drops a piece of paper as he dies.");
@@ -186,13 +186,13 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleFirstObjectAction(Player player, int n, int n2, int n3, int n4) {
         if (n == 2446 && n2 == 2463 && n3 == 3497) {
-            if (player.getQuestState(this.b()) == 0) {
+            if (player.getQuestState(this.getQuestId()) == 0) {
                 Player player2 = player;
                 player2.packetSender.sendGameMessage("It is locked.");
             } else {
-                AttackStyleDefinition.a(player, new Position(2464, 9897, 0));
+                AttackStyleDefinition.startDelayedObjectMove(player, new Position(2464, 9897, 0));
             }
             return true;
         }
@@ -205,9 +205,9 @@ extends QuestScript {
         if (n == 1986 && n4 == 16) {
             Object object = new ArrayList(this.a);
             Collections.shuffle(object, new Random(player.bK));
-            if (n2 == ((Position)object.get(0)).getX() && n3 == ((Position)object.get(0)).getY() && !player.aq(793)) {
+            if (n2 == ((Position)object.get(0)).getX() && n3 == ((Position)object.get(0)).getY() && !player.ownsItem(793)) {
                 player.getDialogueManager().showItemMessage("You've found a Daconia rock!", new ItemStack(793, 1));
-                player.getInventoryManager().b(new ItemStack(793, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(793, 1));
             } else {
                 object = player;
                 ((Player)object).packetSender.sendGameMessage("You search the root but don't find anything.");
@@ -216,16 +216,16 @@ extends QuestScript {
             return true;
         }
         if (n == 2447 && n2 == 2484 && n3 == 3464) {
-            AttackStyleDefinition.a(player, new Position(2486, 3465, 2));
+            AttackStyleDefinition.startDelayedObjectMove(player, new Position(2486, 3465, 2));
             return true;
         }
         if (n == 2448 && n2 == 2485 && n3 == 3464) {
-            AttackStyleDefinition.a(player, new Position(2484, 3463, 1));
+            AttackStyleDefinition.startDelayedObjectMove(player, new Position(2484, 3463, 1));
             return true;
         }
         if (n == 2444 && n2 == 2487 && n3 == 3464 && n4 == 14) {
-            player.n(true);
-            AttackStyleDefinition.a(player, new Position(2491, 9864, 0));
+            player.setActionLocked(true);
+            AttackStyleDefinition.startDelayedObjectMove(player, new Position(2491, 9864, 0));
             GrandTreeGloughCaveEncounterTask grandTreeGloughCaveEncounterTask = new GrandTreeGloughCaveEncounterTask(this, 2, player);
             World.getTaskScheduler().schedule(grandTreeGloughCaveEncounterTask);
             return true;
@@ -235,9 +235,9 @@ extends QuestScript {
             ObjectManager.getInstance().addDynamicObject(new DynamicObject(2435, 2476, 3465, 1, 1, 10, 2434, 999999999), true);
             return true;
         }
-        if (n == 2435 && n2 == 2476 && n3 == 3465 && n4 == 8 && !player.aq(785)) {
+        if (n == 2435 && n2 == 2476 && n3 == 3465 && n4 == 8 && !player.ownsItem(785)) {
             player.getDialogueManager().showItemMessage("You've found Glough's Journal!", new ItemStack(785, 1));
-            player.getInventoryManager().b(new ItemStack(785, 1));
+            player.getInventoryManager().addOrDropItem(new ItemStack(785, 1));
             return true;
         }
         if (n == 2451 && n2 == 2466 && n3 == 9904) {
@@ -248,7 +248,7 @@ extends QuestScript {
                 Player player5 = player;
                 Object object = player5;
                 object = this;
-                player5.packetSender.sendGameMessage("You need to complete: " + QuestDefinition.b(((QuestHook)object).b()).c() + " to go through.");
+                player5.packetSender.sendGameMessage("You need to complete: " + QuestDefinition.forId(((QuestHook)object).getQuestId()).getName() + " to go through.");
             }
             return true;
         }
@@ -284,10 +284,10 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean c(Player player, int n, int n2, int n3, int n4) {
-        if (n == 2435 && n2 == 2476 && n3 == 3465 && n4 == 8 && !player.aq(785)) {
+    public final boolean handleSecondObjectAction(Player player, int n, int n2, int n3, int n4) {
+        if (n == 2435 && n2 == 2476 && n3 == 3465 && n4 == 8 && !player.ownsItem(785)) {
             player.getDialogueManager().showItemMessage("You've found Glough's Journal!", new ItemStack(785, 1));
-            player.getInventoryManager().b(new ItemStack(785, 1));
+            player.getInventoryManager().addOrDropItem(new ItemStack(785, 1));
             return true;
         }
         return false;
@@ -315,7 +315,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3) {
+    public final boolean handleItemOnObject(Player player, int n, int n2, int n3) {
         if (GrandTreeQuest.b(n) && n2 == 2440) {
             GroundItemManager.getInstance();
             if (GroundItemManager.findVisibleItemAt(player, this.b) == null) {
@@ -324,7 +324,7 @@ extends QuestScript {
                 GroundItemManager.getInstance().spawn(groundItem);
                 if (this.f(player)) {
                     player.getDialogueManager().showOneLineStatement("You can hear the grinding of an ancient pulley system.");
-                    player.setQuestState(this.b(), 14);
+                    player.setQuestState(this.getQuestId(), 14);
                 }
             } else {
                 player.packetSender.sendGameMessage("Theres already something on the table.");
@@ -339,7 +339,7 @@ extends QuestScript {
                 GroundItemManager.getInstance().spawn(groundItem);
                 if (this.f(player)) {
                     player.getDialogueManager().showOneLineStatement("You can hear the grinding of an ancient pulley system.");
-                    player.setQuestState(this.b(), 14);
+                    player.setQuestState(this.getQuestId(), 14);
                 }
             } else {
                 player.packetSender.sendGameMessage("Theres already something on the table.");
@@ -354,7 +354,7 @@ extends QuestScript {
                 GroundItemManager.getInstance().spawn(groundItem);
                 if (this.f(player)) {
                     player.getDialogueManager().showOneLineStatement("You can hear the grinding of an ancient pulley system.");
-                    player.setQuestState(this.b(), 14);
+                    player.setQuestState(this.getQuestId(), 14);
                 }
             } else {
                 player.packetSender.sendGameMessage("Theres already something on the table.");
@@ -369,16 +369,16 @@ extends QuestScript {
                 GroundItemManager.getInstance().spawn(groundItem);
                 if (this.f(player)) {
                     player.getDialogueManager().showOneLineStatement("You can hear the grinding of an ancient pulley system.");
-                    player.setQuestState(this.b(), 14);
+                    player.setQuestState(this.getQuestId(), 14);
                 }
             } else {
                 player.packetSender.sendGameMessage("Theres already something on the table.");
             }
             return true;
         }
-        if (n == 788 && n2 == 2436 && player.getInventoryManager().containsItem(788) && n3 == 12 && !player.aq(794)) {
+        if (n == 788 && n2 == 2436 && player.getInventoryManager().containsItem(788) && n3 == 12 && !player.ownsItem(794)) {
             GloughChestScrollFindTask gloughChestScrollFindTask = new GloughChestScrollFindTask(this, 2, player);
-            player.n(true);
+            player.setActionLocked(true);
             ObjectManager.getInstance().addDynamicObject(new DynamicObject(2437, 2482, 3462, 1, 0, 10, 2436, 2), true);
             World.getTaskScheduler().schedule(gloughChestScrollFindTask);
             return true;
@@ -444,7 +444,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean e(Player player, int n, int n2) {
+    public final boolean handleButtonClick(Player player, int n, int n2) {
         if (player.W == 785) {
             if (n == 841 && player.X < this.f) {
                 ++player.X;
@@ -473,7 +473,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean c(Player player, int n, int n2, int n3) {
+    public final boolean handleInventoryItemFirstOption(Player player, int n, int n2, int n3) {
         if (n == 3214) {
             if (n2 == 786) {
                 Player player2 = player;
@@ -583,15 +583,15 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2) {
+    public final boolean handleNpcKill(Player player, int n, int n2) {
         if (n == 677) {
-            player.setQuestState(this.b(), 15);
+            player.setQuestState(this.getQuestId(), 15);
         }
         return false;
     }
 
     @Override
-    public final boolean a(Player object, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player object, int n, int n2, int n3, int n4) {
         if (n == 670 && this.h.containsExclusiveOnPlane(((Entity)object).getPosition())) {
             if (n4 == 0) {
                 if (!GrandTreeQuest.e((Player)object)) {
@@ -645,12 +645,12 @@ extends QuestScript {
                     return false;
                 }
             }
-            if (!(n4 != 3 || n2 != 1 || ((Player)object).aq(783) && ((Player)object).aq(784))) {
-                if (!((Player)object).aq(783)) {
-                    ((Player)object).getInventoryManager().b(new ItemStack(783, 1));
+            if (!(n4 != 3 || n2 != 1 || ((Player)object).ownsItem(783) && ((Player)object).ownsItem(784))) {
+                if (!((Player)object).ownsItem(783)) {
+                    ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(783, 1));
                 }
-                if (!((Player)object).aq(784)) {
-                    ((Player)object).getInventoryManager().b(new ItemStack(784, 1));
+                if (!((Player)object).ownsItem(784)) {
+                    ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(784, 1));
                 }
                 ((Player)object).getDialogueManager().showNpcOneLineDialogue("Don't lose them this time!", 591);
                 ((Player)object).getDialogueManager().finishDialogue();
@@ -783,7 +783,7 @@ extends QuestScript {
                 }
                 if (n2 == 23) {
                     ((Player)object).getDialogueManager().showPlayerOneLineDialogue("OK! I'll be back soon.", 591);
-                    ((Player)object).setQuestState(this.b(), 5);
+                    ((Player)object).setQuestState(this.getQuestId(), 5);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -815,7 +815,7 @@ extends QuestScript {
                 }
                 if (n2 == 7) {
                     ((Player)object).getDialogueManager().showNpcTwoLineDialogue("Certainly. He's on the top level of the tree. Be careful,", "it's a long way down!", 591);
-                    ((Player)object).setQuestState(this.b(), 7);
+                    ((Player)object).setQuestState(this.getQuestId(), 7);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -890,27 +890,27 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 10) {
-                    ((Player)object).getInventoryManager().b(new ItemStack(792, 1));
-                    ((Player)object).getInventoryManager().b(new ItemStack(790, 1));
-                    ((Player)object).getInventoryManager().b(new ItemStack(791, 1));
-                    ((Player)object).getInventoryManager().b(new ItemStack(789, 1));
-                    ((Player)object).setQuestState(this.b(), 13);
+                    ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(792, 1));
+                    ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(790, 1));
+                    ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(791, 1));
+                    ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(789, 1));
+                    ((Player)object).setQuestState(this.getQuestId(), 13);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return false;
                 }
             }
-            if (!(n4 != 13 || n2 != 1 || ((Player)object).aq(792) && ((Player)object).aq(790) && ((Player)object).aq(791) && ((Player)object).aq(789))) {
-                if (!((Player)object).aq(792)) {
-                    ((Player)object).getInventoryManager().b(new ItemStack(792, 1));
+            if (!(n4 != 13 || n2 != 1 || ((Player)object).ownsItem(792) && ((Player)object).ownsItem(790) && ((Player)object).ownsItem(791) && ((Player)object).ownsItem(789))) {
+                if (!((Player)object).ownsItem(792)) {
+                    ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(792, 1));
                 }
-                if (!((Player)object).aq(790)) {
-                    ((Player)object).getInventoryManager().b(new ItemStack(790, 1));
+                if (!((Player)object).ownsItem(790)) {
+                    ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(790, 1));
                 }
-                if (!((Player)object).aq(791)) {
-                    ((Player)object).getInventoryManager().b(new ItemStack(791, 1));
+                if (!((Player)object).ownsItem(791)) {
+                    ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(791, 1));
                 }
-                if (!((Player)object).aq(789)) {
-                    ((Player)object).getInventoryManager().b(new ItemStack(789, 1));
+                if (!((Player)object).ownsItem(789)) {
+                    ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(789, 1));
                 }
                 ((Player)object).getDialogueManager().showPlayerTwoLineDialogue("I should probably be more careful and not lose", "these this time.", 591);
                 ((Player)object).getDialogueManager().finishDialogue();
@@ -918,12 +918,12 @@ extends QuestScript {
             }
         }
         if (n == 670 && this.i.containsExclusive(((Entity)object).getPosition()) || n == 2781 && n2 > 1) {
-            if (!(n4 != 3 || n2 != 1 || ((Player)object).aq(783) && ((Player)object).aq(784))) {
-                if (!((Player)object).aq(783)) {
-                    ((Player)object).getInventoryManager().b(new ItemStack(783, 1));
+            if (!(n4 != 3 || n2 != 1 || ((Player)object).ownsItem(783) && ((Player)object).ownsItem(784))) {
+                if (!((Player)object).ownsItem(783)) {
+                    ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(783, 1));
                 }
-                if (!((Player)object).aq(784)) {
-                    ((Player)object).getInventoryManager().b(new ItemStack(784, 1));
+                if (!((Player)object).ownsItem(784)) {
+                    ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(784, 1));
                 }
                 ((Player)object).getDialogueManager().showNpcOneLineDialogue("Don't lose them this time!", 591);
                 ((Player)object).getDialogueManager().finishDialogue();
@@ -1020,10 +1020,10 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 22) {
-                    ((Player)object).getInventoryManager().b(new ItemStack(783, 1));
-                    ((Player)object).getInventoryManager().b(new ItemStack(784, 1));
+                    ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(783, 1));
+                    ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(784, 1));
                     ((Player)object).getDialogueManager().showNpcOneLineDialogue("I'll show you the way back up.", 591);
-                    ((Player)object).setQuestState(this.b(), 3);
+                    ((Player)object).setQuestState(this.getQuestId(), 3);
                     return true;
                 }
             }
@@ -1072,7 +1072,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 9) {
-                    ((Player)object).n(true);
+                    ((Player)object).setActionLocked(true);
                     ((Player)object).getPacketSender().showInterface(8677);
                     GrandTreeGuardPassageReportTask grandTreeGuardPassageReportTask = new GrandTreeGuardPassageReportTask(this, 5, (Player)object);
                     World.getTaskScheduler().schedule(grandTreeGuardPassageReportTask);
@@ -1119,7 +1119,7 @@ extends QuestScript {
                 if (n2 == 108) {
                     ((Player)object).getDialogueManager().setDialogueNpcId(670);
                     ((Player)object).getDialogueManager().showNpcFourLineDialogue("A reward will have to wait though, the tree is still dying!", "The guards are clearing Glough's rock supply now but", "there must be more Daconia hidden somewhere in the", "roots! Help us search, we have little time!", 591);
-                    ((Player)object).setQuestState(this.b(), 16);
+                    ((Player)object).setQuestState(this.getQuestId(), 16);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -1200,7 +1200,7 @@ extends QuestScript {
                 if (n2 == 19 && ((Player)object).getInventoryManager().containsItem(793)) {
                     ((Player)object).getDialogueManager().finishDialogue();
                     ((Player)object).getInventoryManager().removeItem(new ItemStack(793, 1));
-                    this.c((Player)object);
+                    this.awardCompletionRewards((Player)object);
                     return true;
                 }
             }
@@ -1208,7 +1208,7 @@ extends QuestScript {
         if (n == 670) {
             if (n4 == 9) {
                 if (n2 == 100) {
-                    ((Player)object).n(false);
+                    ((Player)object).setActionLocked(false);
                     ((Player)object).getDialogueManager().showNpcThreeLineDialogue("Traveller please accept my apologies! Glough had no", "right to arrest you! I just think he's scared of humans", "Let me get you out of there.", 591);
                     return true;
                 }
@@ -1219,7 +1219,7 @@ extends QuestScript {
                     }
                     ((Player)object).getPacketSender().openSingleDoor(3367, 2465, 3496, ((Entity)object).getPosition().getPlane());
                     ((Player)object).getPacketSender().queueRelativeMovementStep(1, 0, true);
-                    ((Player)object).setQuestState(this.b(), 10);
+                    ((Player)object).setQuestState(this.getQuestId(), 10);
                     ((Player)object).getDialogueManager().showPlayerTwoLineDialogue("I don't think you can trust Glough, your highness. He", "seems to have an unnatural hatred for humans.", 591);
                     return true;
                 }
@@ -1245,8 +1245,8 @@ extends QuestScript {
             }
         }
         if (n == 669) {
-            if (n4 == 4 && n2 == 1 && !((Player)object).aq(786)) {
-                ((Player)object).getInventoryManager().b(new ItemStack(786, 1));
+            if (n4 == 4 && n2 == 1 && !((Player)object).ownsItem(786)) {
+                ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(786, 1));
                 ((Player)object).getDialogueManager().showPlayerTwoLineDialogue("I should probably be more careful and not lose", "the scroll this time.", 591);
                 ((Player)object).getDialogueManager().finishDialogue();
                 return true;
@@ -1286,8 +1286,8 @@ extends QuestScript {
                 }
                 if (n2 == 9) {
                     ((Player)object).getDialogueManager().showItemMessage("Hazelmere has given you the scroll.", new ItemStack(786, 1));
-                    ((Player)object).getInventoryManager().b(new ItemStack(786, 1));
-                    ((Player)object).setQuestState(this.b(), 4);
+                    ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(786, 1));
+                    ((Player)object).setQuestState(this.getQuestId(), 4);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -1333,12 +1333,12 @@ extends QuestScript {
                 }
                 if (n2 == 10) {
                     ((Player)object).getDialogueManager().showNpcTwoLineDialogue("Your type can't be trusted! I'll take care of this! Go", "back to the King.", 591);
-                    ((Player)object).setQuestState(this.b(), 6);
+                    ((Player)object).setQuestState(this.getQuestId(), 6);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
             }
-            if (n4 == 8 && ((Player)object).aq(785)) {
+            if (n4 == 8 && ((Player)object).ownsItem(785)) {
                 if (n2 == 1) {
                     ((Player)object).getDialogueManager().showPlayerTwoLineDialogue("Glough! I don't know what you're up to but I know", "you paid Charlie to get those rocks!", 591);
                     return true;
@@ -1357,7 +1357,7 @@ extends QuestScript {
                 }
                 if (n2 == 5) {
                     ((Player)object).getDialogueManager().showNpcOneLineDialogue("Guards! Guards!", 591);
-                    ((Player)object).n(true);
+                    ((Player)object).setActionLocked(true);
                     Npc npc = new Npc(2781);
                     GameplayHelper.b((Player)object, npc, 2477, 3463, 1, -1, false, false);
                     npc.setMovementTarget((Entity)object);
@@ -1389,7 +1389,7 @@ extends QuestScript {
                 }
                 if (n2 == 105) {
                     Object object2;
-                    ((Player)object).n(true);
+                    ((Player)object).setActionLocked(true);
                     if (((Entity)object).getInteractionTarget() != null && ((Entity)object).getInteractionTarget().isNpc() && ((Npc)(object2 = (Npc)((Entity)object).getInteractionTarget())).getNpcId() == 671) {
                         ((Npc)object2).queueScriptedPath(new Position[]{new Position(2484, 9864, 0)});
                     }
@@ -1402,7 +1402,7 @@ extends QuestScript {
         }
         if (n == 2781 && n4 == 8 && n2 == 100) {
             ((Player)object).getDialogueManager().showNpcOneLineDialogue("Come with me!", 591);
-            int n5 = this.b();
+            int n5 = this.getQuestId();
             object = new GrandTreeGuardPrisonEscortTask(this, 3, (Player)object, n5);
             World.getTaskScheduler().schedule((TickTask)object);
             return true;
@@ -1443,7 +1443,7 @@ extends QuestScript {
                 }
                 if (n2 == 9) {
                     ((Player)object).getDialogueManager().finishDialogue();
-                    ((Player)object).n(true);
+                    ((Player)object).setActionLocked(true);
                     Npc npc = new Npc(670);
                     GameplayHelper.b((Player)object, npc, 2467, 3496, 3, -1, false, false);
                     npc.queueScriptedPath(new Position[]{new Position(2465, 3496, 3)});
@@ -1495,13 +1495,13 @@ extends QuestScript {
                 }
                 if (n2 == 11) {
                     ((Player)object).getDialogueManager().showNpcOneLineDialogue("Good luck!", 591);
-                    ((Player)object).setQuestState(this.b(), 8);
+                    ((Player)object).setQuestState(this.getQuestId(), 8);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
             }
             if (n4 == 11) {
-                if (n2 == 1 && ((Player)object).aq(787)) {
+                if (n2 == 1 && ((Player)object).ownsItem(787)) {
                     ((Player)object).getDialogueManager().showPlayerOneLineDialogue("How are you doing Charlie?", 591);
                     return true;
                 }
@@ -1535,13 +1535,13 @@ extends QuestScript {
                 }
                 if (n2 == 9) {
                     ((Player)object).getDialogueManager().showPlayerOneLineDialogue("OK, I'll see what I can find.", 591);
-                    ((Player)object).setQuestState(this.b(), 12);
+                    ((Player)object).setQuestState(this.getQuestId(), 12);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
             }
         }
-        int n6 = GameUtil.a(((Entity)object).getPosition().getX(), ((Entity)object).getPosition().getY());
+        int n6 = GameUtil.getRegionId(((Entity)object).getPosition().getX(), ((Entity)object).getPosition().getY());
         if ((n == 3811 || n == 170 && n6 == 9782) && n4 == 10) {
             if (n2 == 1) {
                 ((Player)object).getDialogueManager().showNpcOneLineDialogue("Hi, the King said that you need to leave?", 591);
@@ -1671,12 +1671,12 @@ extends QuestScript {
                 if (n2 == 16) {
                     ((Player)object).getDialogueManager().showNpcOneLineDialogue("Sorry to have kept you.", 591);
                     ((Player)object).getDialogueManager().finishDialogue();
-                    ((Player)object).setQuestState(this.b(), 11);
+                    ((Player)object).setQuestState(this.getQuestId(), 11);
                     return true;
                 }
             }
         }
-        if (n == 672 && n4 == 12 && !((Player)object).aq(788) && !((Player)object).aq(794)) {
+        if (n == 672 && n4 == 12 && !((Player)object).ownsItem(788) && !((Player)object).ownsItem(794)) {
             if (n2 == 1) {
                 ((Player)object).getDialogueManager().showPlayerOneLineDialogue("Hello there.", 591);
                 return true;
@@ -1719,7 +1719,7 @@ extends QuestScript {
             }
             if (n2 == 11) {
                 ((Player)object).getDialogueManager().showPlayerOneLineDialogue("No...thank you!", 591);
-                ((Player)object).getInventoryManager().b(new ItemStack(788, 1));
+                ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(788, 1));
                 ((Player)object).getDialogueManager().finishDialogue();
                 return true;
             }

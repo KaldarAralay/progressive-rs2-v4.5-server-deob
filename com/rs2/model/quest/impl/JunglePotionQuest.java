@@ -15,11 +15,11 @@ public final class JunglePotionQuest
 extends QuestScript {
     public JunglePotionQuest(int n) {
         super(56);
-        super.a(1);
+        super.setQuestPointReward(1);
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player stringArray, int n) {
         if (n == 0) {
             stringArray = new String[]{"I can start this quest by speaking to Trufitus Shakaya", "who lives in the main hut in Tai Bwo Wannai", "village on the island of Karamja."};
             return stringArray;
@@ -56,9 +56,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("1 Quest Point", 12150);
         player2 = player;
@@ -81,7 +81,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
+    public final boolean handleContextDialogue(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
         if (n2 == 2585 && n5 == 2830 && n6 == 9522 && n == 1) {
             if (n3 == 1) {
                 player.getDialogueManager().showOneLineStatement("You attempt to climb the rocks back out.");
@@ -120,14 +120,14 @@ extends QuestScript {
 
     private void a(Player player, int n, int n2, int n3, int n4, boolean bl) {
         int n5 = player.nextActionSequence();
-        player.aN();
+        player.resetAnimation();
         player.getUpdateState().setAnimation(832);
         player.setActiveCycleEvent(new JunglePotionHerbSearchEvent(this, player, n5, n3, n4, n2, n, true));
         CycleEventHandler.getInstance().schedule(player, player.getActiveCycleEvent(), 3);
     }
 
     @Override
-    public final boolean c(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleSecondObjectAction(Player player, int n, int n2, int n3, int n4) {
         if (n == 2575 && n4 == 2) {
             Player player2 = player;
             player2.packetSender.sendGameMessage("You search the vine...");
@@ -138,21 +138,21 @@ extends QuestScript {
             Player player3 = player;
             player3.packetSender.sendGameMessage("You search the palm...");
             player.getDialogueManager().showItemMessage("You find a herb.", new ItemStack(1527, 1));
-            player.getInventoryManager().b(new ItemStack(1527, 1));
+            player.getInventoryManager().addOrDropItem(new ItemStack(1527, 1));
             return true;
         }
         if (n == 2579 && n4 == 4) {
             Player player4 = player;
             player4.packetSender.sendGameMessage("You search the scorched earth...");
             player.getDialogueManager().showItemMessage("You find a herb.", new ItemStack(1529, 1));
-            player.getInventoryManager().b(new ItemStack(1529, 1));
+            player.getInventoryManager().addOrDropItem(new ItemStack(1529, 1));
             return true;
         }
         if (n == 2581 && n4 == 5) {
             Player player5 = player;
             player5.packetSender.sendGameMessage("You search the rock...");
             player.getDialogueManager().showItemMessage("You find a herb.", new ItemStack(1531, 1));
-            player.getInventoryManager().b(new ItemStack(1531, 1));
+            player.getInventoryManager().addOrDropItem(new ItemStack(1531, 1));
             return true;
         }
         if (n == 2583 && n4 == 6) {
@@ -165,7 +165,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         if (n == 740) {
             if (n4 == 0) {
                 if (n2 == 1) {
@@ -266,7 +266,7 @@ extends QuestScript {
                 if (n2 == 4 && player.getInventoryManager().containsItemAmount(1526, 1)) {
                     player.getInventoryManager().removeItem(new ItemStack(1526, 1));
                     player.getDialogueManager().showItemMessage("You give the Snake Weed to Trufitus.", new ItemStack(1526, 1));
-                    player.setQuestState(this.b(), 3);
+                    player.setQuestState(this.getQuestId(), 3);
                     return true;
                 }
                 if (n2 == 15) {
@@ -307,7 +307,7 @@ extends QuestScript {
                 if (n2 == 4 && player.getInventoryManager().containsItemAmount(1528, 1)) {
                     player.getInventoryManager().removeItem(new ItemStack(1528, 1));
                     player.getDialogueManager().showItemMessage("You give the Ardrigal to Trufitus.", new ItemStack(1528, 1));
-                    player.setQuestState(this.b(), 4);
+                    player.setQuestState(this.getQuestId(), 4);
                     return true;
                 }
                 if (n2 == 5) {
@@ -344,7 +344,7 @@ extends QuestScript {
                 if (n2 == 4 && player.getInventoryManager().containsItemAmount(1530, 1)) {
                     player.getInventoryManager().removeItem(new ItemStack(1530, 1));
                     player.getDialogueManager().showItemMessage("You give the Sito Foil to Trufitus.", new ItemStack(1530, 1));
-                    player.setQuestState(this.b(), 5);
+                    player.setQuestState(this.getQuestId(), 5);
                     return true;
                 }
                 if (n2 == 5) {
@@ -381,7 +381,7 @@ extends QuestScript {
                 if (n2 == 4 && player.getInventoryManager().containsItemAmount(1532, 1)) {
                     player.getInventoryManager().removeItem(new ItemStack(1532, 1));
                     player.getDialogueManager().showItemMessage("You give the Volencia Moss to Trufitus.", new ItemStack(1532, 1));
-                    player.setQuestState(this.b(), 6);
+                    player.setQuestState(this.getQuestId(), 6);
                     return true;
                 }
                 if (n2 == 5) {
@@ -422,7 +422,7 @@ extends QuestScript {
                 if (n2 == 4 && player.getInventoryManager().containsItemAmount(1534, 1)) {
                     player.getInventoryManager().removeItem(new ItemStack(1534, 1));
                     player.getDialogueManager().showItemMessage("You give the Rogues Purse to Trufitus.", new ItemStack(1534, 1));
-                    player.setQuestState(this.b(), 7);
+                    player.setQuestState(this.getQuestId(), 7);
                     player.getDialogueManager().setNextDialogueStep(1);
                     return true;
                 }
@@ -454,7 +454,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 4) {
-                    this.c(player);
+                    this.awardCompletionRewards(player);
                     player.getDialogueManager().markDialogueInactive();
                     return true;
                 }

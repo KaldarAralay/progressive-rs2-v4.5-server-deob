@@ -31,8 +31,8 @@ extends CycleEvent {
     @Override
     public final void onStop() {
         HerbPatchManager.getPlayer(this.manager).getUpdateState().setAnimation(1332);
-        HerbPatchManager.getPlayer(this.manager).n(false);
-        HerbPatchManager.getPlayer(this.manager).aN();
+        HerbPatchManager.getPlayer(this.manager).setActionLocked(false);
+        HerbPatchManager.getPlayer(this.manager).resetAnimation();
     }
 }
 

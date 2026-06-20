@@ -19,27 +19,27 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        int n = Server.h();
-        int n2 = 1 + Server.j * n;
-        n = Server.j + Server.j * n;
-        if (Server.i() < n) {
-            n = Server.i();
+        int n = Server.getBotLoginBatchIndex();
+        int n2 = 1 + Server.botLoginBatchSize * n;
+        n = Server.botLoginBatchSize + Server.botLoginBatchSize * n;
+        if (Server.getConfiguredBotCount() < n) {
+            n = Server.getConfiguredBotCount();
         }
         while (n2 <= n) {
             if (n2 > 0 && n2 < ServerSettings.botLoginIdLimit) {
-                BotPlayer.createBotFromPool(n2, "zxcvbn", Server.c());
-                if (n2 == Server.i()) {
+                BotPlayer.createBotFromPool(n2, "zxcvbn", Server.selectNextBotType());
+                if (n2 == Server.getConfiguredBotCount()) {
                     this.stop();
                     return;
                 }
             }
             ++n2;
         }
-        if (this.a == Server.h()) {
+        if (this.a == Server.getBotLoginBatchIndex()) {
             this.stop();
             return;
         }
-        Server.a(Server.h() + 1);
+        Server.setBotLoginBatchIndex(Server.getBotLoginBatchIndex() + 1);
     }
 }
 

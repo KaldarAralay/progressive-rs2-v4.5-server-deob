@@ -38,8 +38,8 @@ public final class PestleAndMortarHandler {
                         return true;
                     }
                     if (player.getQuestState(29) != 1) {
-                        Object object = QuestDefinition.b(29);
-                        object = ((QuestDefinition)object).c();
+                        Object object = QuestDefinition.forId(29);
+                        object = ((QuestDefinition)object).getName();
                         Player player3 = player;
                         player3.packetSender.sendGameMessage("You need to complete " + (String)object + " to do this.");
                         return true;

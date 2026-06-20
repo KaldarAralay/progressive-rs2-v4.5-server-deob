@@ -25,7 +25,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        if (this.leader.isDead() || !this.leader.bW() || !this.leader.dropPartyLeader || this.leader.botTaskState.equals("wait for new task")) {
+        if (this.leader.isDead() || !this.leader.isRegistered() || !this.leader.dropPartyLeader || this.leader.botTaskState.equals("wait for new task")) {
             this.stop();
             return;
         }
@@ -45,7 +45,7 @@ extends TickTask {
                     PathFinder.findPath((Player)object22, ((Position)object).getX(), ((Position)object).getY(), true, 0, 0);
                 }
             }
-            if (GameUtil.h(2) == 0) {
+            if (GameUtil.randomInt(2) == 0) {
                 object22 = null;
                 ItemStack[] itemStackArray = this.leader.getInventoryManager().getContainer().getItems();
                 int n = itemStackArray.length;
@@ -69,7 +69,7 @@ extends TickTask {
             object22 = this.leader.currentBotTask.getRandomTaskAreaPosition();
             PathFinder.getInstance();
             PathFinder.findPath(this.leader, ((Position)object22).getX(), ((Position)object22).getY(), true, 0, 0);
-            int n = GameUtil.h(DropPartyBotManager.dropPartyParticipants.size());
+            int n = GameUtil.randomInt(DropPartyBotManager.dropPartyParticipants.size());
             object = (Player)DropPartyBotManager.dropPartyParticipants.get(n);
             if (!((Player)object).dropPartySentToAssignedDrop && object != this.leader) {
                 ((Player)object).botTaskState = "do task";
@@ -77,7 +77,7 @@ extends TickTask {
             }
             return;
         }
-        if (GameUtil.h(3) == 0) {
+        if (GameUtil.randomInt(3) == 0) {
             this.leader.queuePublicChatMessage(this.leader.botPublicChatMessage, this.leader.botPublicChatColor, this.leader.botPublicChatEffect);
         }
     }

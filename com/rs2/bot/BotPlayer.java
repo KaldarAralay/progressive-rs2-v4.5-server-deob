@@ -36,7 +36,7 @@ extends Player {
 
     private BotPlayer(String object, String string, int n) {
         super(null);
-        this.de = true;
+        this.isBot = true;
         this.botEnabled = true;
         this.az = n;
         this.d(TextUtil.capitalizeFirst((String)object));
@@ -49,7 +49,7 @@ extends Player {
         this.an(ServerSettings.clientBuild);
         this.a(PlayerConnectionState.c);
         try {
-            if (this.br()) {
+            if (this.loadAndValidateLogin()) {
                 this.a("sbot", null, false);
             }
         }
@@ -124,9 +124,9 @@ extends Player {
     @Override
     public final void f() {
         this.a(new Position(ServerSettings.respawnX, ServerSettings.respawnY, ServerSettings.respawnPlane));
-        this.bh();
+        this.randomizeAppearance();
         this.eb();
-        this.bg();
+        this.completeAllQuestStates();
         BotPlayer botPlayer = this;
         botPlayer.packetSender.closeInterfaces();
     }

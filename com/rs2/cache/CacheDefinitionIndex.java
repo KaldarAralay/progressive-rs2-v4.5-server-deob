@@ -13,7 +13,6 @@ import com.rs2.model.clue.NpcClue;
 import com.rs2.model.clue.PuzzleBoxHandler;
 import com.rs2.model.dialogue.DialogueManager;
 import com.rs2.model.item.ItemStack;
-import com.rs2.model.npc.Npc;
 import com.rs2.model.player.Player;
 import com.rs2.model.randomevent.RandomEventRollEvent;
 import com.rs2.model.task.CycleEventHandler;
@@ -29,13 +28,13 @@ public class CacheDefinitionIndex {
     private DefinitionIndexEntry[] npcDefinitionEntries;
 
     public static void dismissRandomEventNpc(Player player) {
-        if (player.fg() != null && !player.fg().isDead()) {
+        if (player.getActiveRandomEventNpc() != null && !player.getActiveRandomEventNpc().isDead()) {
             Player player2 = player;
-            player2.packetSender.sendStillGraphic(86, player.fg().getPosition(), 0x640000);
+            player2.packetSender.sendStillGraphic(86, player.getActiveRandomEventNpc().getPosition(), 0x640000);
             player2 = player;
             player2.packetSender.sendSoundEffect(300, 1, 0);
-            GameplayHelper.a(player.fg());
-            player.c((Npc)null);
+            GameplayHelper.a(player.getActiveRandomEventNpc());
+            player.setActiveRandomEventNpc(null);
         }
     }
 
@@ -275,7 +274,7 @@ public class CacheDefinitionIndex {
                 CacheArchive.giveChallengeQuestionAnswerItem(player, npcClue.getClueItemId());
             }
         } else if (npcClue.getFollowupType() == "Puzzle") {
-            if (PuzzleBoxHandler.isCluePuzzleSolved(player) && player.eM()) {
+            if (PuzzleBoxHandler.isCluePuzzleSolved(player) && player.ownsCluePuzzleBox()) {
                 DialogueManager.a(player, 10009, 2);
                 player.getDialogueManager().showNpcOneLineDialogue("Thank you very much.", 588);
                 player.V = new ItemStack[4];
@@ -284,7 +283,7 @@ public class CacheDefinitionIndex {
                 player.V[2] = new ItemStack(3571, 1);
                 player.V[3] = new ItemStack(3565, 1);
                 player.at = npcClue.getLevel();
-            } else if (player.eM()) {
+            } else if (player.ownsCluePuzzleBox()) {
                 player.getDialogueManager().showNpcOneLineDialogue("The puzzle doesn't seem to be complete yet.", 588);
             } else {
                 player.getDialogueManager().showNpcOneLineDialogue("Hello, Solve this puzzle for me please.", 588);

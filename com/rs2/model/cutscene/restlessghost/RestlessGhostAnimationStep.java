@@ -9,17 +9,17 @@ import com.rs2.model.cutscene.restlessghost.RestlessGhostCutscene;
 
 final class RestlessGhostAnimationStep
 extends CutsceneStep {
-    private /* synthetic */ RestlessGhostCutscene a;
+    private /* synthetic */ RestlessGhostCutscene cutscene;
 
     RestlessGhostAnimationStep(RestlessGhostCutscene restlessGhostCutscene, Cutscene cutscene, int n) {
-        this.a = restlessGhostCutscene;
+        this.cutscene = restlessGhostCutscene;
         super(cutscene, 3);
     }
 
     @Override
-    public final void a() {
-        this.a.c.getUpdateState().setAnimation(1500);
-        this.a.c.getUpdateState().setGraphic(189, 25);
+    public final void executeStep() {
+        this.cutscene.ghost.getUpdateState().setAnimation(1500);
+        this.cutscene.ghost.getUpdateState().setGraphic(189, 25);
     }
 }
 

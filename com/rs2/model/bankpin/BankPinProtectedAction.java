@@ -13,7 +13,7 @@ extends Enum {
      * WARNING - void declaration
      */
     private BankPinProtectedAction() {
-        void cfr_renamed_1;
+        void cfr_renamed_0;
     }
 }
 

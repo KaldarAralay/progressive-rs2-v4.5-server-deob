@@ -23,7 +23,7 @@ implements PacketHandler {
         if (incomingPacket.getOpcode() == 248) {
             n -= 14;
         }
-        if (player.isDead() || player.dJ()) {
+        if (player.isDead() || player.isActionLocked()) {
             return;
         }
         if (player.isMovementLocked()) {
@@ -36,7 +36,7 @@ implements PacketHandler {
             player3.packetSender.sendGameMessage("You are stunned.");
             return;
         }
-        if (DuelRule.j.a(player)) {
+        if (DuelRule.NO_MOVEMENT.isEnabledFor(player)) {
             Player player4 = player;
             player4.packetSender.sendGameMessage("Movements have been disabled during this fight!");
             return;
@@ -49,12 +49,12 @@ implements PacketHandler {
             }
             object = player;
             if (((Player)object).interfaceAction == "duel") {
-                if (player.getDuelSession().i() != null && !player.isInDuelArena()) {
-                    player.getDuelSession().i().getDuelController().a(true);
-                    object = player.getDuelSession().i();
+                if (player.getDuelSession().getOpponent() != null && !player.isInDuelArena()) {
+                    player.getDuelSession().getOpponent().getDuelController().resetDuel(true);
+                    object = player.getDuelSession().getOpponent();
                     ((Player)object).packetSender.sendGameMessage("Other played declined the duel.");
                 }
-                player.getDuelController().a(true);
+                player.getDuelController().resetDuel(true);
             }
             PluginManager.c();
         }
@@ -86,7 +86,7 @@ implements PacketHandler {
         n3 = incomingPacket.getReader().readSignedShort(ByteOrder.LITTLE);
         player.getMovementQueue().clear();
         player.getMovementQueue().setRunPath(incomingPacket.getReader().readSignedByte(ByteTransform.NEGATE) == 1);
-        int n4 = GameUtil.a(player.getPosition().getX(), player.getPosition().getY());
+        int n4 = GameUtil.getRegionId(player.getPosition().getX(), player.getPosition().getY());
         if (player.f == 0 || n4 == 9886 || n4 == 10142) {
             player.getMovementQueue().addStep(new Position(n2, n3));
             n4 = 0;

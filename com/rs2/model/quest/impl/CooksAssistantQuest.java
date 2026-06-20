@@ -12,11 +12,11 @@ public final class CooksAssistantQuest
 extends QuestScript {
     public CooksAssistantQuest(int n) {
         super(2);
-        super.a(1);
+        super.setQuestPointReward(1);
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player stringArray, int n) {
         if (n == 0) {
             stringArray = new String[]{"I can start this quest by speaking to the Cook in the", "Kitchen on the ground floor of Lumbridge Castle."};
             return stringArray;
@@ -38,9 +38,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("1 Quest Point", 12150);
         player2 = player;
@@ -63,7 +63,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         int n5 = n4 - 2;
         if (n == 3806 && n4 >= 2 && n4 < 9) {
             if (n2 == 1) {
@@ -242,7 +242,7 @@ extends QuestScript {
                 if (n2 == 4) {
                     player.getDialogueManager().showPlayerOneLineDialogue("Here's a bucket of milk.", 591);
                     player.getInventoryManager().removeItem(new ItemStack(1927, 1));
-                    player.addQuestState(this.b(), 1);
+                    player.addQuestState(this.getQuestId(), 1);
                     if ((++n5 & 2) == 0 && player.getInventoryManager().containsItem(1933)) {
                         player.getDialogueManager().setNextDialogueStep(5);
                         return true;
@@ -252,7 +252,7 @@ extends QuestScript {
                         return true;
                     }
                     if ((n5 & 1) != 0 && (n5 & 2) != 0 && (n5 & 4) != 0) {
-                        player.setQuestState(this.b(), 9);
+                        player.setQuestState(this.getQuestId(), 9);
                         player.getDialogueManager().setNextDialogueStep(1);
                         return true;
                     }
@@ -262,13 +262,13 @@ extends QuestScript {
                 if (n2 == 5) {
                     player.getDialogueManager().showPlayerOneLineDialogue("Here's a pot of flour.", 591);
                     player.getInventoryManager().removeItem(new ItemStack(1933, 1));
-                    player.addQuestState(this.b(), 2);
+                    player.addQuestState(this.getQuestId(), 2);
                     if (((n5 += 2) & 4) == 0 && player.getInventoryManager().containsItem(1944)) {
                         player.getDialogueManager().setNextDialogueStep(6);
                         return true;
                     }
                     if ((n5 & 1) != 0 && (n5 & 2) != 0 && (n5 & 4) != 0) {
-                        player.setQuestState(this.b(), 9);
+                        player.setQuestState(this.getQuestId(), 9);
                         player.getDialogueManager().setNextDialogueStep(1);
                         return true;
                     }
@@ -278,9 +278,9 @@ extends QuestScript {
                 if (n2 == 6) {
                     player.getDialogueManager().showPlayerOneLineDialogue("Here's a fresh egg.", 591);
                     player.getInventoryManager().removeItem(new ItemStack(1944, 1));
-                    player.addQuestState(this.b(), 4);
+                    player.addQuestState(this.getQuestId(), 4);
                     if (((n5 += 4) & 1) != 0 && (n5 & 2) != 0 && (n5 & 4) != 0) {
-                        player.setQuestState(this.b(), 9);
+                        player.setQuestState(this.getQuestId(), 9);
                         player.getDialogueManager().setNextDialogueStep(1);
                         return true;
                     }
@@ -311,7 +311,7 @@ extends QuestScript {
                 }
                 if (n2 == 6) {
                     player.getDialogueManager().finishDialogue();
-                    this.c(player);
+                    this.awardCompletionRewards(player);
                     return true;
                 }
             }

@@ -29,7 +29,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        this.player.n(false);
+        this.player.setActionLocked(false);
     }
 }
 

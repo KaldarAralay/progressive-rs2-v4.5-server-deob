@@ -30,14 +30,14 @@ extends CycleEvent {
         if (this.manager.growthStages[this.patch.getIndex()] <= 2) {
             int n = this.patch.getIndex();
             this.manager.growthStages[n] = this.manager.growthStages[n] + 1;
-            BushPatchManager.getPlayer(this.manager).getInventoryManager().b(new ItemStack(6055));
+            BushPatchManager.getPlayer(this.manager).getInventoryManager().addOrDropItem(new ItemStack(6055));
         } else {
             this.manager.growthStages[this.patch.getIndex()] = 3;
             bl = true;
             cycleEventContainer.stop();
         }
         BushPatchManager.getPlayer(this.manager).getSkillManager().addExperience(19, 4.0);
-        this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.e();
+        this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.getElapsedMinutes();
         this.manager.refreshConfig();
         if (this.manager.growthStages[this.patch.getIndex()] == 3 && !bl) {
             cycleEventContainer.stop();
@@ -50,8 +50,8 @@ extends CycleEvent {
         BushPatchManager.a(this.manager, this.patch.getIndex());
         Player player = BushPatchManager.getPlayer(this.manager);
         player.packetSender.sendGameMessage("You clear the patch.");
-        BushPatchManager.getPlayer(this.manager).n(false);
-        BushPatchManager.getPlayer(this.manager).aN();
+        BushPatchManager.getPlayer(this.manager).setActionLocked(false);
+        BushPatchManager.getPlayer(this.manager).resetAnimation();
     }
 }
 

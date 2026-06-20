@@ -31,7 +31,7 @@ extends CycleEvent {
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        this.player.n(false);
+        this.player.setActionLocked(false);
         Player player = this.player;
         player.packetSender.queueAgilityMovement(this.deltaX, this.deltaY, true, this.animationId, this.delayedAnimationId, this.duration, this.experience, this.player.getMovementQueue().isRunning(), this.completionMessage);
         cycleEventContainer.stop();

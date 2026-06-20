@@ -12,36 +12,36 @@ import java.awt.Color;
 
 public abstract class QuestScript
 extends QuestHook {
-    private int a;
+    private int questPointReward;
 
     public QuestScript(int n) {
         super(n);
     }
 
-    public String[] a(Player stringArray, int n) {
+    public String[] buildQuestJournal(Player stringArray, int n) {
         stringArray = new String[]{"Quest not added yet!"};
         return stringArray;
     }
 
-    public final int a() {
-        return this.a;
+    public final int getQuestPointReward() {
+        return this.questPointReward;
     }
 
-    public final void a(int n) {
-        this.a = n;
+    public final void setQuestPointReward(int n) {
+        this.questPointReward = n;
     }
 
-    public final void a(Player player) {
+    public final void markQuestComplete(Player player) {
         player.j = true;
         boolean bl = player.isMember();
         Player player2 = player;
         Object object = player2;
         object = this;
-        player2.packetSender.sendInterfaceTextColor(QuestDefinition.b(((QuestHook)object).b()).d(), Color.GREEN);
-        player.setQuestState(this.b(), 1);
+        player2.packetSender.sendInterfaceTextColor(QuestDefinition.forId(((QuestHook)object).getQuestId()).getJournalButtonId(), Color.GREEN);
+        player.setQuestState(this.getQuestId(), 1);
         object = player;
         ((Player)object).packetSender.sendGameMessage("Congratulations! Quest Complete!");
-        player.getQuestManager().d();
+        player.getQuestManager().refreshQuestPointText();
         if (ServerSettings.membershipRequirementMode == 3 && !bl && player.isMember()) {
             player.packetSender.sendGameMessage("You have reached " + ServerSettings.membershipRequirementValue + " quest points and gained access to members content!");
         }
@@ -53,31 +53,31 @@ extends QuestHook {
         }
     }
 
-    public final void b(Player player) {
+    public final void showQuestCompleteInterface(Player player) {
         Object object = player;
         ((Player)object).packetSender.sendInterfacePosition(InterfaceDefinition.interfaceCount <= 12140 ? 6161 : 12145, 0, InterfaceDefinition.interfaceCount <= 12140 ? -40 : 0);
         object = player;
         object = this;
-        ((Player)object).packetSender.sendInterfaceText("You have completed " + QuestDefinition.b(((QuestHook)object).b()).c() + "!", InterfaceDefinition.interfaceCount <= 12140 ? 6160 : 12144);
+        ((Player)object).packetSender.sendInterfaceText("You have completed " + QuestDefinition.forId(((QuestHook)object).getQuestId()).getName() + "!", InterfaceDefinition.interfaceCount <= 12140 ? 6160 : 12144);
         object = player;
         ((Player)object).packetSender.sendMusicJingle(238, 320);
         object = player;
-        ((Player)object).packetSender.sendInterfaceText("" + player.dA(), InterfaceDefinition.interfaceCount <= 12140 ? 1696 : 12147);
+        ((Player)object).packetSender.sendInterfaceText("" + player.getQuestPoints(), InterfaceDefinition.interfaceCount <= 12140 ? 1696 : 12147);
         if (InterfaceDefinition.interfaceCount <= 12140) {
             object = player;
-            ((Player)object).packetSender.sendInterfaceText("" + this.a, 6164);
+            ((Player)object).packetSender.sendInterfaceText("" + this.questPointReward, 6164);
         }
     }
 
-    public void c(Player player) {
+    public void awardCompletionRewards(Player player) {
     }
 
-    public final void d(Player player) {
+    public final void startQuest(Player player) {
         Player player2 = player;
         Object object = player2;
         object = this;
-        player2.packetSender.sendInterfaceTextColor(QuestDefinition.b(((QuestHook)object).b()).d(), Color.YELLOW);
-        player.setQuestState(this.b(), 2);
+        player2.packetSender.sendInterfaceTextColor(QuestDefinition.forId(((QuestHook)object).getQuestId()).getJournalButtonId(), Color.YELLOW);
+        player.setQuestState(this.getQuestId(), 2);
     }
 }
 

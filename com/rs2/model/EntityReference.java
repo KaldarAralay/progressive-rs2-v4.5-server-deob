@@ -26,7 +26,7 @@ public class EntityReference {
     public final Entity resolve() {
         if (this.c == null || this.c.getIndex() == -1) {
             this.c = null;
-            Object object = this.b ? World.f() : World.g();
+            Object object = this.b ? World.getPlayers() : World.getNpcs();
             Entity[] entityArray = object;
             int n = ((Entity[])object).length;
             int n2 = 0;

@@ -8,13 +8,13 @@ import com.rs2.model.player.Player;
 import com.rs2.util.GameUtil;
 
 public final class CasketRewardHandler {
-    private static int[] a = new int[]{995, 1623, 1454};
-    private static int[] b = new int[]{1621, 1619, 1452};
-    private static int[] c = new int[]{1617, 985, 987, 1462};
+    private static int[] commonRewards = new int[]{995, 1623, 1454};
+    private static int[] uncommonRewards = new int[]{1621, 1619, 1452};
+    private static int[] rareRewards = new int[]{1617, 985, 987, 1462};
 
-    public static void a(Player player) {
-        int n = GameUtil.g(999) == 0 ? c[GameUtil.f(4)] : (GameUtil.g(99) == 0 ? b[GameUtil.f(3)] : a[GameUtil.f(3)]);
-        player.getInventoryManager().addItem(new ItemStack(n, n == 995 ? GameUtil.g(2980) + 20 : 1));
+    public static void openCasket(Player player) {
+        int n = GameUtil.randomInclusive(999) == 0 ? rareRewards[GameUtil.randomExclusive(4)] : (GameUtil.randomInclusive(99) == 0 ? uncommonRewards[GameUtil.randomExclusive(3)] : commonRewards[GameUtil.randomExclusive(3)]);
+        player.getInventoryManager().addItem(new ItemStack(n, n == 995 ? GameUtil.randomInclusive(2980) + 20 : 1));
         player.packetSender.sendGameMessage("You open the casket and find some treasure inside.");
     }
 }

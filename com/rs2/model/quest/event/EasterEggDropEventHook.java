@@ -23,7 +23,7 @@ extends QuestHook {
     }
 
     @Override
-    public final void e() {
+    public final void initialize() {
         this.a();
         EasterEggDropRefreshTask easterEggDropRefreshTask = new EasterEggDropRefreshTask(this, ServerSettings.holidayDropRespawnTicks);
         World.getTaskScheduler().schedule(easterEggDropRefreshTask);
@@ -32,24 +32,24 @@ extends QuestHook {
     private void a() {
         int n = 0;
         while (n < ServerSettings.holidayDropSets * 6) {
-            int n2 = 2145 + GameUtil.h(1695);
-            int n3 = 2560 + GameUtil.h(1410);
-            boolean bl = GameUtil.h(2) == 0;
+            int n2 = 2145 + GameUtil.randomInt(1695);
+            int n3 = 2560 + GameUtil.randomInt(1410);
+            boolean bl = GameUtil.randomInt(2) == 0;
             if (!bl) {
-                n2 = 2300 + GameUtil.h(1390);
-                n3 = 9085 + GameUtil.h(1280);
+                n2 = 2300 + GameUtil.randomInt(1390);
+                n3 = 9085 + GameUtil.randomInt(1280);
             }
             bl = false;
             if (WalkingCollisionMap.getTileFlags(n2, n3, 0) != 0) {
                 bl = true;
             }
             while (bl) {
-                n2 = 2145 + GameUtil.h(1695);
-                n3 = 2560 + GameUtil.h(1410);
-                bl = GameUtil.h(2) == 0;
+                n2 = 2145 + GameUtil.randomInt(1695);
+                n3 = 2560 + GameUtil.randomInt(1410);
+                bl = GameUtil.randomInt(2) == 0;
                 if (!bl) {
-                    n2 = 2300 + GameUtil.h(1390);
-                    n3 = 9085 + GameUtil.h(1280);
+                    n2 = 2300 + GameUtil.randomInt(1390);
+                    n3 = 9085 + GameUtil.randomInt(1280);
                 }
                 bl = WalkingCollisionMap.getTileFlags(n2, n3, 0) != 0;
             }

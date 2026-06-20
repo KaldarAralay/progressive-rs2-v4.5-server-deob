@@ -16,7 +16,7 @@ import java.awt.Point;
 
 public class ObeliskTick
 extends TickTask {
-    private static final int activationDelayTicks = (int)GameUtil.b(5L);
+    private static final int activationDelayTicks = (int)GameUtil.secondsToTicks(5L);
     private WildernessObelisk obelisk;
 
     private ObeliskTick(WildernessObelisk wildernessObelisk) {
@@ -45,10 +45,10 @@ extends TickTask {
         this.stop();
         this.obelisk.active = false;
         do {
-            n = GameUtil.a().nextInt(WildernessObelisk.values().length);
+            n = GameUtil.getRandom().nextInt(WildernessObelisk.values().length);
         } while (WildernessObelisk.values()[n] == this.obelisk);
         Position[] positionArray3 = WildernessObelisk.values()[n];
-        Player[] playerArray = World.f();
+        Player[] playerArray = World.getPlayers();
         int n4 = playerArray.length;
         int n5 = 0;
         while (n5 < n4) {
@@ -71,7 +71,7 @@ extends TickTask {
         n4 = 0;
         while (n4 < n8) {
             Position position = positionArray3[n4];
-            World.a(GraphicEffect.createHeight0(342), position);
+            World.sendStillGraphicToNearbyPlayers(GraphicEffect.createHeight0(342), position);
             ++n4;
         }
     }

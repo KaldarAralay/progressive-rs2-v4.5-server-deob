@@ -95,7 +95,7 @@ extends CycleEvent {
     @Override
     public final void onStop() {
         this.player.nextActionSequence();
-        this.player.aN();
+        this.player.resetAnimation();
     }
 }
 

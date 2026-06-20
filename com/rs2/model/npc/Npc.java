@@ -124,7 +124,7 @@ extends Entity {
     }
 
     public Npc(int n) {
-        NpcDefinition npcDefinition = World.i()[n];
+        NpcDefinition npcDefinition = World.getNpcDefinitions()[n];
         int n2 = n;
         Npc npc = this;
         this.npcId = n2;
@@ -189,7 +189,7 @@ extends Entity {
                                         object2 = npc2;
                                         if (!((Npc)object2).b) {
                                             object = object2;
-                                            if (((Npc)object).npcId == 708 && GameUtil.h(30) == 0 && WalkingCollisionMap.getTileFlags(n2 = ((Npc)object2).spawnX + (GameUtil.h(2) == 0 ? -3 - GameUtil.h(4) : 3 + GameUtil.h(4)), n = ((Npc)object2).spawnY + (GameUtil.h(2) == 0 ? -3 - GameUtil.h(4) : 3 + GameUtil.h(4)), ((Entity)object2).getPosition().getPlane()) == 0) {
+                                            if (((Npc)object).npcId == 708 && GameUtil.randomInt(30) == 0 && WalkingCollisionMap.getTileFlags(n2 = ((Npc)object2).spawnX + (GameUtil.randomInt(2) == 0 ? -3 - GameUtil.randomInt(4) : 3 + GameUtil.randomInt(4)), n = ((Npc)object2).spawnY + (GameUtil.randomInt(2) == 0 ? -3 - GameUtil.randomInt(4) : 3 + GameUtil.randomInt(4)), ((Entity)object2).getPosition().getPlane()) == 0) {
                                                 ((Entity)object2).getUpdateState().setGraphic(86, 25);
                                                 ((Npc)object2).moveTo(new Position(n2, n));
                                             }
@@ -276,8 +276,8 @@ extends Entity {
                                     entityUpdateState.setFacePosition(position);
                                     break block49;
                                 }
-                                if (npc2.isMovementLocked() || npc2.isStunned() || !GameUtil.a(0.26)) break block49;
-                                if (!World.c(npc2)) break block46;
+                                if (npc2.isMovementLocked() || npc2.isStunned() || !GameUtil.rollChance(0.26)) break block49;
+                                if (!World.hasNearbyNonBotPlayer(npc2)) break block46;
                                 if (Player.eu != null && Player.eu.getMovementTarget() == npc2) {
                                     System.out.println("npc moved");
                                 }
@@ -285,8 +285,8 @@ extends Entity {
                                 int n6 = npc2.spawnMinPosition.getY();
                                 int n7 = npc2.spawnMaxPosition.getX() - npc2.spawnMinPosition.getX();
                                 int n8 = npc2.spawnMaxPosition.getY() - npc2.spawnMinPosition.getY();
-                                n7 = GameUtil.a().nextInt(n7);
-                                n8 = GameUtil.a().nextInt(n8);
+                                n7 = GameUtil.getRandom().nextInt(n7);
+                                n8 = GameUtil.getRandom().nextInt(n8);
                                 object2 = new Position(n + n7, n6 + n8, npc2.getPosition().getPlane());
                                 npc2.queuePathTo((Position)object2, true);
                             }
@@ -295,31 +295,31 @@ extends Entity {
                             object = object2;
                             if (((Npc)object).npcId != 43) break block51;
                         }
-                        if (GameUtil.h(75) == 0) {
+                        if (GameUtil.randomInt(75) == 0) {
                             ((Entity)object2).getUpdateState().setForcedText("Baa!");
                         }
                     }
                     object = object2;
-                    if (((Npc)object).npcId == 81 && GameUtil.h(75) == 0) {
+                    if (((Npc)object).npcId == 81 && GameUtil.randomInt(75) == 0) {
                         ((Entity)object2).getUpdateState().setForcedText("Moo!");
                     }
                     object = object2;
-                    if (((Npc)object).npcId == 767 && GameUtil.h(75) == 0) {
+                    if (((Npc)object).npcId == 767 && GameUtil.randomInt(75) == 0) {
                         ((Entity)object2).getUpdateState().setForcedText("Mew!");
                     }
-                    if (((Npc)object2).isBanker() && PartyRoomManager.f >= 50000 && PartyRoomManager.a && GameUtil.h(10) == 0) {
-                        double d2 = PartyRoomManager.g.getRemainingTicks();
+                    if (((Npc)object2).isBanker() && PartyRoomManager.partyChestValue >= 50000 && PartyRoomManager.balloonDropPending && GameUtil.randomInt(10) == 0) {
+                        double d2 = PartyRoomManager.balloonDropTask.getRemainingTicks();
                         d = d2 * 0.6;
                         int n = (int)d;
                         object = String.valueOf(n) + " seconds";
                         if (n > 60) {
                             object = String.valueOf(n / 60 + 1) + " mins";
                         }
-                        ((Entity)object2).getUpdateState().setForcedText("Drop party in Party Room in " + (String)object + "! Value: " + GameUtil.d(PartyRoomManager.f));
+                        ((Entity)object2).getUpdateState().setForcedText("Drop party in Party Room in " + (String)object + "! Value: " + GameUtil.formatCompactAmount(PartyRoomManager.partyChestValue));
                     }
                     object = object2;
-                    if (((Npc)object).npcId == 659 && PartyRoomManager.a && GameUtil.h(5) == 0) {
-                        double d3 = PartyRoomManager.g.getRemainingTicks();
+                    if (((Npc)object).npcId == 659 && PartyRoomManager.balloonDropPending && GameUtil.randomInt(5) == 0) {
+                        double d3 = PartyRoomManager.balloonDropTask.getRemainingTicks();
                         d = d3 * 0.6;
                         int n = (int)d;
                         object = String.valueOf(n) + " seconds!";
@@ -330,14 +330,14 @@ extends Entity {
                     }
                 }
                 if (ServerSettings.content2007Enabled) {
-                    GodWarsDungeonManager.a(this);
+                    GodWarsDungeonManager.handleBossBattleCry(this);
                 }
                 this.processStatRestoration();
                 this.getTargetMovement().process();
                 Npc npc4 = npc = this;
                 if (npc.ownerPlayerIndex <= 0 || npc.isDead()) break block52;
                 if (npc.getOwnerPlayer() == null) break block53;
-                if (GameUtil.a(npc.getPosition(), npc.getOwnerPlayer().getPosition(), 15)) break block52;
+                if (GameUtil.isWithinDistance(npc.getPosition(), npc.getOwnerPlayer().getPosition(), 15)) break block52;
                 object = npc;
                 if (((Npc)object).npcId == 3098) break block52;
             }
@@ -347,7 +347,7 @@ extends Entity {
             boolean bl = false;
             object = this;
             this.active = bl;
-            World.b(this);
+            World.unregisterNpc(this);
         }
         if (this.removalDelayTicks > 0) {
             --this.removalDelayTicks;
@@ -487,7 +487,7 @@ extends Entity {
         this.getUpdateState().setAnimation(1818);
         this.getUpdateState().setGraphic(343);
         this.getUpdateState().setForcedText(string);
-        player.n(true);
+        player.setActionLocked(true);
         CycleEventHandler.getInstance().schedule(player, new NpcDialogueTeleportEvent(this, player, n, n2, 0), 4);
     }
 
@@ -496,7 +496,7 @@ extends Entity {
         ((Player)object).getDialogueManager().finishDialogue();
         Player player = object;
         player.packetSender.closeInterfaces();
-        Npc npc2 = npc = new Npc(907 + ((Player)object).dN);
+        Npc npc2 = npc = new Npc(907 + ((Player)object).mageArenaProgressStage);
         player = object;
         ((Player)object).H = npc2;
         this.getUpdateState().setAnimation(717);
@@ -515,7 +515,7 @@ extends Entity {
         this.getUpdateState().setAnimation(n4);
         this.getUpdateState().setGraphic(108);
         this.getUpdateState().setForcedText(string);
-        player.n(true);
+        player.setActionLocked(true);
         player.getAttributes().put("canTakeDamage", Boolean.FALSE);
         CycleEventHandler.getInstance().schedule(player, new AbyssMageTeleportEvent(this, player, 2911, 4832, 0), 4);
     }
@@ -532,7 +532,7 @@ extends Entity {
         if (string != null) {
             this.getUpdateState().setForcedText(string);
         }
-        player.n(true);
+        player.setActionLocked(true);
         CycleEventHandler.getInstance().schedule(player, new NpcRelocationEvent(this, player, n3, n4, n5, bl, (Npc)entity), 4);
     }
 
@@ -710,7 +710,7 @@ extends Entity {
         npc = this;
         this.npcId = n3;
         this.getUpdateState().setUpdateRequired(true);
-        this.definition = World.i()[n];
+        this.definition = World.getNpcDefinitions()[n];
         this.combatDefinition = NpcCombatDefinition.forNpcId(n);
         npc = this;
         this.currentHitpoints = npc.definition.getHitpoints();
@@ -727,7 +727,7 @@ extends Entity {
         npc = this;
         this.npcId = n3;
         this.getUpdateState().setUpdateRequired(true);
-        this.definition = World.i()[n];
+        this.definition = World.getNpcDefinitions()[n];
         this.combatDefinition = NpcCombatDefinition.forNpcId(n);
         this.heal(38);
         this.resetCombatLevels();
@@ -754,10 +754,10 @@ extends Entity {
             boolean bl = false;
             Npc npc = this;
             this.active = bl;
-            World.b(this);
+            World.unregisterNpc(this);
             return null;
         }
-        return World.f()[this.ownerPlayerIndex];
+        return World.getPlayers()[this.ownerPlayerIndex];
     }
 
     public final void setOwnerPlayerIndex(int n) {
@@ -1000,7 +1000,7 @@ extends Entity {
             }
         }
         Npc npc = this;
-        ItemStack[] itemStackArray = NpcDropManager.a(entity, npc.npcId, false);
+        ItemStack[] itemStackArray = NpcDropManager.rollDrops(entity, npc.npcId, false);
         int n = itemStackArray.length;
         int n2 = 0;
         while (n2 < n) {
@@ -1069,8 +1069,8 @@ extends Entity {
             Player player;
             if (entity.isPlayer()) {
                 player = (Player)entity;
-                if (player.q != null) {
-                    entity = player.q.a(player, this.getDeathPosition());
+                if (player.currentGroup != null) {
+                    entity = player.currentGroup.selectLootRecipient(player, this.getDeathPosition());
                 }
             }
             this.dropLootForKiller(entity);
@@ -1080,15 +1080,15 @@ extends Entity {
                     int n;
                     object = this;
                     object = ((Npc)object).definition.getName().toLowerCase();
-                    if (((String)object).contains(player.getSlayerManager().slayerTaskName) && GameUtil.h(n = player.F ? 1 : 2) == 0) {
+                    if (((String)object).contains(player.getSlayerManager().slayerTaskName) && GameUtil.randomInt(n = player.skulled ? 1 : 2) == 0) {
                         this.dropLootForKiller(entity);
                     }
                 }
             }
             if (entity.isPlayer()) {
                 object = this;
-                ((Player)entity).getQuestManager().a(((Npc)object).npcId, (Player)entity, this.getDeathPosition());
-                AbyssManager.a((Player)entity, this);
+                ((Player)entity).getQuestManager().handleNpcDeathDrop(((Npc)object).npcId, (Player)entity, this.getDeathPosition());
+                AbyssManager.rollAbyssPouchDrop((Player)entity, this);
                 ClueKeyHandler.dropRequiredKeyFromNpc((Player)entity, this);
                 Player.rollActionReward();
             }
@@ -1113,7 +1113,7 @@ extends Entity {
 
     public static Npc findByDefinitionId(int n) {
         Npc npc = null;
-        Npc[] npcArray = World.g();
+        Npc[] npcArray = World.getNpcs();
         int n2 = npcArray.length;
         int n3 = 0;
         while (n3 < n2) {
@@ -1139,7 +1139,7 @@ extends Entity {
 
     public static Npc[] findActiveInArea(RectangularArea rectangularArea) {
         ArrayList<Npc> arrayList = new ArrayList<Npc>();
-        Npc[] npcArray = World.g();
+        Npc[] npcArray = World.getNpcs();
         int n = npcArray.length;
         int n2 = 0;
         while (n2 < n) {
@@ -1153,7 +1153,7 @@ extends Entity {
     }
 
     public static Npc findByDefinitionIdAtPosition(int n, Position position) {
-        Npc[] npcArray = World.g();
+        Npc[] npcArray = World.getNpcs();
         int n2 = npcArray.length;
         int n3 = 0;
         while (n3 < n2) {
@@ -1170,12 +1170,12 @@ extends Entity {
     }
 
     public static void refreshNearbyTransformedNpcs(Player player) {
-        Npc[] npcArray = World.g();
+        Npc[] npcArray = World.getNpcs();
         int n = npcArray.length;
         int n2 = 0;
         while (n2 < n) {
             Npc npc = npcArray[n2];
-            if (npc != null && GameUtil.a(player.getPosition(), npc.getPosition(), 25) && player.getPosition().getPlane() == npc.getPosition().getPlane()) {
+            if (npc != null && GameUtil.isWithinDistance(player.getPosition(), npc.getPosition(), 25) && player.getPosition().getPlane() == npc.getPosition().getPlane()) {
                 Npc npc2 = npc;
                 if (npc2.transformTicksRemaining > 0) {
                     npc.getUpdateState().setUpdateRequired(true);
@@ -1198,12 +1198,12 @@ extends Entity {
     }
 
     public final boolean wouldCollideWithNpc(int n, int n2) {
-        Npc[] npcArray = World.g();
+        Npc[] npcArray = World.getNpcs();
         int n3 = npcArray.length;
         int n4 = 0;
         while (n4 < n3) {
             Npc npc = npcArray[n4];
-            if (npc != null && npc != this && !this.isDead() && !npc.isDead() && npc.getPosition().getPlane() == this.getPosition().getPlane() && GameUtil.a(this.getPosition().getX(), this.getPosition().getY(), npc.getPosition().getX(), npc.getPosition().getY(), npc.getSize() + this.getSize())) {
+            if (npc != null && npc != this && !this.isDead() && !npc.isDead() && npc.getPosition().getPlane() == this.getPosition().getPlane() && GameUtil.isWithinDistance(this.getPosition().getX(), this.getPosition().getY(), npc.getPosition().getX(), npc.getPosition().getY(), npc.getSize() + this.getSize())) {
                 boolean bl;
                 block8: {
                     int n5 = n2;
@@ -1285,11 +1285,11 @@ extends Entity {
                 return position.equals(new Position(n - 2, n2, n3));
             }
         }
-        return GameUtil.a(this.getPosition(), position, 1);
+        return GameUtil.isWithinDistance(this.getPosition(), position, 1);
     }
 
     public final boolean isWithinInteractionDistance(Position position, int n) {
-        return GameUtil.a(this.getPosition(), position, n);
+        return GameUtil.isWithinDistance(this.getPosition(), position, n);
     }
 
     public final Position getFacingInteractionPosition(int n) {

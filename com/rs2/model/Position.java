@@ -129,17 +129,17 @@ public class Position {
     }
 
     public static int updateLocalX(Player player) {
-        int n = player.bt().getRegionX() << 3;
+        int n = player.getLastKnownRegionPosition().getRegionX() << 3;
         Position position = player.getPosition();
-        player.g = position.x - n;
-        return player.g;
+        player.localX = position.x - n;
+        return player.localX;
     }
 
     public static int updateLocalY(Player player) {
-        int n = player.bt().getRegionY() << 3;
+        int n = player.getLastKnownRegionPosition().getRegionY() << 3;
         Position position = player.getPosition();
-        player.h = position.y - n;
-        return player.h;
+        player.localY = position.y - n;
+        return player.localY;
     }
 
     public final boolean isWithinViewport(Position position) {
@@ -149,7 +149,7 @@ public class Position {
         if (position2.plane != position3.plane) {
             return false;
         }
-        position3 = position = GameUtil.a(this, position);
+        position3 = position = GameUtil.getDelta(this, position);
         if (position.x <= 14) {
             position3 = position;
             if (position3.x >= -15) {
@@ -172,7 +172,7 @@ public class Position {
         if (position2.plane != position3.plane) {
             return false;
         }
-        return GameUtil.a(this, position, n);
+        return GameUtil.isWithinDistance(this, position, n);
     }
 
     public final Position copy() {
@@ -196,7 +196,7 @@ public class Position {
         block5: {
             Position position2;
             block4: {
-                position2 = position = GameUtil.a(this, position);
+                position2 = position = GameUtil.getDelta(this, position);
                 position2 = position;
                 if (position.x == position2.y) break block4;
                 position2 = position;

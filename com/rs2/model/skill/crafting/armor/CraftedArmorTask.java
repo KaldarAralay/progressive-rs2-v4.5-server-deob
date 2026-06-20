@@ -24,7 +24,7 @@ extends CycleEvent {
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
         if (!this.action.player.isCurrentActionSequence(this.actionSequence) || this.remainingActions == 0) {
-            this.action.player.aN();
+            this.action.player.resetAnimation();
             if (this.action.player.botEnabled) {
                 this.action.player.currentBotTask.startWalkToBank(this.action.player);
             }
@@ -52,10 +52,10 @@ extends CycleEvent {
         this.action.player.getUpdateState().setAnimation(1249);
         Player player = this.action.player;
         player.packetSender.sendGameMessage("You make some " + new ItemStack(this.action.productItemId).getDefinition().getName().toLowerCase() + ".");
-        ++this.action.player.w;
-        if (this.action.player.w >= 5) {
+        ++this.action.player.craftingThreadUseCount;
+        if (this.action.player.craftingThreadUseCount >= 5) {
             this.action.player.getInventoryManager().removeItem(new ItemStack(1734));
-            this.action.player.w = 0;
+            this.action.player.craftingThreadUseCount = 0;
         }
         this.action.player.getInventoryManager().removeItem(new ItemStack(this.action.materialItemId, this.action.materialAmount));
         this.action.player.getInventoryManager().addItem(new ItemStack(this.action.productItemId));
@@ -66,7 +66,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        this.action.player.aN();
+        this.action.player.resetAnimation();
     }
 }
 

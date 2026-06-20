@@ -28,7 +28,7 @@ extends CycleEvent {
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
         if (this.a) {
-            PacketSender.a(this.b).n(false);
+            PacketSender.a(this.b).setActionLocked(false);
             cycleEventContainer.stop();
         }
         this.a = true;
@@ -36,8 +36,8 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        PacketSender.a(this.b).ak(-1);
-        PacketSender.a(this.b).f(true);
+        PacketSender.a(this.b).setWalkAnimationOverride(-1);
+        PacketSender.a(this.b).setAppearanceUpdateRequired(true);
         Player player = PacketSender.a(this.b);
         player.packetSender.sendGameMessage(this.c);
         PacketSender.a(this.b).getSkillManager().addExperience(16, this.d);

@@ -6,29 +6,29 @@ package com.rs2.model.skill;
 import com.rs2.model.item.ItemStack;
 
 public enum GatheringToolDefinition {
-    a(6739, 61, 3.75, new int[]{2846, 2847}, 0, 6743, 6741, 8),
-    b(1359, 41, 3.5, new int[]{867, 868}, 0, 520, 506, 8),
-    c(1357, 31, 3.0, new int[]{869, 870}, 0, 518, 504, 8),
-    d(1355, 21, 2.5, new int[]{871, 872}, 0, 516, 502, 8),
-    e(1361, 11, 2.25, new int[]{873, 874}, 0, 514, 500, 8),
-    f(1353, 6, 2.0, new int[]{875, 876}, 0, 512, 498, 8),
-    g(1349, 1, 1.5, new int[]{877, 878}, 0, 510, 496, 8),
-    h(1351, 1, 1.0, new int[]{879, 880}, 0, 508, 494, 8),
-    i(1275, 41, 3.0, new int[]{624}, 432, 490, 478, 14),
-    j(1271, 31, 4.0, new int[]{628}, 432, 488, 476, 14),
-    k(1273, 21, 5.0, new int[]{629}, 432, 486, 474, 14),
-    l(1269, 6, 6.0, new int[]{627}, 432, 484, 472, 14),
-    m(1267, 1, 7.0, new int[]{626}, 432, 482, 470, 14),
-    n(1265, 1, 8.0, new int[]{625}, 432, 480, 468, 14);
+    DRAGON_AXE(6739, 61, 3.75, new int[]{2846, 2847}, 0, 6743, 6741, 8),
+    RUNE_AXE(1359, 41, 3.5, new int[]{867, 868}, 0, 520, 506, 8),
+    ADAMANT_AXE(1357, 31, 3.0, new int[]{869, 870}, 0, 518, 504, 8),
+    MITHRIL_AXE(1355, 21, 2.5, new int[]{871, 872}, 0, 516, 502, 8),
+    BLACK_AXE(1361, 11, 2.25, new int[]{873, 874}, 0, 514, 500, 8),
+    STEEL_AXE(1353, 6, 2.0, new int[]{875, 876}, 0, 512, 498, 8),
+    IRON_AXE(1349, 1, 1.5, new int[]{877, 878}, 0, 510, 496, 8),
+    BRONZE_AXE(1351, 1, 1.0, new int[]{879, 880}, 0, 508, 494, 8),
+    RUNE_PICKAXE(1275, 41, 3.0, new int[]{624}, 432, 490, 478, 14),
+    ADAMANT_PICKAXE(1271, 31, 4.0, new int[]{628}, 432, 488, 476, 14),
+    MITHRIL_PICKAXE(1273, 21, 5.0, new int[]{629}, 432, 486, 474, 14),
+    STEEL_PICKAXE(1269, 6, 6.0, new int[]{627}, 432, 484, 472, 14),
+    IRON_PICKAXE(1267, 1, 7.0, new int[]{626}, 432, 482, 470, 14),
+    BRONZE_PICKAXE(1265, 1, 8.0, new int[]{625}, 432, 480, 468, 14);
 
-    private int o;
-    private int p;
-    private int[] q;
-    private double r;
-    private int s;
-    private int t;
-    private int u;
-    private int v;
+    private int toolItemId;
+    private int requiredLevel;
+    private int[] animationIds;
+    private double toolSpeed;
+    private int graphicId;
+    private int toolHeadItemId;
+    private int brokenToolItemId;
+    private int skillId;
 
     /*
      * WARNING - Possible parameter corruption
@@ -37,58 +37,58 @@ public enum GatheringToolDefinition {
     private GatheringToolDefinition(double d, int[] nArray, int n3, int n22, int n4, int n5) {
         void var11_8;
         void var10_7;
-        void cfr_renamed_4;
+        void cfr_renamed_3;
         void var4_2;
-        this.o = (int)d;
-        this.p = var4_2;
-        this.r = (double)nArray;
-        this.q = cfr_renamed_4;
-        this.s = n4;
-        this.t = n5;
-        this.u = var10_7;
-        this.v = var11_8;
+        this.toolItemId = (int)d;
+        this.requiredLevel = var4_2;
+        this.toolSpeed = (double)nArray;
+        this.animationIds = cfr_renamed_3;
+        this.graphicId = n4;
+        this.toolHeadItemId = n5;
+        this.brokenToolItemId = var10_7;
+        this.skillId = var11_8;
     }
 
-    public final int a() {
-        return this.o;
+    public final int getToolItemId() {
+        return this.toolItemId;
     }
 
-    public final int b() {
-        return this.p;
+    public final int getRequiredLevel() {
+        return this.requiredLevel;
     }
 
-    public final int c() {
-        return this.t;
+    public final int getToolHeadItemId() {
+        return this.toolHeadItemId;
     }
 
-    public final int d() {
-        return this.q[0];
+    public final int getGatherAnimationId() {
+        return this.animationIds[0];
     }
 
-    public final int e() {
-        return this.q[1];
+    public final int getCanoeAnimationId() {
+        return this.animationIds[1];
     }
 
-    public final double f() {
-        return this.r;
+    public final double getToolSpeed() {
+        return this.toolSpeed;
     }
 
-    public final int g() {
-        return this.s;
+    public final int getGraphicId() {
+        return this.graphicId;
     }
 
-    public final int h() {
-        return this.u;
+    public final int getBrokenToolItemId() {
+        return this.brokenToolItemId;
     }
 
-    public final int i() {
-        return this.v;
+    public final int getSkillId() {
+        return this.skillId;
     }
 
-    public final int j() {
+    public final int getRepairCostCoins() {
         Object object = this;
-        object = new ItemStack(object.u, 1);
-        return ((ItemStack)object).getDefinition().n();
+        object = new ItemStack(object.brokenToolItemId, 1);
+        return ((ItemStack)object).getDefinition().getValue();
     }
 }
 

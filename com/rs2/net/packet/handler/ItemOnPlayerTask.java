@@ -13,74 +13,74 @@ import com.rs2.util.GameUtil;
 
 final class ItemOnPlayerTask
 extends TickTask {
-    private final /* synthetic */ Player a;
-    private final /* synthetic */ Player b;
-    private final /* synthetic */ int c;
-    private final /* synthetic */ ItemStack d;
-    private final /* synthetic */ int e;
+    private final /* synthetic */ Player targetPlayer;
+    private final /* synthetic */ Player requestingPlayer;
+    private final /* synthetic */ int actionSequence;
+    private final /* synthetic */ ItemStack usedItem;
+    private final /* synthetic */ int inventorySlot;
 
     ItemOnPlayerTask(PlayerInteractionPacketHandler playerInteractionPacketHandler, int n, Player player, Player player2, int n2, ItemStack itemStack, int n3) {
-        this.a = player;
-        this.b = player2;
-        this.c = n2;
-        this.d = itemStack;
-        this.e = n3;
+        this.targetPlayer = player;
+        this.requestingPlayer = player2;
+        this.actionSequence = n2;
+        this.usedItem = itemStack;
+        this.inventorySlot = n3;
         super(1);
     }
 
     @Override
     public final void execute() {
-        if (this.a == null || this.a.isDead() || !this.b.isCurrentActionSequence(this.c)) {
-            EntityTargetMovement.clearMovementTarget(this.b);
-            this.b.setInteractionTarget(null);
-            this.b.getMovementQueue().clear();
+        if (this.targetPlayer == null || this.targetPlayer.isDead() || !this.requestingPlayer.isCurrentActionSequence(this.actionSequence)) {
+            EntityTargetMovement.clearMovementTarget(this.requestingPlayer);
+            this.requestingPlayer.setInteractionTarget(null);
+            this.requestingPlayer.getMovementQueue().clear();
             this.stop();
             return;
         }
-        if (this.b.isWithinReach(this.a, 1) && !this.b.isOverlapping(this.a) && !EntityTargetMovement.isDiagonalTo(this.b.getPosition(), this.a.getPosition())) {
-            if (this.d.getDefinition().g() && (this.b.gameMode != 0 || this.a.gameMode != 0)) {
-                this.b.K = this.d;
-                this.b.L = this.a;
-                DialogueManager.startDialogue(this.b, 12345);
-                EntityTargetMovement.clearMovementTarget(this.b);
-                this.b.getUpdateState().setFacePosition(this.a.getPosition());
-                this.b.setInteractionTarget(null);
-                this.b.getMovementQueue().clear();
+        if (this.requestingPlayer.isWithinReach(this.targetPlayer, 1) && !this.requestingPlayer.isOverlapping(this.targetPlayer) && !EntityTargetMovement.isDiagonalTo(this.requestingPlayer.getPosition(), this.targetPlayer.getPosition())) {
+            if (this.usedItem.getDefinition().g() && (this.requestingPlayer.gameMode != 0 || this.targetPlayer.gameMode != 0)) {
+                this.requestingPlayer.pendingDialogueItem = this.usedItem;
+                this.requestingPlayer.pendingItemDropTarget = this.targetPlayer;
+                DialogueManager.startDialogue(this.requestingPlayer, 12345);
+                EntityTargetMovement.clearMovementTarget(this.requestingPlayer);
+                this.requestingPlayer.getUpdateState().setFacePosition(this.targetPlayer.getPosition());
+                this.requestingPlayer.setInteractionTarget(null);
+                this.requestingPlayer.getMovementQueue().clear();
                 this.stop();
             }
-            switch (this.d.getId()) {
+            switch (this.usedItem.getId()) {
                 case 962: {
-                    this.b.getInventoryManager().removeItem(this.d);
-                    Player player = this.b;
-                    player.packetSender.sendGameMessage("You pull the cracker with " + this.a.getUsername() + "...");
-                    player = this.a;
-                    player.packetSender.sendGameMessage(String.valueOf(this.b.getUsername()) + " pulls a Christmas cracker with you...");
-                    if (GameUtil.g(1) == 1) {
-                        player = this.b;
+                    this.requestingPlayer.getInventoryManager().removeItem(this.usedItem);
+                    Player player = this.requestingPlayer;
+                    player.packetSender.sendGameMessage("You pull the cracker with " + this.targetPlayer.getUsername() + "...");
+                    player = this.targetPlayer;
+                    player.packetSender.sendGameMessage(String.valueOf(this.requestingPlayer.getUsername()) + " pulls a Christmas cracker with you...");
+                    if (GameUtil.randomInclusive(1) == 1) {
+                        player = this.requestingPlayer;
                         player.packetSender.sendGameMessage("  ... and get a partyhat! Merry Christmas!");
-                        player = this.a;
+                        player = this.targetPlayer;
                         player.packetSender.sendGameMessage("  ... and they get a partyhat! But have some coins anyways, Merry Christmas!");
-                        this.a.getInventoryManager().addItem(new ItemStack(995, 5 + GameUtil.g(100)));
-                        this.b.getInventoryManager().a(new ItemStack(1038 + (GameUtil.g(5) << 1)), this.e);
+                        this.targetPlayer.getInventoryManager().addItem(new ItemStack(995, 5 + GameUtil.randomInclusive(100)));
+                        this.requestingPlayer.getInventoryManager().setItemInSlot(new ItemStack(1038 + (GameUtil.randomInclusive(5) << 1)), this.inventorySlot);
                         break;
                     }
-                    player = this.a;
+                    player = this.targetPlayer;
                     player.packetSender.sendGameMessage("  ... and you get a partyhat! Merry Christmas!");
-                    player = this.b;
+                    player = this.requestingPlayer;
                     player.packetSender.sendGameMessage("  ... and they get a partyhat! But have some coins anyways, Merry Christmas!");
-                    this.b.getInventoryManager().a(new ItemStack(995, 5 + GameUtil.g(100)), this.e);
-                    this.a.getInventoryManager().addItem(new ItemStack(1038 + (GameUtil.g(5) << 1)));
+                    this.requestingPlayer.getInventoryManager().setItemInSlot(new ItemStack(995, 5 + GameUtil.randomInclusive(100)), this.inventorySlot);
+                    this.targetPlayer.getInventoryManager().addItem(new ItemStack(1038 + (GameUtil.randomInclusive(5) << 1)));
                     break;
                 }
                 default: {
-                    Player player = this.b;
+                    Player player = this.requestingPlayer;
                     player.packetSender.sendGameMessage("Nothing interesting happens.");
                 }
             }
-            EntityTargetMovement.clearMovementTarget(this.b);
-            this.b.getUpdateState().setFacePosition(this.a.getPosition());
-            this.b.setInteractionTarget(null);
-            this.b.getMovementQueue().clear();
+            EntityTargetMovement.clearMovementTarget(this.requestingPlayer);
+            this.requestingPlayer.getUpdateState().setFacePosition(this.targetPlayer.getPosition());
+            this.requestingPlayer.setInteractionTarget(null);
+            this.requestingPlayer.getMovementQueue().clear();
             this.stop();
         }
     }

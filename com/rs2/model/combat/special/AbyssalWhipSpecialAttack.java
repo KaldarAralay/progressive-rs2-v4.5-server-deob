@@ -25,7 +25,7 @@ extends WeaponCombatAttack {
             return false;
         }
         double d = this.calculateMaxHit();
-        if (GameUtil.g(1) == 1) {
+        if (GameUtil.randomInclusive(1) == 1) {
             d = 0.0;
         }
         this.setAttackSoundId(1081);

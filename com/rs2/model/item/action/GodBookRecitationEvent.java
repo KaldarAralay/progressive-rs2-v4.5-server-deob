@@ -9,27 +9,27 @@ import com.rs2.model.task.CycleEventContainer;
 
 final class GodBookRecitationEvent
 extends CycleEvent {
-    private final /* synthetic */ Player a;
-    private final /* synthetic */ String[] b;
+    private final /* synthetic */ Player player;
+    private final /* synthetic */ String[] recitationLines;
 
     GodBookRecitationEvent(Player player, String[] stringArray) {
-        this.a = player;
-        this.b = stringArray;
+        this.player = player;
+        this.recitationLines = stringArray;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        if (this.a.O == this.b.length) {
+        if (this.player.O == this.recitationLines.length) {
             cycleEventContainer.stop();
             return;
         }
-        this.a.getUpdateState().setForcedText(this.b[this.a.O]);
-        ++this.a.O;
+        this.player.getUpdateState().setForcedText(this.recitationLines[this.player.O]);
+        ++this.player.O;
     }
 
     @Override
     public final void onStop() {
-        this.a.n(false);
+        this.player.setActionLocked(false);
     }
 }
 

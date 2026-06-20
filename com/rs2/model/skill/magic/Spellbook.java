@@ -188,8 +188,8 @@ extends Enum {
     private Spellbook() {
         void var4_1;
         void var3_2;
-        void cfr_renamed_2;
         void cfr_renamed_1;
+        void cfr_renamed_0;
         this.spellByButtonId = var3_2;
         this.autocastSpellByButtonId = var4_1;
     }

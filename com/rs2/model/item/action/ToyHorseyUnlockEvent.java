@@ -9,15 +9,15 @@ import com.rs2.model.task.CycleEventContainer;
 
 final class ToyHorseyUnlockEvent
 extends CycleEvent {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
     ToyHorseyUnlockEvent(Player player) {
-        this.a = player;
+        this.player = player;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        this.a.n(false);
+        this.player.setActionLocked(false);
         cycleEventContainer.stop();
     }
 

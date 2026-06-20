@@ -15,44 +15,44 @@ import java.io.FilterOutputStream;
 import org.joda.time.DateTime;
 
 public final class MessageOfTheWeek {
-    private static int a = 5993;
-    private static int b = 15767;
-    private static int c = 15774;
-    private static int d = 15819;
-    private int e;
-    private String[] f;
-    private String g;
-    private static MessageOfTheWeek[] h = new MessageOfTheWeek[]{new MessageOfTheWeek(c, false, "Your password is only as safe as your computer.", "Install anti-virus software!"), new MessageOfTheWeek(a, false, "Out of date anti-virus software is useless.", "Update it often and run regular scans!")};
-    private static MessageOfTheWeek i = new MessageOfTheWeek(b, false, "Halloween has arrived to RuneScape!", "");
-    private static MessageOfTheWeek j = new MessageOfTheWeek(d, false, "JaGeX wishes you a Merry Christmas", "and a Happy New Year!");
-    private static MessageOfTheWeek k = new MessageOfTheWeek(b, false, "Easter has arrived to RuneScape!", "");
+    private static int antivirusMessageInterfaceId = 5993;
+    private static int holidayMessageInterfaceId = 15767;
+    private static int passwordMessageInterfaceId = 15774;
+    private static int christmasMessageInterfaceId = 15819;
+    private int interfaceId;
+    private String[] lines;
+    private String title;
+    private static MessageOfTheWeek[] normalMessages = new MessageOfTheWeek[]{new MessageOfTheWeek(passwordMessageInterfaceId, false, "Your password is only as safe as your computer.", "Install anti-virus software!"), new MessageOfTheWeek(antivirusMessageInterfaceId, false, "Out of date anti-virus software is useless.", "Update it often and run regular scans!")};
+    private static MessageOfTheWeek halloweenMessage = new MessageOfTheWeek(holidayMessageInterfaceId, false, "Halloween has arrived to RuneScape!", "");
+    private static MessageOfTheWeek christmasMessage = new MessageOfTheWeek(christmasMessageInterfaceId, false, "JaGeX wishes you a Merry Christmas", "and a Happy New Year!");
+    private static MessageOfTheWeek easterMessage = new MessageOfTheWeek(holidayMessageInterfaceId, false, "Easter has arrived to RuneScape!", "");
 
     private MessageOfTheWeek(int n, boolean bl, String ... stringArray) {
-        this.e = n;
-        this.f = stringArray;
-        this.g = "Message of the week";
+        this.interfaceId = n;
+        this.lines = stringArray;
+        this.title = "Message of the week";
     }
 
-    public static MessageOfTheWeek a(int n) {
-        if (Server.f) {
-            return i;
+    public static MessageOfTheWeek getMessageForIndex(int n) {
+        if (Server.halloweenEventActive) {
+            return halloweenMessage;
         }
-        if (Server.g) {
-            return j;
+        if (Server.christmasEventActive) {
+            return christmasMessage;
         }
-        if (Server.h) {
-            return k;
+        if (Server.easterEventActive) {
+            return easterMessage;
         }
-        return h[n];
+        return normalMessages[n];
     }
 
-    private static void e() {
+    private static void saveCurrentMessageIndex() {
         Object object = new File("./data/messageOfTheWeek.dat");
         ((File)object).delete();
         try {
             object = new CountingDataOutputStream(new FileOutputStream("./data/messageOfTheWeek.dat"));
             ((CountingDataOutputStream)object).writeLong(System.currentTimeMillis());
-            ((CountingDataOutputStream)object).writeUnsignedByte(Server.i);
+            ((CountingDataOutputStream)object).writeUnsignedByte(Server.messageOfTheWeekIndex);
             ((FilterOutputStream)object).close();
             return;
         }
@@ -61,7 +61,7 @@ public final class MessageOfTheWeek {
         }
     }
 
-    public static void a() {
+    public static void loadAndRotateMessage() {
         long l;
         DateTime dateTime;
         long l2 = 0L;
@@ -72,34 +72,34 @@ public final class MessageOfTheWeek {
                 ByteArrayReader byteArrayReader = new ByteArrayReader((byte[])object);
                 object = byteArrayReader;
                 l2 = byteArrayReader.readLong();
-                Server.i = ((ByteArrayReader)object).readUnsignedByte();
+                Server.messageOfTheWeekIndex = ((ByteArrayReader)object).readUnsignedByte();
             }
             catch (Exception exception) {
                 Exception exception2 = exception;
                 exception.printStackTrace();
             }
         }
-        if (Server.f || Server.g || Server.h) {
-            Server.i = 250;
-            MessageOfTheWeek.e();
+        if (Server.halloweenEventActive || Server.christmasEventActive || Server.easterEventActive) {
+            Server.messageOfTheWeekIndex = 250;
+            MessageOfTheWeek.saveCurrentMessageIndex();
             return;
         }
-        if (GameplayHelper.a(l2, l3) > 0 && (dateTime = new DateTime(l = l3)).dayOfWeek().get() == 1 || Server.i == 250 || l2 == 0L) {
-            Server.i = GameUtil.h(h.length);
-            MessageOfTheWeek.e();
+        if (GameplayHelper.a(l2, l3) > 0 && (dateTime = new DateTime(l = l3)).dayOfWeek().get() == 1 || Server.messageOfTheWeekIndex == 250 || l2 == 0L) {
+            Server.messageOfTheWeekIndex = GameUtil.randomInt(normalMessages.length);
+            MessageOfTheWeek.saveCurrentMessageIndex();
         }
     }
 
-    public final int b() {
-        return this.e;
+    public final int getInterfaceId() {
+        return this.interfaceId;
     }
 
-    public final String c() {
-        return this.g;
+    public final String getTitle() {
+        return this.title;
     }
 
-    public final String[] d() {
-        return this.f;
+    public final String[] getLines() {
+        return this.lines;
     }
 }
 

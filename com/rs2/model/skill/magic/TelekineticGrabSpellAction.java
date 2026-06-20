@@ -69,14 +69,14 @@ extends MagicSpellAction {
                     TelekineticGrabSpellAction.continueBotGroundItemLoot(this.caster, this.groundItem, false);
                     return;
                 }
-                if (!this.caster.getTelekineticTheatreController().g()) {
+                if (!this.caster.getTelekineticTheatreController().isInsideTheatre()) {
                     this.caster.getInventoryManager().addItem(new ItemStack(this.groundItem.getItem().getId(), this.groundItem.getItem().getAmount(), this.groundItem.getItem().getMetadata()));
                     if (!this.caster.botEnabled) return;
                     TelekineticGrabSpellAction.continueBotGroundItemLoot(this.caster, this.groundItem, true);
                     return;
                 }
                 if (this.itemId != 6888) return;
-                object = this.caster.getTelekineticTheatreController().a(this.caster.getTelekineticTheatreController().b);
+                object = this.caster.getTelekineticTheatreController().getPlayerMazeSide(this.caster.getTelekineticTheatreController().mazeIndex);
                 int n = 0;
                 int n2 = 0;
                 if (object == "right") {
@@ -137,7 +137,7 @@ extends MagicSpellAction {
                         break;
                     }
                     n4 += n10;
-                    if (!position4.equals(position3) && !GameUtil.a(position3, position4, true)) {
+                    if (!position4.equals(position3) && !GameUtil.hasClearPath(position3, position4, true)) {
                         n4 = ((PathStep)pathResult.getSteps().getLast()).getX();
                         int n11 = ((PathStep)pathResult.getSteps().getLast()).getY();
                         position = new Position(n4, n11, ((Position)object2).getPlane());
@@ -156,12 +156,12 @@ extends MagicSpellAction {
                     ++n3;
                 }
                 object2 = position;
-                if (!this.caster.getTelekineticTheatreController().a((Position)object2)) {
+                if (!this.caster.getTelekineticTheatreController().isMazeTargetPosition((Position)object2)) {
                     object2 = new GroundItem(new ItemStack(6888, 1), this.caster, (Position)object2);
                     GroundItemManager.getInstance().spawn((GroundItem)object2);
                     return;
                 }
-                this.caster.getTelekineticTheatreController().d();
+                this.caster.getTelekineticTheatreController().completeMaze();
                 return;
             }
         }

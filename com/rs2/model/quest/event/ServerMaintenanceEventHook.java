@@ -28,19 +28,19 @@ extends QuestHook {
     }
 
     @Override
-    public final void e() {
+    public final void initialize() {
         TickTask tickTask;
         if (ServerSettings.relogFrozenBotsEnabled && (ServerSettings.skillingBotsEnabled || ServerSettings.progressiveBotsEnabled)) {
             tickTask = new FrozenBotRelogScanTask(this, 100);
             World.getTaskScheduler().schedule(tickTask);
         }
         if (ServerSettings.grandExchangeServerOffersEnabled && ServerSettings.grandExchangeEnabled && !ServerSettings.instantGrandExchangeEnabled) {
-            GrandExchangeOffer.a();
+            GrandExchangeOffer.initializeServerOffers();
             tickTask = new GrandExchangeOfferUpdateTask(this, 100);
             World.getTaskScheduler().schedule(tickTask);
         }
         if (ServerSettings.grandExchangeEnabled && ServerSettings.instantGrandExchangeEnabled && ServerSettings.instantGrandExchangePriceFluctuationEnabled) {
-            GrandExchangeManager.a();
+            GrandExchangeManager.rollInstantPriceFluctuation();
             tickTask = new GrandExchangeManagerRefreshTask(this, 1000);
             World.getTaskScheduler().schedule(tickTask);
         }
@@ -49,7 +49,7 @@ extends QuestHook {
             World.getTaskScheduler().schedule(tickTask);
         }
         if (ServerSettings.cacheVerificationShutdownPending) {
-            tickTask = new ScheduledServerExitTask(this, 200 + GameUtil.h(300));
+            tickTask = new ScheduledServerExitTask(this, 200 + GameUtil.randomInt(300));
             World.getTaskScheduler().schedule(tickTask);
         }
         if (ServerSettings.clanWarsBotsEnabled && ServerSettings.clanWarsTeamSize > 0) {

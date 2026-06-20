@@ -19,9 +19,9 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        this.a.n(false);
+        this.a.setActionLocked(false);
         this.a.getInventoryManager().removeItem(new ItemStack(4007, 1));
-        this.a.getInventoryManager().b(new ItemStack(4022, 1));
+        this.a.getInventoryManager().addOrDropItem(new ItemStack(4022, 1));
         Player player = this.a;
         player.packetSender.sendGameMessage("You smith the enchanted gold into an amulet.");
         this.stop();

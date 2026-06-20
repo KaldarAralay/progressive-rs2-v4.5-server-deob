@@ -20,49 +20,49 @@ import java.util.ArrayList;
 
 public final class RestlessGhostCutscene
 extends Cutscene {
-    static QuestScript a = QuestDefinition.a(12);
-    Player b = this.a();
-    Npc c = this.a(0);
+    static QuestScript questScript = QuestDefinition.getQuestScript(12);
+    Player player = this.getPlayer();
+    Npc ghost = this.getNpc(0);
 
     public RestlessGhostCutscene(Player player, ArrayList arrayList) {
         super(player, arrayList);
     }
 
     @Override
-    public final void b() {
+    public final void addCustomSteps() {
         RestlessGhostTextStep restlessGhostTextStep = new RestlessGhostTextStep(this, this, 3);
         RestlessGhostAnimationStep restlessGhostAnimationStep = new RestlessGhostAnimationStep(this, this, 3);
         RestlessGhostReleaseStep restlessGhostReleaseStep = new RestlessGhostReleaseStep(this, this, 2);
         RestlessGhostCompletionStep restlessGhostCompletionStep = new RestlessGhostCompletionStep(this, this, 5);
-        this.a(restlessGhostTextStep);
-        this.a(restlessGhostAnimationStep);
-        this.a(restlessGhostReleaseStep);
-        this.a(restlessGhostCompletionStep);
+        this.addStep(restlessGhostTextStep);
+        this.addStep(restlessGhostAnimationStep);
+        this.addStep(restlessGhostReleaseStep);
+        this.addStep(restlessGhostCompletionStep);
     }
 
     @Override
-    public final void d() {
-        this.c.moveTo(new Position(3248, 3193));
-        this.b.moveTo(new Position(3248, 3192, 0));
-        Player player = this.b;
+    public final void setupScene() {
+        this.ghost.moveTo(new Position(3248, 3193));
+        this.player.moveTo(new Position(3248, 3192, 0));
+        Player player = this.player;
         player.packetSender.sendMapRegion();
-        player = this.b;
+        player = this.player;
         player.packetSender.sendCameraLookAt(3340, 3149, 330, 0, 100);
-        player = this.b;
+        player = this.player;
         player.packetSender.sendCameraPosition(3325, 3149, 298, 0, 100);
-        this.b.getUpdateState().setFaceEntity(this.c.getEncodedIndex());
-        this.c.getUpdateState().setFacePositionValue(this.b.getPosition());
+        this.player.getUpdateState().setFaceEntity(this.ghost.getEncodedIndex());
+        this.ghost.getUpdateState().setFacePositionValue(this.player.getPosition());
     }
 
     @Override
-    public final void c() {
-        this.b.getDialogueManager().setDialogueNpcId(this.c.getNpcId());
-        this.b.setQuestState(a.b(), 6);
-        this.b.getDialogueManager().b("", "Release! Thank you stranger..", "", 591);
-        this.c.getUpdateState().setForcedText("Release! Thank you");
+    public final void startDialogue() {
+        this.player.getDialogueManager().setDialogueNpcId(this.ghost.getNpcId());
+        this.player.setQuestState(questScript.getQuestId(), 6);
+        this.player.getDialogueManager().showAlternateNpcThreeLineDialogue("", "Release! Thank you stranger..", "", 591);
+        this.ghost.getUpdateState().setForcedText("Release! Thank you");
     }
 
-    public static void a(Position position, Position position2, int n) {
+    public static void sendReleaseProjectile(Position position, Position position2, int n) {
         new WoodcuttingHandler(position, 0, position2, 0, new ProjectileDefinition(605, ProjectileTiming.d)).a();
     }
 }

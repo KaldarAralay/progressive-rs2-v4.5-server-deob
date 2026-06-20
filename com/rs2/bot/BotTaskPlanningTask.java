@@ -18,7 +18,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        BotTaskPlanner.a(this.a);
+        BotTaskPlanner.startInitialProgressiveBotTask(this.a);
         this.stop();
     }
 }

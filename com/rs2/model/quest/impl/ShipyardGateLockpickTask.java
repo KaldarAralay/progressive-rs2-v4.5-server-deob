@@ -20,7 +20,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        this.a.n(false);
+        this.a.setActionLocked(false);
         if (this.b) {
             Player player = this.a;
             player.packetSender.openSingleDoor(4799, 2771, 2795, this.a.getPosition().getPlane());

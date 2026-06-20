@@ -29,7 +29,7 @@ public final class BankManager {
 
     public static void openBank(Player object) {
         if (((Player)object).botEnabled) {
-            object = new DelayedBankOpenTask(3 + GameUtil.h(3), (Player)object);
+            object = new DelayedBankOpenTask(3 + GameUtil.randomInt(3), (Player)object);
             World.getTaskScheduler().schedule((TickTask)object);
             return;
         }
@@ -66,10 +66,10 @@ public final class BankManager {
                     ((Player)object).getBankPinManager().setEntryMode(BankPinEntryMode.a);
                     return;
                 }
-            } else if (!((Player)object).fd()) {
+            } else if (!((Player)object).isBankPinReminderShown()) {
                 object2 = object;
                 ((Player)object2).packetSender.sendGameMessage("You do not have a bank pin, it is highly recommended you get one.");
-                ((Player)object).z(true);
+                ((Player)object).setBankPinReminderShown(true);
             }
         }
         ItemStack[] itemStackArray = player.getInventoryManager().getContainer().getRawItems();
@@ -99,7 +99,7 @@ public final class BankManager {
             player.ea();
         }
         if (player.botEnabled) {
-            if (player.currentBotTask.lootSellShopIds.size() > 0 && player.az != 4) {
+            if (player.currentBotTask.lootSellShopIds.size() > 0 && player.botMode != 4) {
                 BotCombatHelper.sellBotLootItems(player);
             }
             if (player.botTaskState.equals("empty inventory")) {
@@ -109,10 +109,10 @@ public final class BankManager {
                 }
             }
             if (!player.botTaskReturnToBankRequested) {
-                GameplayHelper.e(player);
+                GameplayHelper.shouldReturnToBankForBotTask(player);
             }
             if (player.botTaskReturnToBankRequested) {
-                BotBankContinuationTask botBankContinuationTask = new BotBankContinuationTask(10 + GameUtil.h(10), player);
+                BotBankContinuationTask botBankContinuationTask = new BotBankContinuationTask(10 + GameUtil.randomInt(10), player);
                 World.getTaskScheduler().schedule(botBankContinuationTask);
                 return;
             }
@@ -140,7 +140,7 @@ public final class BankManager {
                 while (n < player.getInventoryManager().getContainer().getItems().length) {
                     if (player.getInventoryManager().getContainer().getItems()[n] != null) {
                         ItemStack itemStack = player.getInventoryManager().getContainer().getItems()[n];
-                        if (player.az != 4) {
+                        if (player.botMode != 4) {
                             if (itemStack.getDefinition().getEquipmentSlot() == 13) {
                                 player.getEquipmentManager().equipFromInventorySlot(n);
                             }
@@ -164,7 +164,7 @@ public final class BankManager {
                     while (n < player.getInventoryManager().getContainer().getItems().length) {
                         if (player.getInventoryManager().getContainer().getItems()[n] != null) {
                             ItemStack itemStack = player.getInventoryManager().getContainer().getItems()[n];
-                            if (player.az != 4) {
+                            if (player.botMode != 4) {
                                 if (itemStack.getDefinition().getEquipmentSlot() == 13) {
                                     player.getEquipmentManager().equipFromInventorySlot(n);
                                 }
@@ -176,7 +176,7 @@ public final class BankManager {
                     }
                     player.botCombatLoadoutItemIds.clear();
                 }
-                BotTaskPlanner.k(player);
+                BotTaskPlanner.selectMeleeTrainingFightMode(player);
             }
             BankManager.depositInventory(player);
             if (player.botTaskRequiredItems != null) {
@@ -249,12 +249,12 @@ public final class BankManager {
             while (n < n3) {
                 ItemStack itemStack = itemStackArray[n];
                 if (itemStack != null) {
-                    player.getEquipmentManager().a(itemStack);
+                    player.getEquipmentManager().removeItemWithoutRefresh(itemStack);
                     BankManager.depositToBank(player, itemStack);
                 }
                 ++n;
             }
-            player.getEquipmentManager().b();
+            player.getEquipmentManager().finishBulkEquipmentRemoval();
             BankManager.refreshBankAndInventory(player);
             return true;
         }
@@ -346,12 +346,12 @@ public final class BankManager {
             while (n < n3) {
                 ItemStack itemStack = itemStackArray[n];
                 if (itemStack != null) {
-                    player.getEquipmentManager().a(itemStack);
+                    player.getEquipmentManager().removeItemWithoutRefresh(itemStack);
                     BankManager.depositToBank(player, itemStack);
                 }
                 ++n;
             }
-            player.getEquipmentManager().b();
+            player.getEquipmentManager().finishBulkEquipmentRemoval();
             BankManager.refreshBankAndInventory(player);
             return true;
         }
@@ -370,7 +370,7 @@ public final class BankManager {
             return true;
         }
         object = player;
-        int n4 = ((Player)object).de ? 288 : (n2 = ((Player)object).isMember() ? memberBankCapacity : freeBankCapacity);
+        int n4 = ((Player)object).isBot ? 288 : (n2 = ((Player)object).isMember() ? memberBankCapacity : freeBankCapacity);
         if (n >= n2) {
             player.packetSender.sendGameMessage("You don't have enough space in your bank account.");
             return false;
@@ -532,7 +532,7 @@ public final class BankManager {
         boolean bl = player.isBankWithdrawNoteMode();
         boolean bl2 = itemStack.getDefinition().hasNote();
         int n6 = itemStack.getDefinition().getNotedId();
-        if (player.az == 4 && player.botEnabled && player.currentBotTask != null && BotTaskDefinition.smeltingTasks.contains(player.currentBotTask) && n == 453 && n3 < SmeltingHandler.getCoalRequiredForBar(player.botTaskItemId)) {
+        if (player.botMode == 4 && player.botEnabled && player.currentBotTask != null && BotTaskDefinition.smeltingTasks.contains(player.currentBotTask) && n == 453 && n3 < SmeltingHandler.getCoalRequiredForBar(player.botTaskItemId)) {
             player.botTaskReturnToBankRequested = true;
             return;
         }
@@ -567,9 +567,9 @@ public final class BankManager {
         }
         n3 = 0;
         if (!bl || !bl2) {
-            n3 = player.getInventoryManager().a(new ItemStack(n, n2, n8));
+            n3 = player.getInventoryManager().addItemPartial(new ItemStack(n, n2, n8));
         } else if (bl) {
-            n3 = player.getInventoryManager().a(new ItemStack(n6, n2, n8));
+            n3 = player.getInventoryManager().addItemPartial(new ItemStack(n6, n2, n8));
         }
         player.getBankContainer().removeFromTab(new ItemStack(n, n3, n8), n5, n4);
         player.getInventoryManager().sendToInterface(5064);
@@ -633,9 +633,9 @@ public final class BankManager {
             n6 = 0;
         }
         if (n6 == 0 || !bl) {
-            n10 = player.getInventoryManager().a(new ItemStack(n2, n3, n8));
+            n10 = player.getInventoryManager().addItemPartial(new ItemStack(n2, n3, n8));
         } else if (n6 != 0) {
-            n10 = player.getInventoryManager().a(new ItemStack(n4, n3, n8));
+            n10 = player.getInventoryManager().addItemPartial(new ItemStack(n4, n3, n8));
         }
         player.getBankContainer().removeFromTab(new ItemStack(n2, n10, n8), n, n5);
         player.getBankContainer().removeEmptyTabs();

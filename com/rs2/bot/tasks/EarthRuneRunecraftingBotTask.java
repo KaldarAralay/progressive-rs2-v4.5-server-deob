@@ -31,18 +31,18 @@ extends BotTaskDefinition {
 
     @Override
     public final boolean isWithinProgressionRange(Player player) {
-        return player.getSkillManager().getCurrentLevels()[20] < 14 || !player.aq(5537) && !player.aq(1442);
+        return player.getSkillManager().getCurrentLevels()[20] < 14 || !player.ownsItem(5537) && !player.ownsItem(1442);
     }
 
     @Override
     public final ArrayList getRequiredItems(Player player) {
         ArrayList<ItemStack> arrayList = new ArrayList<ItemStack>();
-        if (player.aq(5535) && ItemDefinition.isDefined(5535)) {
+        if (player.ownsItem(5535) && ItemDefinition.isDefined(5535)) {
             arrayList.add(new ItemStack(5535, 1));
         } else {
             arrayList.add(new ItemStack(1440, 1));
         }
-        if (!player.i(1436, 500) && player.i(7936, 500) && ItemDefinition.isDefined(7936)) {
+        if (!player.ownsItemAmount(1436, 500) && player.ownsItemAmount(7936, 500) && ItemDefinition.isDefined(7936)) {
             arrayList.add(new ItemStack(7936, 500));
         } else {
             arrayList.add(new ItemStack(1436, 500));
@@ -63,7 +63,7 @@ extends BotTaskDefinition {
         player.getBankContainer().clear();
         player.getBankContainer().addToTab(new ItemStack(1436, 5000), 0);
         ItemStack[] itemStackArray = new ItemStack[]{new ItemStack(5535), new ItemStack(1436, 28)};
-        if (GameUtil.h(2) == 0 || !ItemDefinition.isDefined(5535)) {
+        if (GameUtil.randomInt(2) == 0 || !ItemDefinition.isDefined(5535)) {
             itemStackArray = new ItemStack[]{new ItemStack(1440), new ItemStack(1436, 27)};
         }
         player.botTaskRequiredItems = itemStackArray;
@@ -80,42 +80,42 @@ extends BotTaskDefinition {
     @Override
     public final void prepareTaskCombatLoadout(Player player) {
         GameplayHelper.b(player);
-        int n = 1 + GameUtil.h(99);
+        int n = 1 + GameUtil.randomInt(99);
         int n2 = n / 5 << 1;
         if (n2 == 0) {
             n2 = 2;
         }
-        BotCombatHelper.setBotSkillLevel(player, 0, n - n / 5 + GameUtil.h(n2));
+        BotCombatHelper.setBotSkillLevel(player, 0, n - n / 5 + GameUtil.randomInt(n2));
         n2 = n / 5 << 1;
         if (n2 == 0) {
             n2 = 2;
         }
-        BotCombatHelper.setBotSkillLevel(player, 2, n - n / 5 + GameUtil.h(n2));
+        BotCombatHelper.setBotSkillLevel(player, 2, n - n / 5 + GameUtil.randomInt(n2));
         n2 = n / 5 << 1;
         if (n2 == 0) {
             n2 = 2;
         }
-        BotCombatHelper.setBotSkillLevel(player, 1, n - n / 5 + GameUtil.h(n2));
+        BotCombatHelper.setBotSkillLevel(player, 1, n - n / 5 + GameUtil.randomInt(n2));
         n2 = n / 5 << 1;
         if (n2 == 0) {
             n2 = 2;
         }
-        BotCombatHelper.setBotSkillLevel(player, 4, n - n / 5 + GameUtil.h(n2));
+        BotCombatHelper.setBotSkillLevel(player, 4, n - n / 5 + GameUtil.randomInt(n2));
         n2 = n / 5 << 1;
         if (n2 == 0) {
             n2 = 2;
         }
-        BotCombatHelper.setBotSkillLevel(player, 6, n - n / 5 + GameUtil.h(n2));
+        BotCombatHelper.setBotSkillLevel(player, 6, n - n / 5 + GameUtil.randomInt(n2));
         n2 = n / 5 << 1;
         if (n2 == 0) {
             n2 = 2;
         }
-        BotCombatHelper.setBotSkillLevel(player, 5, n - (n / 5 << 1) + GameUtil.h(n2));
+        BotCombatHelper.setBotSkillLevel(player, 5, n - (n / 5 << 1) + GameUtil.randomInt(n2));
         n2 = n / 5 << 1;
         if (n2 == 0) {
             n2 = 2;
         }
-        if ((n = n - n / 5 + GameUtil.h(n2)) < 9) {
+        if ((n = n - n / 5 + GameUtil.randomInt(n2)) < 9) {
             n = 9;
         }
         BotCombatHelper.setBotSkillLevel(player, 20, n);
@@ -133,7 +133,7 @@ extends BotTaskDefinition {
         player.botPathWaypointIndex = 0;
         player.botPathSegmentIndex = 0;
         player.currentBotRoute = ab[player.botPathSegmentIndex];
-        player.bk();
+        player.continueBotRoute();
     }
 
     @Override
@@ -147,17 +147,19 @@ extends BotTaskDefinition {
         arrayList.add(2468);
         player.interactWithBotObjectTargets(arrayList);
         player.dm = true;
-        player.bk();
+        player.continueBotRoute();
     }
 
-    public final void a(Player player, int n) {
+    @Override
+    public final void continueWalkToTask(Player player, int n) {
         player.setAutoRetaliate(true);
         player.botPathWaypointIndex = n;
         player.currentBotRoute = ab[player.botPathSegmentIndex];
-        this.c(player, true);
+        this.advanceTaskRouteSegment(player, true);
     }
 
-    public final void b(Player player, int n) {
+    @Override
+    public final void continueWalkToBank(Player player, int n) {
         player.setAutoRetaliate(false);
         player.botPathWaypointIndex = n;
         player.currentBotRoute = ab[player.botPathSegmentIndex].reversed();
@@ -167,11 +169,11 @@ extends BotTaskDefinition {
             player.interactWithBotObjectTargets(arrayList);
             player.dm = true;
         }
-        this.c(player, true);
+        this.advanceTaskRouteSegment(player, true);
     }
 
     @Override
-    public final void c(Player player, boolean bl) {
+    public final void advanceTaskRouteSegment(Player player, boolean bl) {
         if (player.botTaskState.equals("walk towards task") || player.botTaskState.equals("walk to task") && bl) {
             if (!bl) {
                 ++player.botPathSegmentIndex;

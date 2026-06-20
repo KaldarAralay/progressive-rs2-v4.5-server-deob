@@ -98,7 +98,7 @@ public final class FishingHandler {
             ((Player)object).packetSender.sendSoundEffect(289, 1, 0);
         }
         int n4 = this.player.nextActionSequence();
-        if (this.player.getQuestState(0) == 1 && GameUtil.h(800) == 0 && !this.player.botEnabled && ServerSettings.randomEventsMode == 0 && !this.player.r() && (object2 = FishingWhirlpool.forSourceNpcId(npc.getDefinition().getId())) != null) {
+        if (this.player.getQuestState(0) == 1 && GameUtil.randomInt(800) == 0 && !this.player.botEnabled && ServerSettings.randomEventsMode == 0 && !this.player.r() && (object2 = FishingWhirlpool.forSourceNpcId(npc.getDefinition().getId())) != null) {
             npc.transformToNpcId(((FishingWhirlpool)((Object)object2)).getWhirlpoolNpcId(), 20);
         }
         this.player.setActiveCycleEvent(new FishingTask(this, n4, npc, fishingSpotDefinition));

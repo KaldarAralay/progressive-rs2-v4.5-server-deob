@@ -199,7 +199,7 @@ extends BaseCombatAttack {
         if (this.cancelled) {
             return CombatAttackState.a;
         }
-        Object object = ((Player)this.getAttacker()).dU();
+        Object object = ((Player)this.getAttacker()).getSpecialAttackDefinition();
         boolean bl = ((Player)this.getAttacker()).isSpecialAttackEnabled();
         if (object != null && bl) {
             Player player = (Player)this.getAttacker();
@@ -209,7 +209,7 @@ extends BaseCombatAttack {
                 ((Player)object).packetSender.sendGameMessage("You have no special energy left.");
                 return CombatAttackState.a;
             }
-            if (DuelRule.d.a(player)) {
+            if (DuelRule.NO_SPECIAL_ATTACK.isEnabledFor(player)) {
                 object = player;
                 ((Player)object).packetSender.sendGameMessage("Special attacks have been disabled during this fight!");
                 return CombatAttackState.a;
@@ -238,10 +238,10 @@ extends BaseCombatAttack {
                 }
                 if (this.poisonEffect != null) {
                     if (this.attackStyle.getCombatType() == CombatType.MELEE) {
-                        if (GameUtil.a(0.25)) {
+                        if (GameUtil.rollChance(0.25)) {
                             ((HitDefinition)object).addEffect(this.poisonEffect);
                         }
-                    } else if (this.attackStyle.getCombatType() == CombatType.RANGED && GameUtil.a(0.125)) {
+                    } else if (this.attackStyle.getCombatType() == CombatType.RANGED && GameUtil.rollChance(0.125)) {
                         ((HitDefinition)object).addEffect(this.poisonEffect);
                     }
                 }

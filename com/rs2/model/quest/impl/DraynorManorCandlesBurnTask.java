@@ -21,14 +21,14 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        if (!this.b.bW()) {
+        if (!this.b.isRegistered()) {
             this.stop();
             return;
         }
         if (this.a.b.containsExclusive(this.b.getPosition())) {
             Player player = this.b;
             player.packetSender.sendGameMessage("The candles burn your feet!");
-            this.b.getUpdateState().setForcedText(this.a.a[GameUtil.g(this.a.a.length - 1)]);
+            this.b.getUpdateState().setForcedText(this.a.a[GameUtil.randomInclusive(this.a.a.length - 1)]);
             return;
         }
         this.b.eq = -1;

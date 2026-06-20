@@ -134,22 +134,22 @@ public enum TreeDefinition {
      * WARNING - void declaration
      */
     private TreeDefinition(int n, double d, int n2, int n3, int n4, int nArray22, double d2, int n5, int n6) {
-        void cfr_renamed_9;
+        void cfr_renamed_8;
         void var14_11;
         void var11_8;
-        void cfr_renamed_6;
+        void cfr_renamed_5;
         void var5_3;
         this.objectIds = (int[])n;
         this.entNpcIds = (int[])d;
         this.requiredLevel = var5_3;
         this.experience = n2;
         this.logItemId = n4;
-        this.stumpObjectId = cfr_renamed_6;
+        this.stumpObjectId = cfr_renamed_5;
         this.respawnTicksLow = (int)d2;
         this.respawnTicksHigh = var11_8;
         this.depletionChance = n5;
         this.cutChanceLow = var14_11;
-        this.cutChanceHigh = cfr_renamed_9;
+        this.cutChanceHigh = cfr_renamed_8;
     }
 
     public final int[] getEntNpcIds() {

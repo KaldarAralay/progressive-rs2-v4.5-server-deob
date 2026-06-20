@@ -6,19 +6,19 @@ package com.rs2.model.task;
 import com.rs2.model.World;
 
 public final class ElapsedTicks {
-    private int a;
+    private int lastResetTick;
 
     public ElapsedTicks() {
         ElapsedTicks elapsedTicks = this;
-        this.a = World.b;
+        this.lastResetTick = World.tickCount;
     }
 
     public final int elapsed() {
-        return World.b - this.a;
+        return World.tickCount - this.lastResetTick;
     }
 
     public final void reset() {
-        this.a = World.b;
+        this.lastResetTick = World.tickCount;
     }
 }
 

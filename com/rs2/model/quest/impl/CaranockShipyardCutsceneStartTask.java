@@ -30,8 +30,8 @@ extends TickTask {
         Npc npc2 = new Npc(1470);
         GameplayHelper.a(npc, 2604, 4580, n, 2);
         GameplayHelper.a(npc2, 2604, 4582, n, 0);
-        this.a.A.add(npc);
-        this.a.A.add(npc2);
+        this.a.temporaryCutsceneNpcs.add(npc);
+        this.a.temporaryCutsceneNpcs.add(npc2);
         this.a.moveTo(new Position(2596, 4581, n));
         Player player = this.a;
         player.packetSender.sendMapRegion();

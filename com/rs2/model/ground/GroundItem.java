@@ -165,7 +165,7 @@ public final class GroundItem {
 
     public final boolean isVisibleTo(Player player) {
         boolean bl;
-        boolean bl2 = bl = this.f.getPlane() == player.getPosition().getPlane() && player.eD().containsExclusive(this.f);
+        boolean bl2 = bl = this.f.getPlane() == player.getPosition().getPlane() && player.getLocalViewArea().containsExclusive(this.f);
         if (player.gameMode == 0) {
             return bl;
         }

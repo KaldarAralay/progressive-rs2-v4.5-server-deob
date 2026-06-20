@@ -55,7 +55,7 @@ extends TickTask {
             this.stop();
             return;
         }
-        if (!GameUtil.a(this.player.getPosition(), this.npc.getPosition(), true)) {
+        if (!GameUtil.hasClearPath(this.player.getPosition(), this.npc.getPosition(), true)) {
             return;
         }
         EntityTargetMovement.clearMovementTarget(this.player);
@@ -108,7 +108,7 @@ extends TickTask {
                 break;
             }
             case 3863: {
-                GrandExchangeManager.a(this.player);
+                GrandExchangeManager.openGrandExchange(this.player);
                 break;
             }
             case 2437: {
@@ -135,7 +135,7 @@ extends TickTask {
             case 960: 
             case 961: 
             case 962: {
-                this.player.getDuelSession().g();
+                this.player.getDuelSession().restoreHitpoints();
                 break;
             }
             case 3021: {

@@ -44,14 +44,14 @@ public final class DropPartyBotManager {
         int n = 1;
         while (n < dropPartyParticipants.size()) {
             Object object = (Player)dropPartyParticipants.get(n);
-            int n2 = 2 + GameUtil.h(3);
-            int n3 = GameUtil.b(((Entity)object).getPosition(), groundItem.getPosition());
-            int n4 = 1 + GameUtil.h(5);
-            int n5 = GrandExchangeManager.a(groundItem.getItem().getId());
+            int n2 = 2 + GameUtil.randomInt(3);
+            int n3 = GameUtil.getDistance(((Entity)object).getPosition(), groundItem.getPosition());
+            int n4 = 1 + GameUtil.randomInt(5);
+            int n5 = GrandExchangeManager.getGuidePrice(groundItem.getItem().getId());
             if (n5 >= 500) {
                 n4 = 20;
             }
-            if (n3 == 0 && GameUtil.h(3) == 0) {
+            if (n3 == 0 && GameUtil.randomInt(3) == 0) {
                 BotCombatHelper.pickupVisibleGroundItem((Player)object, groundItem.getItem().getId(), groundItem.getPosition());
             } else if (n3 < n4) {
                 object = new DropPartyGroundItemPickupTask(n2, (Player)object, groundItem);
@@ -76,12 +76,12 @@ public final class DropPartyBotManager {
 
     public static void startDropPartyTick(Player object) {
         ((Player)object).botPublicChatMessage = "Follow for Drop party!";
-        ((Player)object).botPublicChatColor = GameUtil.h(12);
+        ((Player)object).botPublicChatColor = GameUtil.randomInt(12);
         int[] nArray = new int[3];
         nArray[1] = 1;
         nArray[2] = 3;
         Object object2 = nArray;
-        int n = GameUtil.h(3);
+        int n = GameUtil.randomInt(3);
         ((Player)object).botPublicChatEffect = object2[n];
         if (((Player)object).dropPartyLeader) {
             object2 = new DropPartyLeaderTickTask(3, (Player)object);
@@ -96,45 +96,45 @@ public final class DropPartyBotManager {
     public static void prepareDropPartyCombatLoadout(Player player) {
         int n;
         GameplayHelper.b(player);
-        int n2 = 80 + GameUtil.h(15);
+        int n2 = 80 + GameUtil.randomInt(15);
         if (player.dropPartyFollower) {
-            n2 = 1 + GameUtil.h(60);
+            n2 = 1 + GameUtil.randomInt(60);
         }
         if ((n = n2 / 5 << 1) == 0) {
             n = 2;
         }
-        BotCombatHelper.setBotSkillLevel(player, 0, n2 - n2 / 5 + GameUtil.h(n));
+        BotCombatHelper.setBotSkillLevel(player, 0, n2 - n2 / 5 + GameUtil.randomInt(n));
         n = n2 / 5 << 1;
         if (n == 0) {
             n = 2;
         }
-        BotCombatHelper.setBotSkillLevel(player, 2, n2 - n2 / 5 + GameUtil.h(n));
+        BotCombatHelper.setBotSkillLevel(player, 2, n2 - n2 / 5 + GameUtil.randomInt(n));
         n = n2 / 5 << 1;
         if (n == 0) {
             n = 2;
         }
-        BotCombatHelper.setBotSkillLevel(player, 1, n2 - n2 / 5 + GameUtil.h(n));
+        BotCombatHelper.setBotSkillLevel(player, 1, n2 - n2 / 5 + GameUtil.randomInt(n));
         n = n2 / 5 << 1;
         if (n == 0) {
             n = 2;
         }
-        BotCombatHelper.setBotSkillLevel(player, 4, n2 - n2 / 5 + GameUtil.h(n));
+        BotCombatHelper.setBotSkillLevel(player, 4, n2 - n2 / 5 + GameUtil.randomInt(n));
         n = n2 / 5 << 1;
         if (n == 0) {
             n = 2;
         }
-        BotCombatHelper.setBotSkillLevel(player, 6, n2 - n2 / 5 + GameUtil.h(n));
+        BotCombatHelper.setBotSkillLevel(player, 6, n2 - n2 / 5 + GameUtil.randomInt(n));
         n = n2 / 5 << 1;
         if (n == 0) {
             n = 2;
         }
-        BotCombatHelper.setBotSkillLevel(player, 5, n2 - (n2 / 5 << 1) + GameUtil.h(n));
+        BotCombatHelper.setBotSkillLevel(player, 5, n2 - (n2 / 5 << 1) + GameUtil.randomInt(n));
         player.getSkillManager().getExperience()[3] = BotCombatHelper.calculateBotHitpointsExperience(player);
         int[] nArray = player.getSkillManager().getCurrentLevels();
         player.getSkillManager();
         nArray[3] = SkillManager.getLevelForExperience(player.getSkillManager().getExperience()[3]);
         player.getSkillManager().refreshAllSkills();
-        BotCombatLoadoutManager.a(player, true);
+        BotCombatLoadoutManager.selectCombatStyleFromStats(player, true);
     }
 
     public static void initializeDropPartyRewardPools() {
@@ -142,8 +142,8 @@ public final class DropPartyBotManager {
         Iterator iterator = ((ArrayList)object).iterator();
         while (iterator.hasNext()) {
             object = (GameplayHelper)iterator.next();
-            if (object == null || ((GameplayHelper)object).c() >= 7955) continue;
-            int n = GrandExchangeManager.a(((GameplayHelper)object).c());
+            if (object == null || ((GameplayHelper)object).getTradeAdvertItemId() >= 7955) continue;
+            int n = GrandExchangeManager.getGuidePrice(((GameplayHelper)object).getTradeAdvertItemId());
             if (n >= valuableDropMinValue) {
                 valuableDropPartyRewardPool.add(object);
             }
@@ -177,16 +177,16 @@ public final class DropPartyBotManager {
                 if (n3 == leaderDropItemCount - 1 && n < valuableDropMinValue) {
                     object4 = object32;
                 }
-                int n5 = GameUtil.h(((ArrayList)object4).size());
+                int n5 = GameUtil.randomInt(((ArrayList)object4).size());
                 object = (GameplayHelper)((ArrayList)object4).get(n5);
                 ((ArrayList)object22).add(object);
                 arrayList.remove(object);
                 if (((ArrayList)object32).contains(object)) {
                     ((ArrayList)object32).remove(object);
                 }
-                if ((n4 = GrandExchangeManager.a(((GameplayHelper)object).c())) > n) {
+                if ((n4 = GrandExchangeManager.getGuidePrice(((GameplayHelper)object).getTradeAdvertItemId())) > n) {
                     n = n4;
-                    player.botAdvertItemId = ((GameplayHelper)object).c();
+                    player.botAdvertItemId = ((GameplayHelper)object).getTradeAdvertItemId();
                 }
                 ++n3;
             }
@@ -224,26 +224,26 @@ public final class DropPartyBotManager {
             object = ((ArrayList)object22).iterator();
             while (object.hasNext()) {
                 GameplayHelper gameplayHelper = (GameplayHelper)object.next();
-                player.getInventoryManager().addItem(new ItemStack(gameplayHelper.c(), 1));
+                player.getInventoryManager().addItem(new ItemStack(gameplayHelper.getTradeAdvertItemId(), 1));
             }
             ItemDefinition itemDefinition = ItemDefinition.forId(player.botAdvertItemId);
             player.botPublicChatMessage = "Follow for Drop party! Best drop: " + itemDefinition.getDisplayName();
         }
         Player player2 = player;
         if (player2.botCombatStyle == 0) {
-            BotCombatLoadoutManager.e(player2);
-            BotCombatLoadoutManager.d(player2);
+            BotCombatLoadoutManager.prepareMeleeLoadout(player2);
+            BotCombatLoadoutManager.equipGlovesAndBoots(player2);
         } else if (player2.botCombatStyle == 2) {
-            BotCombatLoadoutManager.g(player2);
+            BotCombatLoadoutManager.prepareMagicLoadout(player2);
         } else if (player2.botCombatStyle == 1) {
-            BotCombatLoadoutManager.f(player2);
-            int n6 = player2.getSkillManager().getCurrentLevels()[4] >= 40 ? 1731 : (n = GameUtil.h(3) == 0 ? 1478 : 1729);
-            if (!BotCombatHelper.isFreeToPlayWorld() && player2.getCombatLevel() >= 60 && GameUtil.h(2) == 0) {
+            BotCombatLoadoutManager.prepareRangedLoadout(player2);
+            int n6 = player2.getSkillManager().getCurrentLevels()[4] >= 40 ? 1731 : (n = GameUtil.randomInt(3) == 0 ? 1478 : 1729);
+            if (!BotCombatHelper.isFreeToPlayWorld() && player2.getCombatLevel() >= 60 && GameUtil.randomInt(2) == 0) {
                 n = 1712;
             }
             player2.getEquipmentManager().getContainer().setItem(2, new ItemStack(n));
         }
-        BotCombatLoadoutManager.c(player2);
+        BotCombatLoadoutManager.equipRandomCape(player2);
         player.getInventoryManager().refresh();
         player.getEquipmentManager().refresh();
     }

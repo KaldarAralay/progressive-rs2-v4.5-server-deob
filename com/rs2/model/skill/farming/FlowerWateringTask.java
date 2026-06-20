@@ -27,8 +27,8 @@ extends CycleEvent {
     @Override
     public final void onStop() {
         this.manager.refreshConfig();
-        FlowerPatchManager.getPlayer(this.manager).n(false);
-        FlowerPatchManager.getPlayer(this.manager).aN();
+        FlowerPatchManager.getPlayer(this.manager).setActionLocked(false);
+        FlowerPatchManager.getPlayer(this.manager).resetAnimation();
     }
 }
 

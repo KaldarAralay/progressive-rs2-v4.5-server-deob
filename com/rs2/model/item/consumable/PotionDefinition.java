@@ -6,84 +6,84 @@ package com.rs2.model.item.consumable;
 import com.rs2.model.item.consumable.PotionEffectMode;
 
 public final class PotionDefinition {
-    private boolean a;
-    private String b;
-    private PotionEffectMode c;
-    private int[] d;
-    private int[] e;
-    private int[] f;
-    private double[] g;
+    private boolean antipoison;
+    private String name;
+    private PotionEffectMode effectMode;
+    private int[] doseItemIds;
+    private int[] skillIds;
+    private int[] flatBoosts;
+    private double[] percentBoosts;
 
-    public final boolean a() {
-        return this.a;
+    public final boolean isAntipoison() {
+        return this.antipoison;
     }
 
-    public final String b() {
-        return this.b;
+    public final String getName() {
+        return this.name;
     }
 
-    public final int[] c() {
-        return this.d;
+    public final int[] getDoseItemIds() {
+        return this.doseItemIds;
     }
 
-    public final int[] d() {
-        return this.e;
+    public final int[] getSkillIds() {
+        return this.skillIds;
     }
 
-    public final int[] e() {
-        return this.f;
+    public final int[] getFlatBoosts() {
+        return this.flatBoosts;
     }
 
-    public final double[] f() {
-        return this.g;
+    public final double[] getPercentBoosts() {
+        return this.percentBoosts;
     }
 
-    public final PotionEffectMode g() {
-        return this.c;
+    public final PotionEffectMode getEffectMode() {
+        return this.effectMode;
     }
 
-    static /* synthetic */ void a(PotionDefinition potionDefinition, PotionEffectMode potionEffectMode) {
-        potionDefinition.c = potionEffectMode;
+    static /* synthetic */ void setEffectMode(PotionDefinition potionDefinition, PotionEffectMode potionEffectMode) {
+        potionDefinition.effectMode = potionEffectMode;
     }
 
-    static /* synthetic */ void a(PotionDefinition potionDefinition, int[] nArray) {
-        potionDefinition.d = nArray;
+    static /* synthetic */ void setDoseItemIds(PotionDefinition potionDefinition, int[] nArray) {
+        potionDefinition.doseItemIds = nArray;
     }
 
-    static /* synthetic */ void a(PotionDefinition potionDefinition, boolean bl) {
-        potionDefinition.a = bl;
+    static /* synthetic */ void setAntipoison(PotionDefinition potionDefinition, boolean bl) {
+        potionDefinition.antipoison = bl;
     }
 
-    static /* synthetic */ int[] a(PotionDefinition potionDefinition) {
-        return potionDefinition.d;
+    static /* synthetic */ int[] getMutableDoseItemIds(PotionDefinition potionDefinition) {
+        return potionDefinition.doseItemIds;
     }
 
-    static /* synthetic */ void a(PotionDefinition potionDefinition, String string) {
-        potionDefinition.b = string;
+    static /* synthetic */ void setName(PotionDefinition potionDefinition, String string) {
+        potionDefinition.name = string;
     }
 
-    static /* synthetic */ void b(PotionDefinition potionDefinition, int[] nArray) {
-        potionDefinition.e = nArray;
+    static /* synthetic */ void setSkillIds(PotionDefinition potionDefinition, int[] nArray) {
+        potionDefinition.skillIds = nArray;
     }
 
-    static /* synthetic */ void c(PotionDefinition potionDefinition, int[] nArray) {
-        potionDefinition.f = nArray;
+    static /* synthetic */ void setFlatBoosts(PotionDefinition potionDefinition, int[] nArray) {
+        potionDefinition.flatBoosts = nArray;
     }
 
-    static /* synthetic */ void a(PotionDefinition potionDefinition, double[] dArray) {
-        potionDefinition.g = dArray;
+    static /* synthetic */ void setPercentBoosts(PotionDefinition potionDefinition, double[] dArray) {
+        potionDefinition.percentBoosts = dArray;
     }
 
-    static /* synthetic */ int[] b(PotionDefinition potionDefinition) {
-        return potionDefinition.e;
+    static /* synthetic */ int[] getMutableSkillIds(PotionDefinition potionDefinition) {
+        return potionDefinition.skillIds;
     }
 
-    static /* synthetic */ int[] c(PotionDefinition potionDefinition) {
-        return potionDefinition.f;
+    static /* synthetic */ int[] getMutableFlatBoosts(PotionDefinition potionDefinition) {
+        return potionDefinition.flatBoosts;
     }
 
-    static /* synthetic */ double[] d(PotionDefinition potionDefinition) {
-        return potionDefinition.g;
+    static /* synthetic */ double[] getMutablePercentBoosts(PotionDefinition potionDefinition) {
+        return potionDefinition.percentBoosts;
     }
 }
 

@@ -9,20 +9,20 @@ import com.rs2.model.player.Player;
 
 final class CutsceneSceneSetupStep
 extends CutsceneStep {
-    private /* synthetic */ Cutscene a;
-    private final /* synthetic */ Player b;
+    private /* synthetic */ Cutscene cutscene;
+    private final /* synthetic */ Player player;
 
     CutsceneSceneSetupStep(Cutscene cutscene, Cutscene cutscene2, int n, Player player) {
-        this.a = cutscene2;
-        this.b = player;
+        this.cutscene = cutscene2;
+        this.player = player;
         super(cutscene, 4);
     }
 
     @Override
-    public final void a() {
-        Player player = this.b;
+    public final void executeStep() {
+        Player player = this.player;
         player.packetSender.showInterface(18679);
-        this.a.d();
+        this.cutscene.setupScene();
     }
 }
 

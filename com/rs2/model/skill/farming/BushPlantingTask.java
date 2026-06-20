@@ -28,7 +28,7 @@ extends CycleEvent {
     public final void execute(CycleEventContainer cycleEventContainer) {
         this.manager.patchStates[this.patch.getIndex()] = 0;
         this.manager.cropIds[this.patch.getIndex()] = this.seedId;
-        this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.e();
+        this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.getElapsedMinutes();
         BushPatchManager.getPlayer(this.manager).getSkillManager().addExperience(19, this.definition.getPlantingExperience());
         cycleEventContainer.stop();
     }
@@ -36,7 +36,7 @@ extends CycleEvent {
     @Override
     public final void onStop() {
         this.manager.refreshConfig();
-        BushPatchManager.getPlayer(this.manager).n(false);
+        BushPatchManager.getPlayer(this.manager).setActionLocked(false);
     }
 }
 

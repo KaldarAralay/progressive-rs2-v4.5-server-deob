@@ -80,11 +80,11 @@ lbl32:
                 var1_1.setSelectedInterfaceId(var2_2.getReader().readSignedShort(ByteTransform.ADD));
                 var1_1.setSelectedInterfaceItemId(var2_2.getReader().readSignedShort(ByteOrder.LITTLE));
                 if (var1_1.getSelectedInterfaceId() == 3900) {
-                    ShopManager.a(var1_1, var1_1.getSelectedInterfaceSlot(), var1_1.getSelectedInterfaceItemId(), 100);
+                    ShopManager.buyItem(var1_1, var1_1.getSelectedInterfaceSlot(), var1_1.getSelectedInterfaceItemId(), 100);
                     break;
                 }
                 if (var1_1.getSelectedInterfaceId() == 3823) {
-                    ShopManager.b(var1_1, var1_1.getSelectedInterfaceSlot(), var1_1.getSelectedInterfaceItemId(), 100);
+                    ShopManager.sellItem(var1_1, var1_1.getSelectedInterfaceSlot(), var1_1.getSelectedInterfaceItemId(), 100);
                     break;
                 }
                 var2_2 = PacketBuffer.allocateWriter(2);
@@ -100,11 +100,11 @@ lbl32:
                     return;
                 }
                 if (var1_1.getSelectedInterfaceId() == 2006 && var1_1.getOpenInterfaceId() == 2156) {
-                    PartyRoomManager.b(var1_1, var1_1.getSelectedInterfaceSlot(), var1_1.getSelectedInterfaceItemId(), var2_4);
+                    PartyRoomManager.stageInventoryItemForChest(var1_1, var1_1.getSelectedInterfaceSlot(), var1_1.getSelectedInterfaceItemId(), var2_4);
                     return;
                 }
                 if (var1_1.getSelectedInterfaceId() == 2274 && var1_1.getOpenInterfaceId() == 2156) {
-                    PartyRoomManager.c(var1_1, var1_1.getSelectedInterfaceSlot(), var1_1.getSelectedInterfaceItemId(), var2_4);
+                    PartyRoomManager.withdrawStagedChestItem(var1_1, var1_1.getSelectedInterfaceSlot(), var1_1.getSelectedInterfaceItemId(), var2_4);
                     return;
                 }
                 if ((var1_1.getSelectedInterfaceId() == 5382 || var1_1.getSelectedInterfaceId() == 19532 || var1_1.getSelectedInterfaceId() == 19533 || var1_1.getSelectedInterfaceId() == 19534 || var1_1.getSelectedInterfaceId() == 19535 || var1_1.getSelectedInterfaceId() == 19536 || var1_1.getSelectedInterfaceId() == 19537 || var1_1.getSelectedInterfaceId() == 19538 || var1_1.getSelectedInterfaceId() == 19539 || var1_1.getSelectedInterfaceId() == 19540) && var1_1.getOpenInterfaceId() == 5292) {
@@ -114,14 +114,14 @@ lbl32:
                 if (var1_1.getSelectedInterfaceId() == 3322) {
                     var6_7 = var1_1;
                     if (var6_7.interfaceAction == "duel") {
-                        var1_1.getDuelSession().a(new ItemStack(var1_1.getSelectedInterfaceItemId(), var2_4), var1_1.getInventoryManager().getContainer().indexOfItem(var1_1.getSelectedInterfaceItemId()));
+                        var1_1.getDuelSession().addStakeItem(new ItemStack(var1_1.getSelectedInterfaceItemId(), var2_4), var1_1.getInventoryManager().getContainer().indexOfItem(var1_1.getSelectedInterfaceItemId()));
                         break;
                     }
-                    GameplayHelper.b(var1_1, var1_1.getSelectedInterfaceSlot(), var1_1.getSelectedInterfaceItemId(), var2_4);
+                    GameplayHelper.addTradeOfferItem(var1_1, var1_1.getSelectedInterfaceSlot(), var1_1.getSelectedInterfaceItemId(), var2_4);
                     return;
                 }
                 if (var1_1.getSelectedInterfaceId() == 3415) {
-                    GameplayHelper.c(var1_1, var1_1.getSelectedInterfaceSlot(), var1_1.getSelectedInterfaceItemId(), var2_4);
+                    GameplayHelper.removeTradeOfferItem(var1_1, var1_1.getSelectedInterfaceSlot(), var1_1.getSelectedInterfaceItemId(), var2_4);
                     return;
                 }
                 if (var1_1.getSelectedInterfaceId() == 15682 || var1_1.getSelectedInterfaceId() == 15683) {
@@ -133,7 +133,7 @@ lbl32:
                     return;
                 }
                 if (var1_1.getSelectedInterfaceId() == 6669) {
-                    var1_1.getDuelSession().a(new ItemStack(var1_1.getSelectedInterfaceItemId(), var2_4));
+                    var1_1.getDuelSession().removeStakeItem(new ItemStack(var1_1.getSelectedInterfaceItemId(), var2_4));
                     return;
                 }
                 if (var1_1.getSelectedInterfaceId() == 207) {
@@ -142,7 +142,7 @@ lbl32:
                     var3_13 = var1_1;
                     var1_1 = ChallengeQuestion.forClueItemId(var5_9);
                     if (var1_1 != null && var3_13.getInventoryManager().getContainer().containsItem(var1_1.getAnswerItemId())) {
-                        var2_5 = World.g()[var3_13.getInteractionTargetIndex()];
+                        var2_5 = World.getNpcs()[var3_13.getInteractionTargetIndex()];
                         var3_13.getDialogueManager().setDialogueNpcId(var2_5 != null ? var2_5.getNpcId() : 0);
                         if (var4_11 == var1_1.getAnswerValue()) {
                             DialogueManager.a(var3_13, 10009, 2);
@@ -234,11 +234,11 @@ lbl32:
                     return;
                 }
                 if (var1_1.getSelectedInterfaceId() == 18900) {
-                    GrandExchangeManager.c(var1_1, var2_4);
+                    GrandExchangeManager.setSelectedOfferQuantity(var1_1, var2_4);
                     return;
                 }
                 if (var1_1.getSelectedInterfaceId() != 18901) break;
-                GrandExchangeManager.d(var1_1, var2_4);
+                GrandExchangeManager.setSelectedOfferUnitPrice(var1_1, var2_4);
             }
         }
     }

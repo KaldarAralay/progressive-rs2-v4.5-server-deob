@@ -54,17 +54,17 @@ extends QuestScript {
 
     public FremennikTrialsQuest(int n) {
         super(40);
-        super.a(3);
+        super.setQuestPointReward(3);
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player stringArray, int n) {
         if (n == 0) {
             stringArray = new String[]{"I can start this quest by speaking to Chieftain Brundt in", "the Fremennik Longhall, which is in the town of Rellekka to", "the north of Sinclair Mansion.", "To complete this quest I need:", "Level 40 Woodcutting", "Level 40 Crafting", "Level 25 Fletching", "I must also be able to defeat a level 69 enemy and must", "not be afraid of combat without any weapons or armour"};
             return stringArray;
         }
         if (n >= 2) {
-            stringArray = new String[]{"I need the votes from following persons before I", "should go talk to Brundt the Chieftain again:", String.valueOf((n & GameUtil.b(3)) != 0 ? "@str@" : "") + "Manni the Reveller", String.valueOf((n & GameUtil.b(5)) != 0 ? "@str@" : "") + "Olaf the Bard", String.valueOf((n & GameUtil.b(7)) != 0 ? "@str@" : "") + "Sigmund the Merchant", String.valueOf((n & GameUtil.b(9)) != 0 ? "@str@" : "") + "Sigli the Huntsman", String.valueOf((n & GameUtil.b(11)) != 0 ? "@str@" : "") + "Swensen the Navigator", String.valueOf((n & GameUtil.b(13)) != 0 ? "@str@" : "") + "Peer the Seer", String.valueOf((n & GameUtil.b(15)) != 0 ? "@str@" : "") + "Thorvald the Warrior"};
+            stringArray = new String[]{"I need the votes from following persons before I", "should go talk to Brundt the Chieftain again:", String.valueOf((n & GameUtil.bitFlag(3)) != 0 ? "@str@" : "") + "Manni the Reveller", String.valueOf((n & GameUtil.bitFlag(5)) != 0 ? "@str@" : "") + "Olaf the Bard", String.valueOf((n & GameUtil.bitFlag(7)) != 0 ? "@str@" : "") + "Sigmund the Merchant", String.valueOf((n & GameUtil.bitFlag(9)) != 0 ? "@str@" : "") + "Sigli the Huntsman", String.valueOf((n & GameUtil.bitFlag(11)) != 0 ? "@str@" : "") + "Swensen the Navigator", String.valueOf((n & GameUtil.bitFlag(13)) != 0 ? "@str@" : "") + "Peer the Seer", String.valueOf((n & GameUtil.bitFlag(15)) != 0 ? "@str@" : "") + "Thorvald the Warrior"};
             return stringArray;
         }
         if (n == 1) {
@@ -79,14 +79,14 @@ extends QuestScript {
     }
 
     private boolean f(Player player) {
-        int n = player.getQuestState(this.b());
-        return (n & GameUtil.b(3)) != 0 && (n & GameUtil.b(5)) != 0 && (n & GameUtil.b(7)) != 0 && (n & GameUtil.b(9)) != 0 && (n & GameUtil.b(11)) != 0 && (n & GameUtil.b(13)) != 0 && (n & GameUtil.b(15)) != 0;
+        int n = player.getQuestState(this.getQuestId());
+        return (n & GameUtil.bitFlag(3)) != 0 && (n & GameUtil.bitFlag(5)) != 0 && (n & GameUtil.bitFlag(7)) != 0 && (n & GameUtil.bitFlag(9)) != 0 && (n & GameUtil.bitFlag(11)) != 0 && (n & GameUtil.bitFlag(13)) != 0 && (n & GameUtil.bitFlag(15)) != 0;
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("3 Quest Points, 2.8k XP in:", 12150);
         player2 = player;
@@ -118,38 +118,38 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3) {
+    public final boolean handleItemOnObject(Player player, int n, int n2, int n3) {
         if (n3 < 2) {
             return false;
         }
         if (n == 3727 && n2 == 4176) {
             Player player2 = player;
             player2.packetSender.sendGameMessage("You fill the bucket from the tap.");
-            player.getInventoryManager().a(new ItemStack(3727, 1), new ItemStack(3722, 1));
+            player.getInventoryManager().replaceItem(new ItemStack(3727, 1), new ItemStack(3722, 1));
             return true;
         }
         if (n >= 3722 && n <= 3726 && n2 == 4175) {
             Player player3 = player;
             player3.packetSender.sendGameMessage("You empty the bucket down the drain.");
-            player.getInventoryManager().a(new ItemStack(n, 1), new ItemStack(3727, 1));
+            player.getInventoryManager().replaceItem(new ItemStack(n, 1), new ItemStack(3727, 1));
             return true;
         }
         if (n == 3732 && n2 == 4176) {
             Player player4 = player;
             player4.packetSender.sendGameMessage("You fill the jug from the tap.");
-            player.getInventoryManager().a(new ItemStack(3732, 1), new ItemStack(3729, 1));
+            player.getInventoryManager().replaceItem(new ItemStack(3732, 1), new ItemStack(3729, 1));
             return true;
         }
         if (n == 3723 && n2 == 4170) {
             Player player5 = player;
             player5.packetSender.sendGameMessage("You take a strange looking vase out of the chest.");
-            player.getInventoryManager().a(new ItemStack(3723, 1), new ItemStack(3734, 1));
+            player.getInventoryManager().replaceItem(new ItemStack(3723, 1), new ItemStack(3734, 1));
             return true;
         }
         if (n == 3742 && n2 == 4172) {
             player.getDialogueManager().showTwoLineStatement("As you cook the herring on the stove, the colouring on it peels off", "separately as a red sticky goop...");
-            player.getInventoryManager().a(new ItemStack(3742, 1), new ItemStack(347, 1));
-            player.getInventoryManager().b(new ItemStack(3746, 1));
+            player.getInventoryManager().replaceItem(new ItemStack(3742, 1), new ItemStack(347, 1));
+            player.getInventoryManager().addOrDropItem(new ItemStack(3746, 1));
             return true;
         }
         if (n == 3743 && n2 == 4179) {
@@ -158,20 +158,20 @@ extends QuestScript {
             player6 = player;
             player6.packetSender.sendGameMessage("It is a perfect fit!");
             player.getInventoryManager().removeItem(new ItemStack(3743, 1));
-            if ((player.bI[this.b()] & GameUtil.b(23)) == 0) {
-                int n4 = this.b();
-                player.bI[n4] = player.bI[n4] + GameUtil.b(23);
-            } else if ((player.bI[this.b()] & GameUtil.b(22)) != 0 && (player.bI[this.b()] & GameUtil.b(23)) != 0) {
+            if ((player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(23)) == 0) {
+                int n4 = this.getQuestId();
+                player.questProgressFlags[n4] = player.questProgressFlags[n4] + GameUtil.bitFlag(23);
+            } else if ((player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(22)) != 0 && (player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(23)) != 0) {
                 player6 = player;
                 player6.packetSender.sendGameMessage("The center of the mural falls out!");
-                player.getInventoryManager().b(new ItemStack(3737, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(3737, 1));
             }
             return true;
         }
         if (n == 3734 && n2 == 4176) {
             Player player7 = player;
             player7.packetSender.sendGameMessage("You fill the strange looking vase with water.");
-            player.getInventoryManager().a(new ItemStack(3734, 1), new ItemStack(3735, 1));
+            player.getInventoryManager().replaceItem(new ItemStack(3734, 1), new ItemStack(3735, 1));
             return true;
         }
         if (n == 3740 && n2 == 4169) {
@@ -179,58 +179,58 @@ extends QuestScript {
             player8.packetSender.sendGameMessage("The water expands as it freezes, and shatters the vase.");
             player8 = player;
             player8.packetSender.sendGameMessage("You are left with a key encased in ice.");
-            player.getInventoryManager().a(new ItemStack(3740, 1), new ItemStack(3741, 1));
+            player.getInventoryManager().replaceItem(new ItemStack(3740, 1), new ItemStack(3741, 1));
             return true;
         }
         if (n == 3741 && n2 == 4172) {
             Player player9 = player;
             player9.packetSender.sendGameMessage("The heat of the range melts the ice around the key.");
-            player.getInventoryManager().a(new ItemStack(3741, 1), new ItemStack(3745, 1));
+            player.getInventoryManager().replaceItem(new ItemStack(3741, 1), new ItemStack(3745, 1));
             return true;
         }
-        if (n == 3714 && n2 == 4162 && (player.bI[this.b()] & GameUtil.b(2)) == 0) {
+        if (n == 3714 && n2 == 4162 && (player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(2)) == 0) {
             Player player10 = player;
             player10.packetSender.sendGameMessage("You put the lit strange object into the pipe.");
             player.getInventoryManager().removeItem(new ItemStack(3714, 1));
-            int n5 = this.b();
-            player.bI[n5] = player.bI[n5] + GameUtil.b(2);
+            int n5 = this.getQuestId();
+            player.questProgressFlags[n5] = player.questProgressFlags[n5] + GameUtil.bitFlag(2);
             player.getDialogueManager().showPlayerThreeLineDialogue("That is going to make a really loud bang when it goes", "off! It would be a perfect distraction to help me cheat in", "the drinking contest!", 591);
             player.getDialogueManager().finishDialogue();
             return true;
         }
-        if (n == 3695 && n2 == 4149 && (player.bI[this.b()] & GameUtil.b(4)) == 0) {
+        if (n == 3695 && n2 == 4149 && (player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(4)) == 0) {
             Player player11 = player;
             player11.packetSender.sendGameMessage("You put your pet rock into the cauldron.");
             player.getInventoryManager().removeItem(new ItemStack(3695, 1));
-            int n6 = this.b();
-            player.bI[n6] = player.bI[n6] + GameUtil.b(4);
+            int n6 = this.getQuestId();
+            player.questProgressFlags[n6] = player.questProgressFlags[n6] + GameUtil.bitFlag(4);
             DialogueManager.continueDialogue(player, 1270, 100, 0);
             return true;
         }
-        if (n == 1965 && n2 == 4149 && (player.bI[this.b()] & GameUtil.b(5)) == 0) {
+        if (n == 1965 && n2 == 4149 && (player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(5)) == 0) {
             Player player12 = player;
             player12.packetSender.sendGameMessage("You put a cabbage into the cauldron.");
             player.getInventoryManager().removeItem(new ItemStack(1965, 1));
-            int n7 = this.b();
-            player.bI[n7] = player.bI[n7] + GameUtil.b(5);
+            int n7 = this.getQuestId();
+            player.questProgressFlags[n7] = player.questProgressFlags[n7] + GameUtil.bitFlag(5);
             DialogueManager.continueDialogue(player, 1270, 100, 0);
             return true;
         }
-        if (n == 1942 && n2 == 4149 && (player.bI[this.b()] & GameUtil.b(6)) == 0) {
+        if (n == 1942 && n2 == 4149 && (player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(6)) == 0) {
             Player player13 = player;
             player13.packetSender.sendGameMessage("You put a potato into the cauldron.");
             player.getInventoryManager().removeItem(new ItemStack(1942, 1));
-            int n8 = this.b();
-            player.bI[n8] = player.bI[n8] + GameUtil.b(6);
+            int n8 = this.getQuestId();
+            player.questProgressFlags[n8] = player.questProgressFlags[n8] + GameUtil.bitFlag(6);
             DialogueManager.continueDialogue(player, 1270, 100, 0);
             return true;
         }
-        if (n == 1957 && n2 == 4149 && (player.bI[this.b()] & GameUtil.b(7)) == 0) {
+        if (n == 1957 && n2 == 4149 && (player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(7)) == 0) {
             Player player14 = player;
             player14.packetSender.sendGameMessage("You put an onion into the cauldron.");
             player.getInventoryManager().removeItem(new ItemStack(1957, 1));
-            int n9 = this.b();
-            player.bI[n9] = player.bI[n9] + GameUtil.b(7);
+            int n9 = this.getQuestId();
+            player.questProgressFlags[n9] = player.questProgressFlags[n9] + GameUtil.bitFlag(7);
             DialogueManager.continueDialogue(player, 1270, 100, 0);
             return true;
         }
@@ -238,12 +238,12 @@ extends QuestScript {
             Player player15 = player;
             player15.packetSender.sendGameMessage("You spin the fleece into some golden string.");
             player.getUpdateState().setAnimation(896);
-            player.getInventoryManager().a(new ItemStack(3693, 1), new ItemStack(3694, 1));
+            player.getInventoryManager().replaceItem(new ItemStack(3693, 1), new ItemStack(3694, 1));
             return true;
         }
         if ((n == 383 || n == 389 || n == 395) && n2 == 4141 && player.getInventoryManager().containsItemAmount(3689, 1)) {
             player.getInventoryManager().removeItem(new ItemStack(3689, 1));
-            player.getInventoryManager().a(new ItemStack(n, 1), new ItemStack(3690, 1));
+            player.getInventoryManager().replaceItem(new ItemStack(n, 1), new ItemStack(3690, 1));
             Npc npc = new Npc(1273);
             GameplayHelper.a(player, new Position(2626, 3596, 0), npc, false, false);
             DialogueManager.continueDialogue(player, 1273, 100, 0);
@@ -255,7 +255,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
+    public final boolean handleContextDialogue(int n, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
         if (n2 == 4181 && n5 == 2632 && n6 == 3660 && n == 1) {
             if (player.getInventoryManager().containsItemAmount(3743, 1)) {
                 return false;
@@ -266,7 +266,7 @@ extends QuestScript {
             }
             if (n3 == 2) {
                 player.getDialogueManager().showTwoLineStatement("It is not an eye at all, but some kind of red coloured disk. You take", "it from the head.");
-                player.getInventoryManager().b(new ItemStack(3743, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(3743, 1));
                 player.getDialogueManager().finishDialogue();
                 return true;
             }
@@ -281,13 +281,13 @@ extends QuestScript {
             }
             if (n3 == 2) {
                 player.getDialogueManager().showTwoLineStatement("It is not an eye at all, but some kind of disk made of wood. You", "take it from the head.");
-                player.getInventoryManager().b(new ItemStack(3744, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(3744, 1));
                 player.getDialogueManager().finishDialogue();
                 return true;
             }
         }
         if (n2 == 4165 && n5 == 2631 && n6 == 3667 && n == 1) {
-            if ((player.bI[this.b()] & GameUtil.b(21)) != 0 || n7 <= 1 || (player.getQuestState(this.b()) & GameUtil.b(12)) == 0) {
+            if ((player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(21)) != 0 || n7 <= 1 || (player.getQuestState(this.getQuestId()) & GameUtil.bitFlag(12)) == 0) {
                 Player player2 = player;
                 player2.packetSender.sendGameMessage("This door is locked tightly shut.");
                 player.getDialogueManager().finishDialogue();
@@ -386,7 +386,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player object, int n, int n2, int n3, int n4) {
+    public final boolean handleFirstObjectAction(Player object, int n, int n2, int n3, int n4) {
         if (n == 4171 && (n2 == 2634 || n2 == 2635) && n3 == 3665) {
             if (((Player)object).getInventoryManager().containsItemAmount(3742, 1)) {
                 return false;
@@ -395,7 +395,7 @@ extends QuestScript {
             player.packetSender.sendGameMessage("You search the bookcase...");
             player = object;
             player.packetSender.sendGameMessage("Hidden behind some old books, you find a red herring.");
-            ((Player)object).getInventoryManager().b(new ItemStack(3742, 1));
+            ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(3742, 1));
             return true;
         }
         if (n == 4148 && n2 == 2667 && n3 == 3683) {
@@ -427,7 +427,7 @@ extends QuestScript {
                 int n6 = 0;
                 while (n6 < n5) {
                     ItemStack itemStack = itemStackArray[n6];
-                    if (itemStack != null && itemStack.getDefinition().z()) {
+                    if (itemStack != null && itemStack.getDefinition().isUntradeable()) {
                         player.getInventoryManager().removeItem(itemStack);
                     }
                     ++n6;
@@ -442,7 +442,7 @@ extends QuestScript {
             return true;
         }
         if (n == 4165 && n2 == 2631 && n3 == 3667) {
-            if ((((Player)object).bI[this.b()] & GameUtil.b(21)) != 0 && n4 >= 2 && (n4 & GameUtil.b(13)) == 0) {
+            if ((((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(21)) != 0 && n4 >= 2 && (n4 & GameUtil.bitFlag(13)) == 0) {
                 boolean bl;
                 Player player;
                 block48: {
@@ -501,15 +501,15 @@ extends QuestScript {
             return true;
         }
         if (n == 4188 && n2 == 2672 && n3 == 10099) {
-            AttackStyleDefinition.a((Player)object, new Position(2666, 3694, 0));
+            AttackStyleDefinition.startDelayedObjectMove((Player)object, new Position(2666, 3694, 0));
             return true;
         }
         if (n == 4158 && n2 == 2644 && n3 == 3657) {
             if (n4 < 2) {
                 return false;
             }
-            if ((n4 & GameUtil.b(10)) != 0 && (n4 & GameUtil.b(11)) == 0) {
-                AttackStyleDefinition.a((Player)object, new Position(2631, 10004, 0));
+            if ((n4 & GameUtil.bitFlag(10)) != 0 && (n4 & GameUtil.bitFlag(11)) == 0) {
+                AttackStyleDefinition.startDelayedObjectMove((Player)object, new Position(2631, 10004, 0));
                 return true;
             }
         }
@@ -529,11 +529,11 @@ extends QuestScript {
             return true;
         }
         if (n == 4159 && n2 == 2631 && n3 == 10005) {
-            AttackStyleDefinition.a((Player)object, new Position(2644, 3658, 0));
+            AttackStyleDefinition.startDelayedObjectMove((Player)object, new Position(2644, 3658, 0));
             return true;
         }
         if (n == 4161) {
-            AttackStyleDefinition.a((Player)object, new Position(2647, 3658, 0));
+            AttackStyleDefinition.startDelayedObjectMove((Player)object, new Position(2647, 3658, 0));
             return true;
         }
         if (n == 4150 && n2 == 2631 && n3 == 10002) {
@@ -582,8 +582,8 @@ extends QuestScript {
             n4 = 0;
             while (n4 < e.length) {
                 QuestArea questArea = e[n4];
-                if (questArea.c().contains(((Entity)object).getPosition())) {
-                    n = questArea.a();
+                if (questArea.getAreaBounds().contains(((Entity)object).getPosition())) {
+                    n = questArea.getAreaId();
                     break;
                 }
                 ++n4;
@@ -594,16 +594,16 @@ extends QuestScript {
                 n4 = 0;
                 n9 = 0;
                 object2 = e[n - 1];
-                if (n2 > ((QuestArea)object2).b().getX()) {
+                if (n2 > ((QuestArea)object2).getTargetPosition().getX()) {
                     n4 = 3;
                 }
-                if (n2 < ((QuestArea)object2).b().getX()) {
+                if (n2 < ((QuestArea)object2).getTargetPosition().getX()) {
                     n4 = -3;
                 }
-                if (n3 > ((QuestArea)object2).b().getY()) {
+                if (n3 > ((QuestArea)object2).getTargetPosition().getY()) {
                     n9 = 3;
                 }
-                if (n3 < ((QuestArea)object2).b().getY()) {
+                if (n3 < ((QuestArea)object2).getTargetPosition().getY()) {
                     n9 = -3;
                 }
             }
@@ -611,14 +611,14 @@ extends QuestScript {
             n2 = 0;
             while (n2 < e.length) {
                 QuestArea questArea = e[n2];
-                if (questArea.a() != n) {
+                if (questArea.getAreaId() != n) {
                     ((ArrayList)object2).add(n2);
                 }
                 ++n2;
             }
-            n2 = GameUtil.h(((ArrayList)object2).size());
+            n2 = GameUtil.randomInt(((ArrayList)object2).size());
             QuestArea questArea = e[(Integer)((ArrayList)object2).get(n2)];
-            ((Player)object).moveTo(new Position(questArea.b().getX() + n4, questArea.b().getY() + n9, 0));
+            ((Player)object).moveTo(new Position(questArea.getTargetPosition().getX() + n4, questArea.getTargetPosition().getY() + n9, 0));
             n = n9;
             n2 = n4;
             object = new SwensenMazeRandomObjectExitStepTask(this, 1, n, (Player)object, n2);
@@ -629,18 +629,18 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean c(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleSecondObjectAction(Player player, int n, int n2, int n3, int n4) {
         if (n == 4187 && n2 == 2667 && n3 == 3694) {
             if (n4 < 2) {
                 return false;
             }
-            if ((n4 & GameUtil.b(14)) != 0 && (n4 & GameUtil.b(15)) == 0) {
-                if (player.eB()) {
+            if ((n4 & GameUtil.bitFlag(14)) != 0 && (n4 & GameUtil.bitFlag(15)) == 0) {
+                if (player.hasRestrictedCombatEquipment()) {
                     Player player2 = player;
                     player2.packetSender.sendGameMessage("You can't bring combat equipment here!");
                     return true;
                 }
-                AttackStyleDefinition.a(player, new Position(2671, 10098, 2));
+                AttackStyleDefinition.startDelayedObjectMove(player, new Position(2671, 10098, 2));
                 Player player3 = player;
                 player3.packetSender.sendGameMessage("Explore this battleground and find your foe...");
                 player.eq = 0;
@@ -655,7 +655,7 @@ extends QuestScript {
             player4.packetSender.sendGameMessage("You search the cupboard...");
             player4 = player;
             player4.packetSender.sendGameMessage("You find a bucket with a number five painted on it.");
-            player.getInventoryManager().b(new ItemStack(3727, 1));
+            player.getInventoryManager().addOrDropItem(new ItemStack(3727, 1));
             return true;
         }
         if (n == 4168 && n2 == 2638 && n3 == 3662) {
@@ -666,15 +666,15 @@ extends QuestScript {
             player5.packetSender.sendGameMessage("You search the chest...");
             player5 = player;
             player5.packetSender.sendGameMessage("You find a jug with a number three painted on it.");
-            player.getInventoryManager().b(new ItemStack(3732, 1));
+            player.getInventoryManager().addOrDropItem(new ItemStack(3732, 1));
             return true;
         }
         return false;
     }
 
     @Override
-    public final boolean b(Player player, int n) {
-        if ((player.bI[this.b()] & GameUtil.b(24)) != 0 || n < 2) {
+    public final boolean handleMovementStep(Player player, int n) {
+        if ((player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(24)) != 0 || n < 2) {
             return false;
         }
         if (player.eq == 1290) {
@@ -694,7 +694,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Entity entity, Entity entity2, int n) {
+    public final boolean handleCombatDeath(Entity entity, Entity entity2, int n) {
         Npc npc;
         if (entity2.isNpc() && entity.isPlayer()) {
             Player player = (Player)entity;
@@ -718,8 +718,8 @@ extends QuestScript {
                 return true;
             }
             if (npc.getNpcId() == 1293) {
-                if ((player.getQuestState(this.b()) & GameUtil.b(15)) == 0) {
-                    player.addQuestState(this.b(), GameUtil.b(15));
+                if ((player.getQuestState(this.getQuestId()) & GameUtil.bitFlag(15)) == 0) {
+                    player.addQuestState(this.getQuestId(), GameUtil.bitFlag(15));
                     entity = player;
                     ((Player)entity).packetSender.sendGameMessage("Congratulations! You have passed the warrior's trial!");
                 }
@@ -737,7 +737,7 @@ extends QuestScript {
                     entity = player;
                     ((Player)entity).packetSender.sendGameMessage("You absorb the Draugen's essence into your talisman.");
                     player.getInventoryManager().removeItem(new ItemStack(3696, 1));
-                    player.getInventoryManager().b(new ItemStack(3697, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(3697, 1));
                 }
                 return true;
             }
@@ -752,8 +752,8 @@ extends QuestScript {
                 ((Player)entity).packetSender.sendGameMessage("Oh dear you are...");
                 player.setCurrentHitpoints(player.getMaxHitpoints());
                 player.moveTo(new Position(2667, 3692, 1));
-                if ((player.getQuestState(this.b()) & GameUtil.b(15)) == 0) {
-                    player.addQuestState(this.b(), GameUtil.b(15));
+                if ((player.getQuestState(this.getQuestId()) & GameUtil.bitFlag(15)) == 0) {
+                    player.addQuestState(this.getQuestId(), GameUtil.bitFlag(15));
                     DialogueManager.continueDialogue(player, 1289, 100, 0);
                     entity = player;
                     ((Player)entity).packetSender.sendGameMessage("Congratulations! You have passed the warrior's trial!");
@@ -765,7 +765,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean e(Player player, int n, int n2) {
+    public final boolean handleButtonClick(Player player, int n, int n2) {
         if (n == 13888 || n == 13889) {
             int n3 = player.P;
             n3 = n == 13889 ? (n3 == this.i.length - 1 ? 0 : ++n3) : (n3 == 0 ? this.i.length - 1 : --n3);
@@ -808,9 +808,9 @@ extends QuestScript {
                 ((Player)object2).packetSender.closeInterfaces();
                 object2 = player;
                 ((Player)object2).packetSender.sendGameMessage("You have solved the riddle!");
-                if ((player.bI[this.b()] & GameUtil.b(21)) == 0 && n2 >= 2) {
-                    int n7 = this.b();
-                    player.bI[n7] = player.bI[n7] + GameUtil.b(21);
+                if ((player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(21)) == 0 && n2 >= 2) {
+                    int n7 = this.getQuestId();
+                    player.questProgressFlags[n7] = player.questProgressFlags[n7] + GameUtil.bitFlag(21);
                 }
             } else {
                 object2 = player;
@@ -822,16 +822,16 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean c(Player player, int n, int n2, int n3) {
+    public final boolean handleInventoryItemFirstOption(Player player, int n, int n2, int n3) {
         if (n == 3214) {
             if (n2 == 3690 && this.h.contains(player.getPosition())) {
                 player.getUpdateState().setFacePosition(new Position(player.getPosition().getX(), player.getPosition().getY() - 1));
                 Player player2 = player;
                 player2.packetSender.sendGameMessage("You withdraw your lyre.");
-                player.n(true);
-                int n4 = GameUtil.h(2);
-                n2 = GameUtil.h(2);
-                n3 = GameUtil.h(4);
+                player.setActionLocked(true);
+                int n4 = GameUtil.randomInt(2);
+                n2 = GameUtil.randomInt(2);
+                n3 = GameUtil.randomInt(4);
                 LyrePerformanceStartTask lyrePerformanceStartTask = new LyrePerformanceStartTask(this, 2, n4, player, n3, n2);
                 World.getTaskScheduler().schedule(lyrePerformanceStartTask);
                 return true;
@@ -842,9 +842,9 @@ extends QuestScript {
                 }
                 if (player.N != 1279) {
                     player.N = 1279;
-                    player.O = GameUtil.h(f.length);
+                    player.O = GameUtil.randomInt(f.length);
                 } else {
-                    if (GameUtil.a(player.getPosition(), f[player.O], 1)) {
+                    if (GameUtil.isWithinDistance(player.getPosition(), f[player.O], 1)) {
                         Player player3 = player;
                         player3.packetSender.sendGameMessage("The Draugen is here! Beware!");
                         if (!GameplayHelper.i(player, 1279)) {
@@ -853,8 +853,8 @@ extends QuestScript {
                         }
                         return true;
                     }
-                    if (GameUtil.h(100) == 0) {
-                        player.O = GameUtil.h(f.length);
+                    if (GameUtil.randomInt(100) == 0) {
+                        player.O = GameUtil.randomInt(f.length);
                     }
                 }
                 n2 = f[player.O].getX();
@@ -887,67 +887,67 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player object, int n, int n2, int n3) {
+    public final boolean handleItemOnItem(Player object, int n, int n2, int n3) {
         if (n3 < 2) {
             return false;
         }
         if (n == 3735 && n2 == 3737 || n2 == 3735 && n == 3737) {
             Npc[] npcArray = object;
             object.packetSender.sendGameMessage("You screw the lid on tightly.");
-            object.getInventoryManager().a(new ItemStack(3735, 1), new ItemStack(3740, 1));
+            object.getInventoryManager().replaceItem(new ItemStack(3735, 1), new ItemStack(3740, 1));
             object.getInventoryManager().removeItem(new ItemStack(3737, 1));
             return true;
         }
         if (n == 3744 && n2 == 3746 || n2 == 3744 && n == 3746) {
             Npc[] npcArray = object;
             object.packetSender.sendGameMessage("You coat the wooden coin with the sticky red goop.");
-            object.getInventoryManager().a(new ItemStack(3744, 1), new ItemStack(3743, 1));
+            object.getInventoryManager().replaceItem(new ItemStack(3744, 1), new ItemStack(3743, 1));
             object.getInventoryManager().removeItem(new ItemStack(3746, 1));
-            if ((object.bI[this.b()] & GameUtil.b(22)) == 0) {
-                int n4 = this.b();
-                object.bI[n4] = object.bI[n4] + GameUtil.b(22);
+            if ((object.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(22)) == 0) {
+                int n4 = this.getQuestId();
+                object.questProgressFlags[n4] = object.questProgressFlags[n4] + GameUtil.bitFlag(22);
             }
             return true;
         }
         if (n == 3729 && n2 == 3727 || n2 == 3729 && n == 3727) {
             Npc[] npcArray = object;
             object.packetSender.sendGameMessage("You empty the jug into the bucket.");
-            object.getInventoryManager().a(new ItemStack(3729, 1), new ItemStack(3732, 1));
-            object.getInventoryManager().a(new ItemStack(3727, 1), new ItemStack(3724, 1));
+            object.getInventoryManager().replaceItem(new ItemStack(3729, 1), new ItemStack(3732, 1));
+            object.getInventoryManager().replaceItem(new ItemStack(3727, 1), new ItemStack(3724, 1));
             return true;
         }
         if (n == 3729 && n2 == 3724 || n2 == 3729 && n == 3724) {
             Npc[] npcArray = object;
             object.packetSender.sendGameMessage("You fill the bucket to the brim.");
-            object.getInventoryManager().a(new ItemStack(3729, 1), new ItemStack(3731, 1));
-            object.getInventoryManager().a(new ItemStack(3724, 1), new ItemStack(3722, 1));
+            object.getInventoryManager().replaceItem(new ItemStack(3729, 1), new ItemStack(3731, 1));
+            object.getInventoryManager().replaceItem(new ItemStack(3724, 1), new ItemStack(3722, 1));
             return true;
         }
         if (n == 3731 && n2 == 3727 || n2 == 3731 && n == 3727) {
             Npc[] npcArray = object;
             object.packetSender.sendGameMessage("You empty the jug into the bucket.");
-            object.getInventoryManager().a(new ItemStack(3731, 1), new ItemStack(3732, 1));
-            object.getInventoryManager().a(new ItemStack(3727, 1), new ItemStack(3726, 1));
+            object.getInventoryManager().replaceItem(new ItemStack(3731, 1), new ItemStack(3732, 1));
+            object.getInventoryManager().replaceItem(new ItemStack(3727, 1), new ItemStack(3726, 1));
             return true;
         }
         if (n == 3729 && n2 == 3726 || n2 == 3729 && n == 3726) {
             Npc[] npcArray = object;
             object.packetSender.sendGameMessage("You empty the jug into the bucket.");
-            object.getInventoryManager().a(new ItemStack(3729, 1), new ItemStack(3732, 1));
-            object.getInventoryManager().a(new ItemStack(3726, 1), new ItemStack(3723, 1));
+            object.getInventoryManager().replaceItem(new ItemStack(3729, 1), new ItemStack(3732, 1));
+            object.getInventoryManager().replaceItem(new ItemStack(3726, 1), new ItemStack(3723, 1));
             return true;
         }
         if (n == 590 && n2 == 3713 || n2 == 590 && n == 3713) {
             Npc[] npcArray = object;
             object.packetSender.sendGameMessage("You light the string of the strange object. It starts to hiss slightly.");
-            object.getInventoryManager().a(new ItemStack(3713, 1), new ItemStack(3714, 1));
+            object.getInventoryManager().replaceItem(new ItemStack(3713, 1), new ItemStack(3714, 1));
             return true;
         }
         if (n == 946 && n2 == 3692 || n2 == 946 && n == 3692) {
             Npc[] npcArray = object;
             object.packetSender.sendGameMessage("You craft an unstrung lyre out of the branch.");
             object.getUpdateState().setAnimation(1248);
-            object.getInventoryManager().a(new ItemStack(3692, 1), new ItemStack(3688, 1));
+            object.getInventoryManager().replaceItem(new ItemStack(3692, 1), new ItemStack(3688, 1));
             return true;
         }
         if (n == 3801 && n2 == 3712 || n2 == 3801 && n == 3712) {
@@ -955,7 +955,7 @@ extends QuestScript {
             object.packetSender.sendGameMessage("You empty the keg and refill it with low alcohol beer.");
             object.getInventoryManager().removeItem(new ItemStack(3801, 1));
             object.getInventoryManager().removeItem(new ItemStack(3712, 1));
-            object.getInventoryManager().b(new ItemStack(3711, 1));
+            object.getInventoryManager().addOrDropItem(new ItemStack(3711, 1));
             if (this.g.contains(object.getPosition())) {
                 Npc[] npcArray2 = object = Npc.findActiveInArea(this.g);
                 n2 = ((Npc[])object).length;
@@ -973,20 +973,20 @@ extends QuestScript {
             object.packetSender.sendGameMessage("You attach the golden strings to the lyre.");
             object.getInventoryManager().removeItem(new ItemStack(3688, 1));
             object.getInventoryManager().removeItem(new ItemStack(3694, 1));
-            object.getInventoryManager().b(new ItemStack(3689, 1));
+            object.getInventoryManager().addOrDropItem(new ItemStack(3689, 1));
             return true;
         }
         return false;
     }
 
     @Override
-    public final boolean d(Player player, int n, int n2, int n3) {
+    public final boolean handleItemOnNpc(Player player, int n, int n2, int n3) {
         if (n3 < 2) {
             return false;
         }
-        if (!((n3 & GameUtil.b(3)) != 0 || player.aq(3713) || n != 1287 || n2 != 1917 && n2 != 3803)) {
+        if (!((n3 & GameUtil.bitFlag(3)) != 0 || player.ownsItem(3713) || n != 1287 || n2 != 1917 && n2 != 3803)) {
             player.getInventoryManager().removeItem(new ItemStack(n2, 1));
-            player.getInventoryManager().b(new ItemStack(3713, 1));
+            player.getInventoryManager().addOrDropItem(new ItemStack(3713, 1));
             DialogueManager.continueDialogue(player, 1287, 100, 0);
             return true;
         }
@@ -994,13 +994,13 @@ extends QuestScript {
     }
 
     private boolean g(Player player) {
-        return (player.bI[this.b()] & GameUtil.b(4)) != 0 && (player.bI[this.b()] & GameUtil.b(5)) != 0 && (player.bI[this.b()] & GameUtil.b(6)) != 0 && (player.bI[this.b()] & GameUtil.b(7)) != 0;
+        return (player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(4)) != 0 && (player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(5)) != 0 && (player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(6)) != 0 && (player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(7)) != 0;
     }
 
     private static boolean h(Player player) {
         int n = 3698;
         while (n < 3711) {
-            if (player.aq(n)) {
+            if (player.ownsItem(n)) {
                 return true;
             }
             ++n;
@@ -1009,7 +1009,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player object, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player object, int n, int n2, int n3, int n4) {
         if (n == 1294) {
             if (n4 == 0) {
                 if (!FremennikTrialsQuest.e((Player)object)) {
@@ -1146,7 +1146,7 @@ extends QuestScript {
             if (n4 < 2) {
                 return false;
             }
-            if ((n4 & GameUtil.b(6)) != 0 && (n4 & GameUtil.b(7)) == 0 && (((Player)object).bI[this.b()] & GameUtil.b(11)) != 0) {
+            if ((n4 & GameUtil.bitFlag(6)) != 0 && (n4 & GameUtil.bitFlag(7)) == 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(11)) != 0) {
                 if (n2 <= 2 && !((Player)object).getInventoryManager().containsItemAmount(3701, 1)) {
                     return false;
                 }
@@ -1155,13 +1155,13 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 2) {
-                    ((Player)object).getInventoryManager().a(new ItemStack(3701, 1), new ItemStack(3708, 1));
+                    ((Player)object).getInventoryManager().replaceItem(new ItemStack(3701, 1), new ItemStack(3708, 1));
                     ((Player)object).getDialogueManager().showNpcThreeLineDialogue("Excellent work outerlander! And so quickly, too! Here,", "you may take my financial report promising reduced", "sales taxes on all goods.", 591);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(6)) != 0 && (n4 & GameUtil.b(7)) == 0 && (((Player)object).bI[this.b()] & GameUtil.b(10)) != 0 && (((Player)object).bI[this.b()] & GameUtil.b(11)) == 0) {
+            if ((n4 & GameUtil.bitFlag(6)) != 0 && (n4 & GameUtil.bitFlag(7)) == 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(10)) != 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(11)) == 0) {
                 if (n2 == 1) {
                     ((Player)object).getDialogueManager().showPlayerTwoLineDialogue("I don't suppose you have any idea where I could find a", "guarantee of a reduction on sales taxes, do you?", 591);
                     return true;
@@ -1200,8 +1200,8 @@ extends QuestScript {
                 }
                 if (n2 == 10) {
                     ((Player)object).getDialogueManager().showNpcThreeLineDialogue("Speak to Sigli then, and you may have my promise to", "reduce our sales taxes. And best of luck with the rest", "of your trials.", 591);
-                    int n5 = this.b();
-                    ((Player)object).bI[n5] = ((Player)object).bI[n5] + GameUtil.b(11);
+                    int n5 = this.getQuestId();
+                    ((Player)object).questProgressFlags[n5] = ((Player)object).questProgressFlags[n5] + GameUtil.bitFlag(11);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -1232,7 +1232,7 @@ extends QuestScript {
                 }
                 if (n2 == 6) {
                     ((Player)object).getDialogueManager().finishDialogue();
-                    this.c((Player)object);
+                    this.awardCompletionRewards((Player)object);
                     return true;
                 }
             }
@@ -1241,7 +1241,7 @@ extends QuestScript {
             if (n4 < 2) {
                 return false;
             }
-            if ((n4 & GameUtil.b(6)) != 0 && (n4 & GameUtil.b(7)) == 0 && (((Player)object).bI[this.b()] & GameUtil.b(18)) != 0) {
+            if ((n4 & GameUtil.bitFlag(6)) != 0 && (n4 & GameUtil.bitFlag(7)) == 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(18)) != 0) {
                 if (n2 <= 3 && !((Player)object).getInventoryManager().containsItemAmount(3707, 1)) {
                     return false;
                 }
@@ -1254,7 +1254,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 3) {
-                    ((Player)object).getInventoryManager().a(new ItemStack(3707, 1), new ItemStack(3706, 1));
+                    ((Player)object).getInventoryManager().replaceItem(new ItemStack(3707, 1), new ItemStack(3706, 1));
                     ((Player)object).getDialogueManager().showNpcThreeLineDialogue("Here outerlander, you may take my token. I will", "happily give up my place at the longhalls table of", "champions just for a taste of this exquisite beverage!", 591);
                     return true;
                 }
@@ -1276,7 +1276,7 @@ extends QuestScript {
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(6)) != 0 && (n4 & GameUtil.b(7)) == 0 && (((Player)object).bI[this.b()] & GameUtil.b(17)) != 0 && (((Player)object).bI[this.b()] & GameUtil.b(18)) == 0) {
+            if ((n4 & GameUtil.bitFlag(6)) != 0 && (n4 & GameUtil.bitFlag(7)) == 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(17)) != 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(18)) == 0) {
                 if (n2 == 1) {
                     ((Player)object).getDialogueManager().showPlayerTwoLineDialogue("I don't suppose you have any idea where I could find a", "token to allow a seat at the champions table, do you?", 591);
                     return true;
@@ -1323,13 +1323,13 @@ extends QuestScript {
                 }
                 if (n2 == 12) {
                     ((Player)object).getDialogueManager().showNpcOneLineDialogue("That's all.", 591);
-                    int n6 = this.b();
-                    ((Player)object).bI[n6] = ((Player)object).bI[n6] + GameUtil.b(18);
+                    int n6 = this.getQuestId();
+                    ((Player)object).questProgressFlags[n6] = ((Player)object).questProgressFlags[n6] + GameUtil.bitFlag(18);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(2)) == 0) {
+            if ((n4 & GameUtil.bitFlag(2)) == 0) {
                 if (n2 == 1) {
                     ((Player)object).getDialogueManager().showPlayerOneLineDialogue("Hello there!", 591);
                     return true;
@@ -1385,12 +1385,12 @@ extends QuestScript {
                 }
                 if (n2 == 13) {
                     ((Player)object).getDialogueManager().showNpcThreeLineDialogue("We start when you have your keg of beer with you,", "and finish when one of us can drink no more and", "yields.", 591);
-                    ((Player)object).addQuestState(this.b(), GameUtil.b(2));
+                    ((Player)object).addQuestState(this.getQuestId(), GameUtil.bitFlag(2));
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(2)) != 0 && (n4 & GameUtil.b(3)) == 0) {
+            if ((n4 & GameUtil.bitFlag(2)) != 0 && (n4 & GameUtil.bitFlag(3)) == 0) {
                 if (n2 == 1 && (((Player)object).getInventoryManager().containsItemAmount(3801, 1) || ((Player)object).getInventoryManager().containsItemAmount(3711, 1))) {
                     ((Player)object).getDialogueManager().showNpcTwoLineDialogue("Ah, I see you have your keg of beer. Are we ready to", "drink against each other?", 591);
                     return true;
@@ -1414,14 +1414,14 @@ extends QuestScript {
                 }
                 if (n2 == 5 && (((Player)object).getInventoryManager().containsItemAmount(3801, 1) || ((Player)object).getInventoryManager().containsItemAmount(3711, 1))) {
                     ((Player)object).getPacketSender().closeInterfaces();
-                    ((Player)object).n(true);
+                    ((Player)object).setActionLocked(true);
                     Npc npc = Npc.findByDefinitionId(1286);
                     npc.getUpdateState().setAnimation(1327);
                     if (((Player)object).getInventoryManager().containsItemAmount(3711, 1)) {
                         ((Player)object).pendingGameMode = 3711;
                     }
                     ((Player)object).getPacketSender().sendGameMessage("The Fremennik drinks his tankard first. He staggers a little bit.");
-                    int n7 = this.b();
+                    int n7 = this.getQuestId();
                     object = new ManniDrinkingContestPlayerDrinkTask(this, 6, (Player)object, n7);
                     World.getTaskScheduler().schedule((TickTask)object);
                     return true;
@@ -1436,7 +1436,7 @@ extends QuestScript {
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(3)) != 0) {
+            if ((n4 & GameUtil.bitFlag(3)) != 0) {
                 if (n2 == 8) {
                     ((Player)object).getDialogueManager().showNpcThreeLineDialogue("Wassha? Guh? You drank that whole keg! But it dinna", "affect you at all! I conshede! You can probably", "outdrink me!", 591);
                     return true;
@@ -1452,7 +1452,7 @@ extends QuestScript {
             if (n4 < 2) {
                 return false;
             }
-            if ((n4 & GameUtil.b(3)) == 0) {
+            if ((n4 & GameUtil.bitFlag(3)) == 0) {
                 if (n2 == 1) {
                     ((Player)object).getDialogueManager().showPlayerOneLineDialogue("Hello.", 591);
                     return true;
@@ -1601,7 +1601,7 @@ extends QuestScript {
                 if (n2 == 36) {
                     if (((Player)object).getInventoryManager().containsItemAmount(995, 250)) {
                         ((Player)object).getInventoryManager().removeItem(new ItemStack(995, 250));
-                        ((Player)object).getInventoryManager().b(new ItemStack(3712, 1));
+                        ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(3712, 1));
                     }
                     ((Player)object).getDialogueManager().finishDialogue();
                     return false;
@@ -1627,7 +1627,7 @@ extends QuestScript {
             if (n4 < 2) {
                 return false;
             }
-            if ((n4 & GameUtil.b(6)) != 0 && (n4 & GameUtil.b(7)) == 0 && (((Player)object).bI[this.b()] & GameUtil.b(9)) != 0) {
+            if ((n4 & GameUtil.bitFlag(6)) != 0 && (n4 & GameUtil.bitFlag(7)) == 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(9)) != 0) {
                 if (n2 <= 4 && !((Player)object).getInventoryManager().containsItemAmount(3700, 1)) {
                     return false;
                 }
@@ -1644,13 +1644,13 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 4) {
-                    ((Player)object).getInventoryManager().a(new ItemStack(3700, 1), new ItemStack(3699, 1));
+                    ((Player)object).getInventoryManager().replaceItem(new ItemStack(3700, 1), new ItemStack(3699, 1));
                     ((Player)object).getDialogueManager().showNpcThreeLineDialogue("Oh! Superb! Those are great! They're just what I was", "looking for! Here, take this song with my compliments!", "It is one of my finest works yet!", 591);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(6)) != 0 && (n4 & GameUtil.b(7)) == 0 && (((Player)object).bI[this.b()] & GameUtil.b(8)) != 0 && (((Player)object).bI[this.b()] & GameUtil.b(9)) == 0) {
+            if ((n4 & GameUtil.bitFlag(6)) != 0 && (n4 & GameUtil.bitFlag(7)) == 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(8)) != 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(9)) == 0) {
                 if (n2 == 1) {
                     ((Player)object).getDialogueManager().showPlayerTwoLineDialogue("I don't suppose you have any idea where I could find a", "love ballad, do you?", 591);
                     return true;
@@ -1685,13 +1685,13 @@ extends QuestScript {
                 }
                 if (n2 == 9) {
                     ((Player)object).getDialogueManager().showNpcThreeLineDialogue("If you can find me a pair of sturdy boots to replace", "these old worn out ones of mine, I will be happy to", "spend the time on composing you a romantic ballad.", 591);
-                    int n8 = this.b();
-                    ((Player)object).bI[n8] = ((Player)object).bI[n8] + GameUtil.b(9);
+                    int n8 = this.getQuestId();
+                    ((Player)object).questProgressFlags[n8] = ((Player)object).questProgressFlags[n8] + GameUtil.bitFlag(9);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(4)) == 0) {
+            if ((n4 & GameUtil.bitFlag(4)) == 0) {
                 if (n2 == 1) {
                     ((Player)object).getDialogueManager().showNpcOneLineDialogue("Hello? Yes? You want something, outerlander?", 591);
                     return true;
@@ -1739,12 +1739,12 @@ extends QuestScript {
                 }
                 if (n2 == 11) {
                     ((Player)object).getDialogueManager().showNpcTwoLineDialogue("That is great news outerlander! We always need more", "music lovers here!", 591);
-                    ((Player)object).addQuestState(this.b(), GameUtil.b(4));
+                    ((Player)object).addQuestState(this.getQuestId(), GameUtil.bitFlag(4));
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(4)) != 0 && (n4 & GameUtil.b(5)) == 0) {
+            if ((n4 & GameUtil.bitFlag(4)) != 0 && (n4 & GameUtil.bitFlag(5)) == 0) {
                 if (n2 == 1) {
                     ((Player)object).getDialogueManager().showPlayerOneLineDialogue("So how would I go about writing this epic?", 591);
                     return true;
@@ -1843,15 +1843,15 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 102) {
-                    if ((((Player)object).getQuestState(this.b()) & GameUtil.b(5)) == 0) {
-                        ((Player)object).addQuestState(this.b(), GameUtil.b(5));
+                    if ((((Player)object).getQuestState(this.getQuestId()) & GameUtil.bitFlag(5)) == 0) {
+                        ((Player)object).addQuestState(this.getQuestId(), GameUtil.bitFlag(5));
                     }
                     ((Player)object).getPacketSender().sendGameMessage("Congratulations! You have completed the Bard's Trial!");
                     ((Player)object).getPacketSender().sendGameMessage("As you finished playing you felt Fossegrimen's power leave you...");
                     ((Player)object).getPacketSender().sendGameMessage("You feel the musical ability from the Fossegrimen leave you...");
                     if (((Player)object).getInventoryManager().containsItemAmount(3690, 1)) {
                         ((Player)object).getInventoryManager().removeItem(new ItemStack(3690, 1));
-                        ((Player)object).getInventoryManager().b(new ItemStack(3689, 1));
+                        ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(3689, 1));
                     }
                     ((Player)object).getDialogueManager().finishDialogue();
                     return false;
@@ -1862,7 +1862,7 @@ extends QuestScript {
             if (n4 < 2) {
                 return false;
             }
-            if ((((Player)object).bI[this.b()] & GameUtil.b(3)) == 0) {
+            if ((((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(3)) == 0) {
                 if (n2 == 1) {
                     ((Player)object).getDialogueManager().showPlayerOneLineDialogue("Hello there.", 591);
                     return true;
@@ -1910,14 +1910,14 @@ extends QuestScript {
                 }
                 if (n2 == 11) {
                     ((Player)object).getDialogueManager().showPlayerOneLineDialogue("I see... okay, well, bye!", 591);
-                    int n9 = this.b();
-                    ((Player)object).bI[n9] = ((Player)object).bI[n9] + GameUtil.b(3);
+                    int n9 = this.getQuestId();
+                    ((Player)object).questProgressFlags[n9] = ((Player)object).questProgressFlags[n9] + GameUtil.bitFlag(3);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
             }
-            if ((((Player)object).bI[this.b()] & GameUtil.b(3)) != 0) {
-                if (!(!this.g((Player)object) || ((Player)object).aq(3693) || ((Player)object).aq(3694) || ((Player)object).aq(3689) || ((Player)object).aq(3690) || ((Player)object).aq(3691))) {
+            if ((((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(3)) != 0) {
+                if (!(!this.g((Player)object) || ((Player)object).ownsItem(3693) || ((Player)object).ownsItem(3694) || ((Player)object).ownsItem(3689) || ((Player)object).ownsItem(3690) || ((Player)object).ownsItem(3691))) {
                     if (n2 == 1) {
                         ((Player)object).getDialogueManager().showPlayerOneLineDialogue("Hello there.", 591);
                         return true;
@@ -1935,7 +1935,7 @@ extends QuestScript {
                         return true;
                     }
                     if (n2 == 5) {
-                        ((Player)object).getInventoryManager().b(new ItemStack(3693, 1));
+                        ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(3693, 1));
                         ((Player)object).getDialogueManager().showNpcThreeLineDialogue("Here you go. Hah! Me trick you human! All you got is", "worthless golden fleece! Me got very rare soup-making", "stone!", 591);
                         return true;
                     }
@@ -1984,7 +1984,7 @@ extends QuestScript {
                 }
                 if (n2 == 2) {
                     ((Player)object).getDialogueManager().showNpcOneLineDialogue("Sure, have as many as you like. I've plenty more!", 591);
-                    ((Player)object).getInventoryManager().b(new ItemStack(3695, 1));
+                    ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(3695, 1));
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -1992,7 +1992,7 @@ extends QuestScript {
             if (n4 < 2) {
                 return false;
             }
-            if ((n4 & GameUtil.b(6)) != 0 && (n4 & GameUtil.b(7)) == 0 && (((Player)object).bI[this.b()] & GameUtil.b(19)) != 0 && (((Player)object).bI[this.b()] & GameUtil.b(20)) == 0) {
+            if ((n4 & GameUtil.bitFlag(6)) != 0 && (n4 & GameUtil.bitFlag(7)) == 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(19)) != 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(20)) == 0) {
                 if (n2 == 1) {
                     ((Player)object).getDialogueManager().showPlayerThreeLineDialogue("I don't suppose you have any idea where I could find a", "written promise from Askeladden to stay out of the", "Longhall?", 591);
                     return true;
@@ -2032,21 +2032,21 @@ extends QuestScript {
                 }
                 if (n2 == 9 && ((Player)object).getInventoryManager().containsItemAmount(995, 5000)) {
                     ((Player)object).getInventoryManager().removeItem(new ItemStack(995, 5000));
-                    ((Player)object).getInventoryManager().b(new ItemStack(3709, 1));
+                    ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(3709, 1));
                     ((Player)object).getDialogueManager().showNpcThreeLineDialogue("Done, and done. Let me know if you got any more", "cash burning a hole in your pocket I can relieve you", "of, buddy.", 591);
-                    int n10 = this.b();
-                    ((Player)object).bI[n10] = ((Player)object).bI[n10] + GameUtil.b(20);
+                    int n10 = this.getQuestId();
+                    ((Player)object).questProgressFlags[n10] = ((Player)object).questProgressFlags[n10] + GameUtil.bitFlag(20);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(6)) != 0 && (n4 & GameUtil.b(7)) == 0 && (((Player)object).bI[this.b()] & GameUtil.b(20)) != 0 && !FremennikTrialsQuest.h((Player)object) && n2 == 1) {
+            if ((n4 & GameUtil.bitFlag(6)) != 0 && (n4 & GameUtil.bitFlag(7)) == 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(20)) != 0 && !FremennikTrialsQuest.h((Player)object) && n2 == 1) {
                 ((Player)object).getDialogueManager().showNpcOneLineDialogue("Here you go, Don't lose it this time.", 591);
-                ((Player)object).getInventoryManager().b(new ItemStack(3709, 1));
+                ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(3709, 1));
                 ((Player)object).getDialogueManager().finishDialogue();
                 return true;
             }
-            if (!((((Player)object).bI[this.b()] & GameUtil.b(3)) == 0 || (n4 & GameUtil.b(5)) != 0 || ((Player)object).aq(3695) || ((Player)object).aq(3693) || ((Player)object).aq(3694) || ((Player)object).aq(3689) || ((Player)object).aq(3690))) {
+            if (!((((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(3)) == 0 || (n4 & GameUtil.bitFlag(5)) != 0 || ((Player)object).ownsItem(3695) || ((Player)object).ownsItem(3693) || ((Player)object).ownsItem(3694) || ((Player)object).ownsItem(3689) || ((Player)object).ownsItem(3690))) {
                 if (n2 == 1) {
                     ((Player)object).getDialogueManager().showPlayerTwoLineDialogue("Hello there. I understand you managed to get some", "golden wool from Lalli?", 591);
                     return true;
@@ -2096,7 +2096,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 13) {
-                    ((Player)object).getInventoryManager().b(new ItemStack(3695, 1));
+                    ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(3695, 1));
                     ((Player)object).getDialogueManager().showNpcThreeLineDialogue("Sure thing buddy, although I have to say, I doubt even", "that troll is stupid enough to fall for the SAME trick", "TWICE in a row! You can try anyway though!", 591);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
@@ -2129,7 +2129,7 @@ extends QuestScript {
             if (n4 < 2) {
                 return false;
             }
-            if ((n4 & GameUtil.b(6)) == 0) {
+            if ((n4 & GameUtil.bitFlag(6)) == 0) {
                 if (n2 == 1) {
                     ((Player)object).getDialogueManager().showPlayerOneLineDialogue("Hello there!", 591);
                     return true;
@@ -2197,11 +2197,11 @@ extends QuestScript {
                 }
                 if (n2 == 16) {
                     ((Player)object).getDialogueManager().showNpcTwoLineDialogue("Ah, well outerlander, if I knew where to start looking I", "would simply do it myself!", 591);
-                    ((Player)object).addQuestState(this.b(), GameUtil.b(6));
+                    ((Player)object).addQuestState(this.getQuestId(), GameUtil.bitFlag(6));
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(6)) != 0 && (n4 & GameUtil.b(7)) == 0) {
+            if ((n4 & GameUtil.bitFlag(6)) != 0 && (n4 & GameUtil.bitFlag(7)) == 0) {
                 if (n2 == 17) {
                     ((Player)object).getDialogueManager().showPlayerOneLineDialogue("No help at ALL?", 591);
                     return true;
@@ -2221,11 +2221,11 @@ extends QuestScript {
                 if (n2 == 2) {
                     ((Player)object).getDialogueManager().showPlayerOneLineDialogue("Here's that flower you wanted.", 591);
                     ((Player)object).getInventoryManager().removeItem(new ItemStack(3698, 1));
-                    ((Player)object).addQuestState(this.b(), GameUtil.b(7));
+                    ((Player)object).addQuestState(this.getQuestId(), GameUtil.bitFlag(7));
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(7)) != 0 && n2 == 3) {
+            if ((n4 & GameUtil.bitFlag(7)) != 0 && n2 == 3) {
                 ((Player)object).getDialogueManager().showNpcThreeLineDialogue("Incredible! Your merchanting skills might even match", "my own! I have no choice but to recommend you to", "the council of elders!", 591);
                 ((Player)object).getDialogueManager().finishDialogue();
                 return true;
@@ -2235,7 +2235,7 @@ extends QuestScript {
             if (n4 < 2) {
                 return false;
             }
-            if ((n4 & GameUtil.b(6)) != 0 && (n4 & GameUtil.b(7)) == 0 && (((Player)object).bI[this.b()] & GameUtil.b(8)) != 0) {
+            if ((n4 & GameUtil.bitFlag(6)) != 0 && (n4 & GameUtil.bitFlag(7)) == 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(8)) != 0) {
                 if (n2 <= 2 && !((Player)object).getInventoryManager().containsItemAmount(3699, 1)) {
                     return false;
                 }
@@ -2244,13 +2244,13 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 2) {
-                    ((Player)object).getInventoryManager().a(new ItemStack(3699, 1), new ItemStack(3698, 1));
+                    ((Player)object).getInventoryManager().replaceItem(new ItemStack(3699, 1), new ItemStack(3698, 1));
                     ((Player)object).getDialogueManager().showNpcThreeLineDialogue("Oh. It's by Olaf? Hmm. Well, a deal's a deal. I just", "hope it's better than the usual rubbish he comes up with,", "or my chances are worse than ever.", 591);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(6)) != 0 && (n4 & GameUtil.b(7)) == 0 && (((Player)object).bI[this.b()] & GameUtil.b(8)) == 0) {
+            if ((n4 & GameUtil.bitFlag(6)) != 0 && (n4 & GameUtil.bitFlag(7)) == 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(8)) == 0) {
                 if (n2 == 1) {
                     ((Player)object).getDialogueManager().showPlayerTwoLineDialogue("I don't suppose you have any idea where I could find a", "rare flower from across the sea, do you?", 591);
                     return true;
@@ -2285,8 +2285,8 @@ extends QuestScript {
                 }
                 if (n2 == 9) {
                     ((Player)object).getDialogueManager().showNpcOneLineDialogue("That sounds like a fair deal to me, outerlander.", 591);
-                    int n11 = this.b();
-                    ((Player)object).bI[n11] = ((Player)object).bI[n11] + GameUtil.b(8);
+                    int n11 = this.getQuestId();
+                    ((Player)object).questProgressFlags[n11] = ((Player)object).questProgressFlags[n11] + GameUtil.bitFlag(8);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -2296,7 +2296,7 @@ extends QuestScript {
             if (n4 < 2) {
                 return false;
             }
-            if ((n4 & GameUtil.b(6)) != 0 && (n4 & GameUtil.b(7)) == 0 && (((Player)object).bI[this.b()] & GameUtil.b(10)) != 0) {
+            if ((n4 & GameUtil.bitFlag(6)) != 0 && (n4 & GameUtil.bitFlag(7)) == 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(10)) != 0) {
                 if (n2 <= 2 && !((Player)object).getInventoryManager().containsItemAmount(3708, 1)) {
                     return false;
                 }
@@ -2305,7 +2305,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 2) {
-                    ((Player)object).getInventoryManager().a(new ItemStack(3708, 1), new ItemStack(3700, 1));
+                    ((Player)object).getInventoryManager().replaceItem(new ItemStack(3708, 1), new ItemStack(3700, 1));
                     ((Player)object).getDialogueManager().showNpcTwoLineDialogue("Certainly! Let me have a look at what he has written", "here, just give me a moment...", 591);
                     return true;
                 }
@@ -2315,7 +2315,7 @@ extends QuestScript {
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(6)) != 0 && (n4 & GameUtil.b(7)) == 0 && (((Player)object).bI[this.b()] & GameUtil.b(9)) != 0 && (((Player)object).bI[this.b()] & GameUtil.b(10)) == 0) {
+            if ((n4 & GameUtil.bitFlag(6)) != 0 && (n4 & GameUtil.bitFlag(7)) == 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(9)) != 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(10)) == 0) {
                 if (n2 == 1) {
                     ((Player)object).getDialogueManager().showPlayerTwoLineDialogue("I don't suppose you have any idea where I could find", "some custom sturdy boots, do you?", 591);
                     return true;
@@ -2342,8 +2342,8 @@ extends QuestScript {
                 }
                 if (n2 == 7) {
                     ((Player)object).getDialogueManager().showPlayerOneLineDialogue("Okay, I will see what I can do.", 591);
-                    int n12 = this.b();
-                    ((Player)object).bI[n12] = ((Player)object).bI[n12] + GameUtil.b(10);
+                    int n12 = this.getQuestId();
+                    ((Player)object).questProgressFlags[n12] = ((Player)object).questProgressFlags[n12] + GameUtil.bitFlag(10);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -2353,7 +2353,7 @@ extends QuestScript {
             if (n4 < 2) {
                 return false;
             }
-            if ((n4 & GameUtil.b(6)) != 0 && (n4 & GameUtil.b(7)) == 0 && (((Player)object).bI[this.b()] & GameUtil.b(12)) != 0) {
+            if ((n4 & GameUtil.bitFlag(6)) != 0 && (n4 & GameUtil.bitFlag(7)) == 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(12)) != 0) {
                 if (n2 <= 3 && !((Player)object).getInventoryManager().containsItemAmount(3702, 1)) {
                     return false;
                 }
@@ -2366,13 +2366,13 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 3) {
-                    ((Player)object).getInventoryManager().a(new ItemStack(3702, 1), new ItemStack(3701, 1));
+                    ((Player)object).getInventoryManager().replaceItem(new ItemStack(3702, 1), new ItemStack(3701, 1));
                     ((Player)object).getDialogueManager().showNpcThreeLineDialogue("Well met, outerlander. I see some hunting potential", "within you. Here, take my map, I was getting too", "dependent on it for my skill anyway.", 591);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(6)) != 0 && (n4 & GameUtil.b(7)) == 0 && (((Player)object).bI[this.b()] & GameUtil.b(11)) != 0 && (((Player)object).bI[this.b()] & GameUtil.b(12)) == 0) {
+            if ((n4 & GameUtil.bitFlag(6)) != 0 && (n4 & GameUtil.bitFlag(7)) == 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(11)) != 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(12)) == 0) {
                 if (n2 == 1) {
                     ((Player)object).getDialogueManager().showNpcOneLineDialogue("Greetings outerlander.", 591);
                     return true;
@@ -2411,13 +2411,13 @@ extends QuestScript {
                 }
                 if (n2 == 10) {
                     ((Player)object).getDialogueManager().showNpcThreeLineDialogue("I have no idea. But then again, I'm happy with my old", "bowstring and being the only person who knows where", "my hunting ground is.", 591);
-                    int n13 = this.b();
-                    ((Player)object).bI[n13] = ((Player)object).bI[n13] + GameUtil.b(12);
+                    int n13 = this.getQuestId();
+                    ((Player)object).questProgressFlags[n13] = ((Player)object).questProgressFlags[n13] + GameUtil.bitFlag(12);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(8)) == 0) {
+            if ((n4 & GameUtil.bitFlag(8)) == 0) {
                 if (n2 == 1) {
                     ((Player)object).getDialogueManager().showNpcOneLineDialogue("What do you want outerlander?", 591);
                     return true;
@@ -2510,19 +2510,19 @@ extends QuestScript {
                 }
                 if (n2 == 21) {
                     ((Player)object).getDialogueManager().showNpcThreeLineDialogue("Not at all outerlander. The Draugen is indeed", "impossible to kill, but that is not the same as being", "impossible to fight against.", 591);
-                    ((Player)object).addQuestState(this.b(), GameUtil.b(8));
+                    ((Player)object).addQuestState(this.getQuestId(), GameUtil.bitFlag(8));
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(8)) != 0 && (n4 & GameUtil.b(9)) == 0) {
+            if ((n4 & GameUtil.bitFlag(8)) != 0 && (n4 & GameUtil.bitFlag(9)) == 0) {
                 if (n2 == 1) {
-                    if (!((Player)object).aq(3696) && !((Player)object).aq(3697)) {
-                        ((Player)object).getInventoryManager().b(new ItemStack(3696, 1));
+                    if (!((Player)object).ownsItem(3696) && !((Player)object).ownsItem(3697)) {
+                        ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(3696, 1));
                         ((Player)object).getDialogueManager().showNpcOneLineDialogue("Don't lose it this time!", 591);
                         ((Player)object).getDialogueManager().finishDialogue();
                         return true;
                     }
-                    if (((Player)object).aq(3697)) {
+                    if (((Player)object).ownsItem(3697)) {
                         ((Player)object).getDialogueManager().showNpcThreeLineDialogue("I saw the entire hunt. Let me take that talisman from", "you; I would be honoured to speak out for you to our", "council of elders after such a hunt, outerlander.", 591);
                         return true;
                     }
@@ -2532,9 +2532,9 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 3) {
-                    if (((Player)object).aq(3697)) {
+                    if (((Player)object).ownsItem(3697)) {
                         ((Player)object).getInventoryManager().removeItem(new ItemStack(3697, 1));
-                        ((Player)object).addQuestState(this.b(), GameUtil.b(9));
+                        ((Player)object).addQuestState(this.getQuestId(), GameUtil.bitFlag(9));
                     }
                     ((Player)object).getDialogueManager().finishDialogue();
                     return false;
@@ -2544,7 +2544,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 23) {
-                    ((Player)object).getInventoryManager().b(new ItemStack(3696, 1));
+                    ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(3696, 1));
                     ((Player)object).getDialogueManager().showNpcThreeLineDialogue("We do this with a special talisman. Here, take it; it will", "let you track the Draugen while it's invisible, and when", "you defeat it will absorb its essence.", 591);
                     return true;
                 }
@@ -2563,7 +2563,7 @@ extends QuestScript {
             if (n4 < 2) {
                 return false;
             }
-            if ((n4 & GameUtil.b(6)) != 0 && (n4 & GameUtil.b(7)) == 0 && (((Player)object).bI[this.b()] & GameUtil.b(13)) != 0) {
+            if ((n4 & GameUtil.bitFlag(6)) != 0 && (n4 & GameUtil.bitFlag(7)) == 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(13)) != 0) {
                 if (n2 <= 2 && !((Player)object).getInventoryManager().containsItemAmount(3703, 1)) {
                     return false;
                 }
@@ -2572,7 +2572,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 2) {
-                    ((Player)object).getInventoryManager().a(new ItemStack(3703, 1), new ItemStack(3702, 1));
+                    ((Player)object).getInventoryManager().replaceItem(new ItemStack(3703, 1), new ItemStack(3702, 1));
                     ((Player)object).getDialogueManager().showNpcThreeLineDialogue("Ohh... That's a nice fish. Very pleased. Here. Take the", "bowstring. You fulfilled agreement. only fair I do same.", "Good work outerlander.", 591);
                     return true;
                 }
@@ -2582,7 +2582,7 @@ extends QuestScript {
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(6)) != 0 && (n4 & GameUtil.b(7)) == 0 && (((Player)object).bI[this.b()] & GameUtil.b(12)) != 0 && (((Player)object).bI[this.b()] & GameUtil.b(13)) == 0) {
+            if ((n4 & GameUtil.bitFlag(6)) != 0 && (n4 & GameUtil.bitFlag(7)) == 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(12)) != 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(13)) == 0) {
                 if (n2 == 1) {
                     ((Player)object).getDialogueManager().showPlayerTwoLineDialogue("I don't suppose you have any idea where I could find a", "finely balanced custom bowstring, do you?", 591);
                     return true;
@@ -2629,8 +2629,8 @@ extends QuestScript {
                 }
                 if (n2 == 12) {
                     ((Player)object).getDialogueManager().showPlayerOneLineDialogue("Sounds good to me.", 591);
-                    int n14 = this.b();
-                    ((Player)object).bI[n14] = ((Player)object).bI[n14] + GameUtil.b(13);
+                    int n14 = this.getQuestId();
+                    ((Player)object).questProgressFlags[n14] = ((Player)object).questProgressFlags[n14] + GameUtil.bitFlag(13);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -2640,7 +2640,7 @@ extends QuestScript {
             if (n4 < 2) {
                 return false;
             }
-            if ((n4 & GameUtil.b(6)) != 0 && (n4 & GameUtil.b(7)) == 0 && (((Player)object).bI[this.b()] & GameUtil.b(14)) != 0) {
+            if ((n4 & GameUtil.bitFlag(6)) != 0 && (n4 & GameUtil.bitFlag(7)) == 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(14)) != 0) {
                 if (n2 <= 2 && !((Player)object).getInventoryManager().containsItemAmount(3704, 1)) {
                     return false;
                 }
@@ -2649,13 +2649,13 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 2) {
-                    ((Player)object).getInventoryManager().a(new ItemStack(3704, 1), new ItemStack(3703, 1));
+                    ((Player)object).getInventoryManager().replaceItem(new ItemStack(3704, 1), new ItemStack(3703, 1));
                     ((Player)object).getDialogueManager().showNpcThreeLineDialogue("Great work outerlander! With this, I can finally catch", "enough fish to make an honest living from it! Here, have", "the stupid rare fish.", 591);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(6)) != 0 && (n4 & GameUtil.b(7)) == 0 && (((Player)object).bI[this.b()] & GameUtil.b(13)) != 0 && (((Player)object).bI[this.b()] & GameUtil.b(14)) == 0) {
+            if ((n4 & GameUtil.bitFlag(6)) != 0 && (n4 & GameUtil.bitFlag(7)) == 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(13)) != 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(14)) == 0) {
                 if (n2 == 1) {
                     ((Player)object).getDialogueManager().showPlayerTwoLineDialogue("I don't suppose you have any idea where I could find", "an exotic and extremely rare fish, do you?", 591);
                     return true;
@@ -2686,8 +2686,8 @@ extends QuestScript {
                 }
                 if (n2 == 8) {
                     ((Player)object).getDialogueManager().showPlayerOneLineDialogue("I'll see what I can do.", 591);
-                    int n15 = this.b();
-                    ((Player)object).bI[n15] = ((Player)object).bI[n15] + GameUtil.b(14);
+                    int n15 = this.getQuestId();
+                    ((Player)object).questProgressFlags[n15] = ((Player)object).questProgressFlags[n15] + GameUtil.bitFlag(14);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -2697,7 +2697,7 @@ extends QuestScript {
             if (n4 < 2) {
                 return false;
             }
-            if ((n4 & GameUtil.b(6)) != 0 && (n4 & GameUtil.b(7)) == 0 && (((Player)object).bI[this.b()] & GameUtil.b(15)) != 0) {
+            if ((n4 & GameUtil.bitFlag(6)) != 0 && (n4 & GameUtil.bitFlag(7)) == 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(15)) != 0) {
                 if (n2 <= 6 && !((Player)object).getInventoryManager().containsItemAmount(3705, 1)) {
                     return false;
                 }
@@ -2722,13 +2722,13 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 6) {
-                    ((Player)object).getInventoryManager().a(new ItemStack(3705, 1), new ItemStack(3704, 1));
+                    ((Player)object).getInventoryManager().replaceItem(new ItemStack(3705, 1), new ItemStack(3704, 1));
                     ((Player)object).getDialogueManager().showNpcTwoLineDialogue("Here, outerlander; you may take my map of local", "fishing patterns with my gratitude!", 591);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(6)) != 0 && (n4 & GameUtil.b(7)) == 0 && (((Player)object).bI[this.b()] & GameUtil.b(14)) != 0 && (((Player)object).bI[this.b()] & GameUtil.b(15)) == 0) {
+            if ((n4 & GameUtil.bitFlag(6)) != 0 && (n4 & GameUtil.bitFlag(7)) == 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(14)) != 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(15)) == 0) {
                 if (n2 == 1) {
                     ((Player)object).getDialogueManager().showNpcOneLineDialogue("Greetings outerlander.", 591);
                     return true;
@@ -2771,13 +2771,13 @@ extends QuestScript {
                 }
                 if (n2 == 11) {
                     ((Player)object).getDialogueManager().showNpcThreeLineDialogue("I just told you: from the Seer. You will need to", "persuade him to take the time to make a forecast", "somehow.", 591);
-                    int n16 = this.b();
-                    ((Player)object).bI[n16] = ((Player)object).bI[n16] + GameUtil.b(15);
+                    int n16 = this.getQuestId();
+                    ((Player)object).questProgressFlags[n16] = ((Player)object).questProgressFlags[n16] + GameUtil.bitFlag(15);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(10)) == 0) {
+            if ((n4 & GameUtil.bitFlag(10)) == 0) {
                 if (n2 == 1) {
                     ((Player)object).getDialogueManager().showPlayerOneLineDialogue("Hello!", 591);
                     return true;
@@ -2837,11 +2837,11 @@ extends QuestScript {
                 }
                 if (n2 == 14) {
                     ((Player)object).getDialogueManager().showNpcTwoLineDialogue("I will warn you outerlander, this maze was designed by", "myself, and is of the most fiendish complexity!", 591);
-                    ((Player)object).addQuestState(this.b(), GameUtil.b(10));
+                    ((Player)object).addQuestState(this.getQuestId(), GameUtil.bitFlag(10));
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(10)) != 0 && (n4 & GameUtil.b(11)) == 0) {
+            if ((n4 & GameUtil.bitFlag(10)) != 0 && (n4 & GameUtil.bitFlag(11)) == 0) {
                 if (n2 == 1) {
                     ((Player)object).getDialogueManager().showPlayerOneLineDialogue("Hello!", 591);
                     return true;
@@ -2870,11 +2870,11 @@ extends QuestScript {
                 }
                 if (n2 == 100) {
                     ((Player)object).getDialogueManager().showNpcTwoLineDialogue("Outerlander! You have finished my maze! I am", "genuinely impressed!", 591);
-                    ((Player)object).addQuestState(this.b(), GameUtil.b(11));
+                    ((Player)object).addQuestState(this.getQuestId(), GameUtil.bitFlag(11));
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(11)) != 0) {
+            if ((n4 & GameUtil.bitFlag(11)) != 0) {
                 if (n2 == 101) {
                     ((Player)object).getDialogueManager().showPlayerTwoLineDialogue("So does that mean I can rely on your vote at the", "council of elders to allow me into your village?", 591);
                     return true;
@@ -2894,7 +2894,7 @@ extends QuestScript {
             if (n4 < 2) {
                 return false;
             }
-            if ((n4 & GameUtil.b(6)) != 0 && (n4 & GameUtil.b(7)) == 0 && (((Player)object).bI[this.b()] & GameUtil.b(16)) != 0) {
+            if ((n4 & GameUtil.bitFlag(6)) != 0 && (n4 & GameUtil.bitFlag(7)) == 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(16)) != 0) {
                 if (n2 <= 4 && !((Player)object).getInventoryManager().containsItemAmount(3710, 1)) {
                     return false;
                 }
@@ -2911,7 +2911,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 4) {
-                    ((Player)object).getInventoryManager().a(new ItemStack(3710, 1), new ItemStack(3705, 1));
+                    ((Player)object).getInventoryManager().replaceItem(new ItemStack(3710, 1), new ItemStack(3705, 1));
                     ((Player)object).getDialogueManager().showNpcThreeLineDialogue("You have not only persuaded one of the Fremennik to", "act as a servant to me, but you have enlisted the aid of", "mighty Thorvald himself???", 591);
                     return true;
                 }
@@ -2921,7 +2921,7 @@ extends QuestScript {
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(6)) != 0 && (n4 & GameUtil.b(7)) == 0 && (((Player)object).bI[this.b()] & GameUtil.b(15)) != 0 && (((Player)object).bI[this.b()] & GameUtil.b(16)) == 0) {
+            if ((n4 & GameUtil.bitFlag(6)) != 0 && (n4 & GameUtil.bitFlag(7)) == 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(15)) != 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(16)) == 0) {
                 if (n2 == 1) {
                     ((Player)object).getDialogueManager().showPlayerTwoLineDialogue("I don't suppose you have any idea where I could find a", "weather forecast from the Fremennik Seer do you?", 591);
                     return true;
@@ -2952,13 +2952,13 @@ extends QuestScript {
                 }
                 if (n2 == 8) {
                     ((Player)object).getDialogueManager().showNpcOneLineDialogue("That is all.", 591);
-                    int n17 = this.b();
-                    ((Player)object).bI[n17] = ((Player)object).bI[n17] + GameUtil.b(16);
+                    int n17 = this.getQuestId();
+                    ((Player)object).questProgressFlags[n17] = ((Player)object).questProgressFlags[n17] + GameUtil.bitFlag(16);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(12)) == 0) {
+            if ((n4 & GameUtil.bitFlag(12)) == 0) {
                 if (n2 == 1) {
                     ((Player)object).getDialogueManager().showNpcOneLineDialogue("Hello outerlander. What do you want?", 591);
                     return true;
@@ -3038,11 +3038,11 @@ extends QuestScript {
                 }
                 if (n2 == 19) {
                     ((Player)object).getDialogueManager().showNpcOneLineDialogue("Yes, outerlander?", 591);
-                    ((Player)object).addQuestState(this.b(), GameUtil.b(12));
+                    ((Player)object).addQuestState(this.getQuestId(), GameUtil.bitFlag(12));
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(12)) != 0 && (n4 & GameUtil.b(13)) == 0) {
+            if ((n4 & GameUtil.bitFlag(12)) != 0 && (n4 & GameUtil.bitFlag(13)) == 0) {
                 if (n2 == 20) {
                     ((Player)object).getDialogueManager().showPlayerTwoLineDialogue("Well... you say I can bring nothing with me when I", "enter your house...", 591);
                     return true;
@@ -3101,7 +3101,7 @@ extends QuestScript {
                     return false;
                 }
                 if (n2 == 33) {
-                    if (((Player)object).eC()) {
+                    if (((Player)object).depositInventoryAndEquipment()) {
                         ((Player)object).getDialogueManager().showNpcTwoLineDialogue("The task is done. I wish you luck with your test,", "outerlander.", 591);
                     } else {
                         ((Player)object).getDialogueManager().showNpcTwoLineDialogue("I'm not able to! I wish you luck with your test,", "outerlander.", 591);
@@ -3111,11 +3111,11 @@ extends QuestScript {
                 }
                 if (n2 == 100) {
                     ((Player)object).getDialogueManager().showNpcTwoLineDialogue("Incredible! To have solved my puzzle so quickly! I have", "no choice but to vote in your favour!", 591);
-                    ((Player)object).addQuestState(this.b(), GameUtil.b(13));
+                    ((Player)object).addQuestState(this.getQuestId(), GameUtil.bitFlag(13));
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(13)) != 0) {
+            if ((n4 & GameUtil.bitFlag(13)) != 0) {
                 if (n2 == 101) {
                     ((Player)object).getDialogueManager().showPlayerOneLineDialogue("So you will vote for me at the council?", 591);
                     return true;
@@ -3144,7 +3144,7 @@ extends QuestScript {
                 return false;
             }
             if (n2 == 4) {
-                if (((Player)object).eC()) {
+                if (((Player)object).depositInventoryAndEquipment()) {
                     ((Player)object).getDialogueManager().showNpcOneLineDialogue("The task is done.", 591);
                 } else {
                     ((Player)object).getDialogueManager().showNpcOneLineDialogue("I'm not able to!", 591);
@@ -3157,7 +3157,7 @@ extends QuestScript {
             if (n4 < 2) {
                 return false;
             }
-            if ((n4 & GameUtil.b(6)) != 0 && (n4 & GameUtil.b(7)) == 0 && (((Player)object).bI[this.b()] & GameUtil.b(17)) != 0) {
+            if ((n4 & GameUtil.bitFlag(6)) != 0 && (n4 & GameUtil.bitFlag(7)) == 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(17)) != 0) {
                 if (n2 <= 6 && !((Player)object).getInventoryManager().containsItemAmount(3706, 1)) {
                     return false;
                 }
@@ -3182,13 +3182,13 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 6) {
-                    ((Player)object).getInventoryManager().a(new ItemStack(3706, 1), new ItemStack(3710, 1));
+                    ((Player)object).getInventoryManager().replaceItem(new ItemStack(3706, 1), new ItemStack(3710, 1));
                     ((Player)object).getDialogueManager().showNpcTwoLineDialogue("Here outerlander, take this contract; I will fulfill it to", "my utmost.", 591);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(6)) != 0 && (n4 & GameUtil.b(7)) == 0 && (((Player)object).bI[this.b()] & GameUtil.b(16)) != 0 && (((Player)object).bI[this.b()] & GameUtil.b(17)) == 0) {
+            if ((n4 & GameUtil.bitFlag(6)) != 0 && (n4 & GameUtil.bitFlag(7)) == 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(16)) != 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(17)) == 0) {
                 if (n2 == 1) {
                     ((Player)object).getDialogueManager().showPlayerTwoLineDialogue("I don't suppose you have any idea where I could find a", "brave and powerful warrior to act as a bodyguard?", 591);
                     return true;
@@ -3235,13 +3235,13 @@ extends QuestScript {
                 }
                 if (n2 == 12) {
                     ((Player)object).getDialogueManager().showPlayerOneLineDialogue("Okay, I'll see what I can do.", 591);
-                    int n18 = this.b();
-                    ((Player)object).bI[n18] = ((Player)object).bI[n18] + GameUtil.b(17);
+                    int n18 = this.getQuestId();
+                    ((Player)object).questProgressFlags[n18] = ((Player)object).questProgressFlags[n18] + GameUtil.bitFlag(17);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(14)) == 0) {
+            if ((n4 & GameUtil.bitFlag(14)) == 0) {
                 if (n2 == 1) {
                     ((Player)object).getDialogueManager().showPlayerOneLineDialogue("Hello!", 591);
                     return true;
@@ -3309,11 +3309,11 @@ extends QuestScript {
                 }
                 if (n2 == 16) {
                     ((Player)object).getDialogueManager().showNpcTwoLineDialogue("Hahahahaha! I'm beginning to like you already,", "outerlander!", 591);
-                    ((Player)object).addQuestState(this.b(), GameUtil.b(14));
+                    ((Player)object).addQuestState(this.getQuestId(), GameUtil.bitFlag(14));
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(14)) != 0 && (n4 & GameUtil.b(15)) == 0) {
+            if ((n4 & GameUtil.bitFlag(14)) != 0 && (n4 & GameUtil.bitFlag(15)) == 0) {
                 if (n2 == 17) {
                     ((Player)object).getDialogueManager().showNpcThreeLineDialogue("Then allow me to present you with my challenge; This", "ladder here will take you to a place of combat. I have", "placed a special warrior down there to challenge you.", 591);
                     return true;
@@ -3348,7 +3348,7 @@ extends QuestScript {
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(15)) != 0) {
+            if ((n4 & GameUtil.bitFlag(15)) != 0) {
                 if (n2 == 1) {
                     ((Player)object).getDialogueManager().showPlayerTwoLineDialogue("So can I count on your vote at the council of elders", "now Thorvald?", 591);
                     return true;
@@ -3385,7 +3385,7 @@ extends QuestScript {
             if (n4 < 2) {
                 return false;
             }
-            if ((n4 & GameUtil.b(6)) != 0 && (n4 & GameUtil.b(7)) == 0 && (((Player)object).bI[this.b()] & GameUtil.b(19)) != 0) {
+            if ((n4 & GameUtil.bitFlag(6)) != 0 && (n4 & GameUtil.bitFlag(7)) == 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(19)) != 0) {
                 if (n2 <= 3 && !((Player)object).getInventoryManager().containsItemAmount(3709, 1)) {
                     return false;
                 }
@@ -3398,7 +3398,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 3) {
-                    ((Player)object).getInventoryManager().a(new ItemStack(3709, 1), new ItemStack(3707, 1));
+                    ((Player)object).getInventoryManager().replaceItem(new ItemStack(3709, 1), new ItemStack(3707, 1));
                     ((Player)object).getDialogueManager().showNpcThreeLineDialogue("Here you go, on the house! You have made my life SO", "much easier! Knowing that little monster won't be", "bugging me in here all the time anymore!", 591);
                     return true;
                 }
@@ -3412,7 +3412,7 @@ extends QuestScript {
                     return true;
                 }
             }
-            if ((n4 & GameUtil.b(6)) != 0 && (n4 & GameUtil.b(7)) == 0 && (((Player)object).bI[this.b()] & GameUtil.b(18)) != 0 && (((Player)object).bI[this.b()] & GameUtil.b(19)) == 0) {
+            if ((n4 & GameUtil.bitFlag(6)) != 0 && (n4 & GameUtil.bitFlag(7)) == 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(18)) != 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(19)) == 0) {
                 if (n2 == 1) {
                     ((Player)object).getDialogueManager().showPlayerTwoLineDialogue("I don't suppose you have any idea where I could find", "the longhall barkeeps' legendary cocktail, do you?", 591);
                     return true;
@@ -3487,8 +3487,8 @@ extends QuestScript {
                 }
                 if (n2 == 19) {
                     ((Player)object).getDialogueManager().showNpcThreeLineDialogue("Knowing that little horror, he'll probably be willing to in", "exchange for some cash. You should go ask him", "yourself though.", 591);
-                    int n19 = this.b();
-                    ((Player)object).bI[n19] = ((Player)object).bI[n19] + GameUtil.b(19);
+                    int n19 = this.getQuestId();
+                    ((Player)object).questProgressFlags[n19] = ((Player)object).questProgressFlags[n19] + GameUtil.bitFlag(19);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }

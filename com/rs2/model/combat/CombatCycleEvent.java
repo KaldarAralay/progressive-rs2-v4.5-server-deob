@@ -140,7 +140,7 @@ extends CycleEvent {
                     player.currentBotTask.startNpcCombatTick(player, (Npc)object3);
                 }
             }
-            int n = GameUtil.b(this.a.getPosition(), this.b.getPosition());
+            int n = GameUtil.getDistance(this.a.getPosition(), this.b.getPosition());
             object3 = new LinkedList();
             n = this.a.collectCombatAttackOptions((List)object3, this.b, n);
             CombatAttack combatAttack = null;
@@ -212,7 +212,7 @@ extends CycleEvent {
         if (entity2 == null || entity2.isDead()) {
             return AttackValidationResult.INVALID_TARGET;
         }
-        if (entity2.isPlayer() && !((Player)entity2).bW() || !entity2.getPosition().isWithinViewport(entity.getPosition())) {
+        if (entity2.isPlayer() && !((Player)entity2).isRegistered() || !entity2.getPosition().isWithinViewport(entity.getPosition())) {
             return AttackValidationResult.INVALID_TARGET;
         }
         if (entity2.getMaxHitpoints() <= 0) {
@@ -229,7 +229,7 @@ extends CycleEvent {
         }
         int n = entity.isPlayer() && entity2.isPlayer() ? 1 : 0;
         if (n != 0) {
-            if (entity.isInDuelArena() && ((Player)entity).getDuelSession().i() != entity2) {
+            if (entity.isInDuelArena() && ((Player)entity).getDuelSession().getOpponent() != entity2) {
                 return AttackValidationResult.NOT_DUEL_OPPONENT;
             }
             if (entity.isInWilderness()) {

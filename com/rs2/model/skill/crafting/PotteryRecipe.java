@@ -60,7 +60,7 @@ public enum PotteryRecipe {
      * WARNING - void declaration
      */
     private PotteryRecipe(int n3, int n4, int n5, int n6, double d, double d2) {
-        void cfr_renamed_7;
+        void cfr_renamed_6;
         void var8_6;
         this.buttonId = n3;
         this.softClayItemId = 1761;
@@ -69,7 +69,7 @@ public enum PotteryRecipe {
         this.quantity = (int)d;
         this.requiredLevel = var8_6;
         this.wheelExperience = d2;
-        this.firingExperience = cfr_renamed_7;
+        this.firingExperience = cfr_renamed_6;
     }
 
     public final int getButtonId() {

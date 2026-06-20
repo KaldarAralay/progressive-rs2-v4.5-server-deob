@@ -22,7 +22,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        this.a.n(false);
+        this.a.setActionLocked(false);
         this.a.moveTo(new Position(2464, 3496, 3));
         this.a.setQuestState(this.b, 9);
         DialogueManager.continueDialogue(this.a, 673, 1, 0);

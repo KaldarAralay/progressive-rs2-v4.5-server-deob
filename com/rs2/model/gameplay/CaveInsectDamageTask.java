@@ -11,30 +11,30 @@ import com.rs2.model.task.TickTask;
 
 final class CaveInsectDamageTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
     CaveInsectDamageTask(CaveInsectSwarmTask caveInsectSwarmTask, int n, Player player) {
-        this.a = player;
+        this.player = player;
         super(3);
     }
 
     @Override
     public final void execute() {
-        if (!this.a.bW()) {
+        if (!this.player.isRegistered()) {
             this.stop();
             return;
         }
-        if (CaveLightManager.a(this.a)) {
-            if (this.a.eI() == 0) {
-                this.a.applyDirectHit(1, HitType.NORMAL);
-                this.a.getRecentCombatTimer().setTargetDelay(null, 17);
+        if (CaveLightManager.isInCaveInsectRegion(this.player)) {
+            if (this.player.getActiveCaveLightLevel() == 0) {
+                this.player.applyDirectHit(1, HitType.NORMAL);
+                this.player.getRecentCombatTimer().setTargetDelay(null, 17);
                 return;
             }
-            this.a.eH = 0;
+            this.player.caveInsectSwarmStage = 0;
             this.stop();
             return;
         }
-        this.a.eH = 0;
+        this.player.caveInsectSwarmStage = 0;
         this.stop();
     }
 }

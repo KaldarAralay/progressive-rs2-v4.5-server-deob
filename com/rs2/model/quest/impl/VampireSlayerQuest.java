@@ -27,11 +27,11 @@ extends QuestScript {
 
     public VampireSlayerQuest(int n) {
         super(17);
-        super.a(3);
+        super.setQuestPointReward(3);
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player stringArray, int n) {
         if (n == 0) {
             stringArray = new String[]{"I can start this quest by speaking to Morgan who is in", "Draynor Village.", "", "Requirements:", "Must be able to kill a level 34 Vampire"};
             return stringArray;
@@ -60,9 +60,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("3 Quest Points", 12150);
         player2 = player;
@@ -85,7 +85,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Entity entity, Entity entity2, int n) {
+    public final boolean handleCombatDeath(Entity entity, Entity entity2, int n) {
         if (entity2.isNpc() && entity.isPlayer()) {
             entity = (Player)entity;
             if (((Npc)(entity2 = (Npc)entity2)).getNpcId() == 757) {
@@ -104,7 +104,7 @@ extends QuestScript {
     }
 
     @Override
-    public final int b(Entity entity, Entity entity2, int n) {
+    public final int getQuestDamageOverride(Entity entity, Entity entity2, int n) {
         if (CacheStore.cacheVerificationFailed) {
             return 0;
         }
@@ -118,7 +118,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n) {
+    public final boolean handleMovementStep(Player player, int n) {
         if (player.eq == 757) {
             return true;
         }
@@ -132,7 +132,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player object, int n, int n2, int n3, int n4) {
+    public final boolean handleFirstObjectAction(Player object, int n, int n2, int n3, int n4) {
         if (CacheStore.cacheVerificationFailed) {
             return true;
         }
@@ -148,7 +148,7 @@ extends QuestScript {
             }
             Player player = object;
             player.packetSender.sendGameMessage(string);
-            ((Player)object).getInventoryManager().b(new ItemStack(1550, 1));
+            ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(1550, 1));
             ((Player)object).pendingGameMode = 1550;
             return true;
         }
@@ -164,7 +164,7 @@ extends QuestScript {
             }
             Player player = object;
             player.packetSender.sendGameMessage(string);
-            ((Player)object).getInventoryManager().b(new ItemStack(1550, 1));
+            ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(1550, 1));
             ((Player)object).pendingGameMode = 1550;
             return true;
         }
@@ -181,7 +181,7 @@ extends QuestScript {
                 ObjectManager.getInstance().addDynamicObject(new DynamicObject(11208, 3077, 9775, 0, 3, 10, 2614, 10), true);
             }
             Npc npc = new Npc(757);
-            ((Player)object).n(true);
+            ((Player)object).setActionLocked(true);
             object = new VampireCoffinRiseTask(this, 3, npc, (Player)object);
             World.getTaskScheduler().schedule((TickTask)object);
             return true;
@@ -190,7 +190,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean c(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleSecondObjectAction(Player player, int n, int n2, int n3, int n4) {
         if (CacheStore.cacheVerificationFailed) {
             return true;
         }
@@ -203,17 +203,17 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2) {
+    public final boolean handleNpcKill(Player player, int n, int n2) {
         if (n == 757 && n2 == 5 && player.getInventoryManager().containsItem(1549)) {
             player.getInventoryManager().removeItem(new ItemStack(1549, 1));
-            this.c(player);
+            this.awardCompletionRewards(player);
             return true;
         }
         return false;
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         if (n == 755 && n4 == 0) {
             if (n2 == 1) {
                 player.getDialogueManager().showNpcOneLineDialogue("Please please help us, bold adventurer!", 598);
@@ -297,7 +297,7 @@ extends QuestScript {
                 }
                 if (n2 == 8) {
                     player.getDialogueManager().showNpcOneLineDialogue("Buy ush a drink anyway...", 591);
-                    player.setQuestState(this.b(), 3);
+                    player.setQuestState(this.getQuestId(), 3);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -309,7 +309,7 @@ extends QuestScript {
                     player.getInventoryManager().removeItem(new ItemStack(1917, 1));
                     player.getDialogueManager().showTwoItemMessage("You give a beer to Dr Harlow.", "", new ItemStack(-1, 1), new ItemStack(1917, 1));
                     player.getDialogueManager().setNextDialogueStep(1);
-                    player.setQuestState(this.b(), 4);
+                    player.setQuestState(this.getQuestId(), 4);
                     return true;
                 }
             }
@@ -335,15 +335,15 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 6) {
-                    player.getInventoryManager().b(new ItemStack(1549, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(1549, 1));
                     player.getDialogueManager().showItemMessage("Dr Harlow hands you a stake.", new ItemStack(1549, 1));
-                    player.setQuestState(this.b(), 5);
+                    player.setQuestState(this.getQuestId(), 5);
                     return true;
                 }
             }
             if (n4 == 5) {
-                if (n2 == 1 && !player.aq(1549)) {
-                    player.getInventoryManager().b(new ItemStack(1549, 1));
+                if (n2 == 1 && !player.ownsItem(1549)) {
+                    player.getInventoryManager().addOrDropItem(new ItemStack(1549, 1));
                     player.getDialogueManager().showItemMessage("Dr Harlow hands you a stake.", new ItemStack(1549, 1));
                     player.getDialogueManager().setNextDialogueStep(7);
                     return true;

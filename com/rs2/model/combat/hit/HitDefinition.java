@@ -297,7 +297,7 @@ public final class HitDefinition {
     public final int calculateDelay(Position position, Position object) {
         int n = this.delay;
         if (position != null && this.projectile != null) {
-            int n2 = GameUtil.b(position, (Position)object);
+            int n2 = GameUtil.getDistance(position, (Position)object);
             object = this.projectile.getTiming();
             double d = (double)(((ProjectileTiming)object).getStartDelay() + ((ProjectileTiming)object).getSpeed()) + (double)n2 * 5.0;
             d = Math.ceil(d * 12.0 / 600.0);

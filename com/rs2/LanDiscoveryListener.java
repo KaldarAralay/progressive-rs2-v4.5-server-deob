@@ -9,23 +9,23 @@ import java.net.InetAddress;
 
 final class LanDiscoveryListener
 extends Thread {
-    private final /* synthetic */ DatagramPacket a;
+    private final /* synthetic */ DatagramPacket packet;
 
     LanDiscoveryListener(String string, DatagramPacket datagramPacket) {
-        this.a = datagramPacket;
+        this.packet = datagramPacket;
         super(string);
     }
 
     @Override
     public final void run() {
         try {
-            while (LanDiscoveryService.f) {
-                LanDiscoveryService.b().receive(this.a);
-                Object object = new String(this.a.getData()).trim();
-                if (!((String)object).equals(LanDiscoveryService.a)) continue;
-                object = LanDiscoveryService.b.getBytes();
-                object = new DatagramPacket((byte[])object, ((Object)object).length, this.a.getAddress(), this.a.getPort());
-                LanDiscoveryService.b().send((DatagramPacket)object);
+            while (LanDiscoveryService.running) {
+                LanDiscoveryService.getSocket().receive(this.packet);
+                Object object = new String(this.packet.getData()).trim();
+                if (!((String)object).equals(LanDiscoveryService.requestMessage)) continue;
+                object = LanDiscoveryService.responseMessage.getBytes();
+                object = new DatagramPacket((byte[])object, ((Object)object).length, this.packet.getAddress(), this.packet.getPort());
+                LanDiscoveryService.getSocket().send((DatagramPacket)object);
                 object = LanDiscoveryService.d.getBytes();
                 byte[] byArray = LanDiscoveryService.c.getBytes();
                 String string = InetAddress.getLocalHost().getHostName();
@@ -33,8 +33,8 @@ extends Thread {
                     string = "invalid";
                 }
                 object = string.getBytes();
-                object = new DatagramPacket((byte[])object, ((Object)object).length, this.a.getAddress(), this.a.getPort());
-                LanDiscoveryService.b().send((DatagramPacket)object);
+                object = new DatagramPacket((byte[])object, ((Object)object).length, this.packet.getAddress(), this.packet.getPort());
+                LanDiscoveryService.getSocket().send((DatagramPacket)object);
             }
             return;
         }

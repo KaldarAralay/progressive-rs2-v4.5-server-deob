@@ -42,7 +42,7 @@ extends CycleEvent {
                 TeleportManager.a(this.b).getUpdateState().setGraphicHeight100(this.d);
             }
             if (this.a == 2) {
-                TeleportManager.a(this.b).n(false);
+                TeleportManager.a(this.b).setActionLocked(false);
                 TeleportManager.a(this.b).getUpdateState().setAnimation(this.e);
                 TeleportManager.a(this.b).moveTo(new Position(this.f, this.g, this.h));
                 if (this.i != null) {
@@ -60,7 +60,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        TeleportManager.a(this.b).n(false);
+        TeleportManager.a(this.b).setActionLocked(false);
         TeleportManager.a(this.b).getAttributes().put("canTakeDamage", Boolean.TRUE);
     }
 }

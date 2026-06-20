@@ -35,7 +35,7 @@ extends CycleEvent {
     @Override
     public final void onStop() {
         SpecialTreePatchManager.getPlayer(this.manager).getUpdateState().setAnimation(1332);
-        SpecialTreePatchManager.getPlayer(this.manager).n(false);
+        SpecialTreePatchManager.getPlayer(this.manager).setActionLocked(false);
     }
 }
 

@@ -49,7 +49,7 @@ extends CycleEvent {
             cycleEventContainer.stop();
             return;
         }
-        boolean bl = GameUtil.b(64, 512, this.player.getSkillManager().getCurrentLevels()[11]);
+        boolean bl = GameUtil.rollLevelScaledChance(64, 512, this.player.getSkillManager().getCurrentLevels()[11]);
         if (this.logItemId == 7404 || this.logItemId == 7405 || this.logItemId == 7406) {
             bl = true;
         }
@@ -66,7 +66,7 @@ extends CycleEvent {
             if (this.player.gameMode != 0) {
                 player = this.player;
             }
-            new DynamicObject(this.firemakingLog.getFireObjectId(), this.fireX, this.fireY, this.plane, -1, 10, ServerSettings.placeholderObjectId, GameUtil.b(100, 200), player);
+            new DynamicObject(this.firemakingLog.getFireObjectId(), this.fireX, this.fireY, this.plane, -1, 10, ServerSettings.placeholderObjectId, GameUtil.randomBetweenInclusive(100, 200), player);
             player = this.player;
             player.packetSender.sendGameMessage("The fire catches and the logs begin to burn.");
             player = this.player;
@@ -92,7 +92,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        this.player.aN();
+        this.player.resetAnimation();
     }
 }
 

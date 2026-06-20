@@ -12,14 +12,14 @@ import com.rs2.model.player.Player;
 import com.rs2.util.GameUtil;
 
 public final class MithrilSeedFlowerHandler {
-    private static int[] a = new int[]{2980, 2981, 2982, 2983, 2984, 2985, 2986, 2987, 2988};
+    private static int[] mithrilSeedFlowerObjectIds = new int[]{2980, 2981, 2982, 2983, 2984, 2985, 2986, 2987, 2988};
 
     static {
         int[] nArray = new int[]{2460, 2462, 2464, 2466, 2468, 2470, 2472, 2474, 2476};
     }
 
-    public static void a(Player player) {
-        int n = a[GameUtil.f(9)];
+    public static void plantMithrilSeedFlower(Player player) {
+        int n = mithrilSeedFlowerObjectIds[GameUtil.randomExclusive(9)];
         int n2 = player.getPosition().getX();
         int n3 = player.getPosition().getY();
         ObjectManager.getInstance();
@@ -45,8 +45,8 @@ public final class MithrilSeedFlowerHandler {
         player.getUpdateState().setFacePosition(new Position(n2, n3));
     }
 
-    public static final boolean a(int n) {
-        int[] nArray = a;
+    public static final boolean isMithrilSeedFlowerObjectId(int n) {
+        int[] nArray = mithrilSeedFlowerObjectIds;
         int n2 = 0;
         while (n2 < 9) {
             int n3 = nArray[n2];

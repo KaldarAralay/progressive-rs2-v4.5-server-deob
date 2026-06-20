@@ -68,7 +68,7 @@ extends TickTask {
             return;
         }
         Object object2 = ObjectDefinition.forId(this.player.getInteractionTargetId());
-        Object object3 = GameUtil.a(worldObject.getPosition().getX(), worldObject.getPosition().getY(), this.player.getPosition().getX(), this.player.getPosition().getY(), ((ObjectDefinition)object2).getWidthForOrientation(worldObject.getOrientation()), ((ObjectDefinition)object2).getLengthForOrientation(worldObject.getOrientation()), this.objectPlane);
+        Object object3 = GameUtil.findReachableInteractionPosition(worldObject.getPosition().getX(), worldObject.getPosition().getY(), this.player.getPosition().getX(), this.player.getPosition().getY(), ((ObjectDefinition)object2).getWidthForOrientation(worldObject.getOrientation()), ((ObjectDefinition)object2).getLengthForOrientation(worldObject.getOrientation()), this.objectPlane);
         if (this.objectId != 2638) {
             if (object3 == null) {
                 return;
@@ -82,7 +82,7 @@ extends TickTask {
         if (object2 != null) {
             this.player.getUpdateState().setFacePosition(((Position)object3).centerForSize(((ObjectDefinition)object2).getMaxDimension()));
         }
-        if (this.player.getQuestManager().c(this.itemId, this.objectId)) {
+        if (this.player.getQuestManager().handleItemOnObject(this.itemId, this.objectId)) {
             this.stop();
             return;
         }
@@ -112,7 +112,7 @@ extends TickTask {
             }
         }
         if (ServerSettings.content2007Enabled) {
-            if (GodWarsDungeonManager.a(this.player, this.itemId, this.objectId)) {
+            if (GodWarsDungeonManager.handleGodswordShardOnAnvil(this.player, this.itemId, this.objectId)) {
                 this.stop();
                 return;
             }
@@ -139,9 +139,9 @@ extends TickTask {
             return;
         }
         if (this.objectId == 5947 && this.itemId == 954) {
-            if (!this.player.eF) {
+            if (!this.player.swampCaveRopeAttached) {
                 this.player.getInventoryManager().removeItem(new ItemStack(this.itemId));
-                this.player.eF = true;
+                this.player.swampCaveRopeAttached = true;
                 object = this.player;
                 ((Player)object).packetSender.sendGameMessage("You attach the rope.");
             } else {
@@ -152,9 +152,9 @@ extends TickTask {
             return;
         }
         if (this.objectId == 5908 && this.itemId == 1939) {
-            if (!this.player.eG) {
+            if (!this.player.lampOilStillFilled) {
                 this.player.getInventoryManager().removeItem(new ItemStack(this.itemId));
-                this.player.eG = true;
+                this.player.lampOilStillFilled = true;
                 object = this.player;
                 ((Player)object).packetSender.sendGameMessage("You refine some swamp tar into lamp oil.");
             } else {
@@ -165,9 +165,9 @@ extends TickTask {
             return;
         }
         if (this.objectId == 5908 && (this.itemId == 4525 || this.itemId == 4535 || this.itemId == 4546 || this.itemId == 4700)) {
-            if (this.player.eG) {
+            if (this.player.lampOilStillFilled) {
                 this.player.getInventoryManager().removeItem(new ItemStack(this.itemId));
-                this.player.eG = false;
+                this.player.lampOilStillFilled = false;
                 int n = 4522;
                 object3 = "lamp";
                 if (this.itemId == 4535) {
@@ -265,7 +265,7 @@ extends TickTask {
             case 2114: {
                 if (this.itemId != 453) break;
                 object2 = this.player;
-                n6 = 120 - ((Player)object2).fl();
+                n6 = 120 - ((Player)object2).getCoalTruckCoalCount();
                 if (n6 == 0) {
                     Object object5 = object2;
                     ((Player)object5).packetSender.sendGameMessage("The coal truck is already full.");
@@ -275,7 +275,7 @@ extends TickTask {
                 if (n7 == 0) break;
                 int n8 = n4 = n6 < n7 ? n6 : n7;
                 if (!((Player)object2).getInventoryManager().removeItem(new ItemStack(453, n4))) break;
-                ((Player)object2).aE(((Player)object2).fl() + n4);
+                ((Player)object2).setCoalTruckCoalCount(((Player)object2).getCoalTruckCoalCount() + n4);
                 break;
             }
             case 172: {
@@ -284,61 +284,61 @@ extends TickTask {
                 Object object6 = object2;
                 ((Player)object6).packetSender.sendGameMessage("You unlock the chest with your key.");
                 new DynamicObject(173, 2914, 3452, 0, 2, 10, 172, 2);
-                ((Player)object2).getInventoryManager().b(new ItemStack(1631));
+                ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(1631));
                 String[] stringArray = new String[]{"1000/3765", "100/1067", "100/1067", "100/1067", "10/128", "10/128", "10/128", "1/16", "1/64", "1/128", "1000/7529"};
-                int n9 = GameUtil.a(stringArray);
+                int n9 = GameUtil.rollFractionWeightIndex(stringArray);
                 if (n9 == 0) {
-                    ((Player)object2).getInventoryManager().b(new ItemStack(995, 2000));
-                    ((Player)object2).getInventoryManager().b(new ItemStack(1969));
+                    ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(995, 2000));
+                    ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(1969));
                     break;
                 }
                 if (n9 == 1) {
-                    ((Player)object2).getInventoryManager().b(new ItemStack(554, 50));
-                    ((Player)object2).getInventoryManager().b(new ItemStack(555, 50));
-                    ((Player)object2).getInventoryManager().b(new ItemStack(556, 50));
-                    ((Player)object2).getInventoryManager().b(new ItemStack(557, 50));
-                    ((Player)object2).getInventoryManager().b(new ItemStack(558, 50));
-                    ((Player)object2).getInventoryManager().b(new ItemStack(559, 50));
-                    ((Player)object2).getInventoryManager().b(new ItemStack(560, 10));
-                    ((Player)object2).getInventoryManager().b(new ItemStack(561, 10));
-                    ((Player)object2).getInventoryManager().b(new ItemStack(562, 10));
-                    ((Player)object2).getInventoryManager().b(new ItemStack(563, 10));
-                    ((Player)object2).getInventoryManager().b(new ItemStack(564, 10));
+                    ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(554, 50));
+                    ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(555, 50));
+                    ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(556, 50));
+                    ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(557, 50));
+                    ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(558, 50));
+                    ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(559, 50));
+                    ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(560, 10));
+                    ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(561, 10));
+                    ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(562, 10));
+                    ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(563, 10));
+                    ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(564, 10));
                     break;
                 }
                 if (n9 == 2) {
-                    ((Player)object2).getInventoryManager().b(new ItemStack(1617, 2));
-                    ((Player)object2).getInventoryManager().b(new ItemStack(1619, 2));
+                    ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(1617, 2));
+                    ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(1619, 2));
                     break;
                 }
                 if (n9 == 3) {
-                    ((Player)object2).getInventoryManager().b(new ItemStack(2363, 3));
+                    ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(2363, 3));
                     break;
                 }
                 if (n9 == 4) {
-                    ((Player)object2).getInventoryManager().b(new ItemStack(995, 750));
-                    ((Player)object2).getInventoryManager().b(new ItemStack(GameUtil.g(1) == 0 ? 985 : 987));
+                    ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(995, 750));
+                    ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(GameUtil.randomInclusive(1) == 0 ? 985 : 987));
                     break;
                 }
                 if (n9 == 5) {
-                    ((Player)object2).getInventoryManager().b(new ItemStack(441, 150));
+                    ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(441, 150));
                     break;
                 }
                 if (n9 == 6) {
-                    ((Player)object2).getInventoryManager().b(new ItemStack(454, 100));
+                    ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(454, 100));
                     break;
                 }
                 if (n9 == 7) {
-                    ((Player)object2).getInventoryManager().b(new ItemStack(995, 1000));
-                    ((Player)object2).getInventoryManager().b(new ItemStack(371, 5));
+                    ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(995, 1000));
+                    ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(371, 5));
                     break;
                 }
                 if (n9 == 8) {
-                    ((Player)object2).getInventoryManager().b(new ItemStack(1183));
+                    ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(1183));
                     break;
                 }
                 if (n9 != 9) break;
-                ((Player)object2).getInventoryManager().b(new ItemStack(((Player)object2).getGender() == 0 ? 1079 : 1093));
+                ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(((Player)object2).getGender() == 0 ? 1079 : 1093));
                 break;
             }
             case 3827: {
@@ -361,18 +361,18 @@ extends TickTask {
                 Object object7 = object2;
                 ((Player)object7).packetSender.sendGameMessage("You unlock the chest with your key.");
                 new DynamicObject(171, 3089, 3859, 0, 1, 10, 170, 2);
-                ((Player)object2).getInventoryManager().b(new ItemStack(1619, 1));
-                ((Player)object2).getInventoryManager().b(new ItemStack(2359, 1));
-                ((Player)object2).getInventoryManager().b(new ItemStack(1209, 1));
-                ((Player)object2).getInventoryManager().b(new ItemStack(2297, 1));
-                ((Player)object2).getInventoryManager().b(new ItemStack(563, 2));
-                ((Player)object2).getInventoryManager().b(new ItemStack(560, 2));
-                ((Player)object2).getInventoryManager().b(new ItemStack(562, 10));
-                ((Player)object2).getInventoryManager().b(new ItemStack(995, 50));
+                ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(1619, 1));
+                ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(2359, 1));
+                ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(1209, 1));
+                ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(2297, 1));
+                ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(563, 2));
+                ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(560, 2));
+                ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(562, 10));
+                ((Player)object2).getInventoryManager().addOrDropItem(new ItemStack(995, 50));
                 break;
             }
             case 733: {
-                AttackStyleDefinition.a(this.player, this.objectX, this.objectY, this.itemId);
+                AttackStyleDefinition.slashWeb(this.player, this.objectX, this.objectY, this.itemId);
                 break;
             }
             case 2782: 
@@ -400,7 +400,7 @@ extends TickTask {
                     while (n11 < 4) {
                         int n12 = nArray[n11];
                         if (this.player.getInventoryManager().getContainer().containsItem(n12)) {
-                            this.player.getInventoryManager().a(new ItemStack(1712, 1), this.player.getInventoryManager().getContainer().indexOfItem(n12));
+                            this.player.getInventoryManager().setItemInSlot(new ItemStack(1712, 1), this.player.getInventoryManager().getContainer().indexOfItem(n12));
                         }
                         ++n11;
                     }

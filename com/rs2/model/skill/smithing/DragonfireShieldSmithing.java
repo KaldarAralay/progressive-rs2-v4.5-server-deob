@@ -21,7 +21,7 @@ public final class DragonfireShieldSmithing {
                 } else {
                     player.getInventoryManager().removeItem(new ItemStack(ANTI_DRAGON_SHIELD_ITEM_ID, 1));
                     player.getInventoryManager().removeItem(new ItemStack(DRACONIC_VISAGE_ITEM_ID, 1));
-                    player.getInventoryManager().b(new ItemStack(DRAGONFIRE_SHIELD_ITEM_ID, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(DRAGONFIRE_SHIELD_ITEM_ID, 1));
                     Player player3 = player;
                     player3.packetSender.sendSoundEffect(468, 1, 0);
                     player.getUpdateState().setAnimation(898);
@@ -29,7 +29,7 @@ public final class DragonfireShieldSmithing {
                 }
             } else {
                 Player player4 = player;
-                player4.packetSender.sendGameMessage("You need a " + SkillManager.a[13] + " level of 90" + " to do that.");
+                player4.packetSender.sendGameMessage("You need a " + SkillManager.SKILL_NAMES[13] + " level of 90" + " to do that.");
             }
             return true;
         }

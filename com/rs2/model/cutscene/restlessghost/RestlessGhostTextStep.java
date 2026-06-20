@@ -9,16 +9,16 @@ import com.rs2.model.cutscene.restlessghost.RestlessGhostCutscene;
 
 final class RestlessGhostTextStep
 extends CutsceneStep {
-    private /* synthetic */ RestlessGhostCutscene a;
+    private /* synthetic */ RestlessGhostCutscene cutscene;
 
     RestlessGhostTextStep(RestlessGhostCutscene restlessGhostCutscene, Cutscene cutscene, int n) {
-        this.a = restlessGhostCutscene;
+        this.cutscene = restlessGhostCutscene;
         super(cutscene, 3);
     }
 
     @Override
-    public final void a() {
-        this.a.c.getUpdateState().setForcedText("stranger..");
+    public final void executeStep() {
+        this.cutscene.ghost.getUpdateState().setForcedText("stranger..");
     }
 }
 

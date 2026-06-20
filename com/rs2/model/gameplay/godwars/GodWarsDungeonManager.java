@@ -24,34 +24,34 @@ import java.util.Arrays;
 import java.util.List;
 
 public final class GodWarsDungeonManager {
-    public static int a = 1048;
-    private static int f = 0;
-    private static int g = 1;
-    private static int h = 2;
-    private static int i = 3;
-    private static int j = 11710;
-    private static int k = 11712;
-    private static int l = 11714;
-    private static int m = 11686;
-    private static int n = 11688;
-    private static int o = 11692;
-    private static int p = 11690;
-    private static int q = 11694;
-    private static int r = 11696;
-    private static int s = 11698;
-    private static int t = 11700;
-    private static int u = 11702;
-    private static int v = 11704;
-    private static int w = 11706;
-    private static int x = 11708;
-    public static List b = Arrays.asList(6222, 6223, 6225, 6227, 6229, 6230, 6231, 6232, 6233, 6234, 6235, 6236, 6237, 6238, 6239, 6240, 6241, 6242, 6243, 6244, 6245, 6246);
-    public static List c = Arrays.asList(6260, 6261, 6263, 6265, 6267, 6268, 6269, 6270, 6271, 6272, 6273, 6274, 6275, 6276, 6277, 6278, 6279, 6280, 6281, 6282, 6283);
-    public static List d = Arrays.asList(6247, 6248, 6250, 6252, 6254, 6255, 6256, 6257, 6258, 6259);
-    public static List e = Arrays.asList(6203, 6204, 6206, 6208, 6210, 6211, 6212, 6213, 6214, 6215, 6216, 6217, 6218, 6219, 6220, 6221);
-    private static String[] y = new String[]{"Death to our enemies!", "Brargh!", "Break their bones!", "For the glory of Bandos!", "Split their skulls!", "We feast on the bones of our enemies tonight!", "CHAAARGE!", "Crush them underfoot!", "All glory to Bandos!", "GRRRAAAAAR!", "FOR THE GLORY OF THE BIG HIGH WAR GOD!"};
-    private static String[] z = new String[]{"Death to the enemies of the light!", "Slay the evil ones!", "Saradomin lend me strength!", "By the power of Saradomin!", "May Saradomin be my sword!", "Good will always triumph!", "Forward! Our allies are with us!", "Saradomin is with us!", "In the name of Saradomin!", "All praise Saradomin!", "Attack! Find the Godsword!"};
+    public static int ropeShortcutConfigId = 1048;
+    private static int armadylKillCountIndex = 0;
+    private static int bandosKillCountIndex = 1;
+    private static int saradominKillCountIndex = 2;
+    private static int zamorakKillCountIndex = 3;
+    private static int godswordShard1ItemId = 11710;
+    private static int godswordShard2ItemId = 11712;
+    private static int godswordShard3ItemId = 11714;
+    private static int godswordShard1And2ItemId = 11686;
+    private static int godswordShard1And3ItemId = 11688;
+    private static int godswordShard2And3ItemId = 11692;
+    private static int godswordBladeItemId = 11690;
+    private static int armadylGodswordItemId = 11694;
+    private static int bandosGodswordItemId = 11696;
+    private static int saradominGodswordItemId = 11698;
+    private static int zamorakGodswordItemId = 11700;
+    private static int armadylHiltItemId = 11702;
+    private static int bandosHiltItemId = 11704;
+    private static int saradominHiltItemId = 11706;
+    private static int zamorakHiltItemId = 11708;
+    public static List armadylNpcIds = Arrays.asList(6222, 6223, 6225, 6227, 6229, 6230, 6231, 6232, 6233, 6234, 6235, 6236, 6237, 6238, 6239, 6240, 6241, 6242, 6243, 6244, 6245, 6246);
+    public static List bandosNpcIds = Arrays.asList(6260, 6261, 6263, 6265, 6267, 6268, 6269, 6270, 6271, 6272, 6273, 6274, 6275, 6276, 6277, 6278, 6279, 6280, 6281, 6282, 6283);
+    public static List saradominNpcIds = Arrays.asList(6247, 6248, 6250, 6252, 6254, 6255, 6256, 6257, 6258, 6259);
+    public static List zamorakNpcIds = Arrays.asList(6203, 6204, 6206, 6208, 6210, 6211, 6212, 6213, 6214, 6215, 6216, 6217, 6218, 6219, 6220, 6221);
+    private static String[] generalGraardorBattleCries = new String[]{"Death to our enemies!", "Brargh!", "Break their bones!", "For the glory of Bandos!", "Split their skulls!", "We feast on the bones of our enemies tonight!", "CHAAARGE!", "Crush them underfoot!", "All glory to Bandos!", "GRRRAAAAAR!", "FOR THE GLORY OF THE BIG HIGH WAR GOD!"};
+    private static String[] commanderZilyanaBattleCries = new String[]{"Death to the enemies of the light!", "Slay the evil ones!", "Saradomin lend me strength!", "By the power of Saradomin!", "May Saradomin be my sword!", "Good will always triumph!", "Forward! Our allies are with us!", "Saradomin is with us!", "In the name of Saradomin!", "All praise Saradomin!", "Attack! Find the Godsword!"};
 
-    public static void a() {
+    public static void spawnGodWarsNpcs() {
         if (ServerSettings.freeToPlayWorld) {
             return;
         }
@@ -485,21 +485,21 @@ public final class GodWarsDungeonManager {
         n = 1;
         n = 9418;
         Object object = new ItemStack(9418, 1);
-        object = new GroundItem((ItemStack)object, new Position(2869, 5280, 2), (int)GameUtil.b(100L), true);
+        object = new GroundItem((ItemStack)object, new Position(2869, 5280, 2), (int)GameUtil.secondsToTicks(100L), true);
         GroundItemManager.getInstance().spawn((GroundItem)object);
     }
 
-    public static boolean a(Npc npc) {
+    public static boolean handleBossBattleCry(Npc npc) {
         if (npc.getNpcId() == 6260) {
-            if (GameUtil.h(75) == 0) {
-                String string = y[GameUtil.h(y.length)];
+            if (GameUtil.randomInt(75) == 0) {
+                String string = generalGraardorBattleCries[GameUtil.randomInt(generalGraardorBattleCries.length)];
                 npc.getUpdateState().setForcedText(string);
             }
             return true;
         }
         if (npc.getNpcId() == 6247) {
-            if (GameUtil.h(75) == 0) {
-                String string = z[GameUtil.h(z.length)];
+            if (GameUtil.randomInt(75) == 0) {
+                String string = commanderZilyanaBattleCries[GameUtil.randomInt(commanderZilyanaBattleCries.length)];
                 npc.getUpdateState().setForcedText(string);
             }
             return true;
@@ -507,75 +507,75 @@ public final class GodWarsDungeonManager {
         return false;
     }
 
-    public static void a(Player player, int n) {
-        if (b.contains(n)) {
-            player.m[0] = player.m[0] + 1;
-            GodWarsDungeonManager.a(player);
+    public static void recordKillCount(Player player, int n) {
+        if (armadylNpcIds.contains(n)) {
+            player.godWarsKillCounts[0] = player.godWarsKillCounts[0] + 1;
+            GodWarsDungeonManager.refreshKillCountOverlay(player);
             return;
         }
-        if (c.contains(n)) {
-            int n2 = g;
-            player.m[n2] = player.m[n2] + 1;
-            GodWarsDungeonManager.a(player);
+        if (bandosNpcIds.contains(n)) {
+            int n2 = bandosKillCountIndex;
+            player.godWarsKillCounts[n2] = player.godWarsKillCounts[n2] + 1;
+            GodWarsDungeonManager.refreshKillCountOverlay(player);
             return;
         }
-        if (d.contains(n)) {
-            int n3 = h;
-            player.m[n3] = player.m[n3] + 1;
-            GodWarsDungeonManager.a(player);
+        if (saradominNpcIds.contains(n)) {
+            int n3 = saradominKillCountIndex;
+            player.godWarsKillCounts[n3] = player.godWarsKillCounts[n3] + 1;
+            GodWarsDungeonManager.refreshKillCountOverlay(player);
             return;
         }
-        if (e.contains(n)) {
-            int n4 = i;
-            player.m[n4] = player.m[n4] + 1;
-            GodWarsDungeonManager.a(player);
+        if (zamorakNpcIds.contains(n)) {
+            int n4 = zamorakKillCountIndex;
+            player.godWarsKillCounts[n4] = player.godWarsKillCounts[n4] + 1;
+            GodWarsDungeonManager.refreshKillCountOverlay(player);
             return;
         }
     }
 
-    public static void a(Player player) {
+    public static void refreshKillCountOverlay(Player player) {
         int n = 0;
-        while (n < player.m.length) {
-            if (player.m[n] != player.n[n]) {
+        while (n < player.godWarsKillCounts.length) {
+            if (player.godWarsKillCounts[n] != player.lastDisplayedGodWarsKillCounts[n]) {
                 Player player2 = player;
-                player2.packetSender.sendInterfaceText("" + player.m[n], n + 19562);
-                player.n[n] = player.m[n];
+                player2.packetSender.sendInterfaceText("" + player.godWarsKillCounts[n], n + 19562);
+                player.lastDisplayedGodWarsKillCounts[n] = player.godWarsKillCounts[n];
             }
             ++n;
         }
     }
 
-    public static boolean a(Player player, int n, int n2) {
-        if (n2 == 2783 && (n == j || n == k || n == l || n == m || n == GodWarsDungeonManager.n || n == o)) {
-            if ((n == m || n == l) && player.getInventoryManager().containsItem(m) && player.getInventoryManager().containsItem(l)) {
-                GodWarsDungeonManager.b(player, m, l, p);
+    public static boolean handleGodswordShardOnAnvil(Player player, int n, int n2) {
+        if (n2 == 2783 && (n == godswordShard1ItemId || n == godswordShard2ItemId || n == godswordShard3ItemId || n == godswordShard1And2ItemId || n == godswordShard1And3ItemId || n == godswordShard2And3ItemId)) {
+            if ((n == godswordShard1And2ItemId || n == godswordShard3ItemId) && player.getInventoryManager().containsItem(godswordShard1And2ItemId) && player.getInventoryManager().containsItem(godswordShard3ItemId)) {
+                GodWarsDungeonManager.smithGodswordShardCombination(player, godswordShard1And2ItemId, godswordShard3ItemId, godswordBladeItemId);
                 return true;
             }
-            if ((n == GodWarsDungeonManager.n || n == k) && player.getInventoryManager().containsItem(GodWarsDungeonManager.n) && player.getInventoryManager().containsItem(k)) {
-                GodWarsDungeonManager.b(player, GodWarsDungeonManager.n, k, p);
+            if ((n == godswordShard1And3ItemId || n == godswordShard2ItemId) && player.getInventoryManager().containsItem(godswordShard1And3ItemId) && player.getInventoryManager().containsItem(godswordShard2ItemId)) {
+                GodWarsDungeonManager.smithGodswordShardCombination(player, godswordShard1And3ItemId, godswordShard2ItemId, godswordBladeItemId);
                 return true;
             }
-            if ((n == o || n == j) && player.getInventoryManager().containsItem(o) && player.getInventoryManager().containsItem(j)) {
-                GodWarsDungeonManager.b(player, o, j, p);
+            if ((n == godswordShard2And3ItemId || n == godswordShard1ItemId) && player.getInventoryManager().containsItem(godswordShard2And3ItemId) && player.getInventoryManager().containsItem(godswordShard1ItemId)) {
+                GodWarsDungeonManager.smithGodswordShardCombination(player, godswordShard2And3ItemId, godswordShard1ItemId, godswordBladeItemId);
                 return true;
             }
-            if ((n == j || n == k) && player.getInventoryManager().containsItem(j) && player.getInventoryManager().containsItem(k)) {
-                GodWarsDungeonManager.b(player, j, k, m);
+            if ((n == godswordShard1ItemId || n == godswordShard2ItemId) && player.getInventoryManager().containsItem(godswordShard1ItemId) && player.getInventoryManager().containsItem(godswordShard2ItemId)) {
+                GodWarsDungeonManager.smithGodswordShardCombination(player, godswordShard1ItemId, godswordShard2ItemId, godswordShard1And2ItemId);
                 return true;
             }
-            if ((n == j || n == l) && player.getInventoryManager().containsItem(j) && player.getInventoryManager().containsItem(l)) {
-                GodWarsDungeonManager.b(player, j, l, GodWarsDungeonManager.n);
+            if ((n == godswordShard1ItemId || n == godswordShard3ItemId) && player.getInventoryManager().containsItem(godswordShard1ItemId) && player.getInventoryManager().containsItem(godswordShard3ItemId)) {
+                GodWarsDungeonManager.smithGodswordShardCombination(player, godswordShard1ItemId, godswordShard3ItemId, godswordShard1And3ItemId);
                 return true;
             }
-            if ((n == k || n == l) && player.getInventoryManager().containsItem(k) && player.getInventoryManager().containsItem(l)) {
-                GodWarsDungeonManager.b(player, k, l, o);
+            if ((n == godswordShard2ItemId || n == godswordShard3ItemId) && player.getInventoryManager().containsItem(godswordShard2ItemId) && player.getInventoryManager().containsItem(godswordShard3ItemId)) {
+                GodWarsDungeonManager.smithGodswordShardCombination(player, godswordShard2ItemId, godswordShard3ItemId, godswordShard2And3ItemId);
                 return true;
             }
         }
         return false;
     }
 
-    private static void b(Player player, int n, int n2, int n3) {
+    private static void smithGodswordShardCombination(Player player, int n, int n2, int n3) {
         if (player.getSkillManager().getBaseLevel(13) >= 80) {
             if (!player.getInventoryManager().getContainer().containsItem(2347)) {
                 Player player2 = player;
@@ -584,7 +584,7 @@ public final class GodWarsDungeonManager {
             }
             player.getInventoryManager().removeItem(new ItemStack(n, 1));
             player.getInventoryManager().removeItem(new ItemStack(n2, 1));
-            player.getInventoryManager().b(new ItemStack(n3, 1));
+            player.getInventoryManager().addOrDropItem(new ItemStack(n3, 1));
             Player player3 = player;
             player3.packetSender.sendSoundEffect(468, 1, 0);
             player.getUpdateState().setAnimation(898);
@@ -592,139 +592,139 @@ public final class GodWarsDungeonManager {
             return;
         }
         Player player4 = player;
-        player4.packetSender.sendGameMessage("You need a " + SkillManager.a[13] + " level of 80" + " to do that.");
+        player4.packetSender.sendGameMessage("You need a " + SkillManager.SKILL_NAMES[13] + " level of 80" + " to do that.");
     }
 
-    public static boolean b(Player player, int n) {
-        if (n == q) {
+    public static boolean dismantleGodsword(Player player, int n) {
+        if (n == armadylGodswordItemId) {
             if (player.getInventoryManager().getContainer().getFreeSlots() <= 0) {
                 player.packetSender.sendGameMessage("You need more inventory space to do this.");
             } else {
-                player.getInventoryManager().removeItem(new ItemStack(q, 1));
-                player.getInventoryManager().b(new ItemStack(u, 1));
-                player.getInventoryManager().b(new ItemStack(p, 1));
+                player.getInventoryManager().removeItem(new ItemStack(armadylGodswordItemId, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(armadylHiltItemId, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(godswordBladeItemId, 1));
             }
             return true;
         }
-        if (n == r) {
+        if (n == bandosGodswordItemId) {
             if (player.getInventoryManager().getContainer().getFreeSlots() <= 0) {
                 player.packetSender.sendGameMessage("You need more inventory space to do this.");
             } else {
-                player.getInventoryManager().removeItem(new ItemStack(r, 1));
-                player.getInventoryManager().b(new ItemStack(v, 1));
-                player.getInventoryManager().b(new ItemStack(p, 1));
+                player.getInventoryManager().removeItem(new ItemStack(bandosGodswordItemId, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(bandosHiltItemId, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(godswordBladeItemId, 1));
             }
             return true;
         }
-        if (n == s) {
+        if (n == saradominGodswordItemId) {
             if (player.getInventoryManager().getContainer().getFreeSlots() <= 0) {
                 player.packetSender.sendGameMessage("You need more inventory space to do this.");
             } else {
-                player.getInventoryManager().removeItem(new ItemStack(s, 1));
-                player.getInventoryManager().b(new ItemStack(w, 1));
-                player.getInventoryManager().b(new ItemStack(p, 1));
+                player.getInventoryManager().removeItem(new ItemStack(saradominGodswordItemId, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(saradominHiltItemId, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(godswordBladeItemId, 1));
             }
             return true;
         }
-        if (n == t) {
+        if (n == zamorakGodswordItemId) {
             if (player.getInventoryManager().getContainer().getFreeSlots() <= 0) {
                 player.packetSender.sendGameMessage("You need more inventory space to do this.");
             } else {
-                player.getInventoryManager().removeItem(new ItemStack(t, 1));
-                player.getInventoryManager().b(new ItemStack(x, 1));
-                player.getInventoryManager().b(new ItemStack(p, 1));
+                player.getInventoryManager().removeItem(new ItemStack(zamorakGodswordItemId, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(zamorakHiltItemId, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(godswordBladeItemId, 1));
             }
             return true;
         }
         return false;
     }
 
-    public static boolean b(Player player, int n, int n2) {
+    public static boolean handleGodWarsItemCombination(Player player, int n, int n2) {
         if (n == 954 || n2 == 954) {
             if (n == 9418 || n2 == 9418) {
                 if (player.getSkillManager().getBaseLevel(13) >= 59 && player.getSkillManager().getBaseLevel(9) >= 59) {
                     player.getInventoryManager().removeItem(new ItemStack(954, 1));
                     player.getInventoryManager().removeItem(new ItemStack(9418, 1));
-                    player.getInventoryManager().b(new ItemStack(9419, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(9419, 1));
                 } else {
-                    player.packetSender.sendGameMessage("You need " + SkillManager.a[13] + " and " + SkillManager.a[9] + " level of 59" + " to do that.");
+                    player.packetSender.sendGameMessage("You need " + SkillManager.SKILL_NAMES[13] + " and " + SkillManager.SKILL_NAMES[9] + " level of 59" + " to do that.");
                 }
                 return true;
             }
-        } else if (n == p || n2 == p) {
-            if (n == u || n2 == u) {
-                player.getInventoryManager().removeItem(new ItemStack(p, 1));
-                player.getInventoryManager().removeItem(new ItemStack(u, 1));
-                player.getInventoryManager().b(new ItemStack(q, 1));
+        } else if (n == godswordBladeItemId || n2 == godswordBladeItemId) {
+            if (n == armadylHiltItemId || n2 == armadylHiltItemId) {
+                player.getInventoryManager().removeItem(new ItemStack(godswordBladeItemId, 1));
+                player.getInventoryManager().removeItem(new ItemStack(armadylHiltItemId, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(armadylGodswordItemId, 1));
                 return true;
             }
-            if (n == v || n2 == v) {
-                player.getInventoryManager().removeItem(new ItemStack(p, 1));
-                player.getInventoryManager().removeItem(new ItemStack(v, 1));
-                player.getInventoryManager().b(new ItemStack(r, 1));
+            if (n == bandosHiltItemId || n2 == bandosHiltItemId) {
+                player.getInventoryManager().removeItem(new ItemStack(godswordBladeItemId, 1));
+                player.getInventoryManager().removeItem(new ItemStack(bandosHiltItemId, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(bandosGodswordItemId, 1));
                 return true;
             }
-            if (n == w || n2 == w) {
-                player.getInventoryManager().removeItem(new ItemStack(p, 1));
-                player.getInventoryManager().removeItem(new ItemStack(w, 1));
-                player.getInventoryManager().b(new ItemStack(s, 1));
+            if (n == saradominHiltItemId || n2 == saradominHiltItemId) {
+                player.getInventoryManager().removeItem(new ItemStack(godswordBladeItemId, 1));
+                player.getInventoryManager().removeItem(new ItemStack(saradominHiltItemId, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(saradominGodswordItemId, 1));
                 return true;
             }
-            if (n == x || n2 == x) {
-                player.getInventoryManager().removeItem(new ItemStack(p, 1));
-                player.getInventoryManager().removeItem(new ItemStack(x, 1));
-                player.getInventoryManager().b(new ItemStack(t, 1));
+            if (n == zamorakHiltItemId || n2 == zamorakHiltItemId) {
+                player.getInventoryManager().removeItem(new ItemStack(godswordBladeItemId, 1));
+                player.getInventoryManager().removeItem(new ItemStack(zamorakHiltItemId, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(zamorakGodswordItemId, 1));
                 return true;
             }
         }
         return false;
     }
 
-    public static boolean a(Player player, int n, int n2, int n3) {
+    public static boolean handleFirstObjectAction(Player player, int n, int n2, int n3) {
         if (n == 26342) {
-            if (player.ep[a] <= 0) {
+            if (player.ep[ropeShortcutConfigId] <= 0) {
                 if (player.getInventoryManager().containsItem(954)) {
                     Player player2 = player;
-                    player2.packetSender.sendConfig(a, 1);
-                    player.ep[GodWarsDungeonManager.a] = 1;
+                    player2.packetSender.sendConfig(ropeShortcutConfigId, 1);
+                    player.ep[GodWarsDungeonManager.ropeShortcutConfigId] = 1;
                     player.getInventoryManager().removeItem(new ItemStack(954, 1));
                 } else {
                     Player player3 = player;
                     player3.packetSender.sendGameMessage("You don't have a rope to tie around the pillar.");
                 }
             } else if (player.getSkillManager().getBaseLevel(2) >= 60 || player.getSkillManager().getBaseLevel(16) >= 60) {
-                AttackStyleDefinition.a(player, new Position(2881, 5310, 2));
+                AttackStyleDefinition.startDelayedObjectMove(player, new Position(2881, 5310, 2));
                 Player player4 = player;
                 player4.packetSender.sendGameMessage("You climb down the rope.");
             } else {
                 Player player5 = player;
-                player5.packetSender.sendGameMessage("You need a " + SkillManager.a[2] + " or an " + SkillManager.a[16] + " level of 60" + " to do that.");
+                player5.packetSender.sendGameMessage("You need a " + SkillManager.SKILL_NAMES[2] + " or an " + SkillManager.SKILL_NAMES[16] + " level of 60" + " to do that.");
             }
             return true;
         }
         if (n == 26293) {
-            AttackStyleDefinition.a(player, new Position(2967, 3948, 0));
+            AttackStyleDefinition.startDelayedObjectMove(player, new Position(2967, 3948, 0));
             return true;
         }
         if (n == 26444) {
-            GodWarsDungeonManager.b(player);
+            GodWarsDungeonManager.handleUpperRopeRockShortcut(player);
             return true;
         }
         if (n == 26445) {
-            GodWarsDungeonManager.c(player);
+            GodWarsDungeonManager.handleLowerRopeRockShortcut(player);
             return true;
         }
         if (n == 26298) {
-            AttackStyleDefinition.a(player, new Position(2920, 5276, 1));
+            AttackStyleDefinition.startDelayedObjectMove(player, new Position(2920, 5276, 1));
             return true;
         }
         if (n == 26294) {
-            AttackStyleDefinition.a(player, new Position(2912, 5300, 2));
+            AttackStyleDefinition.startDelayedObjectMove(player, new Position(2912, 5300, 2));
             return true;
         }
         if (n == 26426) {
             if (player.getPosition().getY() <= 5295) {
-                if (player.m[0] < 40) {
+                if (player.godWarsKillCounts[0] < 40) {
                     Player player6 = player;
                     player6.packetSender.sendGameMessage("You need atleast 40 Armadyl kills to enter.");
                 } else {
@@ -732,7 +732,7 @@ public final class GodWarsDungeonManager {
                     player7.packetSender.queueRelativeMovementStep(0, player.getPosition().getY() <= 5295 ? 1 : -1, true);
                     player7 = player;
                     player7.packetSender.openSingleDoor(n, n2, n3, player.getPosition().getPlane());
-                    player.m[0] = player.m[0] - 40;
+                    player.godWarsKillCounts[0] = player.godWarsKillCounts[0] - 40;
                 }
             } else {
                 Player player8 = player;
@@ -742,7 +742,7 @@ public final class GodWarsDungeonManager {
         }
         if (n == 26425) {
             if (player.getPosition().getX() <= 2863) {
-                if (player.m[g] < 40) {
+                if (player.godWarsKillCounts[bandosKillCountIndex] < 40) {
                     Player player9 = player;
                     player9.packetSender.sendGameMessage("You need atleast 40 Bandos kills to enter.");
                 } else {
@@ -750,8 +750,8 @@ public final class GodWarsDungeonManager {
                     player10.packetSender.queueRelativeMovementStep(player.getPosition().getX() <= 2863 ? 1 : -1, 0, true);
                     player10 = player;
                     player10.packetSender.openSingleDoor(n, n2, n3, player.getPosition().getPlane());
-                    int n4 = g;
-                    player.m[n4] = player.m[n4] - 40;
+                    int n4 = bandosKillCountIndex;
+                    player.godWarsKillCounts[n4] = player.godWarsKillCounts[n4] - 40;
                 }
             } else {
                 Player player11 = player;
@@ -761,7 +761,7 @@ public final class GodWarsDungeonManager {
         }
         if (n == 26427) {
             if (player.getPosition().getX() >= 2908) {
-                if (player.m[h] < 40) {
+                if (player.godWarsKillCounts[saradominKillCountIndex] < 40) {
                     Player player12 = player;
                     player12.packetSender.sendGameMessage("You need atleast 40 Saradomin kills to enter.");
                 } else {
@@ -769,8 +769,8 @@ public final class GodWarsDungeonManager {
                     player13.packetSender.queueRelativeMovementStep(player.getPosition().getX() >= 2908 ? -1 : 1, 0, true);
                     player13 = player;
                     player13.packetSender.openSingleDoor(n, n2, n3, player.getPosition().getPlane());
-                    int n5 = h;
-                    player.m[n5] = player.m[n5] - 40;
+                    int n5 = saradominKillCountIndex;
+                    player.godWarsKillCounts[n5] = player.godWarsKillCounts[n5] - 40;
                 }
             } else {
                 Player player14 = player;
@@ -780,7 +780,7 @@ public final class GodWarsDungeonManager {
         }
         if (n == 26428) {
             if (player.getPosition().getY() >= 5332) {
-                if (player.m[i] < 40) {
+                if (player.godWarsKillCounts[zamorakKillCountIndex] < 40) {
                     Player player15 = player;
                     player15.packetSender.sendGameMessage("You need atleast 40 Zamorak kills to enter.");
                 } else {
@@ -788,8 +788,8 @@ public final class GodWarsDungeonManager {
                     player16.packetSender.queueRelativeMovementStep(0, player.getPosition().getY() >= 5332 ? -1 : 1, true);
                     player16 = player;
                     player16.packetSender.openSingleDoor(n, n2, n3, player.getPosition().getPlane());
-                    int n6 = i;
-                    player.m[n6] = player.m[n6] - 40;
+                    int n6 = zamorakKillCountIndex;
+                    player.godWarsKillCounts[n6] = player.godWarsKillCounts[n6] - 40;
                 }
             } else {
                 Player player17 = player;
@@ -801,7 +801,7 @@ public final class GodWarsDungeonManager {
             if (player.getPosition().getX() >= 2851) {
                 if (player.getSkillManager().getBaseLevel(2) >= 70) {
                     if (player.getInventoryManager().containsItem(2347)) {
-                        player.n(true);
+                        player.setActionLocked(true);
                         Player player18 = player;
                         player18.packetSender.sendGameMessage("You bang on the big door.");
                         player18 = player;
@@ -815,7 +815,7 @@ public final class GodWarsDungeonManager {
                     }
                 } else {
                     Player player20 = player;
-                    player20.packetSender.sendGameMessage("You need a " + SkillManager.a[2] + " level of 70" + " to do that.");
+                    player20.packetSender.sendGameMessage("You need a " + SkillManager.SKILL_NAMES[2] + " level of 70" + " to do that.");
                 }
             } else {
                 Player player21 = player;
@@ -834,7 +834,7 @@ public final class GodWarsDungeonManager {
                 }
             } else {
                 Player player22 = player;
-                player22.packetSender.sendGameMessage("You need a " + SkillManager.a[3] + " level of 70" + " to do that.");
+                player22.packetSender.sendGameMessage("You need a " + SkillManager.SKILL_NAMES[3] + " level of 70" + " to do that.");
             }
             return true;
         }
@@ -865,15 +865,15 @@ public final class GodWarsDungeonManager {
                 AgilityObstacleHandler.startAgilityMovement(player, 0.0, 0, player.getPosition().getY() >= 5273 ? -11 : 11, 7081, -1, -1, 5, null, null);
             } else {
                 Player player25 = player;
-                player25.packetSender.sendGameMessage("You need a " + SkillManager.a[4] + " level of 70" + " to do that.");
+                player25.packetSender.sendGameMessage("You need a " + SkillManager.SKILL_NAMES[4] + " level of 70" + " to do that.");
             }
             return true;
         }
         if (n == 26288 || n == 26289 || n == 26287 || n == 26286) {
             if (player.getSingleCombatTimer().hasElapsed()) {
-                if (System.currentTimeMillis() - player.o >= 600000L) {
+                if (System.currentTimeMillis() - player.godWarsLastAltarBlessingMillis >= 600000L) {
                     PrayerManager.rechargePrayerWithBoost(player);
-                    player.o = System.currentTimeMillis();
+                    player.godWarsLastAltarBlessingMillis = System.currentTimeMillis();
                 } else {
                     Player player26 = player;
                     player26.packetSender.sendGameMessage("The gods blessed you recently - this time they ignore your prayers.");
@@ -887,12 +887,12 @@ public final class GodWarsDungeonManager {
         return false;
     }
 
-    private static void b(Player player) {
-        if (player.ep[a] < 3) {
+    private static void handleUpperRopeRockShortcut(Player player) {
+        if (player.ep[ropeShortcutConfigId] < 3) {
             if (player.getInventoryManager().containsItem(954)) {
                 Player player2 = player;
-                player2.packetSender.sendConfig(a, 3);
-                player.ep[GodWarsDungeonManager.a] = 3;
+                player2.packetSender.sendConfig(ropeShortcutConfigId, 3);
+                player.ep[GodWarsDungeonManager.ropeShortcutConfigId] = 3;
                 player.getInventoryManager().removeItem(new ItemStack(954, 1));
                 return;
             }
@@ -901,19 +901,19 @@ public final class GodWarsDungeonManager {
             return;
         }
         if (player.getSkillManager().getBaseLevel(16) >= 70) {
-            AttackStyleDefinition.a(player, new Position(2915, 5300, 1));
+            AttackStyleDefinition.startDelayedObjectMove(player, new Position(2915, 5300, 1));
             return;
         }
         Player player4 = player;
-        player4.packetSender.sendGameMessage("You need an " + SkillManager.a[16] + " level of 70" + " to do that.");
+        player4.packetSender.sendGameMessage("You need an " + SkillManager.SKILL_NAMES[16] + " level of 70" + " to do that.");
     }
 
-    private static void c(Player player) {
-        if (player.ep[a] < 15) {
+    private static void handleLowerRopeRockShortcut(Player player) {
+        if (player.ep[ropeShortcutConfigId] < 15) {
             if (player.getInventoryManager().containsItem(954)) {
                 Player player2 = player;
-                player2.packetSender.sendConfig(a, 15);
-                player.ep[GodWarsDungeonManager.a] = 15;
+                player2.packetSender.sendConfig(ropeShortcutConfigId, 15);
+                player.ep[GodWarsDungeonManager.ropeShortcutConfigId] = 15;
                 player.getInventoryManager().removeItem(new ItemStack(954, 1));
                 return;
             }
@@ -921,16 +921,16 @@ public final class GodWarsDungeonManager {
             player3.packetSender.sendGameMessage("You don't have a rope to tie on this rock.");
             return;
         }
-        AttackStyleDefinition.a(player, new Position(2919, 5274, 0));
+        AttackStyleDefinition.startDelayedObjectMove(player, new Position(2919, 5274, 0));
     }
 
-    public static boolean c(Player player, int n) {
+    public static boolean handleSecondObjectAction(Player player, int n) {
         if (n == 26444) {
-            GodWarsDungeonManager.b(player);
+            GodWarsDungeonManager.handleUpperRopeRockShortcut(player);
             return true;
         }
         if (n == 26445) {
-            GodWarsDungeonManager.c(player);
+            GodWarsDungeonManager.handleLowerRopeRockShortcut(player);
             return true;
         }
         if (n == 26288) {

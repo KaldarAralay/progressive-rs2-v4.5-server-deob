@@ -12,38 +12,38 @@ import com.rs2.model.task.TickTask;
 
 final class CaveInsectSwarmTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
     CaveInsectSwarmTask(int n, Player player) {
-        this.a = player;
+        this.player = player;
         super(15);
     }
 
     @Override
     public final void execute() {
-        if (!this.a.bW()) {
+        if (!this.player.isRegistered()) {
             this.stop();
             return;
         }
-        if (CaveLightManager.a(this.a)) {
-            if (this.a.eI() == 0 && this.a.eH == 0) {
-                Player player = this.a;
+        if (CaveLightManager.isInCaveInsectRegion(this.player)) {
+            if (this.player.getActiveCaveLightLevel() == 0 && this.player.caveInsectSwarmStage == 0) {
+                Player player = this.player;
                 player.packetSender.sendGameMessage("You hear tiny insects skittering over the ground...");
-                this.a.eH = 1;
+                this.player.caveInsectSwarmStage = 1;
                 return;
             }
-            if (this.a.eI() == 0 && this.a.eH == 1) {
-                Object object = this.a;
+            if (this.player.getActiveCaveLightLevel() == 0 && this.player.caveInsectSwarmStage == 1) {
+                Object object = this.player;
                 ((Player)object).packetSender.sendGameMessage("Tiny biting insects swarm all over you!");
-                this.a.applyDirectHit(1, HitType.NORMAL);
-                this.a.getRecentCombatTimer().setTargetDelay(null, 17);
-                this.a.eH = 2;
-                object = new CaveInsectDamageTask(this, 3, this.a);
+                this.player.applyDirectHit(1, HitType.NORMAL);
+                this.player.getRecentCombatTimer().setTargetDelay(null, 17);
+                this.player.caveInsectSwarmStage = 2;
+                object = new CaveInsectDamageTask(this, 3, this.player);
                 World.getTaskScheduler().schedule((TickTask)object);
                 return;
             }
         } else {
-            this.a.er = -1;
+            this.player.activeEnvironmentalHazardId = -1;
             this.stop();
         }
     }

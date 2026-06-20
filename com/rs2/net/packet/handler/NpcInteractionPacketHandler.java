@@ -23,7 +23,7 @@ public final class NpcInteractionPacketHandler
 implements PacketHandler {
     @Override
     public final void handle(Player object, IncomingPacket object2) {
-        if (((Player)object).dJ()) {
+        if (((Player)object).isActionLocked()) {
             return;
         }
         Object object3 = object;
@@ -33,7 +33,7 @@ implements PacketHandler {
             case 155: {
                 Npc npc;
                 int n = ((IncomingPacket)object2).getReader().readSignedShort(true, ByteOrder.LITTLE);
-                if (n < 0 || n > World.g().length || (npc = World.g()[n]) == null || !npc.isInteractable()) break;
+                if (n < 0 || n > World.getNpcs().length || (npc = World.getNpcs()[n]) == null || !npc.isInteractable()) break;
                 ((Player)object).setInteractionTargetId(npc.getNpcId());
                 ((Player)object).setInteractionTargetX(npc.getPosition().getX());
                 ((Player)object).setInteractionTargetY(npc.getPosition().getY());
@@ -53,7 +53,7 @@ implements PacketHandler {
             case 17: {
                 Npc npc;
                 int n = ((IncomingPacket)object2).getReader().readSignedShort(ByteTransform.ADD, ByteOrder.LITTLE) & 0xFFFF;
-                if (n < 0 || n > World.g().length || (npc = World.g()[n]) == null || !npc.isInteractable()) break;
+                if (n < 0 || n > World.getNpcs().length || (npc = World.getNpcs()[n]) == null || !npc.isInteractable()) break;
                 ((Player)object).setInteractionTargetId(npc.getNpcId());
                 ((Player)object).setInteractionTargetX(npc.getPosition().getX());
                 ((Player)object).setInteractionTargetY(npc.getPosition().getY());
@@ -73,7 +73,7 @@ implements PacketHandler {
             case 21: {
                 Npc npc;
                 int n = ((IncomingPacket)object2).getReader().readSignedShort(true);
-                if (n < 0 || n > World.g().length || (npc = World.g()[n]) == null || !npc.isInteractable()) break;
+                if (n < 0 || n > World.getNpcs().length || (npc = World.getNpcs()[n]) == null || !npc.isInteractable()) break;
                 ((Player)object).setInteractionTargetId(npc.getNpcId());
                 ((Player)object).setInteractionTargetX(npc.getPosition().getX());
                 ((Player)object).setInteractionTargetY(npc.getPosition().getY());
@@ -99,8 +99,8 @@ implements PacketHandler {
                 object2 = object;
                 object = this;
                 int n = ((IncomingPacket)object3).getReader().readSignedShort(ByteTransform.ADD);
-                if (n < 0 || n > World.g().length || (npc = World.g()[n]) == null || !npc.isInteractable()) break;
-                ((Player)object2).a((SpellDefinition)null);
+                if (n < 0 || n > World.getNpcs().length || (npc = World.getNpcs()[n]) == null || !npc.isInteractable()) break;
+                ((Player)object2).setQueuedCombatSpell(null);
                 if (npc.getOwnerPlayer() != null && npc.getOwnerPlayer() != object2) {
                     Object object7 = object2;
                     ((Player)object7).packetSender.sendGameMessage(String.valueOf(npc.getDefinition().getName()) + " is not interested in interacting with you right now.");
@@ -121,9 +121,9 @@ implements PacketHandler {
             case 131: {
                 ((Entity)object).getMovementQueue().clear();
                 int n = ((IncomingPacket)object2).getReader().readSignedShort(ByteTransform.ADD, ByteOrder.LITTLE);
-                if (n < 0 || n > World.g().length) break;
+                if (n < 0 || n > World.getNpcs().length) break;
                 int n3 = ((IncomingPacket)object2).getReader().readSignedShort(ByteTransform.ADD);
-                Npc npc = World.g()[n];
+                Npc npc = World.getNpcs()[n];
                 if (npc == null || !npc.isInteractable()) break;
                 if (npc.getOwnerPlayer() != null && npc.getOwnerPlayer() != object) {
                     Object object10 = object;
@@ -133,23 +133,23 @@ implements PacketHandler {
                 SpellDefinition spellDefinition = Spellbook.getSpellForButtonId((Player)object, n3);
                 if (spellDefinition != null) {
                     if (!((Entity)object).isInMageArena()) {
-                        if (spellDefinition == SpellDefinition.SARADOMIN_STRIKE && ((Player)object).dM > 0) {
+                        if (spellDefinition == SpellDefinition.SARADOMIN_STRIKE && ((Player)object).mageArenaSaradominStrikeCastsRemaining > 0) {
                             Object object11 = object;
-                            ((Player)object11).packetSender.sendGameMessage("You need to cast this spell " + ((Player)object).dM + " times at Mage arena first.");
+                            ((Player)object11).packetSender.sendGameMessage("You need to cast this spell " + ((Player)object).mageArenaSaradominStrikeCastsRemaining + " times at Mage arena first.");
                             break;
                         }
-                        if (spellDefinition == SpellDefinition.FLAMES_OF_ZAMORAK && ((Player)object).dK > 0) {
+                        if (spellDefinition == SpellDefinition.FLAMES_OF_ZAMORAK && ((Player)object).mageArenaFlamesOfZamorakCastsRemaining > 0) {
                             Object object12 = object;
-                            ((Player)object12).packetSender.sendGameMessage("You need to cast this spell " + ((Player)object).dK + " times at Mage arena first.");
+                            ((Player)object12).packetSender.sendGameMessage("You need to cast this spell " + ((Player)object).mageArenaFlamesOfZamorakCastsRemaining + " times at Mage arena first.");
                             break;
                         }
-                        if (spellDefinition == SpellDefinition.CLAWS_OF_GUTHIX && ((Player)object).dL > 0) {
+                        if (spellDefinition == SpellDefinition.CLAWS_OF_GUTHIX && ((Player)object).mageArenaClawsOfGuthixCastsRemaining > 0) {
                             Object object13 = object;
-                            ((Player)object13).packetSender.sendGameMessage("You need to cast this spell " + ((Player)object).dL + " times at Mage arena first.");
+                            ((Player)object13).packetSender.sendGameMessage("You need to cast this spell " + ((Player)object).mageArenaClawsOfGuthixCastsRemaining + " times at Mage arena first.");
                             break;
                         }
                     }
-                    ((Player)object).a(spellDefinition);
+                    ((Player)object).setQueuedCombatSpell(spellDefinition);
                     if (spellDefinition == SpellDefinition.TELEOTHER_CAMELOT || spellDefinition == SpellDefinition.TELEOTHER_FALADOR || spellDefinition == SpellDefinition.TELEOTHER_LUMBRIDGE || spellDefinition == SpellDefinition.TELE_BLOCK) {
                         Object object14 = object;
                         ((Player)object14).packetSender.sendGameMessage("Nothing interesting happens.");
@@ -175,10 +175,10 @@ implements PacketHandler {
                 if (((Player)object).getPlayerRights() > 1 && ServerSettings.debugModeEnabled) {
                     System.out.println(String.valueOf(n) + " " + n4 + " " + n5);
                 }
-                if (n4 < 0 || n4 > World.g().length) {
+                if (n4 < 0 || n4 > World.getNpcs().length) {
                     return;
                 }
-                object2 = World.g()[n4];
+                object2 = World.getNpcs()[n4];
                 if (object2 == null || !((Npc)object2).isInteractable()) {
                     return;
                 }

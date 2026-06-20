@@ -25,8 +25,8 @@ public final class RunecraftingHandler {
             return;
         }
         if (player.getQuestState(14) != 1) {
-            QuestDefinition questDefinition = QuestDefinition.b(14);
-            String string = questDefinition.c();
+            QuestDefinition questDefinition = QuestDefinition.forId(14);
+            String string = questDefinition.getName();
             object = player;
             ((Player)object).packetSender.sendGameMessage("You need to complete " + string + " to do this.");
             return;
@@ -113,8 +113,8 @@ public final class RunecraftingHandler {
         n3 = 1 + n;
         ItemStack itemStack = player.getInventoryManager().getContainer().findFlatItem(5519);
         n2 = itemStack.getMetadata();
-        if ((n2 & GameUtil.b(n3)) == 0) {
-            itemStack.setMetadata(n2 += GameUtil.b(n3));
+        if ((n2 & GameUtil.bitFlag(n3)) == 0) {
+            itemStack.setMetadata(n2 += GameUtil.bitFlag(n3));
         }
         Player player2 = player;
         n2 = 0;
@@ -122,7 +122,7 @@ public final class RunecraftingHandler {
         int n6 = 0;
         while (n6 < SCRYING_ORB_NPC_IDS.length) {
             int n7 = n6 + 1;
-            if ((n5 & GameUtil.b(n7)) != 0) {
+            if ((n5 & GameUtil.bitFlag(n7)) != 0) {
                 ++n2;
             }
             ++n6;
@@ -137,8 +137,8 @@ public final class RunecraftingHandler {
 
     public static void startAbyssMageTeleport(Player player, Npc object) {
         if (player.getQuestState(14) != 1) {
-            object = QuestDefinition.b(14);
-            object = ((QuestDefinition)object).c();
+            object = QuestDefinition.forId(14);
+            object = ((QuestDefinition)object).getName();
             player.packetSender.sendGameMessage("You need to complete " + (String)object + " to do this.");
             return;
         }

@@ -55,7 +55,7 @@ public final class BoneBuryingHandler {
             player.packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
-        if (!this.player.getSkillManager().f(800)) {
+        if (!this.player.getSkillManager().tryStartActionDelay(800)) {
             return true;
         }
         if (this.player.getInventoryManager().removeItemFromSlot(new ItemStack(n), n2)) {
@@ -70,7 +70,7 @@ public final class BoneBuryingHandler {
             ItemService.getInstance();
             packetSender.sendGameMessage(stringBuilder.append(ItemService.getItemName(n).toLowerCase()).append(".").toString());
             if (SkillActionHelper.shouldTriggerRandomEvent(this.player) && !this.player.botEnabled && !this.player.r()) {
-                GameplayHelper.a(this.player, GameUtil.g(3) == 0 ? SkillRandomEventNpc.b : SkillRandomEventNpc.a);
+                GameplayHelper.a(this.player, GameUtil.randomInclusive(3) == 0 ? SkillRandomEventNpc.b : SkillRandomEventNpc.a);
             }
         }
         return true;

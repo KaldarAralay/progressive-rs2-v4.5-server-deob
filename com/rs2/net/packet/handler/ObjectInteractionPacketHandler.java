@@ -22,7 +22,7 @@ public final class ObjectInteractionPacketHandler
 implements PacketHandler {
     @Override
     public final void handle(Player player, IncomingPacket object) {
-        if (player.dJ()) {
+        if (player.isActionLocked()) {
             return;
         }
         Object object2 = player;

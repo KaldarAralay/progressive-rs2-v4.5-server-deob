@@ -55,7 +55,7 @@ public enum BushPatch {
             BushPatch bushPatch;
             BushPatch bushPatch2 = bushPatch = bushPatchArray[n2];
             bushPatch2 = bushPatch;
-            if (FarmingPatchUtils.a(bushPatch.bounds[0], bushPatch2.bounds[1], position)) {
+            if (FarmingPatchUtils.containsPosition(bushPatch.bounds[0], bushPatch2.bounds[1], position)) {
                 return bushPatch;
             }
             ++n2;

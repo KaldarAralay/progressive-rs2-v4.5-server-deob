@@ -35,7 +35,7 @@ extends CycleEvent {
         player.packetSender.sendConfig(CanoeTravelManager.CANOE_CONFIG_ID, this.player.ep[CanoeTravelManager.CANOE_CONFIG_ID]);
         player = this.player;
         player.packetSender.sendSoundEffect(1312, 1, 0);
-        this.player.getUpdateState().setAnimation(this.gatheringTool.d(), 0);
+        this.player.getUpdateState().setAnimation(this.gatheringTool.getGatherAnimationId(), 0);
         cycleEventContainer.stop();
     }
 

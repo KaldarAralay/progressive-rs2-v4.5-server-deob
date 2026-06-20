@@ -40,7 +40,7 @@ extends TickTask {
                 ((Player)entity).packetSender.setSidebarInterface(6, 12855);
             }
         }
-        MagicSpellAction.getPlayer(this.a).n(false);
+        MagicSpellAction.getPlayer(this.a).setActionLocked(false);
         this.stop();
     }
 }

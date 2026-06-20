@@ -18,7 +18,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        if (GameUtil.h(ServerSettings.clanWarsEventChanceDivisor) == 0 && !ClanWarsBotManager.clanWarsEventActive) {
+        if (GameUtil.randomInt(ServerSettings.clanWarsEventChanceDivisor) == 0 && !ClanWarsBotManager.clanWarsEventActive) {
             GameplayHelper.startClanWarsBotEvent();
         }
     }

@@ -26,7 +26,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        CompostBinManager.getPlayer(this.manager).n(false);
+        CompostBinManager.getPlayer(this.manager).setActionLocked(false);
     }
 }
 

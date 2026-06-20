@@ -27,7 +27,7 @@ public final class BotWorldRouteWalker {
         Object object3 = null;
         BotWorldRouteChoice object4 = null;
         double d = 0.0;
-        int n = GameUtil.b(player.getPosition(), (Position)object2);
+        int n = GameUtil.getDistance(player.getPosition(), (Position)object2);
         Iterator iterator = ((ArrayList)object).iterator();
         while (iterator.hasNext()) {
             object = (BotWorldRouteChoice)iterator.next();
@@ -48,8 +48,8 @@ public final class BotWorldRouteWalker {
                 object5 = object;
                 if (n6 != ((BotWorldRouteChoice)object5).route) {
                     int n4;
-                    int n5 = GameUtil.b(n6.getStartPosition(), position);
-                    if (n5 < (n4 = GameUtil.b(n6.getEndPosition(), position))) {
+                    int n5 = GameUtil.getDistance(n6.getStartPosition(), position);
+                    if (n5 < (n4 = GameUtil.getDistance(n6.getEndPosition(), position))) {
                         if (n5 <= routeDistanceThreshold) {
                             arrayList.add(new BotWorldRouteChoice(n6, false));
                         }
@@ -88,7 +88,7 @@ public final class BotWorldRouteWalker {
                     object5 = object4;
                     Position position3 = ((BotWorldRouteChoice)object5).route.getStartPosition();
                 }
-                GameUtil.b((Position)var12_17, (Position)object2);
+                GameUtil.getDistance((Position)var12_17, (Position)object2);
             } else {
                 for (BotWorldRouteChoice botWorldRouteChoice : arrayList) {
                     int n8;
@@ -105,7 +105,7 @@ public final class BotWorldRouteWalker {
                         object5 = botWorldRouteChoice;
                         position4 = ((BotWorldRouteChoice)object5).route.getStartPosition();
                     }
-                    if ((n8 = GameUtil.b(position4, (Position)object2)) >= n) continue;
+                    if ((n8 = GameUtil.getDistance(position4, (Position)object2)) >= n) continue;
                     arrayList2.add(botWorldRouteChoice);
                 }
             }
@@ -118,7 +118,7 @@ public final class BotWorldRouteWalker {
                     object5 = botWorldRouteChoice;
                     position5 = ((BotWorldRouteChoice)object5).route.getStartPosition();
                 }
-                int n9 = GameUtil.b(position5, (Position)object2);
+                int n9 = GameUtil.getDistance(position5, (Position)object2);
                 double d3 = n - n9;
                 object5 = object;
                 double d4 = ((BotWorldRouteChoice)object5).route.getDistance();
@@ -150,7 +150,7 @@ public final class BotWorldRouteWalker {
         }
         Object object2 = player.currentBotTask;
         object2 = ((BotTaskDefinition)object2).getStartPosition();
-        int n2 = GameUtil.b(player.getPosition(), (Position)object2);
+        int n2 = GameUtil.getDistance(player.getPosition(), (Position)object2);
         if (n2 <= routeDistanceThreshold) {
             player.currentWorldRouteChoice = null;
             GameplayHelper.f(player);
@@ -163,8 +163,8 @@ public final class BotWorldRouteWalker {
         int n4 = 0;
         while (n4 < n3) {
             object = botWorldRouteArray[n4];
-            int n5 = GameUtil.b(((BotWorldRoute)((Object)object)).getStartPosition(), player.getPosition());
-            if (n5 < (n = GameUtil.b(((BotWorldRoute)((Object)object)).getEndPosition(), player.getPosition()))) {
+            int n5 = GameUtil.getDistance(((BotWorldRoute)((Object)object)).getStartPosition(), player.getPosition());
+            if (n5 < (n = GameUtil.getDistance(((BotWorldRoute)((Object)object)).getEndPosition(), player.getPosition()))) {
                 if (n5 <= routeDistanceThreshold) {
                     arrayList.add(new BotWorldRouteChoice((BotWorldRoute)((Object)object), false));
                 }
@@ -201,7 +201,7 @@ public final class BotWorldRouteWalker {
                 botWorldRouteChoice = botWorldRouteChoice2;
                 position = botWorldRouteChoice.route.getStartPosition();
             }
-            n4 = GameUtil.b(position, (Position)object2);
+            n4 = GameUtil.getDistance(position, (Position)object2);
         } else {
             for (BotWorldRouteChoice botWorldRouteChoice5 : arrayList) {
                 if (player.currentWorldRouteChoice != null) {
@@ -217,7 +217,7 @@ public final class BotWorldRouteWalker {
                     botWorldRouteChoice = botWorldRouteChoice5;
                     position = botWorldRouteChoice.route.getStartPosition();
                 }
-                if ((n = GameUtil.b(position, (Position)object2)) >= n2) continue;
+                if ((n = GameUtil.getDistance(position, (Position)object2)) >= n2) continue;
                 object.add(botWorldRouteChoice5);
             }
             double d = 0.0;
@@ -232,7 +232,7 @@ public final class BotWorldRouteWalker {
                     botWorldRouteChoice = botWorldRouteChoice7;
                     position = botWorldRouteChoice.route.getStartPosition();
                 }
-                int n7 = GameUtil.b(position, (Position)object2);
+                int n7 = GameUtil.getDistance(position, (Position)object2);
                 double d3 = n2 - n7;
                 botWorldRouteChoice = botWorldRouteChoice7;
                 double d4 = botWorldRouteChoice.route.getDistance();
@@ -290,13 +290,13 @@ public final class BotWorldRouteWalker {
             player.botTargetNpcId = botWorldRoute.getRouteNpcId();
         }
         object = player.currentBotRoute.waypoints[player.botPathWaypointIndex];
-        int n = GameUtil.b(player.getPosition(), (Position)object);
+        int n = GameUtil.getDistance(player.getPosition(), (Position)object);
         if (n > routeDistanceThreshold) {
             System.out.println("Detected possibly frozen bot: " + player.getUsername() + " at: " + player.getPosition() + ", trying to apply fix.");
             BotWorldRouteWalker.findWorldRoute(player);
             return;
         }
-        player.bk();
+        player.continueBotRoute();
     }
 
     private static void startWorldRoute(Player player, BotWorldRouteChoice botWorldRouteChoice) {
@@ -320,7 +320,7 @@ public final class BotWorldRouteWalker {
         if (botWorldRoute.getRouteNpcId() != -1) {
             player.botTargetNpcId = botWorldRoute.getRouteNpcId();
         }
-        player.bk();
+        player.continueBotRoute();
     }
 
     public static void advanceRouteSegment(Player player) {

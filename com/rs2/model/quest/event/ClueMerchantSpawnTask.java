@@ -23,15 +23,15 @@ extends TickTask {
     public final void execute() {
         int n = 0;
         while (n < this.a.a) {
-            int n2 = 2945 + GameUtil.h(350);
-            int n3 = 3145 + GameUtil.h(370);
+            int n2 = 2945 + GameUtil.randomInt(350);
+            int n3 = 3145 + GameUtil.randomInt(370);
             boolean bl = false;
             if (WalkingCollisionMap.getTileFlags(n2, n3, 0) != 0) {
                 bl = true;
             }
             while (bl) {
-                n2 = 2945 + GameUtil.h(350);
-                bl = WalkingCollisionMap.getTileFlags(n2, n3 = 3145 + GameUtil.h(370), 0) != 0;
+                n2 = 2945 + GameUtil.randomInt(350);
+                bl = WalkingCollisionMap.getTileFlags(n2, n3 = 3145 + GameUtil.randomInt(370), 0) != 0;
             }
             Npc npc = new Npc(3886);
             GameplayHelper.b(npc, n2, n3, 0, 1500);

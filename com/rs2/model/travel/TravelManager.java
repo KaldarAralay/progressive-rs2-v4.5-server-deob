@@ -51,7 +51,7 @@ public class TravelManager {
                             var4_6 = 0;
                             var3_9 = var3_8 /* !! */ .routeIndex;
                             var5_5 = var1_2.getNpcId();
-                            var1_3 = GameUtil.a(var1_2.getPosition().getX(), var1_2.getPosition().getY());
+                            var1_3 = GameUtil.getRegionId(var1_2.getPosition().getX(), var1_2.getPosition().getY());
                             if (var5_5 == 3810 || var1_3 == 11318) {
                                 var4_6 = 0;
                             } else if (var5_5 == 3811 || var1_3 == 9782) {
@@ -138,7 +138,7 @@ lbl74:
                     } else {
                         var3_13 = var0;
                         var3_13.packetSender.sendConfig(153, var1_3);
-                        var0.n(true);
+                        var0.setActionLocked(true);
                         CycleEventHandler.getInstance().schedule(var0, new GnomeGliderTravelTask(var0, var2_14), 3);
                         CycleEventHandler.getInstance().schedule(var0, new GnomeGliderLandingTask(var0), 4);
                     }
@@ -174,11 +174,11 @@ lbl74:
             }
             ((Player)object).getInventoryManager().removeItem(itemStack);
         }
-        if (shipRoute == ShipRoute.PORT_SARIM_TO_ENTRANA && ((Player)object).eB()) {
+        if (shipRoute == ShipRoute.PORT_SARIM_TO_ENTRANA && ((Player)object).hasRestrictedCombatEquipment()) {
             DialogueManager.continueDialogue((Player)object, 657, 4, 0);
             return false;
         }
-        ((Player)object).n(true);
+        ((Player)object).setActionLocked(true);
         Object object2 = ((Player)object).botEnabled || shipRoute.interfaceDestinationPosition == null ? shipRoute.destinationPosition.copy() : shipRoute.interfaceDestinationPosition.copy();
         ((Player)object).moveTo((Position)object2);
         if (shipRoute.ordinal() < 16) {

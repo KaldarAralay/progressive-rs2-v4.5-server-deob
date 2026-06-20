@@ -23,141 +23,141 @@ import com.rs2.util.GameUtil;
 import com.rs2.util.RectangularArea;
 
 public final class MiningManager {
-    private Player b;
-    private static int[] c = new int[]{6981, 6979, 6983};
-    private static int[] d = new int[]{6977, 6971, 6975, 6973};
-    private static int[] e = new int[]{1623, 1623, 1623, 1623, 1621, 1621, 1621, 1619, 1619, 1617};
-    private static int[] f = new int[]{1625, 1625, 1627, 1627, 1629};
-    RectangularArea a = new RectangularArea(2727, 9681, 2742, 9696, 0);
+    private Player player;
+    private static int[] graniteItemIds = new int[]{6981, 6979, 6983};
+    private static int[] sandstoneItemIds = new int[]{6977, 6971, 6975, 6973};
+    private static int[] commonGemItemIds = new int[]{1623, 1623, 1623, 1623, 1621, 1621, 1621, 1619, 1619, 1617};
+    private static int[] semipreciousGemItemIds = new int[]{1625, 1625, 1627, 1627, 1629};
+    RectangularArea perfectGoldOreArea = new RectangularArea(2727, 9681, 2742, 9696, 0);
 
     public MiningManager(Player player) {
-        this.b = player;
+        this.player = player;
     }
 
-    public final boolean a(int n) {
-        if (!MiningManager.c(n)) {
+    public final boolean canMineRock(int n) {
+        if (!MiningManager.isMineableRockObjectId(n)) {
             return false;
         }
         if (!ServerSettings.miningEnabled) {
-            Player player = this.b;
+            Player player = this.player;
             player.packetSender.sendGameMessage("This skill is currently disabled.");
             return false;
         }
-        if (this.b.getInventoryManager().getContainer().getFreeSlots() <= 0) {
-            Player player = this.b;
+        if (this.player.getInventoryManager().getContainer().getFreeSlots() <= 0) {
+            Player player = this.player;
             player.packetSender.sendSoundEffect(1878, 1, 0);
-            player = this.b;
+            player = this.player;
             player.packetSender.sendGameMessage("Not enough space in your inventory.");
-            if (this.b.getQuestState(0) != 1) {
-                this.b.getDialogueManager().showOneLineStatement("Not enough space in your inventory.");
-                this.b.setInteractionTargetId(0);
+            if (this.player.getQuestState(0) != 1) {
+                this.player.getDialogueManager().showOneLineStatement("Not enough space in your inventory.");
+                this.player.setInteractionTargetId(0);
             }
-            if (this.b.botEnabled) {
-                this.b.currentBotTask.startWalkToBank(this.b);
+            if (this.player.botEnabled) {
+                this.player.currentBotTask.startWalkToBank(this.player);
             }
             return false;
         }
-        if (ItemCombinationHandler.a(this.b, 14) == null) {
-            Player player = this.b;
+        if (ItemCombinationHandler.findUsableGatheringTool(this.player, 14) == null) {
+            Player player = this.player;
             player.packetSender.sendGameMessage("You do not have a pickaxe that you can use.");
-            if (this.b.getQuestState(0) != 1) {
-                this.b.getDialogueManager().showOneLineStatement("You do not have a pickaxe that you can use.");
-                this.b.setInteractionTargetId(0);
+            if (this.player.getQuestState(0) != 1) {
+                this.player.getDialogueManager().showOneLineStatement("You do not have a pickaxe that you can use.");
+                this.player.setInteractionTargetId(0);
             }
-            if (this.b.botEnabled) {
-                this.b.currentBotTask.startWalkToBank(this.b);
+            if (this.player.botEnabled) {
+                this.player.currentBotTask.startWalkToBank(this.player);
             }
             return false;
         }
-        return SkillActionHelper.checkSkillRequirement(this.b, 14, MineableRockDefinition.forObjectId(n) != null ? MineableRockDefinition.getRequiredLevel(MineableRockDefinition.forObjectId(n)) : 0, "mine here");
+        return SkillActionHelper.checkSkillRequirement(this.player, 14, MineableRockDefinition.forObjectId(n) != null ? MineableRockDefinition.getRequiredLevel(MineableRockDefinition.forObjectId(n)) : 0, "mine here");
     }
 
-    public final void a(int n, int n2, int n3) {
-        if (!SkillActionHelper.isObjectPresent(n, n2, n3, this.b.getPosition().getPlane())) {
-            if (this.b.botEnabled) {
-                this.b.interactWithBotObjectTargets(this.b.botInteractionTargetIds);
+    public final void startMining(int n, int n2, int n3) {
+        if (!SkillActionHelper.isObjectPresent(n, n2, n3, this.player.getPosition().getPlane())) {
+            if (this.player.botEnabled) {
+                this.player.interactWithBotObjectTargets(this.player.botInteractionTargetIds);
             }
             return;
         }
         ObjectManager.getInstance();
-        Object object = ObjectManager.findDynamicObjectAt(n2, n3, this.b.getPosition().getPlane());
-        if (MiningManager.e(n) == -1 && object != null) {
-            object = this.b;
+        Object object = ObjectManager.findDynamicObjectAt(n2, n3, this.player.getPosition().getPlane());
+        if (MiningManager.getRestoredRockObjectId(n) == -1 && object != null) {
+            object = this.player;
             ((Player)object).packetSender.sendGameMessage("There is currently no ores remaining in this rock.");
-            if (this.b.getQuestState(0) != 1) {
-                this.b.getDialogueManager().showOneLineStatement("There is currently no ores remaining in this rock.");
-                this.b.setInteractionTargetId(0);
+            if (this.player.getQuestState(0) != 1) {
+                this.player.getDialogueManager().showOneLineStatement("There is currently no ores remaining in this rock.");
+                this.player.setInteractionTargetId(0);
             }
-            object = this.b;
+            object = this.player;
             ((Player)object).packetSender.sendSoundEffect(429, 1, 0);
-            if (this.b.botEnabled) {
-                this.b.interactWithBotObjectTargets(this.b.botInteractionTargetIds);
+            if (this.player.botEnabled) {
+                this.player.interactWithBotObjectTargets(this.player.botInteractionTargetIds);
             }
             return;
         }
-        if (this.b.getInventoryManager().getContainer().getFreeSlots() <= 0) {
-            object = this.b;
+        if (this.player.getInventoryManager().getContainer().getFreeSlots() <= 0) {
+            object = this.player;
             ((Player)object).packetSender.sendGameMessage("Not enough space in your inventory.");
-            if (this.b.botEnabled) {
-                this.b.currentBotTask.startWalkToBank(this.b);
+            if (this.player.botEnabled) {
+                this.player.currentBotTask.startWalkToBank(this.player);
             }
             return;
         }
-        object = this.b;
+        object = this.player;
         ((Player)object).packetSender.sendGameMessage("You swing your pick at the rock.");
-        if (this.b.getQuestState(0) != 1) {
-            this.b.getDialogueManager().a("Please wait.", "", "Your character is now attempting to mine the rock.", "This should only take a few seconds.", "", true);
+        if (this.player.getQuestState(0) != 1) {
+            this.player.getDialogueManager().a("Please wait.", "", "Your character is now attempting to mine the rock.", "This should only take a few seconds.", "", true);
         }
-        int n4 = this.b.nextActionSequence();
+        int n4 = this.player.nextActionSequence();
         MineableRockDefinition mineableRockDefinition = MineableRockDefinition.forObjectId(n);
         if (mineableRockDefinition == null) {
             return;
         }
-        GatheringToolDefinition gatheringToolDefinition = ItemCombinationHandler.a(this.b, 14);
+        GatheringToolDefinition gatheringToolDefinition = ItemCombinationHandler.findUsableGatheringTool(this.player, 14);
         if (gatheringToolDefinition == null) {
-            Player player = this.b;
+            Player player = this.player;
             player.packetSender.sendGameMessage("You do not have a pickaxe that you can use.");
-            if (this.b.botEnabled) {
-                this.b.currentBotTask.startWalkToBank(this.b);
+            if (this.player.botEnabled) {
+                this.player.currentBotTask.startWalkToBank(this.player);
             }
             return;
         }
         int n5 = MineableRockDefinition.getOreItemId(mineableRockDefinition);
         int n6 = MineableRockDefinition.getMineChanceLow(mineableRockDefinition);
         int n7 = MineableRockDefinition.getMineChanceHigh(mineableRockDefinition);
-        int n8 = (int)gatheringToolDefinition.f();
+        int n8 = (int)gatheringToolDefinition.getToolSpeed();
         double d = MineableRockDefinition.getDepletionChance(mineableRockDefinition);
         if (n5 == 0) {
-            Player player = this.b;
+            Player player = this.player;
             player.packetSender.sendGameMessage("There is currently no ores remaining in this rock.");
-            player = this.b;
+            player = this.player;
             player.packetSender.sendSoundEffect(429, 1, 0);
-            if (this.b.botEnabled) {
-                this.b.interactWithBotObjectTargets(this.b.botInteractionTargetIds);
+            if (this.player.botEnabled) {
+                this.player.interactWithBotObjectTargets(this.player.botInteractionTargetIds);
             }
             return;
         }
         int n9 = MineableRockDefinition.getBaseExperience(mineableRockDefinition);
         int n10 = MineableRockDefinition.getRespawnTicks(mineableRockDefinition);
         MineableRockDefinition.getRequiredLevel(mineableRockDefinition);
-        this.b.aN();
-        this.b.getUpdateState().setAnimation(gatheringToolDefinition.d());
-        this.b.gatheringHazardCounter = 0;
-        if (ServerSettings.randomEventsMode == 0 && GameUtil.h(800) == 0 && this.b.getQuestState(0) == 1 && !this.b.botEnabled && !this.b.r()) {
-            int n11 = MiningManager.a(n, new Position(n2, n3, this.b.getPosition().getPlane()));
+        this.player.resetAnimation();
+        this.player.getUpdateState().setAnimation(gatheringToolDefinition.getGatherAnimationId());
+        this.player.gatheringHazardCounter = 0;
+        if (ServerSettings.randomEventsMode == 0 && GameUtil.randomInt(800) == 0 && this.player.getQuestState(0) == 1 && !this.player.botEnabled && !this.player.r()) {
+            int n11 = MiningManager.getRandomEventRockObjectId(n, new Position(n2, n3, this.player.getPosition().getPlane()));
             ObjectManager.getInstance();
-            DynamicObject dynamicObject = ObjectManager.findDynamicObjectAt(n2, n3, this.b.getPosition().getPlane());
+            DynamicObject dynamicObject = ObjectManager.findDynamicObjectAt(n2, n3, this.player.getPosition().getPlane());
             if (dynamicObject == null && n11 != -1) {
-                n11 = SkillActionHelper.getObjectOrientation(n, n2, n3, this.b.getPosition().getPlane());
-                int n12 = SkillActionHelper.getObjectType(n, n2, n3, this.b.getPosition().getPlane());
-                ObjectManager.getInstance().addDynamicObject(new DynamicObject(MiningManager.a(n, new Position(n2, n3, this.b.getPosition().getPlane())), n2, n3, this.b.getPosition().getPlane(), n11, n12, n, 15), true);
+                n11 = SkillActionHelper.getObjectOrientation(n, n2, n3, this.player.getPosition().getPlane());
+                int n12 = SkillActionHelper.getObjectType(n, n2, n3, this.player.getPosition().getPlane());
+                ObjectManager.getInstance().addDynamicObject(new DynamicObject(MiningManager.getRandomEventRockObjectId(n, new Position(n2, n3, this.player.getPosition().getPlane())), n2, n3, this.player.getPosition().getPlane(), n11, n12, n, 15), true);
             }
         }
-        this.b.setActiveCycleEvent(new MiningTask(this, n4, n, n2, n3, gatheringToolDefinition, n6, n7, n5, n9, d, n10));
-        CycleEventHandler.getInstance().schedule(this.b, this.b.getActiveCycleEvent(), n8);
+        this.player.setActiveCycleEvent(new MiningTask(this, n4, n, n2, n3, gatheringToolDefinition, n6, n7, n5, n9, d, n10));
+        CycleEventHandler.getInstance().schedule(this.player, this.player.getActiveCycleEvent(), n8);
     }
 
-    public static int b(int n) {
+    public static int rotateDepletedRockOrientation(int n) {
         switch (n) {
             case 1: {
                 return 2;
@@ -175,41 +175,41 @@ public final class MiningManager {
         return n;
     }
 
-    public static int a(int n, int n2) {
+    public static int rollMinedItemId(int n, int n2) {
         switch (n) {
             case 0: {
-                return e[GameUtil.f(10)];
+                return commonGemItemIds[GameUtil.randomExclusive(10)];
             }
             case 2111: {
-                if (GameUtil.g(2) == 0) {
-                    return e[GameUtil.f(10)];
+                if (GameUtil.randomInclusive(2) == 0) {
+                    return commonGemItemIds[GameUtil.randomExclusive(10)];
                 }
-                return f[GameUtil.f(5)];
+                return semipreciousGemItemIds[GameUtil.randomExclusive(5)];
             }
             case 10947: {
-                return c[GameUtil.g(2)];
+                return graniteItemIds[GameUtil.randomInclusive(2)];
             }
             case 10946: {
-                return d[GameUtil.g(3)];
+                return sandstoneItemIds[GameUtil.randomInclusive(3)];
             }
         }
         return n2;
     }
 
-    public static boolean c(int n) {
+    public static boolean isMineableRockObjectId(int n) {
         return MineableRockDefinition.forObjectId(n) != null;
     }
 
-    public final boolean d(int n) {
+    public final boolean prospectRock(int n) {
         Object object = new int[]{10587, 10585, 10586, 14832, 14833, 14834, 10944, 10945, 9723, 9724, 9725, 11555, 11552, 11553, 11554, 11557, 11556, 450, 451, 452};
         int[] nArray = object;
         int n2 = 0;
         while (n2 < 20) {
             int n3 = nArray[n2];
             if (n == n3) {
-                Player player = this.b;
+                Player player = this.player;
                 player.packetSender.sendGameMessage("There is currently no ores remaining in this rock.");
-                player = this.b;
+                player = this.player;
                 player.packetSender.sendSoundEffect(429, 1, 0);
                 return true;
             }
@@ -220,20 +220,20 @@ public final class MiningManager {
         if (mineableRockDefinition == null) {
             return false;
         }
-        if (this.b.getQuestState(0) != 1) {
-            this.b.getDialogueManager().a("Please wait.", "", "Your character is now attempting to prospect the rock. This", "should only take a few seconds.", "", true);
+        if (this.player.getQuestState(0) != 1) {
+            this.player.getDialogueManager().a("Please wait.", "", "Your character is now attempting to prospect the rock. This", "should only take a few seconds.", "", true);
         }
-        Player player = this.b;
+        Player player = this.player;
         player.packetSender.sendGameMessage("You examine the rock for ores...");
-        this.b.n(true);
-        int n4 = MiningManager.a(n, MineableRockDefinition.getOreItemId((MineableRockDefinition)((Object)object)));
+        this.player.setActionLocked(true);
+        int n4 = MiningManager.rollMinedItemId(n, MineableRockDefinition.getOreItemId((MineableRockDefinition)((Object)object)));
         ItemService.getInstance();
         object = ItemService.getItemName(n4).toLowerCase().replaceAll("ore", "").trim();
-        CycleEventHandler.getInstance().schedule(this.b, new ProspectingTask(this, n, (String)object), 5);
+        CycleEventHandler.getInstance().schedule(this.player, new ProspectingTask(this, n, (String)object), 5);
         return true;
     }
 
-    public static int a(int n, Position position) {
+    public static int getRandomEventRockObjectId(int n, Position position) {
         LoadedWorldObject loadedWorldObject = WorldObjectLookup.findObjectByIdAt(n, position.getX(), position.getY(), position.getPlane());
         if (loadedWorldObject.getWorldObject().getObjectId() >= 2090 && loadedWorldObject.getWorldObject().getObjectId() <= 2111) {
             return loadedWorldObject.getWorldObject().getObjectId() + 29;
@@ -253,7 +253,7 @@ public final class MiningManager {
         return -1;
     }
 
-    public static int e(int n) {
+    public static int getRestoredRockObjectId(int n) {
         if (n >= 2119 && n <= 2140) {
             return n - 29;
         }
@@ -290,11 +290,11 @@ public final class MiningManager {
         return -1;
     }
 
-    static /* synthetic */ Player a(MiningManager miningManager) {
-        return miningManager.b;
+    static /* synthetic */ Player getPlayer(MiningManager miningManager) {
+        return miningManager.player;
     }
 
-    static /* synthetic */ double b(int n, int n2) {
+    static /* synthetic */ double getExperienceForMinedItem(int n, int n2) {
         switch (n) {
             case 6979: {
                 return 50.0;
@@ -325,7 +325,7 @@ public final class MiningManager {
      * Enabled force condition propagation
      * Lifted jumps to return sites
      */
-    static /* synthetic */ int f(int n) {
+    static /* synthetic */ int getDepletedRockObjectId(int n) {
         int[] nArray = new int[]{9708, 9711, 9714, 9717, 9720};
         int[] nArray2 = new int[]{9709, 9712, 9715, 9718, 9721};
         int[] nArray3 = new int[]{9710, 9713, 9716, 9719, 9722};

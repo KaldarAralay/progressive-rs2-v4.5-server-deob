@@ -13,7 +13,7 @@ extends DuelRule {
     }
 
     @Override
-    public final void a(Player player, boolean bl) {
+    public final void toggleForPlayer(Player player, boolean bl) {
         boolean bl2 = bl;
         Player player2 = player;
         boolean bl3 = false;
@@ -30,13 +30,13 @@ extends DuelRule {
             player2.packetSender.sendGameMessage("Neither player has a 'fun weapon' for that.");
         }
         if (bl3) {
-            player.getDuelInterfaceManager().a(this.w, "'Fun weapons' will be allowed.");
+            player.getDuelInterfaceManager().toggleRule(this.ruleIndex, "'Fun weapons' will be allowed.");
         }
     }
 
     @Override
-    public final boolean a(Player player) {
-        return player.getDuelSession().k()[this.w];
+    public final boolean isEnabledFor(Player player) {
+        return player.getDuelSession().getEnabledRules()[this.ruleIndex];
     }
 }
 

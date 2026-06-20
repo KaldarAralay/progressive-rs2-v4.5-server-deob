@@ -38,7 +38,7 @@ extends TickTask {
         Position position2 = new Position(3111, 3366, 2);
         Object object2 = this.b;
         object = ((PouletmorphMachineStartTask)object).a;
-        int n2 = ErnestTheChickenQuest.a(position2, position);
+        int n2 = ErnestTheChickenQuest.a((Position)position2, (Position)position);
         new WoodcuttingHandler(position2, 0, position, 0, new ProjectileDefinition(605, ProjectileTiming.d)).a();
         object2 = new ErnestHumanDialogueTask((ErnestTheChickenQuest)object, n2, (Player)object2);
         World.getTaskScheduler().schedule((TickTask)object2);

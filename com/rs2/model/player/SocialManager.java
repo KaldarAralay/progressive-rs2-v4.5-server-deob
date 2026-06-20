@@ -35,17 +35,17 @@ public final class SocialManager {
                     v0 = var5_8.packetSender;
                     v1 = var10_13 = this.player.getFriendsList()[var2_2];
                     var3_4 = this;
-                    var7_11 = World.f();
+                    var7_11 = World.getPlayers();
                     var6_10 = var7_11.length;
                     var5_7 = 0;
                     while (var5_7 < var6_10) {
                         block11: {
                             var4_5 = var7_11[var5_7];
-                            if (var4_5 == null || var4_5.dS() == var3_4.player.dS() || var4_5.dS() != var10_13) break block11;
+                            if (var4_5 == null || var4_5.getNameHash() == var3_4.player.getNameHash() || var4_5.getNameHash() != var10_13) break block11;
                             if (var4_5.getPrivateChatMode() == 0) ** GOTO lbl-1000
                             if (var4_5.getPrivateChatMode() == 1) {
                                 var4_5.getSocialManager();
-                                ** if (!SocialManager.containsNameHash((long[])var4_5.getFriendsList(), (long)var3_4.player.dS())) goto lbl-1000
+                                ** if (!SocialManager.containsNameHash((long[])var4_5.getFriendsList(), (long)var3_4.player.getNameHash())) goto lbl-1000
                             }
                             ** GOTO lbl-1000
 lbl-1000:
@@ -71,8 +71,8 @@ lbl-1000:
             }
             ++var2_2;
         }
-        var2_3 = this.player.dS();
-        var8_14 = World.f();
+        var2_3 = this.player.getNameHash();
+        var8_14 = World.getPlayers();
         var7_12 = var8_14.length;
         var6_10 = 0;
         while (var6_10 < var7_12) {
@@ -84,7 +84,7 @@ lbl-1000:
                 if (var1_1 || this.player.getPrivateChatMode() == 2) ** GOTO lbl-1000
                 if (this.player.getPrivateChatMode() == 1) {
                     this.player.getSocialManager();
-                    ** if (SocialManager.containsNameHash((long[])this.player.getFriendsList(), (long)var5_9.dS())) goto lbl-1000
+                    ** if (SocialManager.containsNameHash((long[])this.player.getFriendsList(), (long)var5_9.getNameHash())) goto lbl-1000
                 }
                 ** GOTO lbl-1000
 lbl-1000:
@@ -141,15 +141,15 @@ lbl53:
     }
 
     public final void sendPrivateMessage(Player player, long l, byte[] byArray, int n) {
-        Player[] playerArray = World.f();
+        Player[] playerArray = World.getPlayers();
         int n2 = playerArray.length;
         int n3 = 0;
         while (n3 < n2) {
             Player player2 = playerArray[n3];
-            if (player2 != null && player2.dS() == l) {
+            if (player2 != null && player2.getNameHash() == l) {
                 boolean bl;
                 block5: {
-                    long l2 = this.player.dS();
+                    long l2 = this.player.getNameHash();
                     SocialManager socialManager = player2.getSocialManager();
                     long[] lArray = socialManager.player.getIgnoreList();
                     int n4 = lArray.length;
@@ -167,7 +167,7 @@ lbl53:
                 if (!bl) {
                     int n6 = player.getPlayerRights();
                     int n7 = player.gameMode;
-                    player2.packetSender.sendPrivateMessage(player.dS(), n6, 0, n7, byArray, n);
+                    player2.packetSender.sendPrivateMessage(player.getNameHash(), n6, 0, n7, byArray, n);
                     ChatTextCodec.decode(byArray, n);
                     return;
                 }

@@ -24,11 +24,11 @@ extends TickTask {
         Npc npc;
         if (this.a.getInteractionTarget() != null && this.a.getInteractionTarget().isNpc() && (npc = (Npc)this.a.getInteractionTarget()).getNpcId() == 671) {
             npc.setActive(false);
-            World.b(npc);
+            World.unregisterNpc(npc);
         }
         npc = new Npc(677);
         GameplayHelper.b(this.a, npc, 2484, 9864, 0, -1, true, false);
-        this.a.n(false);
+        this.a.setActionLocked(false);
         this.stop();
     }
 }

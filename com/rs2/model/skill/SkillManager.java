@@ -7,8 +7,8 @@ import com.rs2.ServerSettings;
 import com.rs2.bot.BotTaskPlanner;
 import com.rs2.model.World;
 import com.rs2.model.player.Player;
-import com.rs2.model.skill.RunEnergyRestoreTask;
 import com.rs2.model.skill.SkillLevelRestoreTask;
+import com.rs2.model.skill.SpecialEnergyRestoreTask;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 import java.math.RoundingMode;
@@ -16,17 +16,17 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 public final class SkillManager {
-    private Player c;
-    private int[] d = new int[22];
-    private double[] e = new double[22];
-    private TickTask[] f = new TickTask[22];
-    private int[] g = new int[22];
-    private TickTask h;
-    private static final int[] i = new int[ServerSettings.maxLevel + 1];
-    public static final String[] a;
-    private long j = -10000L;
-    private long k = -10000L;
-    public static int b;
+    private Player player;
+    private int[] currentLevels = new int[22];
+    private double[] experience = new double[22];
+    private TickTask[] levelRestoreTasks = new TickTask[22];
+    private int[] restoreDelayTicks = new int[22];
+    private TickTask specialEnergyRestoreTask;
+    private static final int[] experienceForLevel = new int[ServerSettings.maxLevel + 1];
+    public static final String[] SKILL_NAMES;
+    private long actionDelayExpiresAtMillis = -10000L;
+    private long drinkDelayExpiresAtMillis = -10000L;
+    public static int maxCombatLevel;
 
     static {
         int n = 0;
@@ -34,11 +34,11 @@ public final class SkillManager {
         while (n2 <= ServerSettings.maxLevel) {
             int n3;
             n = (int)((double)n + Math.floor((double)n2 + 300.0 * Math.pow(2.0, (double)n2 / 7.0)));
-            SkillManager.i[n2] = n3 = (int)Math.floor(n / 4);
+            SkillManager.experienceForLevel[n2] = n3 = (int)Math.floor(n / 4);
             ++n2;
         }
-        a = new String[]{"Attack", "Defence", "Strength", "Hitpoints", "Ranged", "Prayer", "Magic", "Cooking", "Woodcutting", "Fletching", "Fishing", "Firemaking", "Crafting", "Smithing", "Mining", "Herblore", "Agility", "Thieving", "Slayer", "Farming", "Runecrafting"};
-        b = 126;
+        SKILL_NAMES = new String[]{"Attack", "Defence", "Strength", "Hitpoints", "Ranged", "Prayer", "Magic", "Cooking", "Woodcutting", "Fletching", "Fishing", "Firemaking", "Crafting", "Smithing", "Mining", "Herblore", "Agility", "Thieving", "Slayer", "Farming", "Runecrafting"};
+        maxCombatLevel = 126;
     }
 
     private double getExperienceCap() {
@@ -121,15 +121,15 @@ public final class SkillManager {
         nArray17[0] = 20;
         nArray17[1] = 4267;
         nArrayArray[20] = nArray17;
-        this.c = player;
+        this.player = player;
         int n = 0;
-        while (n < this.d.length) {
+        while (n < this.currentLevels.length) {
             if (n == 3) {
-                this.d[n] = 10;
-                this.e[n] = 1154.0;
+                this.currentLevels[n] = 10;
+                this.experience[n] = 1154.0;
             } else {
-                this.d[n] = 1;
-                this.e[n] = 0.0;
+                this.currentLevels[n] = 1;
+                this.experience[n] = 0.0;
             }
             this.setSkillRestoreDelay(n, 100);
             ++n;
@@ -143,17 +143,17 @@ public final class SkillManager {
             if (n != 5) {
                 int n2 = n;
                 SkillManager skillManager = this;
-                object = skillManager.f[n2];
+                object = skillManager.levelRestoreTasks[n2];
                 SkillManager skillManager2 = skillManager;
-                if (skillManager.d[n2] != SkillManager.getLevelForExperience(skillManager2.e[n2])) {
-                    if (skillManager.f[n2] == null || !skillManager.f[n2].isActive()) {
-                        int n3 = skillManager.g[n2];
-                        skillManager.f[n2] = new SkillLevelRestoreTask(skillManager, n3, n2);
-                        World.getTaskScheduler().schedule(skillManager.f[n2]);
+                if (skillManager.currentLevels[n2] != SkillManager.getLevelForExperience(skillManager2.experience[n2])) {
+                    if (skillManager.levelRestoreTasks[n2] == null || !skillManager.levelRestoreTasks[n2].isActive()) {
+                        int n3 = skillManager.restoreDelayTicks[n2];
+                        skillManager.levelRestoreTasks[n2] = new SkillLevelRestoreTask(skillManager, n3, n2);
+                        World.getTaskScheduler().schedule(skillManager.levelRestoreTasks[n2]);
                     }
                 } else if (object != null) {
                     ((TickTask)object).stop();
-                    int n4 = skillManager.g[n2];
+                    int n4 = skillManager.restoreDelayTicks[n2];
                     ((TickTask)object).setIntervalTicks(n4);
                     ((TickTask)object).setRemainingTicks(n4);
                 }
@@ -161,12 +161,12 @@ public final class SkillManager {
             ++n;
         }
         SkillManager skillManager = this;
-        TickTask tickTask = skillManager.h;
-        if (skillManager.c.getSpecialEnergy() < 100) {
+        TickTask tickTask = skillManager.specialEnergyRestoreTask;
+        if (skillManager.player.getSpecialEnergy() < 100) {
             object = skillManager;
-            if (((SkillManager)object).h == null || !((SkillManager)object).h.isActive()) {
-                ((SkillManager)object).h = new RunEnergyRestoreTask((SkillManager)object, 50);
-                World.getTaskScheduler().schedule(((SkillManager)object).h);
+            if (((SkillManager)object).specialEnergyRestoreTask == null || !((SkillManager)object).specialEnergyRestoreTask.isActive()) {
+                ((SkillManager)object).specialEnergyRestoreTask = new SpecialEnergyRestoreTask((SkillManager)object, 50);
+                World.getTaskScheduler().schedule(((SkillManager)object).specialEnergyRestoreTask);
             }
             return;
         }
@@ -186,14 +186,14 @@ public final class SkillManager {
         while (n < 22) {
             if (n != 3 && n != 5) {
                 SkillManager skillManager = this;
-                if (this.d[n] != SkillManager.getLevelForExperience(skillManager.e[n])) {
+                if (this.currentLevels[n] != SkillManager.getLevelForExperience(skillManager.experience[n])) {
                     skillManager = this;
-                    if (this.d[n] > SkillManager.getLevelForExperience(skillManager.e[n])) {
+                    if (this.currentLevels[n] > SkillManager.getLevelForExperience(skillManager.experience[n])) {
                         int n2 = n;
-                        this.d[n2] = this.d[n2] - 1;
+                        this.currentLevels[n2] = this.currentLevels[n2] - 1;
                     } else {
                         int n3 = n;
-                        this.d[n3] = this.d[n3] + 1;
+                        this.currentLevels[n3] = this.currentLevels[n3] + 1;
                     }
                     this.refreshSkill(n);
                 }
@@ -203,8 +203,8 @@ public final class SkillManager {
     }
 
     private void setSkillRestoreDelay(int n, int n2) {
-        this.g[n] = n2;
-        TickTask tickTask = this.f[n];
+        this.restoreDelayTicks[n] = n2;
+        TickTask tickTask = this.levelRestoreTasks[n];
         if (tickTask != null) {
             tickTask.setIntervalTicks(n2);
             tickTask.setRemainingTicks(n2);
@@ -213,11 +213,11 @@ public final class SkillManager {
 
     public final boolean isLevelModified(int n) {
         SkillManager skillManager = this;
-        return this.d[n] != SkillManager.getLevelForExperience(skillManager.e[n]);
+        return this.currentLevels[n] != SkillManager.getLevelForExperience(skillManager.experience[n]);
     }
 
-    public final boolean isRunEnergyBelowMaximum() {
-        return this.c.getSpecialEnergy() < 100;
+    public final boolean isSpecialEnergyBelowMaximum() {
+        return this.player.getSpecialEnergy() < 100;
     }
 
     public final void d() {
@@ -226,30 +226,30 @@ public final class SkillManager {
 
     public final void refreshAllSkills() {
         int n = 0;
-        while (n < this.d.length) {
-            Player player = this.c;
-            player.packetSender.sendSkillUpdate(n, this.d[n], this.e[n]);
+        while (n < this.currentLevels.length) {
+            Player player = this.player;
+            player.packetSender.sendSkillUpdate(n, this.currentLevels[n], this.experience[n]);
             ++n;
         }
-        this.c.setCombatLevel(this.getCombatLevel());
-        this.c.f(true);
+        this.player.setCombatLevel(this.getCombatLevel());
+        this.player.setAppearanceUpdateRequired(true);
     }
 
     public final void refreshSkill(int n) {
-        Player player = this.c;
-        player.packetSender.sendSkillUpdate(n, this.d[n], this.e[n]);
-        this.c.setCombatLevel(this.getCombatLevel());
-        this.c.f(true);
+        Player player = this.player;
+        player.packetSender.sendSkillUpdate(n, this.currentLevels[n], this.experience[n]);
+        this.player.setCombatLevel(this.getCombatLevel());
+        this.player.setAppearanceUpdateRequired(true);
     }
 
     public final int getBaseLevel(int n) {
-        return SkillManager.getLevelForExperience(this.e[n]);
+        return SkillManager.getLevelForExperience(this.experience[n]);
     }
 
     public static int getLevelForExperience(double d) {
         int n = 1;
         while (n <= ServerSettings.maxLevel) {
-            if ((double)i[n] > d) {
+            if ((double)experienceForLevel[n] > d) {
                 return n;
             }
             ++n;
@@ -258,10 +258,10 @@ public final class SkillManager {
     }
 
     public static int getExperienceForLevel(int n) {
-        if (n >= i.length) {
+        if (n >= experienceForLevel.length) {
             return Integer.MAX_VALUE;
         }
-        return i[n];
+        return experienceForLevel[n];
     }
 
     /*
@@ -287,7 +287,7 @@ public final class SkillManager {
         int n = 0;
         while (n < 21) {
             SkillManager skillManager = this;
-            l = (long)((double)l + skillManager.e[n]);
+            l = (long)((double)l + skillManager.experience[n]);
             ++n;
         }
         return l;
@@ -295,12 +295,12 @@ public final class SkillManager {
 
     public final int calculateExperienceGain(int n, double d) {
         d = ServerSettings.progressiveXpMode == 0 ? (d *= ServerSettings.xpRate) : (d *= this.getExperienceRateForSkill(n));
-        if (this.c.de && ServerSettings.botXpRateMode == 1) {
+        if (this.player.isBot && ServerSettings.botXpRateMode == 1) {
             d *= ServerSettings.botXpRateMultiplier;
-        } else if ((this.c.de || this.c.botEnabled) && ServerSettings.botXpRateMode == 2) {
+        } else if ((this.player.isBot || this.player.botEnabled) && ServerSettings.botXpRateMode == 2) {
             d *= ServerSettings.botXpRateMultiplier;
         }
-        if (this.c.getEnchantmentChamberController().c() || this.c.getAlchemistPlaygroundController().b() || this.c.getCreatureGraveyardController().a() || this.c.getTelekineticTheatreController().g()) {
+        if (this.player.getEnchantmentChamberController().isInsideChamber() || this.player.getAlchemistPlaygroundController().isInsidePlayground() || this.player.getCreatureGraveyardController().isInsideGraveyard() || this.player.getTelekineticTheatreController().isInsideTheatre()) {
             d *= 0.75;
         }
         n = (int)d;
@@ -309,7 +309,7 @@ public final class SkillManager {
 
     private double getExperienceRateForSkill(int n) {
         double d = 1.0;
-        n = SkillManager.getLevelForExperience(this.e[n]);
+        n = SkillManager.getLevelForExperience(this.experience[n]);
         if (ServerSettings.progressiveXpMode == 1) {
             double d2 = Math.pow(1.02, n);
             double d3 = Math.pow(n, 2.0);
@@ -331,9 +331,9 @@ public final class SkillManager {
         } else if (ServerSettings.progressiveXpMode == 2) {
             d = 1.0 + (double)(n - 1) * (0.1 * ServerSettings.xpRate);
         }
-        if (this.c.de && ServerSettings.botXpRateMode == 1) {
+        if (this.player.isBot && ServerSettings.botXpRateMode == 1) {
             d *= ServerSettings.botXpRateMultiplier;
-        } else if ((this.c.de || this.c.botEnabled) && ServerSettings.botXpRateMode == 2) {
+        } else if ((this.player.isBot || this.player.botEnabled) && ServerSettings.botXpRateMode == 2) {
             d *= ServerSettings.botXpRateMultiplier;
         }
         return d;
@@ -342,52 +342,52 @@ public final class SkillManager {
     public final boolean addExperience(int n, double d) {
         int n2;
         int n3;
-        int n4 = SkillManager.getLevelForExperience(this.e[n]);
-        if (n4 >= 3 && this.c.getQuestState(0) != 1) {
+        int n4 = SkillManager.getLevelForExperience(this.experience[n]);
+        if (n4 >= 3 && this.player.getQuestState(0) != 1) {
             return false;
         }
         if (d <= 0.0) {
             return false;
         }
         boolean bl = false;
-        boolean bl2 = this.c.isMember();
-        this.c.N = n4;
+        boolean bl2 = this.player.isMember();
+        this.player.N = n4;
         d = ServerSettings.progressiveXpMode == 0 ? (d *= ServerSettings.xpRate) : (d *= this.getExperienceRateForSkill(n));
-        if (this.c.de && ServerSettings.botXpRateMode == 1) {
+        if (this.player.isBot && ServerSettings.botXpRateMode == 1) {
             d *= ServerSettings.botXpRateMultiplier;
-        } else if ((this.c.de || this.c.botEnabled) && ServerSettings.botXpRateMode == 2) {
+        } else if ((this.player.isBot || this.player.botEnabled) && ServerSettings.botXpRateMode == 2) {
             d *= ServerSettings.botXpRateMultiplier;
         }
-        if (this.c.getEnchantmentChamberController().c() || this.c.getAlchemistPlaygroundController().b() || this.c.getCreatureGraveyardController().a() || this.c.getTelekineticTheatreController().g()) {
+        if (this.player.getEnchantmentChamberController().isInsideChamber() || this.player.getAlchemistPlaygroundController().isInsidePlayground() || this.player.getCreatureGraveyardController().isInsideGraveyard() || this.player.getTelekineticTheatreController().isInsideTheatre()) {
             int n5 = n;
-            this.e[n5] = this.e[n5] + d * 0.75;
+            this.experience[n5] = this.experience[n5] + d * 0.75;
         } else {
             int n6 = n;
-            this.e[n6] = this.e[n6] + d;
+            this.experience[n6] = this.experience[n6] + d;
         }
-        if (this.e[n] > this.getExperienceCap()) {
-            this.e[n] = this.getExperienceCap();
+        if (this.experience[n] > this.getExperienceCap()) {
+            this.experience[n] = this.getExperienceCap();
         }
-        if ((n3 = (n2 = SkillManager.getLevelForExperience(this.e[n])) - n4) > 0) {
+        if ((n3 = (n2 = SkillManager.getLevelForExperience(this.experience[n])) - n4) > 0) {
             bl = true;
             int n7 = n;
-            this.d[n7] = this.d[n7] + n3;
+            this.currentLevels[n7] = this.currentLevels[n7] + n3;
             if (n > 0 && n <= 6) {
-                this.c.setCombatLevel(this.getCombatLevel());
+                this.player.setCombatLevel(this.getCombatLevel());
             }
             this.showLevelUpInterface(n);
-            if (this.c.botEnabled) {
-                if (GameUtil.h(5) == 0 && (n2 % 2 == 0 || n2 % 5 == 0)) {
-                    this.c.queuePublicChatMessage("Yay " + n2 + " " + a[n] + "!");
+            if (this.player.botEnabled) {
+                if (GameUtil.randomInt(5) == 0 && (n2 % 2 == 0 || n2 % 5 == 0)) {
+                    this.player.queuePublicChatMessage("Yay " + n2 + " " + SKILL_NAMES[n] + "!");
                 }
-                if (this.c.currentBotTask != null && this.c.currentBotTask.combatTask && n2 % 5 == 0) {
-                    BotTaskPlanner.k(this.c);
+                if (this.player.currentBotTask != null && this.player.currentBotTask.combatTask && n2 % 5 == 0) {
+                    BotTaskPlanner.selectMeleeTrainingFightMode(this.player);
                 }
             }
         }
         this.refreshSkill(n);
-        if (ServerSettings.membershipRequirementMode == 2 && !bl2 && this.c.isMember()) {
-            this.c.packetSender.sendGameMessage("You have reached " + ServerSettings.membershipRequirementValue + "+ total lvl and gained access to members content!");
+        if (ServerSettings.membershipRequirementMode == 2 && !bl2 && this.player.isMember()) {
+            this.player.packetSender.sendGameMessage("You have reached " + ServerSettings.membershipRequirementValue + "+ total lvl and gained access to members content!");
         }
         return bl;
     }
@@ -397,19 +397,19 @@ public final class SkillManager {
         if (d <= 0.0) {
             return;
         }
-        this.c.isMember();
-        this.c.N = n2 = SkillManager.getLevelForExperience(this.e[n]);
+        this.player.isMember();
+        this.player.N = n2 = SkillManager.getLevelForExperience(this.experience[n]);
         int n3 = n;
-        this.e[n3] = this.e[n3] + (d *= ServerSettings.questXpRate);
-        if (this.e[n] > this.getExperienceCap()) {
-            this.e[n] = this.getExperienceCap();
+        this.experience[n3] = this.experience[n3] + (d *= ServerSettings.questXpRate);
+        if (this.experience[n] > this.getExperienceCap()) {
+            this.experience[n] = this.getExperienceCap();
         }
-        int n4 = SkillManager.getLevelForExperience(this.e[n]);
+        int n4 = SkillManager.getLevelForExperience(this.experience[n]);
         if ((n4 -= n2) > 0) {
             int n5 = n;
-            this.d[n5] = this.d[n5] + n4;
+            this.currentLevels[n5] = this.currentLevels[n5] + n4;
             if (n > 0 && n <= 6) {
-                this.c.setCombatLevel(this.getCombatLevel());
+                this.player.setCombatLevel(this.getCombatLevel());
             }
             this.showLevelUpInterface(n);
         }
@@ -418,9 +418,9 @@ public final class SkillManager {
 
     public final void showLevelUpInterface(int n) {
         Object object;
-        if (this.c.j) {
-            if (!this.c.k.contains(n)) {
-                this.c.k.add(n);
+        if (this.player.j) {
+            if (!this.player.k.contains(n)) {
+                this.player.k.add(n);
             }
             return;
         }
@@ -458,16 +458,16 @@ public final class SkillManager {
         nArrayArray[22] = new int[]{22, 19567, 19568, 19566, 656, 657, 256, 256};
         int[][] nArrayArray2 = nArrayArray;
         if (n == nArrayArray2[n][0]) {
-            this.c.i = n;
-            Player player = this.c;
-            player.packetSender.sendInterfaceText("@dbl@Congratulations, you just advanced a " + a[n] + " level!", nArrayArray2[n][1]);
-            player = this.c;
-            player.packetSender.sendInterfaceText("Your " + a[n] + " level is now " + this.getBaseLevel(n) + ".", nArrayArray2[n][2]);
-            player = this.c;
-            player.packetSender.sendGameMessage("You've just advanced a " + a[n] + " level! You have reached level " + this.getBaseLevel(n) + ".");
+            this.player.i = n;
+            Player player = this.player;
+            player.packetSender.sendInterfaceText("@dbl@Congratulations, you just advanced a " + SKILL_NAMES[n] + " level!", nArrayArray2[n][1]);
+            player = this.player;
+            player.packetSender.sendInterfaceText("Your " + SKILL_NAMES[n] + " level is now " + this.getBaseLevel(n) + ".", nArrayArray2[n][2]);
+            player = this.player;
+            player.packetSender.sendGameMessage("You've just advanced a " + SKILL_NAMES[n] + " level! You have reached level " + this.getBaseLevel(n) + ".");
             if (ServerSettings.progressiveXpMode != 0) {
                 int n2 = this.getBaseLevel(n);
-                int n3 = this.c.N;
+                int n3 = this.player.N;
                 double d = this.getExperienceRateForLevel(n3);
                 double d2 = this.getExperienceRateForLevel(n2);
                 Object object2 = new DecimalFormat("#0.00");
@@ -475,44 +475,44 @@ public final class SkillManager {
                 String string = ((NumberFormat)object2).format(d).replaceAll(",", ".");
                 object2 = ((NumberFormat)object2).format(d2).replaceAll(",", ".");
                 if (!string.equals(object2)) {
-                    Player player2 = this.c;
+                    Player player2 = this.player;
                     player2.packetSender.sendGameMessage("XP rate increased to: " + (String)object2 + " (Previous XP rate was: " + string + ").");
                 }
             }
-            this.c.getUpdateState().setGraphic(199);
-            this.c.packetSender.sendSoundEffect(323, 1, 0);
+            this.player.getUpdateState().setGraphic(199);
+            this.player.packetSender.sendSoundEffect(323, 1, 0);
             int n4 = this.getBaseLevel(n) >= 50 ? 1 : 0;
-            object = this.c;
+            object = this.player;
             ((Player)object).packetSender.sendMusicJingle(nArrayArray2[n][n4 + 4], nArrayArray2[n][n4 + 6]);
             if (n == 19) {
-                object = this.c;
+                object = this.player;
                 ((Player)object).packetSender.sendInterfacePosition(311, 0, 30);
-                object = this.c;
+                object = this.player;
                 ((Player)object).packetSender.sendInterfaceModel(311, 200, 5340);
             }
             object = this;
-            if (SkillManager.getLevelForExperience(((SkillManager)object).e[n]) == ServerSettings.maxLevel) {
-                object = this.c;
+            if (SkillManager.getLevelForExperience(((SkillManager)object).experience[n]) == ServerSettings.maxLevel) {
+                object = this.player;
                 ((Player)object).packetSender.sendGameMessage("Well done! You've achieved the highest possible level in this skill!");
             }
-            object = this.c;
+            object = this.player;
             ((Player)object).packetSender.showChatboxInterface(nArrayArray2[n][3]);
-            this.c.getDialogueManager().finishDialogue();
+            this.player.getDialogueManager().finishDialogue();
         }
-        this.c.f(true);
-        object = this.c;
+        this.player.setAppearanceUpdateRequired(true);
+        object = this.player;
         ((Player)object).packetSender.sendInterfaceText("Total Lvl: " + this.getTotalLevel(), 3984);
     }
 
     public final int getCombatLevel() {
         double d;
-        int n = SkillManager.getLevelForExperience(this.e[0]);
-        int n2 = SkillManager.getLevelForExperience(this.e[1]);
-        int n3 = SkillManager.getLevelForExperience(this.e[2]);
-        int n4 = SkillManager.getLevelForExperience(this.e[3]);
-        int n5 = SkillManager.getLevelForExperience(this.e[5]);
-        int n6 = SkillManager.getLevelForExperience(this.e[4]);
-        int n7 = SkillManager.getLevelForExperience(this.e[6]);
+        int n = SkillManager.getLevelForExperience(this.experience[0]);
+        int n2 = SkillManager.getLevelForExperience(this.experience[1]);
+        int n3 = SkillManager.getLevelForExperience(this.experience[2]);
+        int n4 = SkillManager.getLevelForExperience(this.experience[3]);
+        int n5 = SkillManager.getLevelForExperience(this.experience[5]);
+        int n6 = SkillManager.getLevelForExperience(this.experience[4]);
+        int n7 = SkillManager.getLevelForExperience(this.experience[6]);
         double d2 = n2 + n4 + n5 / 2;
         double d3 = (d2 + 1.3 * (1.5 * (double)n7)) / 4.0;
         double d4 = (d2 + 1.3 * (1.5 * (double)n6)) / 4.0;
@@ -549,39 +549,39 @@ public final class SkillManager {
     }
 
     public final int[] getCurrentLevels() {
-        return this.d;
+        return this.currentLevels;
     }
 
     public final double[] getExperience() {
-        return this.e;
+        return this.experience;
     }
 
     public final void setCurrentLevel(int n, int n2) {
-        this.d[n] = n2;
+        this.currentLevels[n] = n2;
     }
 
-    public final boolean f(int n) {
-        if (System.currentTimeMillis() >= this.j) {
-            this.j = System.currentTimeMillis() + (long)n;
+    public final boolean tryStartActionDelay(int n) {
+        if (System.currentTimeMillis() >= this.actionDelayExpiresAtMillis) {
+            this.actionDelayExpiresAtMillis = System.currentTimeMillis() + (long)n;
             return true;
         }
         return false;
     }
 
-    public final boolean g(int n) {
-        if (System.currentTimeMillis() >= this.k) {
-            this.k = System.currentTimeMillis() + 600L;
+    public final boolean tryStartDrinkDelay(int n) {
+        if (System.currentTimeMillis() >= this.drinkDelayExpiresAtMillis) {
+            this.drinkDelayExpiresAtMillis = System.currentTimeMillis() + 600L;
             return true;
         }
         return false;
     }
 
     static /* synthetic */ Player getPlayer(SkillManager skillManager) {
-        return skillManager.c;
+        return skillManager.player;
     }
 
     static /* synthetic */ int[] getCurrentLevels(SkillManager skillManager) {
-        return skillManager.d;
+        return skillManager.currentLevels;
     }
 }
 

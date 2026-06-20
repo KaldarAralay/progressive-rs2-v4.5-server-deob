@@ -26,8 +26,8 @@ extends CycleEvent {
     @Override
     public final void onStop() {
         this.manager.refreshConfig();
-        AllotmentPatchManager.getPlayer(this.manager).n(false);
-        AllotmentPatchManager.getPlayer(this.manager).aN();
+        AllotmentPatchManager.getPlayer(this.manager).setActionLocked(false);
+        AllotmentPatchManager.getPlayer(this.manager).resetAnimation();
     }
 }
 

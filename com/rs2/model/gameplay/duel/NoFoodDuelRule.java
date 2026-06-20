@@ -12,13 +12,13 @@ extends DuelRule {
     }
 
     @Override
-    public final void a(Player player, boolean bl) {
-        player.getDuelInterfaceManager().a(this.w, "Players cannot eat foods.");
+    public final void toggleForPlayer(Player player, boolean bl) {
+        player.getDuelInterfaceManager().toggleRule(this.ruleIndex, "Players cannot eat foods.");
     }
 
     @Override
-    public final boolean a(Player player) {
-        return player.getDuelSession().k()[this.w];
+    public final boolean isEnabledFor(Player player) {
+        return player.getDuelSession().getEnabledRules()[this.ruleIndex];
     }
 }
 

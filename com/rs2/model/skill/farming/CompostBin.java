@@ -8,10 +8,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum CompostBin {
-    a(0, new Position(3056, 3312, 0)),
-    b(1, new Position(2804, 3464, 0)),
-    c(2, new Position(3610, 3522, 0)),
-    d(3, new Position(2661, 3375, 0));
+    FALADOR(0, new Position(3056, 3312, 0)),
+    CATHERBY(1, new Position(2804, 3464, 0)),
+    MORYTANIA(2, new Position(3610, 3522, 0)),
+    ARDOUGNE(3, new Position(2661, 3375, 0));
 
     private int index;
     private Position position;

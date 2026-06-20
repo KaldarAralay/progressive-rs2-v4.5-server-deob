@@ -10,25 +10,25 @@ import com.rs2.model.task.CycleEventContainer;
 
 final class AbyssDelayedMoveEvent
 extends CycleEvent {
-    private final /* synthetic */ Player a;
-    private final /* synthetic */ int b;
-    private final /* synthetic */ int c;
+    private final /* synthetic */ Player player;
+    private final /* synthetic */ int destinationX;
+    private final /* synthetic */ int destinationY;
 
     AbyssDelayedMoveEvent(Player player, int n, int n2) {
-        this.a = player;
-        this.b = n;
-        this.c = n2;
+        this.player = player;
+        this.destinationX = n;
+        this.destinationY = n2;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        this.a.moveTo(new Position(this.b, this.c, this.a.getPosition().getPlane()));
+        this.player.moveTo(new Position(this.destinationX, this.destinationY, this.player.getPosition().getPlane()));
         cycleEventContainer.stop();
     }
 
     @Override
     public final void onStop() {
-        this.a.n(false);
+        this.player.setActionLocked(false);
     }
 }
 

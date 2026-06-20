@@ -53,7 +53,7 @@ implements DatabaseCallback {
             PlayerLoadQueryFactory.getPlayer(this.factory).setRingOfForgingLife(object.getInt("ring_of_recoil_life"));
             int n = object.getInt("skull_timer");
             if (n > 0) {
-                PlayerLoadQueryFactory.getPlayer(this.factory).b(PlayerLoadQueryFactory.getPlayer(this.factory), n);
+                PlayerLoadQueryFactory.getPlayer(this.factory).addPvpCombatReference(PlayerLoadQueryFactory.getPlayer(this.factory), n);
             }
             if (!(string = object.getString("pin")).equals("na")) {
                 int n2 = 0;

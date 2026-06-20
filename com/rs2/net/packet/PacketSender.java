@@ -49,7 +49,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendMinimapState(int n) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(2);
@@ -63,7 +63,7 @@ public final class PacketSender {
         this.sendInterfaceText(((MusicTrackDefinition)object).getName(), 4439);
         int n = ((MusicTrackDefinition)object).getTrackId();
         object = this;
-        if (!((PacketSender)object).a.de && ((PacketSender)object).a.ax != n) {
+        if (!((PacketSender)object).a.isBot && ((PacketSender)object).a.ax != n) {
             ((PacketSender)object).a.ax = n;
             if (n != -1) {
                 PacketWriter packetWriter = PacketBuffer.allocateWriter(3);
@@ -75,12 +75,12 @@ public final class PacketSender {
     }
 
     public final void lockPlayerForTicks(int n) {
-        this.a.n(true);
+        this.a.setActionLocked(true);
         CycleEventHandler.getInstance().schedule(this.a, new DelayedUnlockEvent(this), n);
     }
 
     public final PacketSender sendSystemUpdateTimer(int n) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(4);
@@ -136,9 +136,9 @@ public final class PacketSender {
                 ArrayList<Integer> arrayList2 = new ArrayList<Integer>();
                 arrayList = new ArrayList<Integer>();
                 n = 1;
-                while (n < QuestDefinition.a) {
-                    QuestScript questScript = QuestDefinition.a(n);
-                    if (questScript.b() == -1) {
+                while (n < QuestDefinition.questCount) {
+                    QuestScript questScript = QuestDefinition.getQuestScript(n);
+                    if (questScript.getQuestId() == -1) {
                         arrayList.add(n);
                     } else {
                         arrayList2.add(n);
@@ -179,12 +179,12 @@ public final class PacketSender {
         Object object;
         Object object2;
         PacketSender packetSender2;
-        if (!this.a.bs().equals("127.0.0.1")) {
-            Server.f().e = true;
+        if (!this.a.getHostAddress().equals("127.0.0.1")) {
+            Server.getInstance().backupPending = true;
         }
         this.sendPlayerIndex();
         Object object3 = this;
-        if (((PacketSender)object3).a.de) {
+        if (((PacketSender)object3).a.isBot) {
             packetSender2 = object3;
         } else {
             PacketWriter packetWriter = PacketBuffer.allocateWriter(1);
@@ -197,12 +197,12 @@ public final class PacketSender {
         object3 = this;
         ((PacketSender)object3).b();
         int n2 = 1;
-        while (n2 < QuestDefinition.a) {
+        while (n2 < QuestDefinition.questCount) {
             Player player;
-            object2 = QuestDefinition.b(n2);
-            object = QuestDefinition.a(n2);
-            n = ((QuestDefinition)object2).d();
-            if (ServerSettings.recolorMissingQuests && ((QuestHook)object).b() == -1 && ((PacketSender)object3).a.getQuestState(n2, true) != 1) {
+            object2 = QuestDefinition.forId(n2);
+            object = QuestDefinition.getQuestScript(n2);
+            n = ((QuestDefinition)object2).getJournalButtonId();
+            if (ServerSettings.recolorMissingQuests && ((QuestHook)object).getQuestId() == -1 && ((PacketSender)object3).a.getQuestState(n2, true) != 1) {
                 player = ((PacketSender)object3).a;
                 player.packetSender.sendInterfaceTextColor(n, new Color(102, 102, 102));
             } else if (((PacketSender)object3).a.getQuestState(n2, true) == 0) {
@@ -218,7 +218,7 @@ public final class PacketSender {
             ++n2;
         }
         object3 = this;
-        if (((PacketSender)object3).a.de) {
+        if (((PacketSender)object3).a.isBot) {
             packetSender = object3;
         } else {
             PacketWriter packetWriter = PacketBuffer.allocateWriter(4);
@@ -242,8 +242,8 @@ public final class PacketSender {
         this.a.getSpecialTreePatchManager().processGrowth();
         this.a.getSpecialCropPatchManager().processGrowth();
         int n3 = 0;
-        while (n3 < this.a.cT().length) {
-            this.a.getInventoryManager().addItem(new ItemStack(this.a.cT()[n3], this.a.cU()[n3]));
+        while (n3 < this.a.getQueuedLoginItemIds().length) {
+            this.a.getInventoryManager().addItem(new ItemStack(this.a.getQueuedLoginItemIds()[n3], this.a.getQueuedLoginItemAmounts()[n3]));
             ++n3;
         }
         n3 = 0;
@@ -254,19 +254,19 @@ public final class PacketSender {
         this.a.getSocialManager().initializePrivateMessaging();
         if (this.a.getQuestState(0) == 1) {
             object3 = this;
-            if (!((PacketSender)object3).a.de) {
+            if (!((PacketSender)object3).a.isBot) {
                 PacketSender packetSender3;
                 int n4 = GameplayHelper.a(((PacketSender)object3).a.eh, System.currentTimeMillis());
-                object2 = MessageOfTheWeek.a(Server.i);
-                int n5 = ((MessageOfTheWeek)object2).b();
-                n = ((PacketSender)object3).a.aQ();
+                object2 = MessageOfTheWeek.getMessageForIndex(Server.messageOfTheWeekIndex);
+                int n5 = ((MessageOfTheWeek)object2).getInterfaceId();
+                n = ((PacketSender)object3).a.getMembershipDaysRemaining();
                 int n6 = n4;
                 n4 = PacketSender.b(((PacketSender)object3).a.ek);
                 n3 = 0;
                 boolean bl = ((PacketSender)object3).a.isMember();
                 n3 = 200;
                 PacketSender packetSender4 = object3;
-                if (packetSender4.a.de) {
+                if (packetSender4.a.isBot) {
                     packetSender3 = packetSender4;
                 } else {
                     PacketWriter packetWriter = PacketBuffer.allocateWriter(18);
@@ -289,34 +289,34 @@ public final class PacketSender {
                 }
                 ((PacketSender)object3).sendInterfaceText((String)object, 15270);
                 n = 0;
-                if (((MessageOfTheWeek)object2).b() == 5993) {
+                if (((MessageOfTheWeek)object2).getInterfaceId() == 5993) {
                     n = 1;
                 }
-                ((PacketSender)object3).sendInterfaceText(((MessageOfTheWeek)object2).c(), n != 0 ? 6002 : ((MessageOfTheWeek)object2).b() + 4);
-                ((PacketSender)object3).sendInterfaceText(((MessageOfTheWeek)object2).d()[0], n != 0 ? 15491 : ((MessageOfTheWeek)object2).b() + 2);
-                ((PacketSender)object3).sendInterfaceText(((MessageOfTheWeek)object2).d()[1], n != 0 ? 15492 : ((MessageOfTheWeek)object2).b() + 3);
+                ((PacketSender)object3).sendInterfaceText(((MessageOfTheWeek)object2).getTitle(), n != 0 ? 6002 : ((MessageOfTheWeek)object2).getInterfaceId() + 4);
+                ((PacketSender)object3).sendInterfaceText(((MessageOfTheWeek)object2).getLines()[0], n != 0 ? 15491 : ((MessageOfTheWeek)object2).getInterfaceId() + 2);
+                ((PacketSender)object3).sendInterfaceText(((MessageOfTheWeek)object2).getLines()[1], n != 0 ? 15492 : ((MessageOfTheWeek)object2).getInterfaceId() + 3);
             }
             this.sendGameMessage("Welcome to " + ServerSettings.serverName + "." + (ServerSettings.showServerEmulatorInWelcome ? " (Emulation run by: " + ServerSettings.serverEmulatorName + ")" : ""));
             String string = "";
-            CacheRevisionInfo cacheRevisionInfo = CacheRevisionInfo.a(ServerSettings.cacheVersion);
+            CacheRevisionInfo cacheRevisionInfo = CacheRevisionInfo.forRevision(ServerSettings.cacheVersion);
             if (cacheRevisionInfo != null) {
-                if (cacheRevisionInfo.a != null) {
-                    string = " (From: " + cacheRevisionInfo.a + ")";
+                if (cacheRevisionInfo.releaseDate != null) {
+                    string = " (From: " + cacheRevisionInfo.releaseDate + ")";
                 }
-                if (cacheRevisionInfo.b != null) {
+                if (cacheRevisionInfo.updateNotes != null) {
                     string = String.valueOf(string) + " - Updates:";
                 }
             }
             this.sendGameMessage("Running RS2 Build #" + ServerSettings.cacheVersion + string);
-            if (cacheRevisionInfo != null && cacheRevisionInfo.b != null) {
+            if (cacheRevisionInfo != null && cacheRevisionInfo.updateNotes != null) {
                 int n7 = 0;
-                while (n7 < cacheRevisionInfo.b.length) {
+                while (n7 < cacheRevisionInfo.updateNotes.length) {
                     boolean bl = false;
                     int n8 = n7++;
                     object3 = cacheRevisionInfo;
                     n = n8;
                     object = object3;
-                    this.sendGameMessage(String.valueOf(((CacheRevisionInfo)object).b[n]) + "#url#");
+                    this.sendGameMessage(String.valueOf(((CacheRevisionInfo)object).updateNotes[n]) + "#url#");
                 }
             }
             if (this.a.dQ) {
@@ -365,13 +365,13 @@ public final class PacketSender {
         this.sendConfig(287, this.a.getSplitPrivateChat());
         this.sendConfig(427, this.a.isAcceptAidEnabled() ? 1 : 0);
         this.sendConfig(115, this.a.isBankWithdrawNoteMode() ? 1 : 0);
-        this.sendConfig(304, this.a.getBankRearrangeMode().equals((Object)BankRearrangeMode.a) ? 0 : 1);
+        this.sendConfig(304, this.a.getBankRearrangeMode().equals((Object)BankRearrangeMode.SWAP) ? 0 : 1);
         return this;
     }
 
     public final PacketSender sendEnterInputPrompt(int n) {
         this.a.setSelectedInterfaceId(n);
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(1);
@@ -458,11 +458,11 @@ public final class PacketSender {
         if (bl2) {
             this.a.getMovementQueue().setRunning(false);
         }
-        this.a.n(true);
+        this.a.setActionLocked(true);
         this.a.aw = true;
         if (n3 > 0) {
-            this.a.ak(n3);
-            this.a.f(true);
+            this.a.setWalkAnimationOverride(n3);
+            this.a.setAppearanceUpdateRequired(true);
         }
         this.a.getMovementQueue().clear();
         this.a.getMovementQueue().addStep(new Position(this.a.getPosition().getX() + n, this.a.getPosition().getY() + n2));
@@ -478,7 +478,7 @@ public final class PacketSender {
         if (this.a.isStunned() || this.a.isMovementLocked()) {
             return this;
         }
-        this.a.n(true);
+        this.a.setActionLocked(true);
         this.a.setInteractionTarget(null);
         this.a.getUpdateState().setFaceEntity(65535);
         this.a.aw = true;
@@ -499,7 +499,7 @@ public final class PacketSender {
         if (this.a.isStunned() || this.a.isMovementLocked()) {
             return this;
         }
-        this.a.n(true);
+        this.a.setActionLocked(true);
         if (bl) {
             this.a.aw = true;
         }
@@ -514,7 +514,7 @@ public final class PacketSender {
         if (this.a.isStunned() || this.a.isMovementLocked()) {
             return this;
         }
-        this.a.n(true);
+        this.a.setActionLocked(true);
         this.a.aw = true;
         this.a.getMovementQueue().clear();
         this.a.getMovementQueue().addStep(new Position(this.a.getPosition().getX(), this.a.getPosition().getY() + n2));
@@ -534,12 +534,12 @@ public final class PacketSender {
     }
 
     public final PacketSender sendStillGraphicToNearbyPlayers(int n, int n2, int n3, int n4, int n5) {
-        Player[] playerArray = World.f();
+        Player[] playerArray = World.getPlayers();
         int n6 = playerArray.length;
         int n7 = 0;
         while (n7 < n6) {
             Player player = playerArray[n7];
-            if (player != null && player.getPosition().getPlane() == n4 && GameUtil.a(n2, n3, player.getPosition().getX(), player.getPosition().getY(), 25)) {
+            if (player != null && player.getPosition().getPlane() == n4 && GameUtil.isWithinDistance(n2, n3, player.getPosition().getX(), player.getPosition().getY(), 25)) {
                 player.packetSender.sendStillGraphic(n, new Position(n2, n3, n4), n5);
             }
             ++n7;
@@ -548,7 +548,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendSkillUpdate(int n, int n2, double d) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(7);
@@ -561,7 +561,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendInterfaceModelRotation(int n, int n2, int n3, int n4) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(10);
@@ -575,7 +575,7 @@ public final class PacketSender {
     }
 
     public final PacketSender selectMagicSidebarTab(int n) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(2);
@@ -586,7 +586,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendInterfaceOffset(int n, int n2, int n3) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(7);
@@ -600,7 +600,7 @@ public final class PacketSender {
 
     public final PacketSender sendEntityHintIcon(int n, int n2) {
         this.a.bP = n2;
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(7);
@@ -615,7 +615,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendPositionHintIcon(int n, int n2, int n3, int n4) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(7);
@@ -629,7 +629,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendInterfaceSlotItem(ItemStack itemStack, int n, int n2, int n3) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(32);
@@ -649,7 +649,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendInterfaceSlotItem(int n, int n2, ItemStack itemStack) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(32);
@@ -674,7 +674,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendSingleItemContainer(int n, int n2, int n3) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         if (n >= InterfaceDefinition.interfaceCount) {
@@ -702,7 +702,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendItemContainer(int n, ItemStack[] itemStackArray) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         if (n >= InterfaceDefinition.interfaceCount) {
@@ -737,7 +737,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendObjectCreate(int n, int n2, int n3, int n4, int n5, int n6) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         this.b(new Position(n2, n3, n4));
@@ -751,7 +751,7 @@ public final class PacketSender {
     }
 
     public final PacketSender closeInterface(int n) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         if (n >= InterfaceDefinition.interfaceCount) {
@@ -765,7 +765,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendGameMessage(String string) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         if (string == null) {
@@ -783,7 +783,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendAccountStatus() {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(4);
@@ -792,7 +792,7 @@ public final class PacketSender {
         packetWriter.writeByte(0);
         packetWriter.writeByte(this.a.gameMode);
         this.a.writePacketBuffer(packetWriter.getBuffer());
-        this.a.f(true);
+        this.a.setAppearanceUpdateRequired(true);
         return this;
     }
 
@@ -806,7 +806,7 @@ public final class PacketSender {
 
     public final PacketSender setSidebarInterface(int n, int n2) {
         this.a.setSidebarInterfaceId(n, n2);
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(4);
@@ -818,7 +818,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendInterfaceItemModel(int n, int n2) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(5);
@@ -830,7 +830,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendInterfaceProgress(int n, int n2) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(4);
@@ -845,7 +845,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendProjectile(Position object, int n, int n2, byte by, byte by2, int n3, int n4, int n5, int n6, int n7, int n8) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         if (n > 1) {
@@ -871,13 +871,13 @@ public final class PacketSender {
     }
 
     private PacketSender a(Position position) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(3);
         packetWriter.writeOpcode(this.a.getOutboundCipher(), 85);
-        int n = position.getY() - (this.a.bt().getRegionY() << 3) - 2;
-        int n2 = position.getX() - (this.a.bt().getRegionX() << 3) - 3;
+        int n = position.getY() - (this.a.getLastKnownRegionPosition().getRegionY() << 3) - 2;
+        int n2 = position.getX() - (this.a.getLastKnownRegionPosition().getRegionX() << 3) - 3;
         packetWriter.writeByte(n, ByteTransform.NEGATE);
         packetWriter.writeByte(n2, ByteTransform.NEGATE);
         this.a.writePacketBuffer(packetWriter.getBuffer());
@@ -885,13 +885,13 @@ public final class PacketSender {
     }
 
     public final PacketSender sendMapRegion() {
-        this.a.bt().set(this.a.getPosition());
-        this.a.eE();
-        int n = this.a.bt().getRegionX() << 3;
-        int n2 = this.a.bt().getRegionY() << 3;
-        this.a.g = this.a.getPosition().getX() - n;
-        this.a.h = this.a.getPosition().getY() - n2;
-        if (this.a.de) {
+        this.a.getLastKnownRegionPosition().set(this.a.getPosition());
+        this.a.refreshLocalViewArea();
+        int n = this.a.getLastKnownRegionPosition().getRegionX() << 3;
+        int n2 = this.a.getLastKnownRegionPosition().getRegionY() << 3;
+        this.a.localX = this.a.getPosition().getX() - n;
+        this.a.localY = this.a.getPosition().getY() - n2;
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(5);
@@ -904,7 +904,7 @@ public final class PacketSender {
 
     public final PacketSender sendLogout() {
         this.a.cn = true;
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(1);
@@ -915,7 +915,7 @@ public final class PacketSender {
 
     public final PacketSender showInterface(int n) {
         this.a.setOpenInterfaceId(n);
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         if (n >= InterfaceDefinition.interfaceCount && n == 12140) {
@@ -932,7 +932,7 @@ public final class PacketSender {
     }
 
     public final PacketSender showWalkableInterface(int n) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         if (n >= InterfaceDefinition.interfaceCount) {
@@ -946,7 +946,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendInterfaceScrollPosition(int n, int n2) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(6);
@@ -962,7 +962,7 @@ public final class PacketSender {
             return this;
         }
         this.a.cf = bl;
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(5);
@@ -975,7 +975,7 @@ public final class PacketSender {
     public final PacketSender showInterfaceWithInventory(int n, int n2) {
         this.a.setOpenInterfaceId(n);
         this.a.setInventoryOverlayInterfaceId(n2);
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         if (n2 >= InterfaceDefinition.interfaceCount) {
@@ -990,7 +990,7 @@ public final class PacketSender {
     }
 
     public final PacketSender flashSidebarIcon(int n) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(3);
@@ -1005,7 +1005,7 @@ public final class PacketSender {
         this.a.setInventoryOverlayInterfaceId(0);
         this.a.W = 0;
         this.a.X = 0;
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(2);
@@ -1015,13 +1015,13 @@ public final class PacketSender {
     }
 
     private PacketSender b(Position position) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(3);
         packetWriter.writeOpcode(this.a.getOutboundCipher(), 85);
-        int n = position.getY() - 8 * this.a.bt().getRegionY();
-        int n2 = position.getX() - 8 * this.a.bt().getRegionX();
+        int n = position.getY() - 8 * this.a.getLastKnownRegionPosition().getRegionY();
+        int n2 = position.getX() - 8 * this.a.getLastKnownRegionPosition().getRegionX();
         packetWriter.writeByte(n, ByteTransform.NEGATE);
         packetWriter.writeByte(n2, ByteTransform.NEGATE);
         this.a.writePacketBuffer(packetWriter.getBuffer());
@@ -1029,7 +1029,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendGroundItemCreate(GroundItem groundItem) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         this.b(groundItem.getPosition());
@@ -1043,7 +1043,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendGroundItemRemove(GroundItem groundItem) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         this.b(groundItem.getPosition());
@@ -1056,7 +1056,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendConfig(int n, int n2) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         if (n2 < 128 && -128 <= n2) {
@@ -1076,7 +1076,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendInterfaceTextColor(int n, Color color) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         if (n >= InterfaceDefinition.interfaceCount) {
@@ -1094,7 +1094,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendInterfaceText(String string, int n) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         if (n >= InterfaceDefinition.interfaceCount) {
@@ -1128,7 +1128,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendFriendStatus(long l, int n) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(10);
@@ -1143,7 +1143,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendPrivateMessagingStatus(int n) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(2);
@@ -1154,7 +1154,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendPrivateMessage(long l, int n, int n2, int n3, byte[] byArray, int n4) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(2048);
@@ -1171,7 +1171,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendInterfaceModel(int n, int n2, int n3) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         if (n >= InterfaceDefinition.interfaceCount && n == 12145) {
@@ -1190,7 +1190,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendInterfaceModelId(int n, int n2) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(5);
@@ -1202,7 +1202,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendStillGraphic(int n, Position position, int n2) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         this.b(position);
@@ -1218,7 +1218,7 @@ public final class PacketSender {
 
     public final PacketSender showChatboxInterface(int n) {
         this.a.setOpenInterfaceId(n);
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         if (n >= InterfaceDefinition.interfaceCount) {
@@ -1232,7 +1232,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendInterfaceAnimation(int n, int n2) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         if (n >= InterfaceDefinition.interfaceCount) {
@@ -1247,7 +1247,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendObjectAnimation(int n, int n2, int n3, int n4) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         LoadedWorldObject loadedWorldObject = WorldObjectLookup.findObjectAt(n, n2, n3);
@@ -1265,7 +1265,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendPlayerHeadOnInterface(int n) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(3);
@@ -1276,7 +1276,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendNpcHeadOnInterface(int n, int n2) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         if (n2 >= InterfaceDefinition.interfaceCount) {
@@ -1291,7 +1291,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendSoundEffect(int n, int n2, int n3) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         if (n < 0) {
@@ -1307,7 +1307,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendMusicJingle(int n, int n2) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(5);
@@ -1319,7 +1319,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendPlayerOption(String string, int n, boolean bl) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         if (n > 0 && n <= 5) {
@@ -1339,7 +1339,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendPlayerIndex() {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(4);
@@ -1351,7 +1351,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendRunEnergy() {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(2);
@@ -1362,7 +1362,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendWeight() {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(3);
@@ -1374,7 +1374,7 @@ public final class PacketSender {
     }
 
     public final void refreshAutocastConfig() {
-        if (this.a.ed() == null) {
+        if (this.a.getAutocastSpell() == null) {
             this.sendConfig(108, 0);
             this.sendConfig(43, this.a.getFightMode());
             this.sendInterfaceText("", 352);
@@ -1385,7 +1385,7 @@ public final class PacketSender {
     }
 
     public final PacketSender setInterfaceHiddenFlag(int n, int n2) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         if (n2 >= InterfaceDefinition.interfaceCount) {
@@ -1400,7 +1400,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendCameraShake(int n, int n2, int n3, int n4) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(5);
@@ -1414,7 +1414,7 @@ public final class PacketSender {
     }
 
     public final PacketSender setInterfaceVisible(int n, boolean bl) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         if (n >= InterfaceDefinition.interfaceCount) {
@@ -1429,7 +1429,7 @@ public final class PacketSender {
     }
 
     public final PacketSender sendInterfacePosition(int n, int n2, int n3) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return this;
         }
         if (n >= InterfaceDefinition.interfaceCount && n == 12145) {
@@ -1464,7 +1464,7 @@ public final class PacketSender {
             int n5 = --n;
             int n6 = n3 >= n2 ? 500 : 0;
             PacketSender packetSender2 = this;
-            if (packetSender2.a.de) {
+            if (packetSender2.a.isBot) {
                 packetSender = packetSender2;
             } else {
                 PacketWriter packetWriter = PacketBuffer.allocateWriter(7);
@@ -1481,7 +1481,7 @@ public final class PacketSender {
     }
 
     public final void sendCameraPosition(int n, int n2, int n3, int n4, int n5) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(7);
@@ -1495,7 +1495,7 @@ public final class PacketSender {
     }
 
     public final void sendCameraLookAt(int n, int n2, int n3, int n4, int n5) {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(7);
@@ -1509,7 +1509,7 @@ public final class PacketSender {
     }
 
     public final void resetCamera() {
-        if (this.a.de) {
+        if (this.a.isBot) {
             return;
         }
         PacketWriter packetWriter = PacketBuffer.allocateWriter(1);

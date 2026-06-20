@@ -90,8 +90,8 @@ public class RunecraftingObjectHandler {
             case 7132: {
                 n = player.getQuestState(58) == 1 ? 1 : 0;
                 if (n == 0) {
-                    Object object = QuestDefinition.b(58);
-                    object = ((QuestDefinition)object).c();
+                    Object object = QuestDefinition.forId(58);
+                    object = ((QuestDefinition)object).getName();
                     player.getDialogueManager().showOneLineStatement("You need to complete " + (String)object + " first.");
                     player.getDialogueManager().finishDialogue();
                 } else {
@@ -132,7 +132,7 @@ public class RunecraftingObjectHandler {
                 return true;
             }
             case 7135: {
-                if (player.eB()) {
+                if (player.hasRestrictedCombatEquipment()) {
                     player.getDialogueManager().showOneLineStatement("You cannot bring combat items to Entrana!");
                     player.getDialogueManager().finishDialogue();
                 } else {
@@ -211,8 +211,8 @@ public class RunecraftingObjectHandler {
             }
         }
         if (player.getQuestState(14) != 1) {
-            object = QuestDefinition.b(14);
-            object = ((QuestDefinition)object).c();
+            object = QuestDefinition.forId(14);
+            object = ((QuestDefinition)object).getName();
             object2 = player;
             ((Player)object2).packetSender.sendGameMessage("You need to complete " + (String)object + " to do this.");
             return true;
@@ -275,8 +275,8 @@ public class RunecraftingObjectHandler {
             return true;
         }
         if (player.getQuestState(14) != 1) {
-            object = QuestDefinition.b(14);
-            object = ((QuestDefinition)object).c();
+            object = QuestDefinition.forId(14);
+            object = ((QuestDefinition)object).getName();
             object2 = player;
             ((Player)object2).packetSender.sendGameMessage("You need to complete " + (String)object + " to do this.");
             return true;
@@ -288,7 +288,7 @@ public class RunecraftingObjectHandler {
         object2 = object;
         packetSender.sendGameMessage(stringBuilder.append(ItemService.getItemName(object2.talismanItemId)).append(" towards the mysterious ruins.").toString());
         player.getUpdateState().setAnimation(827);
-        player.n(true);
+        player.setActionLocked(true);
         CycleEventHandler.getInstance().schedule(player, new MysteriousRuinsTeleportTask(player, (RunecraftingAltarDefinition)((Object)object)), 2);
         return true;
     }
@@ -310,7 +310,7 @@ public class RunecraftingObjectHandler {
             }
             ++n5;
         }
-        GatheringToolDefinition gatheringToolDefinition = ItemCombinationHandler.c(n2);
+        GatheringToolDefinition gatheringToolDefinition = ItemCombinationHandler.forBrokenToolItemId(n2);
         if (n3 != -1 && gatheringToolDefinition != null) {
             this.player.N = n2;
             this.player.O = n3;

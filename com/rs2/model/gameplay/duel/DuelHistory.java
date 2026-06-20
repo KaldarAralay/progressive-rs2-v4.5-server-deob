@@ -7,16 +7,16 @@ import com.rs2.model.player.Player;
 import java.util.ArrayList;
 
 public final class DuelHistory {
-    private static ArrayList a = new ArrayList();
+    private static ArrayList recentResults = new ArrayList();
 
-    public static void a(Player player, Player player2) {
-        if (a.size() >= 50) {
-            a.remove(0);
+    public static void recordDuelResult(Player player, Player player2) {
+        if (recentResults.size() >= 50) {
+            recentResults.remove(0);
         }
-        a.add(String.valueOf(player.getUsername()) + " (" + player.getCombatLevel() + ") beat " + player2.getUsername() + " (" + player2.getCombatLevel() + ")");
+        recentResults.add(String.valueOf(player.getUsername()) + " (" + player.getCombatLevel() + ") beat " + player2.getUsername() + " (" + player2.getCombatLevel() + ")");
     }
 
-    public static void a(Player player) {
+    public static void openDuelHistoryInterface(Player player) {
         Player player2;
         Player player3 = player;
         int n = 6402;
@@ -31,23 +31,23 @@ public final class DuelHistory {
             player2.packetSender.sendInterfaceText("", n);
             ++n;
         }
-        if (a.size() == 0) {
+        if (recentResults.size() == 0) {
             player2 = player;
             player2.packetSender.sendInterfaceText("No duel have been started yet.", 6402);
         } else {
             int n2 = 6402;
             while (n2 < 6412) {
-                if (a.size() - 1 - (n2 - 6402) >= 0) {
+                if (recentResults.size() - 1 - (n2 - 6402) >= 0) {
                     player2 = player;
-                    player2.packetSender.sendInterfaceText((String)a.get(a.size() - 1 - (n2 - 6402)), n2);
+                    player2.packetSender.sendInterfaceText((String)recentResults.get(recentResults.size() - 1 - (n2 - 6402)), n2);
                 }
                 ++n2;
             }
             n2 = 8578;
             while (n2 < 8618) {
-                if (a.size() - 10 - (n2 - 8578) >= 0) {
+                if (recentResults.size() - 10 - (n2 - 8578) >= 0) {
                     player2 = player;
-                    player2.packetSender.sendInterfaceText((String)a.get(a.size() - 10 - (n2 - 8578)), n2);
+                    player2.packetSender.sendInterfaceText((String)recentResults.get(recentResults.size() - 10 - (n2 - 8578)), n2);
                 }
                 ++n2;
             }

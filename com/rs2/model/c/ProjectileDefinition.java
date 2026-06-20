@@ -90,7 +90,7 @@ public class ProjectileDefinition {
     private ProjectileTiming a;
     private int b;
 
-    public static void a(Player player) {
+    public static void startSheepShearing(Player player) {
         if (player.getInteractionTarget() == null || player.getInteractionTarget().isPlayer()) {
             return;
         }
@@ -115,7 +115,7 @@ public class ProjectileDefinition {
             }
             return;
         }
-        player.n(true);
+        player.setActionLocked(true);
         player.getUpdateState().setAnimation(894);
         CycleEventHandler.getInstance().schedule(player, new SheepShearingTask(player, (Npc)entity), 2);
     }

@@ -20,14 +20,14 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        if (GameUtil.h(5) == 0) {
+        if (GameUtil.randomInt(5) == 0) {
             this.a.getDialogueManager().showOneLineStatement("You find a kitten! You carefully place it in your backpack.");
-            this.a.getInventoryManager().b(new ItemStack(1554, 1));
+            this.a.getInventoryManager().addOrDropItem(new ItemStack(1554, 1));
         } else {
             Player player = this.a;
             player.packetSender.sendGameMessage("You find nothing.");
         }
-        this.a.n(false);
+        this.a.setActionLocked(false);
         this.stop();
     }
 }

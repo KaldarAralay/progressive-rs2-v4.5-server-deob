@@ -104,7 +104,7 @@ public final class CanoeTravelManager {
                 ((Player)((Object)canoeTreeDefinition)).packetSender.sendGameMessage("This skill is currently disabled.");
                 return;
             }
-            GatheringToolDefinition gatheringToolDefinition = ItemCombinationHandler.a((Player)object2, 8);
+            GatheringToolDefinition gatheringToolDefinition = ItemCombinationHandler.findUsableGatheringTool((Player)object2, 8);
             if (gatheringToolDefinition == null) {
                 CanoeTreeDefinition canoeTreeDefinition = object2;
                 ((Player)((Object)canoeTreeDefinition)).packetSender.sendGameMessage("You do not have an axe which you have the woodcutting level to use.");
@@ -115,7 +115,7 @@ public final class CanoeTravelManager {
                 ((Player)((Object)canoeTreeDefinition)).packetSender.sendGameMessage("You need a Woodcutting level of " + ((CanoeTreeDefinition)((Object)object)).getRequiredLevel() + " to cut this tree.");
                 return;
             }
-            ((Entity)object2).getUpdateState().setAnimation(gatheringToolDefinition.d(), 0);
+            ((Entity)object2).getUpdateState().setAnimation(gatheringToolDefinition.getGatherAnimationId(), 0);
             int n7 = ((Entity)object2).nextActionSequence();
             ((Entity)object2).setActiveCycleEvent(new CanoeTreeCutTask((Player)object2, n7, (CanoeTreeDefinition)((Object)object), gatheringToolDefinition));
             CycleEventHandler.getInstance().schedule((Entity)object2, ((Entity)object2).getActiveCycleEvent(), 4);
@@ -171,7 +171,7 @@ public final class CanoeTravelManager {
                     Player player3 = player2;
                     player3.packetSender.sendGameMessage("This skill is currently disabled.");
                 } else {
-                    GatheringToolDefinition gatheringToolDefinition = ItemCombinationHandler.a(player2, 8);
+                    GatheringToolDefinition gatheringToolDefinition = ItemCombinationHandler.findUsableGatheringTool(player2, 8);
                     if (gatheringToolDefinition == null) {
                         Player player4 = player2;
                         player4.packetSender.sendGameMessage("You do not have an axe which you have the woodcutting level to use.");
@@ -183,7 +183,7 @@ public final class CanoeTravelManager {
                             object = canoeTypeDefinition;
                             player5.packetSender.sendGameMessage("You need a Woodcutting level of " + object.requiredLevel + " to cut this tree.");
                         } else {
-                            player2.getUpdateState().setAnimation(gatheringToolDefinition.e(), 0);
+                            player2.getUpdateState().setAnimation(gatheringToolDefinition.getCanoeAnimationId(), 0);
                             object = player2;
                             ((Player)object).packetSender.sendSoundEffect(471, 1, 0);
                             int n4 = player2.nextActionSequence();

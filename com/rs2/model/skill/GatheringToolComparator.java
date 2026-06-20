@@ -19,12 +19,12 @@ implements Comparator {
         object2 = (GatheringToolDefinition)((Object)object);
         object = this;
         if (((GatheringToolComparator)object).a == 14) {
-            double d = ((GatheringToolDefinition)((Object)object2)).f();
-            double d2 = gatheringToolDefinition.f();
+            double d = ((GatheringToolDefinition)((Object)object2)).getToolSpeed();
+            double d2 = gatheringToolDefinition.getToolSpeed();
             return Double.compare(d2, d);
         }
-        double d = ((GatheringToolDefinition)((Object)object2)).f();
-        double d3 = gatheringToolDefinition.f();
+        double d = ((GatheringToolDefinition)((Object)object2)).getToolSpeed();
+        double d3 = gatheringToolDefinition.getToolSpeed();
         return Double.compare(d, d3);
     }
 }

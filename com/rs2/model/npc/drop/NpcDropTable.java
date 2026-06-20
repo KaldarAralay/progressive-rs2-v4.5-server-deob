@@ -14,20 +14,20 @@ import com.rs2.util.FileUtil;
 import java.util.ArrayList;
 
 public final class NpcDropTable {
-    private static NpcDropTable[] a = new NpcDropTable[0];
-    private NpcDropEntry[] b;
-    private NpcDropEntry[] c;
-    private NpcDropEntry[] d;
-    private static int[] e = new int[]{65001, 65002, 65003, 65004, 65005, 65007, 65009, 65011, 65012, 65013, 65014, 65015, 65018, 65020, 65021, 65022, 65023, 65024, 65025, 65026, 65027, 65028, 65029, 65030};
+    private static NpcDropTable[] tablesByNpcId = new NpcDropTable[0];
+    private NpcDropEntry[] guaranteedDrops;
+    private NpcDropEntry[] weightedDrops;
+    private NpcDropEntry[] independentDrops;
+    private static int[] membersOnlyVirtualDropIds = new int[]{65001, 65002, 65003, 65004, 65005, 65007, 65009, 65011, 65012, 65013, 65014, 65015, 65018, 65020, 65021, 65022, 65023, 65024, 65025, 65026, 65027, 65028, 65029, 65030};
 
-    public static void a() {
+    public static void loadDropTables() {
         if (FileUtil.exists("./data/npcs/Npc drops.dat")) {
             Object object = FileUtil.readBytes("./data/npcs/Npc drops.dat");
             ByteArrayReader byteArrayReader = new ByteArrayReader((byte[])object);
             object = byteArrayReader;
             int n = byteArrayReader.readUnsignedByte();
             int n2 = ((ByteArrayReader)object).readUnsignedShort();
-            a = new NpcDropTable[n2];
+            tablesByNpcId = new NpcDropTable[n2];
             int n3 = 0;
             while (n3 < n2) {
                 NpcDropEntry[] npcDropEntryArray;
@@ -167,7 +167,7 @@ public final class NpcDropTable {
                         }
                         ++n6;
                     }
-                    NpcDropTable.a[n3] = new NpcDropTable(npcDropEntryArray2, npcDropEntryArray, npcDropEntryArray3, npcDropEntryArray4, npcDropEntryArray5, npcDropEntryArray6, npcDropEntryArray7);
+                    NpcDropTable.tablesByNpcId[n3] = new NpcDropTable(npcDropEntryArray2, npcDropEntryArray, npcDropEntryArray3, npcDropEntryArray4, npcDropEntryArray5, npcDropEntryArray6, npcDropEntryArray7);
                 }
                 ++n3;
             }
@@ -175,25 +175,25 @@ public final class NpcDropTable {
     }
 
     private NpcDropTable(NpcDropEntry[] npcDropEntryArray, NpcDropEntry[] npcDropEntryArray2, NpcDropEntry[] npcDropEntryArray3, NpcDropEntry[] npcDropEntryArray4, NpcDropEntry[] npcDropEntryArray5, NpcDropEntry[] npcDropEntryArray6, NpcDropEntry[] npcDropEntryArray7) {
-        this.b = npcDropEntryArray;
-        this.c = npcDropEntryArray6;
-        this.d = npcDropEntryArray7;
+        this.guaranteedDrops = npcDropEntryArray;
+        this.weightedDrops = npcDropEntryArray6;
+        this.independentDrops = npcDropEntryArray7;
     }
 
-    public static NpcDropTable a(int n) {
+    public static NpcDropTable forNpcId(int n) {
         NpcDropTable npcDropTable;
         if (n < 0) {
             n = 1;
         }
-        if ((npcDropTable = a[n]) == null) {
+        if ((npcDropTable = tablesByNpcId[n]) == null) {
             npcDropTable = new NpcDropTable(null, null, null, null, null, null, null);
         }
         return npcDropTable;
     }
 
-    public final NpcDropEntry[] a(Entity object) {
+    public final NpcDropEntry[] getGuaranteedDrops(Entity object) {
         NpcDropEntry[] npcDropEntryArray;
-        if (this.b == null) {
+        if (this.guaranteedDrops == null) {
             return null;
         }
         Player player = null;
@@ -201,8 +201,8 @@ public final class NpcDropTable {
             player = (Player)object;
         }
         object = new ArrayList();
-        NpcDropEntry[] npcDropEntryArray2 = this.b;
-        int n = this.b.length;
+        NpcDropEntry[] npcDropEntryArray2 = this.guaranteedDrops;
+        int n = this.guaranteedDrops.length;
         int n2 = 0;
         while (n2 < n) {
             block8: {
@@ -210,16 +210,16 @@ public final class NpcDropTable {
                     block9: {
                         npcDropEntryArray = npcDropEntryArray2[n2];
                         if (npcDropEntryArray == null) break block8;
-                        if (npcDropEntryArray.d() >= 65000) break block9;
-                        if ((npcDropEntryArray.d() < 7956 || npcDropEntryArray.d() > 8118) && ItemDefinition.isDefined(npcDropEntryArray.d()) && (!ServerSettings.freeToPlayWorld && (player == null || player.isMember()) || !ItemDefinition.forId(npcDropEntryArray.d()).isMembersOnly())) break block10;
+                        if (npcDropEntryArray.getItemId() >= 65000) break block9;
+                        if ((npcDropEntryArray.getItemId() < 7956 || npcDropEntryArray.getItemId() > 8118) && ItemDefinition.isDefined(npcDropEntryArray.getItemId()) && (!ServerSettings.freeToPlayWorld && (player == null || player.isMember()) || !ItemDefinition.forId(npcDropEntryArray.getItemId()).isMembersOnly())) break block10;
                         break block8;
                     }
-                    npcDropEntryArray.d();
+                    npcDropEntryArray.getItemId();
                     boolean bl = false;
                     int n3 = 0;
-                    while (n3 < e.length) {
-                        int n4 = e[n3];
-                        if (n4 == npcDropEntryArray.d()) {
+                    while (n3 < membersOnlyVirtualDropIds.length) {
+                        int n4 = membersOnlyVirtualDropIds[n3];
+                        if (n4 == npcDropEntryArray.getItemId()) {
                             bl = true;
                         }
                         ++n3;
@@ -234,9 +234,9 @@ public final class NpcDropTable {
         return npcDropEntryArray;
     }
 
-    public final NpcDropEntry[] b(Entity object) {
+    public final NpcDropEntry[] getWeightedDrops(Entity object) {
         NpcDropEntry[] npcDropEntryArray;
-        if (this.c == null) {
+        if (this.weightedDrops == null) {
             return null;
         }
         Player player = null;
@@ -244,8 +244,8 @@ public final class NpcDropTable {
             player = (Player)object;
         }
         object = new ArrayList();
-        NpcDropEntry[] npcDropEntryArray2 = this.c;
-        int n = this.c.length;
+        NpcDropEntry[] npcDropEntryArray2 = this.weightedDrops;
+        int n = this.weightedDrops.length;
         int n2 = 0;
         while (n2 < n) {
             block8: {
@@ -253,16 +253,16 @@ public final class NpcDropTable {
                     block9: {
                         npcDropEntryArray = npcDropEntryArray2[n2];
                         if (npcDropEntryArray == null) break block8;
-                        if (npcDropEntryArray.d() >= 65000) break block9;
-                        if ((npcDropEntryArray.d() < 7956 || npcDropEntryArray.d() > 8118) && ItemDefinition.isDefined(npcDropEntryArray.d()) && (!ServerSettings.freeToPlayWorld && (player == null || player.isMember()) || !ItemDefinition.forId(npcDropEntryArray.d()).isMembersOnly())) break block10;
+                        if (npcDropEntryArray.getItemId() >= 65000) break block9;
+                        if ((npcDropEntryArray.getItemId() < 7956 || npcDropEntryArray.getItemId() > 8118) && ItemDefinition.isDefined(npcDropEntryArray.getItemId()) && (!ServerSettings.freeToPlayWorld && (player == null || player.isMember()) || !ItemDefinition.forId(npcDropEntryArray.getItemId()).isMembersOnly())) break block10;
                         break block8;
                     }
-                    int n3 = npcDropEntryArray.d() - 65000;
+                    int n3 = npcDropEntryArray.getItemId() - 65000;
                     boolean bl = false;
                     int n4 = 0;
-                    while (n4 < e.length) {
-                        int n5 = e[n4];
-                        if (n5 == npcDropEntryArray.d()) {
+                    while (n4 < membersOnlyVirtualDropIds.length) {
+                        int n5 = membersOnlyVirtualDropIds[n4];
+                        if (n5 == npcDropEntryArray.getItemId()) {
                             bl = true;
                         }
                         ++n4;
@@ -277,9 +277,9 @@ public final class NpcDropTable {
         return npcDropEntryArray;
     }
 
-    public final NpcDropEntry[] c(Entity object) {
+    public final NpcDropEntry[] getIndependentDrops(Entity object) {
         NpcDropEntry[] npcDropEntryArray;
-        if (this.d == null) {
+        if (this.independentDrops == null) {
             return null;
         }
         Player player = null;
@@ -287,8 +287,8 @@ public final class NpcDropTable {
             player = (Player)object;
         }
         object = new ArrayList();
-        NpcDropEntry[] npcDropEntryArray2 = this.d;
-        int n = this.d.length;
+        NpcDropEntry[] npcDropEntryArray2 = this.independentDrops;
+        int n = this.independentDrops.length;
         int n2 = 0;
         while (n2 < n) {
             block8: {
@@ -296,16 +296,16 @@ public final class NpcDropTable {
                     block9: {
                         npcDropEntryArray = npcDropEntryArray2[n2];
                         if (npcDropEntryArray == null) break block8;
-                        if (npcDropEntryArray.d() >= 65000) break block9;
-                        if ((npcDropEntryArray.d() < 7956 || npcDropEntryArray.d() > 8118) && ItemDefinition.isDefined(npcDropEntryArray.d()) && (!ServerSettings.freeToPlayWorld && (player == null || player.isMember()) || !ItemDefinition.forId(npcDropEntryArray.d()).isMembersOnly())) break block10;
+                        if (npcDropEntryArray.getItemId() >= 65000) break block9;
+                        if ((npcDropEntryArray.getItemId() < 7956 || npcDropEntryArray.getItemId() > 8118) && ItemDefinition.isDefined(npcDropEntryArray.getItemId()) && (!ServerSettings.freeToPlayWorld && (player == null || player.isMember()) || !ItemDefinition.forId(npcDropEntryArray.getItemId()).isMembersOnly())) break block10;
                         break block8;
                     }
-                    int n3 = npcDropEntryArray.d() - 65000;
+                    int n3 = npcDropEntryArray.getItemId() - 65000;
                     boolean bl = false;
                     int n4 = 0;
-                    while (n4 < e.length) {
-                        int n5 = e[n4];
-                        if (n5 == npcDropEntryArray.d()) {
+                    while (n4 < membersOnlyVirtualDropIds.length) {
+                        int n5 = membersOnlyVirtualDropIds[n4];
+                        if (n5 == npcDropEntryArray.getItemId()) {
                             bl = true;
                         }
                         ++n4;

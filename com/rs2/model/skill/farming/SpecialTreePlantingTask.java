@@ -28,7 +28,7 @@ extends CycleEvent {
     public final void execute(CycleEventContainer cycleEventContainer) {
         this.manager.patchStates[this.patch.getIndex()] = 0;
         this.manager.treeIds[this.patch.getIndex()] = this.saplingId;
-        this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.e();
+        this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.getElapsedMinutes();
         SpecialTreePatchManager.getPlayer(this.manager).getSkillManager().addExperience(19, this.definition.getPlantingExperience());
         cycleEventContainer.stop();
     }
@@ -36,8 +36,8 @@ extends CycleEvent {
     @Override
     public final void onStop() {
         this.manager.refreshConfig();
-        SpecialTreePatchManager.getPlayer(this.manager).n(false);
-        SpecialTreePatchManager.getPlayer(this.manager).aN();
+        SpecialTreePatchManager.getPlayer(this.manager).setActionLocked(false);
+        SpecialTreePatchManager.getPlayer(this.manager).resetAnimation();
     }
 }
 

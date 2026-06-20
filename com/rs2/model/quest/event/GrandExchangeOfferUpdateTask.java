@@ -15,7 +15,7 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        GrandExchangeOffer.b();
+        GrandExchangeOffer.processServerOffers();
     }
 }
 

@@ -13,7 +13,7 @@ extends Thread {
     public final void run() {
         CharacterFileManager.saveAllPlayers();
         if (ServerSettings.mysqlHiscoresEnabled) {
-            HiscoresDatabase.b();
+            HiscoresDatabase.disconnect();
         }
         System.out.println("Saved all players.");
     }

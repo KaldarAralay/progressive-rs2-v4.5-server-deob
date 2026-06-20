@@ -10,28 +10,28 @@ import com.rs2.model.task.CycleEventContainer;
 
 final class DuelCountdownTask
 extends CycleEvent {
-    private int a = 3;
-    private /* synthetic */ DuelSession b;
+    private int countdownValue = 3;
+    private /* synthetic */ DuelSession session;
 
     DuelCountdownTask(DuelSession duelSession) {
-        this.b = duelSession;
+        this.session = duelSession;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        DuelSession.a(this.b).getUpdateState().setForcedTextAndMarkUpdated("" + this.a);
-        --this.a;
-        if (this.a < 0) {
+        DuelSession.getPlayer(this.session).getUpdateState().setForcedTextAndMarkUpdated("" + this.countdownValue);
+        --this.countdownValue;
+        if (this.countdownValue < 0) {
             cycleEventContainer.stop();
         }
     }
 
     @Override
     public final void onStop() {
-        DuelSession.a(this.b).getUpdateState().setForcedTextAndMarkUpdated("FIGHT!");
-        Player player = DuelSession.a(this.b);
+        DuelSession.getPlayer(this.session).getUpdateState().setForcedTextAndMarkUpdated("FIGHT!");
+        Player player = DuelSession.getPlayer(this.session);
         player.packetSender.sendMusicJingle(204, 300);
-        this.b.b(true);
+        this.session.setStarted(true);
     }
 }
 

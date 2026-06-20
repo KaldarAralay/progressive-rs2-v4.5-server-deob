@@ -32,7 +32,7 @@ extends TickTask {
         if (!this.player.isWithinReach(this.npc, 1) || this.player.isOverlapping(this.npc)) {
             return;
         }
-        if (!GameUtil.a(this.player.getPosition(), this.npc.getPosition(), true)) {
+        if (!GameUtil.hasClearPath(this.player.getPosition(), this.npc.getPosition(), true)) {
             return;
         }
         EntityTargetMovement.clearMovementTarget(this.player);

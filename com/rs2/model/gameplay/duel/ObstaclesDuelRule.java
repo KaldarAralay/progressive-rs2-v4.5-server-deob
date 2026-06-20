@@ -12,11 +12,11 @@ extends DuelRule {
     }
 
     @Override
-    public final void a(Player player, boolean bl) {
+    public final void toggleForPlayer(Player player, boolean bl) {
         boolean bl2;
         boolean bl3 = bl;
         Player player2 = player;
-        if (j.a(player2)) {
+        if (NO_MOVEMENT.isEnabledFor(player2)) {
             if (bl3) {
                 player2.packetSender.sendGameMessage("You can't have no movement and obstacles");
             }
@@ -25,13 +25,13 @@ extends DuelRule {
             bl2 = true;
         }
         if (bl2) {
-            player.getDuelInterfaceManager().a(this.w, "There will be obstacles in the arena.");
+            player.getDuelInterfaceManager().toggleRule(this.ruleIndex, "There will be obstacles in the arena.");
         }
     }
 
     @Override
-    public final boolean a(Player player) {
-        return player.getDuelSession().k()[this.w];
+    public final boolean isEnabledFor(Player player) {
+        return player.getDuelSession().getEnabledRules()[this.ruleIndex];
     }
 }
 

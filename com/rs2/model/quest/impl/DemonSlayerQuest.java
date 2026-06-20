@@ -27,11 +27,11 @@ extends QuestScript {
 
     public DemonSlayerQuest(int n) {
         super(3);
-        super.a(3);
+        super.setQuestPointReward(3);
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player stringArray, int n) {
         if (n == 0) {
             String[] stringArray2 = new String[]{"I can start this quest by speaking to the Gypsy in the tent", "in Varrock's main square.", "", "", "I must be able to defeat a level 27 apocalyptic demon!"};
             return stringArray2;
@@ -41,16 +41,16 @@ extends QuestScript {
             return stringArray3;
         }
         if (n == 3) {
-            String[] stringArray4 = new String[]{"I need 3 keys to get the Silverlight from Sir Prysin:", String.valueOf(stringArray.aq(2400) ? "@str@" : "") + "Key from Captain Rovin", String.valueOf(stringArray.aq(2401) ? "@str@" : "") + "Key from the drain", String.valueOf(stringArray.aq(2399) ? "@str@" : "") + "Key from Wizard Traiborn"};
+            String[] stringArray4 = new String[]{"I need 3 keys to get the Silverlight from Sir Prysin:", String.valueOf(stringArray.ownsItem(2400) ? "@str@" : "") + "Key from Captain Rovin", String.valueOf(stringArray.ownsItem(2401) ? "@str@" : "") + "Key from the drain", String.valueOf(stringArray.ownsItem(2399) ? "@str@" : "") + "Key from Wizard Traiborn"};
             return stringArray4;
         }
         if (n >= 4 && n < 29) {
             n = 29 - n;
-            stringArray = new String[]{"I need 3 keys to get the Silverlight from Sir Prysin:", String.valueOf(stringArray.aq(2400) ? "@str@" : "") + "Key from Captain Rovin", String.valueOf(stringArray.aq(2401) ? "@str@" : "") + "Key from the drain", String.valueOf(stringArray.aq(2399) ? "@str@" : "") + "Key from Wizard Traiborn", "I need to bring " + n + " bones to Wizard Traiborn."};
+            stringArray = new String[]{"I need 3 keys to get the Silverlight from Sir Prysin:", String.valueOf(stringArray.ownsItem(2400) ? "@str@" : "") + "Key from Captain Rovin", String.valueOf(stringArray.ownsItem(2401) ? "@str@" : "") + "Key from the drain", String.valueOf(stringArray.ownsItem(2399) ? "@str@" : "") + "Key from Wizard Traiborn", "I need to bring " + n + " bones to Wizard Traiborn."};
             return stringArray;
         }
         if (n == 29) {
-            String[] stringArray5 = new String[]{"I need 3 keys to get the Silverlight from Sir Prysin:", String.valueOf(stringArray.aq(2400) ? "@str@" : "") + "Key from Captain Rovin", String.valueOf(stringArray.aq(2401) ? "@str@" : "") + "Key from the drain", String.valueOf(stringArray.aq(2399) ? "@str@" : "") + "Key from Wizard Traiborn", String.valueOf(stringArray.aq(2399) ? "" : "I should talk to Wizard Traiborn to get the key.")};
+            String[] stringArray5 = new String[]{"I need 3 keys to get the Silverlight from Sir Prysin:", String.valueOf(stringArray.ownsItem(2400) ? "@str@" : "") + "Key from Captain Rovin", String.valueOf(stringArray.ownsItem(2401) ? "@str@" : "") + "Key from the drain", String.valueOf(stringArray.ownsItem(2399) ? "@str@" : "") + "Key from Wizard Traiborn", String.valueOf(stringArray.ownsItem(2399) ? "" : "I should talk to Wizard Traiborn to get the key.")};
             return stringArray5;
         }
         if (n == 30) {
@@ -65,9 +65,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("3 Quest Points", 12150);
         player2 = player;
@@ -89,7 +89,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Entity entity, Entity entity2, int n) {
+    public final boolean handleCombatDeath(Entity entity, Entity entity2, int n) {
         if (entity2.isNpc() && entity.isPlayer()) {
             entity = (Player)entity;
             if (((Npc)(entity2 = (Npc)entity2)).getNpcId() == 879) {
@@ -107,12 +107,12 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2) {
+    public final boolean canAttackNpc(Player player, int n, int n2) {
         return n != 879 || n2 == 30;
     }
 
     @Override
-    public final int b(Entity entity, Entity entity2, int n) {
+    public final int getQuestDamageOverride(Entity entity, Entity entity2, int n) {
         if (entity2.isNpc()) {
             entity = (Player)entity;
             if (((Npc)(entity2 = (Npc)entity2)).getNpcId() == 879 && ((Player)entity).getEquipmentManager().getItemIdAtSlot(3) != 2402) {
@@ -124,7 +124,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2) {
+    public final boolean handleNpcKill(Player player, int n, int n2) {
         if (n == 879 && n2 == 30) {
             DialogueManager.continueDialogue(player, 879, 104, 0);
             return true;
@@ -133,12 +133,12 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3) {
-        if (n == 1929 && n2 == 2843 && n3 >= 3 && player.N != 2401 && !player.aq(2401) && n3 < 30) {
+    public final boolean handleItemOnObject(Player player, int n, int n2, int n3) {
+        if (n == 1929 && n2 == 2843 && n3 >= 3 && player.N != 2401 && !player.ownsItem(2401) && n3 < 30) {
             player.getDialogueManager().showPlayerTwoLineDialogue("OK, I think I've washed the key down into the sewer.", "I'd better go down and get it!", 591);
             player.getDialogueManager().finishDialogue();
             player.getUpdateState().setAnimation(827);
-            player.getInventoryManager().a(new ItemStack(1929, 1), new ItemStack(1925, 1));
+            player.getInventoryManager().replaceItem(new ItemStack(1929, 1), new ItemStack(1925, 1));
             Player player2 = player;
             player2.packetSender.sendGameMessage("You pour the liquid down the drain.");
             player.N = 2401;
@@ -148,9 +148,9 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean b(Player player, int n, int n2, int n3, int n4) {
-        if (n == 882 && n2 == 3237 && n3 == 3458 && n4 >= 3 && player.N == 2401 && !player.aq(2401) && n4 < 30) {
-            AttackStyleDefinition.a(player, new Position(player.getPosition().getX(), player.getPosition().getY() + 6400));
+    public final boolean handleFirstObjectAction(Player player, int n, int n2, int n3, int n4) {
+        if (n == 882 && n2 == 3237 && n3 == 3458 && n4 >= 3 && player.N == 2401 && !player.ownsItem(2401) && n4 < 30) {
+            AttackStyleDefinition.startDelayedObjectMove(player, new Position(player.getPosition().getX(), player.getPosition().getY() + 6400));
             GroundItem groundItem = new GroundItem(new ItemStack(2401, 1), player, new Position(3225, 9897, 0));
             GroundItemManager.getInstance();
             if (!GroundItemManager.isVisible(player, groundItem)) {
@@ -166,7 +166,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         ArrayList arrayList = new ArrayList(this.a);
         Collections.shuffle(arrayList, new Random(player.bK));
         if (n == 882) {
@@ -556,7 +556,7 @@ extends QuestScript {
                 }
                 if (n2 == 21) {
                     player.pendingGameMode = 0;
-                    player.setQuestState(this.b(), 3);
+                    player.setQuestState(this.getQuestId(), 3);
                     player.getDialogueManager().showNpcOneLineDialogue("I gave the other to the wizard Traiborn.", 591);
                     return true;
                 }
@@ -662,7 +662,7 @@ extends QuestScript {
                 }
             }
             if (n4 >= 3) {
-                if (n4 == 30 && !player.aq(2402)) {
+                if (n4 == 30 && !player.ownsItem(2402)) {
                     n2 = 5;
                 }
                 if (n2 == 1) {
@@ -696,9 +696,9 @@ extends QuestScript {
                         player.getInventoryManager().removeItem(new ItemStack(2400, 1));
                         player.getInventoryManager().removeItem(new ItemStack(2401, 1));
                         player.getInventoryManager().removeItem(new ItemStack(2399, 1));
-                        player.setQuestState(this.b(), 30);
+                        player.setQuestState(this.getQuestId(), 30);
                     }
-                    player.getInventoryManager().b(new ItemStack(2402, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(2402, 1));
                     player.getDialogueManager().showItemMessage("Sir Prysin hands you a very shiny sword.", new ItemStack(2402, 1));
                     return true;
                 }
@@ -714,7 +714,7 @@ extends QuestScript {
             }
         }
         if (n == 884 && n4 >= 3 && n4 < 30) {
-            if (player.aq(2400)) {
+            if (player.ownsItem(2400)) {
                 return false;
             }
             if (n2 == 1) {
@@ -908,7 +908,7 @@ extends QuestScript {
                 return true;
             }
             if (n2 == 27) {
-                player.getInventoryManager().b(new ItemStack(2400, 1));
+                player.getInventoryManager().addOrDropItem(new ItemStack(2400, 1));
                 player.getDialogueManager().showItemMessage("Captain Rovin hands you a key.", new ItemStack(2400, 1));
                 player.getDialogueManager().finishDialogue();
                 return true;
@@ -1019,13 +1019,13 @@ extends QuestScript {
                 }
                 if (n2 == 18) {
                     player.getDialogueManager().showPlayerOneLineDialogue("Ok I'll speak to you when I've got some bones.", 591);
-                    player.setQuestState(this.b(), 4);
+                    player.setQuestState(this.getQuestId(), 4);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
             }
             if (n4 >= 4 && n4 < 30) {
-                if (n2 == 1 && player.aq(2399)) {
+                if (n2 == 1 && player.ownsItem(2399)) {
                     return false;
                 }
                 if (n2 == 1 && n4 == 29) {
@@ -1072,10 +1072,10 @@ extends QuestScript {
                     if (n4 < 29) {
                         n = player.getInventoryManager().getItemAmount(526);
                         n = n < (n2 = 29 - n4) ? n : n2;
-                        player.addQuestState(this.b(), n);
+                        player.addQuestState(this.getQuestId(), n);
                         player.getInventoryManager().removeItem(new ItemStack(526, n));
                     }
-                    player.getInventoryManager().b(new ItemStack(2399, 1));
+                    player.getInventoryManager().addOrDropItem(new ItemStack(2399, 1));
                     player.getDialogueManager().showItemMessage("Traiborn hands you a key.", new ItemStack(2399, 1));
                     return true;
                 }
@@ -1091,7 +1091,7 @@ extends QuestScript {
                 if (n2 == 10) {
                     n = player.getInventoryManager().getItemAmount(526);
                     n = n < (n2 = 29 - n4) ? n : n2;
-                    player.addQuestState(this.b(), n);
+                    player.addQuestState(this.getQuestId(), n);
                     player.getInventoryManager().removeItem(new ItemStack(526, n));
                     n2 = 29 - (n4 += n);
                     player.getDialogueManager().showNpcOneLineDialogue("You still need to bring me " + n2 + " more.", 591);
@@ -1226,7 +1226,7 @@ extends QuestScript {
             if (n2 == 103) {
                 player.pendingGameMode = 0;
                 player.N = 0;
-                player.getDialogueManager().b("Delrith is sucked into the vortex...");
+                player.getDialogueManager().showOneLineChatboxMessage("Delrith is sucked into the vortex...");
                 Npc npc = Npc.findByDefinitionId(879);
                 npc.setDead(true);
                 CombatManager.handleDeath(npc);
@@ -1238,7 +1238,7 @@ extends QuestScript {
             }
             if (n2 == 105) {
                 player.getDialogueManager().finishDialogue();
-                this.c(player);
+                this.awardCompletionRewards(player);
                 return true;
             }
         }

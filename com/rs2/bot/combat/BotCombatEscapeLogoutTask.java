@@ -16,59 +16,59 @@ import com.rs2.model.task.TickTask;
 
 final class BotCombatEscapeLogoutTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
     BotCombatEscapeLogoutTask(int n, Player player) {
-        this.a = player;
+        this.player = player;
         super(2);
     }
 
     @Override
     public final void execute() {
-        if (this.a.isDead() || !this.a.bW()) {
+        if (this.player.isDead() || !this.player.isRegistered()) {
             this.stop();
         }
-        if (this.a.getPosition().getY() < 3520 || !this.a.isInWilderness()) {
-            if (this.a.currentBotTask == null && !this.a.clanWarsBot) {
-                BotCombatHelper.sellBotLootItems(this.a);
+        if (this.player.getPosition().getY() < 3520 || !this.player.isInWilderness()) {
+            if (this.player.currentBotTask == null && !this.player.clanWarsBot) {
+                BotCombatHelper.sellBotLootItems(this.player);
             }
-            if (this.a.de) {
-                if (this.a.currentBotTask == null) {
-                    if (this.a.clanWarsBot) {
-                        ClanWarsBotManager.hideClanWarsBot(this.a);
+            if (this.player.isBot) {
+                if (this.player.currentBotTask == null) {
+                    if (this.player.clanWarsBot) {
+                        ClanWarsBotManager.hideClanWarsBot(this.player);
                         return;
                     }
-                    BotCombatLoadoutManager.a(this.a);
+                    BotCombatLoadoutManager.startCombatLoadoutBot(this.player);
                     return;
                 }
-                if (this.a.az != 4) {
-                    GameplayHelper.d(this.a);
+                if (this.player.botMode != 4) {
+                    GameplayHelper.startNextBotTask(this.player);
                     return;
                 }
-                System.out.println("Bot needs to escape combat: " + this.a.getUsername() + ", trying to fix by reseting and relogging.");
+                System.out.println("Bot needs to escape combat: " + this.player.getUsername() + ", trying to fix by reseting and relogging.");
                 Object var2_1 = null;
-                Player player = this.a;
-                this.a.currentBotTask = var2_1;
+                Player player = this.player;
+                this.player.currentBotTask = var2_1;
                 var2_1 = null;
-                player = this.a;
-                this.a.deferredBotTask = var2_1;
-                this.a.f(new Position(ServerSettings.respawnX, ServerSettings.respawnY, ServerSettings.respawnPlane));
-                World.a(this.a);
+                player = this.player;
+                this.player.deferredBotTask = var2_1;
+                this.player.applyTeleportPosition(new Position(ServerSettings.respawnX, ServerSettings.respawnY, ServerSettings.respawnPlane));
+                World.logoutBotAndScheduleRelogin(this.player);
                 return;
             }
-            if (!this.a.getRecentCombatTimer().hasElapsed()) {
-                Player player = this.a;
+            if (!this.player.getRecentCombatTimer().hasElapsed()) {
+                Player player = this.player;
                 player.packetSender.sendGameMessage("You have to wait 10 seconds after combat in order to logout.");
                 return;
             }
-            if (this.a.getSingleCombatTimer().hasElapsed()) {
-                Player player = this.a;
+            if (this.player.getSingleCombatTimer().hasElapsed()) {
+                Player player = this.player;
                 player.packetSender.sendLogout();
-                this.a.disconnect();
+                this.player.disconnect();
                 return;
             }
         } else {
-            BotCombatEscapeHandler.b(this.a);
+            BotCombatEscapeHandler.processBotCombatEscape(this.player);
         }
     }
 }

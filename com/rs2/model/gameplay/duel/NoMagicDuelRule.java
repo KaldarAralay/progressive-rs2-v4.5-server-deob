@@ -12,11 +12,11 @@ extends DuelRule {
     }
 
     @Override
-    public final void a(Player player, boolean bl) {
+    public final void toggleForPlayer(Player player, boolean bl) {
         boolean bl2;
         boolean bl3 = bl;
         Player player2 = player;
-        if (a.a(player2) && b.a(player2)) {
+        if (NO_RANGED.isEnabledFor(player2) && NO_MELEE.isEnabledFor(player2)) {
             if (bl3) {
                 player2.packetSender.sendGameMessage("You can't have no ranged, no melee and no magic - how would you fight?");
             }
@@ -25,13 +25,13 @@ extends DuelRule {
             bl2 = true;
         }
         if (bl2) {
-            player.getDuelInterfaceManager().a(this.w, "Players cannot use magic");
+            player.getDuelInterfaceManager().toggleRule(this.ruleIndex, "Players cannot use magic");
         }
     }
 
     @Override
-    public final boolean a(Player player) {
-        return player.getDuelSession().k()[this.w];
+    public final boolean isEnabledFor(Player player) {
+        return player.getDuelSession().getEnabledRules()[this.ruleIndex];
     }
 }
 

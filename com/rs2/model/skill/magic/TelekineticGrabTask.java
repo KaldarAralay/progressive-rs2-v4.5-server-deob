@@ -15,80 +15,80 @@ import com.rs2.util.GameUtil;
 
 final class TelekineticGrabTask
 extends CycleEvent {
-    private final /* synthetic */ Player a;
-    private final /* synthetic */ int b;
-    private final /* synthetic */ int c;
-    private final /* synthetic */ Position d;
-    private final /* synthetic */ SpellDefinition e;
+    private final /* synthetic */ Player caster;
+    private final /* synthetic */ int actionSequence;
+    private final /* synthetic */ int itemId;
+    private final /* synthetic */ Position targetPosition;
+    private final /* synthetic */ SpellDefinition telegrabSpell;
 
     TelekineticGrabTask(Player player, int n, int n2, Position position, SpellDefinition spellDefinition) {
-        this.a = player;
-        this.b = n;
-        this.c = n2;
-        this.d = position;
-        this.e = spellDefinition;
+        this.caster = player;
+        this.actionSequence = n;
+        this.itemId = n2;
+        this.targetPosition = position;
+        this.telegrabSpell = spellDefinition;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        if (!this.a.isCurrentActionSequence(this.b)) {
+        if (!this.caster.isCurrentActionSequence(this.actionSequence)) {
             cycleEventContainer.stop();
             return;
         }
         GroundItemManager.getInstance();
-        Object object = GroundItemManager.findVisibleItem(this.a, this.c, this.d);
+        Object object = GroundItemManager.findVisibleItem(this.caster, this.itemId, this.targetPosition);
         if (object == null) {
             return;
         }
-        if (this.a.gameMode != 0) {
+        if (this.caster.gameMode != 0) {
             if (!((GroundItem)object).isRespawning() && ((GroundItem)object).getOwner() == null) {
-                object = this.a;
+                object = this.caster;
                 ((Player)object).packetSender.sendGameMessage("You are not playing on normal gamemode and cant pick that up.");
                 cycleEventContainer.stop();
                 return;
             }
-            if (!((GroundItem)object).isRespawning() && ((GroundItem)object).getOwner().resolve() != this.a) {
-                object = this.a;
+            if (!((GroundItem)object).isRespawning() && ((GroundItem)object).getOwner().resolve() != this.caster) {
+                object = this.caster;
                 ((Player)object).packetSender.sendGameMessage("You are not playing on normal gamemode and cant pick that up.");
                 cycleEventContainer.stop();
                 return;
             }
         }
-        switch (this.e) {
+        switch (this.telegrabSpell) {
             case TELEKINETIC_GRAB: {
-                if (this.c == 1583) {
-                    object = this.a;
+                if (this.itemId == 1583) {
+                    object = this.caster;
                     ((Player)object).packetSender.sendGameMessage("I can't use Telekinetic Grab on this object.");
                     cycleEventContainer.stop();
                     return;
                 }
-                if (this.c == 1419) {
-                    if (this.a.aq(this.c)) {
-                        object = this.a;
+                if (this.itemId == 1419) {
+                    if (this.caster.ownsItem(this.itemId)) {
+                        object = this.caster;
                         ((Player)object).packetSender.sendGameMessage("You already have a scythe, you don't need another one.");
                         cycleEventContainer.stop();
                         return;
                     }
-                    this.a.bJ[3] = 1;
+                    this.caster.questHookStates[3] = 1;
                 }
-                if (this.c >= 5509 && this.c <= 5515 && this.a.aq(this.c)) {
-                    object = this.a;
+                if (this.itemId >= 5509 && this.itemId <= 5515 && this.caster.ownsItem(this.itemId)) {
+                    object = this.caster;
                     ((Player)object).packetSender.sendGameMessage("I already have that pouch!");
                     cycleEventContainer.stop();
                     return;
                 }
-                if (!(this.a.getTelekineticTheatreController().g() || GameUtil.a(this.a.getPosition(), this.d, false) && GameUtil.a(this.a.getPosition(), this.d, 10))) {
+                if (!(this.caster.getTelekineticTheatreController().isInsideTheatre() || GameUtil.hasClearPath(this.caster.getPosition(), this.targetPosition, false) && GameUtil.isWithinDistance(this.caster.getPosition(), this.targetPosition, 10))) {
                     return;
                 }
-                if (!this.a.getPosition().equals(this.d)) break;
-                this.a.getTargetMovement().moveAwayFromOverlap();
+                if (!this.caster.getPosition().equals(this.targetPosition)) break;
+                this.caster.getTargetMovement().moveAwayFromOverlap();
                 return;
             }
             default: {
                 return;
             }
         }
-        MagicSpellAction.castTelekineticGrab(this.a, this.e, this.c, this.d);
+        MagicSpellAction.castTelekineticGrab(this.caster, this.telegrabSpell, this.itemId, this.targetPosition);
         cycleEventContainer.stop();
     }
 

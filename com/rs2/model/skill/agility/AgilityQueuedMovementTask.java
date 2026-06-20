@@ -43,13 +43,13 @@ extends CycleEvent {
         int n5 = this.deltaY;
         int n6 = this.deltaX;
         Player player2 = this.player;
-        player2.n(true);
+        player2.setActionLocked(true);
         player2.getMovementQueue().clear();
         if (n > 0) {
-            player2.al(n);
-            player2.aj(n);
-            player2.ak(n);
-            player2.f(true);
+            player2.setStandAnimationOverride(n);
+            player2.setRunAnimationOverride(n);
+            player2.setWalkAnimationOverride(n);
+            player2.setAppearanceUpdateRequired(true);
         }
         n = 2;
         if (n6 > 0) {

@@ -30,8 +30,8 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        TreePatchManager.getPlayer(this.manager).n(false);
-        TreePatchManager.getPlayer(this.manager).aN();
+        TreePatchManager.getPlayer(this.manager).setActionLocked(false);
+        TreePatchManager.getPlayer(this.manager).resetAnimation();
     }
 }
 

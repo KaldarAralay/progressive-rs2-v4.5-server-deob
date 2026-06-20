@@ -12,11 +12,11 @@ public final class SheepShearerQuest
 extends QuestScript {
     public SheepShearerQuest(int n) {
         super(15);
-        super.a(1);
+        super.setQuestPointReward(1);
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player stringArray, int n) {
         if (n == 0) {
             stringArray = new String[]{"I can start this quest by speaking to Farmer Fred at his", "farm just a little way North West of Lumbridge"};
             return stringArray;
@@ -38,9 +38,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("1 Quest Point", 12150);
         player2 = player;
@@ -54,7 +54,7 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.sendInterfaceText("", 12155);
         player.getSkillManager().addQuestExperience(12, 150.0);
-        player.getInventoryManager().b(new ItemStack(995, 60));
+        player.getInventoryManager().addOrDropItem(new ItemStack(995, 60));
         player2 = player;
         player2.packetSender.sendInterfaceModel(InterfaceDefinition.interfaceCount <= 12140 ? 6161 : 12145, 250, 1735);
         player2 = player;
@@ -64,7 +64,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         if (n == 758) {
             if (n4 == 0) {
                 if (n2 == 1) {
@@ -231,7 +231,7 @@ extends QuestScript {
                 if (n2 == 7) {
                     n = player.getInventoryManager().getItemAmount(1759);
                     n = n < (n2 = 22 - n4) ? n : n2;
-                    player.addQuestState(this.b(), n);
+                    player.addQuestState(this.getQuestId(), n);
                     if ((n4 += n) < 22) {
                         player.getDialogueManager().showPlayerOneLineDialogue("That's all I have for now.", 591);
                         player.getInventoryManager().removeItem(new ItemStack(1759, n));
@@ -255,7 +255,7 @@ extends QuestScript {
                 }
                 if (n2 == 9) {
                     player.getDialogueManager().finishDialogue();
-                    this.c(player);
+                    this.awardCompletionRewards(player);
                     return true;
                 }
             }

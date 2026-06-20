@@ -14,29 +14,29 @@ import com.rs2.model.task.TickTask;
 
 final class SwampGasExplosionTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
     SwampGasExplosionTask(int n, Player player) {
-        this.a = player;
+        this.player = player;
         super(7);
     }
 
     @Override
     public final void execute() {
-        if (!this.a.bW()) {
+        if (!this.player.isRegistered()) {
             this.stop();
             return;
         }
-        Object object = this.a.eJ();
-        if (CaveLightManager.b(this.a) && object != null) {
+        Object object = this.player.findLitCaveLightSource();
+        if (CaveLightManager.isInSwampGasArea(this.player) && object != null) {
             ItemStack itemStack = object;
-            object = this.a;
+            object = this.player;
             ((Entity)object).applyDirectHit(12, HitType.NORMAL);
             Object object2 = object;
             ((Player)object2).packetSender.sendGameMessage("The swamp gas explodes!");
             object2 = new GraphicEffect(157, 100);
             ((Entity)object).getUpdateState().setGraphic(((GraphicEffect)object2).getId(), ((GraphicEffect)object2).getPackedDelay());
-            GameplayHelper.a((Player)object, itemStack.getId(), false);
+            GameplayHelper.extinguishCaveLightSource((Player)object, itemStack.getId(), false);
             return;
         }
         this.stop();

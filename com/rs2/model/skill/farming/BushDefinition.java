@@ -48,7 +48,7 @@ public enum BushDefinition {
     private BushDefinition(int n3, int n4, int[] nArray, int n5, double d, double d2, double d3, int n6, int n222, int n7, int n222, double d4) {
         void var19_14;
         void var18_13;
-        void cfr_renamed_10;
+        void cfr_renamed_9;
         void var8_6;
         this.seedId = n3;
         this.produceItemId = n4;
@@ -60,7 +60,7 @@ public enum BushDefinition {
         this.plantingExperience = d3;
         this.harvestExperience = n6;
         this.configStartStage = n7;
-        this.configEndStage = cfr_renamed_10;
+        this.configEndStage = cfr_renamed_9;
         this.healthCheckConfigStage = var18_13;
         this.healthCheckExperience = var19_14;
     }

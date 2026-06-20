@@ -8,38 +8,38 @@ import com.rs2.model.task.TickTask;
 
 final class SkillLevelRestoreTask
 extends TickTask {
-    private /* synthetic */ SkillManager a;
-    private final /* synthetic */ int b;
+    private /* synthetic */ SkillManager skillManager;
+    private final /* synthetic */ int skillId;
 
     SkillLevelRestoreTask(SkillManager skillManager, int n, int n2) {
-        this.a = skillManager;
-        this.b = n2;
+        this.skillManager = skillManager;
+        this.skillId = n2;
         super(n);
     }
 
     @Override
     public final void execute() {
-        if (SkillManager.getPlayer(this.a) == null) {
+        if (SkillManager.getPlayer(this.skillManager) == null) {
             this.stop();
             return;
         }
-        if (!SkillManager.getPlayer((SkillManager)this.a).el || SkillManager.getPlayer(this.a).isDead()) {
+        if (!SkillManager.getPlayer((SkillManager)this.skillManager).el || SkillManager.getPlayer(this.skillManager).isDead()) {
             this.stop();
             return;
         }
-        if (SkillManager.getCurrentLevels(this.a)[this.b] != SkillManager.getLevelForExperience(this.a.getExperience()[this.b])) {
-            if (SkillManager.getCurrentLevels(this.a)[this.b] > SkillManager.getLevelForExperience(this.a.getExperience()[this.b])) {
-                int[] nArray = SkillManager.getCurrentLevels(this.a);
-                int n = this.b;
+        if (SkillManager.getCurrentLevels(this.skillManager)[this.skillId] != SkillManager.getLevelForExperience(this.skillManager.getExperience()[this.skillId])) {
+            if (SkillManager.getCurrentLevels(this.skillManager)[this.skillId] > SkillManager.getLevelForExperience(this.skillManager.getExperience()[this.skillId])) {
+                int[] nArray = SkillManager.getCurrentLevels(this.skillManager);
+                int n = this.skillId;
                 nArray[n] = nArray[n] - 1;
             } else {
-                int[] nArray = SkillManager.getCurrentLevels(this.a);
-                int n = this.b;
+                int[] nArray = SkillManager.getCurrentLevels(this.skillManager);
+                int n = this.skillId;
                 nArray[n] = nArray[n] + 1;
             }
-            this.a.refreshSkill(this.b);
+            this.skillManager.refreshSkill(this.skillId);
         }
-        if (!this.a.isLevelModified(this.b)) {
+        if (!this.skillManager.isLevelModified(this.skillId)) {
             this.stop();
         }
     }

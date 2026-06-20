@@ -12,11 +12,11 @@ public final class ImpCatcherQuest
 extends QuestScript {
     public ImpCatcherQuest(int n) {
         super(8);
-        super.a(1);
+        super.setQuestPointReward(1);
     }
 
     @Override
-    public final String[] a(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player stringArray, int n) {
         if (n == 0) {
             stringArray = new String[]{"I can start this quest by speaking to Wizard Mizgog who is", "in the Wizards' Tower.", "", "There aren't any requirements for this quest."};
             return stringArray;
@@ -33,9 +33,9 @@ extends QuestScript {
     }
 
     @Override
-    public final void c(Player player) {
-        super.a(player);
-        super.b(player);
+    public final void awardCompletionRewards(Player player) {
+        super.markQuestComplete(player);
+        super.showQuestCompleteInterface(player);
         Player player2 = player;
         player2.packetSender.sendInterfaceText("1 Quest Point", 12150);
         player2 = player;
@@ -49,7 +49,7 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.sendInterfaceText("", 12155);
         player.getSkillManager().addQuestExperience(6, 875.0);
-        player.getInventoryManager().b(new ItemStack(1478, 1));
+        player.getInventoryManager().addOrDropItem(new ItemStack(1478, 1));
         player2 = player;
         player2.packetSender.sendInterfaceModel(InterfaceDefinition.interfaceCount <= 12140 ? 6161 : 12145, 250, 1478);
         player2 = player;
@@ -67,7 +67,7 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean a(Player player, int n, int n2, int n3, int n4) {
+    public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         if (n == 706) {
             if (n4 == 0) {
                 if (n2 == 1) {
@@ -170,7 +170,7 @@ extends QuestScript {
                     player.getInventoryManager().removeItem(new ItemStack(1470, 1));
                     player.getInventoryManager().removeItem(new ItemStack(1474, 1));
                     player.getInventoryManager().removeItem(new ItemStack(1472, 1));
-                    this.c(player);
+                    this.awardCompletionRewards(player);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }

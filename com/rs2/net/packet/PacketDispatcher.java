@@ -153,7 +153,7 @@ public final class PacketDispatcher {
         }
         try {
             if (!(packetHandler instanceof NoOpPacketHandler) && ((IncomingPacket)object).getOpcode() != 202) {
-                player.aF(0);
+                player.setIdlePacketCount(0);
             }
             player.cl = System.currentTimeMillis();
             packetHandler.handle(player, (IncomingPacket)object);
@@ -197,7 +197,7 @@ public final class PacketDispatcher {
 
     public static final void processIncoming(Player player) {
         try {
-            if (player.getIndex() != -1 && World.f()[player.getIndex()] != player) {
+            if (player.getIndex() != -1 && World.getPlayers()[player.getIndex()] != player) {
                 player.disconnect();
                 player.setIndex(-1);
                 player.getSelectionKey().attach(null);
@@ -217,7 +217,7 @@ public final class PacketDispatcher {
                     break;
                 }
                 if (player.getConnectionState().compareTo(PlayerConnectionState.d) < 0) {
-                    player.df();
+                    player.getLoginProtocol();
                     LoginProtocol.a(player, player.getInboundBuffer());
                     break;
                 }
@@ -240,11 +240,11 @@ public final class PacketDispatcher {
                     return;
                 }
                 int n2 = player.getInboundBuffer().position();
-                player.bf();
+                player.dispatchCurrentPacket();
                 player.getInboundBuffer().position(n2 + player.getCurrentPacketLength());
                 player.setCurrentPacketOpcode(-1);
                 player.setCurrentPacketLength(-1);
-                if (player.bW()) continue;
+                if (player.isRegistered()) continue;
             }
             player.getInboundBuffer().clear();
             return;

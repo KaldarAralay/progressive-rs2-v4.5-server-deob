@@ -38,22 +38,22 @@ public enum FoodPreparationRecipe {
     F(4241, 0, 1921, 4237, 20, 52.0, false, 0),
     G(4239, 0, 1980, 4242, 20, 52.0, false, 1923);
 
-    private int H;
-    private int I;
-    private int J;
-    private int K;
-    private int L;
-    private double M;
-    private boolean N;
-    private int O;
+    private int ingredientItemId;
+    private int ingredientAmount;
+    private int baseItemId;
+    private int productItemId;
+    private int requiredLevel;
+    private double experience;
+    private boolean putIntoMessage;
+    private int returnedItemId;
 
-    public static FoodPreparationRecipe a(int n, int n2) {
+    public static FoodPreparationRecipe forIngredients(int n, int n2) {
         FoodPreparationRecipe[] foodPreparationRecipeArray = FoodPreparationRecipe.values();
         int n3 = foodPreparationRecipeArray.length;
         int n4 = 0;
         while (n4 < n3) {
             FoodPreparationRecipe foodPreparationRecipe = foodPreparationRecipeArray[n4];
-            if (foodPreparationRecipe.H == n && foodPreparationRecipe.J == n2 || foodPreparationRecipe.H == n2 && foodPreparationRecipe.J == n) {
+            if (foodPreparationRecipe.ingredientItemId == n && foodPreparationRecipe.baseItemId == n2 || foodPreparationRecipe.ingredientItemId == n2 && foodPreparationRecipe.baseItemId == n) {
                 return foodPreparationRecipe;
             }
             ++n4;
@@ -67,48 +67,48 @@ public enum FoodPreparationRecipe {
      */
     private FoodPreparationRecipe(int n3, int n4, int n5, double d, boolean bl, int n6) {
         void var11_8;
-        void cfr_renamed_5;
+        void cfr_renamed_4;
         void var7_5;
-        this.H = n3;
-        this.I = n4;
-        this.J = n5;
-        this.K = (int)d;
-        this.L = var7_5;
-        this.M = (double)bl;
-        this.N = cfr_renamed_5;
-        this.O = var11_8;
+        this.ingredientItemId = n3;
+        this.ingredientAmount = n4;
+        this.baseItemId = n5;
+        this.productItemId = (int)d;
+        this.requiredLevel = var7_5;
+        this.experience = (double)bl;
+        this.putIntoMessage = cfr_renamed_4;
+        this.returnedItemId = var11_8;
     }
 
-    public final int a() {
-        return this.H;
+    public final int getIngredientItemId() {
+        return this.ingredientItemId;
     }
 
-    public final int b() {
-        return this.I;
+    public final int getIngredientAmount() {
+        return this.ingredientAmount;
     }
 
-    public final int c() {
-        return this.J;
+    public final int getBaseItemId() {
+        return this.baseItemId;
     }
 
-    public final int d() {
-        return this.K;
+    public final int getProductItemId() {
+        return this.productItemId;
     }
 
-    public final int e() {
-        return this.L;
+    public final int getRequiredLevel() {
+        return this.requiredLevel;
     }
 
-    public final double f() {
-        return this.M;
+    public final double getExperience() {
+        return this.experience;
     }
 
-    public final boolean g() {
-        return this.N;
+    public final boolean usesPutIntoMessage() {
+        return this.putIntoMessage;
     }
 
-    public final int h() {
-        return this.O;
+    public final int getReturnedItemId() {
+        return this.returnedItemId;
     }
 }
 

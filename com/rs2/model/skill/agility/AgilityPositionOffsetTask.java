@@ -35,7 +35,7 @@ extends CycleEvent {
         this.player.getSkillManager().addExperience(16, this.experience);
         Player player = this.player;
         player.packetSender.sendGameMessage(this.completionMessage);
-        this.player.n(false);
+        this.player.setActionLocked(false);
         cycleEventContainer.stop();
     }
 

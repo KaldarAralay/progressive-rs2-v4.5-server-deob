@@ -36,7 +36,7 @@ extends CycleEvent {
         this.player.getInventoryManager().removeItem(new ItemStack(this.recipe.getUnfiredItemId()));
         object = this.player;
         ((Player)object).packetSender.sendGameMessage("You put a " + new ItemStack(this.recipe.getUnfiredItemId()).getDefinition().getName() + " in the oven.");
-        boolean bl = GameUtil.b(180, 800, this.player.getSkillManager().getCurrentLevels()[12]);
+        boolean bl = GameUtil.rollLevelScaledChance(180, 800, this.player.getSkillManager().getCurrentLevels()[12]);
         if (bl) {
             Player player = this.player;
             player.packetSender.sendGameMessage("You retrieve the " + new ItemStack(this.recipe.getFiredItemId()).getDefinition().getName() + " from the oven.");
@@ -51,7 +51,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        this.player.aN();
+        this.player.resetAnimation();
     }
 }
 

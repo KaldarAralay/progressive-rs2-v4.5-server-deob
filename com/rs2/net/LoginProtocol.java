@@ -137,7 +137,7 @@ public final class LoginProtocol {
                     player.setUsername(TextUtil.capitalizeFirst(string));
                     player.ei = System.currentTimeMillis();
                 }
-                player.b(TextUtil.encodeNameHash(player.getUsername().toLowerCase()));
+                player.setNameHash(TextUtil.encodeNameHash(player.getUsername().toLowerCase()));
                 player.setConnectionState(PlayerConnectionState.c);
                 if (a.contains(player.getUsername())) {
                     System.out.println("Player was already logging in " + player.getUsername());
@@ -145,12 +145,12 @@ public final class LoginProtocol {
                     return;
                 }
                 a.add(player.getUsername());
-                if (!player.br() || player.getConnectionState() != PlayerConnectionState.c) break;
+                if (!player.loadAndValidateLogin() || player.getConnectionState() != PlayerConnectionState.c) break;
                 DedicatedReactor dedicatedReactor = DedicatedReactor.b();
                 synchronized (dedicatedReactor) {
                     DedicatedReactor.b().a().wakeup();
                     player.getSelectionKey().interestOps(player.getSelectionKey().interestOps() & 0xFFFFFFFE);
-                    player.getSocketChannel().register(Server.f().g(), 1, player);
+                    player.getSocketChannel().register(Server.getInstance().getSelector(), 1, player);
                     return;
                 }
             }
