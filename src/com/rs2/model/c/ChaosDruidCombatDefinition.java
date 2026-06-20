@@ -1,0 +1,24 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
+package com.rs2.model.c;
+
+import com.rs2.model.Entity;
+import com.rs2.model.combat.AttackBonusType;
+import com.rs2.model.combat.AttackXpMode;
+import com.rs2.model.combat.attack.BaseCombatAttack;
+import com.rs2.model.combat.attack.CombatAttack;
+import com.rs2.model.npc.combat.NpcCombatDefinition;
+import com.rs2.model.skill.magic.SpellDefinition;
+
+final class ChaosDruidCombatDefinition
+extends NpcCombatDefinition {
+    ChaosDruidCombatDefinition() {
+    }
+
+    @Override
+    public final CombatAttack[] createAttacks(Entity entity, Entity entity2) {
+        return new CombatAttack[]{BaseCombatAttack.createMagicAttack(entity, entity2, SpellDefinition.CHAOS_DRUID_CONFUSE), BaseCombatAttack.a(entity, entity2, AttackXpMode.MELEE_ACCURATE, AttackBonusType.CRUSH, 2, 4, 422)};
+    }
+}
+

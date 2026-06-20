@@ -1,0 +1,18 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
+package com.rs2.model.skill.magic;
+
+import com.rs2.model.combat.requirement.MembersRequirement;
+import com.rs2.model.skill.magic.MagicSpellAction;
+
+final class MagicMembersAccountRequirement
+extends MembersRequirement {
+    MagicMembersAccountRequirement(MagicSpellAction magicSpellAction) {
+    }
+
+    public final String a() {
+        return "You need a members account to access members content.";
+    }
+}
+

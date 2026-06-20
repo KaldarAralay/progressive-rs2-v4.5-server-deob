@@ -1,0 +1,28 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
+package com.rs2.bot;
+
+import com.rs2.bot.BotPlayer;
+import com.rs2.cache.CacheArchiveEntry;
+import com.rs2.model.GameplayHelper;
+import com.rs2.model.task.TickTask;
+
+final class BotTradeAdvertStartTask
+extends TickTask {
+    private final /* synthetic */ BotPlayer bot;
+
+    BotTradeAdvertStartTask(BotPlayer botPlayer, int n, BotPlayer botPlayer2) {
+        this.bot = botPlayer2;
+        super(2);
+    }
+
+    @Override
+    public final void execute() {
+        GameplayHelper.d(this.bot);
+        BotPlayer botPlayer = this.bot;
+        CacheArchiveEntry.startTradeOfferTick(botPlayer);
+        this.stop();
+    }
+}
+

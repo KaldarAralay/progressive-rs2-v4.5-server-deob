@@ -1,0 +1,33 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
+package com.rs2.model.item.action;
+
+import com.rs2.model.ground.GroundItem;
+import com.rs2.model.ground.GroundItemManager;
+import com.rs2.model.item.ItemStack;
+import com.rs2.model.item.action.SpinningPlateHandler;
+import com.rs2.model.item.action.SpinningPlateResultEvent;
+import com.rs2.model.player.Player;
+import com.rs2.model.task.CycleEvent;
+import com.rs2.model.task.CycleEventContainer;
+
+final class BrokenPlateDropEvent
+extends CycleEvent {
+    private final /* synthetic */ Player a;
+
+    BrokenPlateDropEvent(SpinningPlateResultEvent spinningPlateResultEvent, Player player) {
+        this.a = player;
+    }
+
+    @Override
+    public final void execute(CycleEventContainer cycleEventContainer) {
+        GroundItemManager.getInstance().spawn(new GroundItem(new ItemStack(SpinningPlateHandler.c(), 1), this.a));
+        cycleEventContainer.stop();
+    }
+
+    @Override
+    public final void onStop() {
+    }
+}
+

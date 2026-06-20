@@ -1,0 +1,49 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
+package com.rs2.model.skill.agility;
+
+import com.rs2.model.Position;
+import com.rs2.model.player.Player;
+import com.rs2.model.task.CycleEvent;
+import com.rs2.model.task.CycleEventContainer;
+
+final class AgilityMovementFinishTask
+extends CycleEvent {
+    private final /* synthetic */ Player player;
+    private final /* synthetic */ int experience;
+    private final /* synthetic */ boolean unlockPlayer;
+    private final /* synthetic */ int destinationX;
+    private final /* synthetic */ int destinationY;
+    private final /* synthetic */ int destinationPlane;
+
+    AgilityMovementFinishTask(Player player, int n, boolean bl, int n2, int n3, int n4) {
+        this.player = player;
+        this.experience = n;
+        this.unlockPlayer = bl;
+        this.destinationX = n2;
+        this.destinationY = n3;
+        this.destinationPlane = n4;
+    }
+
+    @Override
+    public final void execute(CycleEventContainer cycleEventContainer) {
+        this.player.getSkillManager().addExperience(16, this.experience);
+        this.player.getUpdateState().setForcedMovementUpdateRequired(false);
+        if (this.unlockPlayer) {
+            this.player.n(false);
+        }
+        this.player.aw = false;
+        this.player.moveTo(new Position(this.destinationX, this.destinationY, this.destinationPlane));
+        this.player.getUpdateState().clearForcedMovement();
+        this.player.aj(-1);
+        this.player.ak(-1);
+        this.player.f(true);
+        cycleEventContainer.stop();
+    }
+
+    @Override
+    public final void onStop() {
+    }
+}
+

@@ -1,0 +1,41 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
+package com.rs2.model.interaction;
+
+import com.rs2.model.interaction.FirstObjectActionTask;
+import com.rs2.model.item.ItemStack;
+import com.rs2.model.player.Player;
+import com.rs2.model.task.CycleEvent;
+import com.rs2.model.task.CycleEventContainer;
+import com.rs2.util.GameUtil;
+
+final class SearchCrateTask
+extends CycleEvent {
+    private final /* synthetic */ Player a;
+
+    SearchCrateTask(FirstObjectActionTask firstObjectActionTask, Player player) {
+        this.a = player;
+    }
+
+    @Override
+    public final void execute(CycleEventContainer cycleEventContainer) {
+        if (GameUtil.g(99) == 0) {
+            Object object = new ItemStack[]{new ItemStack(995, 10), new ItemStack(686), new ItemStack(687), new ItemStack(689), new ItemStack(690), new ItemStack(697), new ItemStack(1059), new ItemStack(1061)};
+            object = object[GameUtil.f(8)];
+            this.a.getInventoryManager().addItem((ItemStack)object);
+            Player player = this.a;
+            player.packetSender.sendGameMessage("You find some " + ((ItemStack)object).getDefinition().getName().toLowerCase() + "!");
+        } else {
+            Player player = this.a;
+            player.packetSender.sendGameMessage("You find nothing of interest.");
+        }
+        cycleEventContainer.stop();
+    }
+
+    @Override
+    public final void onStop() {
+        this.a.n(false);
+    }
+}
+

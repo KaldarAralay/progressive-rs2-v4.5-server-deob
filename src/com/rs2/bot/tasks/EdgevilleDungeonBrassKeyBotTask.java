@@ -1,0 +1,185 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
+package com.rs2.bot.tasks;
+
+import com.rs2.bot.BotRoute;
+import com.rs2.bot.BotTaskDefinition;
+import com.rs2.bot.combat.BotCombatHelper;
+import com.rs2.bot.tasks.BrassKeyDungeonEntryTickTask;
+import com.rs2.bot.tasks.BrassKeyPickupTickTask;
+import com.rs2.model.GameplayHelper;
+import com.rs2.model.Position;
+import com.rs2.model.World;
+import com.rs2.model.player.Player;
+import com.rs2.model.skill.SkillManager;
+import com.rs2.model.task.TickTask;
+import com.rs2.util.GameUtil;
+import java.util.ArrayList;
+
+public final class EdgevilleDungeonBrassKeyBotTask
+extends BotTaskDefinition {
+    private static Position ab = new Position(3094, 3489, 0);
+    private static BotRoute[] ac = new BotRoute[]{new BotRoute(new Position[]{new Position(3090, 3490, 0), new Position(3090, 3487, 0), new Position(3094, 3482, 0), new Position(3094, 3473, 0), new Position(3096, 3468, 0)}), new BotRoute(new Position[]{new Position(3096, 9879, 0), new Position(3095, 9887, 0), new Position(3095, 9901, 0), new Position(3103, 9909, 0)}), new BotRoute(new Position[]{new Position(3104, 9909, 0), new Position(3121, 9909, 0), new Position(3129, 9911, 0), new Position(3139, 9914, 0), new Position(3142, 9903, 0), new Position(3150, 9894, 0), new Position(3150, 9872, 0), new Position(3146, 9870, 0)}), new BotRoute(new Position[]{new Position(3145, 9870, 0), new Position(3138, 9870, 0), new Position(3135, 9873, 0), new Position(3120, 9872, 0), new Position(3118, 9864, 0), new Position(3128, 9863, 0)})};
+    final Position aa = new Position(3128, 9863, 0);
+
+    public EdgevilleDungeonBrassKeyBotTask(int n) {
+        super(ab, ac, 0, false, 1);
+        this.usesCustomTaskAction = true;
+    }
+
+    @Override
+    public final void configureTaskInteractionTargets(Player player) {
+        player.botInteractionTargetIds.clear();
+    }
+
+    @Override
+    public final boolean meetsUnlockRequirements(Player player) {
+        return player.getCombatLevel() >= 23;
+    }
+
+    @Override
+    public final boolean isWithinProgressionRange(Player player) {
+        return player.getCombatLevel() <= 60;
+    }
+
+    @Override
+    public final void startCustomTaskAction(Player object) {
+        ((Player)object).bm();
+        object = new BrassKeyPickupTickTask(this, 2, (Player)object);
+        World.getTaskScheduler().schedule((TickTask)object);
+    }
+
+    @Override
+    public final void prepareTaskInventory(Player player) {
+        player.getInventoryManager().getContainer().clear();
+        player.getEquipmentManager().getContainer().clear();
+        player.getInventoryManager().refresh();
+        player.getEquipmentManager().refresh();
+    }
+
+    @Override
+    public final void prepareTaskCombatLoadout(Player player) {
+        GameplayHelper.b(player);
+        int n = 1 + GameUtil.h(99);
+        int n2 = n / 5 << 1;
+        if (n2 == 0) {
+            n2 = 2;
+        }
+        BotCombatHelper.setBotSkillLevel(player, 0, n - n / 5 + GameUtil.h(n2));
+        n2 = n / 5 << 1;
+        if (n2 == 0) {
+            n2 = 2;
+        }
+        BotCombatHelper.setBotSkillLevel(player, 2, n - n / 5 + GameUtil.h(n2));
+        n2 = n / 5 << 1;
+        if (n2 == 0) {
+            n2 = 2;
+        }
+        BotCombatHelper.setBotSkillLevel(player, 1, n - n / 5 + GameUtil.h(n2));
+        n2 = n / 5 << 1;
+        if (n2 == 0) {
+            n2 = 2;
+        }
+        BotCombatHelper.setBotSkillLevel(player, 4, n - n / 5 + GameUtil.h(n2));
+        n2 = n / 5 << 1;
+        if (n2 == 0) {
+            n2 = 2;
+        }
+        BotCombatHelper.setBotSkillLevel(player, 5, n - (n / 5 << 1) + GameUtil.h(n2));
+        n2 = n / 5 << 1;
+        if (n2 == 0) {
+            n2 = 2;
+        }
+        if ((n = n - n / 5 + GameUtil.h(n2)) < 33) {
+            n = 33;
+        }
+        BotCombatHelper.setBotSkillLevel(player, 6, n);
+        player.getSkillManager().getExperience()[3] = BotCombatHelper.calculateBotHitpointsExperience(player);
+        int[] nArray = player.getSkillManager().getCurrentLevels();
+        player.getSkillManager();
+        nArray[3] = SkillManager.getLevelForExperience(player.getSkillManager().getExperience()[3]);
+        player.getSkillManager().refreshAllSkills();
+    }
+
+    @Override
+    public final void startWalkToTask(Player player) {
+        player.botTaskState = "walk towards task";
+        player.botPathWaypointIndex = 0;
+        player.botPathSegmentIndex = 0;
+        player.currentBotRoute = ac[player.botPathSegmentIndex];
+        player.botTargetNpcId = 1558;
+        player.bk();
+    }
+
+    @Override
+    public final void startWalkToBank(Player player) {
+        player.botTaskState = "walk towards bank";
+        player.botPathWaypointIndex = 0;
+        player.botPathSegmentIndex = ac.length - 1;
+        player.currentBotRoute = ac[player.botPathSegmentIndex].reversed();
+        player.botTargetNpcId = 1558;
+        player.bk();
+    }
+
+    public final void a(Player player, int n) {
+        player.botPathWaypointIndex = n;
+        player.currentBotRoute = ac[player.botPathSegmentIndex];
+        player.botTargetNpcId = 1558;
+        this.c(player, true);
+    }
+
+    public final void b(Player player, int n) {
+        player.botPathWaypointIndex = n;
+        player.currentBotRoute = ac[player.botPathSegmentIndex].reversed();
+        player.botTargetNpcId = 1558;
+        this.c(player, true);
+    }
+
+    @Override
+    public final void c(Player player, boolean n) {
+        if (player.botTaskState.equals("walk towards task") || player.botTaskState.equals("walk to task") && n != 0) {
+            if (n == 0) {
+                ++player.botPathSegmentIndex;
+            }
+            player.currentBotRoute = ac[player.botPathSegmentIndex];
+            if (n == 0) {
+                player.botPathWaypointIndex = 0;
+            }
+            n = GameUtil.a(player.getPosition().getX(), player.getPosition().getY());
+            if (player.botPathSegmentIndex == 1 && player.botTaskState.equals("walk towards task") && n == 12342) {
+                Object object = new ArrayList<Integer>();
+                ((ArrayList)object).add(1568);
+                player.dm = true;
+                if (player.interactWithBotObjectTargetsNoRetry((ArrayList)object, false)) {
+                    object = new BrassKeyDungeonEntryTickTask(this, 3, player);
+                    World.getTaskScheduler().schedule((TickTask)object);
+                } else {
+                    ((ArrayList)object).clear();
+                    ((ArrayList)object).add(1570);
+                    player.interactWithBotObjectTargetsNoRetry((ArrayList)object, false);
+                }
+            }
+            if (player.botPathSegmentIndex == ac.length - 1) {
+                player.botTaskState = "walk to task";
+                return;
+            }
+        } else if (player.botTaskState.equals("walk towards bank") || player.botTaskState.equals("walk to bank") && n != 0) {
+            if (n == 0) {
+                --player.botPathSegmentIndex;
+            }
+            player.currentBotRoute = ac[player.botPathSegmentIndex].reversed();
+            if (n == 0) {
+                player.botPathWaypointIndex = 0;
+            }
+            if (player.botPathSegmentIndex == 0 && player.botTaskState.equals("walk towards bank")) {
+                ArrayList<Integer> arrayList = new ArrayList<Integer>();
+                arrayList.add(1755);
+                player.interactWithBotObjectTargets(arrayList);
+                player.dm = true;
+                player.botTaskState = "walk to bank";
+            }
+        }
+    }
+}
+

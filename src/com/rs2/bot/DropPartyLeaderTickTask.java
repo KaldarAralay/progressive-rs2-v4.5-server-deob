@@ -1,0 +1,85 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
+package com.rs2.bot;
+
+import com.rs2.bot.DropPartyBotManager;
+import com.rs2.bot.combat.BotCombatHelper;
+import com.rs2.model.Entity;
+import com.rs2.model.EntityTargetMovement;
+import com.rs2.model.Position;
+import com.rs2.model.item.ItemStack;
+import com.rs2.model.player.Player;
+import com.rs2.model.task.TickTask;
+import com.rs2.util.GameUtil;
+import com.rs2.util.path.PathFinder;
+
+final class DropPartyLeaderTickTask
+extends TickTask {
+    private final /* synthetic */ Player leader;
+
+    DropPartyLeaderTickTask(int n, Player player) {
+        this.leader = player;
+        super(3);
+    }
+
+    @Override
+    public final void execute() {
+        if (this.leader.isDead() || !this.leader.bW() || !this.leader.dropPartyLeader || this.leader.botTaskState.equals("wait for new task")) {
+            this.stop();
+            return;
+        }
+        if (this.leader.botTaskState.equals("do task")) {
+            Object object;
+            Object object22;
+            if (this.getIntervalTicks() != 8) {
+                this.leader.queuePublicChatMessage("Dropping now!");
+                this.setIntervalTicks(8);
+                for (Object object22 : DropPartyBotManager.dropPartyParticipants) {
+                    if (object22 == this.leader) continue;
+                    ((Player)object22).botTaskState = "do task";
+                    EntityTargetMovement.clearMovementTarget((Entity)object22);
+                    ((Entity)object22).getMovementQueue().clear();
+                    object = this.leader.currentBotTask.getRandomTaskAreaPosition();
+                    PathFinder.getInstance();
+                    PathFinder.findPath((Player)object22, ((Position)object).getX(), ((Position)object).getY(), true, 0, 0);
+                }
+            }
+            if (GameUtil.h(2) == 0) {
+                object22 = null;
+                ItemStack[] itemStackArray = this.leader.getInventoryManager().getContainer().getItems();
+                int n = itemStackArray.length;
+                int n2 = 0;
+                while (n2 < n) {
+                    ItemStack itemStack = itemStackArray[n2];
+                    if (itemStack != null) {
+                        object22 = itemStack;
+                        break;
+                    }
+                    ++n2;
+                }
+                if (object22 != null) {
+                    BotCombatHelper.dropInventoryItem(this.leader, (ItemStack)object22);
+                } else {
+                    DropPartyBotManager.finishLeaderDrops(this.leader);
+                    this.stop();
+                    return;
+                }
+            }
+            object22 = this.leader.currentBotTask.getRandomTaskAreaPosition();
+            PathFinder.getInstance();
+            PathFinder.findPath(this.leader, ((Position)object22).getX(), ((Position)object22).getY(), true, 0, 0);
+            int n = GameUtil.h(DropPartyBotManager.dropPartyParticipants.size());
+            object = (Player)DropPartyBotManager.dropPartyParticipants.get(n);
+            if (!((Player)object).dropPartySentToAssignedDrop && object != this.leader) {
+                ((Player)object).botTaskState = "do task";
+                ((Player)object).dropPartyAssignedDropPosition = this.leader.getPosition();
+            }
+            return;
+        }
+        if (GameUtil.h(3) == 0) {
+            this.leader.queuePublicChatMessage(this.leader.botPublicChatMessage, this.leader.botPublicChatColor, this.leader.botPublicChatEffect);
+        }
+    }
+}
+

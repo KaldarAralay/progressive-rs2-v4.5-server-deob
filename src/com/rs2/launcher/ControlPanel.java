@@ -1,0 +1,800 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
+package com.rs2.launcher;
+
+import com.rs2.Server;
+import com.rs2.ServerSettings;
+import com.rs2.launcher.ConsolePrintStream;
+import com.rs2.launcher.ControlPanelWindowCloseListener;
+import com.rs2.launcher.MapHorizontalScrollListener;
+import com.rs2.launcher.MapVerticalScrollListener;
+import com.rs2.launcher.WorldMapPanel;
+import com.rs2.model.World;
+import com.rs2.util.FileUtil;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Point;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.FilterInputStream;
+import java.io.IOException;
+import java.io.Serializable;
+import java.math.BigInteger;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenuBar;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+public class ControlPanel
+extends JFrame
+implements ActionListener {
+    private JTabbedPane f;
+    private JPanel g;
+    private JPanel h;
+    private JPanel i;
+    private JPanel j;
+    private JPanel k;
+    private static JButton l;
+    private static JButton m;
+    static JButton a;
+    private static JButton n;
+    private static JButton o;
+    private static JLabel p;
+    private static JLabel q;
+    private static JLabel r;
+    private static JLabel s;
+    private static JTextField t;
+    private static JTextField u;
+    private static JTextField v;
+    private static JTextField w;
+    private static JTextField x;
+    private static JTextField y;
+    private static JCheckBox z;
+    private static JCheckBox A;
+    private static JCheckBox B;
+    private static JCheckBox C;
+    private static JCheckBox D;
+    private static JCheckBox E;
+    private static JRadioButton F;
+    private static JRadioButton G;
+    private static JRadioButton H;
+    private static JRadioButton I;
+    private static JButton J;
+    private static JTextField K;
+    private static JTextField L;
+    private static JCheckBox M;
+    private static JTextField N;
+    private static JTextField O;
+    private static JTextField P;
+    private static JTextField Q;
+    private static JCheckBox R;
+    private static JTextField S;
+    private static JTextField T;
+    private static JCheckBox U;
+    private static JCheckBox V;
+    private static JCheckBox W;
+    private static JCheckBox X;
+    private static JCheckBox Y;
+    private static JCheckBox Z;
+    private static JCheckBox aa;
+    private static JCheckBox ab;
+    private static JCheckBox ac;
+    private static JCheckBox ad;
+    private static JCheckBox ae;
+    private static JCheckBox af;
+    private static JCheckBox ag;
+    private static JCheckBox ah;
+    private static JCheckBox ai;
+    private static JCheckBox aj;
+    private static JCheckBox ak;
+    private static JCheckBox al;
+    private JCheckBox am;
+    private Font an = new Font("Calibri", 0, 12);
+    static WorldMapPanel b;
+    int c;
+    private JFrame ao;
+    private JPanel ap;
+    private JScrollPane aq;
+    int d;
+    int e;
+    private static String ar;
+    private static int as;
+    private static int at;
+    private static int au;
+    private static int av;
+    private static String aw;
+    private static int ax;
+    private static int ay;
+
+    static {
+        b = new WorldMapPanel();
+        ar = "Offline";
+        as = 2000;
+        at = 0;
+        au = 0;
+        av = 0;
+        aw = "Orion";
+        ax = 0;
+        ay = 0;
+    }
+
+    public ControlPanel() {
+        Serializable serializable;
+        this.c = ControlPanel.b.mapScale;
+        this.ao = new JFrame();
+        try {
+            Server.a();
+        }
+        catch (IOException iOException) {
+            serializable = iOException;
+            iOException.printStackTrace();
+        }
+        this.setTitle("EasyRS2 Control Panel Build #" + ServerSettings.cacheVersion + " [" + ServerSettings.serverVersion + "]");
+        ServerSettings.serverEmulatorName = "EasyRS2";
+        this.setSize(440, 370);
+        this.setResizable(false);
+        this.ao.setTitle("LIVE World Map");
+        this.ao.setBounds(100, 100, 415, 400);
+        this.ao.setResizable(true);
+        this.ap = new JPanel();
+        this.ap.setLayout(new BorderLayout());
+        this.ap.add(b);
+        b.setOpaque(false);
+        this.ap.setBackground(Color.black);
+        this.ap.setPreferredSize(new Dimension(ControlPanel.b.mapWidthPixels, ControlPanel.b.mapHeightPixels));
+        this.aq = new JScrollPane(this.ap, 22, 32);
+        this.aq.setPreferredSize(new Dimension(512, 512));
+        serializable = new JMenuBar();
+        this.aq.getHorizontalScrollBar().addAdjustmentListener(new MapHorizontalScrollListener(this));
+        this.aq.getVerticalScrollBar().addAdjustmentListener(new MapVerticalScrollListener(this));
+        this.ao.getContentPane().add((Component)this.aq, "Center");
+        this.ao.getContentPane().add((Component)serializable, "North");
+        this.am = new JCheckBox("Show names");
+        this.am.setFont(this.an);
+        this.am.addActionListener(this);
+        ((Container)serializable).add(this.am);
+        this.d = 3217;
+        this.e = 3218;
+        this.aq.getViewport().setViewPosition(new Point((this.d - 1536 - 64) * this.c, (10432 - this.e - 64) * this.c));
+        this.am.setSelected(true);
+        ControlPanel.b.showPlayerNames = this.am.isSelected();
+        b.repaint();
+        this.setBackground(Color.gray);
+        serializable = new JPanel();
+        ((Container)serializable).setLayout(new BorderLayout());
+        this.getContentPane().add((Component)serializable);
+        Object object = this;
+        this.g = new JPanel();
+        ((ControlPanel)object).g.setLayout(null);
+        Object object2 = ar.equals("Online") ? "<font color=green>" : "<font color=red>";
+        p = new JLabel("<html>Server Status: <b>" + (String)object2 + ar);
+        p.setFont(((ControlPanel)object).an);
+        p.setBounds(10, 15, 250, 20);
+        ((ControlPanel)object).g.add(p);
+        q = new JLabel("<html>Users Online: " + at + "/" + as + " <font color=blue>(" + au + " Mods, <font color=orange>" + av + " Admins)");
+        q.setFont(((ControlPanel)object).an);
+        q.setBounds(10, 40, 250, 20);
+        ((ControlPanel)object).g.add(q);
+        object2 = new JLabel("<html>Server Emulator: <font color=blue>EasyRS2");
+        object2.setFont(((ControlPanel)object).an);
+        object2.setBounds(10, 65, 250, 20);
+        ((ControlPanel)object).g.add((Component)object2);
+        r = new JLabel("<html>Server Name: <font color=#1589FF>" + aw);
+        r.setFont(((ControlPanel)object).an);
+        r.setBounds(10, 90, 250, 20);
+        ((ControlPanel)object).g.add(r);
+        object2 = new JLabel("Server Message:");
+        object2.setFont(((ControlPanel)object).an);
+        object2.setBounds(10, 115, 250, 20);
+        ((ControlPanel)object).g.add((Component)object2);
+        t = new JTextField();
+        t.setBounds(10, 140, 150, 20);
+        ((ControlPanel)object).g.add(t);
+        l = new JButton("Start Server");
+        l.setFont(((ControlPanel)object).an);
+        l.setBounds(280, 15, 125, 21);
+        ((ControlPanel)object).g.add(l);
+        l.addActionListener((ActionListener)object);
+        m = new JButton("Restart Server");
+        m.setFont(((ControlPanel)object).an);
+        m.setBounds(280, 40, 125, 21);
+        ((ControlPanel)object).g.add(m);
+        m.addActionListener((ActionListener)object);
+        m.setEnabled(false);
+        object2 = ax / 60 > 0 ? String.valueOf(ax / 60) + " hours " + ax % 60 + " mins" : String.valueOf(ax) + " mins";
+        s = new JLabel("<html>Runtime: <font color=#1589FF>" + (String)object2);
+        s.setFont(((ControlPanel)object).an);
+        s.setBounds(280, 65, 250, 20);
+        ((ControlPanel)object).g.add(s);
+        object2 = new JCheckBox("Restart every");
+        object2.setBounds(259, 90, 95, 21);
+        object2.setFont(((ControlPanel)object).an);
+        object2.addActionListener((ActionListener)object);
+        ((ControlPanel)object).g.add((Component)object2);
+        object2.setEnabled(false);
+        object2 = new JTextField();
+        object2.setBounds(355, 90, 30, 20);
+        ((ControlPanel)object).g.add((Component)object2);
+        object2 = new JLabel("min");
+        object2.setFont(((ControlPanel)object).an);
+        object2.setBounds(386, 90, 30, 20);
+        ((ControlPanel)object).g.add((Component)object2);
+        a = new JButton("Shutdown Server");
+        a.setFont(((ControlPanel)object).an);
+        a.setBounds(280, 140, 125, 21);
+        ((ControlPanel)object).g.add(a);
+        a.addActionListener((ActionListener)object);
+        a.setEnabled(false);
+        n = new JButton("Send");
+        n.setFont(((ControlPanel)object).an);
+        n.setBounds(170, 140, 65, 21);
+        ((ControlPanel)object).g.add(n);
+        n.addActionListener((ActionListener)object);
+        n.setEnabled(false);
+        object2 = new JLabel("Console:");
+        object2.setFont(((ControlPanel)object).an);
+        object2.setBounds(10, 165, 250, 20);
+        ((ControlPanel)object).g.add((Component)object2);
+        object2 = new JTextArea(20, 30);
+        JScrollPane jScrollPane = new JScrollPane((Component)object2, 22, 31);
+        object2.setForeground(new Color(0, 0, 0));
+        object2.setBackground(new Color(255, 255, 255));
+        System.setOut(new ConsolePrintStream((JTextArea)object2, jScrollPane));
+        jScrollPane.setBounds(10, 190, 400, 110);
+        object2.setEnabled(false);
+        ((ControlPanel)object).g.add(jScrollPane);
+        object = this;
+        this.h = new JPanel();
+        ((ControlPanel)object).h.setLayout(null);
+        object2 = new JLabel("Server Name:");
+        object2.setFont(((ControlPanel)object).an);
+        object2.setBounds(10, 15, 80, 20);
+        ((ControlPanel)object).h.add((Component)object2);
+        u = new JTextField();
+        u.setBounds(95, 15, 155, 20);
+        ((ControlPanel)object).h.add(u);
+        u.setEnabled(false);
+        object2 = new JLabel("Max Players:");
+        object2.setFont(((ControlPanel)object).an);
+        object2.setBounds(10, 40, 80, 20);
+        ((ControlPanel)object).h.add((Component)object2);
+        v = new JTextField();
+        v.setBounds(95, 40, 155, 20);
+        ((ControlPanel)object).h.add(v);
+        v.setEnabled(false);
+        object2 = new JLabel("XP Rate:");
+        object2.setFont(((ControlPanel)object).an);
+        object2.setBounds(10, 65, 80, 20);
+        ((ControlPanel)object).h.add((Component)object2);
+        w = new JTextField();
+        w.setBounds(95, 65, 155, 20);
+        ((ControlPanel)object).h.add(w);
+        object2 = new JLabel("Starting Pos:");
+        object2.setFont(((ControlPanel)object).an);
+        object2.setBounds(10, 90, 80, 20);
+        ((ControlPanel)object).h.add((Component)object2);
+        x = new JTextField();
+        x.setBounds(95, 90, 155, 20);
+        ((ControlPanel)object).h.add(x);
+        x.setEnabled(false);
+        object2 = new JLabel("Respawn Pos:");
+        object2.setFont(((ControlPanel)object).an);
+        object2.setBounds(10, 115, 80, 20);
+        ((ControlPanel)object).h.add((Component)object2);
+        y = new JTextField();
+        y.setBounds(95, 115, 155, 20);
+        ((ControlPanel)object).h.add(y);
+        y.setEnabled(false);
+        B = new JCheckBox("F2P only content");
+        B.setBounds(250, 15, 170, 21);
+        B.setFont(((ControlPanel)object).an);
+        B.addActionListener((ActionListener)object);
+        ((ControlPanel)object).h.add(B);
+        B.setEnabled(false);
+        z = new JCheckBox("Enable Dueling");
+        z.setBounds(250, 40, 170, 21);
+        z.setFont(((ControlPanel)object).an);
+        z.addActionListener((ActionListener)object);
+        ((ControlPanel)object).h.add(z);
+        z.setEnabled(false);
+        A = new JCheckBox("Allow admin interactions");
+        A.setBounds(250, 65, 170, 21);
+        A.setFont(((ControlPanel)object).an);
+        A.addActionListener((ActionListener)object);
+        ((ControlPanel)object).h.add(A);
+        A.setEnabled(false);
+        C = new JCheckBox("Item spawning");
+        C.setBounds(250, 90, 170, 21);
+        C.setFont(((ControlPanel)object).an);
+        C.addActionListener((ActionListener)object);
+        ((ControlPanel)object).h.add(C);
+        C.setEnabled(false);
+        D = new JCheckBox("Fun PK");
+        D.setBounds(250, 115, 170, 21);
+        D.setFont(((ControlPanel)object).an);
+        D.addActionListener((ActionListener)object);
+        ((ControlPanel)object).h.add(D);
+        D.setEnabled(false);
+        E = new JCheckBox("PK World");
+        E.setBounds(250, 140, 170, 21);
+        E.setFont(((ControlPanel)object).an);
+        E.addActionListener((ActionListener)object);
+        ((ControlPanel)object).h.add(E);
+        E.setEnabled(false);
+        object2 = new JLabel("<html><b>Login Restrictions");
+        object2.setFont(((ControlPanel)object).an);
+        object2.setBounds(80, 140, 150, 20);
+        ((ControlPanel)object).h.add((Component)object2);
+        F = new JRadioButton("None");
+        F.setFont(((ControlPanel)object).an);
+        F.setSelected(true);
+        F.setBounds(10, 165, 60, 20);
+        ((ControlPanel)object).h.add(F);
+        F.addActionListener((ActionListener)object);
+        F.setEnabled(false);
+        G = new JRadioButton("P2P");
+        G.setFont(((ControlPanel)object).an);
+        G.setBounds(70, 165, 50, 20);
+        ((ControlPanel)object).h.add(G);
+        G.addActionListener((ActionListener)object);
+        G.setEnabled(false);
+        H = new JRadioButton("Mod");
+        H.setFont(((ControlPanel)object).an);
+        H.setBounds(120, 165, 50, 20);
+        ((ControlPanel)object).h.add(H);
+        H.addActionListener((ActionListener)object);
+        H.setEnabled(false);
+        I = new JRadioButton("Admin");
+        I.setFont(((ControlPanel)object).an);
+        I.setBounds(175, 165, 60, 20);
+        ((ControlPanel)object).h.add(I);
+        I.addActionListener((ActionListener)object);
+        I.setEnabled(false);
+        object2 = new ButtonGroup();
+        object2.add(F);
+        object2.add(G);
+        object2.add(H);
+        object2.add(I);
+        J = new JButton("Set");
+        J.setBounds(145, 280, 60, 20);
+        ((ControlPanel)object).h.add(J);
+        J.addActionListener((ActionListener)object);
+        o = new JButton("Defaults");
+        o.setBounds(210, 280, 85, 20);
+        ((ControlPanel)object).h.add(o);
+        o.addActionListener((ActionListener)object);
+        object = this;
+        this.i = new JPanel();
+        ((ControlPanel)object).i.setLayout(null);
+        object2 = new JLabel("Port Number:");
+        object2.setFont(((ControlPanel)object).an);
+        object2.setBounds(10, 15, 80, 20);
+        ((ControlPanel)object).i.add((Component)object2);
+        K = new JTextField();
+        K.setBounds(95, 15, 155, 20);
+        ((ControlPanel)object).i.add(K);
+        object2 = new JLabel("Client Version:");
+        object2.setFont(((ControlPanel)object).an);
+        object2.setBounds(10, 40, 80, 20);
+        ((ControlPanel)object).i.add((Component)object2);
+        L = new JTextField();
+        L.setBounds(95, 40, 155, 20);
+        ((ControlPanel)object).i.add(L);
+        M = new JCheckBox("MySQL Enabled");
+        M.setBounds(10, 65, 155, 21);
+        M.setFont(((ControlPanel)object).an);
+        M.addActionListener((ActionListener)object);
+        ((ControlPanel)object).i.add(M);
+        object2 = new JLabel("DB Driver:");
+        object2.setFont(((ControlPanel)object).an);
+        object2.setBounds(10, 90, 80, 20);
+        ((ControlPanel)object).i.add((Component)object2);
+        N = new JTextField();
+        N.setBounds(95, 90, 155, 20);
+        ((ControlPanel)object).i.add(N);
+        object2 = new JLabel("DB URL:");
+        object2.setFont(((ControlPanel)object).an);
+        object2.setBounds(10, 115, 80, 20);
+        ((ControlPanel)object).i.add((Component)object2);
+        O = new JTextField();
+        O.setBounds(95, 115, 155, 20);
+        ((ControlPanel)object).i.add(O);
+        object2 = new JLabel("DB User:");
+        object2.setFont(((ControlPanel)object).an);
+        object2.setBounds(10, 140, 80, 20);
+        ((ControlPanel)object).i.add((Component)object2);
+        P = new JTextField();
+        P.setBounds(95, 140, 155, 20);
+        ((ControlPanel)object).i.add(P);
+        object2 = new JLabel("DB Pass:");
+        object2.setFont(((ControlPanel)object).an);
+        object2.setBounds(10, 165, 80, 20);
+        ((ControlPanel)object).i.add((Component)object2);
+        Q = new JTextField();
+        Q.setBounds(95, 165, 155, 20);
+        ((ControlPanel)object).i.add(Q);
+        V = new JCheckBox("Hiscores Enabled");
+        V.setBounds(260, 15, 155, 21);
+        V.setFont(((ControlPanel)object).an);
+        V.addActionListener((ActionListener)object);
+        ((ControlPanel)object).i.add(V);
+        R = new JCheckBox("RSA Enabled");
+        R.setBounds(10, 190, 155, 21);
+        R.setFont(((ControlPanel)object).an);
+        R.addActionListener((ActionListener)object);
+        ((ControlPanel)object).i.add(R);
+        object2 = new JLabel("RSA Key1:");
+        object2.setFont(((ControlPanel)object).an);
+        object2.setBounds(10, 215, 80, 20);
+        ((ControlPanel)object).i.add((Component)object2);
+        S = new JTextField();
+        S.setBounds(95, 215, 155, 20);
+        ((ControlPanel)object).i.add(S);
+        object2 = new JLabel("RSA Key2:");
+        object2.setFont(((ControlPanel)object).an);
+        object2.setBounds(10, 240, 80, 20);
+        ((ControlPanel)object).i.add((Component)object2);
+        T = new JTextField();
+        T.setBounds(95, 240, 155, 20);
+        ((ControlPanel)object).i.add(T);
+        U = new JCheckBox("Debug Mode");
+        U.setBounds(260, 40, 155, 21);
+        U.setFont(((ControlPanel)object).an);
+        U.addActionListener((ActionListener)object);
+        ((ControlPanel)object).i.add(U);
+        W = new JCheckBox("Develop Mode");
+        W.setBounds(260, 65, 155, 21);
+        W.setFont(((ControlPanel)object).an);
+        W.addActionListener((ActionListener)object);
+        ((ControlPanel)object).i.add(W);
+        object = this;
+        this.j = new JPanel();
+        ((ControlPanel)object).j.setLayout(null);
+        object2 = new JLabel("<html><b>Enabled");
+        object2.setFont(((ControlPanel)object).an);
+        object2.setBounds(10, 15, 80, 20);
+        ((ControlPanel)object).j.add((Component)object2);
+        X = new JCheckBox("Woodcutting");
+        X.setBounds(20, 40, 95, 21);
+        X.setFont(((ControlPanel)object).an);
+        X.addActionListener((ActionListener)object);
+        ((ControlPanel)object).j.add(X);
+        Y = new JCheckBox("Thieving");
+        Y.setBounds(20, 65, 95, 21);
+        Y.setFont(((ControlPanel)object).an);
+        Y.addActionListener((ActionListener)object);
+        ((ControlPanel)object).j.add(Y);
+        Z = new JCheckBox("Smithing");
+        Z.setBounds(20, 90, 95, 21);
+        Z.setFont(((ControlPanel)object).an);
+        Z.addActionListener((ActionListener)object);
+        ((ControlPanel)object).j.add(Z);
+        aa = new JCheckBox("Slayer");
+        aa.setBounds(20, 115, 95, 21);
+        aa.setFont(((ControlPanel)object).an);
+        aa.addActionListener((ActionListener)object);
+        ((ControlPanel)object).j.add(aa);
+        ab = new JCheckBox("Runecrafting");
+        ab.setBounds(20, 140, 95, 21);
+        ab.setFont(((ControlPanel)object).an);
+        ab.addActionListener((ActionListener)object);
+        ((ControlPanel)object).j.add(ab);
+        ac = new JCheckBox("Prayer");
+        ac.setBounds(20, 165, 95, 21);
+        ac.setFont(((ControlPanel)object).an);
+        ac.addActionListener((ActionListener)object);
+        ((ControlPanel)object).j.add(ac);
+        ad = new JCheckBox("Mining");
+        ad.setBounds(20, 190, 95, 21);
+        ad.setFont(((ControlPanel)object).an);
+        ad.addActionListener((ActionListener)object);
+        ((ControlPanel)object).j.add(ad);
+        ae = new JCheckBox("Herblore");
+        ae.setBounds(20, 215, 95, 21);
+        ae.setFont(((ControlPanel)object).an);
+        ae.addActionListener((ActionListener)object);
+        ((ControlPanel)object).j.add(ae);
+        af = new JCheckBox("Fletching");
+        af.setBounds(20, 240, 95, 21);
+        af.setFont(((ControlPanel)object).an);
+        af.addActionListener((ActionListener)object);
+        ((ControlPanel)object).j.add(af);
+        ag = new JCheckBox("Fishing");
+        ag.setBounds(20, 265, 95, 21);
+        ag.setFont(((ControlPanel)object).an);
+        ag.addActionListener((ActionListener)object);
+        ((ControlPanel)object).j.add(ag);
+        object2 = new JLabel("<html><b>Enabled");
+        object2.setFont(((ControlPanel)object).an);
+        object2.setBounds(110, 15, 80, 20);
+        ((ControlPanel)object).j.add((Component)object2);
+        ah = new JCheckBox("Firemaking");
+        ah.setBounds(120, 40, 95, 21);
+        ah.setFont(((ControlPanel)object).an);
+        ah.addActionListener((ActionListener)object);
+        ((ControlPanel)object).j.add(ah);
+        ai = new JCheckBox("Farming");
+        ai.setBounds(120, 65, 95, 21);
+        ai.setFont(((ControlPanel)object).an);
+        ai.addActionListener((ActionListener)object);
+        ((ControlPanel)object).j.add(ai);
+        aj = new JCheckBox("Crafting");
+        aj.setBounds(120, 90, 95, 21);
+        aj.setFont(((ControlPanel)object).an);
+        aj.addActionListener((ActionListener)object);
+        ((ControlPanel)object).j.add(aj);
+        ak = new JCheckBox("Cooking");
+        ak.setBounds(120, 115, 95, 21);
+        ak.setFont(((ControlPanel)object).an);
+        ak.addActionListener((ActionListener)object);
+        ((ControlPanel)object).j.add(ak);
+        al = new JCheckBox("Agility");
+        al.setBounds(120, 140, 95, 21);
+        al.setFont(((ControlPanel)object).an);
+        al.addActionListener((ActionListener)object);
+        ((ControlPanel)object).j.add(al);
+        object = this;
+        this.k = new JPanel();
+        ((ControlPanel)object).k.setLayout(null);
+        object2 = new JLabel("<html><b>EasyRS2</b> was created by <b><font color=blue>Mige</b>");
+        object2.setFont(((ControlPanel)object).an);
+        object2.setBounds(110, 15, 200, 20);
+        ((ControlPanel)object).k.add((Component)object2);
+        this.f = new JTabbedPane();
+        this.f.addTab("Main", this.g);
+        this.f.addTab("Credits", this.k);
+        ((Container)serializable).add(this.f, "Center");
+        this.setLocationRelativeTo(null);
+        this.setDefaultCloseOperation(0);
+        this.addWindowListener(new ControlPanelWindowCloseListener(this));
+        this.ao.setLocation(this.getX() + this.getWidth() + 5, this.getY());
+        if (FileUtil.exists("data/settings.dat")) {
+            try {
+                object = new DataInputStream(new BufferedInputStream(new FileInputStream("data/settings.dat")));
+                aw = ((DataInputStream)object).readUTF();
+                as = ((DataInputStream)object).readUnsignedShort();
+                ServerSettings.serverName = aw;
+                ServerSettings.maxPlayers = as;
+                u.setText(aw);
+                v.setText("" + as);
+                w.setText("" + ((DataInputStream)object).readDouble());
+                x.setText(((DataInputStream)object).readUTF());
+                y.setText(((DataInputStream)object).readUTF());
+                B.setSelected(((DataInputStream)object).readBoolean());
+                z.setSelected(((DataInputStream)object).readBoolean());
+                A.setSelected(((DataInputStream)object).readBoolean());
+                C.setSelected(((DataInputStream)object).readBoolean());
+                D.setSelected(((DataInputStream)object).readBoolean());
+                E.setSelected(((DataInputStream)object).readBoolean());
+                byte by = ((DataInputStream)object).readByte();
+                ay = by;
+                if (by == 0) {
+                    F.setSelected(true);
+                }
+                if (ay == 1) {
+                    G.setSelected(true);
+                }
+                if (ay == 2) {
+                    H.setSelected(true);
+                }
+                if (ay == 3) {
+                    I.setSelected(true);
+                }
+                K.setText("" + ((DataInputStream)object).readInt());
+                L.setText("" + ((DataInputStream)object).readShort());
+                M.setSelected(((DataInputStream)object).readBoolean());
+                N.setText(((DataInputStream)object).readUTF());
+                O.setText(((DataInputStream)object).readUTF());
+                P.setText(((DataInputStream)object).readUTF());
+                Q.setText(((DataInputStream)object).readUTF());
+                R.setSelected(((DataInputStream)object).readBoolean());
+                S.setText(((DataInputStream)object).readUTF());
+                T.setText(((DataInputStream)object).readUTF());
+                V.setSelected(((DataInputStream)object).readBoolean());
+                U.setSelected(((DataInputStream)object).readBoolean());
+                W.setSelected(((DataInputStream)object).readBoolean());
+                X.setSelected(((DataInputStream)object).readBoolean());
+                Y.setSelected(((DataInputStream)object).readBoolean());
+                Z.setSelected(((DataInputStream)object).readBoolean());
+                aa.setSelected(((DataInputStream)object).readBoolean());
+                ab.setSelected(((DataInputStream)object).readBoolean());
+                ac.setSelected(((DataInputStream)object).readBoolean());
+                ad.setSelected(((DataInputStream)object).readBoolean());
+                ae.setSelected(((DataInputStream)object).readBoolean());
+                af.setSelected(((DataInputStream)object).readBoolean());
+                ag.setSelected(((DataInputStream)object).readBoolean());
+                ah.setSelected(((DataInputStream)object).readBoolean());
+                ai.setSelected(((DataInputStream)object).readBoolean());
+                aj.setSelected(((DataInputStream)object).readBoolean());
+                ak.setSelected(((DataInputStream)object).readBoolean());
+                al.setSelected(((DataInputStream)object).readBoolean());
+                ((FilterInputStream)object).close();
+                object2 = u.getText();
+                ServerSettings.serverName = object2;
+                object2 = v.getText();
+                ServerSettings.maxPlayers = Integer.parseInt((String)object2);
+                w.getText();
+                object2 = x.getText().split(",");
+                ServerSettings.startX = Integer.parseInt(object2[0]);
+                ServerSettings.startY = Integer.parseInt(object2[1]);
+                ServerSettings.startPlane = Integer.parseInt(object2[2]);
+                object2 = y.getText().split(",");
+                ServerSettings.respawnX = Integer.parseInt(object2[0]);
+                ServerSettings.respawnY = Integer.parseInt(object2[1]);
+                ServerSettings.respawnPlane = Integer.parseInt(object2[2]);
+                ServerSettings.duelingDisabled = !z.isSelected();
+                ServerSettings.adminInteractionsAllowed = A.isSelected();
+                ServerSettings.itemSpawningEnabled = C.isSelected();
+                ServerSettings.funPkEnabled = D.isSelected();
+                ServerSettings.pkWorldEnabled = E.isSelected();
+                ServerSettings.loginRestrictionMode = ay;
+                ControlPanel.a();
+                object2 = K.getText();
+                ServerSettings.serverPort = Integer.parseInt((String)object2);
+                object2 = L.getText();
+                ServerSettings.clientBuild = Integer.parseInt((String)object2);
+                ServerSettings.clientBuild = ServerSettings.cacheVersion;
+                ServerSettings.mysqlPlayerSaveEnabled = M.isSelected();
+                if (M.isSelected()) {
+                    object2 = N.getText();
+                    ServerSettings.mysqlDriverClass = object2;
+                    object2 = O.getText();
+                    ServerSettings.mysqlJdbcUrl = object2;
+                    object2 = P.getText();
+                    ServerSettings.mysqlUsername = object2;
+                    object2 = Q.getText();
+                    ServerSettings.mysqlPassword = object2;
+                }
+                ServerSettings.rsaEnabled = R.isSelected();
+                if (R.isSelected()) {
+                    object2 = S.getText();
+                    ServerSettings.rsaModulusString = object2;
+                    object2 = T.getText();
+                    ServerSettings.rsaPrivateExponentString = object2;
+                    ServerSettings.rsaModulus = new BigInteger(ServerSettings.rsaModulusString);
+                    ServerSettings.rsaPrivateExponent = new BigInteger(ServerSettings.rsaPrivateExponentString);
+                }
+                ServerSettings.controlPanelHiscoresEnabled = V.isSelected();
+                ServerSettings.debugModeEnabled = U.isSelected();
+                ServerSettings.developModeEnabled = W.isSelected();
+                ControlPanel.a();
+                ServerSettings.woodcuttingEnabled = X.isSelected();
+                ServerSettings.thievingEnabled = Y.isSelected();
+                ServerSettings.smithingEnabled = Z.isSelected();
+                ServerSettings.slayerEnabled = aa.isSelected();
+                ServerSettings.runecraftingEnabled = ab.isSelected();
+                ServerSettings.prayerEnabled = ac.isSelected();
+                ServerSettings.miningEnabled = ad.isSelected();
+                ServerSettings.herbloreEnabled = ae.isSelected();
+                ServerSettings.fletchingEnabled = af.isSelected();
+                ServerSettings.fishingEnabled = ag.isSelected();
+                ServerSettings.firemakingEnabled = ah.isSelected();
+                ServerSettings.farmingEnabled = ai.isSelected();
+                ServerSettings.craftingEnabled = aj.isSelected();
+                ServerSettings.cookingEnabled = ak.isSelected();
+                ServerSettings.agilityEnabled = al.isSelected();
+                ControlPanel.a();
+                ControlPanel.a();
+            }
+            catch (Exception exception) {}
+        }
+        this.ao.setVisible(true);
+    }
+
+    public static void main(String[] object) {
+        String string;
+        block3: {
+            object = new ControlPanel();
+            ((Window)object).setVisible(true);
+            String string2 = object.getClass().getName().replace('.', '/');
+            object = object.getClass().getResource("/" + string2 + ".class").toString();
+            if (((String)object).startsWith("jar:")) {
+                object = ((String)object).split("/");
+                String[] stringArray = object;
+                int n = ((String[])object).length;
+                int n2 = 0;
+                while (n2 < n) {
+                    object = stringArray[n2];
+                    if (((String)object).contains("!")) {
+                        string = ((String)object).substring(0, ((String)object).length() - 1);
+                        break block3;
+                    }
+                    ++n2;
+                }
+            }
+            string = null;
+        }
+        object = string;
+        ServerSettings.launcherJarPath = string;
+    }
+
+    public static void a() {
+        if (Server.b == 2) {
+            ar = "<font color=green>Online";
+            l.setEnabled(false);
+            a.setEnabled(true);
+        }
+        if (Server.b == 1) {
+            ar = "<font color=black>Starting up...";
+            l.setEnabled(false);
+            a.setEnabled(true);
+            n.setEnabled(false);
+        }
+        if (Server.b == 3) {
+            ar = "<font color=black>Shutting down...";
+            l.setEnabled(false);
+            m.setEnabled(false);
+            a.setEnabled(false);
+        }
+        if (Server.b == 0) {
+            ar = "<font color=red>Offline";
+            l.setEnabled(true);
+            m.setEnabled(false);
+            a.setEnabled(false);
+            n.setEnabled(false);
+        }
+        p.setText("<html>Server Status: <b>" + ar);
+        ax = Server.d;
+        aw = ServerSettings.serverName;
+        r.setText("<html>Server Name: <font color=#1589FF>" + aw);
+        String string = ax / 60 > 0 ? String.valueOf(ax / 60) + " hours " + ax % 60 + " mins" : String.valueOf(ax) + " mins";
+        s.setText("<html>Runtime: <font color=#1589FF>" + string);
+        at = Server.l;
+        as = ServerSettings.maxPlayers;
+        au = Server.n;
+        av = Server.m;
+        q.setText("<html>Users Online: " + at + "/" + as + " <font color=blue>(" + au + " Mods, <font color=orange>" + av + " Admins)");
+        b.repaint();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent actionEvent) {
+        Object object;
+        if (actionEvent.getActionCommand() == "Start Server") {
+            object = new String[]{""};
+            Server.main(object);
+            ControlPanel.a();
+        }
+        if (actionEvent.getActionCommand() == "Shutdown Server") {
+            if (World.b() > 0 && World.c() == 0) {
+                World.a(true);
+            } else {
+                Server.a(false);
+            }
+            ControlPanel.a();
+        }
+        if (actionEvent.getActionCommand() == "Send") {
+            object = t.getText();
+            Server.a((String)object);
+        }
+        if (actionEvent.getActionCommand() == "Map") {
+            this.ao.setVisible(true);
+        }
+        if (actionEvent.getActionCommand() == "Show names") {
+            ControlPanel.b.showPlayerNames = this.am.isSelected();
+            b.repaint();
+        }
+    }
+
+    static /* synthetic */ JTabbedPane a(ControlPanel controlPanel) {
+        return controlPanel.f;
+    }
+}
+

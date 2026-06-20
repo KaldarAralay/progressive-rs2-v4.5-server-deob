@@ -1,0 +1,70 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
+package com.rs2.model.skill.farming;
+
+import com.rs2.model.Position;
+import com.rs2.model.skill.farming.FarmingPatchUtils;
+import java.util.HashMap;
+import java.util.Map;
+
+public enum TreePatch {
+    a(0, new Position[]{new Position(3228, 3458), new Position(3230, 3460)}, 2341),
+    b(1, new Position[]{new Position(3192, 3230), new Position(3194, 3232)}, 2342),
+    c(2, new Position[]{new Position(2935, 3437), new Position(2937, 3439)}, 2339),
+    d(3, new Position[]{new Position(3003, 3372), new Position(3005, 3374)}, 2340);
+
+    private int index;
+    private Position[] bounds;
+    private int objectId;
+    private static Map patchByObjectId;
+
+    static {
+        patchByObjectId = new HashMap();
+        TreePatch[] treePatchArray = TreePatch.values();
+        int n = treePatchArray.length;
+        int n2 = 0;
+        while (n2 < n) {
+            TreePatch treePatch = treePatchArray[n2];
+            patchByObjectId.put(treePatch.objectId, treePatch);
+            ++n2;
+        }
+    }
+
+    public static TreePatch forObjectId(int n) {
+        return (TreePatch)((Object)patchByObjectId.get(n));
+    }
+
+    /*
+     * WARNING - Possible parameter corruption
+     * WARNING - void declaration
+     */
+    private TreePatch(int n3) {
+        void var5_3;
+        void var4_2;
+        this.index = n3;
+        this.bounds = var4_2;
+        this.objectId = var5_3;
+    }
+
+    public static TreePatch forPosition(Position position) {
+        TreePatch[] treePatchArray = TreePatch.values();
+        int n = treePatchArray.length;
+        int n2 = 0;
+        while (n2 < n) {
+            TreePatch treePatch;
+            TreePatch treePatch2 = treePatch = treePatchArray[n2];
+            treePatch2 = treePatch;
+            if (FarmingPatchUtils.a(treePatch.bounds[0], treePatch2.bounds[1], position)) {
+                return treePatch;
+            }
+            ++n2;
+        }
+        return null;
+    }
+
+    public final int getIndex() {
+        return this.index;
+    }
+}
+

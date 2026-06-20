@@ -1,0 +1,32 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
+package com.rs2.bot;
+
+import com.rs2.bot.combat.BotCombatHelper;
+import com.rs2.model.ground.GroundItem;
+import com.rs2.model.player.Player;
+import com.rs2.model.task.TickTask;
+
+final class DropPartyGroundItemPickupTask
+extends TickTask {
+    private final /* synthetic */ Player participant;
+    private final /* synthetic */ GroundItem groundItem;
+
+    DropPartyGroundItemPickupTask(int n, Player player, GroundItem groundItem) {
+        this.participant = player;
+        this.groundItem = groundItem;
+        super(n);
+    }
+
+    @Override
+    public final void execute() {
+        if (this.participant.isDead() || !this.participant.bW()) {
+            this.stop();
+            return;
+        }
+        BotCombatHelper.pickupVisibleGroundItem(this.participant, this.groundItem.getItem().getId(), this.groundItem.getPosition());
+        this.stop();
+    }
+}
+
