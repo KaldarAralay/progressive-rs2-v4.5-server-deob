@@ -107,7 +107,7 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.showInterface(InterfaceDefinition.interfaceCount <= 12140 ? 1689 : 12140);
         player2 = player;
-        player.j = false;
+        player.deferLevelUpInterfaces = false;
     }
 
     @Override
@@ -315,7 +315,7 @@ extends QuestScript {
                 }
                 if (n2 == 2) {
                     DialogueManager.continueDialogue(player, 474, 100, 0);
-                    player.e(new Position(2504, 3191, 0));
+                    player.moveToPreservingInteractionState(new Position(2504, 3191, 0));
                     return true;
                 }
             }
@@ -395,7 +395,7 @@ extends QuestScript {
             if (n4 == 21) {
                 if (n2 == 17) {
                     DialogueManager.continueDialogue(player, 474, 100, 0);
-                    player.e(new Position(2504, 3191, 0));
+                    player.moveToPreservingInteractionState(new Position(2504, 3191, 0));
                     return true;
                 }
                 if (n2 == 1) {
@@ -554,7 +554,7 @@ extends QuestScript {
                 }
                 if (n2 == 8) {
                     DialogueManager.continueDialogue(player, 473, 100, 0);
-                    player.e(new Position(2515, 3159, 0));
+                    player.moveToPreservingInteractionState(new Position(2515, 3159, 0));
                     return true;
                 }
             }
@@ -604,7 +604,7 @@ extends QuestScript {
                     }
                     if (n2 == 9) {
                         DialogueManager.continueDialogue(player, 473, 100, 0);
-                        player.e(new Position(2515, 3159, 0));
+                        player.moveToPreservingInteractionState(new Position(2515, 3159, 0));
                         return true;
                     }
                 }

@@ -13,15 +13,15 @@ import com.rs2.model.npc.combat.NpcCombatDefinition;
 
 final class NpcDefinitionMeleeCombatDefinition
 extends NpcCombatDefinition {
-    private final /* synthetic */ NpcDefinition a;
+    private final /* synthetic */ NpcDefinition npcDefinition;
 
     NpcDefinitionMeleeCombatDefinition(NpcDefinition npcDefinition) {
-        this.a = npcDefinition;
+        this.npcDefinition = npcDefinition;
     }
 
     @Override
     public final CombatAttack[] createAttacks(Entity entity, Entity entity2) {
-        return new CombatAttack[]{BaseCombatAttack.a(entity, entity2, AttackXpMode.MELEE_ACCURATE, AttackBonusType.STAB, NpcDefinition.getDefaultMaxHit(this.a), NpcDefinition.getDefaultAttackDelay(this.a), NpcDefinition.getDefaultAttackAnimationId(this.a))};
+        return new CombatAttack[]{BaseCombatAttack.createMeleeAttack(entity, entity2, AttackXpMode.MELEE_ACCURATE, AttackBonusType.STAB, NpcDefinition.getDefaultMaxHit(this.npcDefinition), NpcDefinition.getDefaultAttackDelay(this.npcDefinition), NpcDefinition.getDefaultAttackAnimationId(this.npcDefinition))};
     }
 }
 

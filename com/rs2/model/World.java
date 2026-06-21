@@ -179,7 +179,7 @@ public final class World {
             if (object2 != null) {
                 try {
                     PlayerUpdateTask.a((Player)object2);
-                    GameplayHelper.l((Player)object2);
+                    GameplayHelper.sendNpcUpdatePacket((Player)object2);
                 }
                 catch (Exception exception) {
                     object = exception;
@@ -328,7 +328,7 @@ public final class World {
         try {
             CharacterFileManager.savePlayer((Player)object);
             ((Player)object).setRegistered(false);
-            ((Player)object).setConnectionState(PlayerConnectionState.f);
+            ((Player)object).setConnectionState(PlayerConnectionState.DISCONNECTED);
             if (((Entity)object).getIndex() == -1) {
                 return;
             }

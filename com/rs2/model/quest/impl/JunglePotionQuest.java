@@ -77,7 +77,7 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.showInterface(InterfaceDefinition.interfaceCount <= 12140 ? 1689 : 12140);
         player2 = player;
-        player.j = false;
+        player.deferLevelUpInterfaces = false;
     }
 
     @Override
@@ -118,7 +118,7 @@ extends QuestScript {
         return false;
     }
 
-    private void a(Player player, int n, int n2, int n3, int n4, boolean bl) {
+    private void startDelayedHerbSearch(Player player, int n, int n2, int n3, int n4, boolean bl) {
         int n5 = player.nextActionSequence();
         player.resetAnimation();
         player.getUpdateState().setAnimation(832);
@@ -131,7 +131,7 @@ extends QuestScript {
         if (n == 2575 && n4 == 2) {
             Player player2 = player;
             player2.packetSender.sendGameMessage("You search the vine...");
-            this.a(player, 1525, n, n2, n3, true);
+            this.startDelayedHerbSearch(player, 1525, n, n2, n3, true);
             return true;
         }
         if (n == 2577 && n4 == 3) {
@@ -158,7 +158,7 @@ extends QuestScript {
         if (n == 2583 && n4 == 6) {
             Player player6 = player;
             player6.packetSender.sendGameMessage("You search the wall...");
-            this.a(player, 1533, n, n2, n3, true);
+            this.startDelayedHerbSearch(player, 1533, n, n2, n3, true);
             return true;
         }
         return false;

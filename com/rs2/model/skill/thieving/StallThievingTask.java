@@ -56,7 +56,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        this.player.x(false);
+        this.player.setHideHeldItemsInAppearance(false);
         this.player.setActionLocked(false);
     }
 }

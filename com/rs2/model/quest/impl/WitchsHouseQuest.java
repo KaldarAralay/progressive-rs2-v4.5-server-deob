@@ -20,8 +20,8 @@ import com.rs2.util.RectangularArea;
 
 public final class WitchsHouseQuest
 extends QuestScript {
-    RectangularArea a = new RectangularArea(2901, 3460, 2933, 3466, 0);
-    private int b = 3;
+    RectangularArea gardenTrespassArea = new RectangularArea(2901, 3460, 2933, 3466, 0);
+    private int witchesDiaryLastPageIndex = 3;
 
     public WitchsHouseQuest(int n) {
         super(103);
@@ -75,7 +75,7 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.showInterface(InterfaceDefinition.interfaceCount <= 12140 ? 1689 : 12140);
         player2 = player;
-        player.j = false;
+        player.deferLevelUpInterfaces = false;
     }
 
     @Override
@@ -215,7 +215,7 @@ extends QuestScript {
                 player.getDialogueManager().showFourLineStatement("You attach the magnet to the mouse's harness. The mouse finishes", "the cheese and runs back into its hole. You hear some odd noises", "from inside the walls. There is a strange whirring noise from above", "the door frame.");
                 entity = player;
                 entity = entity.H;
-                GameplayHelper.a((Npc)entity);
+                GameplayHelper.unregisterTemporaryNpc((Npc)entity);
                 player.pendingGameMode = 2410;
                 player.getInventoryManager().removeItem(new ItemStack(2410, 1));
                 player.getDialogueManager().finishDialogue();
@@ -294,7 +294,7 @@ extends QuestScript {
         if (player.eq == 896) {
             return true;
         }
-        if (this.a.contains(player.getPosition())) {
+        if (this.gardenTrespassArea.contains(player.getPosition())) {
             WitchsHouseGardenTrespassTask witchsHouseGardenTrespassTask = new WitchsHouseGardenTrespassTask(this, 1, player);
             World.getTaskScheduler().schedule(witchsHouseGardenTrespassTask);
             player.eq = 896;
@@ -303,7 +303,7 @@ extends QuestScript {
         return false;
     }
 
-    private void e(Player player, int n) {
+    private void showWitchesDiaryPage(Player player, int n) {
         String[] stringArray;
         Player player2;
         Player player3 = player2 = player;
@@ -344,9 +344,9 @@ extends QuestScript {
             ++n4;
         }
         player3 = player;
-        player3.packetSender.setInterfaceHiddenFlag(player.X == 0 ? 1 : 0, 840);
+        player3.packetSender.setInterfaceHiddenFlag(player.activeBookPageIndex == 0 ? 1 : 0, 840);
         player3 = player;
-        player3.packetSender.setInterfaceHiddenFlag(player.X == this.b ? 1 : 0, 842);
+        player3.packetSender.setInterfaceHiddenFlag(player.activeBookPageIndex == this.witchesDiaryLastPageIndex ? 1 : 0, 842);
         if (player.getQuestState(this.getQuestId()) == 2 && n == 3) {
             player.setQuestState(this.getQuestId(), 3);
         }
@@ -354,15 +354,15 @@ extends QuestScript {
 
     @Override
     public final boolean handleButtonClick(Player player, int n, int n2) {
-        if (player.W == 2408) {
-            if (n == 841 && player.X < this.b) {
-                ++player.X;
-                this.e(player, player.X);
+        if (player.activeBookItemId == 2408) {
+            if (n == 841 && player.activeBookPageIndex < this.witchesDiaryLastPageIndex) {
+                ++player.activeBookPageIndex;
+                this.showWitchesDiaryPage(player, player.activeBookPageIndex);
                 return true;
             }
-            if (n == 839 && player.X > 0) {
-                --player.X;
-                this.e(player, player.X);
+            if (n == 839 && player.activeBookPageIndex > 0) {
+                --player.activeBookPageIndex;
+                this.showWitchesDiaryPage(player, player.activeBookPageIndex);
                 return true;
             }
         }
@@ -372,9 +372,9 @@ extends QuestScript {
     @Override
     public final boolean handleInventoryItemFirstOption(Player player, int n, int n2, int n3) {
         if (n == 3214 && n2 == 2408) {
-            this.e(player, 0);
-            player.W = n2;
-            player.X = 0;
+            this.showWitchesDiaryPage(player, 0);
+            player.activeBookItemId = n2;
+            player.activeBookPageIndex = 0;
             player.packetSender.showInterface(837);
             return true;
         }

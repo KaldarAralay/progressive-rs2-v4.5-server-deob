@@ -9,20 +9,20 @@ import com.rs2.model.task.TickTask;
 
 final class BotLumbridgeResetTask
 extends TickTask {
-    private /* synthetic */ Player a;
-    private final /* synthetic */ Player b;
+    private /* synthetic */ Player resetPlayer;
+    private final /* synthetic */ Player bot;
 
     BotLumbridgeResetTask(Player player, int n, Player player2) {
-        this.a = player;
-        this.b = player2;
+        this.resetPlayer = player;
+        this.bot = player2;
         super(2);
     }
 
     @Override
     public final void execute() {
-        this.a.bB = false;
-        this.b.deferredBotTask = null;
-        GameplayHelper.a(this.b, false);
+        this.resetPlayer.botLumbridgeResetPending = false;
+        this.bot.deferredBotTask = null;
+        GameplayHelper.selectAndStartProgressiveBotTask(this.bot, false);
         this.stop();
     }
 }

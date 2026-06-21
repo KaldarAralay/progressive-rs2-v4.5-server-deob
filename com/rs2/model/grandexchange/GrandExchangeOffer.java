@@ -320,23 +320,23 @@ public final class GrandExchangeOffer {
             return;
         }
         if (object2 != null && object != null) {
-            ((Player)object2).eC = true;
-            ((Player)object).eC = true;
+            ((Player)object2).grandExchangeSettlementInProgress = true;
+            ((Player)object).grandExchangeSettlementInProgress = true;
             GrandExchangeOffer.settlePlayerVsPlayerMatch(object2, grandExchangeOffer2, (Player)object, grandExchangeOffer);
-            ((Player)object2).eC = false;
-            ((Player)object).eC = false;
+            ((Player)object2).grandExchangeSettlementInProgress = false;
+            ((Player)object).grandExchangeSettlementInProgress = false;
             return;
         }
         if (object4 != null && object != null) {
-            ((Player)object).eC = true;
+            ((Player)object).grandExchangeSettlementInProgress = true;
             GrandExchangeOffer.settleRecordVsPlayerMatch(object4, grandExchangeOffer2, (Player)object, grandExchangeOffer);
-            ((Player)object).eC = false;
+            ((Player)object).grandExchangeSettlementInProgress = false;
             return;
         }
         if (object2 != null && object3 != null) {
-            ((Player)object2).eC = true;
+            ((Player)object2).grandExchangeSettlementInProgress = true;
             GrandExchangeOffer.settlePlayerVsRecordMatch(object2, grandExchangeOffer2, object3, grandExchangeOffer);
-            ((Player)object2).eC = false;
+            ((Player)object2).grandExchangeSettlementInProgress = false;
             return;
         }
         if (object4 != null && string.equals("[SERVER]")) {
@@ -344,15 +344,15 @@ public final class GrandExchangeOffer {
             return;
         }
         if (object2 != null && string.equals("[SERVER]")) {
-            ((Player)object2).eC = true;
+            ((Player)object2).grandExchangeSettlementInProgress = true;
             GrandExchangeOffer.settlePlayerVsPlayerMatch((Player)object2, grandExchangeOffer2, (Player)object, grandExchangeOffer);
-            ((Player)object2).eC = false;
+            ((Player)object2).grandExchangeSettlementInProgress = false;
             return;
         }
         if (string2.equals("[SERVER]") && object != null) {
-            ((Player)object).eC = true;
+            ((Player)object).grandExchangeSettlementInProgress = true;
             GrandExchangeOffer.settleRecordVsPlayerMatch(object4, grandExchangeOffer2, (Player)object, grandExchangeOffer);
-            ((Player)object).eC = false;
+            ((Player)object).grandExchangeSettlementInProgress = false;
             return;
         }
         if (string2.equals("[SERVER]") && object3 != null) {

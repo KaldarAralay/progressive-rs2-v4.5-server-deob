@@ -96,8 +96,8 @@ public final class DuelSession {
         player.getDuelSession().clearDuelState();
         player2.getDuelSession().clearDuelState();
         player.setActionLocked(true);
-        ++player.eb;
-        ++player2.ec;
+        ++player.duelWins;
+        ++player2.duelLosses;
         CycleEventHandler.getInstance().schedule(player, new DuelVictoryTask(player, string, string2, itemStackArray), 2);
     }
 

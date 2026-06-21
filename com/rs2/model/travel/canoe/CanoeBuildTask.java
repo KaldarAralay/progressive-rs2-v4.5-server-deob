@@ -33,11 +33,11 @@ extends CycleEvent {
         Object object = this.canoeType;
         this.player.getSkillManager().addExperience(8, object.experience);
         object = this.canoeType;
-        this.player.ep[CanoeTravelManager.CANOE_CONFIG_ID] = object.configValue << (this.player.T << 3);
+        this.player.ep[CanoeTravelManager.CANOE_CONFIG_ID] = object.configValue << (this.player.canoeStationIndex << 3);
         object = this.player;
         ((Player)object).packetSender.sendConfig(CanoeTravelManager.CANOE_CONFIG_ID, this.player.ep[CanoeTravelManager.CANOE_CONFIG_ID]);
         object = this.canoeType;
-        this.player.U = object.configValue;
+        this.player.builtCanoeTypeConfigValue = object.configValue;
         object = this.player;
         ((Player)object).packetSender.sendSoundEffect(473, 1, 0);
         this.player.getUpdateState().setAnimation(this.gatheringTool.getCanoeAnimationId(), 0);

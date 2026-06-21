@@ -15,23 +15,23 @@ import com.rs2.util.GameUtil;
 
 final class RandomEventRollEvent
 extends CycleEvent {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
     RandomEventRollEvent(Player player) {
-        this.a = player;
+        this.player = player;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        if (this.a.getActiveRandomEventNpc() != null || this.a.isInTeleportRestrictedArea()) {
+        if (this.player.getActiveRandomEventNpc() != null || this.player.isInTeleportRestrictedArea()) {
             return;
         }
-        if (this.a.botEnabled) {
+        if (this.player.botEnabled) {
             return;
         }
         int n = GameUtil.randomInclusive(70);
         boolean bl = true;
-        if (ServerSettings.freeToPlayWorld || !this.a.isMember()) {
+        if (ServerSettings.freeToPlayWorld || !this.player.isMember()) {
             bl = false;
         }
         if (n == 3 && !bl) {
@@ -39,21 +39,21 @@ extends CycleEvent {
         }
         switch (n) {
             case 0: {
-                this.a.getSingleCombatTimer().setDelayTicks(0);
-                this.a.getSingleCombatTimer().reset();
-                GameplayHelper.a(this.a, new Npc(411), true, false);
+                this.player.getSingleCombatTimer().setDelayTicks(0);
+                this.player.getSingleCombatTimer().reset();
+                GameplayHelper.a(this.player, new Npc(411), true, false);
                 return;
             }
             case 1: {
-                RandomEventManager.a(this.a, RandomEventNpcDefinition.a);
+                RandomEventManager.spawnRandomEventNpc(this.player, RandomEventNpcDefinition.DRUNKEN_DWARF);
                 return;
             }
             case 2: {
-                RandomEventManager.a(this.a, RandomEventNpcDefinition.b);
+                RandomEventManager.spawnRandomEventNpc(this.player, RandomEventNpcDefinition.GENIE);
                 return;
             }
             case 3: {
-                RandomEventManager.a(this.a, RandomEventNpcDefinition.c);
+                RandomEventManager.spawnRandomEventNpc(this.player, RandomEventNpcDefinition.DR_JEKYLL);
             }
         }
     }

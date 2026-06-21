@@ -37,7 +37,7 @@ public class SmithingHandler {
         if (object2 == null) {
             return;
         }
-        player.a((SmithingBarDefinition)object2);
+        player.setSelectedSmithingBarDefinition((SmithingBarDefinition)object2);
         if (!SkillActionHelper.checkSkillRequirement(player, 13, ((SmithingBarDefinition)object2).getRequiredLevel(), "smith this bar")) {
             player.nextActionSequence();
             player.resetAnimation();
@@ -46,11 +46,11 @@ public class SmithingHandler {
             }
             return;
         }
-        player.ai(n);
+        player.setSelectedSmithingBarItemId(n);
         if (player.botEnabled) {
             int n2;
             Player player3 = player;
-            SmithingBarDefinition smithingBarDefinition = player3.ek();
+            SmithingBarDefinition smithingBarDefinition = player3.getSelectedSmithingBarDefinition();
             if (smithingBarDefinition == null) {
                 n2 = -1;
             } else {
@@ -64,7 +64,7 @@ public class SmithingHandler {
                         if (ItemDefinition.isDefined(smithableItemDefinition.getProductItemId()) && (!itemStack.getDefinition().isMembersOnly() || player3.isMember() && !ServerSettings.freeToPlayWorld)) {
                             int n6 = smithableItemDefinition.getRequiredLevel();
                             if (player3.getSkillManager().getCurrentLevels()[13] >= n6) {
-                                object2 = new ItemStack(player3.ej(), smithableItemDefinition.getBarCount());
+                                object2 = new ItemStack(player3.getSelectedSmithingBarItemId(), smithableItemDefinition.getBarCount());
                                 if (player3.getInventoryManager().containsItemStack((ItemStack)object2) && n6 > n3) {
                                     n3 = n6;
                                     n4 = smithableItemDefinition.getProductItemId();
@@ -132,7 +132,7 @@ public class SmithingHandler {
         Object object3;
         SmithingBarDefinition smithingBarDefinition;
         block14: {
-            smithingBarDefinition = player.ek();
+            smithingBarDefinition = player.getSelectedSmithingBarDefinition();
             if (smithingBarDefinition == null) {
                 return;
             }
@@ -183,7 +183,7 @@ public class SmithingHandler {
                 object2.packetSender.sendGameMessage("You can only smith daggers here.");
                 return;
             }
-            ItemStack itemStack2 = new ItemStack(player.ej(), ((SmithableItemDefinition)((Object)object3)).getBarCount());
+            ItemStack itemStack2 = new ItemStack(player.getSelectedSmithingBarItemId(), ((SmithableItemDefinition)((Object)object3)).getBarCount());
             if (!player.getInventoryManager().containsItemStack(itemStack2)) {
                 object2 = player;
                 object2.packetSender.sendGameMessage("You need at least " + ((SmithableItemDefinition)((Object)object3)).getBarCount() + " bars to make " + string + ".");

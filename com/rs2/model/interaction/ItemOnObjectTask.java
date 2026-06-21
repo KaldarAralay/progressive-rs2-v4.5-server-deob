@@ -99,7 +99,7 @@ extends TickTask {
             }
             if (((ItemDefinition)object).isNote()) {
                 if (n > 1) {
-                    this.player.N = this.itemId;
+                    this.player.temporaryActionValue = this.itemId;
                     object = this.player;
                     ((Player)object).packetSender.sendEnterInputPrompt(18902);
                 } else if (n == 1) {

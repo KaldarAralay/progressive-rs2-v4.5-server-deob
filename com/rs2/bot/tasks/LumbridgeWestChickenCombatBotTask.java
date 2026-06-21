@@ -17,18 +17,18 @@ import java.util.ArrayList;
 
 public final class LumbridgeWestChickenCombatBotTask
 extends BotTaskDefinition {
-    private static Position aa = new Position(3269, 3167, 0);
-    private static int[] ab = new int[]{1944, 2138};
-    private static BotRoute[] ac = new BotRoute[]{new BotRoute(new Position[]{new Position(3273, 3167, 0), new Position(3275, 3176, 0), new Position(3270, 3178, 0), new Position(3269, 3193, 0), new Position(3269, 3212, 0), new Position(3268, 3228, 0)}), new BotRoute(new Position[]{new Position(3267, 3228, 0), new Position(3258, 3247, 0), new Position(3252, 3254, 0), new Position(3240, 3261, 0), new Position(3229, 3262, 0), new Position(3213, 3277, 0), new Position(3198, 3279, 0), new Position(3189, 3280, 0)}), new BotRoute(new Position[]{new Position(3189, 3279, 0)})};
+    private static Position routeStartPosition = new Position(3269, 3167, 0);
+    private static int[] ignoredLootItemIds = new int[]{1944, 2138};
+    private static BotRoute[] taskRouteSegments = new BotRoute[]{new BotRoute(new Position[]{new Position(3273, 3167, 0), new Position(3275, 3176, 0), new Position(3270, 3178, 0), new Position(3269, 3193, 0), new Position(3269, 3212, 0), new Position(3268, 3228, 0)}), new BotRoute(new Position[]{new Position(3267, 3228, 0), new Position(3258, 3247, 0), new Position(3252, 3254, 0), new Position(3240, 3261, 0), new Position(3229, 3262, 0), new Position(3213, 3277, 0), new Position(3198, 3279, 0), new Position(3189, 3280, 0)}), new BotRoute(new Position[]{new Position(3189, 3279, 0)})};
 
     public LumbridgeWestChickenCombatBotTask(int n) {
-        super(aa, ac, 1, false, 1);
+        super(routeStartPosition, taskRouteSegments, 1, false, 1);
         boolean bl = true;
         LumbridgeWestChickenCombatBotTask lumbridgeWestChickenCombatBotTask = this;
         this.combatTask = true;
-        int[] nArray = ab;
+        int[] nArray = ignoredLootItemIds;
         lumbridgeWestChickenCombatBotTask = this;
-        this.ignoredLootItemIds = nArray;
+        ((BotTaskDefinition)this).ignoredLootItemIds = nArray;
         int n2 = 10;
         lumbridgeWestChickenCombatBotTask = this;
         this.targetSearchRadius = n2;
@@ -84,14 +84,14 @@ extends BotTaskDefinition {
         player.botTaskRequiredItems = object;
         player.getInventoryManager().addItem(object[0]);
         object = player;
-        GameplayHelper.a((Player)object, -1);
+        GameplayHelper.prepareBotCombatStyle((Player)object, -1);
         player.getInventoryManager().refresh();
         player.getEquipmentManager().refresh();
     }
 
     @Override
     public final void prepareTaskCombatLoadout(Player player) {
-        GameplayHelper.b(player);
+        GameplayHelper.resetBotSkillsToBase(player);
         int n = 1 + GameUtil.randomInt(10);
         int n2 = n / 5 << 1;
         if (n2 == 0) {
@@ -136,7 +136,7 @@ extends BotTaskDefinition {
         player.botTaskState = "walk towards task";
         player.botPathWaypointIndex = 0;
         player.botPathSegmentIndex = 0;
-        player.currentBotRoute = ac[player.botPathSegmentIndex];
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex];
         player.continueBotRoute();
     }
 
@@ -145,8 +145,8 @@ extends BotTaskDefinition {
         player.setAutoRetaliate(false);
         player.botTaskState = "walk towards bank";
         player.botPathWaypointIndex = 0;
-        player.botPathSegmentIndex = ac.length - 1;
-        player.currentBotRoute = ac[player.botPathSegmentIndex].reversed();
+        player.botPathSegmentIndex = taskRouteSegments.length - 1;
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex].reversed();
         player.continueBotRoute();
     }
 
@@ -154,7 +154,7 @@ extends BotTaskDefinition {
     public final void continueWalkToTask(Player player, int n) {
         player.setAutoRetaliate(true);
         player.botPathWaypointIndex = n;
-        player.currentBotRoute = ac[player.botPathSegmentIndex];
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex];
         this.advanceTaskRouteSegment(player, true);
     }
 
@@ -162,7 +162,7 @@ extends BotTaskDefinition {
     public final void continueWalkToBank(Player player, int n) {
         player.setAutoRetaliate(false);
         player.botPathWaypointIndex = n;
-        player.currentBotRoute = ac[player.botPathSegmentIndex].reversed();
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex].reversed();
         this.advanceTaskRouteSegment(player, true);
     }
 
@@ -172,16 +172,16 @@ extends BotTaskDefinition {
     @Override
     public final void advanceTaskRouteSegment(Player player, boolean bl) {
         int n;
-        int n2 = n = !GameplayHelper.b(12987) ? 1553 : 12987;
+        int n2 = n = !GameplayHelper.isObjectDefinitionIdValid(12987) ? 1553 : 12987;
         if (player.botTaskState.equals("walk towards task") || player.botTaskState.equals("walk to task") && bl) {
             if (!bl) {
                 ++player.botPathSegmentIndex;
             }
-            player.currentBotRoute = ac[player.botPathSegmentIndex];
+            player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex];
             if (!bl) {
                 player.botPathWaypointIndex = 0;
             }
-            if (player.botPathSegmentIndex != ac.length - 1) {
+            if (player.botPathSegmentIndex != taskRouteSegments.length - 1) {
                 player.botTargetNpcId = 2883;
                 return;
             }
@@ -191,7 +191,7 @@ extends BotTaskDefinition {
             if (!bl) {
                 --player.botPathSegmentIndex;
             }
-            player.currentBotRoute = ac[player.botPathSegmentIndex].reversed();
+            player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex].reversed();
             if (!bl) {
                 player.botPathWaypointIndex = 0;
             }

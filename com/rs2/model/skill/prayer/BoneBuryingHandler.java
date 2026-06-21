@@ -69,8 +69,8 @@ public final class BoneBuryingHandler {
             StringBuilder stringBuilder = new StringBuilder("You bury the ");
             ItemService.getInstance();
             packetSender.sendGameMessage(stringBuilder.append(ItemService.getItemName(n).toLowerCase()).append(".").toString());
-            if (SkillActionHelper.shouldTriggerRandomEvent(this.player) && !this.player.botEnabled && !this.player.r()) {
-                GameplayHelper.a(this.player, GameUtil.randomInclusive(3) == 0 ? SkillRandomEventNpc.b : SkillRandomEventNpc.a);
+            if (SkillActionHelper.shouldTriggerRandomEvent(this.player) && !this.player.botEnabled && !this.player.isInTutorialIsland()) {
+                GameplayHelper.spawnSkillRandomEventNpc(this.player, GameUtil.randomInclusive(3) == 0 ? SkillRandomEventNpc.b : SkillRandomEventNpc.a);
             }
         }
         return true;

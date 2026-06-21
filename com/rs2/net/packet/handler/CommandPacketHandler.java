@@ -18,7 +18,7 @@ implements PacketHandler {
                     object = ((IncomingPacket)object).getReader().readString();
                     String[] stringArray = ((String)object).split(" ");
                     String string = stringArray[0].toLowerCase();
-                    player.a(string, Arrays.copyOfRange(stringArray, 1, stringArray.length), ((String)object).substring(((String)object).indexOf(" ") + 1));
+                    player.handleCommand(string, Arrays.copyOfRange(stringArray, 1, stringArray.length), ((String)object).substring(((String)object).indexOf(" ") + 1));
                     return;
                 }
                 catch (Exception exception) {}

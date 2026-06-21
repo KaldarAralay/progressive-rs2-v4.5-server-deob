@@ -18,11 +18,11 @@ import java.util.ArrayList;
 
 public final class DraynorOakWoodcuttingBotTask
 extends BotTaskDefinition {
-    private static Position aa = new Position(3092, 3245, 0);
-    private static BotRoute ab = new BotRoute(new Position[]{new Position(3093, 3247, 0), new Position(3099, 3250, 0), new Position(3107, 3251, 0)});
+    private static Position routeStartPosition = new Position(3092, 3245, 0);
+    private static BotRoute taskRoute = new BotRoute(new Position[]{new Position(3093, 3247, 0), new Position(3099, 3250, 0), new Position(3107, 3251, 0)});
 
     public DraynorOakWoodcuttingBotTask(int n) {
-        super(aa, ab, 0, false, 3);
+        super(routeStartPosition, taskRoute, 0, false, 3);
         int n2 = 3258;
         DraynorOakWoodcuttingBotTask draynorOakWoodcuttingBotTask = this;
         this.targetMaxY = n2;
@@ -90,7 +90,7 @@ extends BotTaskDefinition {
 
     @Override
     public final void prepareTaskCombatLoadout(Player player) {
-        GameplayHelper.b(player);
+        GameplayHelper.resetBotSkillsToBase(player);
         int n = 1 + GameUtil.randomInt(99);
         int n2 = n / 5 << 1;
         if (n2 == 0) {

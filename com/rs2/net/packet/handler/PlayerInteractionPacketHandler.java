@@ -36,7 +36,7 @@ implements PacketHandler {
         }
         Object object3 = object;
         ((Player)object3).packetSender.closeInterfaces();
-        ((Player)object).er();
+        ((Player)object).resetInteractionState();
         switch (((IncomingPacket)object2).getOpcode()) {
             case 73: 
             case 136: 

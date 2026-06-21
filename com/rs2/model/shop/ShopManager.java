@@ -226,7 +226,7 @@ public final class ShopManager {
                 player.getInventoryManager().removeItem(new ItemStack(n6, n));
                 n4 = n8 + 1;
                 if (n6 == 995) {
-                    player.ea += n5;
+                    player.boughtItemsValue += n5;
                 }
             } else {
                 if (bl) {
@@ -384,7 +384,7 @@ public final class ShopManager {
             player.getInventoryManager().addItem(new ItemStack(n4, (int)d));
         }
         if (n4 == 995) {
-            player.dZ = (int)((double)player.dZ + d);
+            player.soldItemsValue = (int)((double)player.soldItemsValue + d);
         }
         n7 = ShopManager.indexOfStockItem(shopDefinition, n5);
         if (shopDefinition.isGeneralStore() && n6 <= 0) {

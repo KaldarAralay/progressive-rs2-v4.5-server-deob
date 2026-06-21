@@ -85,7 +85,7 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.showInterface(InterfaceDefinition.interfaceCount <= 12140 ? 1689 : 12140);
         player2 = player;
-        player.j = false;
+        player.deferLevelUpInterfaces = false;
     }
 
     @Override
@@ -134,14 +134,14 @@ extends QuestScript {
 
     @Override
     public final boolean handleItemOnObject(Player player, int n, int n2, int n3) {
-        if (n == 1929 && n2 == 2843 && n3 >= 3 && player.N != 2401 && !player.ownsItem(2401) && n3 < 30) {
+        if (n == 1929 && n2 == 2843 && n3 >= 3 && player.temporaryActionValue != 2401 && !player.ownsItem(2401) && n3 < 30) {
             player.getDialogueManager().showPlayerTwoLineDialogue("OK, I think I've washed the key down into the sewer.", "I'd better go down and get it!", 591);
             player.getDialogueManager().finishDialogue();
             player.getUpdateState().setAnimation(827);
             player.getInventoryManager().replaceItem(new ItemStack(1929, 1), new ItemStack(1925, 1));
             Player player2 = player;
             player2.packetSender.sendGameMessage("You pour the liquid down the drain.");
-            player.N = 2401;
+            player.temporaryActionValue = 2401;
             return true;
         }
         return false;
@@ -149,7 +149,7 @@ extends QuestScript {
 
     @Override
     public final boolean handleFirstObjectAction(Player player, int n, int n2, int n3, int n4) {
-        if (n == 882 && n2 == 3237 && n3 == 3458 && n4 >= 3 && player.N == 2401 && !player.ownsItem(2401) && n4 < 30) {
+        if (n == 882 && n2 == 3237 && n3 == 3458 && n4 >= 3 && player.temporaryActionValue == 2401 && !player.ownsItem(2401) && n4 < 30) {
             AttackStyleDefinition.startDelayedObjectMove(player, new Position(player.getPosition().getX(), player.getPosition().getY() + 6400));
             GroundItem groundItem = new GroundItem(new ItemStack(2401, 1), player, new Position(3225, 9897, 0));
             GroundItemManager.getInstance();
@@ -161,7 +161,7 @@ extends QuestScript {
         return false;
     }
 
-    private static boolean e(Player player) {
+    private static boolean hasAllSilverlightKeys(Player player) {
         return player.getInventoryManager().containsItem(2400) && player.getInventoryManager().containsItem(2401) && player.getInventoryManager().containsItem(2399);
     }
 
@@ -670,7 +670,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 2) {
-                    if (DemonSlayerQuest.e(player)) {
+                    if (DemonSlayerQuest.hasAllSilverlightKeys(player)) {
                         player.getDialogueManager().showPlayerOneLineDialogue("I've got all three keys!", 591);
                         player.getDialogueManager().setNextDialogueStep(4);
                     } else {
@@ -690,7 +690,7 @@ extends QuestScript {
                 }
                 if (n2 == 5) {
                     if (n4 < 30) {
-                        if (!DemonSlayerQuest.e(player)) {
+                        if (!DemonSlayerQuest.hasAllSilverlightKeys(player)) {
                             return false;
                         }
                         player.getInventoryManager().removeItem(new ItemStack(2400, 1));
@@ -1103,7 +1103,7 @@ extends QuestScript {
         if (n == 879 && n4 == 30) {
             if (n2 == 100) {
                 player.pendingGameMode = 0;
-                player.N = 0;
+                player.temporaryActionValue = 0;
                 player.getDialogueManager().showPlayerOneLineDialogue("Now what was that incantation again?", 591);
                 return true;
             }
@@ -1113,18 +1113,18 @@ extends QuestScript {
             }
             if (n2 == 102) {
                 if (n3 == 1) {
-                    if (((String)arrayList.get(player.N)).equals(this.a.get(0))) {
+                    if (((String)arrayList.get(player.temporaryActionValue)).equals(this.a.get(0))) {
                         ++player.pendingGameMode;
                     }
-                    String string = "Carlem" + (player.N == 4 ? "!" : "...");
+                    String string = "Carlem" + (player.temporaryActionValue == 4 ? "!" : "...");
                     player.getDialogueManager().showPlayerOneLineDialogue(string, 591);
                     player.getUpdateState().setForcedText(string);
                     if (player.pendingGameMode == 5) {
                         player.getDialogueManager().setNextDialogueStep(103);
                         return true;
                     }
-                    ++player.N;
-                    if (player.N == 5) {
+                    ++player.temporaryActionValue;
+                    if (player.temporaryActionValue == 5) {
                         Npc npc = Npc.findByDefinitionId(879);
                         npc.setCurrentHitpoints(npc.getMaxHitpoints());
                         player.getPacketSender().sendGameMessage("You didn't remember the words correctly!");
@@ -1135,18 +1135,18 @@ extends QuestScript {
                     return true;
                 }
                 if (n3 == 2) {
-                    if (((String)arrayList.get(player.N)).equals(this.a.get(1))) {
+                    if (((String)arrayList.get(player.temporaryActionValue)).equals(this.a.get(1))) {
                         ++player.pendingGameMode;
                     }
-                    String string = "Aber" + (player.N == 4 ? "!" : "...");
+                    String string = "Aber" + (player.temporaryActionValue == 4 ? "!" : "...");
                     player.getDialogueManager().showPlayerOneLineDialogue(string, 591);
                     player.getUpdateState().setForcedText(string);
                     if (player.pendingGameMode == 5) {
                         player.getDialogueManager().setNextDialogueStep(103);
                         return true;
                     }
-                    ++player.N;
-                    if (player.N == 5) {
+                    ++player.temporaryActionValue;
+                    if (player.temporaryActionValue == 5) {
                         Npc npc = Npc.findByDefinitionId(879);
                         npc.setCurrentHitpoints(npc.getMaxHitpoints());
                         player.getPacketSender().sendGameMessage("You didn't remember the words correctly!");
@@ -1157,18 +1157,18 @@ extends QuestScript {
                     return true;
                 }
                 if (n3 == 3) {
-                    if (((String)arrayList.get(player.N)).equals(this.a.get(2))) {
+                    if (((String)arrayList.get(player.temporaryActionValue)).equals(this.a.get(2))) {
                         ++player.pendingGameMode;
                     }
-                    String string = "Camerinthum" + (player.N == 4 ? "!" : "...");
+                    String string = "Camerinthum" + (player.temporaryActionValue == 4 ? "!" : "...");
                     player.getDialogueManager().showPlayerOneLineDialogue(string, 591);
                     player.getUpdateState().setForcedText(string);
                     if (player.pendingGameMode == 5) {
                         player.getDialogueManager().setNextDialogueStep(103);
                         return true;
                     }
-                    ++player.N;
-                    if (player.N == 5) {
+                    ++player.temporaryActionValue;
+                    if (player.temporaryActionValue == 5) {
                         Npc npc = Npc.findByDefinitionId(879);
                         npc.setCurrentHitpoints(npc.getMaxHitpoints());
                         player.getPacketSender().sendGameMessage("You didn't remember the words correctly!");
@@ -1179,18 +1179,18 @@ extends QuestScript {
                     return true;
                 }
                 if (n3 == 4) {
-                    if (((String)arrayList.get(player.N)).equals(this.a.get(3))) {
+                    if (((String)arrayList.get(player.temporaryActionValue)).equals(this.a.get(3))) {
                         ++player.pendingGameMode;
                     }
-                    String string = "Purchai" + (player.N == 4 ? "!" : "...");
+                    String string = "Purchai" + (player.temporaryActionValue == 4 ? "!" : "...");
                     player.getDialogueManager().showPlayerOneLineDialogue(string, 591);
                     player.getUpdateState().setForcedText(string);
                     if (player.pendingGameMode == 5) {
                         player.getDialogueManager().setNextDialogueStep(103);
                         return true;
                     }
-                    ++player.N;
-                    if (player.N == 5) {
+                    ++player.temporaryActionValue;
+                    if (player.temporaryActionValue == 5) {
                         Npc npc = Npc.findByDefinitionId(879);
                         npc.setCurrentHitpoints(npc.getMaxHitpoints());
                         player.getPacketSender().sendGameMessage("You didn't remember the words correctly!");
@@ -1201,18 +1201,18 @@ extends QuestScript {
                     return true;
                 }
                 if (n3 == 5) {
-                    if (((String)arrayList.get(player.N)).equals(this.a.get(4))) {
+                    if (((String)arrayList.get(player.temporaryActionValue)).equals(this.a.get(4))) {
                         ++player.pendingGameMode;
                     }
-                    String string = "Gabindo" + (player.N == 4 ? "!" : "...");
+                    String string = "Gabindo" + (player.temporaryActionValue == 4 ? "!" : "...");
                     player.getDialogueManager().showPlayerOneLineDialogue(string, 591);
                     player.getUpdateState().setForcedText(string);
                     if (player.pendingGameMode == 5) {
                         player.getDialogueManager().setNextDialogueStep(103);
                         return true;
                     }
-                    ++player.N;
-                    if (player.N == 5) {
+                    ++player.temporaryActionValue;
+                    if (player.temporaryActionValue == 5) {
                         Npc npc = Npc.findByDefinitionId(879);
                         npc.setCurrentHitpoints(npc.getMaxHitpoints());
                         player.getPacketSender().sendGameMessage("You didn't remember the words correctly!");
@@ -1225,7 +1225,7 @@ extends QuestScript {
             }
             if (n2 == 103) {
                 player.pendingGameMode = 0;
-                player.N = 0;
+                player.temporaryActionValue = 0;
                 player.getDialogueManager().showOneLineChatboxMessage("Delrith is sucked into the vortex...");
                 Npc npc = Npc.findByDefinitionId(879);
                 npc.setDead(true);

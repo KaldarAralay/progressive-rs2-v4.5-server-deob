@@ -28,7 +28,7 @@ public final class AbyssManager {
         int n2 = 0;
         while (n2 < n) {
             int n3 = nArray[n2];
-            if (!player.getInventoryManager().b(n3)) {
+            if (!player.getInventoryManager().containsItemInInventoryOrBank(n3)) {
                 return n3;
             }
             ++n2;
@@ -218,7 +218,7 @@ public final class AbyssManager {
         int[] nArray = new int[]{3016, 3016, 3021, 3039, 3058, 3063, 3058, 3034};
         int[] nArray2 = new int[]{4848, 4831, 4815, 4806, 4812, 4827, 4848, 4854};
         int n = new Random().nextInt(8);
-        player.ap(npc.getNpcId());
+        player.setAbyssMageNpcId(npc.getNpcId());
         npc.startDialogueTeleport(player, nArray[n], nArray2[n], 0, "Veniens! Sallakar! Rinnesset!");
         player.addPvpCombatReference(player, 600);
         if (player.getSkillManager().getCurrentLevels()[5] > 0) {

@@ -12,7 +12,7 @@ import com.rs2.model.cutscene.CutsceneStep;
 import com.rs2.model.cutscene.CutsceneStepTask;
 import com.rs2.model.npc.Npc;
 import com.rs2.model.player.Player;
-import com.rs2.model.quest.QuestNpcIds;
+import com.rs2.model.quest.QuestConstants;
 import com.rs2.model.task.TickTask;
 import com.rs2.net.packet.PacketSender;
 import java.util.ArrayList;
@@ -62,7 +62,7 @@ public class Cutscene {
     }
 
     public final void finishCutscene() {
-        this.player.ev = false;
+        this.player.cutsceneActive = false;
         this.player.getMovementLockTimer().setDelayTicks(0);
         Player player = this.player;
         player.packetSender.resetCamera();
@@ -75,13 +75,13 @@ public class Cutscene {
 
     public final void startCutscene() {
         Cutscene cutscene = this;
-        this.player.ev = true;
+        this.player.cutsceneActive = true;
         Object object = cutscene.player;
         ((Player)object).packetSender.sendMinimapState(2);
         object = cutscene.player;
         ((Player)object).packetSender.showInterface(8677);
         object = cutscene.player;
-        Object object2 = new int[]{QuestNpcIds.a[0], QuestNpcIds.b[0], QuestNpcIds.c[0], QuestNpcIds.d[0], QuestNpcIds.e[0], QuestNpcIds.f[0], QuestNpcIds.g[0], QuestNpcIds.k[0], QuestNpcIds.l[0]};
+        Object object2 = new int[]{QuestConstants.COMBAT_TAB_INTERFACE[0], QuestConstants.STATS_TAB_INTERFACE[0], QuestConstants.QUEST_TAB_INTERFACE[0], QuestConstants.INVENTORY_TAB_INTERFACE[0], QuestConstants.EQUIPMENT_TAB_INTERFACE[0], QuestConstants.PRAYER_TAB_INTERFACE[0], QuestConstants.MAGIC_TAB_INTERFACE[0], QuestConstants.OPTIONS_TAB_INTERFACE[0], QuestConstants.EMOTES_TAB_INTERFACE[0]};
         object = ((Player)object).packetSender;
         int n = 0;
         while (n < 9) {

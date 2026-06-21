@@ -46,7 +46,7 @@ extends CycleEvent {
         this.a.getUpdateState().setAnimation(this.f.getGatherAnimationId());
         object = this.a;
         ((Player)object).packetSender.sendSoundEffect(432, 1, 0);
-        if (this.a.N == 1) {
+        if (this.a.temporaryActionValue == 1) {
             int n = SkillActionHelper.getObjectOrientation(this.e, this.c, this.d, this.a.getPosition().getPlane());
             int n2 = SkillActionHelper.getObjectType(this.e, this.c, this.d, this.a.getPosition().getPlane());
             new DynamicObject(ServerSettings.placeholderObjectId, this.c, this.d, this.a.getPosition().getPlane(), n, n2 == 11 ? 11 : 10, this.e, 1);
@@ -54,7 +54,7 @@ extends CycleEvent {
             player.packetSender.queueRelativeMovementStep(this.a.getPosition().getX() < 2840 ? 3 : -3, 0, true);
             cycleEventContainer.stop();
         }
-        ++this.a.N;
+        ++this.a.temporaryActionValue;
     }
 
     @Override

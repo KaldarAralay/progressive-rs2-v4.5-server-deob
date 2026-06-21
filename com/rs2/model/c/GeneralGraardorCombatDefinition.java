@@ -20,7 +20,7 @@ extends NpcCombatDefinition {
 
     @Override
     public final CombatAttack[] createAttacks(Entity entity, Entity entity2) {
-        return new CombatAttack[]{BaseCombatAttack.a(entity, entity2, CombatType.RANGED, AttackXpMode.LONGRANGE, 35, 6, 7060, new GraphicEffect(-1, 0), new GraphicEffect(-1, 0), 1200, ProjectileTiming.a), BaseCombatAttack.a(entity, entity2, AttackXpMode.MELEE_ACCURATE, AttackBonusType.CRUSH, 60, 6, 7060)};
+        return new CombatAttack[]{BaseCombatAttack.createProjectileAttack(entity, entity2, CombatType.RANGED, AttackXpMode.LONGRANGE, 35, 6, 7060, new GraphicEffect(-1, 0), new GraphicEffect(-1, 0), 1200, ProjectileTiming.a), BaseCombatAttack.createMeleeAttack(entity, entity2, AttackXpMode.MELEE_ACCURATE, AttackBonusType.CRUSH, 60, 6, 7060)};
     }
 }
 

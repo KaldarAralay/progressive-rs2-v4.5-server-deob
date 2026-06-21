@@ -12,33 +12,33 @@ import com.rs2.model.task.TickTask;
 
 final class BrassKeyPickupTickTask
 extends TickTask {
-    private /* synthetic */ EdgevilleDungeonBrassKeyBotTask a;
-    private final /* synthetic */ Player b;
+    private /* synthetic */ EdgevilleDungeonBrassKeyBotTask task;
+    private final /* synthetic */ Player player;
 
     BrassKeyPickupTickTask(EdgevilleDungeonBrassKeyBotTask edgevilleDungeonBrassKeyBotTask, int n, Player player) {
-        this.a = edgevilleDungeonBrassKeyBotTask;
-        this.b = player;
+        this.task = edgevilleDungeonBrassKeyBotTask;
+        this.player = player;
         super(2);
     }
 
     @Override
     public final void execute() {
-        if (this.b.isDead() || !this.b.isRegistered() || !this.b.currentBotTask.usesCustomTaskAction || !this.b.botTaskState.equals("do task")) {
+        if (this.player.isDead() || !this.player.isRegistered() || !this.player.currentBotTask.usesCustomTaskAction || !this.player.botTaskState.equals("do task")) {
             this.stop();
             return;
         }
-        if (this.b.getInventoryManager().getContainer().getFreeSlots() <= 0 || this.b.ownsItem(983)) {
-            this.b.botTaskReturnToBankRequested = true;
-            this.b.currentBotTask.startWalkToBank(this.b);
+        if (this.player.getInventoryManager().getContainer().getFreeSlots() <= 0 || this.player.ownsItem(983)) {
+            this.player.botTaskReturnToBankRequested = true;
+            this.player.currentBotTask.startWalkToBank(this.player);
             this.stop();
             return;
         }
         GroundItemManager.getInstance();
-        GroundItem groundItem = GroundItemManager.findVisibleItemAt(this.b, this.a.aa);
+        GroundItem groundItem = GroundItemManager.findVisibleItemAt(this.player, this.task.brassKeySpawnPosition);
         if (groundItem != null && groundItem.getItem().getId() == 983) {
-            this.b.botLootPickupTargets.clear();
-            this.b.botLootPickupTargets.add(groundItem);
-            BotCombatHelper.pickupBotCombatGroundItem(this.b, 983, this.a.aa);
+            this.player.botLootPickupTargets.clear();
+            this.player.botLootPickupTargets.add(groundItem);
+            BotCombatHelper.pickupBotCombatGroundItem(this.player, 983, this.task.brassKeySpawnPosition);
         }
     }
 }

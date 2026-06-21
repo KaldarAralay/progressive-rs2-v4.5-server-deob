@@ -10,22 +10,22 @@ import com.rs2.model.task.TickTask;
 
 final class LyrePerformanceSecondLineTask
 extends TickTask {
-    private /* synthetic */ LyrePerformanceStartTask a;
-    private final /* synthetic */ Player b;
-    private final /* synthetic */ int c;
+    private /* synthetic */ LyrePerformanceStartTask startTask;
+    private final /* synthetic */ Player player;
+    private final /* synthetic */ int performanceLineIndex;
 
     LyrePerformanceSecondLineTask(LyrePerformanceStartTask lyrePerformanceStartTask, int n, Player player, int n2) {
-        this.a = lyrePerformanceStartTask;
-        this.b = player;
-        this.c = n2;
+        this.startTask = lyrePerformanceStartTask;
+        this.player = player;
+        this.performanceLineIndex = n2;
         super(4);
     }
 
     @Override
     public final void execute() {
-        LyrePerformanceStartTask lyrePerformanceStartTask = this.a;
-        this.b.getUpdateState().setForcedText(lyrePerformanceStartTask.d.b[this.c][1]);
-        World.getTaskScheduler().schedule(this.a.a);
+        LyrePerformanceStartTask lyrePerformanceStartTask = this.startTask;
+        this.player.getUpdateState().setForcedText(lyrePerformanceStartTask.quest.lyrePerformanceLines[this.performanceLineIndex][1]);
+        World.getTaskScheduler().schedule(this.startTask.thirdLineTask);
         this.stop();
     }
 }

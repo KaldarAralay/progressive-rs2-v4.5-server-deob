@@ -27,7 +27,7 @@ extends TickTask {
         player2.packetSender.resetCamera();
         this.b.moveTo(new Position(2802, 2707, 0));
         this.b.clearTemporaryCutsceneNpcs();
-        this.b.z = null;
+        this.b.cutsceneReturnPosition = null;
         player2 = player = this.b;
         player.packetSender.sendInterfaceText("", 3026);
         player2 = player;

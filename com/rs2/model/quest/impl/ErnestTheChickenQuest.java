@@ -75,14 +75,14 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.showInterface(InterfaceDefinition.interfaceCount <= 12140 ? 1689 : 12140);
         player2 = player;
-        player.j = false;
+        player.deferLevelUpInterfaces = false;
     }
 
-    private static boolean f(Player player) {
+    private static boolean hasAllMachineParts(Player player) {
         return player.getInventoryManager().containsItemAmount(271, 1) && player.getInventoryManager().containsItemAmount(276, 1) && player.getInventoryManager().containsItemAmount(277, 1);
     }
 
-    public static void e(Player player) {
+    public static void refreshBasementLeverDoorConfig(Player player) {
         if (player.ep[33] == 4) {
             player.ep[668] = 4;
         }
@@ -265,7 +265,7 @@ extends QuestScript {
             player.ep[33] = 0;
             Player player12 = player;
             player12.packetSender.sendConfig(33, 0);
-            ErnestTheChickenQuest.e(player);
+            ErnestTheChickenQuest.refreshBasementLeverDoorConfig(player);
             return true;
         }
         if (n == 132 && n2 == 3117 && n3 == 9754) {
@@ -290,7 +290,7 @@ extends QuestScript {
             player.getUpdateState().setAnimation(835);
             player13 = player;
             player13.packetSender.sendGameMessage("You hear a clunk.");
-            ErnestTheChickenQuest.e(player);
+            ErnestTheChickenQuest.refreshBasementLeverDoorConfig(player);
             return true;
         }
         if (n == 147 && n2 == 3118 && n3 == 9752) {
@@ -311,7 +311,7 @@ extends QuestScript {
             player.getUpdateState().setAnimation(835);
             player14 = player;
             player14.packetSender.sendGameMessage("You hear a clunk.");
-            ErnestTheChickenQuest.e(player);
+            ErnestTheChickenQuest.refreshBasementLeverDoorConfig(player);
             return true;
         }
         if (n == 148 && n2 == 3112 && n3 == 9760) {
@@ -332,7 +332,7 @@ extends QuestScript {
             player.getUpdateState().setAnimation(835);
             player15 = player;
             player15.packetSender.sendGameMessage("You hear a clunk.");
-            ErnestTheChickenQuest.e(player);
+            ErnestTheChickenQuest.refreshBasementLeverDoorConfig(player);
             return true;
         }
         if (n == 149 && n2 == 3108 && n3 == 9767) {
@@ -353,7 +353,7 @@ extends QuestScript {
             player.getUpdateState().setAnimation(835);
             player16 = player;
             player16.packetSender.sendGameMessage("You hear a clunk.");
-            ErnestTheChickenQuest.e(player);
+            ErnestTheChickenQuest.refreshBasementLeverDoorConfig(player);
             return true;
         }
         if (n == 150 && n2 == 3097 && n3 == 9767) {
@@ -374,7 +374,7 @@ extends QuestScript {
             player.getUpdateState().setAnimation(835);
             player17 = player;
             player17.packetSender.sendGameMessage("You hear a clunk.");
-            ErnestTheChickenQuest.e(player);
+            ErnestTheChickenQuest.refreshBasementLeverDoorConfig(player);
             return true;
         }
         if (n == 151 && n2 == 3096 && n3 == 9765) {
@@ -395,7 +395,7 @@ extends QuestScript {
             player.getUpdateState().setAnimation(835);
             player18 = player;
             player18.packetSender.sendGameMessage("You hear a clunk.");
-            ErnestTheChickenQuest.e(player);
+            ErnestTheChickenQuest.refreshBasementLeverDoorConfig(player);
             return true;
         }
         if (n == 144 && n2 == 3108 && n3 == 9758) {
@@ -794,7 +794,7 @@ extends QuestScript {
             if (n4 == 3 || n4 == 4) {
                 if (n2 == 1) {
                     player.getDialogueManager().showNpcOneLineDialogue("Have you found anything yet?", 591);
-                    if (ErnestTheChickenQuest.f(player)) {
+                    if (ErnestTheChickenQuest.hasAllMachineParts(player)) {
                         player.getDialogueManager().setNextDialogueStep(2);
                     } else {
                         player.getDialogueManager().setNextDialogueStep(5);
@@ -846,7 +846,7 @@ extends QuestScript {
             }
         }
         if (n == 287) {
-            if (n2 == 100 && ErnestTheChickenQuest.f(player)) {
+            if (n2 == 100 && ErnestTheChickenQuest.hasAllMachineParts(player)) {
                 player.setQuestState(this.getQuestId(), 5);
                 player.getInventoryManager().removeItem(new ItemStack(271, 1));
                 player.getInventoryManager().removeItem(new ItemStack(276, 1));

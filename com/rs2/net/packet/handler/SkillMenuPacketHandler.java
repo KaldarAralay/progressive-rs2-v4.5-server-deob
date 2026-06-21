@@ -10,8 +10,8 @@ import com.rs2.net.packet.PacketHandler;
 
 public final class SkillMenuPacketHandler
 implements PacketHandler {
-    private static int[] a = new int[]{8654, 8655, 8656, 8657, 8658, 8659, 8660, 8661, 8662, 8663, 8664, 8665, 8666, 8667, 8668, 8669, 8670, 8671, 8672, 12162, 13928};
-    private static int[] b;
+    private static int[] skillButtonIds = new int[]{8654, 8655, 8656, 8657, 8658, 8659, 8660, 8661, 8662, 8663, 8664, 8665, 8666, 8667, 8668, 8669, 8670, 8671, 8672, 12162, 13928};
+    private static int[] skillIdByButtonIndex;
 
     static {
         int[] nArray = new int[21];
@@ -35,7 +35,7 @@ implements PacketHandler {
         nArray[18] = 20;
         nArray[19] = 18;
         nArray[20] = 19;
-        b = nArray;
+        skillIdByButtonIndex = nArray;
     }
 
     @Override
@@ -49,11 +49,11 @@ implements PacketHandler {
         }
     }
 
-    public static boolean a(Player player, int n, int n2) {
+    public static boolean handleSetLevelInput(Player player, int n, int n2) {
         int n3 = -1;
         int n4 = 0;
-        while (n4 < a.length) {
-            if (n == a[n4]) {
+        while (n4 < skillButtonIds.length) {
+            if (n == skillButtonIds[n4]) {
                 n3 = n4;
                 break;
             }
@@ -63,8 +63,8 @@ implements PacketHandler {
             return false;
         }
         n4 = n2;
-        n = b[n3];
-        player.a("setlevel", new String[]{String.valueOf(n), String.valueOf(n4)});
+        n = skillIdByButtonIndex[n3];
+        player.executeCheatCommand("setlevel", new String[]{String.valueOf(n), String.valueOf(n4)});
         return true;
     }
 }

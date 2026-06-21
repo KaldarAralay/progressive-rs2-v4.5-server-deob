@@ -143,7 +143,7 @@ public final class MiningManager {
         this.player.resetAnimation();
         this.player.getUpdateState().setAnimation(gatheringToolDefinition.getGatherAnimationId());
         this.player.gatheringHazardCounter = 0;
-        if (ServerSettings.randomEventsMode == 0 && GameUtil.randomInt(800) == 0 && this.player.getQuestState(0) == 1 && !this.player.botEnabled && !this.player.r()) {
+        if (ServerSettings.randomEventsMode == 0 && GameUtil.randomInt(800) == 0 && this.player.getQuestState(0) == 1 && !this.player.botEnabled && !this.player.isInTutorialIsland()) {
             int n11 = MiningManager.getRandomEventRockObjectId(n, new Position(n2, n3, this.player.getPosition().getPlane()));
             ObjectManager.getInstance();
             DynamicObject dynamicObject = ObjectManager.findDynamicObjectAt(n2, n3, this.player.getPosition().getPlane());
@@ -344,7 +344,7 @@ public final class MiningManager {
             return 10945;
         }
         if (n == 2110) {
-            if (GameplayHelper.b(10587)) {
+            if (GameplayHelper.isObjectDefinitionIdValid(10587)) {
                 return 10587;
             }
             if (ServerSettings.cacheVersion >= 270) return 451;

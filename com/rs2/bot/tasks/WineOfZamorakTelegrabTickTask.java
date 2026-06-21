@@ -13,30 +13,30 @@ import com.rs2.model.task.TickTask;
 
 final class WineOfZamorakTelegrabTickTask
 extends TickTask {
-    private /* synthetic */ FaladorWineOfZamorakTelegrabBotTask a;
-    private final /* synthetic */ Player b;
+    private /* synthetic */ FaladorWineOfZamorakTelegrabBotTask task;
+    private final /* synthetic */ Player player;
 
     WineOfZamorakTelegrabTickTask(FaladorWineOfZamorakTelegrabBotTask faladorWineOfZamorakTelegrabBotTask, int n, Player player) {
-        this.a = faladorWineOfZamorakTelegrabBotTask;
-        this.b = player;
+        this.task = faladorWineOfZamorakTelegrabBotTask;
+        this.player = player;
         super(2);
     }
 
     @Override
     public final void execute() {
-        if (this.b.isDead() || !this.b.isRegistered() || !this.b.currentBotTask.usesCustomTaskAction || !this.b.botTaskState.equals("do task")) {
+        if (this.player.isDead() || !this.player.isRegistered() || !this.player.currentBotTask.usesCustomTaskAction || !this.player.botTaskState.equals("do task")) {
             this.stop();
             return;
         }
-        if (this.b.getInventoryManager().getContainer().getFreeSlots() <= 0) {
-            this.b.currentBotTask.startWalkToBank(this.b);
+        if (this.player.getInventoryManager().getContainer().getFreeSlots() <= 0) {
+            this.player.currentBotTask.startWalkToBank(this.player);
             this.stop();
             return;
         }
         GroundItemManager.getInstance();
-        GroundItem groundItem = GroundItemManager.findVisibleItemAt(this.b, this.a.aa);
+        GroundItem groundItem = GroundItemManager.findVisibleItemAt(this.player, this.task.wineOfZamorakPosition);
         if (groundItem != null && groundItem.getItem().getId() == 245) {
-            MagicSpellAction.scheduleTelekineticGrab(this.b, SpellDefinition.TELEKINETIC_GRAB, 245, this.a.aa);
+            MagicSpellAction.scheduleTelekineticGrab(this.player, SpellDefinition.TELEKINETIC_GRAB, 245, this.task.wineOfZamorakPosition);
         }
     }
 }

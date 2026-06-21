@@ -9,7 +9,7 @@ import com.rs2.model.combat.AttackStyleDefinition;
 import com.rs2.model.item.ItemStack;
 import com.rs2.model.npc.Npc;
 import com.rs2.model.player.Player;
-import com.rs2.model.quest.QuestNpcIds;
+import com.rs2.model.quest.QuestConstants;
 import com.rs2.model.quest.QuestScript;
 import com.rs2.util.GameUtil;
 
@@ -172,7 +172,7 @@ extends QuestScript {
     @Override
     public final void refreshQuestJournal(Player itemStackArray, int n) {
         Object object = itemStackArray;
-        itemStackArray.packetSender.setSidebarInterface(QuestNpcIds.j[0], QuestNpcIds.j[1]);
+        itemStackArray.packetSender.setSidebarInterface(QuestConstants.LOGOUT_TAB_INTERFACE[0], QuestConstants.LOGOUT_TAB_INTERFACE[1]);
         if (n < 6) {
             object = itemStackArray;
             itemStackArray.packetSender.sendConfig(406, 0);
@@ -195,52 +195,52 @@ extends QuestScript {
         }
         if (n >= 3) {
             object = itemStackArray;
-            itemStackArray.packetSender.setSidebarInterface(QuestNpcIds.k[0], QuestNpcIds.k[1]);
+            itemStackArray.packetSender.setSidebarInterface(QuestConstants.OPTIONS_TAB_INTERFACE[0], QuestConstants.OPTIONS_TAB_INTERFACE[1]);
         }
         if (n >= 7) {
             object = itemStackArray;
-            itemStackArray.packetSender.setSidebarInterface(QuestNpcIds.d[0], QuestNpcIds.d[1]);
+            itemStackArray.packetSender.setSidebarInterface(QuestConstants.INVENTORY_TAB_INTERFACE[0], QuestConstants.INVENTORY_TAB_INTERFACE[1]);
         }
         if (n >= 10) {
             object = itemStackArray;
-            itemStackArray.packetSender.setSidebarInterface(QuestNpcIds.b[0], QuestNpcIds.b[1]);
+            itemStackArray.packetSender.setSidebarInterface(QuestConstants.STATS_TAB_INTERFACE[0], QuestConstants.STATS_TAB_INTERFACE[1]);
         }
         if (n >= 20) {
             object = itemStackArray;
-            itemStackArray.packetSender.setSidebarInterface(QuestNpcIds.m[0], QuestNpcIds.m[1]);
+            itemStackArray.packetSender.setSidebarInterface(QuestConstants.MUSIC_TAB_INTERFACE[0], QuestConstants.MUSIC_TAB_INTERFACE[1]);
         }
         if (n >= 22) {
             object = itemStackArray;
-            itemStackArray.packetSender.setSidebarInterface(QuestNpcIds.l[0], QuestNpcIds.l[1]);
+            itemStackArray.packetSender.setSidebarInterface(QuestConstants.EMOTES_TAB_INTERFACE[0], QuestConstants.EMOTES_TAB_INTERFACE[1]);
         }
         if (n >= 26) {
             object = itemStackArray;
-            itemStackArray.packetSender.setSidebarInterface(QuestNpcIds.c[0], QuestNpcIds.c[1]);
+            itemStackArray.packetSender.setSidebarInterface(QuestConstants.QUEST_TAB_INTERFACE[0], QuestConstants.QUEST_TAB_INTERFACE[1]);
         }
         if (n >= 41) {
             object = itemStackArray;
-            itemStackArray.packetSender.setSidebarInterface(QuestNpcIds.e[0], QuestNpcIds.e[1]);
+            itemStackArray.packetSender.setSidebarInterface(QuestConstants.EQUIPMENT_TAB_INTERFACE[0], QuestConstants.EQUIPMENT_TAB_INTERFACE[1]);
         }
         if (n >= 45) {
             object = itemStackArray;
-            itemStackArray.packetSender.setSidebarInterface(QuestNpcIds.a[0], QuestNpcIds.a[1]);
+            itemStackArray.packetSender.setSidebarInterface(QuestConstants.COMBAT_TAB_INTERFACE[0], QuestConstants.COMBAT_TAB_INTERFACE[1]);
             itemStackArray.getEquipmentManager().refreshWeaponInterface();
         }
         if (n >= 56) {
             object = itemStackArray;
-            itemStackArray.packetSender.setSidebarInterface(QuestNpcIds.f[0], QuestNpcIds.f[1]);
+            itemStackArray.packetSender.setSidebarInterface(QuestConstants.PRAYER_TAB_INTERFACE[0], QuestConstants.PRAYER_TAB_INTERFACE[1]);
         }
         if (n >= 58) {
             object = itemStackArray;
-            itemStackArray.packetSender.setSidebarInterface(QuestNpcIds.h[0], QuestNpcIds.h[1]);
+            itemStackArray.packetSender.setSidebarInterface(QuestConstants.FRIENDS_TAB_INTERFACE[0], QuestConstants.FRIENDS_TAB_INTERFACE[1]);
         }
         if (n >= 59) {
             object = itemStackArray;
-            itemStackArray.packetSender.setSidebarInterface(QuestNpcIds.i[0], QuestNpcIds.i[1]);
+            itemStackArray.packetSender.setSidebarInterface(QuestConstants.IGNORE_TAB_INTERFACE[0], QuestConstants.IGNORE_TAB_INTERFACE[1]);
         }
         if (n >= 63) {
             object = itemStackArray;
-            itemStackArray.packetSender.setSidebarInterface(QuestNpcIds.g[0], QuestNpcIds.g[1]);
+            itemStackArray.packetSender.setSidebarInterface(QuestConstants.MAGIC_TAB_INTERFACE[0], QuestConstants.MAGIC_TAB_INTERFACE[1]);
         }
         if (n >= 6 && n < 12) {
             object = itemStackArray;
@@ -324,7 +324,7 @@ extends QuestScript {
         }
         if (n == 3) {
             object = itemStackArray;
-            itemStackArray.packetSender.flashSidebarIcon(QuestNpcIds.k[0]);
+            itemStackArray.packetSender.flashSidebarIcon(QuestConstants.OPTIONS_TAB_INTERFACE[0]);
             itemStackArray.getDialogueManager().a("", "Player controls", "Please click on the flashing spanner icon found at the bottom", "right of your screen. This will display your player controls.", "", true);
         }
         if (n == 4) {
@@ -344,7 +344,7 @@ extends QuestScript {
         }
         if (n == 7) {
             object = itemStackArray;
-            itemStackArray.packetSender.flashSidebarIcon(QuestNpcIds.d[0]);
+            itemStackArray.packetSender.flashSidebarIcon(QuestConstants.INVENTORY_TAB_INTERFACE[0]);
             itemStackArray.getDialogueManager().a("Viewing the items that you were given.", "Click on the flashing backpack icon to the right hand side of", "the main window to view your inventory. Your inventory is a list", "of everything you have in your backpack.", "", true);
         }
         if (n == 8) {
@@ -357,7 +357,7 @@ extends QuestScript {
         }
         if (n == 10) {
             object = itemStackArray;
-            itemStackArray.packetSender.flashSidebarIcon(QuestNpcIds.b[0]);
+            itemStackArray.packetSender.flashSidebarIcon(QuestConstants.STATS_TAB_INTERFACE[0]);
             itemStackArray.getDialogueManager().a("", "You gained some experience.", "Click on the flashing bar graph icon near the inventory button", "to see your skill stats.", "", true);
         }
         if (n == 11) {
@@ -401,7 +401,7 @@ extends QuestScript {
         }
         if (n == 20) {
             object = itemStackArray;
-            itemStackArray.packetSender.flashSidebarIcon(QuestNpcIds.m[0]);
+            itemStackArray.packetSender.flashSidebarIcon(QuestConstants.MUSIC_TAB_INTERFACE[0]);
             itemStackArray.getDialogueManager().a("Cooking dough.", "Well done! Your first loaf of bread. As you gain experience in", "Cooking, you will be able to make other things like pies, cakes", "and even kebabs. Now you've got the hang of cooking, let's", "move on. Click on the flashing icon in the bottom right.", true);
         }
         if (n == 21) {
@@ -411,7 +411,7 @@ extends QuestScript {
         }
         if (n == 22) {
             object = itemStackArray;
-            itemStackArray.packetSender.flashSidebarIcon(QuestNpcIds.l[0]);
+            itemStackArray.packetSender.flashSidebarIcon(QuestConstants.EMOTES_TAB_INTERFACE[0]);
             itemStackArray.getDialogueManager().a("It's only a short distance to the next guide", "", "Why not try running there. Start by opening the player", "controls, that's the flashing icon of a running man.", "", true);
         }
         if (n == 23) {
@@ -429,7 +429,7 @@ extends QuestScript {
         }
         if (n == 26) {
             object = itemStackArray;
-            itemStackArray.packetSender.flashSidebarIcon(QuestNpcIds.c[0]);
+            itemStackArray.packetSender.flashSidebarIcon(QuestConstants.QUEST_TAB_INTERFACE[0]);
             itemStackArray.getDialogueManager().a("", "Open the Quest Journal.", "", "Click on the flashing icon next to your inventory.", "", true);
         }
         if (n == 27) {
@@ -502,7 +502,7 @@ extends QuestScript {
         }
         if (n == 41) {
             object = itemStackArray;
-            itemStackArray.packetSender.flashSidebarIcon(QuestNpcIds.e[0]);
+            itemStackArray.packetSender.flashSidebarIcon(QuestConstants.EQUIPMENT_TAB_INTERFACE[0]);
             itemStackArray.getDialogueManager().a("Wielding weapons.", "", "You now have access to a new interface. Click on the flashing", "icon of a man, the one to the right of your backpack icon.", "", true);
         }
         if (n == 42) {
@@ -518,7 +518,7 @@ extends QuestScript {
         }
         if (n == 45) {
             object = itemStackArray;
-            itemStackArray.packetSender.flashSidebarIcon(QuestNpcIds.a[0]);
+            itemStackArray.packetSender.flashSidebarIcon(QuestConstants.COMBAT_TAB_INTERFACE[0]);
             itemStackArray.getDialogueManager().a("Combat Interface.", "", "Click on the flashing crossed swords icon to see the combat", "interface.", "", true);
         }
         if (n == 46) {
@@ -573,7 +573,7 @@ extends QuestScript {
         }
         if (n == 56) {
             object = itemStackArray;
-            itemStackArray.packetSender.flashSidebarIcon(QuestNpcIds.f[0]);
+            itemStackArray.packetSender.flashSidebarIcon(QuestConstants.PRAYER_TAB_INTERFACE[0]);
             itemStackArray.getDialogueManager().a("Your Prayer menu.", "", "Click on the flashing icon to open the Prayer menu.", "", "", true);
         }
         if (n == 57) {
@@ -583,12 +583,12 @@ extends QuestScript {
         }
         if (n == 58) {
             object = itemStackArray;
-            itemStackArray.packetSender.flashSidebarIcon(QuestNpcIds.h[0]);
+            itemStackArray.packetSender.flashSidebarIcon(QuestConstants.FRIENDS_TAB_INTERFACE[0]);
             itemStackArray.getDialogueManager().a("", "Friends list.", "You should now see another new icon. Click on the flashing", "smiling face to open your friends list.", "", true);
         }
         if (n == 59) {
             object = itemStackArray;
-            itemStackArray.packetSender.flashSidebarIcon(QuestNpcIds.i[0]);
+            itemStackArray.packetSender.flashSidebarIcon(QuestConstants.IGNORE_TAB_INTERFACE[0]);
             itemStackArray.getDialogueManager().a("This is your friends list.", "", "This will be explained by Brother Brace shortly, but first click", "on the other flashing face to the right of your screen.", "", true);
         }
         if (n == 60) {
@@ -608,7 +608,7 @@ extends QuestScript {
         }
         if (n == 63) {
             object = itemStackArray;
-            itemStackArray.packetSender.flashSidebarIcon(QuestNpcIds.g[0]);
+            itemStackArray.packetSender.flashSidebarIcon(QuestConstants.MAGIC_TAB_INTERFACE[0]);
             itemStackArray.getDialogueManager().a("Open up your final menu.", "", "Open up the Magic menu by clicking on the flashing icon next", "to the Prayer button you just learned about.", "", true);
         }
         if (n == 64) {

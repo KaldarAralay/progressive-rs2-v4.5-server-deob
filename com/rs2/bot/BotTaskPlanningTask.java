@@ -9,16 +9,16 @@ import com.rs2.model.task.TickTask;
 
 final class BotTaskPlanningTask
 extends TickTask {
-    private final /* synthetic */ BotPlayer a;
+    private final /* synthetic */ BotPlayer bot;
 
     BotTaskPlanningTask(BotPlayer botPlayer, int n, BotPlayer botPlayer2) {
-        this.a = botPlayer2;
+        this.bot = botPlayer2;
         super(2);
     }
 
     @Override
     public final void execute() {
-        BotTaskPlanner.startInitialProgressiveBotTask(this.a);
+        BotTaskPlanner.startInitialProgressiveBotTask(this.bot);
         this.stop();
     }
 }

@@ -62,14 +62,14 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.showInterface(InterfaceDefinition.interfaceCount <= 12140 ? 1689 : 12140);
         player2 = player;
-        player.j = false;
+        player.deferLevelUpInterfaces = false;
     }
 
-    private static boolean e(Player player) {
+    private static boolean hasAnyEnchantedMeat(Player player) {
         return player.getInventoryManager().containsItem(524) || player.getInventoryManager().containsItem(523) || player.getInventoryManager().containsItem(522) || player.getInventoryManager().containsItem(525);
     }
 
-    private static boolean f(Player player) {
+    private static boolean hasAllEnchantedMeats(Player player) {
         return player.getInventoryManager().containsItem(524) && player.getInventoryManager().containsItem(523) && player.getInventoryManager().containsItem(522) && player.getInventoryManager().containsItem(525);
     }
 
@@ -307,15 +307,15 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 2) {
-                    if (!DruidicRitualQuest.e(player)) {
+                    if (!DruidicRitualQuest.hasAnyEnchantedMeat(player)) {
                         player.getDialogueManager().showPlayerOneLineDialogue("No, I have none of them yet.", 591);
                         player.getDialogueManager().finishDialogue();
                     }
-                    if (DruidicRitualQuest.e(player) && !DruidicRitualQuest.f(player)) {
+                    if (DruidicRitualQuest.hasAnyEnchantedMeat(player) && !DruidicRitualQuest.hasAllEnchantedMeats(player)) {
                         player.getDialogueManager().showPlayerOneLineDialogue("I have some of the things you asked for.", 591);
                         player.getDialogueManager().setNextDialogueStep(6);
                     }
-                    if (DruidicRitualQuest.f(player)) {
+                    if (DruidicRitualQuest.hasAllEnchantedMeats(player)) {
                         player.getDialogueManager().showPlayerOneLineDialogue("Yes, I have all four now!", 591);
                     }
                     return true;
@@ -328,7 +328,7 @@ extends QuestScript {
                     player.getDialogueManager().showNpcThreeLineDialogue("Thank you so much adventurer! These meats will allow", "our potion to honour Guthix to be completed, and bring", "one step closer to reclaiming our stone circle!", 591);
                     return true;
                 }
-                if (n2 == 5 && DruidicRitualQuest.f(player)) {
+                if (n2 == 5 && DruidicRitualQuest.hasAllEnchantedMeats(player)) {
                     player.getInventoryManager().removeItem(new ItemStack(524, 1));
                     player.getInventoryManager().removeItem(new ItemStack(523, 1));
                     player.getInventoryManager().removeItem(new ItemStack(522, 1));

@@ -9,15 +9,15 @@ import com.rs2.net.packet.PacketSender;
 
 final class DelayedUnlockEvent
 extends CycleEvent {
-    private /* synthetic */ PacketSender a;
+    private /* synthetic */ PacketSender packetSender;
 
     DelayedUnlockEvent(PacketSender packetSender) {
-        this.a = packetSender;
+        this.packetSender = packetSender;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        PacketSender.a(this.a).setActionLocked(false);
+        PacketSender.getPlayer(this.packetSender).setActionLocked(false);
         cycleEventContainer.stop();
     }
 

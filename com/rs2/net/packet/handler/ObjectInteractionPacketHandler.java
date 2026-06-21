@@ -27,7 +27,7 @@ implements PacketHandler {
         }
         Object object2 = player;
         ((Player)object2).packetSender.closeInterfaces();
-        player.er();
+        player.resetInteractionState();
         switch (((IncomingPacket)object).getOpcode()) {
             case 192: {
                 player.setSelectedItemInterfaceId(((IncomingPacket)object).getReader().readSignedShort());

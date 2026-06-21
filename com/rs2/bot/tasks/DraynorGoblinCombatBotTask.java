@@ -17,18 +17,18 @@ import java.util.ArrayList;
 
 public final class DraynorGoblinCombatBotTask
 extends BotTaskDefinition {
-    private static Position aa = new Position(3092, 3245, 0);
-    private static int[] ab = new int[]{877, 1917};
-    private static BotRoute ac = new BotRoute(new Position[]{new Position(3093, 3247, 0), new Position(3098, 3247, 0), new Position(3098, 3239, 0), new Position(3104, 3235, 0), new Position(3115, 3228, 0), new Position(3133, 3228, 0), new Position(3155, 3229, 0), new Position(3170, 3227, 0)});
+    private static Position routeStartPosition = new Position(3092, 3245, 0);
+    private static int[] ignoredLootItemIds = new int[]{877, 1917};
+    private static BotRoute taskRoute = new BotRoute(new Position[]{new Position(3093, 3247, 0), new Position(3098, 3247, 0), new Position(3098, 3239, 0), new Position(3104, 3235, 0), new Position(3115, 3228, 0), new Position(3133, 3228, 0), new Position(3155, 3229, 0), new Position(3170, 3227, 0)});
 
     public DraynorGoblinCombatBotTask(int n) {
-        super(aa, ac, 1, false, 6);
+        super(routeStartPosition, taskRoute, 1, false, 6);
         boolean bl = true;
         DraynorGoblinCombatBotTask draynorGoblinCombatBotTask = this;
         this.combatTask = true;
-        int[] nArray = ab;
+        int[] nArray = ignoredLootItemIds;
         draynorGoblinCombatBotTask = this;
-        this.ignoredLootItemIds = nArray;
+        ((BotTaskDefinition)this).ignoredLootItemIds = nArray;
     }
 
     @Override
@@ -89,14 +89,14 @@ extends BotTaskDefinition {
         player.botTaskRequiredItems = object;
         player.getInventoryManager().addItem(object[0]);
         object = player;
-        GameplayHelper.a((Player)object, -1);
+        GameplayHelper.prepareBotCombatStyle((Player)object, -1);
         player.getInventoryManager().refresh();
         player.getEquipmentManager().refresh();
     }
 
     @Override
     public final void prepareTaskCombatLoadout(Player player) {
-        GameplayHelper.b(player);
+        GameplayHelper.resetBotSkillsToBase(player);
         int n = 1 + GameUtil.randomInt(10);
         int n2 = n / 5 << 1;
         if (n2 == 0) {

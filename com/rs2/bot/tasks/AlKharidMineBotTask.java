@@ -18,11 +18,11 @@ import java.util.ArrayList;
 
 public final class AlKharidMineBotTask
 extends BotTaskDefinition {
-    private static Position aa = new Position(3269, 3167, 0);
-    private static BotRoute ab = new BotRoute(new Position[]{new Position(3273, 3167, 0), new Position(3280, 3183, 0), new Position(3280, 3197, 0), new Position(3288, 3210, 0), new Position(3297, 3223, 0), new Position(3297, 3243, 0), new Position(3302, 3262, 0), new Position(3301, 3278, 0), new Position(3301, 3292, 0)});
+    private static Position routeStartPosition = new Position(3269, 3167, 0);
+    private static BotRoute taskRoute = new BotRoute(new Position[]{new Position(3273, 3167, 0), new Position(3280, 3183, 0), new Position(3280, 3197, 0), new Position(3288, 3210, 0), new Position(3297, 3223, 0), new Position(3297, 3243, 0), new Position(3302, 3262, 0), new Position(3301, 3278, 0), new Position(3301, 3292, 0)});
 
     public AlKharidMineBotTask(int n) {
-        super(aa, ab, 0, false, 6);
+        super(routeStartPosition, taskRoute, 0, false, 6);
     }
 
     @Override
@@ -143,7 +143,7 @@ extends BotTaskDefinition {
 
     @Override
     public final void prepareTaskCombatLoadout(Player player) {
-        GameplayHelper.b(player);
+        GameplayHelper.resetBotSkillsToBase(player);
         int n = 1 + GameUtil.randomInt(99);
         int n2 = n / 5 << 1;
         if (n2 == 0) {

@@ -20,15 +20,14 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 
 public final class LoginProtocol {
-    public static ArrayList a = new ArrayList();
-    private static /* synthetic */ int[] b;
+    public static ArrayList activeLoginUsernames = new ArrayList();
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public static void a(Player player, ByteBuffer object) {
-        switch (LoginProtocol.a()[player.getConnectionState().ordinal()]) {
-            case 1: {
+    public static void processLoginBuffer(Player player, ByteBuffer object) {
+        switch (player.getConnectionState()) {
+            case HANDSHAKE: {
                 if (((Buffer)object).remaining() < 2) {
                     ((ByteBuffer)object).compact();
                     return;
@@ -45,10 +44,10 @@ public final class LoginProtocol {
                 ((PacketWriter)object).writeByte(0);
                 ((PacketWriter)object).writeLong(new SecureRandom().nextLong());
                 player.writePacketBuffer(((PacketWriter)object).getBuffer());
-                player.setConnectionState(PlayerConnectionState.b);
+                player.setConnectionState(PlayerConnectionState.LOGIN_PAYLOAD);
                 return;
             }
-            case 2: {
+            case LOGIN_PAYLOAD: {
                 if (((Buffer)object).remaining() < 2) {
                     ((ByteBuffer)object).compact();
                     return;
@@ -66,8 +65,8 @@ public final class LoginProtocol {
                     return;
                 }
                 PacketReader packetReader = PacketBuffer.wrapReader((ByteBuffer)object);
-                player.ao(packetReader.readSignedByte());
-                player.an(packetReader.readSignedShort());
+                player.setLoginMagicByte(packetReader.readSignedByte());
+                player.setClientBuild(packetReader.readSignedShort());
                 packetReader.readSignedByte();
                 int n3 = packetReader.readInt();
                 if (-94395865 != n3) {
@@ -111,7 +110,7 @@ public final class LoginProtocol {
                     object = TextUtil.readLine(byteBuffer).trim();
                     player.setSubmittedPassword((String)object);
                     player.setUsername(TextUtil.capitalizeFirst(string));
-                    player.ei = System.currentTimeMillis();
+                    player.sessionStartMillis = System.currentTimeMillis();
                 } else {
                     packetReader.readSignedByte();
                     n3 = packetReader.readSignedByte();
@@ -135,59 +134,26 @@ public final class LoginProtocol {
                     String string2 = packetReader.readString().trim();
                     player.setSubmittedPassword(string2);
                     player.setUsername(TextUtil.capitalizeFirst(string));
-                    player.ei = System.currentTimeMillis();
+                    player.sessionStartMillis = System.currentTimeMillis();
                 }
                 player.setNameHash(TextUtil.encodeNameHash(player.getUsername().toLowerCase()));
-                player.setConnectionState(PlayerConnectionState.c);
-                if (a.contains(player.getUsername())) {
+                player.setConnectionState(PlayerConnectionState.LOGIN_QUEUED);
+                if (activeLoginUsernames.contains(player.getUsername())) {
                     System.out.println("Player was already logging in " + player.getUsername());
                     player.disconnect();
                     return;
                 }
-                a.add(player.getUsername());
-                if (!player.loadAndValidateLogin() || player.getConnectionState() != PlayerConnectionState.c) break;
-                DedicatedReactor dedicatedReactor = DedicatedReactor.b();
+                activeLoginUsernames.add(player.getUsername());
+                if (!player.loadAndValidateLogin() || player.getConnectionState() != PlayerConnectionState.LOGIN_QUEUED) break;
+                DedicatedReactor dedicatedReactor = DedicatedReactor.getInstance();
                 synchronized (dedicatedReactor) {
-                    DedicatedReactor.b().a().wakeup();
+                    DedicatedReactor.getInstance().getSelector().wakeup();
                     player.getSelectionKey().interestOps(player.getSelectionKey().interestOps() & 0xFFFFFFFE);
                     player.getSocketChannel().register(Server.getInstance().getSelector(), 1, player);
                     return;
                 }
             }
         }
-    }
-
-    private static /* synthetic */ int[] a() {
-        if (b != null) {
-            return b;
-        }
-        int[] nArray = new int[PlayerConnectionState.values().length];
-        try {
-            nArray[PlayerConnectionState.c.ordinal()] = 3;
-        }
-        catch (NoSuchFieldError noSuchFieldError) {}
-        try {
-            nArray[PlayerConnectionState.a.ordinal()] = 1;
-        }
-        catch (NoSuchFieldError noSuchFieldError) {}
-        try {
-            nArray[PlayerConnectionState.d.ordinal()] = 4;
-        }
-        catch (NoSuchFieldError noSuchFieldError) {}
-        try {
-            nArray[PlayerConnectionState.f.ordinal()] = 6;
-        }
-        catch (NoSuchFieldError noSuchFieldError) {}
-        try {
-            nArray[PlayerConnectionState.b.ordinal()] = 2;
-        }
-        catch (NoSuchFieldError noSuchFieldError) {}
-        try {
-            nArray[PlayerConnectionState.e.ordinal()] = 5;
-        }
-        catch (NoSuchFieldError noSuchFieldError) {}
-        b = nArray;
-        return nArray;
     }
 }
 

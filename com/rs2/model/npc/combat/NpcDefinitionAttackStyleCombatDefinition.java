@@ -13,16 +13,16 @@ import com.rs2.model.npc.combat.NpcCombatDefinition;
 
 final class NpcDefinitionAttackStyleCombatDefinition
 extends NpcCombatDefinition {
-    private final /* synthetic */ NpcDefinition a;
+    private final /* synthetic */ NpcDefinition npcDefinition;
 
     NpcDefinitionAttackStyleCombatDefinition(NpcDefinition npcDefinition) {
-        this.a = npcDefinition;
+        this.npcDefinition = npcDefinition;
     }
 
     @Override
     public final CombatAttack[] createAttacks(Entity entity, Entity entity2) {
-        int n = NpcDefinition.getAttackBonusTypeId(this.a);
-        return new CombatAttack[]{BaseCombatAttack.a(entity, entity2, AttackXpMode.MELEE_ACCURATE, n == 0 ? AttackBonusType.STAB : (n == 1 ? AttackBonusType.SLASH : (n == 2 ? AttackBonusType.CRUSH : (n == 3 ? AttackBonusType.MAGIC : (n == 4 ? AttackBonusType.RANGED : null)))), NpcDefinition.getDefaultMaxHit(this.a), NpcDefinition.getDefaultAttackDelay(this.a), NpcDefinition.getDefaultAttackAnimationId(this.a))};
+        int n = NpcDefinition.getAttackBonusTypeId(this.npcDefinition);
+        return new CombatAttack[]{BaseCombatAttack.createMeleeAttack(entity, entity2, AttackXpMode.MELEE_ACCURATE, n == 0 ? AttackBonusType.STAB : (n == 1 ? AttackBonusType.SLASH : (n == 2 ? AttackBonusType.CRUSH : (n == 3 ? AttackBonusType.MAGIC : (n == 4 ? AttackBonusType.RANGED : null)))), NpcDefinition.getDefaultMaxHit(this.npcDefinition), NpcDefinition.getDefaultAttackDelay(this.npcDefinition), NpcDefinition.getDefaultAttackAnimationId(this.npcDefinition))};
     }
 }
 

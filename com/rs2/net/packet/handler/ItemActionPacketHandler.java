@@ -132,7 +132,7 @@ implements PacketHandler {
         }
         block7 : switch (var2_2.getOpcode()) {
             case 25: {
-                var1_1.er();
+                var1_1.resetInteractionState();
                 var3_13 = var2_2;
                 var2_2 = var1_1;
                 var1_1 = this;
@@ -151,7 +151,7 @@ implements PacketHandler {
                 return;
             }
             case 53: {
-                var1_1.er();
+                var1_1.resetInteractionState();
                 var4_6 = var2_2.getReader().readSignedShort();
                 var3_15 = var2_2.getReader().readSignedShort(ByteTransform.ADD);
                 var2_2.getReader().readSignedShort();
@@ -692,12 +692,12 @@ lbl605:
                 return;
             }
             case 87: {
-                var1_1.er();
+                var1_1.resetInteractionState();
                 ItemActionPacketHandler.handleDropItem((Player)var1_1, (IncomingPacket)var2_2);
                 return;
             }
             case 236: {
-                var1_1.er();
+                var1_1.resetInteractionState();
                 var1_1.setInteractionTargetY(var2_2.getReader().readSignedShort(ByteOrder.LITTLE));
                 var1_1.setInteractionTargetId(var2_2.getReader().readSignedShort());
                 var1_1.setInteractionTargetX(var2_2.getReader().readSignedShort(ByteOrder.LITTLE));
@@ -720,7 +720,7 @@ lbl605:
                 return;
             }
             case 253: {
-                var1_1.er();
+                var1_1.resetInteractionState();
                 var3_17 = var2_2;
                 var2_2 = var1_1;
                 var1_1 = this;
@@ -747,7 +747,7 @@ lbl605:
                 return;
             }
             case 145: {
-                var1_1.er();
+                var1_1.resetInteractionState();
                 var4_11 = var2_2.getReader().readSignedShort(ByteTransform.ADD);
                 var1_1.setSelectedItemSlot(var2_2.getReader().readSignedShort(ByteTransform.ADD));
                 var3_18 = var2_2.getReader().readSignedShort(ByteTransform.ADD);
@@ -808,7 +808,7 @@ lbl605:
                 return;
             }
             case 117: {
-                var1_1.er();
+                var1_1.resetInteractionState();
                 ItemActionPacketHandler.handleInterfaceItemAmountFive((Player)var1_1, (IncomingPacket)var2_2);
                 return;
             }
@@ -817,7 +817,7 @@ lbl605:
                 return;
             }
             case 129: {
-                var1_1.er();
+                var1_1.resetInteractionState();
                 ItemActionPacketHandler.handleInterfaceItemAmountAll((Player)var1_1, (IncomingPacket)var2_2);
                 return;
             }
@@ -826,27 +826,27 @@ lbl605:
                 return;
             }
             case 122: {
-                var1_1.er();
+                var1_1.resetInteractionState();
                 this.handleInventoryItemFirstOption((Player)var1_1, (IncomingPacket)var2_2);
                 return;
             }
             case 16: {
-                var1_1.er();
+                var1_1.resetInteractionState();
                 ItemActionPacketHandler.handleInventoryItemSecondOption((Player)var1_1, (IncomingPacket)var2_2);
                 return;
             }
             case 75: {
-                var1_1.er();
+                var1_1.resetInteractionState();
                 ItemActionPacketHandler.handleInventoryItemThirdOption((Player)var1_1, (IncomingPacket)var2_2);
                 return;
             }
             case 237: {
-                var1_1.er();
+                var1_1.resetInteractionState();
                 ItemActionPacketHandler.handleMagicOnItem((Player)var1_1, (IncomingPacket)var2_2);
                 return;
             }
             case 181: {
-                var1_1.er();
+                var1_1.resetInteractionState();
                 ItemActionPacketHandler.handleMagicOnGroundItem((Player)var1_1, (IncomingPacket)var2_2);
             }
         }
@@ -878,12 +878,12 @@ lbl605:
         if (player.getQuestManager().handleDropItem(itemStack.getId())) {
             return;
         }
-        Object object = PetManager.a;
+        Object object = PetManager.petItemNpcPairs;
         int n3 = 0;
         while (n3 < 6) {
             int[] nArray = object[n3];
             if (itemStack.getDefinition().getId() == nArray[0]) {
-                player.getPetManager().a(nArray[0], nArray[1]);
+                player.getPetManager().summonPetFromItem(nArray[0], nArray[1]);
                 return;
             }
             ++n3;
@@ -905,7 +905,7 @@ lbl605:
                 player2.packetSender.sendInterfaceText((String)object[0], Integer.parseInt((String)object[1]));
                 ++n4;
             }
-            player.a(itemStack);
+            player.setPendingDestroyItem(itemStack);
             player2 = player;
             player2.packetSender.showChatboxInterface(14170);
             return;
@@ -992,7 +992,7 @@ lbl605:
             return;
         }
         if (n != 1688 || n2 != 11283) {
-            player.er();
+            player.resetInteractionState();
         }
         player.setSelectedItemSlot(n3);
         if (n == 5064 || n == 7423) {
@@ -1095,10 +1095,10 @@ lbl605:
                         }
                         boolean bl2 = true;
                         int n4 = 0;
-                        if (player2.p != -1L) {
+                        if (player2.dragonfireShieldLastOperateMillis != -1L) {
                             n4 = 1;
                         }
-                        if (n4 != 0 && (l = System.currentTimeMillis() - player2.p) / 1000L < 120L) {
+                        if (n4 != 0 && (l = System.currentTimeMillis() - player2.dragonfireShieldLastOperateMillis) / 1000L < 120L) {
                             Player player3 = player2;
                             player3.packetSender.sendGameMessage("You have to wait before using another charge!");
                             bl2 = false;
@@ -1108,7 +1108,7 @@ lbl605:
                             player2.getAttackDelayTimer().setDelayTicks(player2.getAttackDelayTimer().getDelayTicks() + 2);
                             player2.getUpdateState().setAnimation(6696);
                             player2.getUpdateState().setGraphic(new GraphicEffect(1165, 96));
-                            player2.p = System.currentTimeMillis();
+                            player2.dragonfireShieldLastOperateMillis = System.currentTimeMillis();
                             Object object3 = new GraphicEffect(1167, 96);
                             Object object4 = ProjectileTiming.a;
                             object4 = new ProjectileDefinition(1166, ((ProjectileTiming)object4).copy());
@@ -1448,7 +1448,7 @@ lbl605:
                     if (var1_1.isMember()) {
                         var8_17 = var1_1.membershipExpiresMillis;
                     }
-                    var1_1.membershipExpiresMillis = GameplayHelper.a(var8_17, ServerSettings.membershipDaysPerPurchase);
+                    var1_1.membershipExpiresMillis = GameplayHelper.addDaysToTimestamp(var8_17, ServerSettings.membershipDaysPerPurchase);
                     var9_15 = var1_1;
                     var9_15.packetSender.sendGameMessage("You claimed " + ServerSettings.membershipDaysPerPurchase + " days of membership.");
                 }
@@ -1541,7 +1541,7 @@ lbl605:
                 return;
             }
             case 2574: {
-                GameplayHelper.j(var1_1);
+                GameplayHelper.openSextantInterface(var1_1);
                 return;
             }
             case 299: {
@@ -1603,12 +1603,12 @@ lbl605:
                 object2 = ((QuestDefinition)object2).getName();
                 player2 = player3;
                 player2.packetSender.sendGameMessage("You need to complete " + (String)object2 + " to do this.");
-            } else if (player3.am(essencePouchDefinition.getPouchIndex()) > 0) {
+            } else if (player3.getEssencePouchAmount(essencePouchDefinition.getPouchIndex()) > 0) {
                 player2 = player3;
                 PacketSender packetSender = player2.packetSender;
                 StringBuilder stringBuilder = new StringBuilder("Your ");
                 ItemService.getInstance();
-                packetSender.sendGameMessage(stringBuilder.append(ItemService.getItemName(n4)).append(" contains ").append(player3.am(essencePouchDefinition.getPouchIndex())).append(" Pure essence.").toString());
+                packetSender.sendGameMessage(stringBuilder.append(ItemService.getItemName(n4)).append(" contains ").append(player3.getEssencePouchAmount(essencePouchDefinition.getPouchIndex())).append(" Pure essence.").toString());
             } else {
                 player2 = player3;
                 PacketSender packetSender = player2.packetSender;
@@ -1768,10 +1768,10 @@ lbl605:
                 Object object2 = QuestDefinition.forId(14);
                 object2 = ((QuestDefinition)object2).getName();
                 player2.packetSender.sendGameMessage("You need to complete " + (String)object2 + " to do this.");
-            } else if (player2.am(essencePouchDefinition.getPouchIndex()) > 0) {
-                if (player2.getInventoryManager().getContainer().getFreeSlots() >= player2.am(essencePouchDefinition.getPouchIndex())) {
-                    player2.getInventoryManager().addItem(new ItemStack(7936, player2.am(essencePouchDefinition.getPouchIndex())));
-                    player2.h(essencePouchDefinition.getPouchIndex(), 0);
+            } else if (player2.getEssencePouchAmount(essencePouchDefinition.getPouchIndex()) > 0) {
+                if (player2.getInventoryManager().getContainer().getFreeSlots() >= player2.getEssencePouchAmount(essencePouchDefinition.getPouchIndex())) {
+                    player2.getInventoryManager().addItem(new ItemStack(7936, player2.getEssencePouchAmount(essencePouchDefinition.getPouchIndex())));
+                    player2.setEssencePouchAmount(essencePouchDefinition.getPouchIndex(), 0);
                 } else {
                     player2.packetSender.sendGameMessage("Not enough space in your inventory.");
                 }
@@ -1803,7 +1803,7 @@ lbl605:
                     player2.packetSender.sendGameMessage("You have already defeated the demon.");
                     return;
                 }
-                if (player.isInWilderness() || player.s()) {
+                if (player.isInWilderness() || player.isInTenthSquadSigilInstance()) {
                     player2 = player;
                     player2.packetSender.sendGameMessage("You can't use this item here.");
                     return;
@@ -1830,7 +1830,7 @@ lbl605:
         int n2 = ((PacketReader)object).readSignedShort(ByteTransform.ADD);
         SpellDefinition spellDefinition = (SpellDefinition)((Object)player.getSpellbook().getSpellByButtonId().get(n2));
         ItemStack itemStack = player.getInventoryManager().getContainer().getItemAt(player.getSelectedItemSlot());
-        player.N = n;
+        player.temporaryActionValue = n;
         if (itemStack == null || itemStack.getId() != n || !itemStack.isValid()) {
             return;
         }

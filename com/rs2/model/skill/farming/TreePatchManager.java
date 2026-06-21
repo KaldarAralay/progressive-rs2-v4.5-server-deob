@@ -34,7 +34,7 @@ public final class TreePatchManager {
     public int[] patchStates = new int[4];
     public long[] lastUpdateTicks = new long[4];
     public double[] diseaseChanceMultipliers = new double[]{1.0, 1.0, 1.0, 1.0};
-    private boolean[] i = new boolean[4];
+    private boolean[] fullyGrownFlags = new boolean[4];
     public boolean[] protectionFlags = new boolean[4];
 
     public TreePatchManager(Player player) {
@@ -136,7 +136,7 @@ public final class TreePatchManager {
                     break block12;
                 }
                 Object object = FarmedTreeDefinition.forSaplingId(this.treeIds[n]);
-                if (object == null || this.c(n)) break block12;
+                if (object == null || this.shouldStopGrowthCycle(n)) break block12;
                 int n5 = (int)(l / (long)object.getGrowthCycleTicks());
                 int n6 = this.growthStages[n] - 4;
                 if ((n5 -= n6) <= 0) break block12;
@@ -173,7 +173,7 @@ public final class TreePatchManager {
                                 if (((TreePatchManager)object).patchStates[n7] == 5 && ((TreePatchManager)object).growthStages[n7] != 3) {
                                     ((TreePatchManager)object).patchStates[n7] = 0;
                                 }
-                                if (((TreePatchManager)object).patchStates[n7] == 0 && ((TreePatchManager)object).growthStages[n7] >= 4 && !((TreePatchManager)object).i[n7] && (farmedTreeDefinition = FarmedTreeDefinition.forSaplingId(((TreePatchManager)object).treeIds[n7])) != null) {
+                                if (((TreePatchManager)object).patchStates[n7] == 0 && ((TreePatchManager)object).growthStages[n7] >= 4 && !((TreePatchManager)object).fullyGrownFlags[n7] && (farmedTreeDefinition = FarmedTreeDefinition.forSaplingId(((TreePatchManager)object).treeIds[n7])) != null) {
                                     double d = ((TreePatchManager)object).diseaseChanceMultipliers[n7] * farmedTreeDefinition.getDiseaseChance();
                                     double d2 = d * 100.0;
                                     int n10 = (int)d2;
@@ -188,7 +188,7 @@ public final class TreePatchManager {
                             int n11 = n;
                             this.growthStages[n11] = this.growthStages[n11] + 1;
                         }
-                        if (this.c(n)) break block12;
+                        if (this.shouldStopGrowthCycle(n)) break block12;
                     }
                     ++n6;
                 }
@@ -202,7 +202,7 @@ public final class TreePatchManager {
      * Enabled force condition propagation
      * Lifted jumps to return sites
      */
-    private boolean c(int n) {
+    private boolean shouldStopGrowthCycle(int n) {
         if (this.lastUpdateTicks[n] == 0L) return true;
         if (this.patchStates[n] == 2) return true;
         int n2 = n;
@@ -211,7 +211,7 @@ public final class TreePatchManager {
         if (farmedTreeDefinition == null) return false;
         int n3 = treePatchManager.growthStages[n2] - 4;
         if (farmedTreeDefinition.getConfigStartStage() + n3 != farmedTreeDefinition.getConfigEndStage()) return false;
-        treePatchManager.i[n2] = true;
+        treePatchManager.fullyGrownFlags[n2] = true;
         return true;
     }
 
@@ -485,7 +485,7 @@ public final class TreePatchManager {
         this.patchStates[n] = 0;
         this.diseaseChanceMultipliers[n] = 1.0;
         this.patchData[n] = 0;
-        this.i[n] = false;
+        this.fullyGrownFlags[n] = false;
         this.protectionFlags[n] = false;
     }
 
@@ -527,7 +527,7 @@ public final class TreePatchManager {
         this.player.getUpdateState().setAnimation(n4);
         this.player.ah = new Position(n, n2);
         int n5 = this.player.nextActionSequence();
-        this.player.N = 0;
+        this.player.temporaryActionValue = 0;
         this.player.O = 0;
         this.player.setActiveCycleEvent(new FarmedTreeCuttingTask(this, n5, n4, treeDefinition, gatheringToolDefinition, n3, treePatch, n, n2));
         CycleEventHandler.getInstance().schedule(this.player, this.player.getActiveCycleEvent(), 1);
@@ -544,7 +544,7 @@ public final class TreePatchManager {
             return false;
         }
         int n3 = farmedTreeDefinition.getTreeObjectId();
-        if (!this.i[object.getIndex()]) {
+        if (!this.fullyGrownFlags[object.getIndex()]) {
             return false;
         }
         if (ItemCombinationHandler.findUsableGatheringTool(this.player, 8) == null) {

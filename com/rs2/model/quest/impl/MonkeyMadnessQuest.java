@@ -129,19 +129,19 @@ extends QuestScript {
             stringArray = new String[]{"I should try to escape."};
             return stringArray;
         }
-        if (!(n != 13 || this.e((Player)stringArray, 18) || this.e((Player)stringArray, 2) || this.e((Player)stringArray, 6) || this.e((Player)stringArray, 12))) {
+        if (!(n != 13 || this.isProgressFlagSet((Player)stringArray, 18) || this.isProgressFlagSet((Player)stringArray, 2) || this.isProgressFlagSet((Player)stringArray, 6) || this.isProgressFlagSet((Player)stringArray, 12))) {
             stringArray = new String[]{"I should find and speak with Zooknock."};
             return stringArray;
         }
-        if (n == 13 && this.e((Player)stringArray, 2)) {
-            stringArray = new String[]{"Zooknock told me for the amulet he needs:", String.valueOf(this.e((Player)stringArray, 3) ? "@str@" : "") + "Gold bar", String.valueOf(this.e((Player)stringArray, 5) ? "@str@" : "") + "Monkey amulet mould", String.valueOf(this.e((Player)stringArray, 4) ? "@str@" : "") + "Something to do monkey speech"};
+        if (n == 13 && this.isProgressFlagSet((Player)stringArray, 2)) {
+            stringArray = new String[]{"Zooknock told me for the amulet he needs:", String.valueOf(this.isProgressFlagSet((Player)stringArray, 3) ? "@str@" : "") + "Gold bar", String.valueOf(this.isProgressFlagSet((Player)stringArray, 5) ? "@str@" : "") + "Monkey amulet mould", String.valueOf(this.isProgressFlagSet((Player)stringArray, 4) ? "@str@" : "") + "Something to do monkey speech"};
             return stringArray;
         }
-        if (n == 13 && this.e((Player)stringArray, 12)) {
-            stringArray = new String[]{"Zooknock told me for the talisman he needs:", String.valueOf(this.e((Player)stringArray, 13) ? "@str@" : "") + "Some kind of monkey remains", String.valueOf(this.e((Player)stringArray, 14) ? "@str@" : "") + "Authentic magical monkey talisman"};
+        if (n == 13 && this.isProgressFlagSet((Player)stringArray, 12)) {
+            stringArray = new String[]{"Zooknock told me for the talisman he needs:", String.valueOf(this.isProgressFlagSet((Player)stringArray, 13) ? "@str@" : "") + "Some kind of monkey remains", String.valueOf(this.isProgressFlagSet((Player)stringArray, 14) ? "@str@" : "") + "Authentic magical monkey talisman"};
             return stringArray;
         }
-        if (n == 13 && this.e((Player)stringArray, 18)) {
+        if (n == 13 && this.isProgressFlagSet((Player)stringArray, 18)) {
             stringArray = new String[]{"I should speak with Garkor."};
             return stringArray;
         }
@@ -174,13 +174,13 @@ extends QuestScript {
             return stringArray;
         }
         if (n == 1) {
-            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "3 Quest Points", "10,000 coins", "3 diamonds", "", this.e((Player)stringArray, 17) ? "" : "I should speak with Daero for my training."};
+            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "3 Quest Points", "10,000 coins", "3 diamonds", "", this.isProgressFlagSet((Player)stringArray, 17) ? "" : "I should speak with Daero for my training."};
             return stringArray;
         }
         return null;
     }
 
-    private static boolean e(Player player) {
+    private static boolean hasCompletedGrandTreeAndTreeGnomeVillage(Player player) {
         return player.getQuestState(46) == 1 && player.getQuestState(95) == 1;
     }
 
@@ -207,7 +207,7 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.showInterface(InterfaceDefinition.interfaceCount <= 12140 ? 1689 : 12140);
         player2 = player;
-        player.j = false;
+        player.deferLevelUpInterfaces = false;
     }
 
     @Override
@@ -218,16 +218,16 @@ extends QuestScript {
         }
         Object object = (Npc)Npc.scriptedStageNpcs.get(n);
         if (this.c.containsExclusive(player.getPosition()) && ((Npc)object).scriptedPathStage < 5 && GameUtil.isNpcLastStepFacingPlayer(player, (Npc)object)) {
-            this.i(player);
+            this.startApeAtollGuardCapture(player);
             return true;
         }
         if (this.d.containsExclusive(player.getPosition())) {
-            this.i(player);
+            this.startApeAtollGuardCapture(player);
             return true;
         }
         object = Npc.findByDefinitionId(1454);
         if (GameUtil.isNpcLastStepFacingPlayer(player, (Npc)object)) {
-            this.i(player);
+            this.startApeAtollGuardCapture(player);
             return true;
         }
         if (this.a.containsExclusive(player.getPosition()) && !this.b.containsExclusive(player.getPosition())) {
@@ -259,7 +259,7 @@ extends QuestScript {
     @Override
     public final boolean handleFirstObjectAction(Player object, int n, int n2, int n3, int n4) {
         if (n == 4868 || n == 4869 || n == 4870) {
-            ((Player)object).getTeleportManager().a(2466, 3488, 0, null);
+            ((Player)object).getTeleportManager().startStandardTeleport(2466, 3488, 0, null);
             return true;
         }
         if (n == 4871 && n4 == 7) {
@@ -493,7 +493,7 @@ extends QuestScript {
         return false;
     }
 
-    private static void f(Player player) {
+    private static void showCaranockShipyardCutsceneTitle(Player player) {
         Player player2 = player;
         player2.packetSender.sendInterfaceText("", 3026);
         player2 = player;
@@ -522,7 +522,7 @@ extends QuestScript {
         player2.packetSender.showInterface(3023);
     }
 
-    private static void g(Player player) {
+    private static void showCaranockWaydarCutsceneTitle(Player player) {
         Player player2 = player;
         player2.packetSender.sendInterfaceText("", 3026);
         player2 = player;
@@ -551,7 +551,7 @@ extends QuestScript {
         player2.packetSender.showInterface(3023);
     }
 
-    private static void h(Player player) {
+    private static void showAwowogeiAllianceCutsceneTitle(Player player) {
         Player player2 = player;
         player2.packetSender.sendInterfaceText("", 3026);
         player2 = player;
@@ -580,7 +580,7 @@ extends QuestScript {
         player2.packetSender.showInterface(3023);
     }
 
-    private void i(Player object) {
+    private void startApeAtollGuardCapture(Player object) {
         if (((Player)object).getEquipmentManager().getItemIdAtSlot(3) == 4024) {
             return;
         }
@@ -623,30 +623,30 @@ extends QuestScript {
 
     @Override
     public final boolean handleItemOnNpc(Player player, int n, int n2, int n3) {
-        if (n3 == 13 && this.e(player, 2) && !this.e(player, 3) && n2 == 2357 && n == 1425) {
+        if (n3 == 13 && this.isProgressFlagSet(player, 2) && !this.isProgressFlagSet(player, 3) && n2 == 2357 && n == 1425) {
             DialogueManager.continueDialogue(player, 1425, 100, 0);
             return true;
         }
-        if (n3 == 13 && this.e(player, 2) && !this.e(player, 4) && n2 == 4006 && n == 1425) {
+        if (n3 == 13 && this.isProgressFlagSet(player, 2) && !this.isProgressFlagSet(player, 4) && n2 == 4006 && n == 1425) {
             DialogueManager.continueDialogue(player, 1425, 103, 0);
             return true;
         }
-        if (n3 == 13 && this.e(player, 2) && !this.e(player, 5) && n2 == 4020 && n == 1425) {
+        if (n3 == 13 && this.isProgressFlagSet(player, 2) && !this.isProgressFlagSet(player, 5) && n2 == 4020 && n == 1425) {
             DialogueManager.continueDialogue(player, 1425, 104, 0);
             return true;
         }
-        if (n3 == 13 && this.e(player, 12) && !this.e(player, 13) && n2 == 3179 && n == 1425) {
+        if (n3 == 13 && this.isProgressFlagSet(player, 12) && !this.isProgressFlagSet(player, 13) && n2 == 3179 && n == 1425) {
             DialogueManager.continueDialogue(player, 1425, 111, 0);
             return true;
         }
-        if (n3 == 13 && this.e(player, 12) && !this.e(player, 14) && n2 == 4023 && n == 1425) {
+        if (n3 == 13 && this.isProgressFlagSet(player, 12) && !this.isProgressFlagSet(player, 14) && n2 == 4023 && n == 1425) {
             DialogueManager.continueDialogue(player, 1425, 114, 0);
             return true;
         }
         return false;
     }
 
-    public final boolean e(Player player, int n) {
+    public final boolean isProgressFlagSet(Player player, int n) {
         if (player.questProgressFlags[this.getQuestId()] == 0) {
             return false;
         }
@@ -657,7 +657,7 @@ extends QuestScript {
     public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
         if (n == 670 && this.e.containsExclusiveOnPlane(player.getPosition())) {
             if (n4 == 0) {
-                if (!MonkeyMadnessQuest.e(player)) {
+                if (!MonkeyMadnessQuest.hasCompletedGrandTreeAndTreeGnomeVillage(player)) {
                     return false;
                 }
                 if (n2 == 1) {
@@ -905,7 +905,7 @@ extends QuestScript {
                     return true;
                 }
             }
-            if (n4 == 1 && !this.e(player, 17)) {
+            if (n4 == 1 && !this.isProgressFlagSet(player, 17)) {
                 if (n2 == 1) {
                     player.getDialogueManager().showNpcOneLineDialogue("So you're officially a member of the 10th squad then?", 591);
                     return true;
@@ -1137,7 +1137,7 @@ extends QuestScript {
             }
         }
         if (n == 1407 && this.f.containsExclusive(player.getPosition())) {
-            if (n4 == 1 && !this.e(player, 17)) {
+            if (n4 == 1 && !this.isProgressFlagSet(player, 17)) {
                 if (n2 == 1) {
                     player.getDialogueManager().showPlayerOneLineDialogue("Good day, High Tree Guardian.", 591);
                     return true;
@@ -1337,7 +1337,7 @@ extends QuestScript {
                     }
                 }
                 if (n2 == 11) {
-                    if (!this.e(player, 1) || !this.e(player, 2)) {
+                    if (!this.isProgressFlagSet(player, 1) || !this.isProgressFlagSet(player, 2)) {
                         player.getDialogueManager().showThreeOptions("Talk about the journey...", "Talk about the 10th squad...", "Talk about Caranock...");
                     } else {
                         player.getDialogueManager().showFourOptions("Talk about the journey...", "Talk about the 10th squad...", "Talk about Caranock...", "Leave...");
@@ -1391,7 +1391,7 @@ extends QuestScript {
                 }
                 if (n2 == 17) {
                     player.getDialogueManager().showNpcThreeLineDialogue("It is my responsibility to make arrangements for your", "mission. We will shortly visit a colleague of mine who", "will be accompanying you.", 591);
-                    if (!this.e(player, 1)) {
+                    if (!this.isProgressFlagSet(player, 1)) {
                         int n5 = this.getQuestId();
                         player.questProgressFlags[n5] = player.questProgressFlags[n5] + GameUtil.bitFlag(1);
                     }
@@ -1418,7 +1418,7 @@ extends QuestScript {
                 if (n2 == 22) {
                     player.getDialogueManager().showNpcOneLineDialogue("He worries about this, yes.", 591);
                     player.getDialogueManager().setNextDialogueStep(60);
-                    if (!this.e(player, 2)) {
+                    if (!this.isProgressFlagSet(player, 2)) {
                         int n6 = this.getQuestId();
                         player.questProgressFlags[n6] = player.questProgressFlags[n6] + GameUtil.bitFlag(2);
                     }
@@ -1861,7 +1861,7 @@ extends QuestScript {
         }
         if (n == 1419 && this.h.containsExclusive(player.getPosition())) {
             if (n4 == 10) {
-                if (n2 == 1 && !this.e(player, 1)) {
+                if (n2 == 1 && !this.isProgressFlagSet(player, 1)) {
                     player.getDialogueManager().showNpcOneLineDialogue("Who are you two?", 591);
                     return true;
                 }
@@ -1959,7 +1959,7 @@ extends QuestScript {
                 }
                 if (n2 == 25) {
                     player.getDialogueManager().showNpcOneLineDialogue("I will not take orders from you.", 591);
-                    if (!this.e(player, 1)) {
+                    if (!this.isProgressFlagSet(player, 1)) {
                         int n7 = this.getQuestId();
                         player.questProgressFlags[n7] = player.questProgressFlags[n7] + GameUtil.bitFlag(1);
                     }
@@ -2004,12 +2004,12 @@ extends QuestScript {
         }
         if (n == 1409) {
             if (n4 == 10) {
-                if (n2 == 1 && !this.e(player, 2)) {
+                if (n2 == 1 && !this.isProgressFlagSet(player, 2)) {
                     player.getDialogueManager().showPlayerOneLineDialogue("Where are we?", 591);
                     return true;
                 }
-                if (n2 == 1 && this.e(player, 2)) {
-                    if (!this.e(player, 1)) {
+                if (n2 == 1 && this.isProgressFlagSet(player, 2)) {
+                    if (!this.isProgressFlagSet(player, 1)) {
                         player.getDialogueManager().showThreeOptions("What shall we do now?", "Do you recognise the gnome on the beach?", "Can you take me back to your kingdom?");
                     } else {
                         player.getDialogueManager().showFourOptions("What shall we do now?", "Do you recognise the gnome on the beach?", "Can you take me back to your kingdom?", "I cannot convince Lumdo to take us to the island...");
@@ -2041,7 +2041,7 @@ extends QuestScript {
                 }
                 if (n2 == 4) {
                     player.getDialogueManager().showNpcOneLineDialogue("Of course.", 591);
-                    if (!this.e(player, 2)) {
+                    if (!this.isProgressFlagSet(player, 2)) {
                         int n8 = this.getQuestId();
                         player.questProgressFlags[n8] = player.questProgressFlags[n8] + GameUtil.bitFlag(2);
                     }
@@ -2172,7 +2172,7 @@ extends QuestScript {
                 }
                 if (n2 == 24) {
                     player.setActionLocked(true);
-                    MonkeyMadnessQuest.f(player);
+                    MonkeyMadnessQuest.showCaranockShipyardCutsceneTitle(player);
                     player.getPacketSender().showWalkableInterface(8677);
                     CaranockShipyardCutsceneStartTask caranockShipyardCutsceneStartTask = new CaranockShipyardCutsceneStartTask(this, 5, player);
                     World.getTaskScheduler().schedule(caranockShipyardCutsceneStartTask);
@@ -2364,7 +2364,7 @@ extends QuestScript {
             }
         }
         if (n == 1420 && (n4 == 12 || n4 == 13)) {
-            if (this.e(player, 1) && n2 == 1) {
+            if (this.isProgressFlagSet(player, 1) && n2 == 1) {
                 n2 = 7;
             }
             if (n2 == 1) {
@@ -2394,7 +2394,7 @@ extends QuestScript {
             if (n2 == 7) {
                 player.getDialogueManager().showFourOptions("What are you doing here?", "How do you remain unseen?", "How can you be everywhere?", "I'll be back later.");
                 player.getDialogueManager().setNextDialogueStep(8);
-                if (!this.e(player, 1)) {
+                if (!this.isProgressFlagSet(player, 1)) {
                     int n9 = this.getQuestId();
                     player.questProgressFlags[n9] = player.questProgressFlags[n9] + GameUtil.bitFlag(1);
                 }
@@ -2678,7 +2678,7 @@ extends QuestScript {
                 }
                 if (n2 == 7) {
                     player.setActionLocked(true);
-                    MonkeyMadnessQuest.h(player);
+                    MonkeyMadnessQuest.showAwowogeiAllianceCutsceneTitle(player);
                     player.getPacketSender().showWalkableInterface(8677);
                     AwowogeiAllianceCutsceneStartTask awowogeiAllianceCutsceneStartTask = new AwowogeiAllianceCutsceneStartTask(this, 5, player);
                     World.getTaskScheduler().schedule(awowogeiAllianceCutsceneStartTask);
@@ -2745,7 +2745,7 @@ extends QuestScript {
                     return false;
                 }
             }
-            if (n4 == 21 && !this.e(player, 16)) {
+            if (n4 == 21 && !this.isProgressFlagSet(player, 16)) {
                 if (n2 == 1) {
                     player.getDialogueManager().showNpcTwoLineDialogue("Well done, human! That was a most impressive display", "of skill.", 591);
                     return true;
@@ -2769,7 +2769,7 @@ extends QuestScript {
                 if (n2 == 6) {
                     Npc npc;
                     player.getDialogueManager().showNpcOneLineDialogue("Speak to Zooknock. He will arrange for you to leave.", 591);
-                    if (!this.e(player, 16)) {
+                    if (!this.isProgressFlagSet(player, 16)) {
                         int n10 = this.getQuestId();
                         player.questProgressFlags[n10] = player.questProgressFlags[n10] + GameUtil.bitFlag(16);
                     }
@@ -2781,7 +2781,7 @@ extends QuestScript {
                 }
             }
         }
-        if (n == 1426 && n4 == 21 && this.e(player, 16)) {
+        if (n == 1426 && n4 == 21 && this.isProgressFlagSet(player, 16)) {
             if (n2 == 1) {
                 player.getDialogueManager().showNpcOneLineDialogue("Well done, human. Bear with me now.", 591);
                 return true;
@@ -2918,15 +2918,15 @@ extends QuestScript {
             }
         }
         if (n == 1425 && (n4 >= 13 || n4 == 1)) {
-            if (n2 == 1 && this.e(player, 3) && this.e(player, 4) && this.e(player, 5)) {
+            if (n2 == 1 && this.isProgressFlagSet(player, 3) && this.isProgressFlagSet(player, 4) && this.isProgressFlagSet(player, 5)) {
                 n2 = 105;
-            } else if (n2 == 1 && this.e(player, 13) && this.e(player, 14)) {
+            } else if (n2 == 1 && this.isProgressFlagSet(player, 13) && this.isProgressFlagSet(player, 14)) {
                 n2 = 115;
-            } else if (n2 == 1 && this.e(player, 2)) {
+            } else if (n2 == 1 && this.isProgressFlagSet(player, 2)) {
                 n2 = 59;
-            } else if (n2 == 1 && (this.e(player, 6) || this.e(player, 15))) {
+            } else if (n2 == 1 && (this.isProgressFlagSet(player, 6) || this.isProgressFlagSet(player, 15))) {
                 n2 = 56;
-            } else if (n2 == 1 && this.e(player, 12)) {
+            } else if (n2 == 1 && this.isProgressFlagSet(player, 12)) {
                 n2 = 56;
             }
             if (n2 == 1) {
@@ -3152,10 +3152,10 @@ extends QuestScript {
             if (n2 == 56) {
                 String string = "What do we need for the monkey amulet?";
                 String string2 = "What do we need for the monkey talisman?";
-                if (this.e(player, 6)) {
+                if (this.isProgressFlagSet(player, 6)) {
                     string = "I've lost the monkey amulet...";
                 }
-                if (this.e(player, 15)) {
+                if (this.isProgressFlagSet(player, 15)) {
                     string2 = "I've lost the monkey talisman...";
                 }
                 player.getDialogueManager().showTwoOptions(string, string2);
@@ -3163,22 +3163,22 @@ extends QuestScript {
                 return true;
             }
             if (n2 == 57) {
-                if (n3 == 1 && this.e(player, 6)) {
+                if (n3 == 1 && this.isProgressFlagSet(player, 6)) {
                     player.getDialogueManager().showPlayerOneLineDialogue("I've lost the monkey amulet...", 591);
                     player.getDialogueManager().setNextDialogueStep(61);
                     return true;
                 }
-                if (n3 == 1 && !this.e(player, 6)) {
+                if (n3 == 1 && !this.isProgressFlagSet(player, 6)) {
                     player.getDialogueManager().showPlayerOneLineDialogue("What do we need for the monkey amulet?", 591);
                     player.getDialogueManager().setNextDialogueStep(58);
                     return true;
                 }
-                if (n3 == 2 && this.e(player, 15)) {
+                if (n3 == 2 && this.isProgressFlagSet(player, 15)) {
                     player.getDialogueManager().showPlayerOneLineDialogue("I've lost the monkey talisman...", 591);
                     player.getDialogueManager().setNextDialogueStep(72);
                     return true;
                 }
-                if (n3 == 2 && !this.e(player, 15)) {
+                if (n3 == 2 && !this.isProgressFlagSet(player, 15)) {
                     player.getDialogueManager().showPlayerOneLineDialogue("What do we need for the monkey talisman?", 591);
                     player.getDialogueManager().setNextDialogueStep(65);
                     return true;
@@ -3186,7 +3186,7 @@ extends QuestScript {
             }
             if (n2 == 58) {
                 player.getDialogueManager().showNpcTwoLineDialogue("We need a gold bar, a monkey amulet mould and", "something to do monkey speech.", 591);
-                if (!this.e(player, 2)) {
+                if (!this.isProgressFlagSet(player, 2)) {
                     int n11 = this.getQuestId();
                     player.questProgressFlags[n11] = player.questProgressFlags[n11] + GameUtil.bitFlag(2);
                 }
@@ -3225,7 +3225,7 @@ extends QuestScript {
             }
             if (n2 == 64) {
                 player.getDialogueManager().showNpcTwoLineDialogue("Careless human. No matter - bring me the same", "materials again and I will prepare for you another one.", 591);
-                if (!this.e(player, 2)) {
+                if (!this.isProgressFlagSet(player, 2)) {
                     int n12 = this.getQuestId();
                     player.questProgressFlags[n12] = player.questProgressFlags[n12] + GameUtil.bitFlag(2);
                 }
@@ -3234,7 +3234,7 @@ extends QuestScript {
             }
             if (n2 == 65) {
                 player.getDialogueManager().showNpcTwoLineDialogue("We need some kind of monkey remains as well as an", "authentic magical monkey talisman.", 591);
-                if (!this.e(player, 12)) {
+                if (!this.isProgressFlagSet(player, 12)) {
                     int n13 = this.getQuestId();
                     player.questProgressFlags[n13] = player.questProgressFlags[n13] + GameUtil.bitFlag(12);
                 }
@@ -3287,7 +3287,7 @@ extends QuestScript {
             }
             if (n2 == 100) {
                 player.getDialogueManager().showItemMessage("You hand Zooknock the gold bar.", new ItemStack(2357, 1));
-                if (!this.e(player, 3)) {
+                if (!this.isProgressFlagSet(player, 3)) {
                     int n14 = this.getQuestId();
                     player.questProgressFlags[n14] = player.questProgressFlags[n14] + GameUtil.bitFlag(3);
                 }
@@ -3296,7 +3296,7 @@ extends QuestScript {
             }
             if (n2 == 101) {
                 player.getDialogueManager().showNpcOneLineDialogue("Well done, human.", 591);
-                if (this.e(player, 3) && this.e(player, 4) && this.e(player, 5)) {
+                if (this.isProgressFlagSet(player, 3) && this.isProgressFlagSet(player, 4) && this.isProgressFlagSet(player, 5)) {
                     player.getDialogueManager().setNextDialogueStep(105);
                 }
                 return true;
@@ -3306,11 +3306,11 @@ extends QuestScript {
                 String string3 = "";
                 n3 = 0;
                 n4 = 0;
-                if (!this.e(player, 3)) {
+                if (!this.isProgressFlagSet(player, 3)) {
                     string = String.valueOf(string) + "a gold bar";
                     n3 = 1;
                 }
-                if (!this.e(player, 4)) {
+                if (!this.isProgressFlagSet(player, 4)) {
                     if (n3 != 0) {
                         string = String.valueOf(string) + ", ";
                         string3 = "something to do monkey speech";
@@ -3320,7 +3320,7 @@ extends QuestScript {
                     n3 = 1;
                     n4 = 1;
                 }
-                if (!this.e(player, 5)) {
+                if (!this.isProgressFlagSet(player, 5)) {
                     if (n3 != 0) {
                         string = String.valueOf(string) + ", ";
                     }
@@ -3340,7 +3340,7 @@ extends QuestScript {
             }
             if (n2 == 103) {
                 player.getDialogueManager().showItemMessage("You hand Zooknock the magical monkey dentures.", new ItemStack(4006, 1));
-                if (!this.e(player, 4)) {
+                if (!this.isProgressFlagSet(player, 4)) {
                     int n15 = this.getQuestId();
                     player.questProgressFlags[n15] = player.questProgressFlags[n15] + GameUtil.bitFlag(4);
                 }
@@ -3350,7 +3350,7 @@ extends QuestScript {
             }
             if (n2 == 104) {
                 player.getDialogueManager().showItemMessage("You hand Zooknock the monkey amulet mould.", new ItemStack(4020, 1));
-                if (!this.e(player, 5)) {
+                if (!this.isProgressFlagSet(player, 5)) {
                     int n16 = this.getQuestId();
                     player.questProgressFlags[n16] = player.questProgressFlags[n16] + GameUtil.bitFlag(5);
                 }
@@ -3387,23 +3387,23 @@ extends QuestScript {
                 player.getDialogueManager().showTwoItemMessage("Zooknock hands you back the gold bar and the monkey", "amulet mould.", new ItemStack(4007, 1), new ItemStack(4020, 1));
                 player.getInventoryManager().addOrDropItem(new ItemStack(4007, 1));
                 player.getInventoryManager().addOrDropItem(new ItemStack(4020, 1));
-                if (this.e(player, 2)) {
+                if (this.isProgressFlagSet(player, 2)) {
                     int n17 = this.getQuestId();
                     player.questProgressFlags[n17] = player.questProgressFlags[n17] - GameUtil.bitFlag(2);
                 }
-                if (this.e(player, 3)) {
+                if (this.isProgressFlagSet(player, 3)) {
                     int n18 = this.getQuestId();
                     player.questProgressFlags[n18] = player.questProgressFlags[n18] - GameUtil.bitFlag(3);
                 }
-                if (this.e(player, 4)) {
+                if (this.isProgressFlagSet(player, 4)) {
                     int n19 = this.getQuestId();
                     player.questProgressFlags[n19] = player.questProgressFlags[n19] - GameUtil.bitFlag(4);
                 }
-                if (this.e(player, 5)) {
+                if (this.isProgressFlagSet(player, 5)) {
                     int n20 = this.getQuestId();
                     player.questProgressFlags[n20] = player.questProgressFlags[n20] - GameUtil.bitFlag(5);
                 }
-                if (!this.e(player, 6)) {
+                if (!this.isProgressFlagSet(player, 6)) {
                     int n21 = this.getQuestId();
                     player.questProgressFlags[n21] = player.questProgressFlags[n21] + GameUtil.bitFlag(6);
                 }
@@ -3412,7 +3412,7 @@ extends QuestScript {
             }
             if (n2 == 111) {
                 player.getDialogueManager().showItemMessage("You hand Zooknock the monkey remains.", new ItemStack(3179, 1));
-                if (!this.e(player, 13)) {
+                if (!this.isProgressFlagSet(player, 13)) {
                     int n22 = this.getQuestId();
                     player.questProgressFlags[n22] = player.questProgressFlags[n22] + GameUtil.bitFlag(13);
                 }
@@ -3422,16 +3422,16 @@ extends QuestScript {
             }
             if (n2 == 112) {
                 player.getDialogueManager().showNpcOneLineDialogue("Excellent.", 591);
-                if (this.e(player, 13) && this.e(player, 14)) {
+                if (this.isProgressFlagSet(player, 13) && this.isProgressFlagSet(player, 14)) {
                     player.getDialogueManager().setNextDialogueStep(115);
                 }
                 return true;
             }
             if (n2 == 113) {
                 String string = "We still need ";
-                if (!this.e(player, 13)) {
+                if (!this.isProgressFlagSet(player, 13)) {
                     string = String.valueOf(string) + "monkey remains.";
-                } else if (!this.e(player, 14)) {
+                } else if (!this.isProgressFlagSet(player, 14)) {
                     string = String.valueOf(string) + "an authentic magical monkey talisman.";
                 }
                 player.getDialogueManager().showNpcOneLineDialogue(string, 591);
@@ -3440,7 +3440,7 @@ extends QuestScript {
             }
             if (n2 == 114) {
                 player.getDialogueManager().showItemMessage("You hand Zooknock the monkey talisman.", new ItemStack(4023, 1));
-                if (!this.e(player, 14)) {
+                if (!this.isProgressFlagSet(player, 14)) {
                     int n23 = this.getQuestId();
                     player.questProgressFlags[n23] = player.questProgressFlags[n23] + GameUtil.bitFlag(14);
                 }
@@ -3464,19 +3464,19 @@ extends QuestScript {
                 npc.getUpdateState().setGraphic(160, 0);
                 player.getDialogueManager().showThreeLineItemMessage("", "Zooknock hands you back the talisman. It seems to glow", "slightly.", new ItemStack(4024, 1));
                 player.getInventoryManager().addOrDropItem(new ItemStack(4024, 1));
-                if (this.e(player, 12)) {
+                if (this.isProgressFlagSet(player, 12)) {
                     int n24 = this.getQuestId();
                     player.questProgressFlags[n24] = player.questProgressFlags[n24] - GameUtil.bitFlag(12);
                 }
-                if (this.e(player, 13)) {
+                if (this.isProgressFlagSet(player, 13)) {
                     int n25 = this.getQuestId();
                     player.questProgressFlags[n25] = player.questProgressFlags[n25] - GameUtil.bitFlag(13);
                 }
-                if (this.e(player, 14)) {
+                if (this.isProgressFlagSet(player, 14)) {
                     int n26 = this.getQuestId();
                     player.questProgressFlags[n26] = player.questProgressFlags[n26] - GameUtil.bitFlag(14);
                 }
-                if (!this.e(player, 15)) {
+                if (!this.isProgressFlagSet(player, 15)) {
                     int n27 = this.getQuestId();
                     player.questProgressFlags[n27] = player.questProgressFlags[n27] + GameUtil.bitFlag(15);
                 }
@@ -3492,7 +3492,7 @@ extends QuestScript {
             }
             if (n2 == 120) {
                 player.getDialogueManager().showNpcThreeLineDialogue("Furthermore, you will not be able to attack whilst using", "this, so be careful. Perhaps when I refine my spells I", "could look into making this possible.", 591);
-                if (!this.e(player, 18)) {
+                if (!this.isProgressFlagSet(player, 18)) {
                     int n28 = this.getQuestId();
                     player.questProgressFlags[n28] = player.questProgressFlags[n28] + GameUtil.bitFlag(18);
                 } else {
@@ -3502,7 +3502,7 @@ extends QuestScript {
             }
             if (n2 == 121) {
                 player.setActionLocked(true);
-                MonkeyMadnessQuest.g(player);
+                MonkeyMadnessQuest.showCaranockWaydarCutsceneTitle(player);
                 player.getPacketSender().showWalkableInterface(8677);
                 CaranockWaydarCutsceneStartTask caranockWaydarCutsceneStartTask = new CaranockWaydarCutsceneStartTask(this, 5, player);
                 World.getTaskScheduler().schedule(caranockWaydarCutsceneStartTask);
@@ -3513,7 +3513,7 @@ extends QuestScript {
             if (player.getEquipmentManager().getItemIdAtSlot(2) != 4021) {
                 return false;
             }
-            if (n4 == 13 && !this.e(player, 7)) {
+            if (n4 == 13 && !this.isProgressFlagSet(player, 7)) {
                 if (n2 == 1) {
                     player.getDialogueManager().showPlayerOneLineDialogue("Hello there little monkey.", 591);
                     return true;
@@ -3534,7 +3534,7 @@ extends QuestScript {
                     return true;
                 }
             }
-            if (n4 == 13 && !this.e(player, 8)) {
+            if (n4 == 13 && !this.isProgressFlagSet(player, 8)) {
                 if (n2 == 1) {
                     player.getDialogueManager().showPlayerOneLineDialogue("Hello again little monkey.", 591);
                     return true;
@@ -3573,7 +3573,7 @@ extends QuestScript {
                     return true;
                 }
             }
-            if (n4 == 13 && !this.e(player, 9)) {
+            if (n4 == 13 && !this.isProgressFlagSet(player, 9)) {
                 if (n2 == 1) {
                     player.getDialogueManager().showNpcOneLineDialogue("You look a lot bigger than last time, Uncle!", 591);
                     return true;
@@ -3632,7 +3632,7 @@ extends QuestScript {
                     return true;
                 }
             }
-            if (n4 == 13 && !this.e(player, 10)) {
+            if (n4 == 13 && !this.isProgressFlagSet(player, 10)) {
                 if (n2 == 1) {
                     player.getDialogueManager().showNpcOneLineDialogue("Did you get any bananas, Uncle?", 591);
                     return true;
@@ -3670,7 +3670,7 @@ extends QuestScript {
                     return true;
                 }
             }
-            if (n4 == 13 && !this.e(player, 11)) {
+            if (n4 == 13 && !this.isProgressFlagSet(player, 11)) {
                 if (n2 == 1) {
                     player.getDialogueManager().showPlayerOneLineDialogue("Has Aunty given you the toy yet?", 591);
                     return true;
@@ -3715,7 +3715,7 @@ extends QuestScript {
                     return true;
                 }
             }
-            if (!(n4 != 13 && n4 != 1 || !this.e(player, 11) || player.ownsItem(4023) || player.ownsItem(4024))) {
+            if (!(n4 != 13 && n4 != 1 || !this.isProgressFlagSet(player, 11) || player.ownsItem(4023) || player.ownsItem(4024))) {
                 if (n2 == 1) {
                     player.getDialogueManager().showPlayerOneLineDialogue("I lost your toy, can I get a new one?", 591);
                     return true;

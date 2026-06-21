@@ -71,7 +71,7 @@ implements PacketHandler {
         long l4 = System.currentTimeMillis();
         Player player9 = player;
         player.dR = l4;
-        GameplayHelper.a(String.valueOf(System.currentTimeMillis()) + "\u00a7" + player.getUsername() + "\u00a7" + player.getPosition().getX() + "\u00a7" + player.getPosition().getY() + "\u00a7" + player.getPosition().getPlane() + "\u00a7" + player2.getUsername() + "\u00a7" + player2.getPosition().getX() + "\u00a7" + player2.getPosition().getY() + "\u00a7" + player2.getPosition().getPlane() + "\u00a7" + by + "\u00a7" + (bl ? 1 : 0), "reports");
+        GameplayHelper.appendLogLine(String.valueOf(System.currentTimeMillis()) + "\u00a7" + player.getUsername() + "\u00a7" + player.getPosition().getX() + "\u00a7" + player.getPosition().getY() + "\u00a7" + player.getPosition().getPlane() + "\u00a7" + player2.getUsername() + "\u00a7" + player2.getPosition().getX() + "\u00a7" + player2.getPosition().getY() + "\u00a7" + player2.getPosition().getPlane() + "\u00a7" + by + "\u00a7" + (bl ? 1 : 0), "reports");
     }
 }
 

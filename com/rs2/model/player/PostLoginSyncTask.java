@@ -23,7 +23,7 @@ extends TickTask {
         this.stop();
         this.a.getAttributes().put("canPickup", Boolean.TRUE);
         this.a.getSocialManager().refreshFriendStatuses(false);
-        GameplayHelper.g(this.b);
+        GameplayHelper.refreshPlayerAreaOverlay(this.b);
         Player player = this.a;
         player.packetSender.sendRunEnergy();
     }

@@ -85,10 +85,10 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.showInterface(InterfaceDefinition.interfaceCount <= 12140 ? 1689 : 12140);
         player2 = player;
-        player.j = false;
+        player.deferLevelUpInterfaces = false;
     }
 
-    private static boolean e(Player player) {
+    private static boolean hasAllRescueSupplies(Player player) {
         return player.getInventoryManager().containsItemAmount(2419, 1) && player.getInventoryManager().containsItemAmount(2418, 1) && player.getInventoryManager().containsItemAmount(2424, 1) && player.getInventoryManager().containsItemAmount(954, 1) && player.getInventoryManager().containsItemAmount(1013, 1);
     }
 
@@ -459,7 +459,7 @@ extends QuestScript {
                     }
                     if (n2 == 3) {
                         player.getInventoryManager().addOrDropItem(new ItemStack(2418, 1));
-                        if (PrinceAliRescueQuest.e(player)) {
+                        if (PrinceAliRescueQuest.hasAllRescueSupplies(player)) {
                             player.getDialogueManager().showNpcThreeLineDialogue("Good, you have all the basic equipment. Next to deal", "with the guard on the door. He is talkative, try to find", "a weakness in him.", 591);
                             player.setQuestState(this.getQuestId(), 6);
                         } else {
@@ -469,7 +469,7 @@ extends QuestScript {
                         return true;
                     }
                 } else if (n2 == 1) {
-                    if (PrinceAliRescueQuest.e(player)) {
+                    if (PrinceAliRescueQuest.hasAllRescueSupplies(player)) {
                         player.getDialogueManager().showNpcThreeLineDialogue("Good, you have all the basic equipment. Next to deal", "with the guard on the door. He is talkative, try to find", "a weakness in him.", 591);
                         player.setQuestState(this.getQuestId(), 6);
                     } else {

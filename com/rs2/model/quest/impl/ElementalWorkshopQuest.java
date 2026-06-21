@@ -23,7 +23,7 @@ import com.rs2.model.task.TickTask;
 
 public final class ElementalWorkshopQuest
 extends QuestScript {
-    private int a = 1;
+    private int elementalShieldBookLastPageIndex = 1;
 
     public ElementalWorkshopQuest(int n) {
         super(32);
@@ -82,7 +82,7 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.showInterface(InterfaceDefinition.interfaceCount <= 12140 ? 1689 : 12140);
         player2 = player;
-        player.j = false;
+        player.deferLevelUpInterfaces = false;
     }
 
     @Override
@@ -323,7 +323,7 @@ extends QuestScript {
         return false;
     }
 
-    private void e(Player player, int n) {
+    private void showElementalShieldBookPage(Player player, int n) {
         String[] stringArray;
         Player player2;
         Player player3 = player2 = player;
@@ -360,22 +360,22 @@ extends QuestScript {
             ++n3;
         }
         player3 = player;
-        player3.packetSender.setInterfaceHiddenFlag(player.X == 0 ? 1 : 0, 840);
+        player3.packetSender.setInterfaceHiddenFlag(player.activeBookPageIndex == 0 ? 1 : 0, 840);
         player3 = player;
-        player3.packetSender.setInterfaceHiddenFlag(player.X == this.a ? 1 : 0, 842);
+        player3.packetSender.setInterfaceHiddenFlag(player.activeBookPageIndex == this.elementalShieldBookLastPageIndex ? 1 : 0, 842);
     }
 
     @Override
     public final boolean handleButtonClick(Player player, int n, int n2) {
-        if (player.W == 2886) {
-            if (n == 841 && player.X < this.a) {
-                ++player.X;
-                this.e(player, player.X);
+        if (player.activeBookItemId == 2886) {
+            if (n == 841 && player.activeBookPageIndex < this.elementalShieldBookLastPageIndex) {
+                ++player.activeBookPageIndex;
+                this.showElementalShieldBookPage(player, player.activeBookPageIndex);
                 return true;
             }
-            if (n == 839 && player.X > 0) {
-                --player.X;
-                this.e(player, player.X);
+            if (n == 839 && player.activeBookPageIndex > 0) {
+                --player.activeBookPageIndex;
+                this.showElementalShieldBookPage(player, player.activeBookPageIndex);
                 return true;
             }
         }
@@ -385,9 +385,9 @@ extends QuestScript {
     @Override
     public final boolean handleInventoryItemFirstOption(Player player, int n, int n2, int n3) {
         if (n == 3214 && n2 == 2886) {
-            this.e(player, 0);
-            player.W = n2;
-            player.X = 0;
+            this.showElementalShieldBookPage(player, 0);
+            player.activeBookItemId = n2;
+            player.activeBookPageIndex = 0;
             Player player2 = player;
             player2.packetSender.showInterface(837);
             if (n3 == 0) {

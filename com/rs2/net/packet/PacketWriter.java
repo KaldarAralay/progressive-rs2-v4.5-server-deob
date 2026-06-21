@@ -33,7 +33,7 @@ extends PacketBuffer {
     }
 
     public final void writeOpcode(IsaacCipher isaacCipher, int n) {
-        this.writeByte(n + isaacCipher.a());
+        this.writeByte(n + isaacCipher.nextInt());
     }
 
     public final void startVariableBytePacket(IsaacCipher isaacCipher, int n) {
@@ -87,22 +87,22 @@ extends PacketBuffer {
         }
         while (n > n4) {
             byte by = this.buffer.get(n3);
-            by = (byte)(by & ~a[n4]);
-            by = (byte)(by | n2 >> n - n4 & a[n4]);
+            by = (byte)(by & ~BIT_MASKS[n4]);
+            by = (byte)(by | n2 >> n - n4 & BIT_MASKS[n4]);
             this.buffer.put(n3++, by);
             n -= n4;
             n4 = 8;
         }
         if (n == n4) {
             byte by = this.buffer.get(n3);
-            by = (byte)(by & ~a[n4]);
-            by = (byte)(by | n2 & a[n4]);
+            by = (byte)(by & ~BIT_MASKS[n4]);
+            by = (byte)(by | n2 & BIT_MASKS[n4]);
             this.buffer.put(n3, by);
             return;
         }
         byte by = this.buffer.get(n3);
-        by = (byte)(by & ~(a[n] << n4 - n));
-        by = (byte)(by | (n2 & a[n]) << n4 - n);
+        by = (byte)(by & ~(BIT_MASKS[n] << n4 - n));
+        by = (byte)(by | (n2 & BIT_MASKS[n]) << n4 - n);
         this.buffer.put(n3, by);
     }
 

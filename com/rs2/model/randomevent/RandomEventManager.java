@@ -16,17 +16,17 @@ import com.rs2.model.task.CycleEventHandler;
 import com.rs2.util.GameUtil;
 
 public final class RandomEventManager {
-    private static int[][] a = new int[][]{{249, 113}, {251, 2446}, {253, 2428}, {255, 2430}, {257, 3008}, {2998, 2432}, {259, 3032}, {261, 2440}, {263, 3016}, {3000, 2440}, {265, 3024}, {2481, 2442}, {267, 3040}};
+    private static int[][] JEKYLL_HERB_POTION_PAIRS = new int[][]{{249, 113}, {251, 2446}, {253, 2428}, {255, 2430}, {257, 3008}, {2998, 2432}, {259, 3032}, {261, 2440}, {263, 3016}, {3000, 2440}, {265, 3024}, {2481, 2442}, {267, 3040}};
 
-    public static ItemStack a() {
-        return new ItemStack(a[GameUtil.randomExclusive(13)][0]);
+    public static ItemStack selectJekyllRequestedHerb() {
+        return new ItemStack(JEKYLL_HERB_POTION_PAIRS[GameUtil.randomExclusive(13)][0]);
     }
 
-    public static ItemStack a(int n) {
+    public static ItemStack getJekyllPotionRewardForHerb(int n) {
         if (n == 1) {
             return new ItemStack(117);
         }
-        int[][] nArray = a;
+        int[][] nArray = JEKYLL_HERB_POTION_PAIRS;
         int n2 = 0;
         while (n2 < 13) {
             int[] nArray2 = nArray[n2];
@@ -38,7 +38,7 @@ public final class RandomEventManager {
         return null;
     }
 
-    public static boolean b(int n) {
+    public static boolean isRandomEventCombatExcludedNpcId(int n) {
         RandomEventNpcDefinition[] randomEventNpcDefinitionArray = RandomEventNpcDefinition.values();
         int n2 = randomEventNpcDefinitionArray.length;
         int n3 = 0;
@@ -46,7 +46,7 @@ public final class RandomEventManager {
             RandomEventNpcDefinition randomEventNpcDefinition = randomEventNpcDefinitionArray[n3];
             RandomEventNpcDefinition randomEventNpcDefinition2 = randomEventNpcDefinition;
             randomEventNpcDefinition2 = randomEventNpcDefinition;
-            if (randomEventNpcDefinition.e == n) {
+            if (randomEventNpcDefinition.ignorePenaltyNpcId == n) {
                 return true;
             }
             ++n3;
@@ -54,13 +54,13 @@ public final class RandomEventManager {
         return false;
     }
 
-    public static void a(Player player, RandomEventNpcDefinition stringArray) {
+    public static void spawnRandomEventNpc(Player player, RandomEventNpcDefinition stringArray) {
         Object object = player;
         if (object.H != null) {
             return;
         }
         Object object2 = stringArray;
-        object2 = new Npc(stringArray.d);
+        object2 = new Npc(stringArray.npcId);
         player.setActiveRandomEventNpc((Npc)object2);
         GameplayHelper.a(player, (Npc)object2, false, false);
         object = player;
@@ -70,8 +70,8 @@ public final class RandomEventManager {
         String[] stringArray2 = object2;
         object2 = stringArray;
         object = stringArray;
-        int n = stringArray.e;
-        stringArray = stringArray.f;
+        int n = stringArray.ignorePenaltyNpcId;
+        stringArray = stringArray.reminderLines;
         object2 = stringArray2;
         CycleEventHandler.getInstance().schedule((Entity)object2, new RandomEventNpcReminderEvent(player, (Npc)object2, stringArray, n), 1);
     }

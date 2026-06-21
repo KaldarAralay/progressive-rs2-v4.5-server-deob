@@ -1068,7 +1068,7 @@ public class DialogueManager {
                         return true;
                     }
                     case 2: {
-                        player.getTeleportManager().a(2509, 4689, 0, null, 5, 804, -1, 68);
+                        player.getTeleportManager().startScriptedTeleport(2509, 4689, 0, null, 5, 804, -1, 68);
                     }
                 }
                 break;
@@ -1081,7 +1081,7 @@ public class DialogueManager {
                         return true;
                     }
                     case 2: {
-                        player.getTeleportManager().a(2542, 4718, 0, null, 5, 804, -1, 68);
+                        player.getTeleportManager().startScriptedTeleport(2542, 4718, 0, null, 5, 804, -1, 68);
                         break block0;
                     }
                 }
@@ -1987,24 +1987,24 @@ public class DialogueManager {
                         return true;
                     }
                     case 5: {
-                        ShopManager.openShop(var0, GameplayHelper.c(var1_1));
+                        ShopManager.openShop(var0, GameplayHelper.getNpcShopId(var1_1));
                         var0.getDialogueManager().markDialogueInactive();
                         break;
                     }
                     case 6: {
-                        var0.N = GameUtil.bitFlag(1) + GameUtil.bitFlag(2) + GameUtil.bitFlag(3);
+                        var0.temporaryActionValue = GameUtil.bitFlag(1) + GameUtil.bitFlag(2) + GameUtil.bitFlag(3);
                         var1_1 = 0;
                         if (!var0.ownsItem(GodBookHandler.damagedSaradominBookId) && !var0.ownsItem(GodBookHandler.holyBookId)) {
                             ++var1_1;
-                            var0.N -= GameUtil.bitFlag(1);
+                            var0.temporaryActionValue -= GameUtil.bitFlag(1);
                         }
                         if (!var0.ownsItem(GodBookHandler.damagedZamorakBookId) && !var0.ownsItem(GodBookHandler.unholyBookId)) {
                             ++var1_1;
-                            var0.N -= GameUtil.bitFlag(2);
+                            var0.temporaryActionValue -= GameUtil.bitFlag(2);
                         }
                         if (!var0.ownsItem(GodBookHandler.damagedGuthixBookId) && !var0.ownsItem(GodBookHandler.bookOfBalanceId)) {
                             ++var1_1;
-                            var0.N -= GameUtil.bitFlag(3);
+                            var0.temporaryActionValue -= GameUtil.bitFlag(3);
                         }
                         if (var1_1 == 0) {
                             var0.getDialogueManager().showNpcOneLineDialogue("No haven't found anything.", 591);
@@ -2021,19 +2021,19 @@ public class DialogueManager {
                         return true;
                     }
                     case 7: {
-                        if ((var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) == 0) {
+                        if ((var0.temporaryActionValue & GameUtil.bitFlag(1)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(2)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(3)) == 0) {
                             var0.getDialogueManager().showFourOptions("Buy a book of Saradomin", "Buy a book of Zamorak", "Buy a book of Guthix", "Don't buy anything");
-                        } else if ((var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) != 0) {
+                        } else if ((var0.temporaryActionValue & GameUtil.bitFlag(1)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(2)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(3)) != 0) {
                             var0.getDialogueManager().showThreeOptions("Buy a book of Saradomin", "Buy a book of Zamorak", "Don't buy anything");
-                        } else if ((var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) != 0 && (var0.N & GameUtil.bitFlag(3)) == 0) {
+                        } else if ((var0.temporaryActionValue & GameUtil.bitFlag(1)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(2)) != 0 && (var0.temporaryActionValue & GameUtil.bitFlag(3)) == 0) {
                             var0.getDialogueManager().showThreeOptions("Buy a book of Saradomin", "Buy a book of Guthix", "Don't buy anything");
-                        } else if ((var0.N & GameUtil.bitFlag(1)) != 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) == 0) {
+                        } else if ((var0.temporaryActionValue & GameUtil.bitFlag(1)) != 0 && (var0.temporaryActionValue & GameUtil.bitFlag(2)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(3)) == 0) {
                             var0.getDialogueManager().showThreeOptions("Buy a book of Zamorak", "Buy a book of Guthix", "Don't buy anything");
-                        } else if ((var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) != 0 && (var0.N & GameUtil.bitFlag(3)) != 0) {
+                        } else if ((var0.temporaryActionValue & GameUtil.bitFlag(1)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(2)) != 0 && (var0.temporaryActionValue & GameUtil.bitFlag(3)) != 0) {
                             var0.getDialogueManager().showTwoOptions("Buy a book of Saradomin", "Don't buy anything");
-                        } else if ((var0.N & GameUtil.bitFlag(1)) != 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) != 0) {
+                        } else if ((var0.temporaryActionValue & GameUtil.bitFlag(1)) != 0 && (var0.temporaryActionValue & GameUtil.bitFlag(2)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(3)) != 0) {
                             var0.getDialogueManager().showTwoOptions("Buy a book of Zamorak", "Don't buy anything");
-                        } else if ((var0.N & GameUtil.bitFlag(1)) != 0 && (var0.N & GameUtil.bitFlag(2)) != 0 && (var0.N & GameUtil.bitFlag(3)) == 0) {
+                        } else if ((var0.temporaryActionValue & GameUtil.bitFlag(1)) != 0 && (var0.temporaryActionValue & GameUtil.bitFlag(2)) != 0 && (var0.temporaryActionValue & GameUtil.bitFlag(3)) == 0) {
                             var0.getDialogueManager().showTwoOptions("Buy a book of Guthix", "Don't buy anything");
                         }
                         return true;
@@ -2044,11 +2044,11 @@ public class DialogueManager {
                                 if (var0.getInventoryManager().containsItemAmount(995, 5000)) {
                                     var0.getDialogueManager().showNpcOneLineDialogue("Here you go!", 591);
                                     var0.getInventoryManager().removeItem(new ItemStack(995, 5000));
-                                    if ((var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) != 0 && (var0.N & GameUtil.bitFlag(3)) != 0 || (var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) == 0 || (var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) != 0 || (var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) != 0 && (var0.N & GameUtil.bitFlag(3)) == 0) {
+                                    if ((var0.temporaryActionValue & GameUtil.bitFlag(1)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(2)) != 0 && (var0.temporaryActionValue & GameUtil.bitFlag(3)) != 0 || (var0.temporaryActionValue & GameUtil.bitFlag(1)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(2)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(3)) == 0 || (var0.temporaryActionValue & GameUtil.bitFlag(1)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(2)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(3)) != 0 || (var0.temporaryActionValue & GameUtil.bitFlag(1)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(2)) != 0 && (var0.temporaryActionValue & GameUtil.bitFlag(3)) == 0) {
                                         GodBookHandler.giveReplacementBook(var0, GodBookHandler.damagedSaradominBookId);
-                                    } else if ((var0.N & GameUtil.bitFlag(1)) != 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) != 0 || (var0.N & GameUtil.bitFlag(1)) != 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) == 0) {
+                                    } else if ((var0.temporaryActionValue & GameUtil.bitFlag(1)) != 0 && (var0.temporaryActionValue & GameUtil.bitFlag(2)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(3)) != 0 || (var0.temporaryActionValue & GameUtil.bitFlag(1)) != 0 && (var0.temporaryActionValue & GameUtil.bitFlag(2)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(3)) == 0) {
                                         GodBookHandler.giveReplacementBook(var0, GodBookHandler.damagedZamorakBookId);
-                                    } else if ((var0.N & GameUtil.bitFlag(1)) != 0 && (var0.N & GameUtil.bitFlag(2)) != 0 && (var0.N & GameUtil.bitFlag(3)) == 0) {
+                                    } else if ((var0.temporaryActionValue & GameUtil.bitFlag(1)) != 0 && (var0.temporaryActionValue & GameUtil.bitFlag(2)) != 0 && (var0.temporaryActionValue & GameUtil.bitFlag(3)) == 0) {
                                         GodBookHandler.giveReplacementBook(var0, GodBookHandler.damagedGuthixBookId);
                                     }
                                 } else {
@@ -2058,14 +2058,14 @@ public class DialogueManager {
                                 return true;
                             }
                             case 2: {
-                                if ((var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) != 0 && (var0.N & GameUtil.bitFlag(3)) != 0 || (var0.N & GameUtil.bitFlag(1)) != 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) != 0 || (var0.N & GameUtil.bitFlag(1)) != 0 && (var0.N & GameUtil.bitFlag(2)) != 0 && (var0.N & GameUtil.bitFlag(3)) == 0) {
+                                if ((var0.temporaryActionValue & GameUtil.bitFlag(1)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(2)) != 0 && (var0.temporaryActionValue & GameUtil.bitFlag(3)) != 0 || (var0.temporaryActionValue & GameUtil.bitFlag(1)) != 0 && (var0.temporaryActionValue & GameUtil.bitFlag(2)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(3)) != 0 || (var0.temporaryActionValue & GameUtil.bitFlag(1)) != 0 && (var0.temporaryActionValue & GameUtil.bitFlag(2)) != 0 && (var0.temporaryActionValue & GameUtil.bitFlag(3)) == 0) {
                                     var0.getDialogueManager().showPlayerOneLineDialogue("Maybe next time.", 591);
                                 } else if (var0.getInventoryManager().containsItemAmount(995, 5000)) {
                                     var0.getDialogueManager().showNpcOneLineDialogue("Here you go!", 591);
                                     var0.getInventoryManager().removeItem(new ItemStack(995, 5000));
-                                    if ((var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) == 0 || (var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) != 0) {
+                                    if ((var0.temporaryActionValue & GameUtil.bitFlag(1)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(2)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(3)) == 0 || (var0.temporaryActionValue & GameUtil.bitFlag(1)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(2)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(3)) != 0) {
                                         GodBookHandler.giveReplacementBook(var0, GodBookHandler.damagedZamorakBookId);
-                                    } else if ((var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) != 0 && (var0.N & GameUtil.bitFlag(3)) == 0 || (var0.N & GameUtil.bitFlag(1)) != 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) == 0) {
+                                    } else if ((var0.temporaryActionValue & GameUtil.bitFlag(1)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(2)) != 0 && (var0.temporaryActionValue & GameUtil.bitFlag(3)) == 0 || (var0.temporaryActionValue & GameUtil.bitFlag(1)) != 0 && (var0.temporaryActionValue & GameUtil.bitFlag(2)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(3)) == 0) {
                                         GodBookHandler.giveReplacementBook(var0, GodBookHandler.damagedGuthixBookId);
                                     }
                                 } else {
@@ -2075,12 +2075,12 @@ public class DialogueManager {
                                 return true;
                             }
                             case 3: {
-                                if ((var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) != 0 || (var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) != 0 && (var0.N & GameUtil.bitFlag(3)) == 0 || (var0.N & GameUtil.bitFlag(1)) != 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) == 0) {
+                                if ((var0.temporaryActionValue & GameUtil.bitFlag(1)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(2)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(3)) != 0 || (var0.temporaryActionValue & GameUtil.bitFlag(1)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(2)) != 0 && (var0.temporaryActionValue & GameUtil.bitFlag(3)) == 0 || (var0.temporaryActionValue & GameUtil.bitFlag(1)) != 0 && (var0.temporaryActionValue & GameUtil.bitFlag(2)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(3)) == 0) {
                                     var0.getDialogueManager().showPlayerOneLineDialogue("Maybe next time.", 591);
                                 } else if (var0.getInventoryManager().containsItemAmount(995, 5000)) {
                                     var0.getDialogueManager().showNpcOneLineDialogue("Here you go!", 591);
                                     var0.getInventoryManager().removeItem(new ItemStack(995, 5000));
-                                    if ((var0.N & GameUtil.bitFlag(1)) == 0 && (var0.N & GameUtil.bitFlag(2)) == 0 && (var0.N & GameUtil.bitFlag(3)) == 0) {
+                                    if ((var0.temporaryActionValue & GameUtil.bitFlag(1)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(2)) == 0 && (var0.temporaryActionValue & GameUtil.bitFlag(3)) == 0) {
                                         GodBookHandler.giveReplacementBook(var0, GodBookHandler.damagedGuthixBookId);
                                     }
                                 } else {
@@ -2648,19 +2648,19 @@ public class DialogueManager {
                         switch (var3_18) {
                             case 1: {
                                 var0.getDialogueManager().showPlayerOneLineDialogue("One Asgarnian Ale, please.", 591);
-                                var0.r(1917);
+                                var0.setTemporaryActionValue(1917);
                                 var0.getDialogueManager().setNextDialogueStep(6);
                                 return true;
                             }
                             case 2: {
                                 var0.getDialogueManager().showPlayerOneLineDialogue("I'll try the Mind Bomb.", 591);
-                                var0.r(1907);
+                                var0.setTemporaryActionValue(1907);
                                 var0.getDialogueManager().setNextDialogueStep(6);
                                 return true;
                             }
                             case 3: {
                                 var0.getDialogueManager().showPlayerOneLineDialogue("Can I have a Dwarven Stout?", 591);
-                                var0.r(1913);
+                                var0.setTemporaryActionValue(1913);
                                 var0.getDialogueManager().setNextDialogueStep(6);
                                 return true;
                             }
@@ -2676,7 +2676,7 @@ public class DialogueManager {
                         if (var0.getInventoryManager().containsItemAmount(995, 3)) {
                             var0.getDialogueManager().showPlayerOneLineDialogue("Thanks, " + new Npc(var1_1).getDefinition().getName() + ".", 591);
                             var0.getInventoryManager().removeItem(new ItemStack(995, 3));
-                            var0.getInventoryManager().addOrDropItem(new ItemStack(var0.aV(), 1));
+                            var0.getInventoryManager().addOrDropItem(new ItemStack(var0.getTemporaryActionValue(), 1));
                             var0.getDialogueManager().finishDialogue();
                         } else {
                             var0.getDialogueManager().showNpcOneLineDialogue("I said 3 coins! You haven't got 3 coins!", 614);
@@ -4344,7 +4344,7 @@ public class DialogueManager {
                         return true;
                     }
                     case 30: {
-                        var0.getTeleportManager().b(new Position(2736, 3477, 0));
+                        var0.getTeleportManager().castItemTeleport(new Position(2736, 3477, 0));
                     }
                 }
                 break;
@@ -4657,7 +4657,7 @@ public class DialogueManager {
             case 10088: {
                 block818 : switch (var0.getDialogueManager().getDialogueStep()) {
                     case 1: {
-                        var1_6 = ItemCombinationHandler.forBrokenToolItemId(var0.N);
+                        var1_6 = ItemCombinationHandler.forBrokenToolItemId(var0.temporaryActionValue);
                         if (var1_6 == null) break;
                         var0.getDialogueManager().setDialogueNpcId(var0.O);
                         var6_23 = "free";
@@ -4674,7 +4674,7 @@ public class DialogueManager {
                     case 3: {
                         switch (var3_18) {
                             case 1: {
-                                var1_7 = ItemCombinationHandler.forBrokenToolItemId(var0.N);
+                                var1_7 = ItemCombinationHandler.forBrokenToolItemId(var0.temporaryActionValue);
                                 if (var1_7 == null) break block818;
                                 var7_31 = "axe";
                                 if (var1_7.getSkillId() == 14) {
@@ -4685,16 +4685,16 @@ public class DialogueManager {
                                     var6_24 = String.valueOf(var1_7.getRepairCostCoins()) + "gp";
                                 }
                                 var8_39 = new Npc(var0.O);
-                                if (ItemCombinationHandler.repairBrokenGatheringTool(var0, var0.N)) {
+                                if (ItemCombinationHandler.repairBrokenGatheringTool(var0, var0.temporaryActionValue)) {
                                     var0.getPacketSender().sendGameMessage(String.valueOf(var8_39.getDefinition().getName()) + " fixes your " + var7_31 + " for " + var6_24 + ".");
                                 }
-                                var0.N = -1;
+                                var0.temporaryActionValue = -1;
                                 var0.O = -1;
                                 var0.getDialogueManager().finishDialogue();
                                 break block818;
                             }
                             case 2: {
-                                var0.N = -1;
+                                var0.temporaryActionValue = -1;
                                 var0.O = -1;
                                 var0.getDialogueManager().finishDialogue();
                             }
@@ -4766,7 +4766,7 @@ public class DialogueManager {
                     case 2: {
                         switch (var3_18) {
                             case 1: {
-                                GameplayHelper.a(var0, TeleportManager.h);
+                                GameplayHelper.castSelectedItemTeleport(var0, TeleportManager.BURTHORPE_TELEPORT_POSITION);
                             }
                         }
                     }
@@ -4790,19 +4790,19 @@ public class DialogueManager {
                     case 2: {
                         switch (var3_18) {
                             case 1: {
-                                GameplayHelper.a(var0, TeleportManager.b);
+                                GameplayHelper.castSelectedItemTeleport(var0, TeleportManager.EDGEVILLE_TELEPORT_POSITION);
                                 break block844;
                             }
                             case 2: {
-                                GameplayHelper.a(var0, TeleportManager.c);
+                                GameplayHelper.castSelectedItemTeleport(var0, TeleportManager.KARAMJA_TELEPORT_POSITION);
                                 break block844;
                             }
                             case 3: {
-                                GameplayHelper.a(var0, TeleportManager.d);
+                                GameplayHelper.castSelectedItemTeleport(var0, TeleportManager.DRAYNOR_VILLAGE_TELEPORT_POSITION);
                                 break block844;
                             }
                             case 4: {
-                                GameplayHelper.a(var0, TeleportManager.e);
+                                GameplayHelper.castSelectedItemTeleport(var0, TeleportManager.AL_KHARID_TELEPORT_POSITION);
                             }
                         }
                     }
@@ -4826,11 +4826,11 @@ public class DialogueManager {
                     case 2: {
                         switch (var3_18) {
                             case 1: {
-                                GameplayHelper.a(var0, TeleportManager.g);
+                                GameplayHelper.castSelectedItemTeleport(var0, TeleportManager.DUEL_ARENA_TELEPORT_POSITION);
                                 break block854;
                             }
                             case 2: {
-                                GameplayHelper.a(var0, TeleportManager.f);
+                                GameplayHelper.castSelectedItemTeleport(var0, TeleportManager.CASTLE_WARS_TELEPORT_POSITION);
                             }
                         }
                     }
@@ -5051,7 +5051,7 @@ public class DialogueManager {
                                         if (var0.isMember()) {
                                             var6_27 = var0.membershipExpiresMillis;
                                         }
-                                        var0.membershipExpiresMillis = GameplayHelper.a(var6_27, ServerSettings.membershipDaysPerPurchase);
+                                        var0.membershipExpiresMillis = GameplayHelper.addDaysToTimestamp(var6_27, ServerSettings.membershipDaysPerPurchase);
                                     }
                                     var0.getDialogueManager().finishDialogue();
                                     return true;
@@ -5313,7 +5313,7 @@ lbl2786:
                         break block0;
                     }
                     case 5: {
-                        ShopManager.openShop(var0, GameplayHelper.c(var1_1));
+                        ShopManager.openShop(var0, GameplayHelper.getNpcShopId(var1_1));
                         var0.getDialogueManager().markDialogueInactive();
                         break block0;
                     }
@@ -5362,7 +5362,7 @@ lbl2786:
                     case 2: {
                         switch (var3_18) {
                             case 1: {
-                                ShopManager.openShop(var0, GameplayHelper.c(var1_1));
+                                ShopManager.openShop(var0, GameplayHelper.getNpcShopId(var1_1));
                                 var0.getDialogueManager().markDialogueInactive();
                                 break block981;
                             }
@@ -5478,7 +5478,7 @@ lbl2919:
                     case 1: {
                         if (var0.botEnabled) {
                             if (var0.getInventoryManager().removeItem(new ItemStack(995, 875))) {
-                                var0.d(new Position(2713, 9564));
+                                var0.scheduleDelayedMove(new Position(2713, 9564));
                                 var0.setBrimhavenOpen(false);
                             } else {
                                 var0.currentBotTask.startWalkToBank(var0);
@@ -5543,7 +5543,7 @@ lbl2919:
                         switch (var3_18) {
                             case 1: {
                                 if (var0.getInteractionTarget() != null && var0.getInteractionTarget().isNpc()) {
-                                    GameplayHelper.b(var0, ((Npc)var0.getInteractionTarget()).getNpcId());
+                                    GameplayHelper.openNpcShop(var0, ((Npc)var0.getInteractionTarget()).getNpcId());
                                 }
                                 var0.getDialogueManager().markDialogueInactive();
                             }
@@ -5667,29 +5667,29 @@ lbl2919:
                 var6_30 = true;
                 switch (var0.getDialogueManager().getDialogueStep()) {
                     case 1: {
-                        if (var0.V != null) {
-                            if (!var0.getInventoryManager().containsItemStack(var0.V[0])) {
+                        if (var0.clueRequiredItems != null) {
+                            if (!var0.getInventoryManager().containsItemStack(var0.clueRequiredItems[0])) {
                                 var6_30 = false;
                             }
                             if (var6_30) {
                                 var7_37 = 0;
-                                while (var7_37 < var0.V.length) {
-                                    var0.getInventoryManager().removeItem(var0.V[var7_37]);
+                                while (var7_37 < var0.clueRequiredItems.length) {
+                                    var0.getInventoryManager().removeItem(var0.clueRequiredItems[var7_37]);
                                     ++var7_37;
                                 }
-                                var0.V = null;
+                                var0.clueRequiredItems = null;
                             } else {
                                 return false;
                             }
                         }
                         var0.en = false;
-                        TreasureTrailManager.completeTreasureTrail(var0, var0.at);
+                        TreasureTrailManager.completeTreasureTrail(var0, var0.activeClueLevel);
                         var0.getDialogueManager().markDialogueInactive();
                         break;
                     }
                     case 2: {
-                        if (var0.V != null) {
-                            if (!var0.getInventoryManager().containsItemStack(var0.V[0])) {
+                        if (var0.clueRequiredItems != null) {
+                            if (!var0.getInventoryManager().containsItemStack(var0.clueRequiredItems[0])) {
                                 var6_30 = false;
                             }
                             if (!var6_30) {
@@ -5697,12 +5697,12 @@ lbl2919:
                             }
                         }
                         var0.en = false;
-                        TreasureTrailManager.advanceOrCompleteTrail(var0, var0.at, "You recieve another clue!", true, "Here is your reward");
+                        TreasureTrailManager.advanceOrCompleteTrail(var0, var0.activeClueLevel, "You recieve another clue!", true, "Here is your reward");
                         return true;
                     }
                     case 3: {
-                        if (var0.V != null) {
-                            if (!var0.getInventoryManager().containsItemStack(var0.V[0])) {
+                        if (var0.clueRequiredItems != null) {
+                            if (!var0.getInventoryManager().containsItemStack(var0.clueRequiredItems[0])) {
                                 var6_30 = false;
                             }
                             if (!var6_30) {
@@ -6018,7 +6018,7 @@ lbl2919:
                         return true;
                     }
                     case 10: {
-                        ShopManager.openShop(var0, GameplayHelper.c(var1_1));
+                        ShopManager.openShop(var0, GameplayHelper.getNpcShopId(var1_1));
                         var0.getDialogueManager().markDialogueInactive();
                         break;
                     }
@@ -6101,7 +6101,7 @@ lbl2919:
                         break;
                     }
                     case 20: {
-                        FarmingFarmerHandler.handlePatchProtectionDialogue(var0, var0.ei(), var7_38.getPatchType(), var0.getInteractionTargetId(), 2);
+                        FarmingFarmerHandler.handlePatchProtectionDialogue(var0, var0.getSelectedSkillItemId(), var7_38.getPatchType(), var0.getInteractionTargetId(), 2);
                         var0.getDialogueManager().markDialogueInactive();
                     }
                 }
@@ -6784,7 +6784,7 @@ lbl3882:
                         break;
                     }
                     case 6: {
-                        ShopManager.openShop(var0, GameplayHelper.c(var1_1));
+                        ShopManager.openShop(var0, GameplayHelper.getNpcShopId(var1_1));
                         var0.getDialogueManager().markDialogueInactive();
                     }
                 }
@@ -6845,7 +6845,7 @@ lbl3882:
                 switch (var0.getDialogueManager().getDialogueStep()) {
                     case 1: {
                         if (var0.getRandomEventRequestedItem() == null) {
-                            var0.setRandomEventRequestedItem(RandomEventManager.a());
+                            var0.setRandomEventRequestedItem(RandomEventManager.selectJekyllRequestedHerb());
                         }
                         var0.getDialogueManager().showNpcTwoLineDialogue("Hello " + var0.getUsername() + ",", "would you happen to have a " + var0.getRandomEventRequestedItem().getDefinition().getName().toLowerCase() + "?", 588);
                         return true;
@@ -6874,7 +6874,7 @@ lbl3882:
                         break block0;
                     }
                     case 4: {
-                        var9_49 = RandomEventManager.a(var0.getRandomEventRequestedItem().getId());
+                        var9_49 = RandomEventManager.getJekyllPotionRewardForHerb(var0.getRandomEventRequestedItem().getId());
                         var0.getInventoryManager().addOrDropItem(var9_49);
                         var0.getDialogueManager().showTwoItemMessage("Jekyll hands you " + var9_49.getDefinition().getName().toLowerCase() + ".", "", new ItemStack(-1, 1), var9_49);
                         var0.setRandomEventRequestedItem(null);
@@ -6898,7 +6898,7 @@ lbl3882:
                     case 3: {
                         switch (var3_18) {
                             case 1: {
-                                var0.d(new Position(2876, 2952));
+                                var0.scheduleDelayedMove(new Position(2876, 2952));
                                 return true;
                             }
                         }

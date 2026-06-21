@@ -20,11 +20,11 @@ import java.util.ArrayList;
 
 public final class VarrockSewerGiantRatCombatBotTask
 extends BotTaskDefinition {
-    private static Position aa = new Position(3253, 3420, 0);
-    private static BotRoute[] ab = new BotRoute[]{new BotRoute(new Position[]{new Position(3253, 3428, 0), new Position(3247, 3432, 0), new Position(3245, 3444, 0), new Position(3243, 3455, 0), new Position(3238, 3458, 0)}), new BotRoute(new Position[]{new Position(3238, 9866, 0)})};
+    private static Position routeStartPosition = new Position(3253, 3420, 0);
+    private static BotRoute[] taskRouteSegments = new BotRoute[]{new BotRoute(new Position[]{new Position(3253, 3428, 0), new Position(3247, 3432, 0), new Position(3245, 3444, 0), new Position(3243, 3455, 0), new Position(3238, 3458, 0)}), new BotRoute(new Position[]{new Position(3238, 9866, 0)})};
 
     public VarrockSewerGiantRatCombatBotTask(int n) {
-        super(aa, ab, 1, false, 1);
+        super(routeStartPosition, taskRouteSegments, 1, false, 1);
         n = 1;
         VarrockSewerGiantRatCombatBotTask varrockSewerGiantRatCombatBotTask = this;
         this.combatTask = true;
@@ -80,14 +80,14 @@ extends BotTaskDefinition {
         player.botTaskRequiredItems = object;
         player.getInventoryManager().addItem(object[0]);
         object = player;
-        GameplayHelper.a((Player)object, -1);
+        GameplayHelper.prepareBotCombatStyle((Player)object, -1);
         player.getInventoryManager().refresh();
         player.getEquipmentManager().refresh();
     }
 
     @Override
     public final void prepareTaskCombatLoadout(Player player) {
-        GameplayHelper.b(player);
+        GameplayHelper.resetBotSkillsToBase(player);
         int n = 1 + GameUtil.randomInt(6);
         int n2 = n / 5 << 1;
         if (n2 == 0) {
@@ -132,7 +132,7 @@ extends BotTaskDefinition {
         player.botTaskState = "walk towards task";
         player.botPathWaypointIndex = 0;
         player.botPathSegmentIndex = 0;
-        player.currentBotRoute = ab[player.botPathSegmentIndex];
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex];
         player.continueBotRoute();
     }
 
@@ -141,8 +141,8 @@ extends BotTaskDefinition {
         player.setAutoRetaliate(false);
         player.botTaskState = "walk towards bank";
         player.botPathWaypointIndex = 0;
-        player.botPathSegmentIndex = ab.length - 1;
-        player.currentBotRoute = ab[player.botPathSegmentIndex].reversed();
+        player.botPathSegmentIndex = taskRouteSegments.length - 1;
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex].reversed();
         player.continueBotRoute();
     }
 
@@ -150,7 +150,7 @@ extends BotTaskDefinition {
     public final void continueWalkToTask(Player player, int n) {
         player.setAutoRetaliate(true);
         player.botPathWaypointIndex = n;
-        player.currentBotRoute = ab[player.botPathSegmentIndex];
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex];
         this.advanceTaskRouteSegment(player, true);
     }
 
@@ -158,7 +158,7 @@ extends BotTaskDefinition {
     public final void continueWalkToBank(Player player, int n) {
         player.setAutoRetaliate(false);
         player.botPathWaypointIndex = n;
-        player.currentBotRoute = ab[player.botPathSegmentIndex].reversed();
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex].reversed();
         this.advanceTaskRouteSegment(player, true);
     }
 
@@ -168,14 +168,14 @@ extends BotTaskDefinition {
             if (!bl) {
                 ++player.botPathSegmentIndex;
             }
-            player.currentBotRoute = ab[player.botPathSegmentIndex];
+            player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex];
             if (!bl) {
                 player.botPathWaypointIndex = 0;
             }
             if (player.botPathSegmentIndex == 1) {
                 Object object = new ArrayList<Integer>();
                 ((ArrayList)object).add(881);
-                player.dm = true;
+                player.botRouteActionPending = true;
                 if (player.interactWithBotObjectTargetsNoRetry((ArrayList)object, false)) {
                     object = new VarrockSewerGiantRatDungeonEntryTickTask(this, 3, player);
                     World.getTaskScheduler().schedule((TickTask)object);
@@ -185,7 +185,7 @@ extends BotTaskDefinition {
                     player.interactWithBotObjectTargetsNoRetry((ArrayList)object, false);
                 }
             }
-            if (player.botPathSegmentIndex == ab.length - 1) {
+            if (player.botPathSegmentIndex == taskRouteSegments.length - 1) {
                 player.botTaskState = "walk to task";
                 return;
             }
@@ -193,7 +193,7 @@ extends BotTaskDefinition {
             if (!bl) {
                 --player.botPathSegmentIndex;
             }
-            player.currentBotRoute = ab[player.botPathSegmentIndex].reversed();
+            player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex].reversed();
             if (!bl) {
                 player.botPathWaypointIndex = 0;
             }
@@ -201,7 +201,7 @@ extends BotTaskDefinition {
                 ArrayList<Integer> arrayList = new ArrayList<Integer>();
                 arrayList.add(1755);
                 player.interactWithBotObjectTargets(arrayList);
-                player.dm = true;
+                player.botRouteActionPending = true;
                 player.botTaskState = "walk to bank";
             }
         }

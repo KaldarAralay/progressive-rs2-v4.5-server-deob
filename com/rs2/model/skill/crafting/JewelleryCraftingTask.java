@@ -32,7 +32,7 @@ extends CycleEvent {
             cycleEventContainer.stop();
             return;
         }
-        if (JewelleryCraftingHandler.forMaterialItemId(this.materialItemId) == null || !this.player.getInventoryManager().getContainer().containsItem(JewelleryDefinition.getRecipeData(JewelleryCraftingHandler.forMaterialItemId(this.materialItemId))[0]) || !this.player.getInventoryManager().getContainer().containsItem(this.player.ei())) {
+        if (JewelleryCraftingHandler.forMaterialItemId(this.materialItemId) == null || !this.player.getInventoryManager().getContainer().containsItem(JewelleryDefinition.getRecipeData(JewelleryCraftingHandler.forMaterialItemId(this.materialItemId))[0]) || !this.player.getInventoryManager().getContainer().containsItem(this.player.getSelectedSkillItemId())) {
             cycleEventContainer.stop();
             return;
         }
@@ -47,12 +47,12 @@ extends CycleEvent {
                     cycleEventContainer.stop();
                     return;
                 }
-                if (JewelleryDefinition.getRecipeData(JewelleryCraftingHandler.forMaterialItemId(this.materialItemId))[0] != this.player.ei()) {
+                if (JewelleryDefinition.getRecipeData(JewelleryCraftingHandler.forMaterialItemId(this.materialItemId))[0] != this.player.getSelectedSkillItemId()) {
                     this.player.getInventoryManager().removeItem(new ItemStack(JewelleryDefinition.getRecipeData(JewelleryCraftingHandler.forMaterialItemId(this.materialItemId))[0], 1));
                 }
-                this.player.getInventoryManager().removeItem(new ItemStack(this.player.ei(), 1));
+                this.player.getInventoryManager().removeItem(new ItemStack(this.player.getSelectedSkillItemId(), 1));
                 int n = JewelleryDefinition.getRecipeData(JewelleryCraftingHandler.forMaterialItemId(this.materialItemId))[5];
-                if (this.player.ei() == 2365 && n == 1641) {
+                if (this.player.getSelectedSkillItemId() == 2365 && n == 1641) {
                     n = 773;
                 }
                 this.player.getInventoryManager().addItem(new ItemStack(n, 1));
@@ -67,12 +67,12 @@ extends CycleEvent {
                     cycleEventContainer.stop();
                     return;
                 }
-                if (JewelleryDefinition.getRecipeData(JewelleryCraftingHandler.forMaterialItemId(this.materialItemId))[0] != this.player.ei()) {
+                if (JewelleryDefinition.getRecipeData(JewelleryCraftingHandler.forMaterialItemId(this.materialItemId))[0] != this.player.getSelectedSkillItemId()) {
                     this.player.getInventoryManager().removeItem(new ItemStack(JewelleryDefinition.getRecipeData(JewelleryCraftingHandler.forMaterialItemId(this.materialItemId))[0], 1));
                 }
-                this.player.getInventoryManager().removeItem(new ItemStack(this.player.ei(), 1));
+                this.player.getInventoryManager().removeItem(new ItemStack(this.player.getSelectedSkillItemId(), 1));
                 int n = JewelleryDefinition.getRecipeData(JewelleryCraftingHandler.forMaterialItemId(this.materialItemId))[8];
-                if (this.player.ei() == 2365 && n == 1660) {
+                if (this.player.getSelectedSkillItemId() == 2365 && n == 1660) {
                     n = 774;
                 }
                 this.player.getInventoryManager().addItem(new ItemStack(n, 1));
@@ -87,10 +87,10 @@ extends CycleEvent {
                     cycleEventContainer.stop();
                     return;
                 }
-                if (JewelleryDefinition.getRecipeData(JewelleryCraftingHandler.forMaterialItemId(this.materialItemId))[0] != this.player.ei()) {
+                if (JewelleryDefinition.getRecipeData(JewelleryCraftingHandler.forMaterialItemId(this.materialItemId))[0] != this.player.getSelectedSkillItemId()) {
                     this.player.getInventoryManager().removeItem(new ItemStack(JewelleryDefinition.getRecipeData(JewelleryCraftingHandler.forMaterialItemId(this.materialItemId))[0], 1));
                 }
-                this.player.getInventoryManager().removeItem(new ItemStack(this.player.ei(), 1));
+                this.player.getInventoryManager().removeItem(new ItemStack(this.player.getSelectedSkillItemId(), 1));
                 if (this.player.getInventoryManager().getContainer().containsItem(1759)) {
                     this.player.getInventoryManager().removeItem(new ItemStack(1759, 1));
                     this.player.getInventoryManager().addItem(new ItemStack(JewelleryDefinition.getRecipeData(JewelleryCraftingHandler.forMaterialItemId(this.materialItemId))[12], 1));

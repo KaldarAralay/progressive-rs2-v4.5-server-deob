@@ -17,7 +17,7 @@ extends NpcCombatDefinition {
 
     @Override
     public final CombatAttack[] createAttacks(Entity entity, Entity entity2) {
-        return new CombatAttack[]{BaseCombatAttack.a(entity, entity2, AttackXpMode.AGGRESSIVE, 0, WeaponProfile.FISTS)};
+        return new CombatAttack[]{BaseCombatAttack.createWeaponProfileMeleeAttack(entity, entity2, AttackXpMode.AGGRESSIVE, 0, WeaponProfile.FISTS)};
     }
 }
 

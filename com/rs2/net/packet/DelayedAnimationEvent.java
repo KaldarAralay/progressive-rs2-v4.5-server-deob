@@ -9,17 +9,17 @@ import com.rs2.net.packet.PacketSender;
 
 final class DelayedAnimationEvent
 extends CycleEvent {
-    private /* synthetic */ PacketSender a;
-    private final /* synthetic */ int b;
+    private /* synthetic */ PacketSender packetSender;
+    private final /* synthetic */ int animationId;
 
     DelayedAnimationEvent(PacketSender packetSender, int n) {
-        this.a = packetSender;
-        this.b = n;
+        this.packetSender = packetSender;
+        this.animationId = n;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        PacketSender.a(this.a).getUpdateState().setAnimation(this.b);
+        PacketSender.getPlayer(this.packetSender).getUpdateState().setAnimation(this.animationId);
         cycleEventContainer.stop();
     }
 

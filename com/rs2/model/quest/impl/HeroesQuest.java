@@ -42,7 +42,7 @@ extends QuestScript {
             return stringArray;
         }
         if (n == 2 || n == 8) {
-            String[] stringArray2 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(stringArray.ownsItem(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(stringArray.ownsItem(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(stringArray.ownsItem(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (stringArray.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", HeroesQuest.e((Player)stringArray) ? "I should bring the items to Achietties now." : ""};
+            String[] stringArray2 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(stringArray.ownsItem(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(stringArray.ownsItem(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(stringArray.ownsItem(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (stringArray.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", HeroesQuest.hasAllHeroesGuildEntryItems((Player)stringArray) ? "I should bring the items to Achietties now." : ""};
             return stringArray2;
         }
         if (n == 3) {
@@ -113,10 +113,10 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.showInterface(InterfaceDefinition.interfaceCount <= 12140 ? 1689 : 12140);
         player2 = player;
-        player.j = false;
+        player.deferLevelUpInterfaces = false;
     }
 
-    private static boolean e(Player player) {
+    private static boolean hasAllHeroesGuildEntryItems(Player player) {
         return player.getInventoryManager().containsItem(1583) && player.getInventoryManager().containsItem(2149) && player.getInventoryManager().containsItem(1579);
     }
 
@@ -359,7 +359,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 3) {
-                    if (HeroesQuest.e(player) && n4 == 8) {
+                    if (HeroesQuest.hasAllHeroesGuildEntryItems(player) && n4 == 8) {
                         player.getDialogueManager().showPlayerOneLineDialogue("I have all the required items.", 591);
                         player.getDialogueManager().setNextDialogueStep(14);
                     } else {
@@ -443,7 +443,7 @@ extends QuestScript {
                     player.getDialogueManager().showNpcThreeLineDialogue("Congratulations! You have completed the Heroes' Guild", "entry requirements! You will find the door now open", "for you! Enter, Hero! And take this reward!", 591);
                     return true;
                 }
-                if (n2 == 18 && HeroesQuest.e(player)) {
+                if (n2 == 18 && HeroesQuest.hasAllHeroesGuildEntryItems(player)) {
                     player.getDialogueManager().finishDialogue();
                     player.getInventoryManager().removeItem(new ItemStack(1583, 1));
                     player.getInventoryManager().removeItem(new ItemStack(2149, 1));

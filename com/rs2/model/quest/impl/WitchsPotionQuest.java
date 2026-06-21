@@ -62,7 +62,7 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.showInterface(InterfaceDefinition.interfaceCount <= 12140 ? 1689 : 12140);
         player2 = player;
-        player.j = false;
+        player.deferLevelUpInterfaces = false;
     }
 
     @Override
@@ -75,11 +75,11 @@ extends QuestScript {
         return false;
     }
 
-    private static boolean e(Player player) {
+    private static boolean hasAnyPotionIngredient(Player player) {
         return player.getInventoryManager().containsItem(221) || player.getInventoryManager().containsItem(300) || player.getInventoryManager().containsItem(1957) || player.getInventoryManager().containsItem(2146);
     }
 
-    private static boolean f(Player player) {
+    private static boolean hasAllPotionIngredients(Player player) {
         return player.getInventoryManager().containsItem(221) && player.getInventoryManager().containsItem(300) && player.getInventoryManager().containsItem(1957) && player.getInventoryManager().containsItem(2146);
     }
 
@@ -206,15 +206,15 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 2) {
-                    if (!WitchsPotionQuest.e(player)) {
+                    if (!WitchsPotionQuest.hasAnyPotionIngredient(player)) {
                         player.getDialogueManager().showPlayerOneLineDialogue("No, I have none of them yet.", 591);
                         player.getDialogueManager().finishDialogue();
                     }
-                    if (WitchsPotionQuest.e(player) && !WitchsPotionQuest.f(player)) {
+                    if (WitchsPotionQuest.hasAnyPotionIngredient(player) && !WitchsPotionQuest.hasAllPotionIngredients(player)) {
                         player.getDialogueManager().showPlayerOneLineDialogue("I have found some of the things you asked for.", 591);
                         player.getDialogueManager().setNextDialogueStep(3);
                     }
-                    if (WitchsPotionQuest.f(player)) {
+                    if (WitchsPotionQuest.hasAllPotionIngredients(player)) {
                         player.getDialogueManager().showPlayerOneLineDialogue("Yes I have everything!", 591);
                         player.getDialogueManager().setNextDialogueStep(4);
                     }
@@ -237,7 +237,7 @@ extends QuestScript {
                     player.getDialogueManager().showPlayerOneLineDialogue("Well, is it ready?", 591);
                     return true;
                 }
-                if (n2 == 7 && WitchsPotionQuest.f(player)) {
+                if (n2 == 7 && WitchsPotionQuest.hasAllPotionIngredients(player)) {
                     player.getInventoryManager().removeItem(new ItemStack(221, 1));
                     player.getInventoryManager().removeItem(new ItemStack(300, 1));
                     player.getInventoryManager().removeItem(new ItemStack(1957, 1));

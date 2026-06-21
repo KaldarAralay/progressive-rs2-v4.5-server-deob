@@ -71,7 +71,7 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.showInterface(InterfaceDefinition.interfaceCount <= 12140 ? 1689 : 12140);
         player2 = player;
-        player.j = false;
+        player.deferLevelUpInterfaces = false;
     }
 
     @Override
@@ -105,7 +105,7 @@ extends QuestScript {
         if (n == 2406 && n2 == 3202 && n3 == 3169) {
             if (!(n4 != 4 && n4 != 1 || ((Player)object).getEquipmentManager().getItemIdAtSlot(3) != 772 || ServerSettings.freeToPlayWorld)) {
                 Object object3 = !CacheCoordinateTranslator.dungeonCoordinateShiftActive ? new Position(2452, 4473, 0) : new Position(3220, 9593, 0);
-                if (((Player)object).getTeleportManager().b((Position)object3) && n4 == 4) {
+                if (((Player)object).getTeleportManager().castItemTeleport((Position)object3) && n4 == 4) {
                     object3 = object;
                     ((Player)object3).packetSender.sendGameMessage("The world starts to shimmer...");
                     object = new LostCityZanarisEntryCompletionTask(this, 4, (Player)object);

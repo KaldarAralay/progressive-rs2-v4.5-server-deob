@@ -51,14 +51,14 @@ public final class EquipmentManager {
         }
         this.container.remove(itemStack);
         if (itemStack.getId() == 6583 || itemStack.getId() == 7927) {
-            this.player.ak = -1;
+            this.player.npcTransformationId = -1;
             Player player = this.player;
             player.packetSender.refreshSidebarInterfaces();
             this.player.setAppearanceUpdateRequired(true);
         }
         if (itemStack.getId() == 4024) {
             this.player.getUpdateState().setGraphic(160, 0);
-            this.player.ak = -1;
+            this.player.npcTransformationId = -1;
             this.player.setAppearanceUpdateRequired(true);
         }
         return true;
@@ -332,7 +332,7 @@ public final class EquipmentManager {
                 ItemStack itemStack3 = this.container.getItemAt(n8);
                 if (itemStack3.getId() == 4024) {
                     this.player.getUpdateState().setGraphic(160, 0);
-                    this.player.ak = -1;
+                    this.player.npcTransformationId = -1;
                     this.player.setAppearanceUpdateRequired(true);
                 }
                 if (n2 == 0) {
@@ -359,7 +359,7 @@ public final class EquipmentManager {
         this.refreshCarriedValue();
         this.player.getAttributes().put("usedGlory", Boolean.FALSE);
         if (itemStack.getId() == 6583 || itemStack.getId() == 7927) {
-            this.player.ak = itemStack.getId() == 6583 ? 2626 : 3689 + GameUtil.randomInclusive(5);
+            this.player.npcTransformationId = itemStack.getId() == 6583 ? 2626 : 3689 + GameUtil.randomInclusive(5);
             this.player.setAppearanceUpdateRequired(true);
             Player player = this.player;
             player.packetSender.clearSidebarInterfaces();
@@ -368,7 +368,7 @@ public final class EquipmentManager {
         }
         if (itemStack.getId() == 4024) {
             this.player.getUpdateState().setGraphic(160, 0);
-            this.player.ak = 1463;
+            this.player.npcTransformationId = 1463;
             this.player.setAppearanceUpdateRequired(true);
         }
         GameplayHelper.h(this.player);
@@ -390,14 +390,14 @@ public final class EquipmentManager {
             return;
         }
         if (itemStack.getId() == 6583 || itemStack.getId() == 7927) {
-            this.player.ak = -1;
+            this.player.npcTransformationId = -1;
             object = this.player;
             ((Player)object).packetSender.refreshSidebarInterfaces();
             this.player.setAppearanceUpdateRequired(true);
         }
         if (itemStack.getId() == 4024) {
             this.player.getUpdateState().setGraphic(160, 0);
-            this.player.ak = -1;
+            this.player.npcTransformationId = -1;
             this.player.setAppearanceUpdateRequired(true);
         }
         if (n == 0) {
@@ -458,7 +458,7 @@ public final class EquipmentManager {
             }
             ++n;
         }
-        this.player.al = d;
+        this.player.carriedWeight = d;
         object = this.player;
         ((Player)object).packetSender.sendWeight();
     }

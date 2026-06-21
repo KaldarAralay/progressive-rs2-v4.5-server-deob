@@ -53,7 +53,7 @@ public class AgilityObstacleHandler {
         int n9 = player.getPosition().getX() + n;
         n8 = player.getPosition().getY() + n2;
         int n10 = player.getPosition().getPlane();
-        player.aw = true;
+        player.forcedMovementActive = true;
         CycleEventHandler.getInstance().schedule(player, new AgilityMovementStepTask(player, n, n2, 1, n4, n3), 1);
         CycleEventHandler.getInstance().schedule(player, new AgilityMovementFinishTask(player, (int)var7_8, true, n9, n8, n10), n5 + 1);
     }

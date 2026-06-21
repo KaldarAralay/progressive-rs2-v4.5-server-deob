@@ -9,25 +9,25 @@ import javax.swing.JTextArea;
 
 public final class ConsolePrintStream
 extends PrintStream {
-    private JTextArea a;
+    private JTextArea outputTextArea;
 
     public ConsolePrintStream(JTextArea jTextArea, JScrollPane jScrollPane) {
         super(System.out);
-        this.a = jTextArea;
+        this.outputTextArea = jTextArea;
     }
 
     @Override
     public final void println(Object object) {
-        this.a(object);
+        this.appendLine(object);
     }
 
-    private void a(Object object) {
-        this.a.append(object.toString() + "\n");
+    private void appendLine(Object object) {
+        this.outputTextArea.append(object.toString() + "\n");
     }
 
     @Override
     public final void println(String string) {
-        this.a(string);
+        this.appendLine(string);
     }
 
     @Override
@@ -37,16 +37,16 @@ extends PrintStream {
 
     @Override
     public final void print(Object object) {
-        this.b(object);
+        this.appendText(object);
     }
 
-    private void b(Object object) {
-        this.a.append(object.toString());
+    private void appendText(Object object) {
+        this.outputTextArea.append(object.toString());
     }
 
     @Override
     public final void print(String string) {
-        this.b(string);
+        this.appendText(string);
     }
 }
 

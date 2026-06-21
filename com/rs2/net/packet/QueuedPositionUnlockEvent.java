@@ -9,28 +9,28 @@ import com.rs2.net.packet.PacketSender;
 
 final class QueuedPositionUnlockEvent
 extends CycleEvent {
-    private boolean a = false;
-    private /* synthetic */ PacketSender b;
-    private final /* synthetic */ boolean c;
+    private boolean delayElapsed = false;
+    private /* synthetic */ PacketSender packetSender;
+    private final /* synthetic */ boolean clearForcedMovementFlag;
 
     QueuedPositionUnlockEvent(PacketSender packetSender, boolean bl) {
-        this.b = packetSender;
-        this.c = bl;
+        this.packetSender = packetSender;
+        this.clearForcedMovementFlag = bl;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        if (this.a) {
-            PacketSender.a(this.b).setActionLocked(false);
+        if (this.delayElapsed) {
+            PacketSender.getPlayer(this.packetSender).setActionLocked(false);
             cycleEventContainer.stop();
         }
-        this.a = true;
+        this.delayElapsed = true;
     }
 
     @Override
     public final void onStop() {
-        if (this.c) {
-            PacketSender.a((PacketSender)this.b).aw = false;
+        if (this.clearForcedMovementFlag) {
+            PacketSender.getPlayer((PacketSender)this.packetSender).forcedMovementActive = false;
         }
     }
 }

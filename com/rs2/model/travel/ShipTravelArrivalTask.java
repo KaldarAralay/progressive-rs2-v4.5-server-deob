@@ -36,7 +36,7 @@ extends TickTask {
         player.packetSender.sendMinimapState(0);
         this.player.setActionLocked(false);
         if (this.player.currentBotRoute != null) {
-            this.player.dn = false;
+            this.player.botRouteTravelPending = false;
             this.player.continueBotRoute();
         }
         this.stop();

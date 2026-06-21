@@ -153,7 +153,7 @@ public final class BotWorldRouteWalker {
         int n2 = GameUtil.getDistance(player.getPosition(), (Position)object2);
         if (n2 <= routeDistanceThreshold) {
             player.currentWorldRouteChoice = null;
-            GameplayHelper.f(player);
+            GameplayHelper.startBotTaskRoute(player);
             return true;
         }
         ArrayList<BotWorldRouteChoice> arrayList = new ArrayList<BotWorldRouteChoice>();

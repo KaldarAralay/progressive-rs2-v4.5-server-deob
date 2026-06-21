@@ -86,10 +86,10 @@ public final class CreatureGraveyardController {
         this.player.getInventoryManager().removeItem(new ItemStack(6905, nArray[1]));
         this.player.getInventoryManager().removeItem(new ItemStack(6906, nArray[2]));
         this.player.getInventoryManager().removeItem(new ItemStack(6907, nArray[3]));
-        this.player.getInventoryManager().d(new ItemStack(player, nArray[0] * CreatureGraveyardController.getFruitYieldForBoneItemId(6904)));
-        this.player.getInventoryManager().d(new ItemStack(player, nArray[1] * CreatureGraveyardController.getFruitYieldForBoneItemId(6905)));
-        this.player.getInventoryManager().d(new ItemStack(player, nArray[2] * CreatureGraveyardController.getFruitYieldForBoneItemId(6906)));
-        this.player.getInventoryManager().d(new ItemStack(player, nArray[3] * CreatureGraveyardController.getFruitYieldForBoneItemId(6907)));
+        this.player.getInventoryManager().addItemUpToFreeSlots(new ItemStack(player, nArray[0] * CreatureGraveyardController.getFruitYieldForBoneItemId(6904)));
+        this.player.getInventoryManager().addItemUpToFreeSlots(new ItemStack(player, nArray[1] * CreatureGraveyardController.getFruitYieldForBoneItemId(6905)));
+        this.player.getInventoryManager().addItemUpToFreeSlots(new ItemStack(player, nArray[2] * CreatureGraveyardController.getFruitYieldForBoneItemId(6906)));
+        this.player.getInventoryManager().addItemUpToFreeSlots(new ItemStack(player, nArray[3] * CreatureGraveyardController.getFruitYieldForBoneItemId(6907)));
         return true;
     }
 

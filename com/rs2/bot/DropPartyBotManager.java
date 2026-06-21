@@ -95,7 +95,7 @@ public final class DropPartyBotManager {
 
     public static void prepareDropPartyCombatLoadout(Player player) {
         int n;
-        GameplayHelper.b(player);
+        GameplayHelper.resetBotSkillsToBase(player);
         int n2 = 80 + GameUtil.randomInt(15);
         if (player.dropPartyFollower) {
             n2 = 1 + GameUtil.randomInt(60);

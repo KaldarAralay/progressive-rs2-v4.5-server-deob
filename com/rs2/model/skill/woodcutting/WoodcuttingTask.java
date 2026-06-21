@@ -101,7 +101,7 @@ extends CycleEvent {
             cycleEventContainer.stop();
             if (this.player.botEnabled) {
                 if (this.treeDefinition == TreeDefinition.VINES) {
-                    this.player.dm = false;
+                    this.player.botRouteActionPending = false;
                     return;
                 }
                 this.player.interactWithBotObjectTargets(this.player.botInteractionTargetIds);
@@ -120,10 +120,10 @@ extends CycleEvent {
             }
             return;
         }
-        if (SkillActionHelper.shouldTriggerRandomEvent(this.player) && !this.player.botEnabled && !this.player.r()) {
-            GameplayHelper.a(this.player, SkillRandomEventNpc.c);
+        if (SkillActionHelper.shouldTriggerRandomEvent(this.player) && !this.player.botEnabled && !this.player.isInTutorialIsland()) {
+            GameplayHelper.spawnSkillRandomEventNpc(this.player, SkillRandomEventNpc.c);
         }
-        if (this.player.isMember() && !ServerSettings.freeToPlayWorld && GameUtil.randomInt(256) == 0 && !this.player.botEnabled && !this.player.r() && ItemDefinition.isDefined(n = 5070 + GameUtil.randomInclusive(4))) {
+        if (this.player.isMember() && !ServerSettings.freeToPlayWorld && GameUtil.randomInt(256) == 0 && !this.player.botEnabled && !this.player.isInTutorialIsland() && ItemDefinition.isDefined(n = 5070 + GameUtil.randomInclusive(4))) {
             GroundItem groundItem = new GroundItem(new ItemStack(n), this.player);
             GroundItemManager.getInstance().spawn(groundItem);
         }
@@ -183,7 +183,7 @@ extends CycleEvent {
                         ((Player)object7).packetSender.queueRelativeMovementStep(0, 2, true);
                     }
                     if (this.player.botEnabled) {
-                        this.player.dm = false;
+                        this.player.botRouteActionPending = false;
                         return;
                     }
                 } else if (this.player.botEnabled) {

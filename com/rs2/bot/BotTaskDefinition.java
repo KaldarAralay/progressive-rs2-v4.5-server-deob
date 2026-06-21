@@ -608,7 +608,7 @@ public abstract class BotTaskDefinition {
     }
 
     public final void startTask(Player player) {
-        GameplayHelper.a(player);
+        GameplayHelper.resetBotTaskState(player);
         if (!(shopTasks.contains(this) || spinningTasks.contains(this) || leatherCraftingTasks.contains(this) || tanningTasks.contains(this) || cookingTasks.contains(this) || smeltingTasks.contains(this) || smithingTasks.contains(this))) {
             player.botTaskItemId = -1;
         }

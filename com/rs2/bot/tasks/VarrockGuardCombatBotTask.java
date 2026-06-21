@@ -17,18 +17,18 @@ import java.util.ArrayList;
 
 public final class VarrockGuardCombatBotTask
 extends BotTaskDefinition {
-    private static Position aa = new Position(3185, 3436, 0);
-    private static BotRoute ab = new BotRoute(new Position[]{new Position(3182, 3432, 0), new Position(3191, 3432, 0), new Position(3200, 3438, 0), new Position(3212, 3438, 0), new Position(3212, 3449, 0), new Position(3212, 3462, 0)});
-    private static int[] ac = new int[]{1935, 1947};
+    private static Position routeStartPosition = new Position(3185, 3436, 0);
+    private static BotRoute taskRoute = new BotRoute(new Position[]{new Position(3182, 3432, 0), new Position(3191, 3432, 0), new Position(3200, 3438, 0), new Position(3212, 3438, 0), new Position(3212, 3449, 0), new Position(3212, 3462, 0)});
+    private static int[] ignoredLootItemIds = new int[]{1935, 1947};
 
     public VarrockGuardCombatBotTask(int n) {
-        super(aa, ab, 1, false, 3);
+        super(routeStartPosition, taskRoute, 1, false, 3);
         boolean bl = true;
         VarrockGuardCombatBotTask varrockGuardCombatBotTask = this;
         this.combatTask = true;
-        int[] nArray = ac;
+        int[] nArray = ignoredLootItemIds;
         varrockGuardCombatBotTask = this;
-        this.ignoredLootItemIds = nArray;
+        ((BotTaskDefinition)this).ignoredLootItemIds = nArray;
     }
 
     @Override
@@ -88,14 +88,14 @@ extends BotTaskDefinition {
         player.botTaskRequiredItems = object;
         player.getInventoryManager().addItem(object[0]);
         object = player;
-        GameplayHelper.a((Player)object, -1);
+        GameplayHelper.prepareBotCombatStyle((Player)object, -1);
         player.getInventoryManager().refresh();
         player.getEquipmentManager().refresh();
     }
 
     @Override
     public final void prepareTaskCombatLoadout(Player player) {
-        GameplayHelper.b(player);
+        GameplayHelper.resetBotSkillsToBase(player);
         int n = 15 + GameUtil.randomInt(10);
         int n2 = n / 5 << 1;
         if (n2 == 0) {

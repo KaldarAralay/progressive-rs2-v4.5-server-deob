@@ -17,18 +17,18 @@ import java.util.ArrayList;
 
 public final class BarbarianVillageBarbarianCombatBotTask
 extends BotTaskDefinition {
-    private static Position aa = new Position(3094, 3491, 0);
-    private static BotRoute ab = new BotRoute(new Position[]{new Position(3090, 3490, 0), new Position(3081, 3483, 0), new Position(3080, 3467, 0), new Position(3086, 3464, 0), new Position(3086, 3451, 0), new Position(3086, 3440, 0), new Position(3083, 3434, 0), new Position(3079, 3433, 0), new Position(3079, 3425, 0)});
-    private static int[] ac = new int[]{956, 1379, 1592, 1917, 6814};
+    private static Position routeStartPosition = new Position(3094, 3491, 0);
+    private static BotRoute taskRoute = new BotRoute(new Position[]{new Position(3090, 3490, 0), new Position(3081, 3483, 0), new Position(3080, 3467, 0), new Position(3086, 3464, 0), new Position(3086, 3451, 0), new Position(3086, 3440, 0), new Position(3083, 3434, 0), new Position(3079, 3433, 0), new Position(3079, 3425, 0)});
+    private static int[] ignoredLootItemIds = new int[]{956, 1379, 1592, 1917, 6814};
 
     public BarbarianVillageBarbarianCombatBotTask(int n) {
-        super(aa, ab, 1, false, 2);
+        super(routeStartPosition, taskRoute, 1, false, 2);
         boolean bl = true;
         BarbarianVillageBarbarianCombatBotTask barbarianVillageBarbarianCombatBotTask = this;
         this.combatTask = true;
-        int[] nArray = ac;
+        int[] nArray = ignoredLootItemIds;
         barbarianVillageBarbarianCombatBotTask = this;
-        this.ignoredLootItemIds = nArray;
+        ((BotTaskDefinition)this).ignoredLootItemIds = nArray;
     }
 
     @Override
@@ -92,14 +92,14 @@ extends BotTaskDefinition {
         player.botTaskRequiredItems = object;
         player.getInventoryManager().addItem(object[0]);
         object = player;
-        GameplayHelper.a((Player)object, -1);
+        GameplayHelper.prepareBotCombatStyle((Player)object, -1);
         player.getInventoryManager().refresh();
         player.getEquipmentManager().refresh();
     }
 
     @Override
     public final void prepareTaskCombatLoadout(Player player) {
-        GameplayHelper.b(player);
+        GameplayHelper.resetBotSkillsToBase(player);
         int n = 15 + GameUtil.randomInt(5);
         int n2 = n / 5 << 1;
         if (n2 == 0) {

@@ -90,7 +90,7 @@ extends QuestScript {
         object = player;
         ((Player)object).packetSender.showInterface(InterfaceDefinition.interfaceCount <= 12140 ? 1689 : 12140);
         object = player;
-        player.j = false;
+        player.deferLevelUpInterfaces = false;
     }
 
     @Override
@@ -287,7 +287,7 @@ extends QuestScript {
                 }
                 if (n2 == 12) {
                     ((Player)object).getDialogueManager().finishDialogue();
-                    ((Player)object).getPetManager().b(1561, 768);
+                    ((Player)object).getPetManager().spawnQuestCatFollower(1561, 768);
                     ((Player)object).setActionLocked(true);
                     object = new GertrudeRewardFoodTask(this, 5, (Player)object);
                     World.getTaskScheduler().schedule((TickTask)object);

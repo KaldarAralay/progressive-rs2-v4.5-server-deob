@@ -119,7 +119,7 @@ public final class FruitTreePatchManager {
                     break block11;
                 }
                 FruitTreeDefinition fruitTreeDefinition = FruitTreeDefinition.forSaplingId(this.treeIds[n]);
-                if (fruitTreeDefinition == null || this.b(n)) break block11;
+                if (fruitTreeDefinition == null || this.shouldStopGrowthCycle(n)) break block11;
                 int n5 = (int)(l / (long)fruitTreeDefinition.getGrowthCycleTicks());
                 int n6 = this.growthStages[n] - 4;
                 if ((n5 -= n6) <= 0) break block11;
@@ -172,7 +172,7 @@ public final class FruitTreePatchManager {
                             int n11 = n;
                             this.growthStages[n11] = this.growthStages[n11] + 1;
                         }
-                        if (this.b(n)) break block11;
+                        if (this.shouldStopGrowthCycle(n)) break block11;
                         if (this.growthStages[n] + fruitTreeDefinition.getConfigStartStage() == fruitTreeDefinition.getMatureConfigStage() + 3) {
                             this.growthStages[n] = fruitTreeDefinition.getGrowthStageCount() + 7;
                             this.patchStates[n] = 3;
@@ -187,7 +187,7 @@ public final class FruitTreePatchManager {
         this.refreshConfig();
     }
 
-    private boolean b(int n) {
+    private boolean shouldStopGrowthCycle(int n) {
         return this.lastUpdateTicks[n] == 0L || this.patchStates[n] == 2 || this.patchStates[n] == 3;
     }
 

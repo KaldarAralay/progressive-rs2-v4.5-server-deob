@@ -48,8 +48,8 @@ extends CycleEvent {
             cycleEventContainer.stop();
             return;
         }
-        ++TreePatchManager.getPlayer((TreePatchManager)this.manager).N;
-        if (TreePatchManager.getPlayer((TreePatchManager)this.manager).N % 4 != 0) {
+        ++TreePatchManager.getPlayer((TreePatchManager)this.manager).temporaryActionValue;
+        if (TreePatchManager.getPlayer((TreePatchManager)this.manager).temporaryActionValue % 4 != 0) {
             return;
         }
         if (GameUtil.randomInclusive(256) == 0) {

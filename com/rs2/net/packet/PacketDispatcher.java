@@ -177,9 +177,9 @@ public final class PacketDispatcher {
                 player.getOutboundBuffer().flip();
                 player.getSocketChannel().write(player.getOutboundBuffer());
                 if (!player.getOutboundBuffer().hasRemaining()) {
-                    DedicatedReactor dedicatedReactor = DedicatedReactor.b();
+                    DedicatedReactor dedicatedReactor = DedicatedReactor.getInstance();
                     synchronized (dedicatedReactor) {
-                        DedicatedReactor.b().a().wakeup();
+                        DedicatedReactor.getInstance().getSelector().wakeup();
                         player.getSelectionKey().interestOps(player.getSelectionKey().interestOps() & 0xFFFFFFFB);
                     }
                     player.getOutboundBuffer().clear();
@@ -203,7 +203,7 @@ public final class PacketDispatcher {
                 player.getSelectionKey().attach(null);
                 return;
             }
-            if (player.getConnectionState().compareTo(PlayerConnectionState.e) < 0 && player.getSocketChannel().read(player.getInboundBuffer()) == -1) {
+            if (player.getConnectionState().compareTo(PlayerConnectionState.DISCONNECTING) < 0 && player.getSocketChannel().read(player.getInboundBuffer()) == -1) {
                 player.disconnect();
                 return;
             }
@@ -211,19 +211,19 @@ public final class PacketDispatcher {
             player.getInboundBuffer().flip();
             int n = 0;
             while (player.getInboundBuffer().hasRemaining()) {
-                if (player.getConnectionState().compareTo(PlayerConnectionState.e) >= 0) break;
+                if (player.getConnectionState().compareTo(PlayerConnectionState.DISCONNECTING) >= 0) break;
                 if (n++ >= 25) {
                     player.disconnect();
                     break;
                 }
-                if (player.getConnectionState().compareTo(PlayerConnectionState.d) < 0) {
+                if (player.getConnectionState().compareTo(PlayerConnectionState.IN_GAME) < 0) {
                     player.getLoginProtocol();
-                    LoginProtocol.a(player, player.getInboundBuffer());
+                    LoginProtocol.processLoginBuffer(player, player.getInboundBuffer());
                     break;
                 }
                 if (player.getCurrentPacketOpcode() == -1) {
                     player.setCurrentPacketOpcode(player.getInboundBuffer().get() & 0xFF);
-                    player.setCurrentPacketOpcode(player.getCurrentPacketOpcode() - player.getInboundCipher().a() & 0xFF);
+                    player.setCurrentPacketOpcode(player.getCurrentPacketOpcode() - player.getInboundCipher().nextInt() & 0xFF);
                 }
                 if (player.getCurrentPacketLength() == -1) {
                     player.setCurrentPacketLength(ServerSettings.PACKET_LENGTHS[player.getCurrentPacketOpcode()]);

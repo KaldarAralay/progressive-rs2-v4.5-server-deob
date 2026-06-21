@@ -69,10 +69,10 @@ public final class BotCombatLoadoutManager {
             player3.botCombatStyle = BotCombatLoadoutTables.enabledCombatLoadoutTypes[GameUtil.randomInt(BotCombatLoadoutTables.enabledCombatLoadoutTypes.length)];
             bl = player3.botCombatStyle == 8 || player3.botCombatStyle == 9 || player3.botCombatStyle == 10 || player3.botCombatStyle == 11;
         }
-        GameplayHelper.a(player3);
+        GameplayHelper.resetBotTaskState(player3);
         if (ServerSettings.wildyBotsUseNewGeneration) {
             player2 = player3;
-            GameplayHelper.b(player2);
+            GameplayHelper.resetBotSkillsToBase(player2);
             int n = ServerSettings.wildyBotsBaseCombatLevel - ServerSettings.wildyBotsCombatLevelSpread;
             if ((n += GameUtil.randomInt((ServerSettings.wildyBotsCombatLevelSpread << 1) + 1)) < 3) {
                 n = 3;
@@ -123,7 +123,7 @@ public final class BotCombatLoadoutManager {
         } else {
             player2 = player3;
             int n = player2.botCombatStyle;
-            GameplayHelper.b(player2);
+            GameplayHelper.resetBotSkillsToBase(player2);
             switch (n) {
                 case 4: {
                     BotCombatHelper.setBotSkillLevel(player2, 0, 40);

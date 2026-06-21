@@ -12,13 +12,13 @@ import com.rs2.util.RectangularArea;
 
 public final class VarrockTradeAdvertBotTask
 extends BotTaskDefinition {
-    private static Position aa = new Position(3185, 3436, 0);
-    private static BotRoute ab = null;
-    private static RectangularArea[] ac = new RectangularArea[]{new RectangularArea(3181, 3436, 3184, 3446), new RectangularArea(3176, 3425, 3184, 3432)};
+    private static Position tradeAdvertStartPosition = new Position(3185, 3436, 0);
+    private static BotRoute unusedTradeAdvertRoute = null;
+    private static RectangularArea[] tradeAdvertTaskAreas = new RectangularArea[]{new RectangularArea(3181, 3436, 3184, 3446), new RectangularArea(3176, 3425, 3184, 3432)};
 
     public VarrockTradeAdvertBotTask(int n) {
-        super(aa, (BotRoute)null, 0, false, 30);
-        super.setTaskAreas(ac);
+        super(tradeAdvertStartPosition, (BotRoute)null, 0, false, 30);
+        super.setTaskAreas(tradeAdvertTaskAreas);
     }
 
     @Override

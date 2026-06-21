@@ -44,11 +44,11 @@ public final class PrayerManager {
     }
 
     public final void drainPrayerPoints() {
-        if (this.player.eB > 0) {
-            this.player.eA += this.player.eB;
+        if (this.player.prayerDrainRate > 0) {
+            this.player.prayerDrainAccumulator += this.player.prayerDrainRate;
             int n = 0;
-            while (this.player.eA > this.player.cX()) {
-                this.player.eA -= this.player.cX();
+            while (this.player.prayerDrainAccumulator > this.player.getPrayerDrainThreshold()) {
+                this.player.prayerDrainAccumulator -= this.player.getPrayerDrainThreshold();
                 ++n;
             }
             int n2 = n;
@@ -216,13 +216,13 @@ public final class PrayerManager {
     }
 
     private void updatePrayerDrain() {
-        this.player.eB = 0;
+        this.player.prayerDrainRate = 0;
         int n = 0;
         while (n < this.player.getActivePrayers().length) {
             if (this.player.getActivePrayers()[n]) {
                 Object[] objectArray = PRAYER_DEFINITIONS[n];
                 int n2 = (Integer)objectArray[4];
-                this.player.eB += n2;
+                this.player.prayerDrainRate += n2;
             }
             ++n;
         }

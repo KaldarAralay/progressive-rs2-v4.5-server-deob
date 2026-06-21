@@ -25,7 +25,7 @@ extends CycleEvent {
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
         if (!this.player.isCurrentActionSequence(this.actionSequence)) {
-            this.player.ah(0);
+            this.player.setSelectedSkillItemId(0);
             cycleEventContainer.stop();
             return;
         }

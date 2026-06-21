@@ -18,7 +18,7 @@ extends TickTask {
     @Override
     public final void execute() {
         if (GameUtil.randomInt(DropPartyBotManager.dropPartyChanceDivisor) == 0 && !DropPartyBotManager.dropPartyActive) {
-            GameplayHelper.a();
+            GameplayHelper.startDropPartyBotEvent();
         }
     }
 }

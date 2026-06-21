@@ -64,8 +64,8 @@ extends TickTask {
             this.stop();
             return;
         }
-        if (this.npc.p()) {
-            int n = GameplayHelper.c(this.player.getInteractionTargetId());
+        if (this.npc.isInApeAtoll()) {
+            int n = GameplayHelper.getNpcShopId(this.player.getInteractionTargetId());
             if (n >= 0 && !this.player.ez()) {
                 Player player = this.player;
                 player.packetSender.sendGameMessage("This npc is not interested in talking with you right now.");
@@ -87,7 +87,7 @@ extends TickTask {
         }
         this.npc.getUpdateState().setFaceEntity(this.player.getEncodedIndex());
         this.player.setInteractionTarget(this.npc);
-        if (GameplayHelper.b(this.player, this.npc.getNpcId())) {
+        if (GameplayHelper.openNpcShop(this.player, this.npc.getNpcId())) {
             this.stop();
             return;
         }

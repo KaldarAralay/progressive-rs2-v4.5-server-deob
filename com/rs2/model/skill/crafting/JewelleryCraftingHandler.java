@@ -77,7 +77,7 @@ extends JewelleryCraftingData {
         JewelleryCraftingHandler.sendMouldOptions(player, 1592);
         JewelleryCraftingHandler.sendMouldOptions(player, 1595);
         JewelleryCraftingHandler.sendMouldOptions(player, 1597);
-        player.ah(n);
+        player.setSelectedSkillItemId(n);
         player.packetSender.showInterface(4161);
     }
 

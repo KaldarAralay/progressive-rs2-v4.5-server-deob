@@ -20,7 +20,7 @@ public final class SmeltingHandler {
         while (n2 < 10) {
             int[][] nArray2 = nArray[n2];
             if (n == nArray2[1][0] || nArray2.length > 2 && n == nArray2[2][0]) {
-                player.ai(nArray2[0][0]);
+                player.setSelectedSmithingBarItemId(nArray2[0][0]);
                 SmeltingHandler.startSmeltingTask(player, 1);
                 return;
             }
@@ -129,7 +129,7 @@ public final class SmeltingHandler {
             return;
         }
         if (player.botEnabled) {
-            player.ai(player.botTaskItemId);
+            player.setSelectedSmithingBarItemId(player.botTaskItemId);
             SmeltingHandler.startSmeltingTask(player, 28);
             return;
         }
@@ -166,7 +166,7 @@ public final class SmeltingHandler {
         while (n3 < 32) {
             object = nArray[n3];
             if (n == object[0]) {
-                player.ai((int)object[1]);
+                player.setSelectedSmithingBarItemId((int)object[1]);
                 if (object[2] == 28 && n2 <= 0) {
                     object = player;
                     ((Player)object).packetSender.sendEnterInputPrompt(n);
@@ -189,7 +189,7 @@ public final class SmeltingHandler {
         String string = "";
         player2 = player;
         player.interfaceAction = string;
-        int n2 = player.ej();
+        int n2 = player.getSelectedSmithingBarItemId();
         int n3 = 0;
         while (n3 < 10) {
             if (n2 == SMELTING_DEFINITIONS[n3][0][0]) {

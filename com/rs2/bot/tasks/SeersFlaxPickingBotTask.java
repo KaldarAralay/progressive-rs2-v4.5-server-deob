@@ -14,11 +14,11 @@ import com.rs2.util.GameUtil;
 
 public final class SeersFlaxPickingBotTask
 extends BotTaskDefinition {
-    private static Position aa = new Position(2725, 3493, 0);
-    private static BotRoute ab = new BotRoute(new Position[]{new Position(2726, 3486, 0), new Position(2726, 3475, 0), new Position(2726, 3459, 0), new Position(2736, 3443, 0)});
+    private static Position routeStartPosition = new Position(2725, 3493, 0);
+    private static BotRoute taskRoute = new BotRoute(new Position[]{new Position(2726, 3486, 0), new Position(2726, 3475, 0), new Position(2726, 3459, 0), new Position(2736, 3443, 0)});
 
     public SeersFlaxPickingBotTask(int n) {
-        super(aa, ab, 0, true, 4);
+        super(routeStartPosition, taskRoute, 0, true, 4);
         n = 2;
         SeersFlaxPickingBotTask seersFlaxPickingBotTask = this;
         this.interactionOption = 2;
@@ -45,7 +45,7 @@ extends BotTaskDefinition {
 
     @Override
     public final void prepareTaskCombatLoadout(Player player) {
-        GameplayHelper.b(player);
+        GameplayHelper.resetBotSkillsToBase(player);
         int n = 1 + GameUtil.randomInt(99);
         int n2 = n / 5 << 1;
         if (n2 == 0) {

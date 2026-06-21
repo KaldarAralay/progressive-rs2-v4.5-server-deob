@@ -11,7 +11,7 @@ public enum SkillRandomEventNpc {
     e(391),
     g(2463);
 
-    int f;
+    int baseNpcId;
 
     /*
      * WARNING - Possible parameter corruption
@@ -19,11 +19,11 @@ public enum SkillRandomEventNpc {
      */
     private SkillRandomEventNpc() {
         void var3_2;
-        this.f = var3_2;
+        this.baseNpcId = var3_2;
     }
 
-    public final int a() {
-        return this.f;
+    public final int getBaseNpcId() {
+        return this.baseNpcId;
     }
 }
 

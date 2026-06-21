@@ -9,7 +9,7 @@ import com.rs2.util.plugin.PluginType;
 public abstract class GlobalPlugin
 extends Plugin {
     public GlobalPlugin() {
-        super(PluginType.b);
+        super(PluginType.GLOBAL);
     }
 }
 

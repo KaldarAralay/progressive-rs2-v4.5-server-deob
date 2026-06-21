@@ -11,20 +11,20 @@ import com.rs2.model.task.TickTask;
 
 final class LootNextItemTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
     LootNextItemTask(ItemService itemService, int n, Player player) {
-        this.a = player;
+        this.player = player;
         super(1);
     }
 
     @Override
     public final void execute() {
-        if (this.a.isDead() || !this.a.isRegistered()) {
+        if (this.player.isDead() || !this.player.isRegistered()) {
             this.stop();
             return;
         }
-        BotCombatHelper.pickupBotCombatGroundItem(this.a, ((GroundItem)this.a.botLootPickupTargets.get(0)).getItem().getId(), ((GroundItem)this.a.botLootPickupTargets.get(0)).getPosition());
+        BotCombatHelper.pickupBotCombatGroundItem(this.player, ((GroundItem)this.player.botLootPickupTargets.get(0)).getItem().getId(), ((GroundItem)this.player.botLootPickupTargets.get(0)).getPosition());
         this.stop();
     }
 }

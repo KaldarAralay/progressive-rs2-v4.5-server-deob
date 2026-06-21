@@ -25,7 +25,7 @@ extends TickTask {
         Position position = new Position(2980, 3045, 1);
         position.getPlane();
         int n = position.getPlane() + 4 + (this.a.getIndex() << 2);
-        this.a.z = new Position(2807, 2761, 0);
+        this.a.cutsceneReturnPosition = new Position(2807, 2761, 0);
         Npc npc = new Npc(1448);
         Npc npc2 = new Npc(1428);
         Npc npc3 = new Npc(1409);

@@ -16,11 +16,11 @@ import java.util.ArrayList;
 
 public final class BarbarianVillageFlyFishingBotTask
 extends BotTaskDefinition {
-    private static Position aa = new Position(3094, 3489, 0);
-    private static BotRoute ab = new BotRoute(new Position[]{new Position(3091, 3490, 0), new Position(3081, 3483, 0), new Position(3080, 3467, 0), new Position(3086, 3464, 0), new Position(3091, 3448, 0), new Position(3100, 3434, 0)});
+    private static Position routeStartPosition = new Position(3094, 3489, 0);
+    private static BotRoute taskRoute = new BotRoute(new Position[]{new Position(3091, 3490, 0), new Position(3081, 3483, 0), new Position(3080, 3467, 0), new Position(3086, 3464, 0), new Position(3091, 3448, 0), new Position(3100, 3434, 0)});
 
     public BarbarianVillageFlyFishingBotTask(int n) {
-        super(aa, ab, 1, false, 3);
+        super(routeStartPosition, taskRoute, 1, false, 3);
         int n2 = 20;
         BarbarianVillageFlyFishingBotTask barbarianVillageFlyFishingBotTask = this;
         this.targetSearchRadius = n2;
@@ -66,7 +66,7 @@ extends BotTaskDefinition {
 
     @Override
     public final void prepareTaskCombatLoadout(Player player) {
-        GameplayHelper.b(player);
+        GameplayHelper.resetBotSkillsToBase(player);
         int n = 1 + GameUtil.randomInt(40);
         int n2 = n / 5 << 1;
         if (n2 == 0) {

@@ -138,8 +138,8 @@ extends CycleEvent {
             cycleEventContainer.stop();
             return;
         }
-        if (SkillActionHelper.shouldTriggerRandomEvent(FishingHandler.getPlayer(this.handler)) && !FishingHandler.getPlayer((FishingHandler)this.handler).botEnabled && !FishingHandler.getPlayer(this.handler).r()) {
-            GameplayHelper.a(FishingHandler.getPlayer(this.handler), SkillRandomEventNpc.e);
+        if (SkillActionHelper.shouldTriggerRandomEvent(FishingHandler.getPlayer(this.handler)) && !FishingHandler.getPlayer((FishingHandler)this.handler).botEnabled && !FishingHandler.getPlayer(this.handler).isInTutorialIsland()) {
+            GameplayHelper.spawnSkillRandomEventNpc(FishingHandler.getPlayer(this.handler), SkillRandomEventNpc.e);
         }
         cycleEventContainer.setTickDelay(5);
         Player player = FishingHandler.getPlayer(this.handler);

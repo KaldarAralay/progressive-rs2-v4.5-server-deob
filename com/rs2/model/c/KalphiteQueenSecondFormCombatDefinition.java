@@ -21,7 +21,7 @@ extends NpcCombatDefinition {
 
     @Override
     public final CombatAttack[] createAttacks(Entity entity, Entity entity2) {
-        return new CombatAttack[]{BaseCombatAttack.a(entity, entity2, CombatType.RANGED, AttackXpMode.KQ_RANGED, 31, 8, 1170, new GraphicEffect(-1, 0), new GraphicEffect(-1, 0), 289, ProjectileTiming.a, new StatDrainEffect(5, 1), true), BaseCombatAttack.a(entity, entity2, CombatType.MAGIC, AttackXpMode.KQ_MAGIC, 31, 4, 1170, new GraphicEffect(279, 0), new GraphicEffect(281, 0), 280, ProjectileTiming.d, true), BaseCombatAttack.a(entity, entity2, AttackXpMode.MELEE_ACCURATE, AttackBonusType.STAB, 31, 4, 1177), BaseCombatAttack.a(entity, entity2, AttackXpMode.MELEE_ACCURATE, AttackBonusType.STAB, 31, 4, 1177)};
+        return new CombatAttack[]{BaseCombatAttack.createKalphiteQueenRangedAttackWithEffect(entity, entity2, CombatType.RANGED, AttackXpMode.KQ_RANGED, 31, 8, 1170, new GraphicEffect(-1, 0), new GraphicEffect(-1, 0), 289, ProjectileTiming.a, new StatDrainEffect(5, 1), true), BaseCombatAttack.createKalphiteQueenMagicAttack(entity, entity2, CombatType.MAGIC, AttackXpMode.KQ_MAGIC, 31, 4, 1170, new GraphicEffect(279, 0), new GraphicEffect(281, 0), 280, ProjectileTiming.d, true), BaseCombatAttack.createMeleeAttack(entity, entity2, AttackXpMode.MELEE_ACCURATE, AttackBonusType.STAB, 31, 4, 1177), BaseCombatAttack.createMeleeAttack(entity, entity2, AttackXpMode.MELEE_ACCURATE, AttackBonusType.STAB, 31, 4, 1177)};
     }
 }
 

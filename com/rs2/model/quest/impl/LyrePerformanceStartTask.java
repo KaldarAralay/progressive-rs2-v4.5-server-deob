@@ -14,30 +14,30 @@ import com.rs2.model.task.TickTask;
 
 final class LyrePerformanceStartTask
 extends TickTask {
-    private TickTask e;
-    final TickTask a;
-    final TickTask b;
-    final TickTask c;
-    final /* synthetic */ FremennikTrialsQuest d;
-    private final /* synthetic */ int f;
-    private final /* synthetic */ Player g;
+    private TickTask secondLineTask;
+    final TickTask thirdLineTask;
+    final TickTask heckleTask;
+    final TickTask finishDialogueTask;
+    final /* synthetic */ FremennikTrialsQuest quest;
+    private final /* synthetic */ int performanceLineIndex;
+    private final /* synthetic */ Player player;
 
     LyrePerformanceStartTask(FremennikTrialsQuest fremennikTrialsQuest, int n, int n2, Player player, int n3, int n4) {
-        this.d = fremennikTrialsQuest;
-        this.f = n2;
-        this.g = player;
+        this.quest = fremennikTrialsQuest;
+        this.performanceLineIndex = n2;
+        this.player = player;
         super(2);
-        this.e = new LyrePerformanceSecondLineTask(this, 4, player, n2);
-        this.a = new LyrePerformanceThirdLineTask(this, 4, player, n2);
-        this.b = new LyrePerformanceHeckleTask(this, 4, n3, n4, player, n2);
-        this.c = new LyrePerformanceFinishDialogueTask(this, 4, player);
+        this.secondLineTask = new LyrePerformanceSecondLineTask(this, 4, player, n2);
+        this.thirdLineTask = new LyrePerformanceThirdLineTask(this, 4, player, n2);
+        this.heckleTask = new LyrePerformanceHeckleTask(this, 4, n3, n4, player, n2);
+        this.finishDialogueTask = new LyrePerformanceFinishDialogueTask(this, 4, player);
     }
 
     @Override
     public final void execute() {
-        String string = this.d.b[this.f][0].replaceAll("PLAYERNAME", this.g.getUsername());
-        this.g.getUpdateState().setForcedText(string);
-        World.getTaskScheduler().schedule(this.e);
+        String string = this.quest.lyrePerformanceLines[this.performanceLineIndex][0].replaceAll("PLAYERNAME", this.player.getUsername());
+        this.player.getUpdateState().setForcedText(string);
+        World.getTaskScheduler().schedule(this.secondLineTask);
         this.stop();
     }
 }

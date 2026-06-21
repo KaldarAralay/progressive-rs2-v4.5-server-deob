@@ -11,57 +11,57 @@ import com.rs2.model.task.CycleEventContainer;
 
 final class ScriptedTeleportTask
 extends CycleEvent {
-    private int a;
-    private /* synthetic */ TeleportManager b;
-    private final /* synthetic */ int c;
-    private final /* synthetic */ int d;
-    private final /* synthetic */ int e;
-    private final /* synthetic */ int f;
-    private final /* synthetic */ int g;
-    private final /* synthetic */ int h;
-    private final /* synthetic */ String i;
+    private int ticksRemaining;
+    private /* synthetic */ TeleportManager teleportManager;
+    private final /* synthetic */ int departureAnimationId;
+    private final /* synthetic */ int departureGraphicId;
+    private final /* synthetic */ int arrivalAnimationId;
+    private final /* synthetic */ int destinationX;
+    private final /* synthetic */ int destinationY;
+    private final /* synthetic */ int destinationPlane;
+    private final /* synthetic */ String arrivalMessage;
 
     ScriptedTeleportTask(TeleportManager teleportManager, int n, int n2, int n3, int n4, int n5, int n6, int n7, String string) {
-        this.b = teleportManager;
-        this.c = n2;
-        this.d = n3;
-        this.e = n4;
-        this.f = n5;
-        this.g = n6;
-        this.h = n7;
-        this.i = string;
-        this.a = n;
+        this.teleportManager = teleportManager;
+        this.departureAnimationId = n2;
+        this.departureGraphicId = n3;
+        this.arrivalAnimationId = n4;
+        this.destinationX = n5;
+        this.destinationY = n6;
+        this.destinationPlane = n7;
+        this.arrivalMessage = string;
+        this.ticksRemaining = n;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        --this.a;
-        if (!TeleportManager.a(this.b).isDead()) {
-            if (this.a == 4) {
-                TeleportManager.a(this.b).getUpdateState().setAnimation(this.c);
-                TeleportManager.a(this.b).getUpdateState().setGraphicHeight100(this.d);
+        --this.ticksRemaining;
+        if (!TeleportManager.getPlayer(this.teleportManager).isDead()) {
+            if (this.ticksRemaining == 4) {
+                TeleportManager.getPlayer(this.teleportManager).getUpdateState().setAnimation(this.departureAnimationId);
+                TeleportManager.getPlayer(this.teleportManager).getUpdateState().setGraphicHeight100(this.departureGraphicId);
             }
-            if (this.a == 2) {
-                TeleportManager.a(this.b).setActionLocked(false);
-                TeleportManager.a(this.b).getUpdateState().setAnimation(this.e);
-                TeleportManager.a(this.b).moveTo(new Position(this.f, this.g, this.h));
-                if (this.i != null) {
-                    Player player = TeleportManager.a(this.b);
-                    player.packetSender.sendGameMessage(this.i);
+            if (this.ticksRemaining == 2) {
+                TeleportManager.getPlayer(this.teleportManager).setActionLocked(false);
+                TeleportManager.getPlayer(this.teleportManager).getUpdateState().setAnimation(this.arrivalAnimationId);
+                TeleportManager.getPlayer(this.teleportManager).moveTo(new Position(this.destinationX, this.destinationY, this.destinationPlane));
+                if (this.arrivalMessage != null) {
+                    Player player = TeleportManager.getPlayer(this.teleportManager);
+                    player.packetSender.sendGameMessage(this.arrivalMessage);
                 }
             }
         } else {
-            this.a = 0;
+            this.ticksRemaining = 0;
         }
-        if (this.a <= 0) {
+        if (this.ticksRemaining <= 0) {
             cycleEventContainer.stop();
         }
     }
 
     @Override
     public final void onStop() {
-        TeleportManager.a(this.b).setActionLocked(false);
-        TeleportManager.a(this.b).getAttributes().put("canTakeDamage", Boolean.TRUE);
+        TeleportManager.getPlayer(this.teleportManager).setActionLocked(false);
+        TeleportManager.getPlayer(this.teleportManager).getAttributes().put("canTakeDamage", Boolean.TRUE);
     }
 }
 

@@ -33,7 +33,7 @@ public class CacheDefinitionIndex {
             player2.packetSender.sendStillGraphic(86, player.getActiveRandomEventNpc().getPosition(), 0x640000);
             player2 = player;
             player2.packetSender.sendSoundEffect(300, 1, 0);
-            GameplayHelper.a(player.getActiveRandomEventNpc());
+            GameplayHelper.unregisterTemporaryNpc(player.getActiveRandomEventNpc());
             player.setActiveRandomEventNpc(null);
         }
     }
@@ -42,7 +42,7 @@ public class CacheDefinitionIndex {
         if (player.botEnabled) {
             return;
         }
-        if (player.r()) {
+        if (player.isInTutorialIsland()) {
             return;
         }
         if (ServerSettings.randomEventsMode == 2) {
@@ -259,8 +259,8 @@ public class CacheDefinitionIndex {
         player.getDialogueManager().setDialogueNpcId(n);
         if (npcClue.getFollowupType() == "Challenge") {
             if (CacheArchive.hasChallengeQuestionAnswerItem(player, npcClue.getClueItemId())) {
-                player.at = npcClue.getLevel();
-                player.au = npcClue.getClueItemId();
+                player.activeClueLevel = npcClue.getLevel();
+                player.activeClueItemId = npcClue.getClueItemId();
                 DialogueManager.a(player, 10009, 3);
                 if (CacheArchive.getChallengeQuestionLines(npcClue.getClueItemId()).length == 1) {
                     player.getDialogueManager().showNpcOneLineDialogue(CacheArchive.getChallengeQuestionLines(npcClue.getClueItemId())[0], 588);
@@ -268,8 +268,8 @@ public class CacheDefinitionIndex {
                     player.getDialogueManager().showNpcTwoLineDialogue(CacheArchive.getChallengeQuestionLines(npcClue.getClueItemId())[0], CacheArchive.getChallengeQuestionLines(npcClue.getClueItemId())[1], 588);
                 }
             } else {
-                player.V = new ItemStack[1];
-                player.V[0] = new ItemStack(npcClue.getClueItemId(), 1);
+                player.clueRequiredItems = new ItemStack[1];
+                player.clueRequiredItems[0] = new ItemStack(npcClue.getClueItemId(), 1);
                 player.getDialogueManager().showNpcOneLineDialogue("Here's a challenge for you.", 588);
                 CacheArchive.giveChallengeQuestionAnswerItem(player, npcClue.getClueItemId());
             }
@@ -277,12 +277,12 @@ public class CacheDefinitionIndex {
             if (PuzzleBoxHandler.isCluePuzzleSolved(player) && player.ownsCluePuzzleBox()) {
                 DialogueManager.a(player, 10009, 2);
                 player.getDialogueManager().showNpcOneLineDialogue("Thank you very much.", 588);
-                player.V = new ItemStack[4];
-                player.V[0] = new ItemStack(npcClue.getClueItemId(), 1);
-                player.V[1] = new ItemStack(2800, 1);
-                player.V[2] = new ItemStack(3571, 1);
-                player.V[3] = new ItemStack(3565, 1);
-                player.at = npcClue.getLevel();
+                player.clueRequiredItems = new ItemStack[4];
+                player.clueRequiredItems[0] = new ItemStack(npcClue.getClueItemId(), 1);
+                player.clueRequiredItems[1] = new ItemStack(2800, 1);
+                player.clueRequiredItems[2] = new ItemStack(3571, 1);
+                player.clueRequiredItems[3] = new ItemStack(3565, 1);
+                player.activeClueLevel = npcClue.getLevel();
             } else if (player.ownsCluePuzzleBox()) {
                 player.getDialogueManager().showNpcOneLineDialogue("The puzzle doesn't seem to be complete yet.", 588);
             } else {
@@ -292,9 +292,9 @@ public class CacheDefinitionIndex {
         } else {
             DialogueManager.a(player, 10009, 2);
             player.getDialogueManager().showNpcOneLineDialogue("Thank you very much.", 588);
-            player.V = new ItemStack[1];
-            player.V[0] = new ItemStack(npcClue.getClueItemId(), 1);
-            player.at = npcClue.getLevel();
+            player.clueRequiredItems = new ItemStack[1];
+            player.clueRequiredItems[0] = new ItemStack(npcClue.getClueItemId(), 1);
+            player.activeClueLevel = npcClue.getLevel();
         }
         return true;
     }

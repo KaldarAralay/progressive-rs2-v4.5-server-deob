@@ -10,10 +10,10 @@ import com.rs2.model.task.TickTask;
 
 final class BotLoginBatchTask
 extends TickTask {
-    private final /* synthetic */ int a;
+    private final /* synthetic */ int finalBatchIndex;
 
     BotLoginBatchTask(int n, int n2) {
-        this.a = n2;
+        this.finalBatchIndex = n2;
         super(n);
     }
 
@@ -35,7 +35,7 @@ extends TickTask {
             }
             ++n2;
         }
-        if (this.a == Server.getBotLoginBatchIndex()) {
+        if (this.finalBatchIndex == Server.getBotLoginBatchIndex()) {
             this.stop();
             return;
         }

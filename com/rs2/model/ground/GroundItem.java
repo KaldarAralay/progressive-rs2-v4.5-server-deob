@@ -12,68 +12,68 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.ElapsedTicks;
 
 public final class GroundItem {
-    private ItemStack a;
-    private EntityReference b = null;
-    private EntityReference c = null;
-    private ElapsedTicks d;
-    private GroundItemVisibility e = null;
-    private Position f;
-    private boolean g;
-    private int h;
-    private boolean i = false;
+    private ItemStack item;
+    private EntityReference source = null;
+    private EntityReference owner = null;
+    private ElapsedTicks timer;
+    private GroundItemVisibility visibility = null;
+    private Position position;
+    private boolean respawning;
+    private int respawnDelayTicks;
+    private boolean restrictedModePickupAllowed = false;
 
     public GroundItem(ItemStack object, Position position, int n, boolean bl) {
-        this.a = object;
+        this.item = object;
         position = position.copy();
         object = this;
-        this.f = position;
-        this.d = new ElapsedTicks();
-        this.e = GroundItemVisibility.b;
-        this.h = n;
-        this.g = true;
+        this.position = position;
+        this.timer = new ElapsedTicks();
+        this.visibility = GroundItemVisibility.PUBLIC;
+        this.respawnDelayTicks = n;
+        this.respawning = true;
     }
 
     public GroundItem(ItemStack object, Position position, boolean bl) {
-        this.a = object;
+        this.item = object;
         position = position.copy();
         object = this;
-        this.f = position;
-        this.d = new ElapsedTicks();
-        this.e = GroundItemVisibility.b;
-        this.g = false;
+        this.position = position;
+        this.timer = new ElapsedTicks();
+        this.visibility = GroundItemVisibility.PUBLIC;
+        this.respawning = false;
     }
 
     public GroundItem(ItemStack object, Position position, boolean bl, boolean bl2) {
-        this.a = object;
+        this.item = object;
         position = position.copy();
         object = this;
-        this.f = position;
-        this.d = new ElapsedTicks();
-        this.e = GroundItemVisibility.b;
-        this.g = false;
-        this.i = true;
+        this.position = position;
+        this.timer = new ElapsedTicks();
+        this.visibility = GroundItemVisibility.PUBLIC;
+        this.respawning = false;
+        this.restrictedModePickupAllowed = true;
     }
 
     public GroundItem(ItemStack object, Position position, boolean bl, Entity entity) {
-        this.a = object;
+        this.item = object;
         position = position.copy();
         object = this;
-        this.f = position;
-        this.d = new ElapsedTicks();
+        this.position = position;
+        this.timer = new ElapsedTicks();
         if (entity != null) {
-            this.c = this.b = new EntityReference(entity);
-            this.e = GroundItemVisibility.a;
+            this.owner = this.source = new EntityReference(entity);
+            this.visibility = GroundItemVisibility.PRIVATE;
         } else {
-            this.e = GroundItemVisibility.b;
+            this.visibility = GroundItemVisibility.PUBLIC;
         }
-        this.g = false;
+        this.respawning = false;
     }
 
     public GroundItem(ItemStack itemStack, Entity entity, Position position) {
         this(itemStack, position, false);
-        this.b = new EntityReference(entity);
-        this.e = GroundItemVisibility.a;
-        this.c = this.b;
+        this.source = new EntityReference(entity);
+        this.visibility = GroundItemVisibility.PRIVATE;
+        this.owner = this.source;
     }
 
     public GroundItem(ItemStack itemStack, Entity entity) {
@@ -82,79 +82,79 @@ public final class GroundItem {
 
     public GroundItem(ItemStack itemStack, Entity entity, Entity entity2, Position position) {
         this(itemStack, entity, position);
-        this.c = new EntityReference(entity2);
+        this.owner = new EntityReference(entity2);
     }
 
     public final EntityReference getSource() {
-        if (this.b == null) {
+        if (this.source == null) {
             return null;
         }
-        return this.b;
+        return this.source;
     }
 
     public final EntityReference getOwner() {
-        if (this.c == null) {
+        if (this.owner == null) {
             return null;
         }
-        return this.c;
+        return this.owner;
     }
 
     public final ItemStack getItem() {
-        return this.a;
+        return this.item;
     }
 
     public final ElapsedTicks getTimer() {
-        return this.d;
+        return this.timer;
     }
 
     public final int getRespawnDelayTicks() {
-        return this.h;
+        return this.respawnDelayTicks;
     }
 
     public final GroundItemVisibility getVisibility() {
-        return this.e;
+        return this.visibility;
     }
 
     public final void setVisibility(GroundItemVisibility groundItemVisibility) {
-        this.e = groundItemVisibility;
+        this.visibility = groundItemVisibility;
     }
 
     public final Position getPosition() {
-        return this.f;
+        return this.position;
     }
 
     public final boolean isRespawning() {
-        return this.g;
+        return this.respawning;
     }
 
     public final boolean allowsRestrictedModePickup() {
-        return this.i;
+        return this.restrictedModePickupAllowed;
     }
 
     public final boolean canStackWith(GroundItem groundItem) {
         if (groundItem == this) {
             return false;
         }
-        if (groundItem.g || this.g) {
+        if (groundItem.respawning || this.respawning) {
             return false;
         }
-        if (groundItem.a.getId() != this.a.getId() || groundItem.e != this.e) {
+        if (groundItem.item.getId() != this.item.getId() || groundItem.visibility != this.visibility) {
             return false;
         }
-        if (!groundItem.f.equals(this.f)) {
+        if (!groundItem.position.equals(this.position)) {
             return false;
         }
-        if ((long)this.a.getAmount() + (long)groundItem.a.getAmount() > Integer.MAX_VALUE) {
+        if ((long)this.item.getAmount() + (long)groundItem.item.getAmount() > Integer.MAX_VALUE) {
             return false;
         }
         GroundItem groundItem2 = groundItem;
-        switch (groundItem2.e) {
-            case b: {
+        switch (groundItem2.visibility) {
+            case PUBLIC: {
                 return true;
             }
-            case a: {
+            case PRIVATE: {
                 boolean bl = false;
-                if (this.c != null && this.c.equals(groundItem.c)) {
+                if (this.owner != null && this.owner.equals(groundItem.owner)) {
                     bl = true;
                 }
                 return bl;
@@ -165,18 +165,18 @@ public final class GroundItem {
 
     public final boolean isVisibleTo(Player player) {
         boolean bl;
-        boolean bl2 = bl = this.f.getPlane() == player.getPosition().getPlane() && player.getLocalViewArea().containsExclusive(this.f);
+        boolean bl2 = bl = this.position.getPlane() == player.getPosition().getPlane() && player.getLocalViewArea().containsExclusive(this.position);
         if (player.gameMode == 0) {
             return bl;
         }
         if (!bl) {
             return false;
         }
-        if (!this.g && this.getOwner() == null && !this.i) {
+        if (!this.respawning && this.getOwner() == null && !this.restrictedModePickupAllowed) {
             return false;
         }
         GroundItem groundItem = this;
-        return groundItem.g || this.getOwner() == null || this.getOwner().resolve() == player || this.i;
+        return groundItem.respawning || this.getOwner() == null || this.getOwner().resolve() == player || this.restrictedModePickupAllowed;
     }
 }
 

@@ -105,7 +105,7 @@ public final class StallThievingHandler {
         }
         int n11 = player.nextActionSequence();
         player.setActionLocked(false);
-        player.x(true);
+        player.setHideHeldItemsInAppearance(true);
         player.getUpdateState().setAnimation(832);
         player.setActiveCycleEvent(new StallThievingTask(player, n11, n, n2, n3, (ItemStack)object, stallDefinition));
         CycleEventHandler.getInstance().schedule(player, player.getActiveCycleEvent(), 2);

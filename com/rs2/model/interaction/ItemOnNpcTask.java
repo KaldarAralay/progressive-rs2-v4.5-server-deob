@@ -81,8 +81,8 @@ extends TickTask {
                 return;
             }
             case 1925: {
-                if (this.player.getInteractionTargetId() != 81 || GameplayHelper.b(8689)) break;
-                GameplayHelper.n(this.player);
+                if (this.player.getInteractionTargetId() != 81 || GameplayHelper.isObjectDefinitionIdValid(8689)) break;
+                GameplayHelper.milkCow(this.player);
                 this.stop();
                 return;
             }

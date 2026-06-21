@@ -35,7 +35,7 @@ extends CycleEvent {
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
         Player player;
-        if (this.player.ej() <= 0 || !this.player.isCurrentActionSequence(this.actionSequence)) {
+        if (this.player.getSelectedSmithingBarItemId() <= 0 || !this.player.isCurrentActionSequence(this.actionSequence)) {
             if (this.player.botEnabled) {
                 this.player.currentBotTask.startWalkToBank(this.player);
             }

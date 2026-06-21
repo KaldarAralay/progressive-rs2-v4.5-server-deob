@@ -16,11 +16,11 @@ import java.util.ArrayList;
 
 public final class AlKharidNetBaitFishingBotTask
 extends BotTaskDefinition {
-    private static Position aa = new Position(3269, 3166, 0);
-    private static BotRoute ab = new BotRoute(new Position[]{new Position(3273, 3166, 0), new Position(3273, 3155, 0), new Position(3272, 3145, 0)});
+    private static Position routeStartPosition = new Position(3269, 3166, 0);
+    private static BotRoute taskRoute = new BotRoute(new Position[]{new Position(3273, 3166, 0), new Position(3273, 3155, 0), new Position(3272, 3145, 0)});
 
     public AlKharidNetBaitFishingBotTask(int n) {
-        super(aa, ab, 1, false, 4);
+        super(routeStartPosition, taskRoute, 1, false, 4);
         int n2 = 20;
         AlKharidNetBaitFishingBotTask alKharidNetBaitFishingBotTask = this;
         this.targetSearchRadius = n2;
@@ -79,7 +79,7 @@ extends BotTaskDefinition {
 
     @Override
     public final void prepareTaskCombatLoadout(Player player) {
-        GameplayHelper.b(player);
+        GameplayHelper.resetBotSkillsToBase(player);
         int n = 1 + GameUtil.randomInt(40);
         int n2 = n / 5 << 1;
         if (n2 == 0) {

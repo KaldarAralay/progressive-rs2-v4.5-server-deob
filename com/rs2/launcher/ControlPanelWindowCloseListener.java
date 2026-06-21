@@ -10,16 +10,16 @@ import javax.swing.JOptionPane;
 
 final class ControlPanelWindowCloseListener
 extends WindowAdapter {
-    private /* synthetic */ ControlPanel a;
+    private /* synthetic */ ControlPanel controlPanel;
 
     ControlPanelWindowCloseListener(ControlPanel controlPanel) {
-        this.a = controlPanel;
+        this.controlPanel = controlPanel;
     }
 
     @Override
     public final void windowClosing(WindowEvent windowEvent) {
-        if (ControlPanel.a.isEnabled()) {
-            JOptionPane.showMessageDialog(ControlPanel.a(this.a), "Please use the shutdown button for closing!");
+        if (ControlPanel.shutdownServerButton.isEnabled()) {
+            JOptionPane.showMessageDialog(ControlPanel.getTabbedPane(this.controlPanel), "Please use the shutdown button for closing!");
             return;
         }
         System.exit(0);

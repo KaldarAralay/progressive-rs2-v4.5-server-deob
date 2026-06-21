@@ -22,7 +22,7 @@ public class WorldObjectLookup {
         Object object = CacheStore.getInstance();
         try {
             ((CacheStore)object).getDefinitionIndex().getObjectDefinitionEntries();
-            GameplayHelper.e();
+            GameplayHelper.loadObjectDefinitions();
             return;
         }
         catch (Exception exception) {

@@ -40,13 +40,13 @@ public final class NpcDefinition {
     private static int cacheDefinitionCount;
     private int shopId = -1;
     private int id;
-    private int A = -1;
+    private int dropTableNpcIdOverride = -1;
     private String name;
     public int respawnDelaySeconds = 0;
-    private int C = 20;
-    private int D = 20;
-    private int E = 20;
-    private int F = 20;
+    private int legacyAttackBonus = 20;
+    private int legacyMeleeDefenceBonus = 20;
+    private int legacyRangedDefenceBonus = 20;
+    private int legacyMagicDefenceBonus = 20;
     private int combatLevel = 0;
     private int hitpoints = 1;
     private int maxHit = 0;
@@ -98,10 +98,10 @@ public final class NpcDefinition {
                     ((NpcDefinition)object).attackSoundId = ((ByteArrayReader)object2).readUnsignedShort() - 1;
                     ((NpcDefinition)object).hitSoundId = ((ByteArrayReader)object2).readUnsignedShort() - 1;
                     ((NpcDefinition)object).deathSoundId = ((ByteArrayReader)object2).readUnsignedShort() - 1;
-                    ((NpcDefinition)object).C = ((ByteArrayReader)object2).readUnsignedShort() - 1;
-                    ((NpcDefinition)object).D = ((ByteArrayReader)object2).readUnsignedShort() - 1;
-                    ((NpcDefinition)object).E = ((ByteArrayReader)object2).readUnsignedShort() - 1;
-                    ((NpcDefinition)object).F = ((ByteArrayReader)object2).readUnsignedShort() - 1;
+                    ((NpcDefinition)object).legacyAttackBonus = ((ByteArrayReader)object2).readUnsignedShort() - 1;
+                    ((NpcDefinition)object).legacyMeleeDefenceBonus = ((ByteArrayReader)object2).readUnsignedShort() - 1;
+                    ((NpcDefinition)object).legacyRangedDefenceBonus = ((ByteArrayReader)object2).readUnsignedShort() - 1;
+                    ((NpcDefinition)object).legacyMagicDefenceBonus = ((ByteArrayReader)object2).readUnsignedShort() - 1;
                     ((NpcDefinition)object).attackBonusTypeId = ((ByteArrayReader)object2).readUnsignedByte() - 1;
                     if (((NpcDefinition)object).attackBonusTypeId >= 3) {
                         ((NpcDefinition)object).attackBonusTypeId = 0;
@@ -156,10 +156,10 @@ public final class NpcDefinition {
                     ((NpcDefinition)object).attackSoundId = npcDefinition.attackSoundId;
                     ((NpcDefinition)object).hitSoundId = npcDefinition.hitSoundId;
                     ((NpcDefinition)object).deathSoundId = npcDefinition.deathSoundId;
-                    ((NpcDefinition)object).C = npcDefinition.C;
-                    ((NpcDefinition)object).D = npcDefinition.D;
-                    ((NpcDefinition)object).E = npcDefinition.E;
-                    ((NpcDefinition)object).F = npcDefinition.F;
+                    ((NpcDefinition)object).legacyAttackBonus = npcDefinition.legacyAttackBonus;
+                    ((NpcDefinition)object).legacyMeleeDefenceBonus = npcDefinition.legacyMeleeDefenceBonus;
+                    ((NpcDefinition)object).legacyRangedDefenceBonus = npcDefinition.legacyRangedDefenceBonus;
+                    ((NpcDefinition)object).legacyMagicDefenceBonus = npcDefinition.legacyMagicDefenceBonus;
                     ((NpcDefinition)object).shopId = npcDefinition.shopId;
                     ((NpcDefinition)object).attackBonusTypeId = npcDefinition.attackBonusTypeId;
                     ((NpcDefinition)object).respawnDelayTicks = npcDefinition.respawnDelayTicks;
@@ -375,10 +375,10 @@ public final class NpcDefinition {
         npcDefinition.attackSoundId = npcDefinition2.attackSoundId;
         npcDefinition.hitSoundId = npcDefinition2.hitSoundId;
         npcDefinition.deathSoundId = npcDefinition2.deathSoundId;
-        npcDefinition.C = npcDefinition2.C;
-        npcDefinition.D = npcDefinition2.D;
-        npcDefinition.E = npcDefinition2.E;
-        npcDefinition.F = npcDefinition2.F;
+        npcDefinition.legacyAttackBonus = npcDefinition2.legacyAttackBonus;
+        npcDefinition.legacyMeleeDefenceBonus = npcDefinition2.legacyMeleeDefenceBonus;
+        npcDefinition.legacyRangedDefenceBonus = npcDefinition2.legacyRangedDefenceBonus;
+        npcDefinition.legacyMagicDefenceBonus = npcDefinition2.legacyMagicDefenceBonus;
         npcDefinition.shopId = npcDefinition2.shopId;
         npcDefinition.attackBonusTypeId = npcDefinition2.attackBonusTypeId;
         npcDefinition.respawnDelayTicks = npcDefinition2.respawnDelayTicks;
@@ -471,17 +471,17 @@ public final class NpcDefinition {
                         block26: {
                             npcDefinition8 = NpcDefinition.forId(n);
                             if ((n < 1290 || n > 1293) && npcDefinition8.hitpoints > 0) {
-                                if (npcDefinition8.C != 0) {
-                                    npcDefinition8.C = npcDefinition8.hitpoints;
+                                if (npcDefinition8.legacyAttackBonus != 0) {
+                                    npcDefinition8.legacyAttackBonus = npcDefinition8.hitpoints;
                                 }
-                                if (npcDefinition8.D != 0) {
-                                    npcDefinition8.D = npcDefinition8.hitpoints;
+                                if (npcDefinition8.legacyMeleeDefenceBonus != 0) {
+                                    npcDefinition8.legacyMeleeDefenceBonus = npcDefinition8.hitpoints;
                                 }
-                                if (npcDefinition8.F != 0) {
-                                    npcDefinition8.F = npcDefinition8.hitpoints;
+                                if (npcDefinition8.legacyMagicDefenceBonus != 0) {
+                                    npcDefinition8.legacyMagicDefenceBonus = npcDefinition8.hitpoints;
                                 }
-                                if (npcDefinition8.E != 0) {
-                                    npcDefinition8.E = npcDefinition8.hitpoints;
+                                if (npcDefinition8.legacyRangedDefenceBonus != 0) {
+                                    npcDefinition8.legacyRangedDefenceBonus = npcDefinition8.hitpoints;
                                 }
                             }
                             npcDefinition = npcDefinition8;
@@ -490,15 +490,15 @@ public final class NpcDefinition {
                             npcCombatDefinition = NpcCombatDefinition.forNpcId(npcDefinition.id);
                             if (!bl) break block26;
                             if (!npcCombatDefinition.hasAttackBonuses() && !npcCombatDefinition.hasDefenceBonuses()) {
-                                npcCombatDefinition = npcCombatDefinition.addAttackBonuses(npcDefinition8.C, npcDefinition8.C, npcDefinition8.C, npcDefinition8.C, npcDefinition8.C).addDefenceBonuses(npcDefinition8.D, npcDefinition8.D, npcDefinition8.D, npcDefinition8.F, npcDefinition8.E);
+                                npcCombatDefinition = npcCombatDefinition.addAttackBonuses(npcDefinition8.legacyAttackBonus, npcDefinition8.legacyAttackBonus, npcDefinition8.legacyAttackBonus, npcDefinition8.legacyAttackBonus, npcDefinition8.legacyAttackBonus).addDefenceBonuses(npcDefinition8.legacyMeleeDefenceBonus, npcDefinition8.legacyMeleeDefenceBonus, npcDefinition8.legacyMeleeDefenceBonus, npcDefinition8.legacyMagicDefenceBonus, npcDefinition8.legacyRangedDefenceBonus);
                             } else if (!npcCombatDefinition.hasAttackBonuses()) {
-                                npcCombatDefinition = npcCombatDefinition.addAttackBonuses(npcDefinition8.C, npcDefinition8.C, npcDefinition8.C, npcDefinition8.C, npcDefinition8.C);
+                                npcCombatDefinition = npcCombatDefinition.addAttackBonuses(npcDefinition8.legacyAttackBonus, npcDefinition8.legacyAttackBonus, npcDefinition8.legacyAttackBonus, npcDefinition8.legacyAttackBonus, npcDefinition8.legacyAttackBonus);
                             } else if (!npcCombatDefinition.hasDefenceBonuses()) {
-                                npcCombatDefinition = npcCombatDefinition.addDefenceBonuses(npcDefinition8.D, npcDefinition8.D, npcDefinition8.D, npcDefinition8.F, npcDefinition8.E);
+                                npcCombatDefinition = npcCombatDefinition.addDefenceBonuses(npcDefinition8.legacyMeleeDefenceBonus, npcDefinition8.legacyMeleeDefenceBonus, npcDefinition8.legacyMeleeDefenceBonus, npcDefinition8.legacyMagicDefenceBonus, npcDefinition8.legacyRangedDefenceBonus);
                             }
                             break block27;
                         }
-                        npcCombatDefinition = new NpcDefinitionMeleeCombatDefinition(npcDefinition8).setRespawnDelaySeconds(npcDefinition8.respawnDelaySeconds).addAttackBonuses(npcDefinition8.C, npcDefinition8.C, npcDefinition8.C, npcDefinition8.C, npcDefinition8.C).addDefenceBonuses(npcDefinition8.D, npcDefinition8.D, npcDefinition8.D, npcDefinition8.F, npcDefinition8.E);
+                        npcCombatDefinition = new NpcDefinitionMeleeCombatDefinition(npcDefinition8).setRespawnDelaySeconds(npcDefinition8.respawnDelaySeconds).addAttackBonuses(npcDefinition8.legacyAttackBonus, npcDefinition8.legacyAttackBonus, npcDefinition8.legacyAttackBonus, npcDefinition8.legacyAttackBonus, npcDefinition8.legacyAttackBonus).addDefenceBonuses(npcDefinition8.legacyMeleeDefenceBonus, npcDefinition8.legacyMeleeDefenceBonus, npcDefinition8.legacyMeleeDefenceBonus, npcDefinition8.legacyMagicDefenceBonus, npcDefinition8.legacyRangedDefenceBonus);
                         npcDefinition = npcDefinition8;
                         if (npcDefinition.id == 919) break block28;
                         npcDefinition = npcDefinition8;
@@ -569,12 +569,12 @@ public final class NpcDefinition {
         return this.attackSoundId;
     }
 
-    public final int h() {
-        return this.A;
+    public final int getDropTableNpcIdOverride() {
+        return this.dropTableNpcIdOverride;
     }
 
-    public final void c(int n) {
-        this.A = n;
+    public final void setDropTableNpcIdOverride(int n) {
+        this.dropTableNpcIdOverride = n;
     }
 
     public final int getDeathSoundId() {

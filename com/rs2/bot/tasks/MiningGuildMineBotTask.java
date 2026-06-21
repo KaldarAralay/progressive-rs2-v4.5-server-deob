@@ -18,11 +18,11 @@ import java.util.ArrayList;
 
 public final class MiningGuildMineBotTask
 extends BotTaskDefinition {
-    private static Position aa = new Position(3013, 3355, 0);
-    private static BotRoute[] ab = new BotRoute[]{new BotRoute(new Position[]{new Position(3013, 3359, 0), new Position(3019, 3359, 0), new Position(3025, 3351, 0), new Position(3029, 3337, 0)}), new BotRoute(new Position[]{new Position(3027, 9738, 0), new Position(3038, 9738, 0)})};
+    private static Position routeStartPosition = new Position(3013, 3355, 0);
+    private static BotRoute[] taskRouteSegments = new BotRoute[]{new BotRoute(new Position[]{new Position(3013, 3359, 0), new Position(3019, 3359, 0), new Position(3025, 3351, 0), new Position(3029, 3337, 0)}), new BotRoute(new Position[]{new Position(3027, 9738, 0), new Position(3038, 9738, 0)})};
 
     public MiningGuildMineBotTask(int n) {
-        super(aa, ab, 0, false, 6);
+        super(routeStartPosition, taskRouteSegments, 0, false, 6);
         int n2 = 9756;
         MiningGuildMineBotTask miningGuildMineBotTask = this;
         this.targetMaxY = n2;
@@ -74,7 +74,7 @@ extends BotTaskDefinition {
 
     @Override
     public final void prepareTaskCombatLoadout(Player player) {
-        GameplayHelper.b(player);
+        GameplayHelper.resetBotSkillsToBase(player);
         int n = 1 + GameUtil.randomInt(99);
         int n2 = n / 5 << 1;
         if (n2 == 0) {
@@ -126,7 +126,7 @@ extends BotTaskDefinition {
         player.botTaskState = "walk towards task";
         player.botPathWaypointIndex = 0;
         player.botPathSegmentIndex = 0;
-        player.currentBotRoute = ab[player.botPathSegmentIndex];
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex];
         player.continueBotRoute();
     }
 
@@ -134,22 +134,22 @@ extends BotTaskDefinition {
     public final void startWalkToBank(Player player) {
         player.botTaskState = "walk towards bank";
         player.botPathWaypointIndex = 0;
-        player.botPathSegmentIndex = ab.length - 1;
-        player.currentBotRoute = ab[player.botPathSegmentIndex].reversed();
+        player.botPathSegmentIndex = taskRouteSegments.length - 1;
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex].reversed();
         player.continueBotRoute();
     }
 
     @Override
     public final void continueWalkToTask(Player player, int n) {
         player.botPathWaypointIndex = n;
-        player.currentBotRoute = ab[player.botPathSegmentIndex];
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex];
         this.advanceTaskRouteSegment(player, true);
     }
 
     @Override
     public final void continueWalkToBank(Player player, int n) {
         player.botPathWaypointIndex = n;
-        player.currentBotRoute = ab[player.botPathSegmentIndex].reversed();
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex].reversed();
         this.advanceTaskRouteSegment(player, true);
     }
 
@@ -159,24 +159,24 @@ extends BotTaskDefinition {
             if (n == 0) {
                 ++player.botPathSegmentIndex;
             }
-            player.currentBotRoute = ab[player.botPathSegmentIndex];
+            player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex];
             if (n == 0) {
                 player.botPathWaypointIndex = 0;
             }
             n = GameUtil.getRegionId(player.getPosition().getX(), player.getPosition().getY());
-            if (player.botPathSegmentIndex == ab.length - 1 && n == 12084) {
+            if (player.botPathSegmentIndex == taskRouteSegments.length - 1 && n == 12084) {
                 player.botTaskState = "walk to task";
                 ArrayList<Integer> arrayList = new ArrayList<Integer>();
                 arrayList.add(2113);
                 player.interactWithBotObjectTargets(arrayList);
-                player.dm = true;
+                player.botRouteActionPending = true;
                 return;
             }
         } else if (player.botTaskState.equals("walk towards bank") || player.botTaskState.equals("walk to bank") && n != 0) {
             if (n == 0) {
                 --player.botPathSegmentIndex;
             }
-            player.currentBotRoute = ab[player.botPathSegmentIndex].reversed();
+            player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex].reversed();
             if (n == 0) {
                 player.botPathWaypointIndex = 0;
             }
@@ -186,7 +186,7 @@ extends BotTaskDefinition {
                 ArrayList<Integer> arrayList = new ArrayList<Integer>();
                 arrayList.add(1755);
                 player.interactWithBotObjectTargets(arrayList);
-                player.dm = true;
+                player.botRouteActionPending = true;
             }
         }
     }

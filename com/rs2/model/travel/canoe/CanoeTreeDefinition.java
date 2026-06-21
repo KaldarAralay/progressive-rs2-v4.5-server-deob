@@ -40,10 +40,10 @@ public enum CanoeTreeDefinition {
      * WARNING - void declaration
      */
     private CanoeTreeDefinition(int n2) {
-        void cfr_renamed_15;
+        void cfr_renamed_14;
         this.objectIds = (int[])n2;
         this.requiredLevel = 12;
-        this.configShift = cfr_renamed_15;
+        this.configShift = cfr_renamed_14;
     }
 
     public final int getRequiredLevel() {

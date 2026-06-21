@@ -20,7 +20,7 @@ extends NpcCombatDefinition {
 
     @Override
     public final CombatAttack[] createAttacks(Entity entity, Entity entity2) {
-        return new CombatAttack[]{BaseCombatAttack.createMagicAttack(entity, entity2, SpellDefinition.SPINOLYP_WATER_STRIKE), BaseCombatAttack.a(entity, entity2, CombatType.RANGED, AttackXpMode.LONGRANGE, 10, 4, 2868, new GraphicEffect(-1, 0), new GraphicEffect(-1, 0), 294, ProjectileTiming.a)};
+        return new CombatAttack[]{BaseCombatAttack.createMagicAttack(entity, entity2, SpellDefinition.SPINOLYP_WATER_STRIKE), BaseCombatAttack.createProjectileAttack(entity, entity2, CombatType.RANGED, AttackXpMode.LONGRANGE, 10, 4, 2868, new GraphicEffect(-1, 0), new GraphicEffect(-1, 0), 294, ProjectileTiming.a)};
     }
 }
 

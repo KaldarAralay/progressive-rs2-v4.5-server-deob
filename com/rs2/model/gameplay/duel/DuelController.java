@@ -61,7 +61,7 @@ public final class DuelController {
         object = this.player;
         ((Player)object).packetSender.closeInterfaces();
         this.player.getDuelInterfaceManager().resetRules();
-        GameplayHelper.g(this.player);
+        GameplayHelper.refreshPlayerAreaOverlay(this.player);
     }
 
     public final void acceptCurrentDuelScreen() {

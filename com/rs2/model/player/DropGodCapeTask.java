@@ -13,32 +13,32 @@ import com.rs2.model.task.TickTask;
 
 final class DropGodCapeTask
 extends TickTask {
-    private final /* synthetic */ Player a;
-    private final /* synthetic */ int b;
+    private final /* synthetic */ Player player;
+    private final /* synthetic */ int capeAnimationId;
 
     DropGodCapeTask(Player player, int n, Player player2, int n2) {
-        this.a = player2;
-        this.b = n2;
+        this.player = player2;
+        this.capeAnimationId = n2;
         super(4);
     }
 
     @Override
     public final void execute() {
-        int n = this.a.getPosition().getX();
-        int n2 = this.a.getPosition().getY() + 1;
+        int n = this.player.getPosition().getX();
+        int n2 = this.player.getPosition().getY() + 1;
         int n3 = 0;
-        if (this.b == 2873) {
+        if (this.capeAnimationId == 2873) {
             n3 = 2412;
-        } else if (this.b == 2874) {
+        } else if (this.capeAnimationId == 2874) {
             n3 = 2414;
-        } else if (this.b == 2875) {
+        } else if (this.capeAnimationId == 2875) {
             n3 = 2413;
         }
-        GroundItemManager.getInstance().spawn(new GroundItem(new ItemStack(n3, 1), this.a, new Position(n, n2, 0)));
-        Player player = this.a;
+        GroundItemManager.getInstance().spawn(new GroundItem(new ItemStack(n3, 1), this.player, new Position(n, n2, 0)));
+        Player player = this.player;
         player.packetSender.sendStillGraphicToNearbyPlayers(86, n, n2, 0, 0);
-        this.a.setActionLocked(false);
-        DialogueManager.continueContextDialogue(1, this.a, this.b, 10, 0, this.a.getPosition().getX(), this.a.getPosition().getY());
+        this.player.setActionLocked(false);
+        DialogueManager.continueContextDialogue(1, this.player, this.capeAnimationId, 10, 0, this.player.getPosition().getX(), this.player.getPosition().getY());
         this.stop();
     }
 }

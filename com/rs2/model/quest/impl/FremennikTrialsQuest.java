@@ -39,18 +39,18 @@ import java.util.Random;
 
 public final class FremennikTrialsQuest
 extends QuestScript {
-    private static QuestArea[] e = new QuestArea[]{new QuestArea(1, new Position(2630, 10037, 0), new RectangularArea(2627, 10034, 2633, 10040, 0)), new QuestArea(2, new Position(2642, 10039, 0), new RectangularArea(2639, 10035, 2645, 10042, 0)), new QuestArea(3, new Position(2642, 10026, 0), new RectangularArea(2639, 10023, 2645, 10031, 0)), new QuestArea(4, new Position(2654, 10026, 0), new RectangularArea(2651, 10023, 2657, 10030, 0)), new QuestArea(5, new Position(2631, 10015, 0), new RectangularArea(2628, 10012, 2634, 10018, 0)), new QuestArea(6, new Position(2653, 10015, 0), new RectangularArea(2649, 10012, 2656, 10019, 0)), new QuestArea(7, new Position(2642, 10005, 0), new RectangularArea(2639, 10002, 2645, 10008, 0)), new QuestArea(8, new Position(2664, 10004, 0), new RectangularArea(2661, 10000, 2667, 10007, 0))};
-    public static RectangularArea[] a = new RectangularArea[]{new RectangularArea(2653, 10087, 2666, 10095, 2), new RectangularArea(2661, 10078, 2667, 10085, 2), new RectangularArea(2651, 10068, 2659, 10075, 2), new RectangularArea(2645, 10073, 2649, 10078, 2), new RectangularArea(2644, 10081, 2648, 10085, 2)};
-    private static Position[] f = new Position[]{new Position(2697, 3561), new Position(2649, 3569), new Position(2678, 3605), new Position(2618, 3626), new Position(2666, 3568), new Position(2689, 3571)};
-    private RectangularArea g = new RectangularArea(2655, 3665, 2662, 3677, 0);
-    private RectangularArea h = new RectangularArea(2655, 3682, 2662, 3685, 0);
-    private String[] i = new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
-    private List j = Arrays.asList("TIME", "MIND", "WIND", "TREE", "LIFE");
-    private List k = Arrays.asList("Baldur", "Baldar", "Baldor", "Balkal", "Balkar", "Balkur", "Ballah", "Ballor", "Baltin", "Bardor", "Barkar", "Barkir", "Barlah", "Barlak", "Barlim", "Barlor", "Barrak", "Bartor", "Barton", "Barvald", "Berkal", "Daldar", "Daldor", "Daldur", "Dalkal", "Dalkar", "Dalkir", "Dallah", "Dallak", "Daltin", "Dalton", "Daltor", "Danlek", "Dardar", "Darkal", "Darkar", "Darkir", "Darkur", "Darlah", "Darlim", "Darlor", "Dartin", "Dartor", "Dendor", "Dendur", "Denkal", "Denkar", "Denkir", "Denkur", "Denlah", "Denlak", "Denrak", "Denlim", "Denlor", "Dentor", "Dokdor", "Dokdur", "Dokkal", "Dokkir", "Dokkur", "Doklah", "Doklim", "Doklak", "Doklor", "Dokrak", "Doktin", "Dokton", "Doktor", "Jardar", "Jarlah", "Jarlak", "Jarlor", "Jarkal", "Jarkur", "Jarrak", "Jartor", "Jikarak", "Jikdar", "Jikdor", "Jikkal", "Jikkar", "Jikkir", "Jikkur", "Jiklah", "Jiklak", "Jiklim", "Jiklor", "Jiktin", "Jiktor", "Jikvald", "Jokkul", "Lardar", "Larkal", "Larkir", "Larkur", "Larlah", "Larlak", "Larlim", "Larlor", "Larton", "Lartor", "Larvald", "Rakdar", "Rakdur", "Rakkal", "Rakkar", "Rakkir", "Rakkur", "Raklak", "Raklim", "Raklor", "Rakrak", "Rakton", "Raktor", "Rakvald", "Raldar", "Raldur", "Raldor", "Ralkar", "Ralkur", "Rallah", "Rallak", "Rallim", "Rallor", "Raltin", "Ralton", "Raltor", "Ralvald", "Rildar", "Rildor", "Rilkal", "Rilkur", "Rilkir", "Rillah", "Rillak", "Rillim", "Rillor", "Riltin", "Rilton", "Riltor", "Rivgar", "Rilvald", "Sigdar", "Sigdor", "Sigdur", "Sigkal", "Sigkar", "Sigkir", "Sigkur", "Siglah", "Siglak", "Siglim", "Sigrak", "Sigvald", "Sigtin", "Sigton", "Sigtor", "Taldar", "Taldur", "Talkal", "Talkar", "Talkir", "Tallah", "Tallak", "Tallim", "Tallor", "Talrak", "Talton", "Tarlak", "Thordar", "Thordur", "Thorkur", "Thortin", "Thortor", "Thorkal", "Thorkar", "Thorkir", "Thorlah", "Thorlim", "Thorlor", "Thorrak", "Thorton", "Thortor", "Thorvald", "Tondar", "Tondur", "Tonkal", "Tonkar", "Tonkir", "Tonkur", "Tonlah", "Tonlim", "Tonlin", "Tonlor", "Tonrak", "Tontin", "Tonton", "Tontor", "Tonvald");
-    private List l = Arrays.asList("Baldar", "Baldor", "Baldur", "Balkal", "Balkar", "Balkir", "Balkur", "Ballah", "Ballak", "Ballim", "Ballor", "Balrak", "Baltin", "Balton", "Baltor", "Balvald", "Bardar", "Bardor", "Barkal", "Barlah", "Barlak", "Barlim", "Barlor", "Barkar", "Barkir", "Barkur", "Barrak", "Bartin", "Barton", "Bartor", "Barvald", "Dalkal", "Daldar", "Daldor", "Daldur", "Dalkir", "Dalkur", "Dallah", "Dallak", "Dallim", "Dallor", "Dalrak", "Daltin", "Daltor", "Dalvald", "Dardar", "Dardor", "Dardur", "Darlak", "Darlor", "Darlim", "Darkal", "Darlah", "Darkar", "Darkir", "Darkur", "Darrak", "Dartin", "Dartis", "Darton", "Dartor", "Darvald", "Dendar", "Dendor", "Dendur", "Denkar", "Denkal", "Denkir", "Denkur", "Denlah", "Denlak", "Denlim", "Denlor", "Denrak", "Dentin", "Denton", "Dentor", "Denvald", "Dentin", "Dokdar", "Dokdor", "Dokdur", "Dokkal", "Dokkar", "Dokkir", "Dokkur", "Doklah", "Doklak", "Doklim", "Doklor", "Dokrak", "Doktin", "Dokton", "Doktor", "Dokvald", "Jardar", "Jardor", "Jardur", "Jarkal", "Jarlor", "Jarkar", "Jarkir", "Jarkur", "Jarlah", "Jarlak", "Jarlim", "Jarlor", "Jarrak", "Jartin", "Jarton", "Jardor", "Jartor", "Jarvald", "Jikdar", "Jikdor", "Jikdur", "Jikkal", "Jikkar", "Jikkir", "Jikkur", "Jiklah", "Jiklak", "Jiklim", "Jiklor", "Jikrak", "Jiktin", "Jikton", "Jiktor", "Jikvald", "Lardar", "Larkal", "Lardor", "Larkar", "Larkir", "Larkur", "Larlah", "Larlak", "Larlim", "Larlor", "Larrak", "Larravak", "Lartin", "Larton", "Lartor", "Larvald", "Lardur", "Rakdar", "Rakdur", "Rakkal", "Rakkar", "Rakkir", "Rakkur", "Raklak", "Raklah", "Raklim", "Rakrak", "Raktin", "Rakton", "Rakdor", "Raklor", "Rakrak", "Raktor", "Rakvald", "Raldor", "Raldar", "Ralkal", "Ralkar", "Ralkir", "Ralkur", "Rallah", "Rallak", "Rallim", "Rallor", "Ralrak", "Raltin", "Ralton", "Raltor", "Ralvald", "Riklar", "Rildur", "Rilkar", "Rilkir", "Rilkur", "Rillim", "Rillah", "Rildor", "Rillor", "Rillak", "Rilrak", "Rilrar", "Riltin", "Rilton", "Riltor", "Rilvald", "Rildar", "Rilkal", "Rallor", "Sigkal", "Sigkar", "Sigkir", "Sigkur", "Siglah", "Siglim", "Siglor", "Sigrak", "Sigtin", "Sigton", "Sigtor", "Sigvald", "Siglak", "Sigdar", "Sigdor", "Sigdur", "Taldar", "Taldor", "Taldur", "Talkal", "Talkar", "Talkir", "Talkur", "Tallah", "Tallak", "Tallim", "Tallor", "Talrak", "Taltin", "Talton", "Taltor", "Talvald", "Thorak", "Thordar", "Thordor", "Thordur", "Thorkal", "Thorkir", "Thorkar", "Thorkur", "Thorlah", "Thorlak", "Thorlim", "Thorlor", "Thorrak", "Thortin", "Thorton", "Thortor", "Thorvald", "Tondar", "Tondor", "Tondur", "Tonkal", "Tonkar", "Tonkir", "Tonlah", "Tonlak", "Tonlim", "Tonlor", "Tonrak", "Tonton", "Tontor", "Tonvald", "Tontin", "Tonkur");
-    String[][] b = new String[][]{{"The thought of lots of questing,", "Leaves some people unfulfilled,", "But I have done my simple best, in", "Entering the Champions Guild."}, {"PLAYERNAME, is my name,", "I haven't much to say.", "But since I have to sing this song,", "I'll just go ahead and play."}};
-    String[] c = new String[]{"Please, ye gods! Make it stop!", "YOU ARE A TERRIBLE BARD!"};
-    int[] d = new int[]{1274, 1275, 1276, 1277};
+    private static QuestArea[] swensenMazeAreas = new QuestArea[]{new QuestArea(1, new Position(2630, 10037, 0), new RectangularArea(2627, 10034, 2633, 10040, 0)), new QuestArea(2, new Position(2642, 10039, 0), new RectangularArea(2639, 10035, 2645, 10042, 0)), new QuestArea(3, new Position(2642, 10026, 0), new RectangularArea(2639, 10023, 2645, 10031, 0)), new QuestArea(4, new Position(2654, 10026, 0), new RectangularArea(2651, 10023, 2657, 10030, 0)), new QuestArea(5, new Position(2631, 10015, 0), new RectangularArea(2628, 10012, 2634, 10018, 0)), new QuestArea(6, new Position(2653, 10015, 0), new RectangularArea(2649, 10012, 2656, 10019, 0)), new QuestArea(7, new Position(2642, 10005, 0), new RectangularArea(2639, 10002, 2645, 10008, 0)), new QuestArea(8, new Position(2664, 10004, 0), new RectangularArea(2661, 10000, 2667, 10007, 0))};
+    public static RectangularArea[] peerHouseGuardianAreas = new RectangularArea[]{new RectangularArea(2653, 10087, 2666, 10095, 2), new RectangularArea(2661, 10078, 2667, 10085, 2), new RectangularArea(2651, 10068, 2659, 10075, 2), new RectangularArea(2645, 10073, 2649, 10078, 2), new RectangularArea(2644, 10081, 2648, 10085, 2)};
+    private static Position[] draugenTalismanTargetPositions = new Position[]{new Position(2697, 3561), new Position(2649, 3569), new Position(2678, 3605), new Position(2618, 3626), new Position(2666, 3568), new Position(2689, 3571)};
+    private RectangularArea longhallDistractionArea = new RectangularArea(2655, 3665, 2662, 3677, 0);
+    private RectangularArea lyrePerformanceArea = new RectangularArea(2655, 3682, 2662, 3685, 0);
+    private String[] doorRiddleLetters = new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
+    private List doorRiddleAnswers = Arrays.asList("TIME", "MIND", "WIND", "TREE", "LIFE");
+    private List femaleFremennikNamePool = Arrays.asList("Baldur", "Baldar", "Baldor", "Balkal", "Balkar", "Balkur", "Ballah", "Ballor", "Baltin", "Bardor", "Barkar", "Barkir", "Barlah", "Barlak", "Barlim", "Barlor", "Barrak", "Bartor", "Barton", "Barvald", "Berkal", "Daldar", "Daldor", "Daldur", "Dalkal", "Dalkar", "Dalkir", "Dallah", "Dallak", "Daltin", "Dalton", "Daltor", "Danlek", "Dardar", "Darkal", "Darkar", "Darkir", "Darkur", "Darlah", "Darlim", "Darlor", "Dartin", "Dartor", "Dendor", "Dendur", "Denkal", "Denkar", "Denkir", "Denkur", "Denlah", "Denlak", "Denrak", "Denlim", "Denlor", "Dentor", "Dokdor", "Dokdur", "Dokkal", "Dokkir", "Dokkur", "Doklah", "Doklim", "Doklak", "Doklor", "Dokrak", "Doktin", "Dokton", "Doktor", "Jardar", "Jarlah", "Jarlak", "Jarlor", "Jarkal", "Jarkur", "Jarrak", "Jartor", "Jikarak", "Jikdar", "Jikdor", "Jikkal", "Jikkar", "Jikkir", "Jikkur", "Jiklah", "Jiklak", "Jiklim", "Jiklor", "Jiktin", "Jiktor", "Jikvald", "Jokkul", "Lardar", "Larkal", "Larkir", "Larkur", "Larlah", "Larlak", "Larlim", "Larlor", "Larton", "Lartor", "Larvald", "Rakdar", "Rakdur", "Rakkal", "Rakkar", "Rakkir", "Rakkur", "Raklak", "Raklim", "Raklor", "Rakrak", "Rakton", "Raktor", "Rakvald", "Raldar", "Raldur", "Raldor", "Ralkar", "Ralkur", "Rallah", "Rallak", "Rallim", "Rallor", "Raltin", "Ralton", "Raltor", "Ralvald", "Rildar", "Rildor", "Rilkal", "Rilkur", "Rilkir", "Rillah", "Rillak", "Rillim", "Rillor", "Riltin", "Rilton", "Riltor", "Rivgar", "Rilvald", "Sigdar", "Sigdor", "Sigdur", "Sigkal", "Sigkar", "Sigkir", "Sigkur", "Siglah", "Siglak", "Siglim", "Sigrak", "Sigvald", "Sigtin", "Sigton", "Sigtor", "Taldar", "Taldur", "Talkal", "Talkar", "Talkir", "Tallah", "Tallak", "Tallim", "Tallor", "Talrak", "Talton", "Tarlak", "Thordar", "Thordur", "Thorkur", "Thortin", "Thortor", "Thorkal", "Thorkar", "Thorkir", "Thorlah", "Thorlim", "Thorlor", "Thorrak", "Thorton", "Thortor", "Thorvald", "Tondar", "Tondur", "Tonkal", "Tonkar", "Tonkir", "Tonkur", "Tonlah", "Tonlim", "Tonlin", "Tonlor", "Tonrak", "Tontin", "Tonton", "Tontor", "Tonvald");
+    private List maleFremennikNamePool = Arrays.asList("Baldar", "Baldor", "Baldur", "Balkal", "Balkar", "Balkir", "Balkur", "Ballah", "Ballak", "Ballim", "Ballor", "Balrak", "Baltin", "Balton", "Baltor", "Balvald", "Bardar", "Bardor", "Barkal", "Barlah", "Barlak", "Barlim", "Barlor", "Barkar", "Barkir", "Barkur", "Barrak", "Bartin", "Barton", "Bartor", "Barvald", "Dalkal", "Daldar", "Daldor", "Daldur", "Dalkir", "Dalkur", "Dallah", "Dallak", "Dallim", "Dallor", "Dalrak", "Daltin", "Daltor", "Dalvald", "Dardar", "Dardor", "Dardur", "Darlak", "Darlor", "Darlim", "Darkal", "Darlah", "Darkar", "Darkir", "Darkur", "Darrak", "Dartin", "Dartis", "Darton", "Dartor", "Darvald", "Dendar", "Dendor", "Dendur", "Denkar", "Denkal", "Denkir", "Denkur", "Denlah", "Denlak", "Denlim", "Denlor", "Denrak", "Dentin", "Denton", "Dentor", "Denvald", "Dentin", "Dokdar", "Dokdor", "Dokdur", "Dokkal", "Dokkar", "Dokkir", "Dokkur", "Doklah", "Doklak", "Doklim", "Doklor", "Dokrak", "Doktin", "Dokton", "Doktor", "Dokvald", "Jardar", "Jardor", "Jardur", "Jarkal", "Jarlor", "Jarkar", "Jarkir", "Jarkur", "Jarlah", "Jarlak", "Jarlim", "Jarlor", "Jarrak", "Jartin", "Jarton", "Jardor", "Jartor", "Jarvald", "Jikdar", "Jikdor", "Jikdur", "Jikkal", "Jikkar", "Jikkir", "Jikkur", "Jiklah", "Jiklak", "Jiklim", "Jiklor", "Jikrak", "Jiktin", "Jikton", "Jiktor", "Jikvald", "Lardar", "Larkal", "Lardor", "Larkar", "Larkir", "Larkur", "Larlah", "Larlak", "Larlim", "Larlor", "Larrak", "Larravak", "Lartin", "Larton", "Lartor", "Larvald", "Lardur", "Rakdar", "Rakdur", "Rakkal", "Rakkar", "Rakkir", "Rakkur", "Raklak", "Raklah", "Raklim", "Rakrak", "Raktin", "Rakton", "Rakdor", "Raklor", "Rakrak", "Raktor", "Rakvald", "Raldor", "Raldar", "Ralkal", "Ralkar", "Ralkir", "Ralkur", "Rallah", "Rallak", "Rallim", "Rallor", "Ralrak", "Raltin", "Ralton", "Raltor", "Ralvald", "Riklar", "Rildur", "Rilkar", "Rilkir", "Rilkur", "Rillim", "Rillah", "Rildor", "Rillor", "Rillak", "Rilrak", "Rilrar", "Riltin", "Rilton", "Riltor", "Rilvald", "Rildar", "Rilkal", "Rallor", "Sigkal", "Sigkar", "Sigkir", "Sigkur", "Siglah", "Siglim", "Siglor", "Sigrak", "Sigtin", "Sigton", "Sigtor", "Sigvald", "Siglak", "Sigdar", "Sigdor", "Sigdur", "Taldar", "Taldor", "Taldur", "Talkal", "Talkar", "Talkir", "Talkur", "Tallah", "Tallak", "Tallim", "Tallor", "Talrak", "Taltin", "Talton", "Taltor", "Talvald", "Thorak", "Thordar", "Thordor", "Thordur", "Thorkal", "Thorkir", "Thorkar", "Thorkur", "Thorlah", "Thorlak", "Thorlim", "Thorlor", "Thorrak", "Thortin", "Thorton", "Thortor", "Thorvald", "Tondar", "Tondor", "Tondur", "Tonkal", "Tonkar", "Tonkir", "Tonlah", "Tonlak", "Tonlim", "Tonlor", "Tonrak", "Tonton", "Tontor", "Tonvald", "Tontin", "Tonkur");
+    String[][] lyrePerformanceLines = new String[][]{{"The thought of lots of questing,", "Leaves some people unfulfilled,", "But I have done my simple best, in", "Entering the Champions Guild."}, {"PLAYERNAME, is my name,", "I haven't much to say.", "But since I have to sing this song,", "I'll just go ahead and play."}};
+    String[] lyreAudienceHeckleLines = new String[]{"Please, ye gods! Make it stop!", "YOU ARE A TERRIBLE BARD!"};
+    int[] lyreAudienceNpcIds = new int[]{1274, 1275, 1276, 1277};
 
     public FremennikTrialsQuest(int n) {
         super(40);
@@ -74,11 +74,11 @@ extends QuestScript {
         return null;
     }
 
-    private static boolean e(Player player) {
+    private static boolean hasRequiredSkillLevels(Player player) {
         return player.getSkillManager().getBaseLevel(8) >= 40 && player.getSkillManager().getBaseLevel(12) >= 40 && player.getSkillManager().getBaseLevel(9) >= 25;
     }
 
-    private boolean f(Player player) {
+    private boolean hasAllCouncilVotes(Player player) {
         int n = player.getQuestState(this.getQuestId());
         return (n & GameUtil.bitFlag(3)) != 0 && (n & GameUtil.bitFlag(5)) != 0 && (n & GameUtil.bitFlag(7)) != 0 && (n & GameUtil.bitFlag(9)) != 0 && (n & GameUtil.bitFlag(11)) != 0 && (n & GameUtil.bitFlag(13)) != 0 && (n & GameUtil.bitFlag(15)) != 0;
     }
@@ -114,7 +114,7 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.showInterface(InterfaceDefinition.interfaceCount <= 12140 ? 1689 : 12140);
         player2 = player;
-        player.j = false;
+        player.deferLevelUpInterfaces = false;
     }
 
     @Override
@@ -303,26 +303,26 @@ extends QuestScript {
             }
             if (n3 == 3) {
                 if (n4 == 1) {
-                    ArrayList arrayList = new ArrayList(this.j);
+                    ArrayList arrayList = new ArrayList(this.doorRiddleAnswers);
                     Collections.shuffle(arrayList, new Random(player.bK));
-                    FremennikTrialsQuest.a(player, (String)arrayList.get(0), 1);
+                    FremennikTrialsQuest.showDoorRiddleText(player, (String)arrayList.get(0), 1);
                     player.getDialogueManager().setNextDialogueStep(4);
                     return true;
                 }
                 if (n4 == 2) {
                     player.getDialogueManager().finishDialogue();
-                    player.P = 0;
-                    player.Q = 0;
-                    player.R = 0;
-                    player.S = 0;
+                    player.fremennikDoorRiddleFirstLetterIndex = 0;
+                    player.fremennikDoorRiddleSecondLetterIndex = 0;
+                    player.fremennikDoorRiddleThirdLetterIndex = 0;
+                    player.fremennikDoorRiddleFourthLetterIndex = 0;
                     Player player3 = player;
-                    player3.packetSender.sendInterfaceText(this.i[0], 13884);
+                    player3.packetSender.sendInterfaceText(this.doorRiddleLetters[0], 13884);
                     player3 = player;
-                    player3.packetSender.sendInterfaceText(this.i[0], 13885);
+                    player3.packetSender.sendInterfaceText(this.doorRiddleLetters[0], 13885);
                     player3 = player;
-                    player3.packetSender.sendInterfaceText(this.i[0], 13886);
+                    player3.packetSender.sendInterfaceText(this.doorRiddleLetters[0], 13886);
                     player3 = player;
-                    player3.packetSender.sendInterfaceText(this.i[0], 13887);
+                    player3.packetSender.sendInterfaceText(this.doorRiddleLetters[0], 13887);
                     player3 = player;
                     player3.packetSender.showInterface(671);
                     return true;
@@ -333,9 +333,9 @@ extends QuestScript {
                 }
             }
             if (n3 == 4) {
-                ArrayList arrayList = new ArrayList(this.j);
+                ArrayList arrayList = new ArrayList(this.doorRiddleAnswers);
                 Collections.shuffle(arrayList, new Random(player.bK));
-                FremennikTrialsQuest.a(player, (String)arrayList.get(0), 2);
+                FremennikTrialsQuest.showDoorRiddleText(player, (String)arrayList.get(0), 2);
                 player.getDialogueManager().finishDialogue();
                 return true;
             }
@@ -343,7 +343,7 @@ extends QuestScript {
         return false;
     }
 
-    private static void a(Player player, String string, int n) {
+    private static void showDoorRiddleText(Player player, String string, int n) {
         if (string.equals("TIME")) {
             if (n == 1) {
                 player.getDialogueManager().showFourLineStatement("My first is in water, and also in tea.", "My second in fish, but not in the sea.", "My third in mountains, but not underground.", "My last is in strike, but not in pound.");
@@ -580,8 +580,8 @@ extends QuestScript {
             Object object2;
             n = 0;
             n4 = 0;
-            while (n4 < e.length) {
-                QuestArea questArea = e[n4];
+            while (n4 < swensenMazeAreas.length) {
+                QuestArea questArea = swensenMazeAreas[n4];
                 if (questArea.getAreaBounds().contains(((Entity)object).getPosition())) {
                     n = questArea.getAreaId();
                     break;
@@ -593,7 +593,7 @@ extends QuestScript {
             if (n != 0) {
                 n4 = 0;
                 n9 = 0;
-                object2 = e[n - 1];
+                object2 = swensenMazeAreas[n - 1];
                 if (n2 > ((QuestArea)object2).getTargetPosition().getX()) {
                     n4 = 3;
                 }
@@ -609,15 +609,15 @@ extends QuestScript {
             }
             object2 = new ArrayList();
             n2 = 0;
-            while (n2 < e.length) {
-                QuestArea questArea = e[n2];
+            while (n2 < swensenMazeAreas.length) {
+                QuestArea questArea = swensenMazeAreas[n2];
                 if (questArea.getAreaId() != n) {
                     ((ArrayList)object2).add(n2);
                 }
                 ++n2;
             }
             n2 = GameUtil.randomInt(((ArrayList)object2).size());
-            QuestArea questArea = e[(Integer)((ArrayList)object2).get(n2)];
+            QuestArea questArea = swensenMazeAreas[(Integer)((ArrayList)object2).get(n2)];
             ((Player)object).moveTo(new Position(questArea.getTargetPosition().getX() + n4, questArea.getTargetPosition().getY() + n9, 0));
             n = n9;
             n2 = n4;
@@ -681,8 +681,8 @@ extends QuestScript {
             return true;
         }
         n = 0;
-        while (n < a.length) {
-            if (a[n].containsExclusive(player.getPosition())) {
+        while (n < peerHouseGuardianAreas.length) {
+            if (peerHouseGuardianAreas[n].containsExclusive(player.getPosition())) {
                 PeerTheSeerHouseGuardianTask peerTheSeerHouseGuardianTask = new PeerTheSeerHouseGuardianTask(this, 10, player);
                 World.getTaskScheduler().schedule(peerTheSeerHouseGuardianTask);
                 player.eq = 1290;
@@ -767,42 +767,42 @@ extends QuestScript {
     @Override
     public final boolean handleButtonClick(Player player, int n, int n2) {
         if (n == 13888 || n == 13889) {
-            int n3 = player.P;
-            n3 = n == 13889 ? (n3 == this.i.length - 1 ? 0 : ++n3) : (n3 == 0 ? this.i.length - 1 : --n3);
-            player.P = n3;
+            int n3 = player.fremennikDoorRiddleFirstLetterIndex;
+            n3 = n == 13889 ? (n3 == this.doorRiddleLetters.length - 1 ? 0 : ++n3) : (n3 == 0 ? this.doorRiddleLetters.length - 1 : --n3);
+            player.fremennikDoorRiddleFirstLetterIndex = n3;
             Player player2 = player;
-            player2.packetSender.sendInterfaceText(this.i[n3], 13884);
+            player2.packetSender.sendInterfaceText(this.doorRiddleLetters[n3], 13884);
             return true;
         }
         if (n == 13890 || n == 13891) {
-            int n4 = player.Q;
-            n4 = n == 13891 ? (n4 == this.i.length - 1 ? 0 : ++n4) : (n4 == 0 ? this.i.length - 1 : --n4);
-            player.Q = n4;
+            int n4 = player.fremennikDoorRiddleSecondLetterIndex;
+            n4 = n == 13891 ? (n4 == this.doorRiddleLetters.length - 1 ? 0 : ++n4) : (n4 == 0 ? this.doorRiddleLetters.length - 1 : --n4);
+            player.fremennikDoorRiddleSecondLetterIndex = n4;
             Player player3 = player;
-            player3.packetSender.sendInterfaceText(this.i[n4], 13885);
+            player3.packetSender.sendInterfaceText(this.doorRiddleLetters[n4], 13885);
             return true;
         }
         if (n == 13892 || n == 13893) {
-            int n5 = player.R;
-            n5 = n == 13893 ? (n5 == this.i.length - 1 ? 0 : ++n5) : (n5 == 0 ? this.i.length - 1 : --n5);
-            player.R = n5;
+            int n5 = player.fremennikDoorRiddleThirdLetterIndex;
+            n5 = n == 13893 ? (n5 == this.doorRiddleLetters.length - 1 ? 0 : ++n5) : (n5 == 0 ? this.doorRiddleLetters.length - 1 : --n5);
+            player.fremennikDoorRiddleThirdLetterIndex = n5;
             Player player4 = player;
-            player4.packetSender.sendInterfaceText(this.i[n5], 13886);
+            player4.packetSender.sendInterfaceText(this.doorRiddleLetters[n5], 13886);
             return true;
         }
         if (n == 13894 || n == 13895) {
-            int n6 = player.S;
-            n6 = n == 13895 ? (n6 == this.i.length - 1 ? 0 : ++n6) : (n6 == 0 ? this.i.length - 1 : --n6);
-            player.S = n6;
+            int n6 = player.fremennikDoorRiddleFourthLetterIndex;
+            n6 = n == 13895 ? (n6 == this.doorRiddleLetters.length - 1 ? 0 : ++n6) : (n6 == 0 ? this.doorRiddleLetters.length - 1 : --n6);
+            player.fremennikDoorRiddleFourthLetterIndex = n6;
             Player player5 = player;
-            player5.packetSender.sendInterfaceText(this.i[n6], 13887);
+            player5.packetSender.sendInterfaceText(this.doorRiddleLetters[n6], 13887);
             return true;
         }
         if (n == 13898) {
-            Object object = new ArrayList(this.j);
+            Object object = new ArrayList(this.doorRiddleAnswers);
             Collections.shuffle(object, new Random(player.bK));
             Object object2 = (String)object.get(0);
-            object = String.valueOf(this.i[player.P]) + this.i[player.Q] + this.i[player.R] + this.i[player.S];
+            object = String.valueOf(this.doorRiddleLetters[player.fremennikDoorRiddleFirstLetterIndex]) + this.doorRiddleLetters[player.fremennikDoorRiddleSecondLetterIndex] + this.doorRiddleLetters[player.fremennikDoorRiddleThirdLetterIndex] + this.doorRiddleLetters[player.fremennikDoorRiddleFourthLetterIndex];
             if (((String)object2).equals(object)) {
                 object2 = player;
                 ((Player)object2).packetSender.closeInterfaces();
@@ -824,7 +824,7 @@ extends QuestScript {
     @Override
     public final boolean handleInventoryItemFirstOption(Player player, int n, int n2, int n3) {
         if (n == 3214) {
-            if (n2 == 3690 && this.h.contains(player.getPosition())) {
+            if (n2 == 3690 && this.lyrePerformanceArea.contains(player.getPosition())) {
                 player.getUpdateState().setFacePosition(new Position(player.getPosition().getX(), player.getPosition().getY() - 1));
                 Player player2 = player;
                 player2.packetSender.sendGameMessage("You withdraw your lyre.");
@@ -840,11 +840,11 @@ extends QuestScript {
                 if (GameplayHelper.i(player, 1279)) {
                     return false;
                 }
-                if (player.N != 1279) {
-                    player.N = 1279;
-                    player.O = GameUtil.randomInt(f.length);
+                if (player.temporaryActionValue != 1279) {
+                    player.temporaryActionValue = 1279;
+                    player.O = GameUtil.randomInt(draugenTalismanTargetPositions.length);
                 } else {
-                    if (GameUtil.isWithinDistance(player.getPosition(), f[player.O], 1)) {
+                    if (GameUtil.isWithinDistance(player.getPosition(), draugenTalismanTargetPositions[player.O], 1)) {
                         Player player3 = player;
                         player3.packetSender.sendGameMessage("The Draugen is here! Beware!");
                         if (!GameplayHelper.i(player, 1279)) {
@@ -854,11 +854,11 @@ extends QuestScript {
                         return true;
                     }
                     if (GameUtil.randomInt(100) == 0) {
-                        player.O = GameUtil.randomInt(f.length);
+                        player.O = GameUtil.randomInt(draugenTalismanTargetPositions.length);
                     }
                 }
-                n2 = f[player.O].getX();
-                n3 = f[player.O].getY();
+                n2 = draugenTalismanTargetPositions[player.O].getX();
+                n3 = draugenTalismanTargetPositions[player.O].getY();
                 n = player.getPosition().getX() - n2;
                 n2 = player.getPosition().getY() - n3;
                 String string = "";
@@ -956,8 +956,8 @@ extends QuestScript {
             object.getInventoryManager().removeItem(new ItemStack(3801, 1));
             object.getInventoryManager().removeItem(new ItemStack(3712, 1));
             object.getInventoryManager().addOrDropItem(new ItemStack(3711, 1));
-            if (this.g.contains(object.getPosition())) {
-                Npc[] npcArray2 = object = Npc.findActiveInArea(this.g);
+            if (this.longhallDistractionArea.contains(object.getPosition())) {
+                Npc[] npcArray2 = object = Npc.findActiveInArea(this.longhallDistractionArea);
                 n2 = ((Npc[])object).length;
                 int n5 = 0;
                 while (n5 < n2) {
@@ -993,11 +993,11 @@ extends QuestScript {
         return false;
     }
 
-    private boolean g(Player player) {
+    private boolean hasPreparedStoneSoup(Player player) {
         return (player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(4)) != 0 && (player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(5)) != 0 && (player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(6)) != 0 && (player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(7)) != 0;
     }
 
-    private static boolean h(Player player) {
+    private static boolean hasAnyMerchantTrialItem(Player player) {
         int n = 3698;
         while (n < 3711) {
             if (player.ownsItem(n)) {
@@ -1012,7 +1012,7 @@ extends QuestScript {
     public final boolean handleNpcDialogue(Player object, int n, int n2, int n3, int n4) {
         if (n == 1294) {
             if (n4 == 0) {
-                if (!FremennikTrialsQuest.e((Player)object)) {
+                if (!FremennikTrialsQuest.hasRequiredSkillLevels((Player)object)) {
                     return false;
                 }
                 if (n2 == 1) {
@@ -1206,7 +1206,7 @@ extends QuestScript {
                     return true;
                 }
             }
-            if (this.f((Player)object)) {
+            if (this.hasAllCouncilVotes((Player)object)) {
                 if (n2 == 1) {
                     ((Player)object).getDialogueManager().showNpcTwoLineDialogue("Greetings again outerlander! How goes your attempts", "to gain votes with the council of elders?", 591);
                     return true;
@@ -1224,7 +1224,7 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 5) {
-                    Object object2 = new ArrayList(((Player)object).getGender() == 0 ? this.l : this.k);
+                    Object object2 = new ArrayList(((Player)object).getGender() == 0 ? this.maleFremennikNamePool : this.femaleFremennikNamePool);
                     Collections.shuffle(object2, new Random(((Player)object).bK));
                     object2 = (String)object2.get(0);
                     ((Player)object).getDialogueManager().showNpcFourLineDialogue("From this day onward, you are outerlander no more!", "In honour of your acceptance into the Fremennik You", "gain a new name to be known as; You will now be", "called " + (String)object2, 591);
@@ -1917,7 +1917,7 @@ extends QuestScript {
                 }
             }
             if ((((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(3)) != 0) {
-                if (!(!this.g((Player)object) || ((Player)object).ownsItem(3693) || ((Player)object).ownsItem(3694) || ((Player)object).ownsItem(3689) || ((Player)object).ownsItem(3690) || ((Player)object).ownsItem(3691))) {
+                if (!(!this.hasPreparedStoneSoup((Player)object) || ((Player)object).ownsItem(3693) || ((Player)object).ownsItem(3694) || ((Player)object).ownsItem(3689) || ((Player)object).ownsItem(3690) || ((Player)object).ownsItem(3691))) {
                     if (n2 == 1) {
                         ((Player)object).getDialogueManager().showPlayerOneLineDialogue("Hello there.", 591);
                         return true;
@@ -1947,7 +1947,7 @@ extends QuestScript {
                 }
                 if (n2 == 100) {
                     ((Player)object).getDialogueManager().showNpcOneLineDialogue("It am ready now?", 591);
-                    if (this.g((Player)object)) {
+                    if (this.hasPreparedStoneSoup((Player)object)) {
                         ((Player)object).getDialogueManager().setNextDialogueStep(102);
                     }
                     return true;
@@ -2040,7 +2040,7 @@ extends QuestScript {
                     return true;
                 }
             }
-            if ((n4 & GameUtil.bitFlag(6)) != 0 && (n4 & GameUtil.bitFlag(7)) == 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(20)) != 0 && !FremennikTrialsQuest.h((Player)object) && n2 == 1) {
+            if ((n4 & GameUtil.bitFlag(6)) != 0 && (n4 & GameUtil.bitFlag(7)) == 0 && (((Player)object).questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(20)) != 0 && !FremennikTrialsQuest.hasAnyMerchantTrialItem((Player)object) && n2 == 1) {
                 ((Player)object).getDialogueManager().showNpcOneLineDialogue("Here you go, Don't lose it this time.", 591);
                 ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(3709, 1));
                 ((Player)object).getDialogueManager().finishDialogue();

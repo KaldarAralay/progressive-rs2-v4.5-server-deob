@@ -113,7 +113,7 @@ public final class SpecialTreePatchManager {
                     }
                 } else {
                     SpecialTreeDefinition specialTreeDefinition = SpecialTreeDefinition.forSaplingId(this.treeIds[n]);
-                    if (specialTreeDefinition != null && !this.b(n)) {
+                    if (specialTreeDefinition != null && !this.shouldStopGrowthCycle(n)) {
                         if (specialTreeDefinition == SpecialTreeDefinition.CALQUAT && this.f[n] && this.growthStages[n] < 18) {
                             int n5 = n;
                             this.growthStages[n5] = this.growthStages[n5] + 1;
@@ -151,7 +151,7 @@ public final class SpecialTreePatchManager {
                                             int n11 = n;
                                             this.growthStages[n11] = this.growthStages[n11] + 1;
                                         }
-                                        if (this.b(n)) break;
+                                        if (this.shouldStopGrowthCycle(n)) break;
                                         if (this.growthStages[n] <= specialTreeDefinition.getGrowthStageCount() + (specialTreeDefinition == SpecialTreeDefinition.SPIRIT_TREE ? 3 : -2) && this.growthStages[n] == specialTreeDefinition.getGrowthStageCount() + (specialTreeDefinition == SpecialTreeDefinition.SPIRIT_TREE ? 3 : -2)) {
                                             this.growthStages[n] = specialTreeDefinition.getGrowthStageCount() + 7;
                                             this.patchStates[n] = 3;
@@ -170,7 +170,7 @@ public final class SpecialTreePatchManager {
         this.refreshConfig();
     }
 
-    private boolean b(int n) {
+    private boolean shouldStopGrowthCycle(int n) {
         return this.lastUpdateTicks[n] == 0L || this.patchStates[n] == 2 || this.patchStates[n] == 3;
     }
 

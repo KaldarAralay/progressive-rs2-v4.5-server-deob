@@ -35,7 +35,7 @@ public final class NpcDropTable {
                 if (n4 == 2) {
                     int n5 = ((ByteArrayReader)object).readUnsignedShort();
                     npcDropEntryArray = NpcDefinition.forId(n3);
-                    npcDropEntryArray.c(n5);
+                    npcDropEntryArray.setDropTableNpcIdOverride(n5);
                 }
                 if (n4 == 1) {
                     NpcDropEntry[] npcDropEntryArray2 = null;

@@ -65,14 +65,14 @@ public final class BotTaskPlanner {
     }
 
     public static void startInitialProgressiveBotTask(Player player) {
-        if (player.currentBotTask == null && player.ej == 0L) {
+        if (player.currentBotTask == null && player.totalPlaytimeMillis == 0L) {
             int n;
             Object object = new ArrayList<BotTaskDefinition>();
             ((ArrayList)object).addAll(BotTaskDefinition.miningTasks);
             ((ArrayList)object).addAll(BotTaskDefinition.fishingTasks);
             ((ArrayList)object).addAll(BotTaskDefinition.woodcuttingTasks);
             ((ArrayList)object).add((BotTaskDefinition)BotTaskDefinition.runecraftingTasks.get(0));
-            BotTaskDefinition botTaskDefinition = GameplayHelper.a(player, object, false);
+            BotTaskDefinition botTaskDefinition = GameplayHelper.selectAvailableBotTask(player, object, false);
             object = player;
             player.currentBotTask = botTaskDefinition;
             BotTaskPlanner.configureCurrentBotTaskGoals(player);

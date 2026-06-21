@@ -19,11 +19,11 @@ import com.rs2.util.GameUtil;
 
 public final class ArdougneAxeShopBotTask
 extends BotTaskDefinition {
-    private static Position aa = new Position(2655, 3283, 0);
-    private static BotRoute[] ab = new BotRoute[]{new BotRoute(new Position[]{new Position(2644, 3284, 0), new Position(2634, 3290, 0), new Position(2628, 3297, 0), new Position(2614, 3297, 0), new Position(2614, 3295, 0)}), new BotRoute(new Position[]{new Position(2614, 3294, 0)})};
+    private static Position routeStartPosition = new Position(2655, 3283, 0);
+    private static BotRoute[] taskRouteSegments = new BotRoute[]{new BotRoute(new Position[]{new Position(2644, 3284, 0), new Position(2634, 3290, 0), new Position(2628, 3297, 0), new Position(2614, 3297, 0), new Position(2614, 3295, 0)}), new BotRoute(new Position[]{new Position(2614, 3294, 0)})};
 
     public ArdougneAxeShopBotTask(int n) {
-        super(aa, ab, 1, true, 1);
+        super(routeStartPosition, taskRouteSegments, 1, true, 1);
         n = 2;
         ArdougneAxeShopBotTask ardougneAxeShopBotTask = this;
         this.interactionOption = 2;
@@ -66,7 +66,7 @@ extends BotTaskDefinition {
 
     @Override
     public final void prepareTaskCombatLoadout(Player player) {
-        GameplayHelper.b(player);
+        GameplayHelper.resetBotSkillsToBase(player);
         int n = 1 + GameUtil.randomInt(40);
         int n2 = n / 5 << 1;
         if (n2 == 0) {
@@ -111,7 +111,7 @@ extends BotTaskDefinition {
         player.botTaskState = "walk towards task";
         player.botPathWaypointIndex = 0;
         player.botPathSegmentIndex = 0;
-        player.currentBotRoute = ab[player.botPathSegmentIndex];
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex];
         player.botTargetNpcId = 1533;
         player.continueBotRoute();
     }
@@ -121,8 +121,8 @@ extends BotTaskDefinition {
         player.setAutoRetaliate(false);
         player.botTaskState = "walk towards bank";
         player.botPathWaypointIndex = 0;
-        player.botPathSegmentIndex = ab.length - 1;
-        player.currentBotRoute = ab[player.botPathSegmentIndex].reversed();
+        player.botPathSegmentIndex = taskRouteSegments.length - 1;
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex].reversed();
         player.botTargetNpcId = 1533;
         player.continueBotRoute();
     }
@@ -131,7 +131,7 @@ extends BotTaskDefinition {
     public final void continueWalkToTask(Player player, int n) {
         player.setAutoRetaliate(true);
         player.botPathWaypointIndex = n;
-        player.currentBotRoute = ab[player.botPathSegmentIndex];
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex];
         player.botTargetNpcId = 1533;
         this.advanceTaskRouteSegment(player, true);
     }
@@ -140,7 +140,7 @@ extends BotTaskDefinition {
     public final void continueWalkToBank(Player player, int n) {
         player.setAutoRetaliate(false);
         player.botPathWaypointIndex = n;
-        player.currentBotRoute = ab[player.botPathSegmentIndex].reversed();
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex].reversed();
         player.botTargetNpcId = 1533;
         this.advanceTaskRouteSegment(player, true);
     }
@@ -151,12 +151,12 @@ extends BotTaskDefinition {
             if (!bl) {
                 ++player.botPathSegmentIndex;
             }
-            player.currentBotRoute = ab[player.botPathSegmentIndex];
+            player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex];
             if (!bl) {
                 player.botPathWaypointIndex = 0;
             }
             player.botTargetNpcId = 1533;
-            if (player.botPathSegmentIndex == ab.length - 1) {
+            if (player.botPathSegmentIndex == taskRouteSegments.length - 1) {
                 player.botTaskState = "walk to task";
                 return;
             }
@@ -164,7 +164,7 @@ extends BotTaskDefinition {
             if (!bl) {
                 --player.botPathSegmentIndex;
             }
-            player.currentBotRoute = ab[player.botPathSegmentIndex].reversed();
+            player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex].reversed();
             if (!bl) {
                 player.botPathWaypointIndex = 0;
             }

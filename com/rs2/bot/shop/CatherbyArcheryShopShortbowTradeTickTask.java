@@ -28,7 +28,7 @@ extends TickTask {
             return;
         }
         if (this.player.getOpenInterfaceId() == 3824) {
-            if (this.player.N <= 0) {
+            if (this.player.temporaryActionValue <= 0) {
                 if (this.player.botShopBuyMode == 1) {
                     ShopManager.buyItemStack(this.player, this.shopItem);
                     return;
@@ -36,10 +36,10 @@ extends TickTask {
                 ShopManager.sellItemStack(this.player, this.shopItem);
                 return;
             }
-            --this.player.N;
+            --this.player.temporaryActionValue;
             return;
         }
-        this.player.N = 3 + GameUtil.randomInt(3);
+        this.player.temporaryActionValue = 3 + GameUtil.randomInt(3);
         this.player.botInteractionOption = 2;
         this.player.interactWithBotNpcTargets(this.player.botInteractionTargetIds);
     }

@@ -18,11 +18,11 @@ import java.util.ArrayList;
 
 public final class RimmingtonMineBotTask
 extends BotTaskDefinition {
-    private static Position aa = new Position(3012, 3355, 0);
-    private static BotRoute ab = new BotRoute(new Position[]{new Position(3012, 3359, 0), new Position(3008, 3359, 0), new Position(3007, 3342, 0), new Position(3006, 3322, 0), new Position(3005, 3305, 0), new Position(3005, 3288, 0), new Position(3005, 3278, 0), new Position(2991, 3277, 0), new Position(2983, 3277, 0), new Position(2978, 3270, 0), new Position(2978, 3256, 0), new Position(2978, 3250, 0), new Position(2975, 3248, 0), new Position(2975, 3240, 0), new Position(2977, 3239, 0)});
+    private static Position routeStartPosition = new Position(3012, 3355, 0);
+    private static BotRoute taskRoute = new BotRoute(new Position[]{new Position(3012, 3359, 0), new Position(3008, 3359, 0), new Position(3007, 3342, 0), new Position(3006, 3322, 0), new Position(3005, 3305, 0), new Position(3005, 3288, 0), new Position(3005, 3278, 0), new Position(2991, 3277, 0), new Position(2983, 3277, 0), new Position(2978, 3270, 0), new Position(2978, 3256, 0), new Position(2978, 3250, 0), new Position(2975, 3248, 0), new Position(2975, 3240, 0), new Position(2977, 3239, 0)});
 
     public RimmingtonMineBotTask(int n) {
-        super(aa, ab, 0, false, 8);
+        super(routeStartPosition, taskRoute, 0, false, 8);
     }
 
     @Override
@@ -110,7 +110,7 @@ extends BotTaskDefinition {
 
     @Override
     public final void prepareTaskCombatLoadout(Player player) {
-        GameplayHelper.b(player);
+        GameplayHelper.resetBotSkillsToBase(player);
         int n = 1 + GameUtil.randomInt(99);
         int n2 = n / 5 << 1;
         if (n2 == 0) {

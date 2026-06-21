@@ -64,19 +64,19 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.showInterface(InterfaceDefinition.interfaceCount <= 12140 ? 1689 : 12140);
         player2 = player;
-        player.j = false;
+        player.deferLevelUpInterfaces = false;
     }
 
     @Override
     public final boolean handleFirstNpcAction(Player player, int n, int n2) {
         if (n2 != 1) {
-            if (n == 385 && ScorpionCatcherQuest.e(player)) {
+            if (n == 385 && ScorpionCatcherQuest.hasCaughtFirstScorpion(player)) {
                 return false;
             }
-            if (n == 386 && ScorpionCatcherQuest.f(player)) {
+            if (n == 386 && ScorpionCatcherQuest.hasCaughtSecondScorpion(player)) {
                 return false;
             }
-            if (n == 387 && ScorpionCatcherQuest.g(player)) {
+            if (n == 387 && ScorpionCatcherQuest.hasCaughtThirdScorpion(player)) {
                 return false;
             }
             if (n == 385 || n == 386 || n == 387) {
@@ -88,30 +88,30 @@ extends QuestScript {
         return false;
     }
 
-    private static boolean e(Player player) {
+    private static boolean hasCaughtFirstScorpion(Player player) {
         return player.ownsItem(463) || player.ownsItem(457) || player.ownsItem(458) || player.ownsItem(459);
     }
 
-    private static boolean f(Player player) {
+    private static boolean hasCaughtSecondScorpion(Player player) {
         return player.ownsItem(463) || player.ownsItem(460) || player.ownsItem(458) || player.ownsItem(461);
     }
 
-    private static boolean g(Player player) {
+    private static boolean hasCaughtThirdScorpion(Player player) {
         return player.ownsItem(463) || player.ownsItem(462) || player.ownsItem(459) || player.ownsItem(461);
     }
 
     @Override
     public final boolean handleItemOnNpc(Player player, int n, int n2, int n3) {
         if (n3 >= 2) {
-            if (n == 385 && n2 >= 456 && n2 < 463 && !ScorpionCatcherQuest.e(player)) {
+            if (n == 385 && n2 >= 456 && n2 < 463 && !ScorpionCatcherQuest.hasCaughtFirstScorpion(player)) {
                 n3 = 457;
-                if (ScorpionCatcherQuest.f(player) && !ScorpionCatcherQuest.g(player)) {
+                if (ScorpionCatcherQuest.hasCaughtSecondScorpion(player) && !ScorpionCatcherQuest.hasCaughtThirdScorpion(player)) {
                     n3 = 458;
                 }
-                if (ScorpionCatcherQuest.g(player) && !ScorpionCatcherQuest.f(player)) {
+                if (ScorpionCatcherQuest.hasCaughtThirdScorpion(player) && !ScorpionCatcherQuest.hasCaughtSecondScorpion(player)) {
                     n3 = 459;
                 }
-                if (ScorpionCatcherQuest.g(player) && ScorpionCatcherQuest.f(player)) {
+                if (ScorpionCatcherQuest.hasCaughtThirdScorpion(player) && ScorpionCatcherQuest.hasCaughtSecondScorpion(player)) {
                     n3 = 463;
                 }
                 player.getInventoryManager().removeItem(new ItemStack(n2, 1));
@@ -122,15 +122,15 @@ extends QuestScript {
                 CombatManager.finishDeath(npc, player, false);
                 return true;
             }
-            if (n == 386 && n2 >= 456 && n2 < 463 && !ScorpionCatcherQuest.f(player)) {
+            if (n == 386 && n2 >= 456 && n2 < 463 && !ScorpionCatcherQuest.hasCaughtSecondScorpion(player)) {
                 n3 = 460;
-                if (ScorpionCatcherQuest.e(player) && !ScorpionCatcherQuest.g(player)) {
+                if (ScorpionCatcherQuest.hasCaughtFirstScorpion(player) && !ScorpionCatcherQuest.hasCaughtThirdScorpion(player)) {
                     n3 = 458;
                 }
-                if (ScorpionCatcherQuest.g(player) && !ScorpionCatcherQuest.e(player)) {
+                if (ScorpionCatcherQuest.hasCaughtThirdScorpion(player) && !ScorpionCatcherQuest.hasCaughtFirstScorpion(player)) {
                     n3 = 461;
                 }
-                if (ScorpionCatcherQuest.g(player) && ScorpionCatcherQuest.e(player)) {
+                if (ScorpionCatcherQuest.hasCaughtThirdScorpion(player) && ScorpionCatcherQuest.hasCaughtFirstScorpion(player)) {
                     n3 = 463;
                 }
                 player.getInventoryManager().removeItem(new ItemStack(n2, 1));
@@ -141,15 +141,15 @@ extends QuestScript {
                 CombatManager.finishDeath(npc, player, false);
                 return true;
             }
-            if (n == 387 && n2 >= 456 && n2 < 463 && !ScorpionCatcherQuest.g(player)) {
+            if (n == 387 && n2 >= 456 && n2 < 463 && !ScorpionCatcherQuest.hasCaughtThirdScorpion(player)) {
                 n3 = 462;
-                if (ScorpionCatcherQuest.f(player) && !ScorpionCatcherQuest.e(player)) {
+                if (ScorpionCatcherQuest.hasCaughtSecondScorpion(player) && !ScorpionCatcherQuest.hasCaughtFirstScorpion(player)) {
                     n3 = 461;
                 }
-                if (ScorpionCatcherQuest.e(player) && !ScorpionCatcherQuest.f(player)) {
+                if (ScorpionCatcherQuest.hasCaughtFirstScorpion(player) && !ScorpionCatcherQuest.hasCaughtSecondScorpion(player)) {
                     n3 = 459;
                 }
-                if (ScorpionCatcherQuest.e(player) && ScorpionCatcherQuest.f(player)) {
+                if (ScorpionCatcherQuest.hasCaughtFirstScorpion(player) && ScorpionCatcherQuest.hasCaughtSecondScorpion(player)) {
                     n3 = 463;
                 }
                 player.getInventoryManager().removeItem(new ItemStack(n2, 1));

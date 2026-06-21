@@ -112,7 +112,7 @@ public final class SpecialCropPatchManager {
                     }
                 } else {
                     SpecialCropDefinition specialCropDefinition = SpecialCropDefinition.forSeedId(this.cropIds[n]);
-                    if (specialCropDefinition != null && !this.b(n)) {
+                    if (specialCropDefinition != null && !this.shouldStopGrowthCycle(n)) {
                         int n5 = (int)(l / (long)specialCropDefinition.getGrowthCycleTicks());
                         int n6 = this.growthStages[n] - 4;
                         if ((n5 -= n6) > 0) {
@@ -146,7 +146,7 @@ public final class SpecialCropPatchManager {
                                         int n10 = n;
                                         this.growthStages[n10] = this.growthStages[n10] + 1;
                                     }
-                                    if (this.b(n)) break;
+                                    if (this.shouldStopGrowthCycle(n)) break;
                                     if (this.growthStages[n] <= specialCropDefinition.getGrowthStageCount() + (specialCropDefinition == SpecialCropDefinition.BELLADONNA ? 3 : -2) && this.growthStages[n] == specialCropDefinition.getGrowthStageCount() - 2 && specialCropDefinition.getHealthCheckConfigStage() != -1) {
                                         this.growthStages[n] = specialCropDefinition.getGrowthStageCount() + 4;
                                         this.patchStates[n] = 3;
@@ -164,7 +164,7 @@ public final class SpecialCropPatchManager {
         this.refreshConfig();
     }
 
-    private boolean b(int n) {
+    private boolean shouldStopGrowthCycle(int n) {
         return this.lastUpdateTicks[n] == 0L || this.patchStates[n] == 2 || this.patchStates[n] == 3;
     }
 

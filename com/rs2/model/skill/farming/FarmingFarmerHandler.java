@@ -41,7 +41,7 @@ public final class FarmingFarmerHandler {
                 } else {
                     player.getDialogueManager().showNpcOneLineDialogue("If you like, but I want " + nArray[1] + " " + FarmingFarmerHandler.formatPaymentItemName(ItemDefinition.forId(nArray[0]).getName().toLowerCase()) + (FarmingFarmerHandler.formatPaymentItemName(ItemDefinition.forId(nArray[0]).getName().toLowerCase()).endsWith("s") ? "" : "s") + " for that.", 602);
                     player.getDialogueManager().setNextDialogueStep(18);
-                    player.ah(n);
+                    player.setSelectedSkillItemId(n);
                 }
             }
             if (string == "bushes") {
@@ -58,7 +58,7 @@ public final class FarmingFarmerHandler {
                 } else {
                     player.getDialogueManager().showNpcOneLineDialogue("If you like, but I want " + nArray[1] + " " + FarmingFarmerHandler.formatPaymentItemName(ItemDefinition.forId(nArray[0]).getName().toLowerCase()) + (FarmingFarmerHandler.formatPaymentItemName(ItemDefinition.forId(nArray[0]).getName().toLowerCase()).endsWith("s") ? "" : "s") + " for that.", 602);
                     player.getDialogueManager().setNextDialogueStep(18);
-                    player.ah(n);
+                    player.setSelectedSkillItemId(n);
                 }
             }
             if (string == "fruitTree") {
@@ -75,7 +75,7 @@ public final class FarmingFarmerHandler {
                 } else {
                     player.getDialogueManager().showNpcOneLineDialogue("If you like, but I want " + nArray[1] + " " + FarmingFarmerHandler.formatPaymentItemName(ItemDefinition.forId(nArray[0]).getName().toLowerCase()) + (FarmingFarmerHandler.formatPaymentItemName(ItemDefinition.forId(nArray[0]).getName().toLowerCase()).endsWith("s") ? "" : "s") + " for that.", 602);
                     player.getDialogueManager().setNextDialogueStep(18);
-                    player.ah(n);
+                    player.setSelectedSkillItemId(n);
                 }
             }
             if (string == "hops") {
@@ -92,7 +92,7 @@ public final class FarmingFarmerHandler {
                 } else {
                     player.getDialogueManager().showNpcOneLineDialogue("If you like, but I want " + nArray[1] + " " + FarmingFarmerHandler.formatPaymentItemName(ItemDefinition.forId(nArray[0]).getName().toLowerCase()) + (FarmingFarmerHandler.formatPaymentItemName(ItemDefinition.forId(nArray[0]).getName().toLowerCase()).endsWith("s") ? "" : "s") + " for that.", 602);
                     player.getDialogueManager().setNextDialogueStep(18);
-                    player.ah(n);
+                    player.setSelectedSkillItemId(n);
                 }
             }
             if (string == "tree") {
@@ -112,7 +112,7 @@ public final class FarmingFarmerHandler {
                 }
                 player.getDialogueManager().showNpcOneLineDialogue("If you like, but I want " + nArray[1] + " " + FarmingFarmerHandler.formatPaymentItemName(ItemDefinition.forId(nArray[0]).getName().toLowerCase()) + (FarmingFarmerHandler.formatPaymentItemName(ItemDefinition.forId(nArray[0]).getName().toLowerCase()).endsWith("s") ? "" : "s") + " for that.", 602);
                 player.getDialogueManager().setNextDialogueStep(18);
-                player.ah(n);
+                player.setSelectedSkillItemId(n);
                 return;
             }
         } else if (n3 == 2) {

@@ -402,7 +402,7 @@ public final class ObjectManager {
                 break;
             }
             case 4419: {
-                if (player.b(player.getPosition().getX(), player.getPosition().getY())) {
+                if (player.isInCastleWarsObstacleArea(player.getPosition().getX(), player.getPosition().getY())) {
                     player.ab = 2416;
                     player.ac = 3074;
                     player.Y = 2417;
@@ -417,7 +417,7 @@ public final class ObjectManager {
                 return;
             }
             case 4420: {
-                if (player.b(player.getPosition().getX(), player.getPosition().getY())) {
+                if (player.isInCastleWarsObstacleArea(player.getPosition().getX(), player.getPosition().getY())) {
                     player.ab = 2383;
                     player.ac = 3133;
                     player.Y = 2382;

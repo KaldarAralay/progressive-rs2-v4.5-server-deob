@@ -87,8 +87,8 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEventHandler;
 
 public class ProjectileDefinition {
-    private ProjectileTiming a;
-    private int b;
+    private ProjectileTiming timing;
+    private int projectileId;
 
     public static void startSheepShearing(Player player) {
         if (player.getInteractionTarget() == null || player.getInteractionTarget().isPlayer()) {
@@ -121,29 +121,29 @@ public class ProjectileDefinition {
     }
 
     public ProjectileDefinition(int n, ProjectileTiming projectileTiming) {
-        this.b = n;
-        this.a = projectileTiming;
+        this.projectileId = n;
+        this.timing = projectileTiming;
     }
 
     public ProjectileTiming getTiming() {
-        return this.a;
+        return this.timing;
     }
 
     public int getProjectileId() {
-        return this.b;
+        return this.projectileId;
     }
 
-    private static NpcCombatDefinition d() {
+    private static NpcCombatDefinition createSaradominWizardCombatDefinition() {
         SaradominWizardCombatDefinition saradominWizardCombatDefinition = new SaradominWizardCombatDefinition();
         return saradominWizardCombatDefinition;
     }
 
-    private static NpcCombatDefinition e() {
+    private static NpcCombatDefinition createZamorakWizardCombatDefinition() {
         ZamorakWizardCombatDefinition zamorakWizardCombatDefinition = new ZamorakWizardCombatDefinition();
         return zamorakWizardCombatDefinition;
     }
 
-    public static void c() {
+    public static void registerNpcCombatDefinitions() {
         NpcCombatDefinition npcCombatDefinition = new KingBlackDragonCombatDefinition();
         NpcCombatDefinition.register(new int[]{50}, npcCombatDefinition);
         npcCombatDefinition = new RedDragonCombatDefinition();
@@ -173,11 +173,11 @@ public class ProjectileDefinition {
         npcCombatDefinition = new GreenDragonCombatDefinition();
         NpcCombatDefinition.register(new int[]{941}, npcCombatDefinition);
         if (ServerSettings.modernCombatSystemEnabled) {
-            NpcCombatDefinition.register(new int[]{1007}, ProjectileDefinition.e());
-            NpcCombatDefinition.register(new int[]{1264}, ProjectileDefinition.d());
+            NpcCombatDefinition.register(new int[]{1007}, ProjectileDefinition.createZamorakWizardCombatDefinition());
+            NpcCombatDefinition.register(new int[]{1264}, ProjectileDefinition.createSaradominWizardCombatDefinition());
         } else {
-            NpcCombatDefinition.register(new int[]{1007}, ProjectileDefinition.e().addAttackBonuses(0, 0, 0, 350, 0));
-            NpcCombatDefinition.register(new int[]{1264}, ProjectileDefinition.d().addAttackBonuses(500, 500, 500, 500, 0));
+            NpcCombatDefinition.register(new int[]{1007}, ProjectileDefinition.createZamorakWizardCombatDefinition().addAttackBonuses(0, 0, 0, 350, 0));
+            NpcCombatDefinition.register(new int[]{1264}, ProjectileDefinition.createSaradominWizardCombatDefinition().addAttackBonuses(500, 500, 500, 500, 0));
         }
         npcCombatDefinition = new KalphiteQueenFirstFormCombatDefinition();
         NpcCombatDefinition.register(new int[]{1158}, npcCombatDefinition);

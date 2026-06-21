@@ -13,11 +13,11 @@ import java.util.Iterator;
 
 public final class DedicatedReactor
 extends Thread {
-    private static DedicatedReactor a;
-    private final Selector b;
+    private static DedicatedReactor instance;
+    private final Selector selector;
 
     public DedicatedReactor(Selector selector) {
-        this.b = selector;
+        this.selector = selector;
     }
 
     /*
@@ -31,15 +31,15 @@ extends Thread {
     public final void run() {
         Thread.currentThread().setName("DedicatedReactor");
         block3: while (!Thread.interrupted()) {
-            DedicatedReactor dedicatedReactor = a;
+            DedicatedReactor dedicatedReactor = instance;
             // MONITORENTER : dedicatedReactor
             // MONITOREXIT : dedicatedReactor
             try {
-                this.b.select();
-                Iterator<SelectionKey> iterator = this.b.selectedKeys().iterator();
+                this.selector.select();
+                Iterator<SelectionKey> iterator = this.selector.selectedKeys().iterator();
                 while (true) {
                     if (!iterator.hasNext()) {
-                        this.b.selectedKeys().clear();
+                        this.selector.selectedKeys().clear();
                         continue block3;
                     }
                     SelectionKey selectionKey = iterator.next();
@@ -62,19 +62,19 @@ extends Thread {
         }
     }
 
-    public final Selector a() {
-        return this.b;
+    public final Selector getSelector() {
+        return this.selector;
     }
 
-    public static DedicatedReactor b() {
-        return a;
+    public static DedicatedReactor getInstance() {
+        return instance;
     }
 
-    public static void a(DedicatedReactor dedicatedReactor) {
-        if (a != null) {
+    public static void setInstance(DedicatedReactor dedicatedReactor) {
+        if (instance != null) {
             throw new IllegalStateException("Instance already set");
         }
-        a = dedicatedReactor;
+        instance = dedicatedReactor;
     }
 }
 

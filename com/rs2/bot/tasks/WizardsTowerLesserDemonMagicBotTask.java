@@ -18,19 +18,19 @@ import java.util.ArrayList;
 
 public final class WizardsTowerLesserDemonMagicBotTask
 extends BotTaskDefinition {
-    private static Position aa = new Position(3092, 3245, 0);
-    private static int[] ab = new int[]{592, 1993};
-    private static BotRoute[] ac = new BotRoute[]{new BotRoute(new Position[]{new Position(3093, 3247, 0), new Position(3098, 3247, 0), new Position(3098, 3239, 0), new Position(3101, 3229, 0), new Position(3113, 3222, 0), new Position(3117, 3215, 0), ServerSettings.cacheVersion < 366 ? new Position(3122, 3206, 0) : new Position(3114, 3206, 0), new Position(3113, 3190, 0), new Position(3113, 3174, 0), new Position(3109, 3167, 0)}), new BotRoute(new Position[]{new Position(3109, 3166, 0), ServerSettings.cacheVersion < 366 ? new Position(3108, 3162, 0) : new Position(3107, 3163, 0)}), new BotRoute(new Position[]{ServerSettings.cacheVersion < 366 ? new Position(3107, 3161, 0) : new Position(3106, 3162, 0), new Position(3105, 3160, 0)}), new BotRoute(new Position[]{new Position(3104, 3161, 1), new Position(3105, 3160, 1)}), new BotRoute(new Position[]{new Position(3104, 3161, 2), new Position(3107, 3162, 2)}), new BotRoute(new Position[]{new Position(3108, 3162, 2), new Position(3110, 3162, 2), new Position(3110, 3159, 2)})};
+    private static Position routeStartPosition = new Position(3092, 3245, 0);
+    private static int[] ignoredLootItemIds = new int[]{592, 1993};
+    private static BotRoute[] taskRouteSegments = new BotRoute[]{new BotRoute(new Position[]{new Position(3093, 3247, 0), new Position(3098, 3247, 0), new Position(3098, 3239, 0), new Position(3101, 3229, 0), new Position(3113, 3222, 0), new Position(3117, 3215, 0), ServerSettings.cacheVersion < 366 ? new Position(3122, 3206, 0) : new Position(3114, 3206, 0), new Position(3113, 3190, 0), new Position(3113, 3174, 0), new Position(3109, 3167, 0)}), new BotRoute(new Position[]{new Position(3109, 3166, 0), ServerSettings.cacheVersion < 366 ? new Position(3108, 3162, 0) : new Position(3107, 3163, 0)}), new BotRoute(new Position[]{ServerSettings.cacheVersion < 366 ? new Position(3107, 3161, 0) : new Position(3106, 3162, 0), new Position(3105, 3160, 0)}), new BotRoute(new Position[]{new Position(3104, 3161, 1), new Position(3105, 3160, 1)}), new BotRoute(new Position[]{new Position(3104, 3161, 2), new Position(3107, 3162, 2)}), new BotRoute(new Position[]{new Position(3108, 3162, 2), new Position(3110, 3162, 2), new Position(3110, 3159, 2)})};
 
     public WizardsTowerLesserDemonMagicBotTask(int n) {
-        super(aa, ac, 1, false, 1);
+        super(routeStartPosition, taskRouteSegments, 1, false, 1);
         boolean bl = true;
         WizardsTowerLesserDemonMagicBotTask wizardsTowerLesserDemonMagicBotTask = this;
         this.combatTask = true;
         super.setForcedCombatStyle(2);
-        int[] nArray = ab;
+        int[] nArray = ignoredLootItemIds;
         wizardsTowerLesserDemonMagicBotTask = this;
-        this.ignoredLootItemIds = nArray;
+        ((BotTaskDefinition)this).ignoredLootItemIds = nArray;
         int n2 = 10;
         wizardsTowerLesserDemonMagicBotTask = this;
         this.targetSearchRadius = n2;
@@ -59,7 +59,7 @@ extends BotTaskDefinition {
         player.getInventoryManager().getContainer().clear();
         player.getEquipmentManager().getContainer().clear();
         player.getBankContainer().clear();
-        GameplayHelper.a(player, 2);
+        GameplayHelper.prepareBotCombatStyle(player, 2);
         BotCombatHelper.grantBotSpellRunes(player, SpellDefinition.TELEKINETIC_GRAB, 1000);
         player.getInventoryManager().refresh();
         player.getEquipmentManager().refresh();
@@ -67,7 +67,7 @@ extends BotTaskDefinition {
 
     @Override
     public final void prepareTaskCombatLoadout(Player player) {
-        GameplayHelper.b(player);
+        GameplayHelper.resetBotSkillsToBase(player);
         int n = 30 + GameUtil.randomInt(20);
         int n2 = n / 5 << 1;
         if (n2 == 0) {
@@ -116,7 +116,7 @@ extends BotTaskDefinition {
         player.botTaskState = "walk towards task";
         player.botPathWaypointIndex = 0;
         player.botPathSegmentIndex = 0;
-        player.currentBotRoute = ac[player.botPathSegmentIndex];
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex];
         player.botTargetNpcId = n;
         player.continueBotRoute();
     }
@@ -127,8 +127,8 @@ extends BotTaskDefinition {
         player.setAutoRetaliate(false);
         player.botTaskState = "walk towards bank";
         player.botPathWaypointIndex = 0;
-        player.botPathSegmentIndex = ac.length - 1;
-        player.currentBotRoute = ac[player.botPathSegmentIndex].reversed();
+        player.botPathSegmentIndex = taskRouteSegments.length - 1;
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex].reversed();
         player.botTargetNpcId = n;
         player.continueBotRoute();
     }
@@ -138,7 +138,7 @@ extends BotTaskDefinition {
         int n2 = ServerSettings.cacheVersion < 366 ? 1536 : 11993;
         player.setAutoRetaliate(true);
         player.botPathWaypointIndex = n;
-        player.currentBotRoute = ac[player.botPathSegmentIndex];
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex];
         player.botTargetNpcId = n2;
         this.advanceTaskRouteSegment(player, true);
     }
@@ -148,7 +148,7 @@ extends BotTaskDefinition {
         int n2 = ServerSettings.cacheVersion < 366 ? 1536 : 11993;
         player.setAutoRetaliate(false);
         player.botPathWaypointIndex = n;
-        player.currentBotRoute = ac[player.botPathSegmentIndex].reversed();
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex].reversed();
         player.botTargetNpcId = n2;
         this.advanceTaskRouteSegment(player, true);
     }
@@ -159,7 +159,7 @@ extends BotTaskDefinition {
             if (!bl) {
                 ++player.botPathSegmentIndex;
             }
-            player.currentBotRoute = ac[player.botPathSegmentIndex];
+            player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex];
             if (!bl) {
                 player.botPathWaypointIndex = 0;
             }
@@ -168,7 +168,7 @@ extends BotTaskDefinition {
                 ArrayList<Integer> arrayList = new ArrayList<Integer>();
                 arrayList.add(n);
                 player.interactWithBotObjectTargets(arrayList);
-                player.dm = true;
+                player.botRouteActionPending = true;
                 return;
             }
             if (player.botPathSegmentIndex == 4) {
@@ -177,7 +177,7 @@ extends BotTaskDefinition {
                 arrayList.add(n);
                 player.botInteractionOption = 2;
                 player.interactWithBotObjectTargets(arrayList);
-                player.dm = true;
+                player.botRouteActionPending = true;
                 return;
             }
             if (player.botPathSegmentIndex == 5) {
@@ -189,7 +189,7 @@ extends BotTaskDefinition {
             if (!bl) {
                 --player.botPathSegmentIndex;
             }
-            player.currentBotRoute = ac[player.botPathSegmentIndex].reversed();
+            player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex].reversed();
             if (!bl) {
                 player.botPathWaypointIndex = 0;
             }
@@ -198,7 +198,7 @@ extends BotTaskDefinition {
                 ArrayList<Integer> arrayList = new ArrayList<Integer>();
                 arrayList.add(n);
                 player.interactWithBotObjectTargets(arrayList);
-                player.dm = true;
+                player.botRouteActionPending = true;
                 return;
             }
             if (player.botPathSegmentIndex == 2) {
@@ -207,7 +207,7 @@ extends BotTaskDefinition {
                 arrayList.add(n);
                 player.botInteractionOption = 3;
                 player.interactWithBotObjectTargets(arrayList);
-                player.dm = true;
+                player.botRouteActionPending = true;
                 return;
             }
             if (player.botPathSegmentIndex == 1) {

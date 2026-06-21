@@ -18,19 +18,19 @@ import java.util.LinkedList;
 
 public final class GroundItemManager
 implements Runnable {
-    private LinkedList a = new LinkedList();
-    private static int b;
-    private static int c;
-    private static int d;
-    private static int e;
-    private static GroundItemManager f;
+    private LinkedList groundItems = new LinkedList();
+    private static int hiddenItemRevealDelayTicks;
+    private static int privateItemRevealDelayTicks;
+    private static int publicItemLifetimeTicks;
+    private static int privateUntradeableLifetimeTicks;
+    private static GroundItemManager instance;
 
     static {
-        f = new GroundItemManager();
-        b = (int)GameUtil.secondsToTicks(100L);
-        c = (int)GameUtil.secondsToTicks(100L);
-        d = (int)GameUtil.secondsToTicks(ServerSettings.groundItemLifetimeSeconds);
-        e = (int)GameUtil.secondsToTicks(ServerSettings.groundItemLifetimeSeconds);
+        instance = new GroundItemManager();
+        hiddenItemRevealDelayTicks = (int)GameUtil.secondsToTicks(100L);
+        privateItemRevealDelayTicks = (int)GameUtil.secondsToTicks(100L);
+        publicItemLifetimeTicks = (int)GameUtil.secondsToTicks(ServerSettings.groundItemLifetimeSeconds);
+        privateUntradeableLifetimeTicks = (int)GameUtil.secondsToTicks(ServerSettings.groundItemLifetimeSeconds);
     }
 
     /*
@@ -42,14 +42,14 @@ implements Runnable {
     public final void run() {
         try {
             GroundItem groundItem;
-            int n = this.a.size();
+            int n = this.groundItems.size();
             LinkedList<GroundItem> linkedList = new LinkedList<GroundItem>();
             int n2 = 0;
             while (n2 < n) {
-                groundItem = (GroundItem)this.a.get(n2);
+                groundItem = (GroundItem)this.groundItems.get(n2);
                 if (groundItem == null) continue;
                 switch (groundItem.getVisibility()) {
-                    case b: {
+                    case PUBLIC: {
                         linkedList.add(groundItem);
                         break;
                     }
@@ -58,18 +58,18 @@ implements Runnable {
             }
             n2 = 0;
             block11: while (n2 < n) {
-                groundItem = (GroundItem)this.a.get(n2);
+                groundItem = (GroundItem)this.groundItems.get(n2);
                 if (groundItem == null) continue;
                 switch (groundItem.getVisibility()) {
-                    case c: {
-                        if (groundItem.getItem().getId() == 6903 && groundItem.getTimer().elapsed() < 700 || (!groundItem.isRespawning() ? groundItem.getTimer().elapsed() < b : groundItem.getTimer().elapsed() < groundItem.getRespawnDelayTicks())) break;
+                    case HIDDEN: {
+                        if (groundItem.getItem().getId() == 6903 && groundItem.getTimer().elapsed() < 700 || (!groundItem.isRespawning() ? groundItem.getTimer().elapsed() < hiddenItemRevealDelayTicks : groundItem.getTimer().elapsed() < groundItem.getRespawnDelayTicks())) break;
                         groundItem.getTimer().reset();
-                        groundItem.setVisibility(GroundItemVisibility.b);
+                        groundItem.setVisibility(GroundItemVisibility.PUBLIC);
                         if (groundItem.getItem().getDefinition().isStackable()) {
                             for (GroundItem groundItem2 : linkedList) {
                                 if (groundItem2 == null || !groundItem.canStackWith(groundItem2)) continue;
                                 GroundItemManager.mergeStackedItems(groundItem, groundItem2, World.getPlayers());
-                                this.a.remove(n2);
+                                this.groundItems.remove(n2);
                                 --n;
                                 continue block11;
                             }
@@ -77,8 +77,8 @@ implements Runnable {
                         GroundItemManager.showToPlayers(groundItem, World.getPlayers());
                         break;
                     }
-                    case b: {
-                        if (groundItem.getTimer().elapsed() < d) break;
+                    case PUBLIC: {
+                        if (groundItem.getTimer().elapsed() < publicItemLifetimeTicks) break;
                         groundItem.getTimer().reset();
                         if (groundItem.isRespawning()) break;
                         linkedList.remove(groundItem);
@@ -86,16 +86,16 @@ implements Runnable {
                         --n;
                         continue block11;
                     }
-                    case a: {
+                    case PRIVATE: {
                         if (groundItem.getItem().getDefinition().isUntradeable()) {
                             Entity entity;
                             if (groundItem.getItem().getId() == 6888) {
                                 if (groundItem.getOwner().resolve() != null) break;
-                                this.a.remove(groundItem);
+                                this.groundItems.remove(groundItem);
                                 --n;
                                 continue block11;
                             }
-                            if (groundItem.getTimer().elapsed() < e) break;
+                            if (groundItem.getTimer().elapsed() < privateUntradeableLifetimeTicks) break;
                             groundItem.getTimer().reset();
                             if (groundItem.getOwner() != null && (entity = groundItem.getOwner().resolve()) != null && entity.isPlayer()) {
                                 this.removeForPlayers(groundItem, new Player[]{(Player)entity});
@@ -103,14 +103,14 @@ implements Runnable {
                             --n;
                             continue block11;
                         }
-                        if (groundItem.getTimer().elapsed() < c) break;
+                        if (groundItem.getTimer().elapsed() < privateItemRevealDelayTicks) break;
                         groundItem.getTimer().reset();
-                        groundItem.setVisibility(GroundItemVisibility.b);
+                        groundItem.setVisibility(GroundItemVisibility.PUBLIC);
                         if (groundItem.getItem().getDefinition().isStackable()) {
                             for (GroundItem groundItem3 : linkedList) {
                                 if (groundItem3 == null || !groundItem.canStackWith(groundItem3)) continue;
                                 GroundItemManager.mergeStackedItems(groundItem, groundItem3, World.getPlayers());
-                                this.a.remove(n2);
+                                this.groundItems.remove(n2);
                                 --n;
                                 continue block11;
                             }
@@ -214,7 +214,7 @@ implements Runnable {
             }
             ++n2;
         }
-        this.a.remove(groundItem);
+        this.groundItems.remove(groundItem);
     }
 
     private static void showToPlayers(GroundItem groundItem, Player[] object) {
@@ -243,21 +243,21 @@ implements Runnable {
             DropPartyBotManager.pendingDropPartyGroundItems.remove(groundItem);
         }
         Player[] playerArray = null;
-        if (groundItem.getVisibility() == GroundItemVisibility.a) {
+        if (groundItem.getVisibility() == GroundItemVisibility.PRIVATE) {
             if (groundItem.getOwner() != null && (entity = groundItem.getOwner().resolve()) != null && entity.isPlayer()) {
                 playerArray = new Player[]{(Player)entity};
             }
-        } else if (groundItem.getVisibility() == GroundItemVisibility.b) {
+        } else if (groundItem.getVisibility() == GroundItemVisibility.PUBLIC) {
             playerArray = World.getPlayers();
         }
-        if (groundItem.getVisibility() == GroundItemVisibility.b && groundItem.isRespawning()) {
-            groundItem.setVisibility(GroundItemVisibility.c);
+        if (groundItem.getVisibility() == GroundItemVisibility.PUBLIC && groundItem.isRespawning()) {
+            groundItem.setVisibility(GroundItemVisibility.HIDDEN);
             groundItem.getTimer().reset();
         } else {
-            if (!this.a.contains(groundItem)) {
+            if (!this.groundItems.contains(groundItem)) {
                 return false;
             }
-            this.a.remove(groundItem);
+            this.groundItems.remove(groundItem);
         }
         if (playerArray == null) {
             return false;
@@ -283,34 +283,34 @@ implements Runnable {
         if (groundItem.getSource() != null && BotPlayer.dropPartyBots.size() > 0 && groundItem.getSource().resolve() == BotPlayer.dropPartyBots.get(0)) {
             DropPartyBotManager.pendingDropPartyGroundItems.add(groundItem);
         }
-        int n = this.a.size();
+        int n = this.groundItems.size();
         LinkedList<GroundItem> linkedList = new LinkedList<GroundItem>();
         int n2 = 0;
         while (n2 < n) {
-            GroundItem groundItem2 = (GroundItem)this.a.get(n2);
+            GroundItem groundItem2 = (GroundItem)this.groundItems.get(n2);
             if (groundItem2 == null) continue;
             switch (groundItem2.getVisibility()) {
-                case b: {
+                case PUBLIC: {
                     linkedList.add(groundItem2);
                 }
             }
             ++n2;
         }
         switch (groundItem.getVisibility()) {
-            case a: {
+            case PRIVATE: {
                 Entity entity;
                 if (groundItem.getOwner() != null && (entity = groundItem.getOwner().resolve()) != null && entity.isPlayer()) {
                     playerArray = new Player[]{(Player)entity};
                 }
                 if (!ItemDefinition.forId(groundItem.getItem().getId()).isStackable()) break;
-                for (GroundItem groundItem2 : this.a) {
+                for (GroundItem groundItem2 : this.groundItems) {
                     if (!groundItem.canStackWith(groundItem2)) continue;
                     GroundItemManager.mergeStackedItems(groundItem, groundItem2, playerArray);
                     return;
                 }
                 break;
             }
-            case b: {
+            case PUBLIC: {
                 playerArray = World.getPlayers();
                 if (!ItemDefinition.forId(groundItem.getItem().getId()).isStackable()) break;
                 for (GroundItem groundItem2 : linkedList) {
@@ -321,7 +321,7 @@ implements Runnable {
                 break;
             }
         }
-        this.a.add(groundItem);
+        this.groundItems.add(groundItem);
         if (playerArray == null) {
             return;
         }
@@ -329,7 +329,7 @@ implements Runnable {
     }
 
     public static GroundItemManager getInstance() {
-        return f;
+        return instance;
     }
 
     public static boolean isVisible(Player object2, GroundItem groundItem) {
@@ -380,16 +380,16 @@ implements Runnable {
         if (player == null) {
             return;
         }
-        for (GroundItem groundItem : this.a) {
+        for (GroundItem groundItem : this.groundItems) {
             Player player2;
             if (groundItem == null || !groundItem.isVisibleTo(player)) continue;
-            if (groundItem.getVisibility() == GroundItemVisibility.b) {
+            if (groundItem.getVisibility() == GroundItemVisibility.PUBLIC) {
                 player.getVisibleGroundItems().add(groundItem);
                 player2 = player;
                 player2.packetSender.sendGroundItemCreate(groundItem);
                 continue;
             }
-            if (groundItem.getVisibility() != GroundItemVisibility.a || groundItem.getOwner() == null || !groundItem.getOwner().equals(player)) continue;
+            if (groundItem.getVisibility() != GroundItemVisibility.PRIVATE || groundItem.getOwner() == null || !groundItem.getOwner().equals(player)) continue;
             player.getVisibleGroundItems().add(groundItem);
             player2 = player;
             player2.packetSender.sendGroundItemCreate(groundItem);

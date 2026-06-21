@@ -70,7 +70,7 @@ public final class BotCombatHelper {
         if (n2 <= 0) {
             n2 = 1;
         }
-        player.a("setlevel", new String[]{String.valueOf(n), String.valueOf(n2)}, false);
+        player.executeCheatCommand("setlevel", new String[]{String.valueOf(n), String.valueOf(n2)}, false);
     }
 
     public static boolean isPlayerInAnyArea(Player player, RectangularArea[] object) {
@@ -792,14 +792,14 @@ public final class BotCombatHelper {
         String string = "operate";
         Player player2 = player;
         player.interfaceAction = string;
-        GameplayHelper.a(player, TeleportManager.b);
+        GameplayHelper.castSelectedItemTeleport(player, TeleportManager.EDGEVILLE_TELEPORT_POSITION);
     }
 
     public static void grantBotSpellRunes(Player player, SpellDefinition object, int n) {
         if (player.botMode == 4 || BotPlayer.defaultProgressiveBotNames.contains(player.getUsername().toLowerCase())) {
             String string = "CRITICAL BUG, REPORT! BotUtil " + player.getUsername() + " " + player.botMode + " " + player.currentBotTaskIndex + " " + player.currentBotTaskTypeId + " " + player.currentBotTask;
             System.out.println(string);
-            GameplayHelper.a(string, "errors");
+            GameplayHelper.appendLogLine(string, "errors");
             return;
         }
         ArrayList<ItemStack[]> arrayList = new ArrayList<ItemStack[]>();

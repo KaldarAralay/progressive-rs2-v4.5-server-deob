@@ -18,7 +18,7 @@ extends NpcCombatDefinition {
 
     @Override
     public final CombatAttack[] createAttacks(Entity entity, Entity entity2) {
-        return new CombatAttack[]{BaseCombatAttack.a(entity, entity2, AttackXpMode.MELEE_ACCURATE, AttackBonusType.CRUSH, 27, 2, 6964), BaseCombatAttack.createMagicAttack(entity, entity2, SpellDefinition.COMMANDER_ZILYANA_MAGIC_ATTACK)};
+        return new CombatAttack[]{BaseCombatAttack.createMeleeAttack(entity, entity2, AttackXpMode.MELEE_ACCURATE, AttackBonusType.CRUSH, 27, 2, 6964), BaseCombatAttack.createMagicAttack(entity, entity2, SpellDefinition.COMMANDER_ZILYANA_MAGIC_ATTACK)};
     }
 }
 

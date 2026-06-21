@@ -21,12 +21,12 @@ public final class CanoeTravelManager {
 
     private static boolean canTravelToStation(Player player, CanoeStation enum_, int n) {
         if (enum_ == CanoeStation.WILDERNESS) {
-            enum_ = CanoeTypeDefinition.values()[player.U - 1];
+            enum_ = CanoeTypeDefinition.values()[player.builtCanoeTypeConfigValue - 1];
             if (!((CanoeTypeDefinition)enum_).canEnterWilderness) {
                 return false;
             }
         }
-        return Math.abs(player.T - n) <= CanoeTypeDefinition.values()[player.U - 1].travelRange;
+        return Math.abs(player.canoeStationIndex - n) <= CanoeTypeDefinition.values()[player.builtCanoeTypeConfigValue - 1].travelRange;
     }
 
     public static void handleCanoeTreeClick(Player player, int n, int n2, int n3) {
@@ -39,14 +39,14 @@ public final class CanoeTravelManager {
         if (object2 == null) {
             return;
         }
-        if (player.U != 0) {
-            if (player.ep[CANOE_CONFIG_ID] == player.U << object2.getConfigShift()) {
-                player.ep[CanoeTravelManager.CANOE_CONFIG_ID] = player.U + 10 << object2.getConfigShift();
+        if (player.builtCanoeTypeConfigValue != 0) {
+            if (player.ep[CANOE_CONFIG_ID] == player.builtCanoeTypeConfigValue << object2.getConfigShift()) {
+                player.ep[CanoeTravelManager.CANOE_CONFIG_ID] = player.builtCanoeTypeConfigValue + 10 << object2.getConfigShift();
                 Player player2 = player;
                 player2.packetSender.sendConfig(CANOE_CONFIG_ID, player.ep[CANOE_CONFIG_ID]);
                 return;
             }
-            if (player.ep[CANOE_CONFIG_ID] == player.U + 10 << object2.getConfigShift()) {
+            if (player.ep[CANOE_CONFIG_ID] == player.builtCanoeTypeConfigValue + 10 << object2.getConfigShift()) {
                 Object object3;
                 object2 = player;
                 int n4 = 0;
@@ -55,7 +55,7 @@ public final class CanoeTravelManager {
                 int n6 = 0;
                 while (n6 < n5) {
                     CanoeStation canoeStation = canoeStationArray[n6];
-                    if (n4 == ((Player)object2).T) {
+                    if (n4 == ((Player)object2).canoeStationIndex) {
                         CanoeTreeDefinition canoeTreeDefinition = object2;
                         object3 = canoeTreeDefinition;
                         object3 = canoeStation;
@@ -95,7 +95,7 @@ public final class CanoeTravelManager {
                 return;
             }
         }
-        player.U = 0;
+        player.builtCanoeTypeConfigValue = 0;
         if (player.ep[CANOE_CONFIG_ID] != 10 << object2.getConfigShift()) {
             object = object2;
             object2 = player;
@@ -154,7 +154,7 @@ public final class CanoeTravelManager {
             }
             object4 = player;
             ((Player)object4).packetSender.showInterface(18178);
-            player.T = object2.getConfigShift() / 8;
+            player.canoeStationIndex = object2.getConfigShift() / 8;
             return;
         }
     }
@@ -218,8 +218,8 @@ public final class CanoeTravelManager {
                     ((Player)object).packetSender.sendGameMessage("You arrive at the " + object.displayName + "." + (canoeStation2 == CanoeStation.WILDERNESS ? " There are no trees suitable to make a canoe." : ""));
                     object = player;
                     ((Player)object).packetSender.sendGameMessage("Your canoe sinks into the water after the hard journey.");
-                    player.T = 0;
-                    player.U = 0;
+                    player.canoeStationIndex = 0;
+                    player.builtCanoeTypeConfigValue = 0;
                     player.ep[CanoeTravelManager.CANOE_CONFIG_ID] = 0;
                     object = player;
                     ((Player)object).packetSender.sendConfig(CANOE_CONFIG_ID, player.ep[CANOE_CONFIG_ID]);

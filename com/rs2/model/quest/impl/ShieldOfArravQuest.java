@@ -10,12 +10,12 @@ import com.rs2.model.npc.Npc;
 import com.rs2.model.objects.DynamicObject;
 import com.rs2.model.objects.ObjectManager;
 import com.rs2.model.player.Player;
-import com.rs2.model.quest.QuestNpcIds;
+import com.rs2.model.quest.QuestConstants;
 import com.rs2.model.quest.QuestScript;
 
 public final class ShieldOfArravQuest
 extends QuestScript {
-    private int a = 2;
+    private int shieldOfArravBookLastPageIndex = 2;
 
     public ShieldOfArravQuest(int n) {
         super(16);
@@ -105,7 +105,7 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.showInterface(InterfaceDefinition.interfaceCount <= 12140 ? 1689 : 12140);
         player2 = player;
-        player.j = false;
+        player.deferLevelUpInterfaces = false;
     }
 
     @Override
@@ -256,7 +256,7 @@ extends QuestScript {
         return false;
     }
 
-    private void e(Player player, int n) {
+    private void showShieldOfArravBookPage(Player player, int n) {
         String[] stringArray;
         Player player2;
         Player player3 = player2 = player;
@@ -294,22 +294,22 @@ extends QuestScript {
             ++n3;
         }
         player3 = player;
-        player3.packetSender.setInterfaceHiddenFlag(player.X == 0 ? 1 : 0, 840);
+        player3.packetSender.setInterfaceHiddenFlag(player.activeBookPageIndex == 0 ? 1 : 0, 840);
         player3 = player;
-        player3.packetSender.setInterfaceHiddenFlag(player.X == this.a ? 1 : 0, 842);
+        player3.packetSender.setInterfaceHiddenFlag(player.activeBookPageIndex == this.shieldOfArravBookLastPageIndex ? 1 : 0, 842);
     }
 
     @Override
     public final boolean handleButtonClick(Player player, int n, int n2) {
-        if (player.W == 757) {
-            if (n == 841 && player.X < this.a) {
-                ++player.X;
-                this.e(player, player.X);
+        if (player.activeBookItemId == 757) {
+            if (n == 841 && player.activeBookPageIndex < this.shieldOfArravBookLastPageIndex) {
+                ++player.activeBookPageIndex;
+                this.showShieldOfArravBookPage(player, player.activeBookPageIndex);
                 return true;
             }
-            if (n == 839 && player.X > 0) {
-                --player.X;
-                this.e(player, player.X);
+            if (n == 839 && player.activeBookPageIndex > 0) {
+                --player.activeBookPageIndex;
+                this.showShieldOfArravBookPage(player, player.activeBookPageIndex);
                 return true;
             }
         }
@@ -319,9 +319,9 @@ extends QuestScript {
     @Override
     public final boolean handleInventoryItemFirstOption(Player player, int n, int n2, int n3) {
         if (n == 3214 && n2 == 757) {
-            this.e(player, 0);
-            player.W = n2;
-            player.X = 0;
+            this.showShieldOfArravBookPage(player, 0);
+            player.activeBookItemId = n2;
+            player.activeBookPageIndex = 0;
             player.packetSender.showInterface(837);
             return true;
         }
@@ -330,7 +330,7 @@ extends QuestScript {
 
     @Override
     public final boolean handleNpcDialogue(Player player, int n, int n2, int n3, int n4) {
-        if (n == QuestNpcIds.n) {
+        if (n == QuestConstants.RELDO_NPC_ID) {
             if (n4 == 0) {
                 if (n2 == 1) {
                     player.getDialogueManager().showNpcOneLineDialogue("Hello stranger.", 591);

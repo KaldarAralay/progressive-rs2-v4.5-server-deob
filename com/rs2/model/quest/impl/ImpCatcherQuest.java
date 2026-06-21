@@ -55,14 +55,14 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.showInterface(InterfaceDefinition.interfaceCount <= 12140 ? 1689 : 12140);
         player2 = player;
-        player.j = false;
+        player.deferLevelUpInterfaces = false;
     }
 
-    private static boolean e(Player player) {
+    private static boolean hasAnyImpBead(Player player) {
         return player.getInventoryManager().containsItem(1476) || player.getInventoryManager().containsItem(1470) || player.getInventoryManager().containsItem(1474) || player.getInventoryManager().containsItem(1472);
     }
 
-    private static boolean f(Player player) {
+    private static boolean hasAllImpBeads(Player player) {
         return player.getInventoryManager().containsItem(1476) && player.getInventoryManager().containsItem(1470) && player.getInventoryManager().containsItem(1474) && player.getInventoryManager().containsItem(1472);
     }
 
@@ -138,15 +138,15 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 2) {
-                    if (!ImpCatcherQuest.e(player)) {
+                    if (!ImpCatcherQuest.hasAnyImpBead(player)) {
                         player.getDialogueManager().showPlayerOneLineDialogue("I have none of them yet.", 591);
                         player.getDialogueManager().finishDialogue();
                     }
-                    if (ImpCatcherQuest.e(player) && !ImpCatcherQuest.f(player)) {
+                    if (ImpCatcherQuest.hasAnyImpBead(player) && !ImpCatcherQuest.hasAllImpBeads(player)) {
                         player.getDialogueManager().showPlayerOneLineDialogue("I have found some of them.", 591);
                         player.getDialogueManager().setNextDialogueStep(3);
                     }
-                    if (ImpCatcherQuest.f(player)) {
+                    if (ImpCatcherQuest.hasAllImpBeads(player)) {
                         player.getDialogueManager().showPlayerOneLineDialogue("I've got all four beads. It was hard work I can tell you.", 591);
                         player.getDialogueManager().setNextDialogueStep(4);
                     }
@@ -165,7 +165,7 @@ extends QuestScript {
                     player.getDialogueManager().showOneLineStatement("You give four coloured beads to Wizard Mizgog.");
                     return true;
                 }
-                if (n2 == 6 && ImpCatcherQuest.f(player)) {
+                if (n2 == 6 && ImpCatcherQuest.hasAllImpBeads(player)) {
                     player.getInventoryManager().removeItem(new ItemStack(1476, 1));
                     player.getInventoryManager().removeItem(new ItemStack(1470, 1));
                     player.getInventoryManager().removeItem(new ItemStack(1474, 1));

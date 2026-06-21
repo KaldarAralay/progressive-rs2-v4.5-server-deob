@@ -192,7 +192,7 @@ public class Position {
         return new Position(position.x + n5, position.y + n4, position.plane);
     }
 
-    public final boolean c(Position position) {
+    public final boolean isOrthogonallyAlignedWith(Position position) {
         block5: {
             Position position2;
             block4: {

@@ -55,14 +55,14 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.showInterface(InterfaceDefinition.interfaceCount <= 12140 ? 1689 : 12140);
         player2 = player;
-        player.j = false;
+        player.deferLevelUpInterfaces = false;
     }
 
-    private static boolean e(Player player) {
+    private static boolean hasAnyDoricMaterial(Player player) {
         return player.getInventoryManager().containsItem(434) || player.getInventoryManager().containsItem(436) || player.getInventoryManager().containsItem(440);
     }
 
-    private static boolean f(Player player) {
+    private static boolean hasAllDoricMaterials(Player player) {
         return player.getInventoryManager().containsItemAmount(434, 6) && player.getInventoryManager().containsItemAmount(436, 4) && player.getInventoryManager().containsItemAmount(440, 2);
     }
 
@@ -147,15 +147,15 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 2) {
-                    if (!DoricsQuest.e(player)) {
+                    if (!DoricsQuest.hasAnyDoricMaterial(player)) {
                         player.getDialogueManager().showPlayerOneLineDialogue("No, I have none of them yet.", 591);
                         player.getDialogueManager().finishDialogue();
                     }
-                    if (DoricsQuest.e(player) && !DoricsQuest.f(player)) {
+                    if (DoricsQuest.hasAnyDoricMaterial(player) && !DoricsQuest.hasAllDoricMaterials(player)) {
                         player.getDialogueManager().showPlayerOneLineDialogue("I have found some of the things you asked for.", 591);
                         player.getDialogueManager().setNextDialogueStep(3);
                     }
-                    if (DoricsQuest.f(player)) {
+                    if (DoricsQuest.hasAllDoricMaterials(player)) {
                         player.getDialogueManager().showPlayerOneLineDialogue("I have everything you need.", 591);
                         player.getDialogueManager().setNextDialogueStep(4);
                     }
@@ -174,7 +174,7 @@ extends QuestScript {
                     player.getDialogueManager().showItemMessage("You hand the clay, copper, and iron to Doric.", new ItemStack(436, 1));
                     return true;
                 }
-                if (n2 == 6 && DoricsQuest.f(player)) {
+                if (n2 == 6 && DoricsQuest.hasAllDoricMaterials(player)) {
                     player.getInventoryManager().removeItem(new ItemStack(434, 6));
                     player.getInventoryManager().removeItem(new ItemStack(436, 4));
                     player.getInventoryManager().removeItem(new ItemStack(440, 2));

@@ -18,11 +18,11 @@ import java.util.ArrayList;
 
 public final class SeersMagicTreeWoodcuttingBotTask
 extends BotTaskDefinition {
-    private static Position aa = new Position(2725, 3493, 0);
-    private static BotRoute ab = new BotRoute(new Position[]{new Position(2725, 3486, 0), new Position(2718, 3484, 0), new Position(2718, 3463, 0), new Position(2718, 3456, 0), new Position(2709, 3448, 0), new Position(2707, 3434, 0), new Position(2700, 3427, 0)});
+    private static Position routeStartPosition = new Position(2725, 3493, 0);
+    private static BotRoute taskRoute = new BotRoute(new Position[]{new Position(2725, 3486, 0), new Position(2718, 3484, 0), new Position(2718, 3463, 0), new Position(2718, 3456, 0), new Position(2709, 3448, 0), new Position(2707, 3434, 0), new Position(2700, 3427, 0)});
 
     public SeersMagicTreeWoodcuttingBotTask(int n) {
-        super(aa, ab, 0, true, 2);
+        super(routeStartPosition, taskRoute, 0, true, 2);
     }
 
     @Override
@@ -76,7 +76,7 @@ extends BotTaskDefinition {
 
     @Override
     public final void prepareTaskCombatLoadout(Player player) {
-        GameplayHelper.b(player);
+        GameplayHelper.resetBotSkillsToBase(player);
         int n = 1 + GameUtil.randomInt(99);
         int n2 = n / 5 << 1;
         if (n2 == 0) {

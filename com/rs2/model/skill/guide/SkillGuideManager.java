@@ -320,7 +320,7 @@ public final class SkillGuideManager {
             ((Player)object2).packetSender.sendInterfaceText(stringArray[n], (int)object[n]);
             ++n;
         }
-        this.player.er();
+        this.player.resetInteractionState();
         object2 = this.player;
         ((Player)object2).packetSender.showInterface(8714);
     }

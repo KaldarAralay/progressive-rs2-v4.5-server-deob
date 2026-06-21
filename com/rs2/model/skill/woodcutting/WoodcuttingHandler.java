@@ -95,11 +95,11 @@ public class WoodcuttingHandler {
             ((Player)object).packetSender.sendGameMessage("You swing your axe at the " + (object3 == TreeDefinition.VINES ? "vines" : "tree") + ".");
         }
         if (object3 == TreeDefinition.VINES && player.botEnabled) {
-            player.dm = true;
+            player.botRouteActionPending = true;
         }
         player.getUpdateState().setAnimation(gatheringToolDefinition.getGatherAnimationId(), 0);
         player.gatheringHazardCounter = 0;
-        if (player.getQuestState(0) == 1 && ServerSettings.randomEventsMode == 0 && GameUtil.randomInt(800) == 0 && ((TreeDefinition)((Object)object3)).getEntNpcIds() != null && !player.botEnabled && !player.r()) {
+        if (player.getQuestState(0) == 1 && ServerSettings.randomEventsMode == 0 && GameUtil.randomInt(800) == 0 && ((TreeDefinition)((Object)object3)).getEntNpcIds() != null && !player.botEnabled && !player.isInTutorialIsland()) {
             int n4 = TreeDefinition.getObjectIdIndex(n, (TreeDefinition)((Object)object3)) >= ((TreeDefinition)((Object)object3)).getEntNpcIds().length ? 0 : TreeDefinition.getObjectIdIndex(n, (TreeDefinition)((Object)object3));
             n4 = ((TreeDefinition)((Object)object3)).getEntNpcIds()[n4];
             if (NpcDefinition.isDefined(n4)) {

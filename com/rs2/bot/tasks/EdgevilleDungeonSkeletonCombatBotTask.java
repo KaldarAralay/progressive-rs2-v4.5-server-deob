@@ -20,18 +20,18 @@ import java.util.ArrayList;
 
 public final class EdgevilleDungeonSkeletonCombatBotTask
 extends BotTaskDefinition {
-    private static Position aa = new Position(3094, 3489, 0);
-    private static BotRoute[] ab = new BotRoute[]{new BotRoute(new Position[]{new Position(3090, 3490, 0), new Position(3090, 3487, 0), new Position(3094, 3482, 0), new Position(3094, 3473, 0), new Position(3096, 3468, 0)}), new BotRoute(new Position[]{new Position(3096, 9879, 0), new Position(3095, 9887, 0), new Position(3095, 9901, 0)})};
-    private static int[] ac = new int[]{1947};
+    private static Position routeStartPosition = new Position(3094, 3489, 0);
+    private static BotRoute[] taskRouteSegments = new BotRoute[]{new BotRoute(new Position[]{new Position(3090, 3490, 0), new Position(3090, 3487, 0), new Position(3094, 3482, 0), new Position(3094, 3473, 0), new Position(3096, 3468, 0)}), new BotRoute(new Position[]{new Position(3096, 9879, 0), new Position(3095, 9887, 0), new Position(3095, 9901, 0)})};
+    private static int[] ignoredLootItemIds = new int[]{1947};
 
     public EdgevilleDungeonSkeletonCombatBotTask(int n) {
-        super(aa, ab, 1, false, 2);
+        super(routeStartPosition, taskRouteSegments, 1, false, 2);
         boolean bl = true;
         EdgevilleDungeonSkeletonCombatBotTask edgevilleDungeonSkeletonCombatBotTask = this;
         this.combatTask = true;
-        int[] nArray = ac;
+        int[] nArray = ignoredLootItemIds;
         edgevilleDungeonSkeletonCombatBotTask = this;
-        this.ignoredLootItemIds = nArray;
+        ((BotTaskDefinition)this).ignoredLootItemIds = nArray;
     }
 
     @Override
@@ -91,14 +91,14 @@ extends BotTaskDefinition {
         player.botTaskRequiredItems = object;
         player.getInventoryManager().addItem(object[0]);
         object = player;
-        GameplayHelper.a((Player)object, -1);
+        GameplayHelper.prepareBotCombatStyle((Player)object, -1);
         player.getInventoryManager().refresh();
         player.getEquipmentManager().refresh();
     }
 
     @Override
     public final void prepareTaskCombatLoadout(Player player) {
-        GameplayHelper.b(player);
+        GameplayHelper.resetBotSkillsToBase(player);
         int n = 15 + GameUtil.randomInt(10);
         int n2 = n / 5 << 1;
         if (n2 == 0) {
@@ -143,7 +143,7 @@ extends BotTaskDefinition {
         player.botTaskState = "walk towards task";
         player.botPathWaypointIndex = 0;
         player.botPathSegmentIndex = 0;
-        player.currentBotRoute = ab[player.botPathSegmentIndex];
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex];
         player.continueBotRoute();
     }
 
@@ -152,8 +152,8 @@ extends BotTaskDefinition {
         player.setAutoRetaliate(false);
         player.botTaskState = "walk towards bank";
         player.botPathWaypointIndex = 0;
-        player.botPathSegmentIndex = ab.length - 1;
-        player.currentBotRoute = ab[player.botPathSegmentIndex].reversed();
+        player.botPathSegmentIndex = taskRouteSegments.length - 1;
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex].reversed();
         player.continueBotRoute();
     }
 
@@ -161,7 +161,7 @@ extends BotTaskDefinition {
     public final void continueWalkToTask(Player player, int n) {
         player.setAutoRetaliate(true);
         player.botPathWaypointIndex = n;
-        player.currentBotRoute = ab[player.botPathSegmentIndex];
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex];
         this.advanceTaskRouteSegment(player, true);
     }
 
@@ -169,7 +169,7 @@ extends BotTaskDefinition {
     public final void continueWalkToBank(Player player, int n) {
         player.setAutoRetaliate(false);
         player.botPathWaypointIndex = n;
-        player.currentBotRoute = ab[player.botPathSegmentIndex].reversed();
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex].reversed();
         this.advanceTaskRouteSegment(player, true);
     }
 
@@ -179,14 +179,14 @@ extends BotTaskDefinition {
             if (!bl) {
                 ++player.botPathSegmentIndex;
             }
-            player.currentBotRoute = ab[player.botPathSegmentIndex];
+            player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex];
             if (!bl) {
                 player.botPathWaypointIndex = 0;
             }
             if (player.botPathSegmentIndex == 1) {
                 Object object = new ArrayList<Integer>();
                 ((ArrayList)object).add(1568);
-                player.dm = true;
+                player.botRouteActionPending = true;
                 if (player.interactWithBotObjectTargetsNoRetry((ArrayList)object, false)) {
                     object = new SkeletonDungeonEntryTickTask(this, 3, player);
                     World.getTaskScheduler().schedule((TickTask)object);
@@ -196,7 +196,7 @@ extends BotTaskDefinition {
                     player.interactWithBotObjectTargetsNoRetry((ArrayList)object, false);
                 }
             }
-            if (player.botPathSegmentIndex == ab.length - 1) {
+            if (player.botPathSegmentIndex == taskRouteSegments.length - 1) {
                 player.botTaskState = "walk to task";
                 return;
             }
@@ -204,7 +204,7 @@ extends BotTaskDefinition {
             if (!bl) {
                 --player.botPathSegmentIndex;
             }
-            player.currentBotRoute = ab[player.botPathSegmentIndex].reversed();
+            player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex].reversed();
             if (!bl) {
                 player.botPathWaypointIndex = 0;
             }
@@ -212,7 +212,7 @@ extends BotTaskDefinition {
                 ArrayList<Integer> arrayList = new ArrayList<Integer>();
                 arrayList.add(1755);
                 player.interactWithBotObjectTargets(arrayList);
-                player.dm = true;
+                player.botRouteActionPending = true;
                 player.botTaskState = "walk to bank";
             }
         }

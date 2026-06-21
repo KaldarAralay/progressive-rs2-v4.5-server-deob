@@ -32,7 +32,7 @@ public class AllotmentPatchManager {
     public long[] lastUpdateTicks = new long[8];
     public double[] diseaseChanceMultipliers = new double[]{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
     public boolean[] protectionFlags = new boolean[8];
-    private boolean[] j = new boolean[8];
+    private boolean[] fullyGrownFlags = new boolean[8];
 
     public AllotmentPatchManager(Player player) {
         this.player = player;
@@ -128,7 +128,7 @@ public class AllotmentPatchManager {
                         ++n2;
                     }
                 }
-                if ((object = AllotmentCropDefinition.forSeedId(this.cropIds[n])) == null || this.a(n)) break block23;
+                if ((object = AllotmentCropDefinition.forSeedId(this.cropIds[n])) == null || this.shouldStopGrowthCycle(n)) break block23;
                 n2 = (int)(l / (long)object.getGrowthCycleTicks());
                 int n5 = this.growthStages[n] - 4;
                 if ((n5 = n2 - n5) <= 0) break block23;
@@ -167,7 +167,7 @@ public class AllotmentPatchManager {
                                 if (((AllotmentPatchManager)object).patchStates[n2] == 5 && ((AllotmentPatchManager)object).growthStages[n2] != 3) {
                                     ((AllotmentPatchManager)object).patchStates[n2] = 0;
                                 }
-                                if (!(((AllotmentPatchManager)object).patchStates[n2] != 0 && ((AllotmentPatchManager)object).patchStates[n2] != 1 || ((AllotmentPatchManager)object).growthStages[n2] < 4 || ((AllotmentPatchManager)object).j[n2] || (allotmentCropDefinition = AllotmentCropDefinition.forSeedId(((AllotmentPatchManager)object).cropIds[n2])) == null || (allotmentCropDefinition = AllotmentCropDefinition.forSeedId(((AllotmentPatchManager)object).cropIds[n2])) == null)) {
+                                if (!(((AllotmentPatchManager)object).patchStates[n2] != 0 && ((AllotmentPatchManager)object).patchStates[n2] != 1 || ((AllotmentPatchManager)object).growthStages[n2] < 4 || ((AllotmentPatchManager)object).fullyGrownFlags[n2] || (allotmentCropDefinition = AllotmentCropDefinition.forSeedId(((AllotmentPatchManager)object).cropIds[n2])) == null || (allotmentCropDefinition = AllotmentCropDefinition.forSeedId(((AllotmentPatchManager)object).cropIds[n2])) == null)) {
                                     double d = ((AllotmentPatchManager)object).diseaseChanceMultipliers[n2] * allotmentCropDefinition.getDiseaseChance();
                                     double d2 = d * 100.0;
                                     int n9 = (int)d2;
@@ -198,7 +198,7 @@ public class AllotmentPatchManager {
                                             }
                                         }
                                         if (((AllotmentPatchManager)object).player.getFlowerPatchManager().cropIds[n10] < 33 || ((AllotmentPatchManager)object).player.getFlowerPatchManager().cropIds[n10] > 36 || allotmentCropDefinition.getProtectionCropId() != 6059) {
-                                            if (((AllotmentPatchManager)object).player.getFlowerPatchManager().patchStates[n10] != 3 && ((AllotmentPatchManager)object).player.getFlowerPatchManager().f[n10] && ((AllotmentPatchManager)object).player.getFlowerPatchManager().cropIds[n10] == allotmentCropDefinition.getProtectionCropId()) {
+                                            if (((AllotmentPatchManager)object).player.getFlowerPatchManager().patchStates[n10] != 3 && ((AllotmentPatchManager)object).player.getFlowerPatchManager().fullyGrownFlags[n10] && ((AllotmentPatchManager)object).player.getFlowerPatchManager().cropIds[n10] == allotmentCropDefinition.getProtectionCropId()) {
                                                 ((AllotmentPatchManager)object).player.getFlowerPatchManager().patchStates[n10] = 3;
                                                 ((AllotmentPatchManager)object).player.getFlowerPatchManager().refreshConfig();
                                             } else if (ServerSettings.diseasingEnabled) {
@@ -214,7 +214,7 @@ public class AllotmentPatchManager {
                             int n11 = n;
                             this.growthStages[n11] = this.growthStages[n11] + 1;
                         }
-                        if (this.a(n)) break;
+                        if (this.shouldStopGrowthCycle(n)) break;
                     }
                     ++n6;
                 }
@@ -228,7 +228,7 @@ public class AllotmentPatchManager {
      * Enabled force condition propagation
      * Lifted jumps to return sites
      */
-    private boolean a(int n) {
+    private boolean shouldStopGrowthCycle(int n) {
         if (this.lastUpdateTicks[n] == 0L) return true;
         if (this.patchStates[n] == 3) return true;
         int n2 = n;
@@ -237,7 +237,7 @@ public class AllotmentPatchManager {
         if (allotmentCropDefinition == null) return false;
         int n3 = allotmentPatchManager.growthStages[n2] - 4;
         if (allotmentCropDefinition.getConfigStartStage() + n3 != allotmentCropDefinition.getConfigEndStage()) return false;
-        allotmentPatchManager.j[n2] = true;
+        allotmentPatchManager.fullyGrownFlags[n2] = true;
         return true;
     }
 
@@ -551,7 +551,7 @@ public class AllotmentPatchManager {
         this.d[n] = 0;
         this.harvestAmounts[n] = 3;
         this.protectionFlags[n] = false;
-        this.j[n] = false;
+        this.fullyGrownFlags[n] = false;
     }
 
     static /* synthetic */ Player getPlayer(AllotmentPatchManager allotmentPatchManager) {

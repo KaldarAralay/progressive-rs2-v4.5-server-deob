@@ -81,7 +81,7 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.showInterface(InterfaceDefinition.interfaceCount <= 12140 ? 1689 : 12140);
         player2 = player;
-        player.j = false;
+        player.deferLevelUpInterfaces = false;
     }
 
     @Override
@@ -176,7 +176,7 @@ extends QuestScript {
                 System.out.println("[Vampire Slayer]: vampire not spawned! (reason: spawnedNpcId = vampire id)");
                 return true;
             }
-            if (GameplayHelper.b(11208)) {
+            if (GameplayHelper.isObjectDefinitionIdValid(11208)) {
                 ObjectManager.getInstance().removeDynamicObjectAt(3077, 9775, 0, 0);
                 ObjectManager.getInstance().addDynamicObject(new DynamicObject(11208, 3077, 9775, 0, 3, 10, 2614, 10), true);
             }

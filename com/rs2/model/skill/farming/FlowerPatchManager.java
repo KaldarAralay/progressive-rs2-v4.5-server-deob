@@ -29,7 +29,7 @@ public final class FlowerPatchManager {
     public int[] patchStates = new int[4];
     public long[] lastUpdateTicks = new long[4];
     public double[] diseaseChanceMultipliers = new double[]{1.0, 1.0, 1.0, 1.0};
-    public boolean[] f = new boolean[4];
+    public boolean[] fullyGrownFlags = new boolean[4];
 
     public FlowerPatchManager(Player player) {
         this.player = player;
@@ -129,7 +129,7 @@ public final class FlowerPatchManager {
                     this.cropIds[n5] = this.cropIds[n5] - 1;
                 } else {
                     Object object = FlowerDefinition.forSeedId(this.cropIds[n]);
-                    if (object != null && this.cropIds[n] != 33 && !this.a(n)) {
+                    if (object != null && this.cropIds[n] != 33 && !this.shouldStopGrowthCycle(n)) {
                         n2 = (int)(l / (long)object.getGrowthCycleTicks());
                         int n6 = this.growthStages[n] - 4;
                         if ((n6 = n2 - n6) > 0) {
@@ -152,7 +152,7 @@ public final class FlowerPatchManager {
                                         if (((FlowerPatchManager)object).patchStates[n2] == 5 && ((FlowerPatchManager)object).growthStages[n2] != 3) {
                                             ((FlowerPatchManager)object).patchStates[n2] = 0;
                                         }
-                                        if (!(((FlowerPatchManager)object).patchStates[n2] != 0 && ((FlowerPatchManager)object).patchStates[n2] != 1 || ((FlowerPatchManager)object).growthStages[n2] < 4 || ((FlowerPatchManager)object).f[n2] || (flowerDefinition = FlowerDefinition.forSeedId(((FlowerPatchManager)object).cropIds[n2])) == null)) {
+                                        if (!(((FlowerPatchManager)object).patchStates[n2] != 0 && ((FlowerPatchManager)object).patchStates[n2] != 1 || ((FlowerPatchManager)object).growthStages[n2] < 4 || ((FlowerPatchManager)object).fullyGrownFlags[n2] || (flowerDefinition = FlowerDefinition.forSeedId(((FlowerPatchManager)object).cropIds[n2])) == null)) {
                                             double d = ((FlowerPatchManager)object).diseaseChanceMultipliers[n2] * flowerDefinition.getDiseaseChance();
                                             double d2 = d * 100.0;
                                             int n9 = (int)d2;
@@ -168,7 +168,7 @@ public final class FlowerPatchManager {
                                         int n10 = n;
                                         this.growthStages[n10] = this.growthStages[n10] + 1;
                                     }
-                                    if (this.a(n)) break;
+                                    if (this.shouldStopGrowthCycle(n)) break;
                                 }
                                 ++n7;
                             }
@@ -185,7 +185,7 @@ public final class FlowerPatchManager {
      * Enabled force condition propagation
      * Lifted jumps to return sites
      */
-    private boolean a(int n) {
+    private boolean shouldStopGrowthCycle(int n) {
         if (this.lastUpdateTicks[n] == 0L) return true;
         if (this.patchStates[n] == 3) return true;
         int n2 = n;
@@ -194,7 +194,7 @@ public final class FlowerPatchManager {
         if (flowerDefinition == null) return false;
         int n3 = flowerPatchManager.growthStages[n2] - 4;
         if (flowerDefinition.getConfigEndStage() != flowerDefinition.getConfigStartStage() + n3) return false;
-        flowerPatchManager.f[n2] = true;
+        flowerPatchManager.fullyGrownFlags[n2] = true;
         return true;
     }
 

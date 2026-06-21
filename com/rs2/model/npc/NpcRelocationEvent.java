@@ -39,7 +39,7 @@ extends CycleEvent {
             player = player2;
             player = this.a;
             player2.packetSender.sendStillGraphic(86, player.H.getPosition(), 0x640000);
-            GameplayHelper.a(this.f);
+            GameplayHelper.unregisterTemporaryNpc(this.f);
         }
         cycleEventContainer.stop();
     }

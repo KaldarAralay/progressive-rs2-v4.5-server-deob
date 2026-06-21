@@ -123,7 +123,7 @@ public final class NpcDropManager {
 
     private static NpcDropTable getDropTableForNpcId(int n) {
         NpcDefinition npcDefinition = NpcDefinition.forId(n);
-        int n2 = npcDefinition.h();
+        int n2 = npcDefinition.getDropTableNpcIdOverride();
         n = n2 == -1 ? n : n2;
         return NpcDropTable.forNpcId(n);
     }

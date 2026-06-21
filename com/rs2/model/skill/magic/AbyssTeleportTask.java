@@ -11,42 +11,42 @@ import com.rs2.model.task.CycleEventContainer;
 
 final class AbyssTeleportTask
 extends CycleEvent {
-    private int a = 3;
-    private /* synthetic */ TeleportManager b;
-    private final /* synthetic */ int c;
-    private final /* synthetic */ int d;
-    private final /* synthetic */ int e;
+    private int ticksRemaining = 3;
+    private /* synthetic */ TeleportManager teleportManager;
+    private final /* synthetic */ int destinationX;
+    private final /* synthetic */ int destinationY;
+    private final /* synthetic */ int destinationPlane;
 
     AbyssTeleportTask(TeleportManager teleportManager, int n, int n2, int n3) {
-        this.b = teleportManager;
-        this.c = n;
-        this.d = n2;
-        this.e = n3;
+        this.teleportManager = teleportManager;
+        this.destinationX = n;
+        this.destinationY = n2;
+        this.destinationPlane = n3;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        if (!TeleportManager.a(this.b).isDead()) {
-            if (this.a == 3) {
-                TeleportManager.a(this.b).moveTo(new Position(this.c, this.d, this.e));
-                if (TeleportManager.a(this.b).getInventoryManager().containsItem(5519)) {
-                    RunecraftingHandler.recordScryingOrbTeleport(TeleportManager.a(this.b));
+        if (!TeleportManager.getPlayer(this.teleportManager).isDead()) {
+            if (this.ticksRemaining == 3) {
+                TeleportManager.getPlayer(this.teleportManager).moveTo(new Position(this.destinationX, this.destinationY, this.destinationPlane));
+                if (TeleportManager.getPlayer(this.teleportManager).getInventoryManager().containsItem(5519)) {
+                    RunecraftingHandler.recordScryingOrbTeleport(TeleportManager.getPlayer(this.teleportManager));
                 }
                 cycleEventContainer.stop();
             }
         } else {
-            this.a = 0;
+            this.ticksRemaining = 0;
         }
-        if (this.a <= 0) {
+        if (this.ticksRemaining <= 0) {
             cycleEventContainer.stop();
         }
-        --this.a;
+        --this.ticksRemaining;
     }
 
     @Override
     public final void onStop() {
-        TeleportManager.a(this.b).setActionLocked(false);
-        TeleportManager.a(this.b).getAttributes().put("canTakeDamage", Boolean.TRUE);
+        TeleportManager.getPlayer(this.teleportManager).setActionLocked(false);
+        TeleportManager.getPlayer(this.teleportManager).getAttributes().put("canTakeDamage", Boolean.TRUE);
     }
 }
 

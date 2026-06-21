@@ -76,7 +76,7 @@ extends TickTask {
                     }
                     return;
                 }
-                if (entity2.getMaxHitpoints() <= 0 || entity2.isNpc() && (((Npc)entity2).getNpcId() == 411 || RandomEventManager.b(((Npc)entity2).getNpcId()))) {
+                if (entity2.getMaxHitpoints() <= 0 || entity2.isNpc() && (((Npc)entity2).getNpcId() == 411 || RandomEventManager.isRandomEventCombatExcludedNpcId(((Npc)entity2).getNpcId()))) {
                     if (entity.isPlayer()) {
                         Player player3 = (Player)entity;
                         player3.packetSender.sendGameMessage("You cannot attack this npc.");
@@ -150,8 +150,8 @@ extends TickTask {
             }
             if (entity2.isPlayer()) {
                 object = (Player)entity2;
-                if (((Player)object).ak == 2626 || ((Player)object).ak >= 3689 && ((Player)object).ak <= 3694) {
-                    ((Player)object).ak = -1;
+                if (((Player)object).npcTransformationId == 2626 || ((Player)object).npcTransformationId >= 3689 && ((Player)object).npcTransformationId <= 3694) {
+                    ((Player)object).npcTransformationId = -1;
                     object4 = object;
                     ((Player)object4).packetSender.refreshSidebarInterfaces();
                     ((Player)object).setAppearanceUpdateRequired(true);
@@ -170,7 +170,7 @@ extends TickTask {
             if (((Npc)(entity2 = (Npc)entity2)).getNpcId() == 911) {
                 entity2.setDead(true);
                 CombatManager.handleDeath(entity2);
-                ((Player)entity).getTeleportManager().a(2541, 4717, 0, null);
+                ((Player)entity).getTeleportManager().startStandardTeleport(2541, 4717, 0, null);
                 ((Player)entity).mageArenaProgressStage = 5;
                 return true;
             }
@@ -219,7 +219,7 @@ extends TickTask {
                     }
                     if (((CombatAction)object2).getTarget() != null && ((CombatAction)object2).getTarget().isPlayer()) {
                         Player player = (Player)((CombatAction)object2).getTarget();
-                        if (player.dP) {
+                        if (player.godModeEnabled) {
                             player.setCurrentHitpoints(player.getMaxHitpoints());
                             return;
                         }
@@ -354,7 +354,7 @@ extends TickTask {
                                 var2_3 = (Npc)var0;
                                 var3_8 = (Player)var1_1;
                                 var4_10 = var3_8.getBossPetUnlockFlags();
-                                ++((Player)var1_1).dT;
+                                ++((Player)var1_1).npcKillCount;
                                 if (var2_3.getNpcId() == 50 && (var4_10 & 1) == 0) {
                                     var5_14 = var4_10 + 1;
                                     var3_8.setBossPetUnlockFlags(var5_14);
@@ -509,7 +509,7 @@ extends TickTask {
             var2_6 = (Player)var1_1;
             var3_8 = (Player)var0;
             if (!var0.isInDuelArena()) {
-                ++var2_6.dU;
+                ++var2_6.playerKillCount;
             }
             var1_1 = var2_6;
             var1_1.packetSender.sendGameMessage("You have defeated " + GameUtil.formatDisplayName(var3_8.getUsername()) + ".");
@@ -520,7 +520,7 @@ extends TickTask {
         if (var0.isPlayer()) {
             var2_7 = (Player)var0;
             var2_7.setActionLocked(false);
-            var2_7.x(false);
+            var2_7.setHideHeldItemsInAppearance(false);
             var2_7.setAutocastSpell(null);
             var2_7.eq();
             var2_7.getSkillManager().refreshAllSkills();
@@ -539,13 +539,13 @@ extends TickTask {
             return;
         }
         if (var0.isPlayer()) {
-            if (((Player)var0).s()) {
+            if (((Player)var0).isInTenthSquadSigilInstance()) {
                 ((Player)var0).clearTemporaryCutsceneNpcs();
             }
-            ((Player)var0).moveTo(TeleportManager.a);
+            ((Player)var0).moveTo(TeleportManager.RESPAWN_TELEPORT_POSITION);
             var1_1 = (Player)var0;
             var1_1.packetSender.sendGameMessage("Oh dear, you are dead!");
-            ++((Player)var0).dV;
+            ++((Player)var0).deathCount;
             var1_1 = (Player)var0;
             var1_1.packetSender.sendMusicJingle(203, 256);
             ((Player)var0).getRecentCombatTimer().setDelayTicks(0);
@@ -602,7 +602,7 @@ extends TickTask {
                         }
                         n += n2;
                         n += 8;
-                        if (((Player)entity).ew()) {
+                        if (((Player)entity).hasFullVoidRangedSet()) {
                             n = (int)((double)n * 1.1);
                         }
                         n = (int)Math.floor(n);
@@ -841,7 +841,7 @@ extends TickTask {
                     }
                     n += n2;
                     n += 8;
-                    if (((Player)object).ex()) {
+                    if (((Player)object).hasFullVoidMeleeSet()) {
                         n = (int)((double)n * 1.1);
                     }
                     n = (int)Math.floor(n);
@@ -884,7 +884,7 @@ extends TickTask {
                     }
                     n += n4;
                     n += 8;
-                    if (((Player)object).ew()) {
+                    if (((Player)object).hasFullVoidRangedSet()) {
                         n = (int)((double)n * 1.1);
                     }
                     n = (int)Math.floor(n);
@@ -922,7 +922,7 @@ extends TickTask {
                     d15 = player4.getSkillManager().getCurrentLevels()[6];
                     double d16 = d15 * CombatManager.getPrayerMultiplier(player4, 6);
                     n6 = (int)Math.floor(d16);
-                    if (player4.ev()) {
+                    if (player4.hasFullVoidMagicSet()) {
                         n6 = (int)((double)n6 * 1.45);
                     }
                     n6 += 9;
@@ -968,14 +968,14 @@ extends TickTask {
             } else if (player.getActivePrayers()[11]) {
                 d20 *= 1.15;
             }
-            if (player.ex()) {
+            if (player.hasFullVoidMeleeSet()) {
                 d20 *= 1.1;
             }
         }
-        if (((AttackStyleDefinition)object).getCombatType() == CombatType.RANGED && entity.isPlayer() && (player = (Player)entity).ew()) {
+        if (((AttackStyleDefinition)object).getCombatType() == CombatType.RANGED && entity.isPlayer() && (player = (Player)entity).hasFullVoidRangedSet()) {
             d20 *= 1.1;
         }
-        if (((AttackStyleDefinition)object).getCombatType() == CombatType.MAGIC && entity.isPlayer() && (player = (Player)entity).ev()) {
+        if (((AttackStyleDefinition)object).getCombatType() == CombatType.MAGIC && entity.isPlayer() && (player = (Player)entity).hasFullVoidMagicSet()) {
             d20 *= 1.45;
         }
         double d21 = Math.floor(d20 + d19) + 8.0;
@@ -1048,7 +1048,7 @@ extends TickTask {
             }
             n2 += n3;
             n2 += 8;
-            if (((Player)entity2).ex()) {
+            if (((Player)entity2).hasFullVoidMeleeSet()) {
                 n2 = (int)((double)n2 * 1.1);
             }
         } else {

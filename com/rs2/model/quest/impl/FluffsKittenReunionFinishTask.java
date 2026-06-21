@@ -26,7 +26,7 @@ extends TickTask {
     @Override
     public final void execute() {
         CombatManager.finishDeath(this.a, this.b, false);
-        GameplayHelper.a(this.c);
+        GameplayHelper.unregisterTemporaryNpc(this.c);
         this.b.setActionLocked(false);
         this.b.getDialogueManager().showOneLineStatement("Fluffs has run off home with her offspring.");
         this.stop();

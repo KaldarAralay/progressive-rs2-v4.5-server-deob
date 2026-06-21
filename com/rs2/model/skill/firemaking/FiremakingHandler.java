@@ -75,7 +75,7 @@ public final class FiremakingHandler {
                     if (System.currentTimeMillis() < 200L) {
                         return;
                     }
-                    if (this.player.x() || this.player.o() || this.player.isInDuelArena()) {
+                    if (this.player.isInFiremakingRestrictedArea() || this.player.isInCastleWars() || this.player.isInDuelArena()) {
                         Player player4 = this.player;
                         player4.packetSender.sendGameMessage("You can't light a fire here.");
                         return;

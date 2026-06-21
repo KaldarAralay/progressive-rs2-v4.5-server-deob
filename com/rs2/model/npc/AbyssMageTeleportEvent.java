@@ -24,7 +24,7 @@ extends CycleEvent {
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        this.a.getTeleportManager().b(this.b, this.c, this.d);
+        this.a.getTeleportManager().startAbyssTeleport(this.b, this.c, this.d);
         cycleEventContainer.stop();
     }
 

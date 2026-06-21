@@ -38,15 +38,15 @@ import java.util.Random;
 
 public final class GrandTreeQuest
 extends QuestScript {
-    private List a = Arrays.asList(new Position(2481, 9904, 0), new Position(2465, 9891, 0), new Position(2467, 9872, 0), new Position(2457, 9881, 0), new Position(2455, 9874, 0), new Position(2439, 9881, 0), new Position(2444, 9893, 0), new Position(2468, 9890, 0));
-    private Position b = new Position(2485, 3467, 2);
-    private Position c = new Position(2486, 3467, 2);
-    private Position d = new Position(2487, 3467, 2);
-    private Position e = new Position(2488, 3467, 2);
-    private int f = 3;
-    private int g = 4;
-    private RectangularArea h = new RectangularArea(2461, 3491, 2470, 3500, 0);
-    private RectangularArea i = new RectangularArea(2426, 9851, 2498, 9921, 0);
+    private List daconiaRootSearchPositions = Arrays.asList(new Position(2481, 9904, 0), new Position(2465, 9891, 0), new Position(2467, 9872, 0), new Position(2457, 9881, 0), new Position(2455, 9874, 0), new Position(2439, 9881, 0), new Position(2444, 9893, 0), new Position(2468, 9890, 0));
+    private Position twig789PlacementPosition = new Position(2485, 3467, 2);
+    private Position twig790PlacementPosition = new Position(2486, 3467, 2);
+    private Position twig791PlacementPosition = new Position(2487, 3467, 2);
+    private Position twig792PlacementPosition = new Position(2488, 3467, 2);
+    private int gloughJournalLastPageIndex = 3;
+    private int translationBookLastPageIndex = 4;
+    private RectangularArea kingNarnodeIntroArea = new RectangularArea(2461, 3491, 2470, 3500, 0);
+    private RectangularArea grandTreeUndergroundArea = new RectangularArea(2426, 9851, 2498, 9921, 0);
 
     public GrandTreeQuest(int n) {
         super(46);
@@ -143,7 +143,7 @@ extends QuestScript {
         return null;
     }
 
-    private static boolean e(Player player) {
+    private static boolean hasRequiredAgilityLevel(Player player) {
         return player.getSkillManager().getBaseLevel(16) >= 25;
     }
 
@@ -171,7 +171,7 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.showInterface(InterfaceDefinition.interfaceCount <= 12140 ? 1689 : 12140);
         player2 = player;
-        player.j = false;
+        player.deferLevelUpInterfaces = false;
     }
 
     @Override
@@ -203,7 +203,7 @@ extends QuestScript {
             return true;
         }
         if (n == 1986 && n4 == 16) {
-            Object object = new ArrayList(this.a);
+            Object object = new ArrayList(this.daconiaRootSearchPositions);
             Collections.shuffle(object, new Random(player.bK));
             if (n2 == ((Position)object.get(0)).getX() && n3 == ((Position)object.get(0)).getY() && !player.ownsItem(793)) {
                 player.getDialogueManager().showItemMessage("You've found a Daconia rock!", new ItemStack(793, 1));
@@ -293,19 +293,19 @@ extends QuestScript {
         return false;
     }
 
-    private static boolean b(int n) {
+    private static boolean isTwigItem(int n) {
         return n == 789 || n == 790 || n == 791 || n == 792;
     }
 
-    private boolean f(Player player) {
+    private boolean areAllTwigsPlaced(Player player) {
         GroundItemManager.getInstance();
-        if (GroundItemManager.findVisibleItem(player, 789, this.b) != null) {
+        if (GroundItemManager.findVisibleItem(player, 789, this.twig789PlacementPosition) != null) {
             GroundItemManager.getInstance();
-            if (GroundItemManager.findVisibleItem(player, 790, this.c) != null) {
+            if (GroundItemManager.findVisibleItem(player, 790, this.twig790PlacementPosition) != null) {
                 GroundItemManager.getInstance();
-                if (GroundItemManager.findVisibleItem(player, 791, this.d) != null) {
+                if (GroundItemManager.findVisibleItem(player, 791, this.twig791PlacementPosition) != null) {
                     GroundItemManager.getInstance();
-                    if (GroundItemManager.findVisibleItem(player, 792, this.e) != null) {
+                    if (GroundItemManager.findVisibleItem(player, 792, this.twig792PlacementPosition) != null) {
                         return true;
                     }
                 }
@@ -316,13 +316,13 @@ extends QuestScript {
 
     @Override
     public final boolean handleItemOnObject(Player player, int n, int n2, int n3) {
-        if (GrandTreeQuest.b(n) && n2 == 2440) {
+        if (GrandTreeQuest.isTwigItem(n) && n2 == 2440) {
             GroundItemManager.getInstance();
-            if (GroundItemManager.findVisibleItemAt(player, this.b) == null) {
+            if (GroundItemManager.findVisibleItemAt(player, this.twig789PlacementPosition) == null) {
                 player.getInventoryManager().removeItem(new ItemStack(n, 1));
-                GroundItem groundItem = new GroundItem(new ItemStack(n, 1), player, this.b);
+                GroundItem groundItem = new GroundItem(new ItemStack(n, 1), player, this.twig789PlacementPosition);
                 GroundItemManager.getInstance().spawn(groundItem);
-                if (this.f(player)) {
+                if (this.areAllTwigsPlaced(player)) {
                     player.getDialogueManager().showOneLineStatement("You can hear the grinding of an ancient pulley system.");
                     player.setQuestState(this.getQuestId(), 14);
                 }
@@ -331,13 +331,13 @@ extends QuestScript {
             }
             return true;
         }
-        if (GrandTreeQuest.b(n) && n2 == 2441) {
+        if (GrandTreeQuest.isTwigItem(n) && n2 == 2441) {
             GroundItemManager.getInstance();
-            if (GroundItemManager.findVisibleItemAt(player, this.c) == null) {
+            if (GroundItemManager.findVisibleItemAt(player, this.twig790PlacementPosition) == null) {
                 player.getInventoryManager().removeItem(new ItemStack(n, 1));
-                GroundItem groundItem = new GroundItem(new ItemStack(n, 1), player, this.c);
+                GroundItem groundItem = new GroundItem(new ItemStack(n, 1), player, this.twig790PlacementPosition);
                 GroundItemManager.getInstance().spawn(groundItem);
-                if (this.f(player)) {
+                if (this.areAllTwigsPlaced(player)) {
                     player.getDialogueManager().showOneLineStatement("You can hear the grinding of an ancient pulley system.");
                     player.setQuestState(this.getQuestId(), 14);
                 }
@@ -346,13 +346,13 @@ extends QuestScript {
             }
             return true;
         }
-        if (GrandTreeQuest.b(n) && n2 == 2442) {
+        if (GrandTreeQuest.isTwigItem(n) && n2 == 2442) {
             GroundItemManager.getInstance();
-            if (GroundItemManager.findVisibleItemAt(player, this.d) == null) {
+            if (GroundItemManager.findVisibleItemAt(player, this.twig791PlacementPosition) == null) {
                 player.getInventoryManager().removeItem(new ItemStack(n, 1));
-                GroundItem groundItem = new GroundItem(new ItemStack(n, 1), player, this.d);
+                GroundItem groundItem = new GroundItem(new ItemStack(n, 1), player, this.twig791PlacementPosition);
                 GroundItemManager.getInstance().spawn(groundItem);
-                if (this.f(player)) {
+                if (this.areAllTwigsPlaced(player)) {
                     player.getDialogueManager().showOneLineStatement("You can hear the grinding of an ancient pulley system.");
                     player.setQuestState(this.getQuestId(), 14);
                 }
@@ -361,13 +361,13 @@ extends QuestScript {
             }
             return true;
         }
-        if (GrandTreeQuest.b(n) && n2 == 2443) {
+        if (GrandTreeQuest.isTwigItem(n) && n2 == 2443) {
             GroundItemManager.getInstance();
-            if (GroundItemManager.findVisibleItemAt(player, this.e) == null) {
+            if (GroundItemManager.findVisibleItemAt(player, this.twig792PlacementPosition) == null) {
                 player.getInventoryManager().removeItem(new ItemStack(n, 1));
-                GroundItem groundItem = new GroundItem(new ItemStack(n, 1), player, this.e);
+                GroundItem groundItem = new GroundItem(new ItemStack(n, 1), player, this.twig792PlacementPosition);
                 GroundItemManager.getInstance().spawn(groundItem);
-                if (this.f(player)) {
+                if (this.areAllTwigsPlaced(player)) {
                     player.getDialogueManager().showOneLineStatement("You can hear the grinding of an ancient pulley system.");
                     player.setQuestState(this.getQuestId(), 14);
                 }
@@ -386,7 +386,7 @@ extends QuestScript {
         return false;
     }
 
-    private static void g(Player player) {
+    private static void clearBookInterfaceText(Player player) {
         Player player2 = player;
         player2.packetSender.sendInterfaceText("", 14165);
         player2 = player;
@@ -399,9 +399,9 @@ extends QuestScript {
         }
     }
 
-    private void e(Player player, int n) {
+    private void showGloughJournalPage(Player player, int n) {
         String[] stringArray;
-        GrandTreeQuest.g(player);
+        GrandTreeQuest.clearBookInterfaceText(player);
         stringArray = n == 0 ? (stringArray = new String[]{"Journal", "", "", "@red@The migration failed!", "", "After spending half a", "century hiding", "underground you would", "think that the great", "migration would have", "improved life on", "RuneScape for tree", "gnomes. However, rather", "than the great liberation", "promised to us by King", "Healthorg at the end of", "the last age, we have been", "forced to live in hiding,", "up trees or in the gnome", "maze, laughed at and", "mocked by man. Living in", "constant fear of human", "aggression, we are in a", "no better situation now", "than when we lived in the"}) : (n == 1 ? (stringArray = new String[]{"Journal", "", "", "caves! Change must come", "soon!", "", "@red@They must be stopped!", "", "Today I heard of three", "more gnomes slain by", "Khazard's human troops", "for fun, I can't control", "my anger! Humanity", "seems to have acquired a", "level of arrogance", "comparable to that of", "Zamorak, killing and", "pillaging at will! We are", "small and at heart not", "warriors but something", "must be done! We will", "pick up arms and go", "forth into the human", "world! We will defend", "ourselves and we will"}) : (n == 2 ? (stringArray = new String[]{"Journal", "", "", "pursue justice for all", "gnomes who fell at the", "hands of humans!", "", "@red@Gaining support.", "", "Some of the local gnomes", "seem strangely deluded", "about humans, many", "actually believe that", "humans are not all", "naturally evil but instead", "vary from person to", "person. This sort of talk", "could be the end for the", "tree gnomes and I must", "continue to convince my", "fellow gnome folk the cold", "truth about these human", "creatures! How they will", "not stop until all gnome", "life is destroyed! Unless"}) : (n == 3 ? (stringArray = new String[]{"Journal", "", "", "we can destroy them", "first!"}) : null)));
         Player player2 = player;
         player2.packetSender.sendInterfaceText((String)stringArray[0], 903);
@@ -416,14 +416,14 @@ extends QuestScript {
             ++n2;
         }
         player2 = player;
-        player2.packetSender.setInterfaceHiddenFlag(player.X == 0 ? 1 : 0, 840);
+        player2.packetSender.setInterfaceHiddenFlag(player.activeBookPageIndex == 0 ? 1 : 0, 840);
         player2 = player;
-        player2.packetSender.setInterfaceHiddenFlag(player.X == this.f ? 1 : 0, 842);
+        player2.packetSender.setInterfaceHiddenFlag(player.activeBookPageIndex == this.gloughJournalLastPageIndex ? 1 : 0, 842);
     }
 
-    private void f(Player player, int n) {
+    private void showTranslationBookPage(Player player, int n) {
         String[] stringArray;
-        GrandTreeQuest.g(player);
+        GrandTreeQuest.clearBookInterfaceText(player);
         stringArray = n == 0 ? (stringArray = new String[]{"Gnome-English Translation", "", "", "Gnome-English", "Translation", "", "written by Anita", "", "This text contains the", "ancient Gnome words I", "have managed to translate", "thus far.", "", "", "-A-", "arpos: rocks", "ando: gate", "andra: city", "ataris: cow", "", "-C-", "cef: threat", "cheray: lazy", "Cinqo: King", "cretor: bucket"}) : (n == 1 ? (stringArray = new String[]{"Gnome-English Translation", "", "", "-E-", "eis: me", "es: a", "et: and", "eto: will", "", "-G-", "gandius: jungle", "Gal: All", "gentis: leaf", "gutus: banana", "gomondo: branch", "", "-H-", "har: old", "harij: harpoon", "hewo: grass", "", "-I-", "ip: you", "imindus: quest", "irno: translate"}) : (n == 2 ? (stringArray = new String[]{"Gnome-English Translation", "", "", "", "-K-", "kar: no", "kai: boat", "ko: sail", "", "-L-", "lauf: eye", "laquinay: common sense", "lemanto: man", "lemantolly: stupid man", "lovos: gave", "", "-M-", "meso: came", "meris: kill", "mina: time(s)", "mos: coin", "mis: I", "mond: seal", "", "-P-"}) : (n == 3 ? (stringArray = new String[]{"Gnome-English Translation", "", "", "por: long", "prit: with", "priw: tree", "pro: to", "", "-Q-", "Qui: guard", "Quir: guardian", "", "-R-", "rentos: agility", "", "-S-", "sarko: Begone", "sind: big", "", "-T-", "ta: the", "tuzo: open", "", "-U-", "undri: lands"}) : (n == 4 ? (stringArray = new String[]{"Gnome-English Translation", "", "", "umesco: Soul"}) : null))));
         Player player2 = player;
         player2.packetSender.sendInterfaceText((String)stringArray[0], 903);
@@ -438,34 +438,34 @@ extends QuestScript {
             ++n2;
         }
         player2 = player;
-        player2.packetSender.setInterfaceHiddenFlag(player.X == 0 ? 1 : 0, 840);
+        player2.packetSender.setInterfaceHiddenFlag(player.activeBookPageIndex == 0 ? 1 : 0, 840);
         player2 = player;
-        player2.packetSender.setInterfaceHiddenFlag(player.X == this.g ? 1 : 0, 842);
+        player2.packetSender.setInterfaceHiddenFlag(player.activeBookPageIndex == this.translationBookLastPageIndex ? 1 : 0, 842);
     }
 
     @Override
     public final boolean handleButtonClick(Player player, int n, int n2) {
-        if (player.W == 785) {
-            if (n == 841 && player.X < this.f) {
-                ++player.X;
-                this.e(player, player.X);
+        if (player.activeBookItemId == 785) {
+            if (n == 841 && player.activeBookPageIndex < this.gloughJournalLastPageIndex) {
+                ++player.activeBookPageIndex;
+                this.showGloughJournalPage(player, player.activeBookPageIndex);
                 return true;
             }
-            if (n == 839 && player.X > 0) {
-                --player.X;
-                this.e(player, player.X);
+            if (n == 839 && player.activeBookPageIndex > 0) {
+                --player.activeBookPageIndex;
+                this.showGloughJournalPage(player, player.activeBookPageIndex);
                 return true;
             }
         }
-        if (player.W == 784) {
-            if (n == 841 && player.X < this.g) {
-                ++player.X;
-                this.f(player, player.X);
+        if (player.activeBookItemId == 784) {
+            if (n == 841 && player.activeBookPageIndex < this.translationBookLastPageIndex) {
+                ++player.activeBookPageIndex;
+                this.showTranslationBookPage(player, player.activeBookPageIndex);
                 return true;
             }
-            if (n == 839 && player.X > 0) {
-                --player.X;
-                this.f(player, player.X);
+            if (n == 839 && player.activeBookPageIndex > 0) {
+                --player.activeBookPageIndex;
+                this.showTranslationBookPage(player, player.activeBookPageIndex);
                 return true;
             }
         }
@@ -505,9 +505,9 @@ extends QuestScript {
                 return true;
             }
             if (n2 == 785) {
-                this.e(player, 0);
-                player.W = n2;
-                player.X = 0;
+                this.showGloughJournalPage(player, 0);
+                player.activeBookItemId = n2;
+                player.activeBookPageIndex = 0;
                 Player player3 = player;
                 player3.packetSender.showInterface(837);
                 return true;
@@ -571,9 +571,9 @@ extends QuestScript {
                 return true;
             }
             if (n2 == 784) {
-                this.f(player, 0);
-                player.W = n2;
-                player.X = 0;
+                this.showTranslationBookPage(player, 0);
+                player.activeBookItemId = n2;
+                player.activeBookPageIndex = 0;
                 Player player6 = player;
                 player6.packetSender.showInterface(837);
                 return true;
@@ -592,9 +592,9 @@ extends QuestScript {
 
     @Override
     public final boolean handleNpcDialogue(Player object, int n, int n2, int n3, int n4) {
-        if (n == 670 && this.h.containsExclusiveOnPlane(((Entity)object).getPosition())) {
+        if (n == 670 && this.kingNarnodeIntroArea.containsExclusiveOnPlane(((Entity)object).getPosition())) {
             if (n4 == 0) {
-                if (!GrandTreeQuest.e((Player)object)) {
+                if (!GrandTreeQuest.hasRequiredAgilityLevel((Player)object)) {
                     return false;
                 }
                 if (n2 == 1) {
@@ -917,7 +917,7 @@ extends QuestScript {
                 return true;
             }
         }
-        if (n == 670 && this.i.containsExclusive(((Entity)object).getPosition()) || n == 2781 && n2 > 1) {
+        if (n == 670 && this.grandTreeUndergroundArea.containsExclusive(((Entity)object).getPosition()) || n == 2781 && n2 > 1) {
             if (!(n4 != 3 || n2 != 1 || ((Player)object).ownsItem(783) && ((Player)object).ownsItem(784))) {
                 if (!((Player)object).ownsItem(783)) {
                     ((Player)object).getInventoryManager().addOrDropItem(new ItemStack(783, 1));

@@ -17,18 +17,18 @@ import java.util.ArrayList;
 
 public final class FaladorGuardCombatBotTask
 extends BotTaskDefinition {
-    private static Position aa = new Position(2946, 3368, 0);
-    private static BotRoute ab = new BotRoute(new Position[]{new Position(2946, 3374, 0), new Position(2954, 3379, 0), new Position(2966, 3390, 0)});
-    private static int[] ac = new int[]{1935, 1947};
+    private static Position routeStartPosition = new Position(2946, 3368, 0);
+    private static BotRoute taskRoute = new BotRoute(new Position[]{new Position(2946, 3374, 0), new Position(2954, 3379, 0), new Position(2966, 3390, 0)});
+    private static int[] ignoredLootItemIds = new int[]{1935, 1947};
 
     public FaladorGuardCombatBotTask(int n) {
-        super(aa, ab, 1, false, 3);
+        super(routeStartPosition, taskRoute, 1, false, 3);
         boolean bl = true;
         FaladorGuardCombatBotTask faladorGuardCombatBotTask = this;
         this.combatTask = true;
-        int[] nArray = ac;
+        int[] nArray = ignoredLootItemIds;
         faladorGuardCombatBotTask = this;
-        this.ignoredLootItemIds = nArray;
+        ((BotTaskDefinition)this).ignoredLootItemIds = nArray;
     }
 
     @Override
@@ -88,14 +88,14 @@ extends BotTaskDefinition {
         player.botTaskRequiredItems = object;
         player.getInventoryManager().addItem(object[0]);
         object = player;
-        GameplayHelper.a((Player)object, -1);
+        GameplayHelper.prepareBotCombatStyle((Player)object, -1);
         player.getInventoryManager().refresh();
         player.getEquipmentManager().refresh();
     }
 
     @Override
     public final void prepareTaskCombatLoadout(Player player) {
-        GameplayHelper.b(player);
+        GameplayHelper.resetBotSkillsToBase(player);
         int n = 15 + GameUtil.randomInt(10);
         int n2 = n / 5 << 1;
         if (n2 == 0) {

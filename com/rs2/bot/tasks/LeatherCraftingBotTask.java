@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 public final class LeatherCraftingBotTask
 extends BotTaskDefinition {
-    private static Position aa = new Position(3269, 3167, 0);
+    private static Position leatherCraftingStartPosition = new Position(3269, 3167, 0);
 
     public LeatherCraftingBotTask(int n) {
         super(0, false, 1);
@@ -45,7 +45,7 @@ extends BotTaskDefinition {
         player.getBankContainer().addToTab(new ItemStack(1734, 5000), 0);
         ItemStack[] itemStackArray = new ItemStack[]{new ItemStack(1733, 1), new ItemStack(1734, 26), new ItemStack(player.botTaskItemId, 26)};
         player.botTaskRequiredItems = itemStackArray;
-        player.moveTo(aa);
+        player.moveTo(leatherCraftingStartPosition);
         player.getInventoryManager().addItem(itemStackArray[0]);
         player.getInventoryManager().addItem(itemStackArray[1]);
         player.getInventoryManager().addItem(itemStackArray[2]);
@@ -55,7 +55,7 @@ extends BotTaskDefinition {
 
     @Override
     public final void prepareTaskCombatLoadout(Player player) {
-        GameplayHelper.b(player);
+        GameplayHelper.resetBotSkillsToBase(player);
         int n = 1 + GameUtil.randomInt(40);
         int n2 = n / 5 << 1;
         if (n2 == 0) {

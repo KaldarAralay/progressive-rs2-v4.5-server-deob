@@ -19,11 +19,11 @@ import com.rs2.util.GameUtil;
 
 public final class CatherbyGeneralStoreBotTask
 extends BotTaskDefinition {
-    private static Position aa = new Position(2809, 3441, 0);
-    private static BotRoute ab = new BotRoute(new Position[]{new Position(2808, 3437, 0), new Position(2806, 3434, 0)});
+    private static Position routeStartPosition = new Position(2809, 3441, 0);
+    private static BotRoute taskRoute = new BotRoute(new Position[]{new Position(2808, 3437, 0), new Position(2806, 3434, 0)});
 
     public CatherbyGeneralStoreBotTask(int n) {
-        super(aa, ab, 1, true, 1);
+        super(routeStartPosition, taskRoute, 1, true, 1);
         n = 2;
         CatherbyGeneralStoreBotTask catherbyGeneralStoreBotTask = this;
         this.interactionOption = 2;
@@ -65,7 +65,7 @@ extends BotTaskDefinition {
 
     @Override
     public final void prepareTaskCombatLoadout(Player player) {
-        GameplayHelper.b(player);
+        GameplayHelper.resetBotSkillsToBase(player);
         int n = 1 + GameUtil.randomInt(40);
         int n2 = n / 5 << 1;
         if (n2 == 0) {

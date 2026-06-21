@@ -10,35 +10,35 @@ import com.rs2.model.task.TickTask;
 
 final class DeathAnimationTask
 extends TickTask {
-    private final /* synthetic */ int a;
-    private final /* synthetic */ Entity b;
-    private final /* synthetic */ Entity c;
+    private final /* synthetic */ int deathAnimationId;
+    private final /* synthetic */ Entity defeatedEntity;
+    private final /* synthetic */ Entity killer;
 
     DeathAnimationTask(int n, int n2, Entity entity, Entity entity2) {
-        this.a = n2;
-        this.b = entity;
-        this.c = entity2;
+        this.deathAnimationId = n2;
+        this.defeatedEntity = entity;
+        this.killer = entity2;
         super(2);
     }
 
     @Override
     public final void execute() {
         Player player;
-        int n = this.a;
-        if (this.b.isPlayer()) {
-            player = (Player)this.b;
-            player.x(true);
-            this.b.getUpdateState().setFaceEntity(-1);
+        int n = this.deathAnimationId;
+        if (this.defeatedEntity.isPlayer()) {
+            player = (Player)this.defeatedEntity;
+            player.setHideHeldItemsInAppearance(true);
+            this.defeatedEntity.getUpdateState().setFaceEntity(-1);
             player.setAppearanceUpdateRequired(true);
-            if (player.ak > 0) {
-                n = new Npc(player.ak).getDefinition().getDeathAnimationId();
+            if (player.npcTransformationId > 0) {
+                n = new Npc(player.npcTransformationId).getDefinition().getDeathAnimationId();
             }
         }
-        this.b.getUpdateState().setAnimation(n);
-        if (this.b != null && this.c != null && this.b.isNpc() && this.c.isPlayer()) {
-            player = (Player)this.c;
-            Npc npc = (Npc)this.b;
-            this.b.getUpdateState().setFaceEntity(-1);
+        this.defeatedEntity.getUpdateState().setAnimation(n);
+        if (this.defeatedEntity != null && this.killer != null && this.defeatedEntity.isNpc() && this.killer.isPlayer()) {
+            player = (Player)this.killer;
+            Npc npc = (Npc)this.defeatedEntity;
+            this.defeatedEntity.getUpdateState().setFaceEntity(-1);
             player.packetSender.sendSoundEffect(npc.getDeathSoundId(), 1, 20);
         }
         this.stop();

@@ -118,7 +118,7 @@ public class PlayerUpdateTask {
                     Object object4;
                     block55: {
                         player3 = (Player)iterator.next();
-                        if (!player3.getPosition().isWithinViewport(player.getPosition()) || !player3.eu() || player3.getConnectionState() == PlayerConnectionState.f || player3.isTeleporting()) break block53;
+                        if (!player3.getPosition().isWithinViewport(player.getPosition()) || !player3.eu() || player3.getConnectionState() == PlayerConnectionState.DISCONNECTED || player3.isTeleporting()) break block53;
                         Object object5 = packetWriter;
                         object2 = player3;
                         n4 = ((Entity)object2).getUpdateState().isUpdateRequired();
@@ -224,7 +224,7 @@ public class PlayerUpdateTask {
         while (n21 < World.getPlayers().length) {
             if (n20 > 15 || player.getLocalPlayers().size() >= 255) break;
             Player player4 = World.getPlayers()[n21];
-            if (player4 != null && player4 != player && player4.getConnectionState() != PlayerConnectionState.f && !player.getLocalPlayers().contains(player4) && player4.getPosition().isWithinViewport(player.getPosition()) && player4.eu()) {
+            if (player4 != null && player4 != player && player4.getConnectionState() != PlayerConnectionState.DISCONNECTED && !player.getLocalPlayers().contains(player4) && player4.getPosition().isWithinViewport(player.getPosition()) && player4.eu()) {
                 ++n20;
                 player.getLocalPlayers().add(player4);
                 Player player5 = player4;
@@ -249,10 +249,10 @@ public class PlayerUpdateTask {
         }
         packetWriter.finishVariableShortPacket();
         player.writePacketBuffer(packetWriter.getBuffer());
-        if (player.ew) {
+        if (player.planeChangeRefreshPending) {
             ObjectManager.getInstance().refreshDynamicObjectsForPlayer(player);
             GroundItemManager.getInstance().refreshForPlayer(player);
-            player.ew = false;
+            player.planeChangeRefreshPending = false;
         }
     }
 
@@ -355,7 +355,7 @@ public class PlayerUpdateTask {
             packetWriter2.writeByte(player3.getGender());
             packetWriter2.writeByte(player3.getPrayerHeadIcon());
             packetWriter2.writeByte(player3.getSkullIcon());
-            if (player3.ak <= 0) {
+            if (player3.npcTransformationId <= 0) {
                 if (player3.getEquipmentManager().getContainer().hasItemAtSlot(0) && player3.getEquipmentManager().getContainer().getItemAt(0).isEquippable()) {
                     packetWriter2.writeShort(512 + player3.getEquipmentManager().getContainer().getItemAt(0).getId());
                 } else {
@@ -371,7 +371,7 @@ public class PlayerUpdateTask {
                 } else {
                     packetWriter2.writeByte(0);
                 }
-                if (player3.getEquipmentManager().getContainer().hasItemAtSlot(3) && !player3.et() && player3.getEquipmentManager().getContainer().getItemAt(3).isEquippable()) {
+                if (player3.getEquipmentManager().getContainer().hasItemAtSlot(3) && !player3.shouldHideHeldItemsInAppearance() && player3.getEquipmentManager().getContainer().getItemAt(3).isEquippable()) {
                     packetWriter2.writeShort(512 + player3.getEquipmentManager().getContainer().getItemAt(3).getId());
                 } else {
                     packetWriter2.writeByte(0);
@@ -381,7 +381,7 @@ public class PlayerUpdateTask {
                 } else {
                     packetWriter2.writeShort(256 + player3.getAppearanceParts()[0]);
                 }
-                if (player3.getEquipmentManager().getContainer().hasItemAtSlot(5) && !player3.et() && player3.getEquipmentManager().getContainer().getItemAt(5).isEquippable()) {
+                if (player3.getEquipmentManager().getContainer().hasItemAtSlot(5) && !player3.shouldHideHeldItemsInAppearance() && player3.getEquipmentManager().getContainer().getItemAt(5).isEquippable()) {
                     packetWriter2.writeShort(512 + player3.getEquipmentManager().getContainer().getItemAt(5).getId());
                 } else {
                     packetWriter2.writeByte(0);
@@ -428,7 +428,7 @@ public class PlayerUpdateTask {
                 }
             } else {
                 packetWriter2.writeShort(-1);
-                packetWriter2.writeShort(player3.ak);
+                packetWriter2.writeShort(player3.npcTransformationId);
             }
             packetWriter2.writeByte(player3.getAppearanceColors()[0]);
             packetWriter2.writeByte(player3.getAppearanceColors()[1]);

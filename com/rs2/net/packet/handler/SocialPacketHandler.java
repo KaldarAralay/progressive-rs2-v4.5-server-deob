@@ -42,7 +42,7 @@ implements PacketHandler {
                 object = ((IncomingPacket)object).getReader().readBytes(n);
                 if (player.isMuted()) {
                     object = player;
-                    ((Player)object).packetSender.sendGameMessage("You are muted and cannot talk. Mute expires in: " + (GameplayHelper.b(System.currentTimeMillis(), player.getMuteExpires()) + 1) + " hours.");
+                    ((Player)object).packetSender.sendGameMessage("You are muted and cannot talk. Mute expires in: " + (GameplayHelper.getHoursBetween(System.currentTimeMillis(), player.getMuteExpires()) + 1) + " hours.");
                     return;
                 }
                 player.getSocialManager().sendPrivateMessage(player, l, (byte[])object, n);

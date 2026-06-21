@@ -42,16 +42,16 @@ implements PacketHandler {
                     var6_6.packetSender.sendGameMessage("dialogue: " + var1_1.getDialogueManager().getDialogueId() + " chat: " + var1_1.getDialogueManager().getDialogueStep());
                 }
                 if (!var1_1.getDialogueManager().isDialogueInactive()) ** GOTO lbl23
-                if (var1_1.i == -1 || var1_1.getQuestState(0) != 1 || !ServerSettings.showSkillUnlocks) ** GOTO lbl12
-                var2_3 = BankPinManager.a(var1_1, var1_1.i);
-                var1_1.i = -1;
+                if (var1_1.currentLevelUpSkillId == -1 || var1_1.getQuestState(0) != 1 || !ServerSettings.showSkillUnlocks) ** GOTO lbl12
+                var2_3 = BankPinManager.showSkillUnlockMessage(var1_1, var1_1.currentLevelUpSkillId);
+                var1_1.currentLevelUpSkillId = -1;
                 if (var2_3) ** GOTO lbl32
 lbl12:
                 // 2 sources
 
-                if (var1_1.k.size() > 0) {
-                    var1_1.getSkillManager().showLevelUpInterface((Integer)var1_1.k.get(0));
-                    var1_1.k.remove(0);
+                if (var1_1.queuedLevelUpSkillIds.size() > 0) {
+                    var1_1.getSkillManager().showLevelUpInterface((Integer)var1_1.queuedLevelUpSkillIds.get(0));
+                    var1_1.queuedLevelUpSkillIds.remove(0);
                     break;
                 }
                 var6_6 = var1_1;
@@ -137,7 +137,7 @@ lbl32:
                     return;
                 }
                 if (var1_1.getSelectedInterfaceId() == 207) {
-                    var5_9 = var1_1.au;
+                    var5_9 = var1_1.activeClueItemId;
                     var4_11 = var2_4;
                     var3_13 = var1_1;
                     var1_1 = ChallengeQuestion.forClueItemId(var5_9);
@@ -147,9 +147,9 @@ lbl32:
                         if (var4_11 == var1_1.getAnswerValue()) {
                             DialogueManager.a(var3_13, 10009, 2);
                             var3_13.getDialogueManager().showNpcOneLineDialogue("Thank you, this is the right answer.", 588);
-                            var3_13.V = new ItemStack[2];
-                            var3_13.V[0] = new ItemStack(var1_1.getClueItemId(), 1);
-                            var3_13.V[1] = new ItemStack(var1_1.getAnswerItemId(), 1);
+                            var3_13.clueRequiredItems = new ItemStack[2];
+                            var3_13.clueRequiredItems[0] = new ItemStack(var1_1.getClueItemId(), 1);
+                            var3_13.clueRequiredItems[1] = new ItemStack(var1_1.getAnswerItemId(), 1);
                             break;
                         }
                         DialogueManager.a(var3_13, 10009, 3);
@@ -217,19 +217,19 @@ lbl32:
                         v0 = false;
                     }
                 }
-                if (v0 || SkillMenuPacketHandler.a(var1_1, var1_1.getSelectedInterfaceId(), var2_4)) break;
+                if (v0 || SkillMenuPacketHandler.handleSetLevelInput(var1_1, var1_1.getSelectedInterfaceId(), var2_4)) break;
                 if (var1_1.getSelectedInterfaceId() == 18902) {
-                    var3_15 = var1_1.getInventoryManager().getItemAmount(var1_1.N);
+                    var3_15 = var1_1.getInventoryManager().getItemAmount(var1_1.temporaryActionValue);
                     if (var2_4 > var3_15 || var2_4 <= 0) {
                         var2_4 = var3_15;
                     }
                     if (var2_4 > var1_1.getInventoryManager().getContainer().getFreeSlots()) {
                         var2_4 = var1_1.getInventoryManager().getContainer().getFreeSlots();
                     }
-                    var3_16 = new ItemStack(var1_1.N, var3_15);
+                    var3_16 = new ItemStack(var1_1.temporaryActionValue, var3_15);
                     var3_16 = var3_16.getDefinition();
                     var3_17 = var3_16.getUnnotedId();
-                    var1_1.getInventoryManager().removeItem(new ItemStack(var1_1.N, var2_4));
+                    var1_1.getInventoryManager().removeItem(new ItemStack(var1_1.temporaryActionValue, var2_4));
                     var1_1.getInventoryManager().addItem(new ItemStack(var3_17, var2_4));
                     return;
                 }

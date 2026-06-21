@@ -9,19 +9,19 @@ import com.rs2.model.task.TickTask;
 
 final class BotBankContinuationTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player bot;
 
     BotBankContinuationTask(int n, Player player) {
-        this.a = player;
+        this.bot = player;
         super(n);
     }
 
     @Override
     public final void execute() {
-        if (this.a.botMode != 4) {
-            GameplayHelper.startNextBotTask(this.a);
+        if (this.bot.botMode != 4) {
+            GameplayHelper.startNextBotTask(this.bot);
         } else {
-            GameplayHelper.c(this.a);
+            GameplayHelper.selectAndStartNextProgressiveBotTask(this.bot);
         }
         this.stop();
     }

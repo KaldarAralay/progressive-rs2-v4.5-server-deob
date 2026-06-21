@@ -9,16 +9,16 @@ import com.rs2.model.task.TickTask;
 
 final class BotCombatLoadoutTask
 extends TickTask {
-    private final /* synthetic */ BotPlayer a;
+    private final /* synthetic */ BotPlayer bot;
 
     BotCombatLoadoutTask(BotPlayer botPlayer, int n, BotPlayer botPlayer2) {
-        this.a = botPlayer2;
+        this.bot = botPlayer2;
         super(2);
     }
 
     @Override
     public final void execute() {
-        BotCombatLoadoutManager.startCombatLoadoutBot(this.a);
+        BotCombatLoadoutManager.startCombatLoadoutBot(this.bot);
         this.stop();
     }
 }

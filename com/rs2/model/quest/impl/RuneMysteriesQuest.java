@@ -70,7 +70,7 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.showInterface(InterfaceDefinition.interfaceCount <= 12140 ? 1689 : 12140);
         player2 = player;
-        player.j = false;
+        player.deferLevelUpInterfaces = false;
     }
 
     @Override
@@ -442,7 +442,7 @@ extends QuestScript {
                 }
                 if (n2 == 4) {
                     if (n3 == 1) {
-                        GameplayHelper.b(player, n);
+                        GameplayHelper.openNpcShop(player, n);
                         player.getDialogueManager().markDialogueInactive();
                         return false;
                     }

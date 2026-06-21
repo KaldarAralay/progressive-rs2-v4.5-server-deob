@@ -733,7 +733,7 @@ extends TickTask {
         }
         switch (this.objectId) {
             case 2114: {
-                GameplayHelper.m(this.player);
+                GameplayHelper.withdrawCoalTruckCoal(this.player);
                 break;
             }
             case 2693: 
@@ -1204,7 +1204,7 @@ extends TickTask {
             }
             case 5083: {
                 if (this.player.isBrimhavenOpen()) {
-                    this.player.d(new Position(2713, 9564));
+                    this.player.scheduleDelayedMove(new Position(2713, 9564));
                     this.player.setBrimhavenOpen(false);
                     break;
                 }
@@ -1216,7 +1216,7 @@ extends TickTask {
                 break;
             }
             case 4499: {
-                this.player.d(new Position(2808, 10002));
+                this.player.scheduleDelayedMove(new Position(2808, 10002));
                 this.player.getPacketSender().sendGameMessage("You enter the cave.");
                 break;
             }
@@ -1283,7 +1283,7 @@ extends TickTask {
             }
             case 6481: {
                 this.player.getPacketSender().sendGameMessage("You sneak into the back of the pyramid...");
-                this.player.d(new Position(3229, 9310));
+                this.player.scheduleDelayedMove(new Position(3229, 9310));
                 break;
             }
             case 6515: {
@@ -1537,7 +1537,7 @@ extends TickTask {
                 break;
             }
             case 2492: {
-                switch (this.player.eA()) {
+                switch (this.player.getAbyssMageNpcId()) {
                     case 171: {
                         this.player.moveTo(new Position(2388, 9812));
                         break;
@@ -1580,11 +1580,11 @@ extends TickTask {
                 break;
             }
             case 5581: {
-                GameplayHelper.e(this.player, this.objectX, this.objectY);
+                GameplayHelper.takeAxeFromLog(this.player, this.objectX, this.objectY);
                 break;
             }
             case 8689: {
-                GameplayHelper.n(this.player);
+                GameplayHelper.milkCow(this.player);
                 break;
             }
             case 2718: 
@@ -1818,14 +1818,14 @@ extends TickTask {
                 this.player.getPacketSender().sendSoundEffect(319, 1, 0);
                 this.player.getUpdateState().setAnimation(835);
                 this.player.getPacketSender().sendGameMessage("You pull the lever...");
-                this.player.getTeleportManager().a(3105, 3951, 0, "... and get teleported into the arena!");
+                this.player.getTeleportManager().startStandardTeleport(3105, 3951, 0, "... and get teleported into the arena!");
                 break;
             }
             case 9707: {
                 this.player.getPacketSender().sendSoundEffect(319, 1, 0);
                 this.player.getUpdateState().setAnimation(835);
                 this.player.getPacketSender().sendGameMessage("You pull the lever...");
-                this.player.getTeleportManager().a(3105, 3956, 0, "... and get teleported out of the arena!");
+                this.player.getTeleportManager().startStandardTeleport(3105, 3956, 0, "... and get teleported out of the arena!");
                 break;
             }
             case 1767: {
@@ -1841,45 +1841,45 @@ extends TickTask {
                 this.player.getUpdateState().setAnimation(835);
                 this.player.getPacketSender().sendGameMessage("You pull the lever...");
                 if (ServerSettings.cacheVersion < 319) {
-                    this.player.getTeleportManager().a(2717, 9802, 0, "...And teleport into the Dragon's Lair.");
+                    this.player.getTeleportManager().startStandardTeleport(2717, 9802, 0, "...And teleport into the Dragon's Lair.");
                     break;
                 }
-                this.player.getTeleportManager().a(2272, 4681, 0, "...And teleport into the Dragon's Lair.");
+                this.player.getTeleportManager().startStandardTeleport(2272, 4681, 0, "...And teleport into the Dragon's Lair.");
                 break;
             }
             case 1817: {
                 this.player.getPacketSender().sendSoundEffect(319, 1, 0);
                 this.player.getUpdateState().setAnimation(835);
                 this.player.getPacketSender().sendGameMessage("You pull the lever...");
-                this.player.getTeleportManager().a(3067, 10254, 0, "...And teleport out of the Dragon's Lair.");
+                this.player.getTeleportManager().startStandardTeleport(3067, 10254, 0, "...And teleport out of the Dragon's Lair.");
                 break;
             }
             case 5959: {
                 this.player.getPacketSender().sendSoundEffect(319, 1, 0);
                 this.player.getUpdateState().setAnimation(835);
                 this.player.getPacketSender().sendGameMessage("You pull the lever...");
-                this.player.getTeleportManager().a(2539, 4712, 0, "... and teleport into the mage's cave.");
+                this.player.getTeleportManager().startStandardTeleport(2539, 4712, 0, "... and teleport into the mage's cave.");
                 break;
             }
             case 5960: {
                 this.player.getPacketSender().sendSoundEffect(319, 1, 0);
                 this.player.getUpdateState().setAnimation(835);
                 this.player.getPacketSender().sendGameMessage("You pull the lever...");
-                this.player.getTeleportManager().a(3090, 3956, 0, "... and teleport out of the mage's cave.");
+                this.player.getTeleportManager().startStandardTeleport(3090, 3956, 0, "... and teleport out of the mage's cave.");
                 break;
             }
             case 1814: {
                 this.player.getPacketSender().sendSoundEffect(319, 1, 0);
                 this.player.getUpdateState().setAnimation(835);
                 this.player.getPacketSender().sendGameMessage("You pull the lever...");
-                this.player.getTeleportManager().a(3154, 3923, 0, "...And teleport into the wilderness.");
+                this.player.getTeleportManager().startStandardTeleport(3154, 3923, 0, "...And teleport into the wilderness.");
                 break;
             }
             case 1815: {
                 this.player.getPacketSender().sendSoundEffect(319, 1, 0);
                 this.player.getUpdateState().setAnimation(835);
                 this.player.getPacketSender().sendGameMessage("You pull the lever...");
-                this.player.getTeleportManager().a(2562, 3311, 0, "...And teleport out of the wilderness.");
+                this.player.getTeleportManager().startStandardTeleport(2562, 3311, 0, "...And teleport out of the wilderness.");
                 break;
             }
             case 194: {

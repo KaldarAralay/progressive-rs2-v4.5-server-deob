@@ -10,45 +10,45 @@ import com.rs2.net.packet.PacketSender;
 
 final class AgilityMovementCompletionEvent
 extends CycleEvent {
-    private boolean a = false;
-    private /* synthetic */ PacketSender b;
-    private final /* synthetic */ String c;
-    private final /* synthetic */ double d;
-    private final /* synthetic */ boolean e;
-    private final /* synthetic */ boolean f;
+    private boolean delayElapsed = false;
+    private /* synthetic */ PacketSender packetSender;
+    private final /* synthetic */ String completionMessage;
+    private final /* synthetic */ double experience;
+    private final /* synthetic */ boolean restoreRunning;
+    private final /* synthetic */ boolean clearForcedMovementFlag;
 
     AgilityMovementCompletionEvent(PacketSender packetSender, String string, double d, boolean bl, boolean bl2) {
-        this.b = packetSender;
-        this.c = string;
-        this.d = d;
-        this.e = bl;
-        this.f = bl2;
+        this.packetSender = packetSender;
+        this.completionMessage = string;
+        this.experience = d;
+        this.restoreRunning = bl;
+        this.clearForcedMovementFlag = bl2;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        if (this.a) {
-            PacketSender.a(this.b).setActionLocked(false);
+        if (this.delayElapsed) {
+            PacketSender.getPlayer(this.packetSender).setActionLocked(false);
             cycleEventContainer.stop();
         }
-        this.a = true;
+        this.delayElapsed = true;
     }
 
     @Override
     public final void onStop() {
-        PacketSender.a(this.b).setWalkAnimationOverride(-1);
-        PacketSender.a(this.b).setAppearanceUpdateRequired(true);
-        Player player = PacketSender.a(this.b);
-        player.packetSender.sendGameMessage(this.c);
-        PacketSender.a(this.b).getSkillManager().addExperience(16, this.d);
-        if (this.e) {
-            PacketSender.a(this.b).getMovementQueue().setRunning(true);
+        PacketSender.getPlayer(this.packetSender).setWalkAnimationOverride(-1);
+        PacketSender.getPlayer(this.packetSender).setAppearanceUpdateRequired(true);
+        Player player = PacketSender.getPlayer(this.packetSender);
+        player.packetSender.sendGameMessage(this.completionMessage);
+        PacketSender.getPlayer(this.packetSender).getSkillManager().addExperience(16, this.experience);
+        if (this.restoreRunning) {
+            PacketSender.getPlayer(this.packetSender).getMovementQueue().setRunning(true);
         }
-        if (this.f) {
-            PacketSender.a((PacketSender)this.b).aw = false;
+        if (this.clearForcedMovementFlag) {
+            PacketSender.getPlayer((PacketSender)this.packetSender).forcedMovementActive = false;
         }
-        if (PacketSender.a((PacketSender)this.b).botEnabled) {
-            PacketSender.a((PacketSender)this.b).dm = false;
+        if (PacketSender.getPlayer((PacketSender)this.packetSender).botEnabled) {
+            PacketSender.getPlayer((PacketSender)this.packetSender).botRouteActionPending = false;
         }
     }
 }

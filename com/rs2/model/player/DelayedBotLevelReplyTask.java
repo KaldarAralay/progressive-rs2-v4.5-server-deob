@@ -8,22 +8,22 @@ import com.rs2.model.task.TickTask;
 
 final class DelayedBotLevelReplyTask
 extends TickTask {
-    private final /* synthetic */ Player a;
-    private final /* synthetic */ String b;
+    private final /* synthetic */ Player bot;
+    private final /* synthetic */ String replyMessage;
 
     DelayedBotLevelReplyTask(Player player, int n, Player player2, String string) {
-        this.a = player2;
-        this.b = string;
+        this.bot = player2;
+        this.replyMessage = string;
         super(n);
     }
 
     @Override
     public final void execute() {
-        if (this.a.isDead() || !this.a.isRegistered()) {
+        if (this.bot.isDead() || !this.bot.isRegistered()) {
             this.stop();
             return;
         }
-        this.a.queuePublicChatMessage(this.b);
+        this.bot.queuePublicChatMessage(this.replyMessage);
         this.stop();
     }
 }

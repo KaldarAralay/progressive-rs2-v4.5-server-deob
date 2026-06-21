@@ -68,7 +68,7 @@ public final class FightCaveController {
     public final void startFightCave() {
         this.player.fightCaveWaveIndex = ServerSettings.fightCaveStartWaveZeroBased;
         this.player.fightCaveSpawnRotation = GameUtil.randomInt(15);
-        this.player.b(new Position(2411, 5114, 0), true);
+        this.player.moveToInstancedPosition(new Position(2411, 5114, 0), true);
         this.player.getDialogueManager().setDialogueNpcId(2617);
         this.player.getDialogueManager().showNpcTwoLineDialogue("You're on your own now JalYt, prepare to fight for", "your life!", 591);
         this.player.getDialogueManager().finishDialogue();

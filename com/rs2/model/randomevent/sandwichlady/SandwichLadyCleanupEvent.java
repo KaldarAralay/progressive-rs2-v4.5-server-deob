@@ -29,7 +29,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        GameplayHelper.a(this.npc);
+        GameplayHelper.unregisterTemporaryNpc(this.npc);
     }
 }
 

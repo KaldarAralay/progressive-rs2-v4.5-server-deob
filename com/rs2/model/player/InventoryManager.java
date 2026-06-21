@@ -108,7 +108,7 @@ public final class InventoryManager {
         return true;
     }
 
-    public final boolean d(ItemStack object) {
+    public final boolean addItemUpToFreeSlots(ItemStack object) {
         if (!((ItemStack)object).isValid()) {
             return false;
         }
@@ -156,7 +156,7 @@ public final class InventoryManager {
         return !(bl ? this.container.getFreeSlots() <= 0 && !this.container.canAdd(itemStack) : !this.container.canAdd(itemStack));
     }
 
-    public final boolean b(int n) {
+    public final boolean containsItemInInventoryOrBank(int n) {
         ItemStack itemStack;
         ItemStack[] itemStackArray = this.container.getItems();
         int n2 = itemStackArray.length;

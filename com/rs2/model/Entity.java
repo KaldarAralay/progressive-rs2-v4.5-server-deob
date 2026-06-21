@@ -195,16 +195,16 @@ public abstract class Entity {
         return n5 >= n && n5 <= n2 && n6 >= n3 && n6 <= n4;
     }
 
-    public final boolean o() {
+    public final boolean isInCastleWars() {
         Entity entity;
         return this.isInArea(2368, 2431, 9479, 9535) || this.isInArea(2368, 2431, 3072, 3135) && !(entity = this).isInArea(2368, 2392, 9479, 9498) && !(entity = this).isInArea(2409, 2431, 9511, 9535);
     }
 
-    public final boolean p() {
+    public final boolean isInApeAtoll() {
         return this.isInArea(2688, 2820, 2688, 2820);
     }
 
-    private boolean a() {
+    private boolean isInFightPits() {
         return this.isInArea(2370, 2430, 5122, 5168);
     }
 
@@ -212,11 +212,11 @@ public abstract class Entity {
         return this.isInArea(2371, 2422, 5062, 5117);
     }
 
-    public final boolean r() {
+    public final boolean isInTutorialIsland() {
         return this.isInArea(3072, 3135, 3072, 3135) || this.isInArea(3072, 3135, 9472, 9535);
     }
 
-    private boolean b() {
+    private boolean isInWildernessDitchSafeZone() {
         if (Q == null) {
             Q = new Polygon();
             Q.addPoint(2994, 3516);
@@ -245,16 +245,16 @@ public abstract class Entity {
         return false;
     }
 
-    public final boolean s() {
+    public final boolean isInTenthSquadSigilInstance() {
         return this.isInArea(2688, 2751, 9152, 9215);
     }
 
     public final boolean isInWilderness() {
-        return (this.isInArea(2942, 3391, 3520, 3966) || this.isInArea(3076, 3135, 9919, 10000) || this.isInArea(2990, 3071, 10239, 10366)) && !this.b();
+        return (this.isInArea(2942, 3391, 3520, 3966) || this.isInArea(3076, 3135, 9919, 10000) || this.isInArea(2990, 3071, 10239, 10366)) && !this.isInWildernessDitchSafeZone();
     }
 
     public final boolean isWildernessCoordinate(int n, int n2) {
-        return (Entity.isPointInArea(2942, 3391, 3517, 3966, n, n2) || Entity.isPointInArea(3076, 3135, 9917, 10000, n, n2) || Entity.isPointInArea(2990, 3071, 10239, 10366, n, n2)) && !this.b() || this.b() && Entity.isPointInArea(2996, 2999, 3529, 3535, n, n2);
+        return (Entity.isPointInArea(2942, 3391, 3517, 3966, n, n2) || Entity.isPointInArea(3076, 3135, 9917, 10000, n, n2) || Entity.isPointInArea(2990, 3071, 10239, 10366, n, n2)) && !this.isInWildernessDitchSafeZone() || this.isInWildernessDitchSafeZone() && Entity.isPointInArea(2996, 2999, 3529, 3535, n, n2);
     }
 
     public final int getWildernessLevel() {
@@ -313,14 +313,14 @@ public abstract class Entity {
             }
             bl = false;
         }
-        return bl || this.o() || this.a() || this.isInFightCave();
+        return bl || this.isInCastleWars() || this.isInFightPits() || this.isInFightCave();
     }
 
-    public final boolean b(int n, int n2) {
+    public final boolean isInCastleWarsObstacleArea(int n, int n2) {
         return Entity.isPointInArea(2414, 2416, 3074, 3085, n, n2) || Entity.isPointInArea(2418, 2424, 3087, 3089, n, n2) || Entity.isPointInArea(2412, 2417, 3086, 3091, n, n2) || Entity.isPointInArea(2383, 2385, 3122, 3133, n, n2) || Entity.isPointInArea(2375, 2381, 3118, 3120, n, n2) || Entity.isPointInArea(2382, 2387, 3116, 3121, n, n2);
     }
 
-    public final boolean x() {
+    public final boolean isInFiremakingRestrictedArea() {
         return this.isInArea(3090, 3099, 3487, 3500) || this.isInArea(3089, 3090, 3492, 3498) || this.isInArea(3248, 3258, 3413, 3428) || this.isInArea(3179, 3191, 3432, 3448) || this.isInArea(2944, 2948, 3365, 3374) || this.isInArea(2942, 2948, 3367, 3374) || this.isInArea(2944, 2950, 3365, 3370) || this.isInArea(3008, 3019, 3352, 3359) || this.isInArea(3017, 3022, 3352, 3357) || this.isInArea(3203, 3213, 3200, 3237) || this.isInArea(3212, 3215, 3200, 3235) || this.isInArea(3215, 3220, 3202, 3235) || this.isInArea(3220, 3227, 3202, 3229) || this.isInArea(3227, 3230, 3208, 3226) || this.isInArea(3226, 3228, 3230, 3211) || this.isInArea(3227, 3229, 3208, 3226);
     }
 
@@ -548,7 +548,7 @@ public abstract class Entity {
         if (n3 != -1) {
             object3 = entity;
             Object object4 = this;
-            object4 = new CombatAttack[]{BaseCombatAttack.a((Entity)object4, (Entity)object3, CombatType.MAGIC, AttackXpMode.KBD_SPECIAL, 50, 4, 81, new GraphicEffect(-1, 0), new GraphicEffect(-1, 0), 394, ProjectileTiming.a, new PoisonEffect(8.0)), BaseCombatAttack.a((Entity)object4, (Entity)object3, CombatType.MAGIC, AttackXpMode.KBD_SPECIAL, 50, 4, 81, new GraphicEffect(-1, 0), new GraphicEffect(-1, 0), 395, ProjectileTiming.a, new MovementLockEffect(10)), BaseCombatAttack.a((Entity)object4, (Entity)object3, CombatType.MAGIC, AttackXpMode.KBD_SPECIAL, 50, 4, 81, new GraphicEffect(-1, 0), new GraphicEffect(-1, 0), 396, ProjectileTiming.a, new StatDrainEffect(-1, 2))};
+            object4 = new CombatAttack[]{BaseCombatAttack.createProjectileAttackWithEffect((Entity)object4, (Entity)object3, CombatType.MAGIC, AttackXpMode.KBD_SPECIAL, 50, 4, 81, new GraphicEffect(-1, 0), new GraphicEffect(-1, 0), 394, ProjectileTiming.a, new PoisonEffect(8.0)), BaseCombatAttack.createProjectileAttackWithEffect((Entity)object4, (Entity)object3, CombatType.MAGIC, AttackXpMode.KBD_SPECIAL, 50, 4, 81, new GraphicEffect(-1, 0), new GraphicEffect(-1, 0), 395, ProjectileTiming.a, new MovementLockEffect(10)), BaseCombatAttack.createProjectileAttackWithEffect((Entity)object4, (Entity)object3, CombatType.MAGIC, AttackXpMode.KBD_SPECIAL, 50, 4, 81, new GraphicEffect(-1, 0), new GraphicEffect(-1, 0), 396, ProjectileTiming.a, new StatDrainEffect(-1, 2))};
             int n7 = GameUtil.randomInt(3);
             object4 = object4[n7];
             object4.prepare();
@@ -800,7 +800,7 @@ public abstract class Entity {
         return this.tradePartner;
     }
 
-    public final boolean a(int n, int n2, int n3, int n4, int n5, int n6, int n7) {
+    public final boolean canTravelBetween(int n, int n2, int n3, int n4, int n5, int n6, int n7) {
         if (n5 < 0 && this.isPlayer()) {
             System.out.println(String.valueOf(((Player)this).getUsername()) + " negative height value!");
             n5 = 0;
@@ -863,7 +863,7 @@ public abstract class Entity {
 
     public final boolean isInTeleportRestrictedArea() {
         Entity entity = this;
-        return entity.isInArea(2587, 2619, 4760, 4785) || this.a() || (entity = this).isInArea(2394, 2404, 5169, 5175) || this.isInFightCave() || this.isInDuelArena();
+        return entity.isInArea(2587, 2619, 4760, 4785) || this.isInFightPits() || (entity = this).isInArea(2394, 2404, 5169, 5175) || this.isInFightCave() || this.isInDuelArena();
     }
 
     public final boolean isMovementLocked() {

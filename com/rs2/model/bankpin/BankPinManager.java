@@ -377,7 +377,7 @@ lbl62:
         return nArray;
     }
 
-    public static boolean a(Player player, int n) {
+    public static boolean showSkillUnlockMessage(Player player, int n) {
         if (n != 13 && n != 8 && n != 16 && n != 0 && n != 7 && n != 12 && n != 1 && n != 19 && n != 11 && n != 10 && n != 9 && n != 15 && n != 14 && n != 4 && n != 20 && n != 18 && n != 2 && n != 17) {
             return false;
         }

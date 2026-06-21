@@ -17,18 +17,18 @@ import java.util.ArrayList;
 
 public final class FaladorImpCombatBotTask
 extends BotTaskDefinition {
-    private static Position aa = new Position(3012, 3355, 0);
-    private static int[] ab = new int[]{590, 592, 753, 877, 956, 1931, 1935, 1944, 1947, 2307};
-    private static BotRoute ac = new BotRoute(new Position[]{new Position(3012, 3359, 0), new Position(3008, 3359, 0), new Position(3008, 3343, 0), new Position(3008, 3325, 0), new Position(3004, 3302, 0)});
+    private static Position routeStartPosition = new Position(3012, 3355, 0);
+    private static int[] ignoredLootItemIds = new int[]{590, 592, 753, 877, 956, 1931, 1935, 1944, 1947, 2307};
+    private static BotRoute taskRoute = new BotRoute(new Position[]{new Position(3012, 3359, 0), new Position(3008, 3359, 0), new Position(3008, 3343, 0), new Position(3008, 3325, 0), new Position(3004, 3302, 0)});
 
     public FaladorImpCombatBotTask(int n) {
-        super(aa, ac, 1, false, 1);
+        super(routeStartPosition, taskRoute, 1, false, 1);
         boolean bl = true;
         FaladorImpCombatBotTask faladorImpCombatBotTask = this;
         this.combatTask = true;
-        int[] nArray = ab;
+        int[] nArray = ignoredLootItemIds;
         faladorImpCombatBotTask = this;
-        this.ignoredLootItemIds = nArray;
+        ((BotTaskDefinition)this).ignoredLootItemIds = nArray;
     }
 
     @Override
@@ -81,14 +81,14 @@ extends BotTaskDefinition {
         player.botTaskRequiredItems = object;
         player.getInventoryManager().addItem(object[0]);
         object = player;
-        GameplayHelper.a((Player)object, -1);
+        GameplayHelper.prepareBotCombatStyle((Player)object, -1);
         player.getInventoryManager().refresh();
         player.getEquipmentManager().refresh();
     }
 
     @Override
     public final void prepareTaskCombatLoadout(Player player) {
-        GameplayHelper.b(player);
+        GameplayHelper.resetBotSkillsToBase(player);
         int n = 1 + GameUtil.randomInt(10);
         int n2 = n / 5 << 1;
         if (n2 == 0) {

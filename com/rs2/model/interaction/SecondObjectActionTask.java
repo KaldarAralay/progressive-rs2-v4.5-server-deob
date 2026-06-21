@@ -131,7 +131,7 @@ extends TickTask {
                 if (!SkillActionHelper.checkSkillRequirement((Player)object, 14, 50, "mine here")) break;
                 int n4 = ((Entity)object).nextActionSequence();
                 ((Player)object).resetAnimation();
-                ((Player)object).N = 0;
+                ((Player)object).temporaryActionValue = 0;
                 ((Entity)object).getUpdateState().setAnimation(gatheringToolDefinition.getGatherAnimationId());
                 Object object3 = object;
                 ((Player)object3).packetSender.sendSoundEffect(432, 1, 0);

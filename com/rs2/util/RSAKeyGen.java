@@ -24,9 +24,9 @@ public class RSAKeyGen {
             Object object3 = ((KeyPair)object2).getPrivate();
             object2 = ((KeyPair)object2).getPublic();
             object3 = ((KeyFactory)object).getKeySpec((Key)object3, RSAPrivateKeySpec.class);
-            RSAKeyGen.a("./data/rsapriv", ((RSAPrivateKeySpec)object3).getModulus(), ((RSAPrivateKeySpec)object3).getPrivateExponent());
+            RSAKeyGen.writeRsaConstantsFile("./data/rsapriv", ((RSAPrivateKeySpec)object3).getModulus(), ((RSAPrivateKeySpec)object3).getPrivateExponent());
             object = ((KeyFactory)object).getKeySpec((Key)object2, RSAPublicKeySpec.class);
-            RSAKeyGen.a("./data/rsapub", ((RSAPublicKeySpec)object).getModulus(), ((RSAPublicKeySpec)object).getPublicExponent());
+            RSAKeyGen.writeRsaConstantsFile("./data/rsapub", ((RSAPublicKeySpec)object).getModulus(), ((RSAPublicKeySpec)object).getPublicExponent());
             return;
         }
         catch (Exception exception) {
@@ -36,7 +36,7 @@ public class RSAKeyGen {
         }
     }
 
-    private static void a(String object, BigInteger bigInteger, BigInteger bigInteger2) {
+    private static void writeRsaConstantsFile(String object, BigInteger bigInteger, BigInteger bigInteger2) {
         try {
             object = new BufferedWriter(new FileWriter((String)object));
             ((Writer)object).write("private static final BigInteger RSA_MODULUS = new BigInteger(\"" + bigInteger.toString() + "\");");

@@ -8,8 +8,8 @@ import com.rs2.CacheCoordinateTranslator;
 import com.rs2.ConfigFile;
 import com.rs2.ConnectionThrottle;
 import com.rs2.HiscoresDatabase;
-import com.rs2.ItemDegradeTickTask;
 import com.rs2.LanDiscoveryService;
+import com.rs2.MinuteMaintenanceTickTask;
 import com.rs2.ServerSettings;
 import com.rs2.StartingRareItemList;
 import com.rs2.bot.BotPlayer;
@@ -289,14 +289,14 @@ implements Runnable {
             Runtime.getRuntime().addShutdownHook((Thread)object2);
             PacketDispatcher.registerHandlers();
             CacheStore.initializeCacheStore();
-            ProjectileDefinition.c();
+            ProjectileDefinition.registerNpcCombatDefinitions();
             QuestDefinition.loadDefinitions();
             ItemDefinition.loadDefinitions();
             NpcDefinition.loadDefinitions();
             FoodHandler.loadPotionDefinitions();
             ShopManager.loadShops();
             InterfaceDefinition.loadDefinitions();
-            PluginManager.a();
+            PluginManager.loadPlugins();
             new WorldObjectLookup();
             WorldObjectLookup.loadWorldObjects();
             ObjectDefinition.a();
@@ -313,8 +313,8 @@ implements Runnable {
                 object = exception;
                 exception.printStackTrace();
             }
-            World.scheduleTickTask(new ItemDegradeTickTask((Server)object2, 100));
-            GameplayHelper.g();
+            World.scheduleTickTask(new MinuteMaintenanceTickTask((Server)object2, 100));
+            GameplayHelper.loadGroundItemSpawns();
             FishingSpotManager.spawnFishingSpots();
             MusicTrackDefinition.loadDefinitions();
             MusicAreaDefinition.loadDefinitions();
@@ -335,14 +335,14 @@ implements Runnable {
             object2 = this;
             this.selector = Selector.open();
             ((Server)object2).serverSocketChannel = ServerSocketChannel.open();
-            DedicatedReactor.a(new DedicatedReactor(Selector.open()));
-            DedicatedReactor.b().start();
+            DedicatedReactor.setInstance(new DedicatedReactor(Selector.open()));
+            DedicatedReactor.getInstance().start();
             ((Server)object2).serverSocketChannel.configureBlocking(false);
             ((Server)object2).serverSocketChannel.socket().bind(((Server)object2).bindAddress);
-            object = DedicatedReactor.b();
+            object = DedicatedReactor.getInstance();
             synchronized (object) {
-                DedicatedReactor.b().a().wakeup();
-                ((Server)object2).serverSocketChannel.register(DedicatedReactor.b().a(), 16);
+                DedicatedReactor.getInstance().getSelector().wakeup();
+                ((Server)object2).serverSocketChannel.register(DedicatedReactor.getInstance().getSelector(), 16);
             }
             ((Server)object2).cycleTimer = new ElapsedTimer();
             serverStatus = 2;
@@ -466,7 +466,7 @@ implements Runnable {
             Exception exception2 = exception;
             exception.printStackTrace();
         }
-        PluginManager.d();
+        PluginManager.shutdownGlobalPlugins();
     }
 
     private static void loginAllConfiguredBots() {
@@ -519,7 +519,7 @@ implements Runnable {
         onlinePlayerCount = World.getPlayerCount();
         adminPlayerCount = World.getAdminCount();
         moderatorPlayerCount = World.getModeratorCount();
-        ControlPanel.a();
+        ControlPanel.refreshStatusDisplay();
     }
 
     public static void broadcastServerMessage(String string) {
@@ -561,7 +561,7 @@ implements Runnable {
         while ((var2_3 = (Player)this.loginQueue.poll()) != null) {
             try {
                 var2_3.processPostLogin();
-                var2_3.setConnectionState(PlayerConnectionState.d);
+                var2_3.setConnectionState(PlayerConnectionState.IN_GAME);
             }
             catch (Exception v0) {
                 var3_4 = v0;
@@ -578,7 +578,7 @@ implements Runnable {
             PacketDispatcher.processIncoming((Player)var1_1.attachment());
         }
         var3_4.stop();
-        PluginManager.b();
+        PluginManager.tickGlobalPlugins();
         World.processTick();
         var1_1 = ProfilerRegistry.getTimer("disconnectingPlayers");
         var1_1.start();
@@ -589,10 +589,10 @@ implements Runnable {
                 block27: {
                     var2_3 = (Player)var3_4.next();
                     var5_6 = var2_3;
-                    if (var2_3.eC) ** GOTO lbl-1000
+                    if (var2_3.grandExchangeSettlementInProgress) ** GOTO lbl-1000
                     if (var5_6.cn) {
                         v1 = false;
-                    } else if (var5_6.getConnectionState() == PlayerConnectionState.e && var5_6.getDisconnectGraceExpiresAtMillis() < System.currentTimeMillis()) {
+                    } else if (var5_6.getConnectionState() == PlayerConnectionState.DISCONNECTING && var5_6.getDisconnectGraceExpiresAtMillis() < System.currentTimeMillis()) {
                         v1 = false;
                     } else if (var5_6.getRecentCombatTimer().hasElapsed()) {
                         v1 = false;
@@ -627,8 +627,8 @@ implements Runnable {
                             var2_3.stop();
                             var2_3 = ProfilerRegistry.getTimer("petUnregister");
                             var2_3.start();
-                            if (var5_6.getPetManager().b() != null) {
-                                var5_6.getPetManager().a();
+                            if (var5_6.getPetManager().getActivePetNpc() != null) {
+                                var5_6.getPetManager().pickupPet();
                             }
                             var2_3.stop();
                             var2_3 = ProfilerRegistry.getTimer("endFightCave");

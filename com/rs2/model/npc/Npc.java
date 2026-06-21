@@ -341,7 +341,7 @@ extends Entity {
                 object = npc;
                 if (((Npc)object).npcId == 3098) break block52;
             }
-            GameplayHelper.a(npc);
+            GameplayHelper.unregisterTemporaryNpc(npc);
         }
         if (this.removalDelayTicks == 0) {
             boolean bl = false;
@@ -500,7 +500,7 @@ extends Entity {
         player = object;
         ((Player)object).H = npc2;
         this.getUpdateState().setAnimation(717);
-        ((Player)object).getTeleportManager().a(3105, 3934, 0, null);
+        ((Player)object).getTeleportManager().startStandardTeleport(3105, 3934, 0, null);
         object = new MageArenaChallengeStartTask(this, 12, (Player)object, npc);
         World.getTaskScheduler().schedule((TickTask)object);
     }

@@ -12,7 +12,8 @@ extends SkillLevelRequirement {
         super(6, n2);
     }
 
-    public final String a() {
+    @Override
+    public final String getFailureMessage() {
         return "Your level in magic is not high enough!";
     }
 }

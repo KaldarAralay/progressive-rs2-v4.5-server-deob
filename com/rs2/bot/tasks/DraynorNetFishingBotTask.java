@@ -16,11 +16,11 @@ import java.util.ArrayList;
 
 public final class DraynorNetFishingBotTask
 extends BotTaskDefinition {
-    private static Position aa = new Position(3092, 3245, 0);
-    private static BotRoute ab = new BotRoute(new Position[]{new Position(3092, 3247, 0), new Position(3087, 3247, 0), new Position(3087, 3241, 0)});
+    private static Position routeStartPosition = new Position(3092, 3245, 0);
+    private static BotRoute taskRoute = new BotRoute(new Position[]{new Position(3092, 3247, 0), new Position(3087, 3247, 0), new Position(3087, 3241, 0)});
 
     public DraynorNetFishingBotTask(int n) {
-        super(aa, ab, 1, false, 3);
+        super(routeStartPosition, taskRoute, 1, false, 3);
         int n2 = 20;
         DraynorNetFishingBotTask draynorNetFishingBotTask = this;
         this.targetSearchRadius = n2;
@@ -62,7 +62,7 @@ extends BotTaskDefinition {
 
     @Override
     public final void prepareTaskCombatLoadout(Player player) {
-        GameplayHelper.b(player);
+        GameplayHelper.resetBotSkillsToBase(player);
         int n = 1 + GameUtil.randomInt(20);
         int n2 = n / 5 << 1;
         if (n2 == 0) {

@@ -4,29 +4,29 @@
 package com.rs2.util.path;
 
 public final class MapDataReader {
-    private byte[] a;
-    private int b;
+    private byte[] data;
+    private int offset;
 
     public MapDataReader(byte[] byArray) {
-        this.a = byArray;
-        this.b = 0;
+        this.data = byArray;
+        this.offset = 0;
     }
 
-    public final void a(int n) {
-        ++this.b;
+    public final void skipByte(int n) {
+        ++this.offset;
     }
 
-    public final int a() {
-        return this.a[this.b++] & 0xFF;
+    public final int readUnsignedByte() {
+        return this.data[this.offset++] & 0xFF;
     }
 
-    public final int b() {
-        int n = this.a[this.b] & 0xFF;
+    public final int readUnsignedSmart() {
+        int n = this.data[this.offset] & 0xFF;
         if (n < 128) {
-            return this.a();
+            return this.readUnsignedByte();
         }
         MapDataReader mapDataReader = this;
-        return (mapDataReader.a() << 8) + mapDataReader.a() - 32768;
+        return (mapDataReader.readUnsignedByte() << 8) + mapDataReader.readUnsignedByte() - 32768;
     }
 }
 

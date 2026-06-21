@@ -18,139 +18,139 @@ import com.rs2.util.path.PathFinder;
 
 final class PickupItemTask
 extends TickTask {
-    private /* synthetic */ ItemService a;
-    private final /* synthetic */ Player b;
-    private final /* synthetic */ int c;
-    private final /* synthetic */ int d;
-    private final /* synthetic */ Position e;
+    private /* synthetic */ ItemService itemService;
+    private final /* synthetic */ Player player;
+    private final /* synthetic */ int actionSequence;
+    private final /* synthetic */ int itemId;
+    private final /* synthetic */ Position groundItemPosition;
 
     PickupItemTask(ItemService itemService, int n, boolean bl, Player player, int n2, int n3, Position position) {
-        this.a = itemService;
-        this.b = player;
-        this.c = n2;
-        this.d = n3;
-        this.e = position;
+        this.itemService = itemService;
+        this.player = player;
+        this.actionSequence = n2;
+        this.itemId = n3;
+        this.groundItemPosition = position;
         super(1, true);
     }
 
     @Override
     public final void execute() {
-        if (!this.b.isCurrentActionSequence(this.c)) {
-            if (this.b.botLootPickupTargets.size() > 0) {
-                BotCombatHelper.pickupBotCombatGroundItem(this.b, ((GroundItem)this.b.botLootPickupTargets.get(0)).getItem().getId(), ((GroundItem)this.b.botLootPickupTargets.get(0)).getPosition());
-            } else if (this.b.currentBotTask != null) {
+        if (!this.player.isCurrentActionSequence(this.actionSequence)) {
+            if (this.player.botLootPickupTargets.size() > 0) {
+                BotCombatHelper.pickupBotCombatGroundItem(this.player, ((GroundItem)this.player.botLootPickupTargets.get(0)).getItem().getId(), ((GroundItem)this.player.botLootPickupTargets.get(0)).getPosition());
+            } else if (this.player.currentBotTask != null) {
                 int n;
-                GameplayHelper.shouldReturnToBankForBotTask(this.b);
-                int n2 = n = this.b.isInWilderness() ? 8 : 0;
-                if (this.b.getInventoryManager().getItemAmount(this.b.botFoodItemId) <= n && this.b.currentBotTask.getForcedCombatStyle() != 2 || this.b.botTaskReturnToBankRequested) {
-                    this.b.currentBotTask.startWalkToBank(this.b);
+                GameplayHelper.shouldReturnToBankForBotTask(this.player);
+                int n2 = n = this.player.isInWilderness() ? 8 : 0;
+                if (this.player.getInventoryManager().getItemAmount(this.player.botFoodItemId) <= n && this.player.currentBotTask.getForcedCombatStyle() != 2 || this.player.botTaskReturnToBankRequested) {
+                    this.player.currentBotTask.startWalkToBank(this.player);
                 } else {
-                    this.b.interactWithBotNpcTargets(this.b.botInteractionTargetIds);
+                    this.player.interactWithBotNpcTargets(this.player.botInteractionTargetIds);
                 }
             }
             this.stop();
             return;
         }
         GroundItemManager.getInstance();
-        GroundItem groundItem = GroundItemManager.findVisibleItem(this.b, this.d, this.e);
+        GroundItem groundItem = GroundItemManager.findVisibleItem(this.player, this.itemId, this.groundItemPosition);
         if (groundItem == null) {
-            if (this.b.dropPartyFollower) {
-                if (GameUtil.randomInt(3) == 0 && this.b.currentBotTask != null) {
-                    Position position = this.b.currentBotTask.getRandomTaskAreaPosition();
+            if (this.player.dropPartyFollower) {
+                if (GameUtil.randomInt(3) == 0 && this.player.currentBotTask != null) {
+                    Position position = this.player.currentBotTask.getRandomTaskAreaPosition();
                     PathFinder.getInstance();
-                    PathFinder.findPath(this.b, position.getX(), position.getY(), true, 0, 0);
+                    PathFinder.findPath(this.player, position.getX(), position.getY(), true, 0, 0);
                 }
-            } else if (this.b.currentBotTask != null) {
+            } else if (this.player.currentBotTask != null) {
                 int n;
-                GameplayHelper.shouldReturnToBankForBotTask(this.b);
-                int n3 = n = this.b.isInWilderness() ? 8 : 0;
-                if (this.b.getInventoryManager().getItemAmount(this.b.botFoodItemId) <= n && this.b.currentBotTask.getForcedCombatStyle() != 2 || this.b.botTaskReturnToBankRequested) {
-                    this.b.currentBotTask.startWalkToBank(this.b);
+                GameplayHelper.shouldReturnToBankForBotTask(this.player);
+                int n3 = n = this.player.isInWilderness() ? 8 : 0;
+                if (this.player.getInventoryManager().getItemAmount(this.player.botFoodItemId) <= n && this.player.currentBotTask.getForcedCombatStyle() != 2 || this.player.botTaskReturnToBankRequested) {
+                    this.player.currentBotTask.startWalkToBank(this.player);
                 } else {
-                    this.b.interactWithBotNpcTargets(this.b.botInteractionTargetIds);
+                    this.player.interactWithBotNpcTargets(this.player.botInteractionTargetIds);
                 }
             }
             this.stop();
             return;
         }
         boolean bl = false;
-        if (this.e.getX() == 2822 && this.e.getY() == 3355) {
+        if (this.groundItemPosition.getX() == 2822 && this.groundItemPosition.getY() == 3355) {
             bl = true;
         }
-        if (!GameUtil.isWithinDistance(this.b.getPosition(), this.e, 1)) {
+        if (!GameUtil.isWithinDistance(this.player.getPosition(), this.groundItemPosition, 1)) {
             return;
         }
-        boolean bl2 = PathReachability.isReachable(this.b, this.e.getX(), this.e.getY(), true, 0, 0);
-        if (!GameUtil.hasClearPath(this.b.getPosition(), this.e, bl2) && !bl) {
+        boolean bl2 = PathReachability.isReachable(this.player, this.groundItemPosition.getX(), this.groundItemPosition.getY(), true, 0, 0);
+        if (!GameUtil.hasClearPath(this.player.getPosition(), this.groundItemPosition, bl2) && !bl) {
             return;
         }
-        if (GameUtil.hasClearPath(this.b.getPosition(), this.e, true) && !this.b.getPosition().equals(this.e)) {
+        if (GameUtil.hasClearPath(this.player.getPosition(), this.groundItemPosition, true) && !this.player.getPosition().equals(this.groundItemPosition)) {
             return;
         }
-        if (this.b.getQuestManager().handleGroundItemInteraction(this.d)) {
+        if (this.player.getQuestManager().handleGroundItemInteraction(this.itemId)) {
             this.stop();
             return;
         }
-        if (this.b.gameMode != 0) {
+        if (this.player.gameMode != 0) {
             if (!groundItem.isRespawning() && groundItem.getOwner() == null && !groundItem.allowsRestrictedModePickup()) {
-                Player player = this.b;
+                Player player = this.player;
                 player.packetSender.sendGameMessage("You are not playing on normal gamemode and cant pick that up.");
                 this.stop();
                 return;
             }
-            if (!groundItem.isRespawning() && groundItem.getOwner() != null && groundItem.getOwner().resolve() != this.b && !groundItem.allowsRestrictedModePickup()) {
-                Player player = this.b;
+            if (!groundItem.isRespawning() && groundItem.getOwner() != null && groundItem.getOwner().resolve() != this.player && !groundItem.allowsRestrictedModePickup()) {
+                Player player = this.player;
                 player.packetSender.sendGameMessage("You are not playing on normal gamemode and cant pick that up.");
                 this.stop();
                 return;
             }
         }
-        if (this.d == 245 && this.e.getX() == 2930 && this.e.getY() == 3515) {
-            Player player = this.b;
+        if (this.itemId == 245 && this.groundItemPosition.getX() == 2930 && this.groundItemPosition.getY() == 3515) {
+            Player player = this.player;
             player.packetSender.sendGameMessage("You can only take the wine by casting tele grab (temporary).");
             this.stop();
             return;
         }
-        if (this.d == 1419) {
-            if (this.b.ownsItem(this.d)) {
-                Player player = this.b;
+        if (this.itemId == 1419) {
+            if (this.player.ownsItem(this.itemId)) {
+                Player player = this.player;
                 player.packetSender.sendGameMessage("You already have a scythe, you don't need another one.");
                 this.stop();
                 return;
             }
-            this.b.questHookStates[3] = 1;
+            this.player.questHookStates[3] = 1;
         }
-        if (this.d >= 5509 && this.d <= 5515 && this.b.ownsItem(this.d)) {
-            Player player = this.b;
+        if (this.itemId >= 5509 && this.itemId <= 5515 && this.player.ownsItem(this.itemId)) {
+            Player player = this.player;
             player.packetSender.sendGameMessage("I already have that pouch!");
             this.stop();
             return;
         }
-        if (this.b.getWalkDirection() >= 0 || this.b.getRunDirection() >= 0) {
+        if (this.player.getWalkDirection() >= 0 || this.player.getRunDirection() >= 0) {
             return;
         }
         this.stop();
-        if (!GroundItemManager.getInstance().removeForPickup(groundItem, this.b)) {
-            Player player = this.b;
+        if (!GroundItemManager.getInstance().removeForPickup(groundItem, this.player)) {
+            Player player = this.player;
             player.packetSender.sendGameMessage("That item does not seem to exist anymore.");
-            player = this.b;
+            player = this.player;
             player.packetSender.sendGroundItemRemove(groundItem);
-            if (this.b.botEnabled) {
-                this.a.a(this.b, this.d, groundItem, false);
+            if (this.player.botEnabled) {
+                this.itemService.handleBotGroundItemPickupResult(this.player, this.itemId, groundItem, false);
             }
             return;
         }
-        Player player = this.b;
+        Player player = this.player;
         player.packetSender.sendSoundEffect(356, 1, 0);
         if (groundItem.getItem().getDefinition().isStackable()) {
-            if (this.b.getInventoryManager().addItem(new ItemStack(this.b.getInteractionTargetId(), groundItem.getItem().getAmount(), groundItem.getItem().getMetadata()))) {
-                this.b.getEquipmentManager().refreshCarriedValue();
+            if (this.player.getInventoryManager().addItem(new ItemStack(this.player.getInteractionTargetId(), groundItem.getItem().getAmount(), groundItem.getItem().getMetadata()))) {
+                this.player.getEquipmentManager().refreshCarriedValue();
             }
-        } else if (this.b.getInventoryManager().addItem(new ItemStack(this.b.getInteractionTargetId(), 1, groundItem.getItem().getMetadata()))) {
-            this.b.getEquipmentManager().refreshCarriedValue();
+        } else if (this.player.getInventoryManager().addItem(new ItemStack(this.player.getInteractionTargetId(), 1, groundItem.getItem().getMetadata()))) {
+            this.player.getEquipmentManager().refreshCarriedValue();
         }
-        if (this.b.botEnabled) {
-            this.a.a(this.b, this.d, groundItem, true);
+        if (this.player.botEnabled) {
+            this.itemService.handleBotGroundItemPickupResult(this.player, this.itemId, groundItem, true);
         }
     }
 }

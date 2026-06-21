@@ -351,7 +351,7 @@ public final class SkillManager {
         }
         boolean bl = false;
         boolean bl2 = this.player.isMember();
-        this.player.N = n4;
+        this.player.temporaryActionValue = n4;
         d = ServerSettings.progressiveXpMode == 0 ? (d *= ServerSettings.xpRate) : (d *= this.getExperienceRateForSkill(n));
         if (this.player.isBot && ServerSettings.botXpRateMode == 1) {
             d *= ServerSettings.botXpRateMultiplier;
@@ -398,7 +398,7 @@ public final class SkillManager {
             return;
         }
         this.player.isMember();
-        this.player.N = n2 = SkillManager.getLevelForExperience(this.experience[n]);
+        this.player.temporaryActionValue = n2 = SkillManager.getLevelForExperience(this.experience[n]);
         int n3 = n;
         this.experience[n3] = this.experience[n3] + (d *= ServerSettings.questXpRate);
         if (this.experience[n] > this.getExperienceCap()) {
@@ -418,9 +418,9 @@ public final class SkillManager {
 
     public final void showLevelUpInterface(int n) {
         Object object;
-        if (this.player.j) {
-            if (!this.player.k.contains(n)) {
-                this.player.k.add(n);
+        if (this.player.deferLevelUpInterfaces) {
+            if (!this.player.queuedLevelUpSkillIds.contains(n)) {
+                this.player.queuedLevelUpSkillIds.add(n);
             }
             return;
         }
@@ -458,7 +458,7 @@ public final class SkillManager {
         nArrayArray[22] = new int[]{22, 19567, 19568, 19566, 656, 657, 256, 256};
         int[][] nArrayArray2 = nArrayArray;
         if (n == nArrayArray2[n][0]) {
-            this.player.i = n;
+            this.player.currentLevelUpSkillId = n;
             Player player = this.player;
             player.packetSender.sendInterfaceText("@dbl@Congratulations, you just advanced a " + SKILL_NAMES[n] + " level!", nArrayArray2[n][1]);
             player = this.player;
@@ -467,7 +467,7 @@ public final class SkillManager {
             player.packetSender.sendGameMessage("You've just advanced a " + SKILL_NAMES[n] + " level! You have reached level " + this.getBaseLevel(n) + ".");
             if (ServerSettings.progressiveXpMode != 0) {
                 int n2 = this.getBaseLevel(n);
-                int n3 = this.player.N;
+                int n3 = this.player.temporaryActionValue;
                 double d = this.getExperienceRateForLevel(n3);
                 double d2 = this.getExperienceRateForLevel(n2);
                 Object object2 = new DecimalFormat("#0.00");

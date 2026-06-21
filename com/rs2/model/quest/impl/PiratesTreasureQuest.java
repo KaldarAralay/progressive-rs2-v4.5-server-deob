@@ -99,7 +99,7 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.showInterface(InterfaceDefinition.interfaceCount <= 12140 ? 1689 : 12140);
         player2 = player;
-        player.j = false;
+        player.deferLevelUpInterfaces = false;
     }
 
     @Override
@@ -277,11 +277,11 @@ extends QuestScript {
                 } else {
                     player.getDialogueManager().showTwoLineStatement("You pack a banana into the crate.", "The crate is now full.");
                 }
-                player.er();
+                player.resetInteractionState();
                 player.getDialogueManager().finishDialogue();
             } else {
                 player.getDialogueManager().showOneLineStatement("The crate is already full.");
-                player.er();
+                player.resetInteractionState();
                 player.getDialogueManager().finishDialogue();
             }
             return true;
@@ -291,13 +291,13 @@ extends QuestScript {
                 player.getInventoryManager().removeItem(new ItemStack(431, 1));
                 player.getDialogueManager().showOneLineStatement("You stash the rum in the crate.");
                 player.setQuestState(this.getQuestId(), 3);
-                player.er();
+                player.resetInteractionState();
                 player.getDialogueManager().finishDialogue();
                 return true;
             }
             if (n3 == 3) {
                 player.getDialogueManager().showOneLineStatement("You have already stashed a bottle of rum there.");
-                player.er();
+                player.resetInteractionState();
                 player.getDialogueManager().finishDialogue();
                 return true;
             }

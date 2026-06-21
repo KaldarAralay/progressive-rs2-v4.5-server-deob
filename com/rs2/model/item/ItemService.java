@@ -17,8 +17,8 @@ import com.rs2.model.path.PathReachability;
 import com.rs2.model.player.Player;
 
 public final class ItemService {
-    private static ItemService b = new ItemService();
-    static PathReachability a = new PathReachability();
+    private static ItemService instance = new ItemService();
+    static PathReachability pathReachability = new PathReachability();
 
     public static boolean isEssencePouch(int n) {
         if (n >= 5510 && n <= 5515) {
@@ -32,7 +32,7 @@ public final class ItemService {
         World.scheduleTickTask(new PickupItemTask(this, 1, true, player, n2, n, position));
     }
 
-    public final void a(Player player, int n, GroundItem groundItem, boolean bl) {
+    public final void handleBotGroundItemPickupResult(Player player, int n, GroundItem groundItem, boolean bl) {
         int n2 = player.getEquipmentManager().getItemIdAtSlot(3);
         boolean bl2 = false;
         if (n2 > 0) {
@@ -123,7 +123,7 @@ public final class ItemService {
     }
 
     public static ItemService getInstance() {
-        return b;
+        return instance;
     }
 }
 

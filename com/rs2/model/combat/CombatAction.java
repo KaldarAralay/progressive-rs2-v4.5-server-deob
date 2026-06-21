@@ -212,14 +212,14 @@ public class CombatAction {
                     Player player;
                     if (combatAction.hitDefinition.getAttackStyle().getCombatType() == CombatType.MELEE && combatAction.attacker.isPlayer()) {
                         Player player2 = (Player)combatAction.attacker;
-                        if (player2.ex()) {
+                        if (player2.hasFullVoidMeleeSet()) {
                             combatAction.damage = (int)((double)combatAction.damage * 1.1);
                         }
                         if (player2.getEquipmentManager().getItemIdAtSlot(2) == 11128 && (player2.getEquipmentManager().getItemIdAtSlot(3) == 6523 || player2.getEquipmentManager().getItemIdAtSlot(3) == 6528 || player2.getEquipmentManager().getItemIdAtSlot(3) == 6527 || player2.getEquipmentManager().getItemIdAtSlot(3) == 6525)) {
                             combatAction.damage = (int)((double)combatAction.damage * 1.2);
                         }
                     }
-                    if (combatAction.hitDefinition.getAttackStyle().getCombatType() == CombatType.RANGED && combatAction.attacker.isPlayer() && (player = (Player)combatAction.attacker).ew()) {
+                    if (combatAction.hitDefinition.getAttackStyle().getCombatType() == CombatType.RANGED && combatAction.attacker.isPlayer() && (player = (Player)combatAction.attacker).hasFullVoidRangedSet()) {
                         combatAction.damage = (int)((double)combatAction.damage * 1.2);
                     }
                 }
@@ -252,7 +252,7 @@ public class CombatAction {
                         entity2 = (Player)entity2;
                         Entity entity3 = entity = (Npc)entity;
                         if (((Npc)entity).getNpcId() == 53 || ((Npc)entity3).getNpcId() == 54 || ((Npc)entity3).getNpcId() == 55 || ((Npc)entity3).getNpcId() == 941 || ((Npc)entity3).getNpcId() == 3885 || ((Npc)entity3).getNpcId() == 5362) {
-                            switch (((Player)entity2).ey()) {
+                            switch (((Player)entity2).getDragonfireProtectionState()) {
                                 case 0: {
                                     if (bl) {
                                         n4 = 30;
@@ -296,7 +296,7 @@ public class CombatAction {
                         } else {
                             entity3 = entity;
                             if (((Npc)entity3).getNpcId() == 1590 || ((Npc)entity3).getNpcId() == 1591 || ((Npc)entity3).getNpcId() == 1592 || ((Npc)entity3).getNpcId() == 5363) {
-                                switch (((Player)entity2).ey()) {
+                                switch (((Player)entity2).getDragonfireProtectionState()) {
                                     case 0: {
                                         if (bl) {
                                             n4 = 30;
@@ -342,7 +342,7 @@ public class CombatAction {
                                     }
                                 }
                             } else if (((Npc)entity).getNpcId() == 50) {
-                                switch (((Player)entity2).ey()) {
+                                switch (((Player)entity2).getDragonfireProtectionState()) {
                                     case 0: {
                                         if (hitDefinition.getAttackStyle().getXpMode() == AttackXpMode.KBD_SPECIAL) {
                                             n4 = 50;
@@ -412,7 +412,7 @@ public class CombatAction {
                                     }
                                 }
                             } else if (((Npc)entity).getNpcId() == 742) {
-                                switch (((Player)entity2).ey()) {
+                                switch (((Player)entity2).getDragonfireProtectionState()) {
                                     case 0: {
                                         n4 = 70;
                                         break;
@@ -722,8 +722,8 @@ public class CombatAction {
                 this.target.getUpdateState().setAnimation(this.hitDefinition.getBlockAnimationId());
             } else if (this.target.isPlayer()) {
                 object32 = (Player)this.target;
-                if (((Player)object32).ak > 1) {
-                    this.target.getUpdateState().setAnimation(new Npc(((Player)object32).ak).getDefinition().getBlockAnimationId());
+                if (((Player)object32).npcTransformationId > 1) {
+                    this.target.getUpdateState().setAnimation(new Npc(((Player)object32).npcTransformationId).getDefinition().getBlockAnimationId());
                 } else {
                     this.target.getUpdateState().setAnimation(this.target.getBlockAnimationId());
                 }
@@ -925,7 +925,7 @@ public class CombatAction {
                 if (player.getActivePrayers()[16]) {
                     PrayerManager.triggerRedemption(player, this.target, n4);
                 }
-                if ((itemStack = player.getEquipmentManager().getContainer().getItemAt(12)) != null && itemStack.getId() == 2570 && player.getTeleportManager().b(TeleportManager.a)) {
+                if ((itemStack = player.getEquipmentManager().getContainer().getItemAt(12)) != null && itemStack.getId() == 2570 && player.getTeleportManager().castItemTeleport(TeleportManager.RESPAWN_TELEPORT_POSITION)) {
                     Player player3 = player;
                     player3.packetSender.sendGameMessage("Your ring shatters!");
                     player.getEquipmentManager().consumeSlotItemAmount(12, 1);

@@ -8,15 +8,15 @@ import java.awt.image.RGBImageFilter;
 
 final class TransparentColorFilter
 extends RGBImageFilter {
-    private int a;
+    private int transparentRgb;
 
     TransparentColorFilter(Color color) {
-        this.a = color.getRGB() | 0xFF000000;
+        this.transparentRgb = color.getRGB() | 0xFF000000;
     }
 
     @Override
     public final int filterRGB(int n, int n2, int n3) {
-        if ((n3 | 0xFF000000) == this.a) {
+        if ((n3 | 0xFF000000) == this.transparentRgb) {
             return 0xFFFFFF & n3;
         }
         return n3;

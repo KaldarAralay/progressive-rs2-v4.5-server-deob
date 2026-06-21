@@ -231,7 +231,7 @@ public final class BotTradeAdvertManager {
     }
 
     public static void prepareTradeAdvertCombatLoadout(Player player) {
-        GameplayHelper.b(player);
+        GameplayHelper.resetBotSkillsToBase(player);
         int n = 1 + GameUtil.randomInt(99);
         int n2 = n / 5 << 1;
         if (n2 == 0) {

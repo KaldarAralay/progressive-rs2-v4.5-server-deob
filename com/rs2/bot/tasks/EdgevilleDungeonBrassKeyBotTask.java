@@ -19,12 +19,12 @@ import java.util.ArrayList;
 
 public final class EdgevilleDungeonBrassKeyBotTask
 extends BotTaskDefinition {
-    private static Position ab = new Position(3094, 3489, 0);
-    private static BotRoute[] ac = new BotRoute[]{new BotRoute(new Position[]{new Position(3090, 3490, 0), new Position(3090, 3487, 0), new Position(3094, 3482, 0), new Position(3094, 3473, 0), new Position(3096, 3468, 0)}), new BotRoute(new Position[]{new Position(3096, 9879, 0), new Position(3095, 9887, 0), new Position(3095, 9901, 0), new Position(3103, 9909, 0)}), new BotRoute(new Position[]{new Position(3104, 9909, 0), new Position(3121, 9909, 0), new Position(3129, 9911, 0), new Position(3139, 9914, 0), new Position(3142, 9903, 0), new Position(3150, 9894, 0), new Position(3150, 9872, 0), new Position(3146, 9870, 0)}), new BotRoute(new Position[]{new Position(3145, 9870, 0), new Position(3138, 9870, 0), new Position(3135, 9873, 0), new Position(3120, 9872, 0), new Position(3118, 9864, 0), new Position(3128, 9863, 0)})};
-    final Position aa = new Position(3128, 9863, 0);
+    private static Position routeStartPosition = new Position(3094, 3489, 0);
+    private static BotRoute[] taskRouteSegments = new BotRoute[]{new BotRoute(new Position[]{new Position(3090, 3490, 0), new Position(3090, 3487, 0), new Position(3094, 3482, 0), new Position(3094, 3473, 0), new Position(3096, 3468, 0)}), new BotRoute(new Position[]{new Position(3096, 9879, 0), new Position(3095, 9887, 0), new Position(3095, 9901, 0), new Position(3103, 9909, 0)}), new BotRoute(new Position[]{new Position(3104, 9909, 0), new Position(3121, 9909, 0), new Position(3129, 9911, 0), new Position(3139, 9914, 0), new Position(3142, 9903, 0), new Position(3150, 9894, 0), new Position(3150, 9872, 0), new Position(3146, 9870, 0)}), new BotRoute(new Position[]{new Position(3145, 9870, 0), new Position(3138, 9870, 0), new Position(3135, 9873, 0), new Position(3120, 9872, 0), new Position(3118, 9864, 0), new Position(3128, 9863, 0)})};
+    final Position brassKeySpawnPosition = new Position(3128, 9863, 0);
 
     public EdgevilleDungeonBrassKeyBotTask(int n) {
-        super(ab, ac, 0, false, 1);
+        super(routeStartPosition, taskRouteSegments, 0, false, 1);
         this.usesCustomTaskAction = true;
     }
 
@@ -60,7 +60,7 @@ extends BotTaskDefinition {
 
     @Override
     public final void prepareTaskCombatLoadout(Player player) {
-        GameplayHelper.b(player);
+        GameplayHelper.resetBotSkillsToBase(player);
         int n = 1 + GameUtil.randomInt(99);
         int n2 = n / 5 << 1;
         if (n2 == 0) {
@@ -107,7 +107,7 @@ extends BotTaskDefinition {
         player.botTaskState = "walk towards task";
         player.botPathWaypointIndex = 0;
         player.botPathSegmentIndex = 0;
-        player.currentBotRoute = ac[player.botPathSegmentIndex];
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex];
         player.botTargetNpcId = 1558;
         player.continueBotRoute();
     }
@@ -116,8 +116,8 @@ extends BotTaskDefinition {
     public final void startWalkToBank(Player player) {
         player.botTaskState = "walk towards bank";
         player.botPathWaypointIndex = 0;
-        player.botPathSegmentIndex = ac.length - 1;
-        player.currentBotRoute = ac[player.botPathSegmentIndex].reversed();
+        player.botPathSegmentIndex = taskRouteSegments.length - 1;
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex].reversed();
         player.botTargetNpcId = 1558;
         player.continueBotRoute();
     }
@@ -125,7 +125,7 @@ extends BotTaskDefinition {
     @Override
     public final void continueWalkToTask(Player player, int n) {
         player.botPathWaypointIndex = n;
-        player.currentBotRoute = ac[player.botPathSegmentIndex];
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex];
         player.botTargetNpcId = 1558;
         this.advanceTaskRouteSegment(player, true);
     }
@@ -133,7 +133,7 @@ extends BotTaskDefinition {
     @Override
     public final void continueWalkToBank(Player player, int n) {
         player.botPathWaypointIndex = n;
-        player.currentBotRoute = ac[player.botPathSegmentIndex].reversed();
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex].reversed();
         player.botTargetNpcId = 1558;
         this.advanceTaskRouteSegment(player, true);
     }
@@ -144,7 +144,7 @@ extends BotTaskDefinition {
             if (n == 0) {
                 ++player.botPathSegmentIndex;
             }
-            player.currentBotRoute = ac[player.botPathSegmentIndex];
+            player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex];
             if (n == 0) {
                 player.botPathWaypointIndex = 0;
             }
@@ -152,7 +152,7 @@ extends BotTaskDefinition {
             if (player.botPathSegmentIndex == 1 && player.botTaskState.equals("walk towards task") && n == 12342) {
                 Object object = new ArrayList<Integer>();
                 ((ArrayList)object).add(1568);
-                player.dm = true;
+                player.botRouteActionPending = true;
                 if (player.interactWithBotObjectTargetsNoRetry((ArrayList)object, false)) {
                     object = new BrassKeyDungeonEntryTickTask(this, 3, player);
                     World.getTaskScheduler().schedule((TickTask)object);
@@ -162,7 +162,7 @@ extends BotTaskDefinition {
                     player.interactWithBotObjectTargetsNoRetry((ArrayList)object, false);
                 }
             }
-            if (player.botPathSegmentIndex == ac.length - 1) {
+            if (player.botPathSegmentIndex == taskRouteSegments.length - 1) {
                 player.botTaskState = "walk to task";
                 return;
             }
@@ -170,7 +170,7 @@ extends BotTaskDefinition {
             if (n == 0) {
                 --player.botPathSegmentIndex;
             }
-            player.currentBotRoute = ac[player.botPathSegmentIndex].reversed();
+            player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex].reversed();
             if (n == 0) {
                 player.botPathWaypointIndex = 0;
             }
@@ -178,7 +178,7 @@ extends BotTaskDefinition {
                 ArrayList<Integer> arrayList = new ArrayList<Integer>();
                 arrayList.add(1755);
                 player.interactWithBotObjectTargets(arrayList);
-                player.dm = true;
+                player.botRouteActionPending = true;
                 player.botTaskState = "walk to bank";
             }
         }

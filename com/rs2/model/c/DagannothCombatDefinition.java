@@ -19,7 +19,7 @@ extends NpcCombatDefinition {
 
     @Override
     public final CombatAttack[] createAttacks(Entity entity, Entity entity2) {
-        return new CombatAttack[]{BaseCombatAttack.a(entity, entity2, CombatType.RANGED, AttackXpMode.LONGRANGE, 19, 3, 1343, new GraphicEffect(-1, 0), new GraphicEffect(-1, 0), 294, ProjectileTiming.a)};
+        return new CombatAttack[]{BaseCombatAttack.createProjectileAttack(entity, entity2, CombatType.RANGED, AttackXpMode.LONGRANGE, 19, 3, 1343, new GraphicEffect(-1, 0), new GraphicEffect(-1, 0), 294, ProjectileTiming.a)};
     }
 }
 

@@ -15,133 +15,133 @@ import com.rs2.model.skill.magic.StandardTeleportTask;
 import com.rs2.model.task.CycleEventHandler;
 
 public final class TeleportManager {
-    private Player i;
-    public static final Position a = new Position(ServerSettings.respawnX, ServerSettings.respawnY, ServerSettings.respawnPlane);
-    public static final Position b = new Position(3087, 3495);
-    public static final Position c = new Position(2912, 3170);
-    public static final Position d = new Position(3104, 3249);
-    public static final Position e = new Position(3293, 3162);
-    public static final Position f = new Position(2441, 3090);
-    public static final Position g = new Position(3317, 3233);
-    public static final Position h = new Position(2207, 4941);
+    private Player player;
+    public static final Position RESPAWN_TELEPORT_POSITION = new Position(ServerSettings.respawnX, ServerSettings.respawnY, ServerSettings.respawnPlane);
+    public static final Position EDGEVILLE_TELEPORT_POSITION = new Position(3087, 3495);
+    public static final Position KARAMJA_TELEPORT_POSITION = new Position(2912, 3170);
+    public static final Position DRAYNOR_VILLAGE_TELEPORT_POSITION = new Position(3104, 3249);
+    public static final Position AL_KHARID_TELEPORT_POSITION = new Position(3293, 3162);
+    public static final Position CASTLE_WARS_TELEPORT_POSITION = new Position(2441, 3090);
+    public static final Position DUEL_ARENA_TELEPORT_POSITION = new Position(3317, 3233);
+    public static final Position BURTHORPE_TELEPORT_POSITION = new Position(2207, 4941);
 
     public TeleportManager(Player player) {
-        this.i = player;
+        this.player = player;
     }
 
     public final boolean castSpellbookTeleport(Position object) {
-        if (this.i.getEnchantmentChamberController().isInsideChamber() || this.i.getAlchemistPlaygroundController().isInsidePlayground() || this.i.getCreatureGraveyardController().isInsideGraveyard() || this.i.getTelekineticTheatreController().isInsideTheatre()) {
-            object = this.i;
+        if (this.player.getEnchantmentChamberController().isInsideChamber() || this.player.getAlchemistPlaygroundController().isInsidePlayground() || this.player.getCreatureGraveyardController().isInsideGraveyard() || this.player.getTelekineticTheatreController().isInsideTheatre()) {
+            object = this.player;
             ((Player)object).packetSender.sendGameMessage("You can't teleport out of here.");
             return false;
         }
-        if (this.i.isInWilderness() && this.i.getWildernessLevel() > 20) {
-            object = this.i;
+        if (this.player.isInWilderness() && this.player.getWildernessLevel() > 20) {
+            object = this.player;
             ((Player)object).packetSender.sendGameMessage("You can't teleport above level 20 in the wilderness.");
             return false;
         }
-        if (this.i.isTeleblocked()) {
-            object = this.i;
+        if (this.player.isTeleblocked()) {
+            object = this.player;
             ((Player)object).packetSender.sendGameMessage("A magical force prevents you from teleporting.");
             return false;
         }
-        if (this.i.isInTeleportRestrictedArea()) {
-            object = this.i;
+        if (this.player.isInTeleportRestrictedArea()) {
+            object = this.player;
             ((Player)object).packetSender.sendGameMessage("You can't teleport from here.");
             return false;
         }
-        this.a(((Position)object).getX(), ((Position)object).getY(), ((Position)object).getPlane(), this.i.getSpellbook() == Spellbook.ANCIENT);
+        this.startMagicTeleportTask(((Position)object).getX(), ((Position)object).getY(), ((Position)object).getPlane(), this.player.getSpellbook() == Spellbook.ANCIENT);
         return true;
     }
 
-    public final boolean b(Position position) {
-        if (this.i.getEnchantmentChamberController().isInsideChamber() || this.i.getAlchemistPlaygroundController().isInsidePlayground() || this.i.getCreatureGraveyardController().isInsideGraveyard() || this.i.getTelekineticTheatreController().isInsideTheatre()) {
-            Player player = this.i;
+    public final boolean castItemTeleport(Position position) {
+        if (this.player.getEnchantmentChamberController().isInsideChamber() || this.player.getAlchemistPlaygroundController().isInsidePlayground() || this.player.getCreatureGraveyardController().isInsideGraveyard() || this.player.getTelekineticTheatreController().isInsideTheatre()) {
+            Player player = this.player;
             player.packetSender.sendGameMessage("You can't teleport out of here.");
             return false;
         }
-        if (this.i.isInWilderness() && this.i.getWildernessLevel() > 30) {
-            Player player = this.i;
+        if (this.player.isInWilderness() && this.player.getWildernessLevel() > 30) {
+            Player player = this.player;
             player.packetSender.sendGameMessage("You can't teleport above level 30 in the wilderness.");
             return false;
         }
-        if (this.i.isTeleblocked()) {
-            Player player = this.i;
+        if (this.player.isTeleblocked()) {
+            Player player = this.player;
             player.packetSender.sendGameMessage("A magical force prevents you from teleporting.");
             return false;
         }
-        if (this.i.isInTeleportRestrictedArea()) {
-            Player player = this.i;
+        if (this.player.isInTeleportRestrictedArea()) {
+            Player player = this.player;
             player.packetSender.sendGameMessage("You can't teleport from here.");
             return false;
         }
-        this.i.getUpdateState().setAnimation(714);
-        this.i.getUpdateState().setGraphicHeight100(301);
-        Player player = this.i;
+        this.player.getUpdateState().setAnimation(714);
+        this.player.getUpdateState().setGraphicHeight100(301);
+        Player player = this.player;
         player.packetSender.sendSoundEffect(202, 1, 0);
-        this.a(position.getX(), position.getY(), position.getPlane(), false);
+        this.startMagicTeleportTask(position.getX(), position.getY(), position.getPlane(), false);
         return true;
     }
 
-    public final void a(int n, int n2, int n3, String string, int n4, int n5, int n6, int n7) {
-        this.i.setActionLocked(true);
-        this.i.getAttributes().put("canTakeDamage", Boolean.FALSE);
-        CycleEventHandler.getInstance().schedule(this.i, new ScriptedTeleportTask(this, 5, 804, 68, -1, n, n2, 0, null), 1);
+    public final void startScriptedTeleport(int n, int n2, int n3, String string, int n4, int n5, int n6, int n7) {
+        this.player.setActionLocked(true);
+        this.player.getAttributes().put("canTakeDamage", Boolean.FALSE);
+        CycleEventHandler.getInstance().schedule(this.player, new ScriptedTeleportTask(this, 5, 804, 68, -1, n, n2, 0, null), 1);
     }
 
-    public final void a(int n, int n2, int n3, String string) {
-        this.i.setActionLocked(true);
-        this.i.getAttributes().put("canTakeDamage", Boolean.FALSE);
-        CycleEventHandler.getInstance().schedule(this.i, new StandardTeleportTask(this, n, n2, n3, string), 1);
+    public final void startStandardTeleport(int n, int n2, int n3, String string) {
+        this.player.setActionLocked(true);
+        this.player.getAttributes().put("canTakeDamage", Boolean.FALSE);
+        CycleEventHandler.getInstance().schedule(this.player, new StandardTeleportTask(this, n, n2, n3, string), 1);
     }
 
-    private void a(int n, int n2, int n3, boolean bl) {
-        if (this.i.isTeleblocked() || this.i.isInTeleportRestrictedArea()) {
-            Player player = this.i;
+    private void startMagicTeleportTask(int n, int n2, int n3, boolean bl) {
+        if (this.player.isTeleblocked() || this.player.isInTeleportRestrictedArea()) {
+            Player player = this.player;
             player.packetSender.sendGameMessage("You can't teleport out of here!");
             return;
         }
-        this.i.setActionLocked(true);
-        this.i.getAttributes().put("canTakeDamage", Boolean.FALSE);
-        CycleEventHandler.getInstance().schedule(this.i, new MagicTeleportTask(this, bl, n, n2, n3), 1);
+        this.player.setActionLocked(true);
+        this.player.getAttributes().put("canTakeDamage", Boolean.FALSE);
+        CycleEventHandler.getInstance().schedule(this.player, new MagicTeleportTask(this, bl, n, n2, n3), 1);
     }
 
-    public final void a(int n, int n2, int n3) {
-        this.a(n, n2, n3, true, null);
+    public final void startDelayedTeleport(int n, int n2, int n3) {
+        this.startDelayedTeleport(n, n2, n3, true, null);
     }
 
-    public final void a(int n, int n2, int n3, boolean bl, String string) {
-        if (this.i.isTeleblocked()) {
-            Player player = this.i;
+    public final void startDelayedTeleport(int n, int n2, int n3, boolean bl, String string) {
+        if (this.player.isTeleblocked()) {
+            Player player = this.player;
             player.packetSender.sendGameMessage("A magical force prevents you from teleporting.");
             return;
         }
-        if (this.i.isInTeleportRestrictedArea()) {
-            Player player = this.i;
+        if (this.player.isInTeleportRestrictedArea()) {
+            Player player = this.player;
             player.packetSender.sendGameMessage("You can't teleport from here.");
             return;
         }
         if (bl) {
-            this.i.getUpdateState().setGraphicHeight100(342);
+            this.player.getUpdateState().setGraphicHeight100(342);
         }
-        this.i.getUpdateState().setAnimation(1816);
-        this.i.setActionLocked(true);
-        this.i.getAttributes().put("canTakeDamage", Boolean.FALSE);
-        CycleEventHandler.getInstance().schedule(this.i, new DelayedTeleportTask(this, n, n2, n3, string), 1);
+        this.player.getUpdateState().setAnimation(1816);
+        this.player.setActionLocked(true);
+        this.player.getAttributes().put("canTakeDamage", Boolean.FALSE);
+        CycleEventHandler.getInstance().schedule(this.player, new DelayedTeleportTask(this, n, n2, n3, string), 1);
     }
 
-    public final void b(int n, int n2, int n3) {
-        if (this.i.isTeleblocked() || this.i.isInTeleportRestrictedArea()) {
-            Player player = this.i;
+    public final void startAbyssTeleport(int n, int n2, int n3) {
+        if (this.player.isTeleblocked() || this.player.isInTeleportRestrictedArea()) {
+            Player player = this.player;
             player.packetSender.sendGameMessage("You can't teleport out of here!");
             return;
         }
-        this.i.getUpdateState().setGraphicHeight100(110);
-        CycleEventHandler.getInstance().schedule(this.i, new AbyssTeleportTask(this, n, n2, n3), 1);
+        this.player.getUpdateState().setGraphicHeight100(110);
+        CycleEventHandler.getInstance().schedule(this.player, new AbyssTeleportTask(this, n, n2, n3), 1);
     }
 
-    static /* synthetic */ Player a(TeleportManager teleportManager) {
-        return teleportManager.i;
+    static /* synthetic */ Player getPlayer(TeleportManager teleportManager) {
+        return teleportManager.player;
     }
 }
 

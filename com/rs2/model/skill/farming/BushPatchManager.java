@@ -145,7 +145,7 @@ lbl41:
                     break block11;
                 }
                 BushDefinition bushDefinition = BushDefinition.forSeedId(this.cropIds[n]);
-                if (bushDefinition == null || this.c(n)) break block11;
+                if (bushDefinition == null || this.shouldStopGrowthCycle(n)) break block11;
                 int n5 = (int)(l / (long)bushDefinition.getGrowthCycleTicks());
                 int n6 = this.growthStages[n] - 4;
                 if ((n5 -= n6) <= 0) break block11;
@@ -198,7 +198,7 @@ lbl41:
                             int n11 = n;
                             this.growthStages[n11] = this.growthStages[n11] + 1;
                         }
-                        if (this.c(n)) break block11;
+                        if (this.shouldStopGrowthCycle(n)) break block11;
                         if (this.growthStages[n] == bushDefinition.getGrowthStageCount() - 1) {
                             this.growthStages[n] = bushDefinition.getGrowthStageCount() + 4;
                             this.patchStates[n] = 3;
@@ -213,7 +213,7 @@ lbl41:
         this.refreshConfig();
     }
 
-    private boolean c(int n) {
+    private boolean shouldStopGrowthCycle(int n) {
         return this.lastUpdateTicks[n] == 0L || this.patchStates[n] == 2 || this.patchStates[n] == 3;
     }
 

@@ -13,7 +13,8 @@ extends SpellRuneCostRequirement {
         super(spellDefinition);
     }
 
-    public final String a() {
+    @Override
+    public final String getFailureMessage() {
         return "You do not have the runes required!";
     }
 }

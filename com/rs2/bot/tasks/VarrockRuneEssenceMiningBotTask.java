@@ -17,11 +17,11 @@ import java.util.ArrayList;
 
 public final class VarrockRuneEssenceMiningBotTask
 extends BotTaskDefinition {
-    private static Position aa = new Position(3254, 3420, 0);
-    private static BotRoute[] ab = new BotRoute[]{new BotRoute(new Position[]{new Position(3254, 3428, 0), new Position(3260, 3425, 0), new Position(3260, 3414, 0), new Position(3257, 3400, 0), new Position(3253, 3398, 0)}), new BotRoute(new Position[]{new Position(3253, 3399, 0)}), new BotRoute(new Position[]{new Position(2911, 4832, 0)})};
+    private static Position routeStartPosition = new Position(3254, 3420, 0);
+    private static BotRoute[] taskRouteSegments = new BotRoute[]{new BotRoute(new Position[]{new Position(3254, 3428, 0), new Position(3260, 3425, 0), new Position(3260, 3414, 0), new Position(3257, 3400, 0), new Position(3253, 3398, 0)}), new BotRoute(new Position[]{new Position(3253, 3399, 0)}), new BotRoute(new Position[]{new Position(2911, 4832, 0)})};
 
     public VarrockRuneEssenceMiningBotTask(int n) {
-        super(aa, ab, 0, false, 6);
+        super(routeStartPosition, taskRouteSegments, 0, false, 6);
         int n2 = 30;
         VarrockRuneEssenceMiningBotTask varrockRuneEssenceMiningBotTask = this;
         this.targetSearchRadius = n2;
@@ -61,7 +61,7 @@ extends BotTaskDefinition {
 
     @Override
     public final void prepareTaskCombatLoadout(Player player) {
-        GameplayHelper.b(player);
+        GameplayHelper.resetBotSkillsToBase(player);
         int n = 1 + GameUtil.randomInt(99);
         int n2 = n / 5 << 1;
         if (n2 == 0) {
@@ -112,7 +112,7 @@ extends BotTaskDefinition {
         player.botTaskState = "walk towards task";
         player.botPathWaypointIndex = 0;
         player.botPathSegmentIndex = 0;
-        player.currentBotRoute = ab[player.botPathSegmentIndex];
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex];
         player.botTargetNpcId = 1530;
         player.continueBotRoute();
     }
@@ -123,12 +123,12 @@ extends BotTaskDefinition {
         player.setAutoRetaliate(false);
         player.botTaskState = "walk towards bank";
         player.botPathWaypointIndex = 0;
-        player.botPathSegmentIndex = ab.length - 2;
-        player.currentBotRoute = ab[player.botPathSegmentIndex].reversed();
+        player.botPathSegmentIndex = taskRouteSegments.length - 2;
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex].reversed();
         ArrayList<Integer> arrayList = new ArrayList<Integer>();
         arrayList.add(2492);
         player.interactWithBotObjectTargets(arrayList);
-        player.dm = true;
+        player.botRouteActionPending = true;
         player.botTargetNpcId = 1530;
         player.continueBotRoute();
     }
@@ -138,7 +138,7 @@ extends BotTaskDefinition {
         player.botInteractionOption = 1;
         player.setAutoRetaliate(true);
         player.botPathWaypointIndex = n;
-        player.currentBotRoute = ab[player.botPathSegmentIndex];
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex];
         player.botTargetNpcId = 1530;
         this.advanceTaskRouteSegment(player, true);
     }
@@ -148,13 +148,13 @@ extends BotTaskDefinition {
         player.botInteractionOption = 1;
         player.setAutoRetaliate(false);
         player.botPathWaypointIndex = n;
-        player.currentBotRoute = ab[player.botPathSegmentIndex].reversed();
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex].reversed();
         n = GameUtil.getRegionId(player.getPosition().getX(), player.getPosition().getY());
-        if (player.botPathSegmentIndex == ab.length - 2 && n == 11595) {
+        if (player.botPathSegmentIndex == taskRouteSegments.length - 2 && n == 11595) {
             ArrayList<Integer> arrayList = new ArrayList<Integer>();
             arrayList.add(2492);
             player.interactWithBotObjectTargets(arrayList);
-            player.dm = true;
+            player.botRouteActionPending = true;
         }
         player.botTargetNpcId = 1530;
         this.advanceTaskRouteSegment(player, true);
@@ -167,19 +167,19 @@ extends BotTaskDefinition {
             if (n == 0) {
                 ++player.botPathSegmentIndex;
             }
-            player.currentBotRoute = ab[player.botPathSegmentIndex];
+            player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex];
             if (n == 0) {
                 player.botPathWaypointIndex = 0;
             }
             player.botTargetNpcId = 1530;
             n = GameUtil.getRegionId(player.getPosition().getX(), player.getPosition().getY());
-            if (player.botPathSegmentIndex == ab.length - 1 && player.botTaskState.equals("walk towards task") || player.botTaskState.equals("walk to task") && n != 11595) {
+            if (player.botPathSegmentIndex == taskRouteSegments.length - 1 && player.botTaskState.equals("walk towards task") || player.botTaskState.equals("walk to task") && n != 11595) {
                 player.botTaskState = "walk to task";
                 ArrayList<Integer> arrayList = new ArrayList<Integer>();
                 arrayList.add(553);
                 player.botInteractionOption = 3;
                 player.interactWithBotNpcTargets(arrayList);
-                player.dm = true;
+                player.botRouteActionPending = true;
                 player.botInteractionOption = 1;
                 return;
             }
@@ -187,16 +187,16 @@ extends BotTaskDefinition {
             if (n == 0) {
                 --player.botPathSegmentIndex;
             }
-            player.currentBotRoute = ab[player.botPathSegmentIndex].reversed();
+            player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex].reversed();
             if (n == 0) {
                 player.botPathWaypointIndex = 0;
             }
             player.botTargetNpcId = 1530;
-            if (player.botPathSegmentIndex == ab.length - 1 && player.botTaskState.equals("walk towards bank")) {
+            if (player.botPathSegmentIndex == taskRouteSegments.length - 1 && player.botTaskState.equals("walk towards bank")) {
                 ArrayList<Integer> arrayList = new ArrayList<Integer>();
                 arrayList.add(2492);
                 player.interactWithBotObjectTargets(arrayList);
-                player.dm = true;
+                player.botRouteActionPending = true;
             }
             if (player.botPathSegmentIndex == 0) {
                 player.botTaskState = "walk to bank";

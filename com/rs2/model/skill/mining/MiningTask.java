@@ -115,8 +115,8 @@ extends CycleEvent {
             cycleEventContainer.stop();
             return;
         }
-        if (SkillActionHelper.shouldTriggerRandomEvent(MiningManager.getPlayer(this.manager)) && !MiningManager.getPlayer((MiningManager)this.manager).botEnabled && !MiningManager.getPlayer(this.manager).r()) {
-            GameplayHelper.a(MiningManager.getPlayer(this.manager), SkillRandomEventNpc.d);
+        if (SkillActionHelper.shouldTriggerRandomEvent(MiningManager.getPlayer(this.manager)) && !MiningManager.getPlayer((MiningManager)this.manager).botEnabled && !MiningManager.getPlayer(this.manager).isInTutorialIsland()) {
+            GameplayHelper.spawnSkillRandomEventNpc(MiningManager.getPlayer(this.manager), SkillRandomEventNpc.d);
         }
         MiningManager.getPlayer(this.manager).getUpdateState().setAnimation(this.gatheringTool.getGatherAnimationId());
         int n3 = 256;

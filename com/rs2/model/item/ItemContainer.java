@@ -14,7 +14,7 @@ import java.util.List;
 public class ItemContainer {
     private int capacity;
     private ItemStack[] items;
-    private List c = new LinkedList();
+    private List updateListeners = new LinkedList();
     private ArrayList tabs = new ArrayList();
     private int tabLimit;
     private ItemContainerType containerType;
@@ -195,7 +195,7 @@ public class ItemContainer {
                     ++n6;
                 }
                 if (bl) {
-                    this.l();
+                    this.notifyFullRefresh();
                 }
                 return true;
             }
@@ -252,7 +252,7 @@ public class ItemContainer {
                     ++n;
                 }
                 if (bl) {
-                    this.l();
+                    this.notifyFullRefresh();
                 }
                 return true;
             }
@@ -355,7 +355,7 @@ public class ItemContainer {
     public final void setItem(int n, ItemStack itemStack) {
         this.items[n] = itemStack;
         if (this.updatesEnabled) {
-            this.m(n);
+            this.notifySlotUpdated(n);
         }
     }
 
@@ -375,7 +375,7 @@ public class ItemContainer {
             itemContainerTab.items.set(n, itemStack);
         }
         if (this.updatesEnabled) {
-            this.m(n);
+            this.notifySlotUpdated(n);
         }
     }
 
@@ -422,7 +422,7 @@ public class ItemContainer {
         if (this.tabLimit == 0) {
             this.items = new ItemStack[this.items.length];
             if (this.updatesEnabled) {
-                this.l();
+                this.notifyFullRefresh();
                 return;
             }
         } else {
@@ -563,7 +563,7 @@ public class ItemContainer {
             this.setItem(n, this.getItemAt(n2));
             this.setItem(n2, itemStack);
             if (bl) {
-                this.a(new int[]{n, n2});
+                this.notifySlotsUpdated(new int[]{n, n2});
             }
         }
         finally {
@@ -579,7 +579,7 @@ public class ItemContainer {
             this.setTabItem(n, this.getItemAtTabSlot(n2, n4), n3);
             this.setTabItem(n2, itemStack, n4);
             if (bl) {
-                this.a(new int[]{n, n2});
+                this.notifySlotsUpdated(new int[]{n, n2});
             }
         }
         finally {
@@ -707,26 +707,26 @@ public class ItemContainer {
             }
         }
         if (this.updatesEnabled) {
-            this.l();
+            this.notifyFullRefresh();
         }
     }
 
-    private void m(int n) {
-        Iterator iterator = this.c.iterator();
+    private void notifySlotUpdated(int n) {
+        Iterator iterator = this.updateListeners.iterator();
         while (iterator.hasNext()) {
             iterator.next();
         }
     }
 
-    private void l() {
-        Iterator iterator = this.c.iterator();
+    private void notifyFullRefresh() {
+        Iterator iterator = this.updateListeners.iterator();
         while (iterator.hasNext()) {
             iterator.next();
         }
     }
 
-    private void a(int[] object) {
-        object = this.c.iterator();
+    private void notifySlotsUpdated(int[] object) {
+        object = this.updateListeners.iterator();
         while (object.hasNext()) {
             object.next();
         }

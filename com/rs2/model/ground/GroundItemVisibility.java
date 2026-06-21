@@ -4,9 +4,9 @@
 package com.rs2.model.ground;
 
 public enum GroundItemVisibility {
-    a,
-    b,
-    c;
+    PRIVATE,
+    PUBLIC,
+    HIDDEN;
 
 }
 

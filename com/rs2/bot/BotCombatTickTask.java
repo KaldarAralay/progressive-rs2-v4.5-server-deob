@@ -18,14 +18,14 @@ import com.rs2.model.task.TickTask;
 
 final class BotCombatTickTask
 extends TickTask {
-    private /* synthetic */ BotTaskDefinition a;
-    private final /* synthetic */ Npc b;
-    private final /* synthetic */ Player c;
+    private /* synthetic */ BotTaskDefinition taskDefinition;
+    private final /* synthetic */ Npc targetNpc;
+    private final /* synthetic */ Player bot;
 
     BotCombatTickTask(BotTaskDefinition botTaskDefinition, int n, Npc npc, Player player) {
-        this.a = botTaskDefinition;
-        this.b = npc;
-        this.c = player;
+        this.taskDefinition = botTaskDefinition;
+        this.targetNpc = npc;
+        this.bot = player;
         super(1);
     }
 
@@ -41,29 +41,29 @@ extends TickTask {
             block16: {
                 BotTaskDefinition botTaskDefinition;
                 block15: {
-                    if (this.b.isDead()) {
-                        CombatManager.stopCombat(this.c);
+                    if (this.targetNpc.isDead()) {
+                        CombatManager.stopCombat(this.bot);
                         this.stop();
                         return;
                     }
-                    if (this.c.isDead() || !this.c.isRegistered()) {
-                        CombatManager.stopCombat(this.c);
+                    if (this.bot.isDead() || !this.bot.isRegistered()) {
+                        CombatManager.stopCombat(this.bot);
                         this.stop();
                         return;
                     }
-                    if (this.c.getCombatTarget() == null) {
-                        CombatManager.stopCombat(this.c);
+                    if (this.bot.getCombatTarget() == null) {
+                        CombatManager.stopCombat(this.bot);
                         this.stop();
                         return;
                     }
-                    if (!this.c.botTaskState.equals("do task")) {
-                        CombatManager.stopCombat(this.c);
+                    if (!this.bot.botTaskState.equals("do task")) {
+                        CombatManager.stopCombat(this.bot);
                         this.stop();
                         return;
                     }
-                    npc = this.b;
-                    player = this.c;
-                    botTaskDefinition = this.a;
+                    npc = this.targetNpc;
+                    player = this.bot;
+                    botTaskDefinition = this.taskDefinition;
                     if (player.botCombatState != null && player.botCombatState.equals("escape")) {
                         CombatManager.stopCombat(player);
                         botTaskDefinition.startWalkToBank(player);

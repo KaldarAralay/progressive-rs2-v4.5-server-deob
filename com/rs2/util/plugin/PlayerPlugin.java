@@ -9,7 +9,7 @@ import com.rs2.util.plugin.PluginType;
 public abstract class PlayerPlugin
 extends Plugin {
     public PlayerPlugin() {
-        super(PluginType.c);
+        super(PluginType.PLAYER_LOCAL);
     }
 }
 

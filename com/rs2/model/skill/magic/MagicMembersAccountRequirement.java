@@ -11,7 +11,8 @@ extends MembersRequirement {
     MagicMembersAccountRequirement(MagicSpellAction magicSpellAction) {
     }
 
-    public final String a() {
+    @Override
+    public final String getFailureMessage() {
         return "You need a members account to access members content.";
     }
 }

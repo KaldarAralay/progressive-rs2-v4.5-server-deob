@@ -29,7 +29,7 @@ extends TickTask {
             this.stop();
             return;
         }
-        if (this.a.a.contains(this.b.getPosition())) {
+        if (this.a.gardenTrespassArea.contains(this.b.getPosition())) {
             Object object = Npc.findByDefinitionId(896);
             if (GameUtil.isNpcWaypointFacingPlayer(this.b, (Npc)object)) {
                 ((Entity)object).getUpdateState().setForcedText("Get out of my property!");

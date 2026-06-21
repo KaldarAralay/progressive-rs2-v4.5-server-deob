@@ -169,7 +169,7 @@ public enum TreeDefinition {
     }
 
     public final int getStumpObjectId() {
-        if (!GameplayHelper.b(this.stumpObjectId)) {
+        if (!GameplayHelper.isObjectDefinitionIdValid(this.stumpObjectId)) {
             this.stumpObjectId = 1356;
         }
         return this.stumpObjectId;

@@ -105,9 +105,9 @@ import org.joda.time.base.AbstractDateTime;
 public class GameplayHelper {
     private int tradeAdvertItemId;
     private int[] tradeAdvertQuantityOptions;
-    public static int a;
+    public static int objectDefinitionCount;
 
-    public static void a(Player player) {
+    public static void resetBotTaskState(Player player) {
         if (player.botMode == 4) {
             if (player.botEscapeLogoutTask != null && player.botEscapeLogoutTask.isActive()) {
                 player.botEscapeLogoutTask.stop();
@@ -192,7 +192,7 @@ public class GameplayHelper {
         player.getDamageContributions().clear();
     }
 
-    public static void b(Player player) {
+    public static void resetBotSkillsToBase(Player player) {
         int n = 0;
         while (n < player.getSkillManager().getCurrentLevels().length) {
             if (n == 3) {
@@ -206,7 +206,7 @@ public class GameplayHelper {
         }
     }
 
-    public static void a(Player player, boolean bl) {
+    public static void selectAndStartProgressiveBotTask(Player player, boolean bl) {
         int n;
         boolean bl2;
         Object object = null;
@@ -327,7 +327,7 @@ public class GameplayHelper {
                         ((ArrayList)object).addAll(BotTaskDefinition.tanningTasks);
                     }
                 }
-                BotTaskDefinition botTaskDefinition2 = GameplayHelper.a(player2, (ArrayList)object, bl2);
+                BotTaskDefinition botTaskDefinition2 = GameplayHelper.selectAvailableBotTask(player2, (ArrayList)object, bl2);
                 if (botTaskDefinition2 != null) {
                     botTaskDefinition = botTaskDefinition2;
                 } else {
@@ -342,7 +342,7 @@ public class GameplayHelper {
                     if (BotTaskPlanner.prepareTanningTaskRequirements(player2, true)) {
                         ((ArrayList)object).addAll(BotTaskDefinition.tanningTasks);
                     }
-                    botTaskDefinition = GameplayHelper.a(player2, (ArrayList)object, false);
+                    botTaskDefinition = GameplayHelper.selectAvailableBotTask(player2, (ArrayList)object, false);
                 }
                 object = botTaskDefinition;
             }
@@ -424,8 +424,8 @@ public class GameplayHelper {
         }
     }
 
-    public static void c(Player player) {
-        GameplayHelper.a(player, false);
+    public static void selectAndStartNextProgressiveBotTask(Player player) {
+        GameplayHelper.selectAndStartProgressiveBotTask(player, false);
     }
 
     public static void startNextBotTask(Player player) {
@@ -477,7 +477,7 @@ public class GameplayHelper {
         }
     }
 
-    public static void a() {
+    public static void startDropPartyBotEvent() {
         if (DropPartyBotManager.dropPartyActive) {
             return;
         }
@@ -529,7 +529,7 @@ public class GameplayHelper {
         return false;
     }
 
-    public static void a(Player player, int n) {
+    public static void prepareBotCombatStyle(Player player, int n) {
         player.botCombatStyle = n;
         if (n == -1) {
             BotCombatLoadoutManager.selectCombatStyleFromStats(player, true);
@@ -557,7 +557,7 @@ public class GameplayHelper {
     /*
      * WARNING - void declaration
      */
-    public static BotTaskDefinition a(Player object2, ArrayList iterator, boolean bl) {
+    public static BotTaskDefinition selectAvailableBotTask(Player object2, ArrayList iterator, boolean bl) {
         BotTaskDefinition botTaskDefinition;
         void botTaskDefinition2;
         if (botTaskDefinition2 != false) {
@@ -596,7 +596,7 @@ public class GameplayHelper {
         return null;
     }
 
-    public static void f(Player player) {
+    public static void startBotTaskRoute(Player player) {
         BotTaskDefinition botTaskDefinition = player.currentBotTask;
         player.botTaskState = "worldwalk to bank";
         player.botTaskStartTimeMillis = System.currentTimeMillis();
@@ -633,14 +633,14 @@ public class GameplayHelper {
         return -1;
     }
 
-    public static boolean b(int n) {
-        return n < a;
+    public static boolean isObjectDefinitionIdValid(int n) {
+        return n < objectDefinitionCount;
     }
 
     /*
      * Unable to fully structure code
      */
-    public static void e() {
+    public static void loadObjectDefinitions() {
         var0 = CacheStore.getInstance();
         var1_1 = null;
         try {
@@ -650,7 +650,7 @@ public class GameplayHelper {
             var2_2 = v0;
             v0.printStackTrace();
         }
-        GameplayHelper.a = var2_3 = var0.getDefinitionIndex().getObjectDefinitionEntries().length;
+        GameplayHelper.objectDefinitionCount = var2_3 = var0.getDefinitionIndex().getObjectDefinitionEntries().length;
         ObjectDefinition.definitionsById = new ObjectDefinition[var2_3];
         var1_1.position = 2;
         var3_4 = 0;
@@ -822,7 +822,7 @@ public class GameplayHelper {
         }
     }
 
-    public static byte[] a(CacheFile object) {
+    public static byte[] inflateGzipCacheFile(CacheFile object) {
         Object object2 = new byte[((CacheFile)object).getBuffer().remaining()];
         ((CacheFile)object).getBuffer().get((byte[])object2);
         new GZIPInputStream(new ByteArrayInputStream((byte[])object2));
@@ -847,7 +847,7 @@ public class GameplayHelper {
         return object2;
     }
 
-    public static int c(int n) {
+    public static int getNpcShopId(int n) {
         NpcDefinition npcDefinition = NpcDefinition.forId(n);
         int n2 = npcDefinition.getShopId();
         if (n2 >= 0) {
@@ -856,22 +856,22 @@ public class GameplayHelper {
         return -1;
     }
 
-    public static boolean b(Player player, int n) {
-        if ((n = GameplayHelper.c(n)) >= 0) {
+    public static boolean openNpcShop(Player player, int n) {
+        if ((n = GameplayHelper.getNpcShopId(n)) >= 0) {
             ShopManager.openShop(player, n);
             return true;
         }
         return false;
     }
 
-    public static void g(Player player) {
+    public static void refreshPlayerAreaOverlay(Player player) {
         Player player2;
         if (player.isInWilderness()) {
             player.aj = true;
         }
         if ((player2 = player).isInWilderness()) {
             Player player3;
-            if (GameplayHelper.c(player2, 197)) {
+            if (GameplayHelper.updateWalkableInterface(player2, 197)) {
                 player3 = player2;
                 player3.packetSender.sendPlayerOption("Attack", 1, false);
             }
@@ -883,11 +883,11 @@ public class GameplayHelper {
         } else if (player2.isInDuelArena()) {
             Player player4 = player2;
             player4.packetSender.sendPlayerOption("Attack", 1, false);
-            GameplayHelper.c(player2, 201);
+            GameplayHelper.updateWalkableInterface(player2, 201);
         } else if (player2.isInDuelArenaLobby()) {
             Player player5 = player2;
             player5.packetSender.sendPlayerOption("Challenge", 1, false);
-            GameplayHelper.c(player2, 201);
+            GameplayHelper.updateWalkableInterface(player2, 201);
         } else if (player2.isInBarrows()) {
             Player player6;
             if (player2.ci != player2.getBarrowsKillCount()) {
@@ -896,7 +896,7 @@ public class GameplayHelper {
                 player2.ci = player2.getBarrowsKillCount();
             }
             BarrowsManager.ensurePrayerDrainTask(player2);
-            if (GameplayHelper.c(player2, 4535)) {
+            if (GameplayHelper.updateWalkableInterface(player2, 4535)) {
                 player6 = player2;
                 player6.packetSender.sendPlayerOption("null", 1, false);
                 player6 = player2;
@@ -906,14 +906,14 @@ public class GameplayHelper {
             Object object = player2;
             if (((Entity)object).isInArea(2816, 2943, 5248, 5375)) {
                 GodWarsDungeonManager.refreshKillCountOverlay(player2);
-                if (GameplayHelper.c(player2, 19556)) {
+                if (GameplayHelper.updateWalkableInterface(player2, 19556)) {
                     object = player2;
                     ((Player)object).packetSender.sendPlayerOption("null", 1, false);
                 }
             } else {
                 object = player2;
                 if (((Entity)object).isInArea(2494, 2569, 3701, 3785)) {
-                    if (GameplayHelper.c(player2, 11877)) {
+                    if (GameplayHelper.updateWalkableInterface(player2, 11877)) {
                         object = player2;
                         ((Player)object).packetSender.sendPlayerOption("null", 1, false);
                     }
@@ -928,16 +928,16 @@ public class GameplayHelper {
                         } else if (player2.getActiveCaveLightLevel() == 2) {
                             n = 12416;
                         }
-                        if (n != -1 && GameplayHelper.c(player2, n)) {
+                        if (n != -1 && GameplayHelper.updateWalkableInterface(player2, n)) {
                             Player player7 = player2;
                             player7.packetSender.sendPlayerOption("null", 1, false);
                         }
                     } else if (player2.isInSmokeDungeon()) {
-                        if (GameplayHelper.c(player2, 13103)) {
+                        if (GameplayHelper.updateWalkableInterface(player2, 13103)) {
                             object = player2;
                             ((Player)object).packetSender.sendPlayerOption("null", 1, false);
                         }
-                    } else if (GameplayHelper.c(player2, -1)) {
+                    } else if (GameplayHelper.updateWalkableInterface(player2, -1)) {
                         object = player2;
                         ((Player)object).packetSender.sendPlayerOption("null", 1, false);
                         object = InterfaceDefinition.forId(11092);
@@ -978,14 +978,14 @@ public class GameplayHelper {
         player.packetSender.sendPlayerOption("null", 5, false);
     }
 
-    public static boolean c(Player player, int n) {
-        if (player.dT() == n) {
+    public static boolean updateWalkableInterface(Player player, int n) {
+        if (player.getCurrentWalkableInterfaceId() == n) {
             return false;
         }
         if (player.barrowsChestOpened && n == 4535) {
             return true;
         }
-        player.af(n);
+        player.setCurrentWalkableInterfaceId(n);
         player.packetSender.showWalkableInterface(n);
         return true;
     }
@@ -998,7 +998,7 @@ public class GameplayHelper {
         return position;
     }
 
-    public static int d(int n) {
+    public static int getRandomEventCombatLevelOffset(int n) {
         if (n < 10) {
             return 0;
         }
@@ -1017,7 +1017,7 @@ public class GameplayHelper {
         return 5;
     }
 
-    public static void a(Player player, SkillRandomEventNpc skillRandomEventNpc) {
+    public static void spawnSkillRandomEventNpc(Player player, SkillRandomEventNpc skillRandomEventNpc) {
         Player player2 = player;
         if (player2.H != null) {
             player2 = player;
@@ -1025,7 +1025,7 @@ public class GameplayHelper {
                 return;
             }
         }
-        GameplayHelper.a(player, new Npc(skillRandomEventNpc.a() + GameplayHelper.d(player.getCombatLevel())), true, true);
+        GameplayHelper.a(player, new Npc(skillRandomEventNpc.getBaseNpcId() + GameplayHelper.getRandomEventCombatLevelOffset(player.getCombatLevel())), true, true);
     }
 
     public static void a(Player object, String string) {
@@ -2357,7 +2357,7 @@ public class GameplayHelper {
                 EssencePouchDefinition essencePouchDefinition2 = essencePouchDefinition;
                 n4 = essencePouchDefinition2.getCapacity() - essencePouchDefinition2.getDegradedCapacityPenalty();
             }
-            if ((n4 -= player.am(essencePouchDefinition.getPouchIndex())) <= 0) {
+            if ((n4 -= player.getEssencePouchAmount(essencePouchDefinition.getPouchIndex())) <= 0) {
                 Player player6 = player;
                 PacketSender packetSender = player6.packetSender;
                 StringBuilder stringBuilder = new StringBuilder("Your ");
@@ -2365,7 +2365,7 @@ public class GameplayHelper {
                 packetSender.sendGameMessage(stringBuilder.append(ItemService.getItemName(n)).append(" is full.").toString());
                 break;
             }
-            player.h(essencePouchDefinition.getPouchIndex(), player.am(essencePouchDefinition.getPouchIndex()) + 1);
+            player.setEssencePouchAmount(essencePouchDefinition.getPouchIndex(), player.getEssencePouchAmount(essencePouchDefinition.getPouchIndex()) + 1);
             if (essencePouchDefinition.getDegradedItemId() != -1) {
                 itemStack.setMetadata(itemStack.getMetadata() + 1);
             }
@@ -2475,8 +2475,8 @@ public class GameplayHelper {
         player.getDialogueManager().setDialogueNpcId(n);
         if (anagramClue.getFollowupType() == "Challenge") {
             if (CacheArchive.hasChallengeQuestionAnswerItem(player, anagramClue.getClueItemId())) {
-                player.at = anagramClue.getLevel();
-                player.au = anagramClue.getClueItemId();
+                player.activeClueLevel = anagramClue.getLevel();
+                player.activeClueItemId = anagramClue.getClueItemId();
                 DialogueManager.a(player, 10009, 3);
                 if (CacheArchive.getChallengeQuestionLines(anagramClue.getClueItemId()).length == 1) {
                     player.getDialogueManager().showNpcOneLineDialogue(CacheArchive.getChallengeQuestionLines(anagramClue.getClueItemId())[0], 588);
@@ -2486,20 +2486,20 @@ public class GameplayHelper {
                     player.getDialogueManager().showNpcThreeLineDialogue(CacheArchive.getChallengeQuestionLines(anagramClue.getClueItemId())[0], CacheArchive.getChallengeQuestionLines(anagramClue.getClueItemId())[1], CacheArchive.getChallengeQuestionLines(anagramClue.getClueItemId())[2], 588);
                 }
             } else {
-                player.V = new ItemStack[1];
-                player.V[0] = new ItemStack(anagramClue.getClueItemId(), 1);
+                player.clueRequiredItems = new ItemStack[1];
+                player.clueRequiredItems[0] = new ItemStack(anagramClue.getClueItemId(), 1);
                 player.getDialogueManager().showNpcOneLineDialogue("Here's a challenge for you.", 588);
                 CacheArchive.giveChallengeQuestionAnswerItem(player, anagramClue.getClueItemId());
             }
         } else if (anagramClue.getFollowupType() == "Puzzle") {
             if (PuzzleBoxHandler.isCluePuzzleSolved(player) && player.ownsCluePuzzleBox()) {
                 DialogueManager.a(player, 10009, 2);
-                player.V = new ItemStack[4];
-                player.V[0] = new ItemStack(anagramClue.getClueItemId(), 1);
-                player.V[1] = new ItemStack(2800, 1);
-                player.V[2] = new ItemStack(3571, 1);
-                player.V[3] = new ItemStack(3565, 1);
-                player.at = anagramClue.getLevel();
+                player.clueRequiredItems = new ItemStack[4];
+                player.clueRequiredItems[0] = new ItemStack(anagramClue.getClueItemId(), 1);
+                player.clueRequiredItems[1] = new ItemStack(2800, 1);
+                player.clueRequiredItems[2] = new ItemStack(3571, 1);
+                player.clueRequiredItems[3] = new ItemStack(3565, 1);
+                player.activeClueLevel = anagramClue.getLevel();
             } else if (player.ownsCluePuzzleBox()) {
                 player.getDialogueManager().showNpcOneLineDialogue("The puzzle doesn't seem to be complete yet.", 588);
             } else {
@@ -2509,9 +2509,9 @@ public class GameplayHelper {
         } else {
             DialogueManager.a(player, 10009, 2);
             player.getDialogueManager().showNpcOneLineDialogue("Thank you very much.", 588);
-            player.V = new ItemStack[1];
-            player.V[0] = new ItemStack(anagramClue.getClueItemId(), 1);
-            player.at = anagramClue.getLevel();
+            player.clueRequiredItems = new ItemStack[1];
+            player.clueRequiredItems[0] = new ItemStack(anagramClue.getClueItemId(), 1);
+            player.activeClueLevel = anagramClue.getLevel();
         }
         return true;
     }
@@ -2524,71 +2524,71 @@ public class GameplayHelper {
         return AnagramClue.values()[n2].getClueItemId();
     }
 
-    public static void j(Player player) {
+    public static void openSextantInterface(Player player) {
         Player player2 = player;
-        player.am = 0.0;
-        player2.an = 0;
-        player2.ao = 0;
-        player2.ap = 0;
-        player2.aq = 0;
+        player.sextantSunAngleDegrees = 0.0;
+        player2.sextantSunVerticalOffset = 0;
+        player2.sextantSunHorizontalOffset = 0;
+        player2.sextantHorizonRotation = 0;
+        player2.sextantHorizonVerticalOffset = 0;
         player2 = player;
-        double d = -32.0 + (double)player2.ao / 5.7 + (double)GameUtil.randomInclusive((int)(32.0 + (double)player2.ao / 5.7 + 28.0 + (double)player2.ao / 5.7));
-        int n = (int)(28.0 + (double)player2.ao / 5.7 - d);
-        int n2 = Math.abs((int)(d + 32.0 + (double)player2.ao / 5.7));
+        double d = -32.0 + (double)player2.sextantSunHorizontalOffset / 5.7 + (double)GameUtil.randomInclusive((int)(32.0 + (double)player2.sextantSunHorizontalOffset / 5.7 + 28.0 + (double)player2.sextantSunHorizontalOffset / 5.7));
+        int n = (int)(28.0 + (double)player2.sextantSunHorizontalOffset / 5.7 - d);
+        int n2 = Math.abs((int)(d + 32.0 + (double)player2.sextantSunHorizontalOffset / 5.7));
         n = GameUtil.randomInclusive(1) == 0 ? GameUtil.randomInclusive(n2) << 1 : -GameUtil.randomInclusive(n) << 1;
         double d2 = -10.175438596491228 + (double)GameUtil.randomInclusive(17);
         n2 = (int)(7.017543859649122 - d2);
         int n3 = Math.abs((int)(d2 + 10.175438596491228));
         n2 = GameUtil.randomInclusive(1) == 0 ? GameUtil.randomInclusive(n3) : -GameUtil.randomInclusive(n2);
-        player2.aq = (int)((double)player2.aq + (double)n2 * 5.7);
-        player2.ap = (int)((double)player2.ap + d2 * 5.7);
-        player2.an += n;
-        player2.am = d;
+        player2.sextantHorizonVerticalOffset = (int)((double)player2.sextantHorizonVerticalOffset + (double)n2 * 5.7);
+        player2.sextantHorizonRotation = (int)((double)player2.sextantHorizonRotation + d2 * 5.7);
+        player2.sextantSunVerticalOffset += n;
+        player2.sextantSunAngleDegrees = d;
         player2 = player;
         player2.packetSender.showInterface(6946);
         GameplayHelper.refreshSextantInterface(player);
     }
 
     public static void refreshSextantInterface(Player player) {
-        double d = player.am;
+        double d = player.sextantSunAngleDegrees;
         Player player2 = player;
-        double d2 = d < -32.0 + (double)player2.ao / 5.7 ? -32.0 + (double)player2.ao / 5.7 : (d > 28.0 + (double)player2.ao / 5.7 ? 28.0 + (double)player2.ao / 5.7 : d);
+        double d2 = d < -32.0 + (double)player2.sextantSunHorizontalOffset / 5.7 ? -32.0 + (double)player2.sextantSunHorizontalOffset / 5.7 : (d > 28.0 + (double)player2.sextantSunHorizontalOffset / 5.7 ? 28.0 + (double)player2.sextantSunHorizontalOffset / 5.7 : d);
         int n = d2 > 0.0 ? (int)(d2 * 5.7) : 2047 - (int)(-d2 * 5.7);
         int n2 = (int)Math.round(Math.abs(140.0 * Math.sin(d2 * Math.PI / 180.0)));
         int n3 = (int)Math.floor(Math.abs(140.0 * (1.0 - Math.cos(d2 * Math.PI / 180.0))));
         Player player3 = player2;
         player3.packetSender.sendInterfaceModelRotation(6957, 513, n, 580);
         player3 = player2;
-        player3.packetSender.sendInterfaceOffset(d2 > 0.0 ? -(n2 - player2.ao / 2) : n2 + player2.ao / 2, -n3, 6957);
+        player3.packetSender.sendInterfaceOffset(d2 > 0.0 ? -(n2 - player2.sextantSunHorizontalOffset / 2) : n2 + player2.sextantSunHorizontalOffset / 2, -n3, 6957);
         player3 = player2 = player;
-        player2.packetSender.sendInterfaceOffset(0, player2.an, 6949);
+        player2.packetSender.sendInterfaceOffset(0, player2.sextantSunVerticalOffset, 6949);
         player2 = player;
-        n = player2.ap < -58 ? -58 : (player2.ap > 40 ? 40 : player2.ap);
+        n = player2.sextantHorizonRotation < -58 ? -58 : (player2.sextantHorizonRotation > 40 ? 40 : player2.sextantHorizonRotation);
         n2 = n > 0 ? n : 2047 - -n;
         player3 = player2;
         player3.packetSender.sendInterfaceModelRotation(6958, 513, n2, 555);
         player3 = player2;
         player3.packetSender.sendInterfaceModelRotation(6956, 513, n2, 555);
         player3 = player2 = player;
-        player2.packetSender.sendInterfaceOffset(0, player2.aq, 6948);
+        player2.packetSender.sendInterfaceOffset(0, player2.sextantHorizonVerticalOffset, 6948);
     }
 
     public static void adjustSextantSun(Player player, boolean bl) {
         boolean bl2;
-        player.am = bl ? (player.am += 1.0) : (player.am -= 1.0);
-        boolean bl3 = player.am > 28.0 + (double)player.ao / 5.7;
-        boolean bl4 = bl2 = player.am < -32.0 + (double)player.ao / 5.7;
+        player.sextantSunAngleDegrees = bl ? (player.sextantSunAngleDegrees += 1.0) : (player.sextantSunAngleDegrees -= 1.0);
+        boolean bl3 = player.sextantSunAngleDegrees > 28.0 + (double)player.sextantSunHorizontalOffset / 5.7;
+        boolean bl4 = bl2 = player.sextantSunAngleDegrees < -32.0 + (double)player.sextantSunHorizontalOffset / 5.7;
         if (!bl3 && !bl2) {
             boolean bl5 = bl;
             Player player2 = player;
-            player2.an = bl5 ? (player2.an += 2) : (player2.an -= 2);
+            player2.sextantSunVerticalOffset = bl5 ? (player2.sextantSunVerticalOffset += 2) : (player2.sextantSunVerticalOffset -= 2);
             GameplayHelper.refreshSextantInterface(player2);
         }
         if (bl3) {
-            player.am = 28.0 + (double)player.ao / 5.7;
+            player.sextantSunAngleDegrees = 28.0 + (double)player.sextantSunHorizontalOffset / 5.7;
         }
         if (bl2) {
-            player.am = -32.0 + (double)player.ao / 5.7;
+            player.sextantSunAngleDegrees = -32.0 + (double)player.sextantSunHorizontalOffset / 5.7;
         }
         GameplayHelper.refreshSextantInterface(player);
     }
@@ -2596,40 +2596,40 @@ public class GameplayHelper {
     public static void adjustSextantHorizon(Player player, boolean bl) {
         boolean bl2;
         if (bl) {
-            player.ap += 7;
-            if (player.ap <= 40 && player.ap >= -58) {
-                player.am += 1.2280701754385965;
-                player.ao += 7;
+            player.sextantHorizonRotation += 7;
+            if (player.sextantHorizonRotation <= 40 && player.sextantHorizonRotation >= -58) {
+                player.sextantSunAngleDegrees += 1.2280701754385965;
+                player.sextantSunHorizontalOffset += 7;
             }
         } else {
-            player.ap -= 7;
-            if (player.ap <= 40 && player.ap >= -58) {
-                player.am -= 1.2280701754385965;
-                player.ao -= 7;
+            player.sextantHorizonRotation -= 7;
+            if (player.sextantHorizonRotation <= 40 && player.sextantHorizonRotation >= -58) {
+                player.sextantSunAngleDegrees -= 1.2280701754385965;
+                player.sextantSunHorizontalOffset -= 7;
             }
         }
-        boolean bl3 = player.ap > 40;
-        boolean bl4 = bl2 = player.ap < -58;
+        boolean bl3 = player.sextantHorizonRotation > 40;
+        boolean bl4 = bl2 = player.sextantHorizonRotation < -58;
         if (!bl3 && !bl2) {
             boolean bl5;
             boolean bl6 = bl;
             Player player2 = player;
-            player2.aq = bl6 ? (player2.aq += 7) : (player2.aq -= 7);
+            player2.sextantHorizonVerticalOffset = bl6 ? (player2.sextantHorizonVerticalOffset += 7) : (player2.sextantHorizonVerticalOffset -= 7);
             GameplayHelper.refreshSextantInterface(player2);
-            bl6 = player2.aq > 70;
-            boolean bl7 = bl5 = player2.aq < -70;
+            bl6 = player2.sextantHorizonVerticalOffset > 70;
+            boolean bl7 = bl5 = player2.sextantHorizonVerticalOffset < -70;
             if (bl6) {
-                player2.aq = 70;
+                player2.sextantHorizonVerticalOffset = 70;
             }
             if (bl5) {
-                player2.aq = -70;
+                player2.sextantHorizonVerticalOffset = -70;
             }
         }
         if (bl3) {
-            player.ap = 40;
+            player.sextantHorizonRotation = 40;
         }
         if (bl2) {
-            player.ap = -58;
+            player.sextantHorizonRotation = -58;
         }
         GameplayHelper.refreshSextantInterface(player);
     }
@@ -2656,11 +2656,11 @@ public class GameplayHelper {
                 boolean bl;
                 Player player;
                 Player player2 = object;
-                if (Math.abs(player2.aq) > 7) {
+                if (Math.abs(player2.sextantHorizonVerticalOffset) > 7) {
                     player = player2;
                     player.packetSender.sendGameMessage("You need to get the horizon in the middle of the eye piece.");
                     bl = false;
-                } else if (player2.an != 0) {
+                } else if (player2.sextantSunVerticalOffset != 0) {
                     player = player2;
                     player.packetSender.sendGameMessage("You need to get the sun in the middle of the eye piece.");
                     bl = false;
@@ -2836,7 +2836,7 @@ public class GameplayHelper {
                     }
                     GameplayHelper.a(n9, n7, n6, n5, n8);
                     NpcDefinition npcDefinition = NpcDefinition.forId(n9);
-                    npcDefinition.h();
+                    npcDefinition.getDropTableNpcIdOverride();
                 }
                 ++n4;
             }
@@ -3073,7 +3073,7 @@ public class GameplayHelper {
         entity.isPlayer();
     }
 
-    public static void a(Npc npc) {
+    public static void unregisterTemporaryNpc(Npc npc) {
         if (npc.getOwnerPlayer() != null) {
             Object var2_1 = null;
             Player player = npc.getOwnerPlayer();
@@ -3087,7 +3087,7 @@ public class GameplayHelper {
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public static void l(Player player) {
+    public static void sendNpcUpdatePacket(Player player) {
         PacketWriter packetWriter;
         Object object;
         Npc npc;
@@ -3121,7 +3121,7 @@ public class GameplayHelper {
                         packetWriter.writeBoolean(true);
                     }
                     if (!npc.getUpdateState().isUpdateRequired()) continue;
-                    GameplayHelper.a(packetWriter3, npc);
+                    GameplayHelper.writeNpcUpdateBlock(packetWriter3, npc);
                     continue;
                 }
                 if (npc.b) {
@@ -3154,7 +3154,7 @@ public class GameplayHelper {
                         packetWriter.writeBits(12, npc2.getNpcId());
                         packetWriter.writeBoolean(true);
                         if (npc.getUpdateState().isUpdateRequired()) {
-                            GameplayHelper.a(packetWriter3, npc);
+                            GameplayHelper.writeNpcUpdateBlock(packetWriter3, npc);
                         }
                     }
                 }
@@ -3172,7 +3172,7 @@ public class GameplayHelper {
         player.writePacketBuffer(packetWriter2.getBuffer());
     }
 
-    public static void a(PacketWriter packetWriter, Npc npc) {
+    public static void writeNpcUpdateBlock(PacketWriter packetWriter, Npc npc) {
         int n = 0;
         if (npc.getUpdateState().isAnimationUpdateRequired()) {
             n = 16;
@@ -3207,7 +3207,7 @@ public class GameplayHelper {
             n = npc.getUpdateState().getPrimaryHitDamage();
             packetWriter.writeByte(n, ByteTransform.ADD);
             packetWriter.writeByte(npc.getUpdateState().getPrimaryHitType(), ByteTransform.NEGATE);
-            packetWriter.writeByte(GameplayHelper.a(npc.getCurrentHitpoints(), npc.getMaxHitpoints(), 100), ByteTransform.ADD);
+            packetWriter.writeByte(GameplayHelper.calculatePercent(npc.getCurrentHitpoints(), npc.getMaxHitpoints(), 100), ByteTransform.ADD);
             packetWriter.writeByte(100);
         }
         if (npc.getUpdateState().isGraphicUpdateRequired()) {
@@ -3224,7 +3224,7 @@ public class GameplayHelper {
             n = npc.getUpdateState().getSecondaryHitDamage();
             packetWriter.writeByte(n, ByteTransform.NEGATE);
             packetWriter.writeByte(npc.getUpdateState().getSecondaryHitType(), ByteTransform.SUBTRACT);
-            packetWriter.writeByte(GameplayHelper.a(npc.getCurrentHitpoints(), npc.getMaxHitpoints(), 100), ByteTransform.SUBTRACT);
+            packetWriter.writeByte(GameplayHelper.calculatePercent(npc.getCurrentHitpoints(), npc.getMaxHitpoints(), 100), ByteTransform.SUBTRACT);
             packetWriter.writeByte(100, ByteTransform.NEGATE);
         }
         if (npc.isTransformed() && npc.getTransformedNpcId() != -1) {
@@ -3242,12 +3242,12 @@ public class GameplayHelper {
         }
     }
 
-    public static int a(int n, int n2, int n3) {
+    public static int calculatePercent(int n, int n2, int n3) {
         double d = (double)n / (double)n2;
         return (int)Math.round(d * 100.0);
     }
 
-    public static void e(Player player, int n, int n2) {
+    public static void takeAxeFromLog(Player player, int n, int n2) {
         if (player.getInventoryManager().getContainer().getFreeSlots() <= 0) {
             Player player2 = player;
             player2.packetSender.sendGameMessage("Not enough space in your inventory.");
@@ -3260,7 +3260,7 @@ public class GameplayHelper {
         new DynamicObject(5582, n, n2, player.getPosition().getPlane(), 2, 10, 5581, 100);
     }
 
-    public static void m(Player player) {
+    public static void withdrawCoalTruckCoal(Player player) {
         if (player.getCoalTruckCoalCount() == 0) {
             player.packetSender.sendGameMessage("There is no coal left in the truck.");
             return;
@@ -3275,7 +3275,7 @@ public class GameplayHelper {
         player.setCoalTruckCoalCount(player.getCoalTruckCoalCount() - n);
     }
 
-    public static void n(Player player) {
+    public static void milkCow(Player player) {
         if (!player.getInventoryManager().containsItemAmount(1925, 1)) {
             player.packetSender.sendGameMessage("You need a bucket in order to milk this cow.");
             return;
@@ -3286,7 +3286,7 @@ public class GameplayHelper {
         player.packetSender.sendGameMessage("You milk the cow.");
     }
 
-    public static void g() {
+    public static void loadGroundItemSpawns() {
         try {
             int n;
             byte[] byArray = FileUtil.readBytes("./data/world/Item spawn.dat");
@@ -3793,14 +3793,14 @@ public class GameplayHelper {
         return true;
     }
 
-    public static boolean a(Player player, Position position) {
+    public static boolean castSelectedItemTeleport(Player player, Position position) {
         Player player2 = player;
         player2.packetSender.closeInterfaces();
         player2 = player;
         if (player2.interfaceAction.equals("operate") ? player.getEquipmentManager().getItemIdAtSlot(player.getSelectedItemSlot()) != player.getSelectedItemId() : !player.getInventoryManager().containsItem(player.getSelectedItemId())) {
             return false;
         }
-        int n = player.getTeleportManager().b(position);
+        int n = player.getTeleportManager().castItemTeleport(position);
         if (player.botEnabled && n == 0 && player.botCombatState.startsWith("escape")) {
             player.botCombatState = "tele";
             BotCombatEscapeHandler.startBotCombatWalkingEscape(player);
@@ -3846,7 +3846,7 @@ public class GameplayHelper {
         return 0;
     }
 
-    public static void a(String string, String object) {
+    public static void appendLogLine(String string, String object) {
         object = "./data/logs/" + (String)object + ".txt";
         try {
             object = new BufferedWriter(new FileWriter((String)object, true));
@@ -3866,38 +3866,38 @@ public class GameplayHelper {
         }
     }
 
-    public static int a(long l, long l2) {
+    public static int getDaysBetweenMidnights(long l, long l2) {
         DateTime dateTime = new DateTime(l);
         DateTime dateTime2 = new DateTime(l2);
         int n = Days.daysBetween(dateTime.toDateMidnight(), dateTime2.toDateMidnight()).getDays();
         return n;
     }
 
-    public static int b(long l, long l2) {
+    public static int getHoursBetween(long l, long l2) {
         DateTime dateTime = new DateTime(l);
         DateTime dateTime2 = new DateTime(l2);
         int n = Hours.hoursBetween(dateTime, dateTime2).getHours();
         return n;
     }
 
-    public static long a(long l, int n) {
+    public static long addDaysToTimestamp(long l, int n) {
         DateTime dateTime = new DateTime(l);
         dateTime = dateTime.plusDays(n);
         return dateTime.getMillis();
     }
 
-    public static long b(int n, int n2, int n3, int n4, int n5) {
+    public static long buildTimestampMillis(int n, int n2, int n3, int n4, int n5) {
         GregorianCalendar gregorianCalendar = new GregorianCalendar(n3, n2 - 1, n, n4, n5, 0);
         return gregorianCalendar.getTimeInMillis();
     }
 
-    public static String a(long l) {
+    public static String formatDateDayMonthYear(long l) {
         Object object = new DateTime(l);
         object = String.valueOf(((AbstractDateTime)object).getDayOfMonth()) + "-" + ((AbstractDateTime)object).getMonthOfYear() + "-" + ((AbstractDateTime)object).getYear();
         return object;
     }
 
-    public static String b(long l) {
+    public static String formatDurationHoursMinutes(long l) {
         String string = String.valueOf(l / 1000L / 60L / 60L) + "h " + l / 1000L / 60L % 60L + "min";
         return string;
     }

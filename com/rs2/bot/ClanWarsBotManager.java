@@ -48,10 +48,10 @@ public final class ClanWarsBotManager {
         int n3;
         int n4;
         Player player2;
-        GameplayHelper.a(player);
+        GameplayHelper.resetBotTaskState(player);
         if (ServerSettings.wildyBotsUseNewGeneration) {
             player2 = player;
-            GameplayHelper.b(player2);
+            GameplayHelper.resetBotSkillsToBase(player2);
             n4 = ServerSettings.wildyBotsBaseCombatLevel - ServerSettings.wildyBotsCombatLevelSpread;
             n3 = n4 + GameUtil.randomInt((ServerSettings.wildyBotsCombatLevelSpread << 1) + 1);
             if (n3 < 3) {
@@ -81,7 +81,7 @@ public final class ClanWarsBotManager {
             BotCombatLoadoutManager.selectCombatStyleFromStats(player2, false);
         } else {
             player2 = player;
-            GameplayHelper.b(player2);
+            GameplayHelper.resetBotSkillsToBase(player2);
             n4 = clanWarsBaseCombatLevel + GameUtil.randomInt(6);
             n3 = n4 / 5 << 1;
             if (n3 == 0) {

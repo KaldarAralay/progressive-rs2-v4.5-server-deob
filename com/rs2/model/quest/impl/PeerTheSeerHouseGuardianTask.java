@@ -11,35 +11,35 @@ import com.rs2.model.task.TickTask;
 
 final class PeerTheSeerHouseGuardianTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
     PeerTheSeerHouseGuardianTask(FremennikTrialsQuest fremennikTrialsQuest, int n, Player player) {
-        this.a = player;
+        this.player = player;
         super(10);
     }
 
     @Override
     public final void execute() {
-        if (!this.a.isRegistered()) {
+        if (!this.player.isRegistered()) {
             this.stop();
             return;
         }
         boolean bl = false;
         int n = 0;
-        while (n < FremennikTrialsQuest.a.length) {
-            if (FremennikTrialsQuest.a[n].containsExclusive(this.a.getPosition())) {
+        while (n < FremennikTrialsQuest.peerHouseGuardianAreas.length) {
+            if (FremennikTrialsQuest.peerHouseGuardianAreas[n].containsExclusive(this.player.getPosition())) {
                 bl = true;
-                if (!GameplayHelper.i(this.a, 1290)) {
+                if (!GameplayHelper.i(this.player, 1290)) {
                     Npc npc = new Npc(1290);
-                    GameplayHelper.a(this.a, npc, true, true);
-                    npc.getUpdateState().setForcedText("Prepare to die, " + this.a.getUsername() + "!");
+                    GameplayHelper.a(this.player, npc, true, true);
+                    npc.getUpdateState().setForcedText("Prepare to die, " + this.player.getUsername() + "!");
                 }
                 this.stop();
             }
             ++n;
         }
         if (!bl) {
-            this.a.eq = -1;
+            this.player.eq = -1;
             this.stop();
         }
     }

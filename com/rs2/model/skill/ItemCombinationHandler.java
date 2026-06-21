@@ -26,16 +26,16 @@ public class ItemCombinationHandler {
         int n;
         int n2;
         ItemStack[] itemStackArray;
-        if ((object = ItemCombinationRecipe.a(object.getId(), ((ItemStack)object2).getId())) == null) {
+        if ((object = ItemCombinationRecipe.forItemIds(object.getId(), ((ItemStack)object2).getId())) == null) {
             return false;
         }
-        if (ItemCombinationRecipe.a((ItemCombinationRecipe)((Object)object)) != null && this.player.getSkillManager().getCurrentLevels()[ItemCombinationRecipe.a((ItemCombinationRecipe)((Object)object))[0]] < ItemCombinationRecipe.a((ItemCombinationRecipe)((Object)object))[1]) {
+        if (ItemCombinationRecipe.getSkillRequirement((ItemCombinationRecipe)((Object)object)) != null && this.player.getSkillManager().getCurrentLevels()[ItemCombinationRecipe.getSkillRequirement((ItemCombinationRecipe)((Object)object))[0]] < ItemCombinationRecipe.getSkillRequirement((ItemCombinationRecipe)((Object)object))[1]) {
             object2 = this.player;
-            ((Player)object2).packetSender.sendGameMessage("Your " + SkillManager.SKILL_NAMES[ItemCombinationRecipe.a((ItemCombinationRecipe)((Object)object))[0]].toLowerCase() + " level is not high enough to do this.");
+            ((Player)object2).packetSender.sendGameMessage("Your " + SkillManager.SKILL_NAMES[ItemCombinationRecipe.getSkillRequirement((ItemCombinationRecipe)((Object)object))[0]].toLowerCase() + " level is not high enough to do this.");
             return true;
         }
-        if (ItemCombinationRecipe.b((ItemCombinationRecipe)((Object)object)) != null) {
-            itemStackArray = ItemCombinationRecipe.b((ItemCombinationRecipe)((Object)object));
+        if (ItemCombinationRecipe.getRequiredItems((ItemCombinationRecipe)((Object)object)) != null) {
+            itemStackArray = ItemCombinationRecipe.getRequiredItems((ItemCombinationRecipe)((Object)object));
             n2 = itemStackArray.length;
             n = 0;
             while (n < n2) {
@@ -45,7 +45,7 @@ public class ItemCombinationHandler {
                 }
                 ++n;
             }
-            itemStackArray = ItemCombinationRecipe.b((ItemCombinationRecipe)((Object)object));
+            itemStackArray = ItemCombinationRecipe.getRequiredItems((ItemCombinationRecipe)((Object)object));
             n2 = itemStackArray.length;
             n = 0;
             while (n < n2) {
@@ -54,16 +54,16 @@ public class ItemCombinationHandler {
                 ++n;
             }
         }
-        if (ItemCombinationRecipe.c((ItemCombinationRecipe)((Object)object)) != null) {
+        if (ItemCombinationRecipe.getMessage((ItemCombinationRecipe)((Object)object)) != null) {
             object2 = this.player;
-            ((Player)object2).packetSender.sendGameMessage(ItemCombinationRecipe.c((ItemCombinationRecipe)((Object)object)));
+            ((Player)object2).packetSender.sendGameMessage(ItemCombinationRecipe.getMessage((ItemCombinationRecipe)((Object)object)));
         }
-        if (ItemCombinationRecipe.d((ItemCombinationRecipe)((Object)object)) != null) {
-            if (ItemCombinationRecipe.d((ItemCombinationRecipe)((Object)object)).length == 2 && ItemCombinationRecipe.b((ItemCombinationRecipe)((Object)object)).length == 2) {
-                this.player.getInventoryManager().addItem(ItemCombinationRecipe.d((ItemCombinationRecipe)((Object)object))[0]);
-                this.player.getInventoryManager().addItem(ItemCombinationRecipe.d((ItemCombinationRecipe)((Object)object))[1]);
+        if (ItemCombinationRecipe.getProductItems((ItemCombinationRecipe)((Object)object)) != null) {
+            if (ItemCombinationRecipe.getProductItems((ItemCombinationRecipe)((Object)object)).length == 2 && ItemCombinationRecipe.getRequiredItems((ItemCombinationRecipe)((Object)object)).length == 2) {
+                this.player.getInventoryManager().addItem(ItemCombinationRecipe.getProductItems((ItemCombinationRecipe)((Object)object))[0]);
+                this.player.getInventoryManager().addItem(ItemCombinationRecipe.getProductItems((ItemCombinationRecipe)((Object)object))[1]);
             } else {
-                itemStackArray = ItemCombinationRecipe.d((ItemCombinationRecipe)((Object)object));
+                itemStackArray = ItemCombinationRecipe.getProductItems((ItemCombinationRecipe)((Object)object));
                 n2 = itemStackArray.length;
                 n = 0;
                 while (n < n2) {
@@ -78,11 +78,11 @@ public class ItemCombinationHandler {
                 }
             }
         }
-        if (ItemCombinationRecipe.e((ItemCombinationRecipe)((Object)object)) > 0) {
-            this.player.getUpdateState().setAnimation(ItemCombinationRecipe.e((ItemCombinationRecipe)((Object)object)));
+        if (ItemCombinationRecipe.getAnimationId((ItemCombinationRecipe)((Object)object)) > 0) {
+            this.player.getUpdateState().setAnimation(ItemCombinationRecipe.getAnimationId((ItemCombinationRecipe)((Object)object)));
         }
-        if (ItemCombinationRecipe.a((ItemCombinationRecipe)((Object)object)) != null) {
-            this.player.getSkillManager().addExperience(ItemCombinationRecipe.a((ItemCombinationRecipe)((Object)object))[0], ItemCombinationRecipe.f((ItemCombinationRecipe)((Object)object)));
+        if (ItemCombinationRecipe.getSkillRequirement((ItemCombinationRecipe)((Object)object)) != null) {
+            this.player.getSkillManager().addExperience(ItemCombinationRecipe.getSkillRequirement((ItemCombinationRecipe)((Object)object))[0], ItemCombinationRecipe.getExperience((ItemCombinationRecipe)((Object)object)));
         }
         return true;
     }

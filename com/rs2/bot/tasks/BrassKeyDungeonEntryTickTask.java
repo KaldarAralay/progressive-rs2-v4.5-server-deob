@@ -10,22 +10,22 @@ import java.util.ArrayList;
 
 final class BrassKeyDungeonEntryTickTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
     BrassKeyDungeonEntryTickTask(EdgevilleDungeonBrassKeyBotTask edgevilleDungeonBrassKeyBotTask, int n, Player player) {
-        this.a = player;
+        this.player = player;
         super(3);
     }
 
     @Override
     public final void execute() {
-        if (this.a.isDead() || !this.a.isRegistered()) {
+        if (this.player.isDead() || !this.player.isRegistered()) {
             this.stop();
             return;
         }
         ArrayList<Integer> arrayList = new ArrayList<Integer>();
         arrayList.add(1570);
-        this.a.interactWithBotObjectTargetsNoRetry(arrayList, false);
+        this.player.interactWithBotObjectTargetsNoRetry(arrayList, false);
         this.stop();
     }
 }

@@ -11,49 +11,49 @@ import com.rs2.model.task.CycleEventContainer;
 
 final class StandardTeleportTask
 extends CycleEvent {
-    private int a = 8;
-    private /* synthetic */ TeleportManager b;
-    private final /* synthetic */ int c;
-    private final /* synthetic */ int d;
-    private final /* synthetic */ int e;
-    private final /* synthetic */ String f;
+    private int ticksRemaining = 8;
+    private /* synthetic */ TeleportManager teleportManager;
+    private final /* synthetic */ int destinationX;
+    private final /* synthetic */ int destinationY;
+    private final /* synthetic */ int destinationPlane;
+    private final /* synthetic */ String arrivalMessage;
 
     StandardTeleportTask(TeleportManager teleportManager, int n, int n2, int n3, String string) {
-        this.b = teleportManager;
-        this.c = n;
-        this.d = n2;
-        this.e = n3;
-        this.f = string;
+        this.teleportManager = teleportManager;
+        this.destinationX = n;
+        this.destinationY = n2;
+        this.destinationPlane = n3;
+        this.arrivalMessage = string;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        --this.a;
-        if (!TeleportManager.a(this.b).isDead()) {
-            if (this.a == 4) {
-                TeleportManager.a(this.b).getUpdateState().setAnimation(714);
-                TeleportManager.a(this.b).getUpdateState().setGraphicHeight100(301);
+        --this.ticksRemaining;
+        if (!TeleportManager.getPlayer(this.teleportManager).isDead()) {
+            if (this.ticksRemaining == 4) {
+                TeleportManager.getPlayer(this.teleportManager).getUpdateState().setAnimation(714);
+                TeleportManager.getPlayer(this.teleportManager).getUpdateState().setGraphicHeight100(301);
             }
-            if (this.a == 2) {
-                TeleportManager.a(this.b).getUpdateState().setAnimation(715);
-                TeleportManager.a(this.b).moveTo(new Position(this.c, this.d, this.e));
-                if (this.f != null) {
-                    Player player = TeleportManager.a(this.b);
-                    player.packetSender.sendGameMessage(this.f);
+            if (this.ticksRemaining == 2) {
+                TeleportManager.getPlayer(this.teleportManager).getUpdateState().setAnimation(715);
+                TeleportManager.getPlayer(this.teleportManager).moveTo(new Position(this.destinationX, this.destinationY, this.destinationPlane));
+                if (this.arrivalMessage != null) {
+                    Player player = TeleportManager.getPlayer(this.teleportManager);
+                    player.packetSender.sendGameMessage(this.arrivalMessage);
                 }
             }
         } else {
-            this.a = 0;
+            this.ticksRemaining = 0;
         }
-        if (this.a <= 0) {
+        if (this.ticksRemaining <= 0) {
             cycleEventContainer.stop();
         }
     }
 
     @Override
     public final void onStop() {
-        TeleportManager.a(this.b).setActionLocked(false);
-        TeleportManager.a(this.b).getAttributes().put("canTakeDamage", Boolean.TRUE);
+        TeleportManager.getPlayer(this.teleportManager).setActionLocked(false);
+        TeleportManager.getPlayer(this.teleportManager).getAttributes().put("canTakeDamage", Boolean.TRUE);
     }
 }
 

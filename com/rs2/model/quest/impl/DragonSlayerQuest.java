@@ -87,7 +87,7 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.showInterface(InterfaceDefinition.interfaceCount <= 12140 ? 1689 : 12140);
         player2 = player;
-        player.j = false;
+        player.deferLevelUpInterfaces = false;
     }
 
     @Override
@@ -106,7 +106,7 @@ extends QuestScript {
             Player player3 = player;
             player3.packetSender.sendGameMessage("You pour the Wizard's Mind Bomb into the opening in the door.");
             player.addQuestState(this.getQuestId(), 16);
-            DragonSlayerQuest.e(player, player.getQuestState(this.getQuestId()));
+            DragonSlayerQuest.sendMelzarDoorOpenMessageIfReady(player, player.getQuestState(this.getQuestId()));
             return true;
         }
         if (n == 1791 && n2 == 2586) {
@@ -119,7 +119,7 @@ extends QuestScript {
             Player player5 = player;
             player5.packetSender.sendGameMessage("You put the unfired bowl into the opening in the door.");
             player.addQuestState(this.getQuestId(), 32);
-            DragonSlayerQuest.e(player, player.getQuestState(this.getQuestId()));
+            DragonSlayerQuest.sendMelzarDoorOpenMessageIfReady(player, player.getQuestState(this.getQuestId()));
             return true;
         }
         if (n == 950 && n2 == 2586) {
@@ -132,7 +132,7 @@ extends QuestScript {
             Player player7 = player;
             player7.packetSender.sendGameMessage("You put the silk into the opening in the door.");
             player.addQuestState(this.getQuestId(), 64);
-            DragonSlayerQuest.e(player, player.getQuestState(this.getQuestId()));
+            DragonSlayerQuest.sendMelzarDoorOpenMessageIfReady(player, player.getQuestState(this.getQuestId()));
             return true;
         }
         if (n == 301 && n2 == 2586) {
@@ -145,13 +145,13 @@ extends QuestScript {
             Player player9 = player;
             player9.packetSender.sendGameMessage("You put the lobster pot into the opening in the door.");
             player.addQuestState(this.getQuestId(), 128);
-            DragonSlayerQuest.e(player, player.getQuestState(this.getQuestId()));
+            DragonSlayerQuest.sendMelzarDoorOpenMessageIfReady(player, player.getQuestState(this.getQuestId()));
             return true;
         }
         return false;
     }
 
-    private static void e(Player player, int n) {
+    private static void sendMelzarDoorOpenMessageIfReady(Player player, int n) {
         if (((n -= 4) & 0x10) != 0 && (n & 0x20) != 0 && (n & 0x40) != 0 && (n & 0x80) != 0) {
             player.packetSender.sendGameMessage("The door opens...");
         }
@@ -500,7 +500,7 @@ extends QuestScript {
     @Override
     public final boolean handleItemOnItem(Player player, int n, int n2, int n3) {
         Player player2 = player;
-        if (player2.getInventoryManager().containsItem(1535) && player2.getInventoryManager().containsItem(1536) && player2.getInventoryManager().containsItem(1537) && DragonSlayerQuest.b(n) && DragonSlayerQuest.b(n2)) {
+        if (player2.getInventoryManager().containsItem(1535) && player2.getInventoryManager().containsItem(1536) && player2.getInventoryManager().containsItem(1537) && DragonSlayerQuest.isCrandorMapPiece(n) && DragonSlayerQuest.isCrandorMapPiece(n2)) {
             player.getInventoryManager().removeItem(new ItemStack(1535, 1));
             player.getInventoryManager().removeItem(new ItemStack(1536, 1));
             player.getInventoryManager().removeItem(new ItemStack(1537, 1));
@@ -512,7 +512,7 @@ extends QuestScript {
         return false;
     }
 
-    private static boolean b(int n) {
+    private static boolean isCrandorMapPiece(int n) {
         return n == 1535 || n == 1536 || n == 1537;
     }
 

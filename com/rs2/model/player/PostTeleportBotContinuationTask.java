@@ -13,46 +13,46 @@ import com.rs2.model.task.CycleEventContainer;
 
 final class PostTeleportBotContinuationTask
 extends CycleEvent {
-    private /* synthetic */ Player a;
-    private final /* synthetic */ boolean b;
-    private final /* synthetic */ Player c;
+    private /* synthetic */ Player player;
+    private final /* synthetic */ boolean wasActionLocked;
+    private final /* synthetic */ Player continuationPlayer;
 
     PostTeleportBotContinuationTask(Player player, boolean bl, Player player2) {
-        this.a = player;
-        this.b = bl;
-        this.c = player2;
+        this.player = player;
+        this.wasActionLocked = bl;
+        this.continuationPlayer = player2;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        if (!this.b) {
-            this.a.setActionLocked(false);
+        if (!this.wasActionLocked) {
+            this.player.setActionLocked(false);
         }
-        this.a.getMovementQueue().clear();
-        if (!this.c.bB) {
-            if (this.c.isBot && this.c.botCombatState != null && (this.c.botCombatState.startsWith("escape") || this.c.botCombatState.equals("tele") || this.c.botCombatState.equals("died"))) {
-                if (!this.c.botCombatState.equals("died") && !this.c.clanWarsBot) {
-                    BotCombatHelper.sellBotLootItems(this.c);
+        this.player.getMovementQueue().clear();
+        if (!this.continuationPlayer.botLumbridgeResetPending) {
+            if (this.continuationPlayer.isBot && this.continuationPlayer.botCombatState != null && (this.continuationPlayer.botCombatState.startsWith("escape") || this.continuationPlayer.botCombatState.equals("tele") || this.continuationPlayer.botCombatState.equals("died"))) {
+                if (!this.continuationPlayer.botCombatState.equals("died") && !this.continuationPlayer.clanWarsBot) {
+                    BotCombatHelper.sellBotLootItems(this.continuationPlayer);
                 }
-                if (this.c.clanWarsBot) {
-                    ClanWarsBotManager.hideClanWarsBot(this.c);
-                } else if (this.c.botMode == 4) {
-                    GameplayHelper.c(this.c);
+                if (this.continuationPlayer.clanWarsBot) {
+                    ClanWarsBotManager.hideClanWarsBot(this.continuationPlayer);
+                } else if (this.continuationPlayer.botMode == 4) {
+                    GameplayHelper.selectAndStartNextProgressiveBotTask(this.continuationPlayer);
                 } else {
-                    BotCombatLoadoutManager.startCombatLoadoutBot(this.c);
+                    BotCombatLoadoutManager.startCombatLoadoutBot(this.continuationPlayer);
                 }
             }
-            if (this.c.currentBotTask != null && this.c.botCombatState != null && (this.c.botCombatState.equals("died") || this.c.botCombatState.startsWith("escape") || this.c.botCombatState.equals("tele"))) {
-                if (this.c.botMode != 4) {
-                    GameplayHelper.startNextBotTask(this.c);
+            if (this.continuationPlayer.currentBotTask != null && this.continuationPlayer.botCombatState != null && (this.continuationPlayer.botCombatState.equals("died") || this.continuationPlayer.botCombatState.startsWith("escape") || this.continuationPlayer.botCombatState.equals("tele"))) {
+                if (this.continuationPlayer.botMode != 4) {
+                    GameplayHelper.startNextBotTask(this.continuationPlayer);
                 } else {
-                    GameplayHelper.c(this.c);
+                    GameplayHelper.selectAndStartNextProgressiveBotTask(this.continuationPlayer);
                 }
             }
-            if (this.c.currentBotRoute != null) {
-                this.c.dm = false;
-                if (!this.c.dn) {
-                    this.c.continueBotRoute();
+            if (this.continuationPlayer.currentBotRoute != null) {
+                this.continuationPlayer.botRouteActionPending = false;
+                if (!this.continuationPlayer.botRouteTravelPending) {
+                    this.continuationPlayer.continueBotRoute();
                 }
             }
         }

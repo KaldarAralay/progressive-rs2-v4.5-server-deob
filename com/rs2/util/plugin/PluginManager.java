@@ -20,13 +20,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class PluginManager {
-    private static List a = new LinkedList();
-    private static List b = new LinkedList();
+    private static List playerPluginClasses = new LinkedList();
+    private static List globalPlugins = new LinkedList();
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public static void a() {
+    public static void loadPlugins() {
         try {
             Serializable serializable;
             Object object = "com.rs2.util.plugin.impl";
@@ -43,7 +43,7 @@ public class PluginManager {
             object4 = object4.iterator();
             while (object4.hasNext()) {
                 object3 = (File)object4.next();
-                ((ArrayList)serializable).addAll(PluginManager.a((File)object3, (String)object));
+                ((ArrayList)serializable).addAll(PluginManager.findPluginClasses((File)object3, (String)object));
             }
             object = ((ArrayList)serializable).toArray(new Class[((ArrayList)serializable).size()]);
             serializable = object;
@@ -52,19 +52,19 @@ public class PluginManager {
             while (n2 < n) {
                 object = serializable[n2];
                 object2 = (Plugin)((Class)object).newInstance();
-                if (((Plugin)object2).d() == PluginType.b) {
+                if (((Plugin)object2).getPluginType() == PluginType.GLOBAL) {
                     object = (GlobalPlugin)object2;
-                    object2 = a;
+                    object2 = playerPluginClasses;
                     synchronized (object2) {
-                        System.out.println("Loaded global plugin: " + ((Plugin)object).a() + " v" + ((Plugin)object).c() + " by " + ((Plugin)object).b());
-                        b.add(object);
+                        System.out.println("Loaded global plugin: " + ((Plugin)object).getName() + " v" + ((Plugin)object).getVersion() + " by " + ((Plugin)object).getAuthor());
+                        globalPlugins.add(object);
                     }
                 }
-                if (((Plugin)object2).d() == PluginType.c) {
-                    object2 = a;
+                if (((Plugin)object2).getPluginType() == PluginType.PLAYER_LOCAL) {
+                    object2 = playerPluginClasses;
                     synchronized (object2) {
                         System.out.println("Loaded local plugin: " + ((Class)object).getSimpleName());
-                        a.add(object);
+                        playerPluginClasses.add(object);
                     }
                 }
                 ++n2;
@@ -96,10 +96,10 @@ public class PluginManager {
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public static void a(Player player) {
-        List list = a;
+    public static void attachPlayerPlugins(Player player) {
+        List list = playerPluginClasses;
         synchronized (list) {
-            Iterator iterator = a.iterator();
+            Iterator iterator = playerPluginClasses.iterator();
             while (iterator.hasNext()) {
                 Object object;
                 try {
@@ -124,12 +124,12 @@ public class PluginManager {
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public static void b() {
+    public static void tickGlobalPlugins() {
         ProfilerTimer profilerTimer = ProfilerRegistry.getTimer("tickPlugins");
         profilerTimer.start();
-        List list = b;
+        List list = globalPlugins;
         synchronized (list) {
-            Iterator iterator = b.iterator();
+            Iterator iterator = globalPlugins.iterator();
             while (iterator.hasNext()) {
                 iterator.next();
             }
@@ -140,10 +140,10 @@ public class PluginManager {
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public static void c() {
-        List list = b;
+    public static void handleMovementPacketPlugins() {
+        List list = globalPlugins;
         synchronized (list) {
-            Iterator iterator = b.iterator();
+            Iterator iterator = globalPlugins.iterator();
             while (iterator.hasNext()) {
                 iterator.next();
             }
@@ -154,10 +154,10 @@ public class PluginManager {
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public static void d() {
-        List list = b;
+    public static void shutdownGlobalPlugins() {
+        List list = globalPlugins;
         synchronized (list) {
-            Iterator iterator = b.iterator();
+            Iterator iterator = globalPlugins.iterator();
             while (iterator.hasNext()) {
                 iterator.next();
             }
@@ -165,7 +165,7 @@ public class PluginManager {
         }
     }
 
-    private static List a(File object, String string) {
+    private static List findPluginClasses(File object, String string) {
         ArrayList arrayList = new ArrayList();
         if (!((File)object).exists()) {
             return arrayList;
@@ -178,7 +178,7 @@ public class PluginManager {
             object = fileArray[n2];
             if (((File)object).isDirectory()) {
                 assert (!((File)object).getName().contains("."));
-                arrayList.addAll(PluginManager.a((File)object, String.valueOf(string) + "." + ((File)object).getName()));
+                arrayList.addAll(PluginManager.findPluginClasses((File)object, String.valueOf(string) + "." + ((File)object).getName()));
             } else if (((File)object).getName().endsWith(".class")) {
                 arrayList.add(Class.forName(String.valueOf(string) + '.' + ((File)object).getName().substring(0, ((File)object).getName().length() - 6)));
             }

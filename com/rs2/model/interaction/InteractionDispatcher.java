@@ -91,12 +91,12 @@ public final class InteractionDispatcher {
                 Npc npc = World.getNpcs()[player.getInteractionTargetIndex()];
                 int n18 = player.nextActionSequence();
                 if (npc == null || !npc.isInteractable()) return;
-                int[][] nArray = PetManager.a;
+                int[][] nArray = PetManager.petItemNpcPairs;
                 int n19 = 0;
                 while (n19 < 6) {
                     int[] nArray2 = nArray[n19];
                     if (player.getInteractionTargetId() == nArray2[1]) {
-                        player.getPetManager().a();
+                        player.getPetManager().pickupPet();
                         return;
                     }
                     ++n19;
@@ -106,7 +106,7 @@ public final class InteractionDispatcher {
                     player2.packetSender.sendGameMessage("This npc is not interested in talking with you right now.");
                     return;
                 }
-                if (npc.p() && (n = GameplayHelper.c(player.getInteractionTargetId())) >= 0 && !player.ez()) {
+                if (npc.isInApeAtoll() && (n = GameplayHelper.getNpcShopId(player.getInteractionTargetId())) >= 0 && !player.ez()) {
                     Player player3 = player;
                     player3.packetSender.sendGameMessage("This npc is not interested in talking with you right now.");
                     return;

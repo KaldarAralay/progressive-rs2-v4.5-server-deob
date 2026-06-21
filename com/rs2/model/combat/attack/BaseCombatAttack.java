@@ -98,8 +98,8 @@ extends CombatAttack {
         }
         if (this.getAttacker().isPlayer()) {
             object = (Player)this.getAttacker();
-            if (((Player)object).ak > 1) {
-                this.animationId = new Npc(((Player)object).ak).getDefinition().getAttackAnimationId();
+            if (((Player)object).npcTransformationId > 1) {
+                this.animationId = new Npc(((Player)object).npcTransformationId).getDefinition().getAttackAnimationId();
             }
         }
         if (this.animationId != -1) {
@@ -265,15 +265,15 @@ extends CombatAttack {
         return this;
     }
 
-    public static BaseCombatAttack a(Entity entity, Entity entity2, AttackXpMode attackXpMode, AttackBonusType attackBonusType, int n, int n2, int n3, boolean bl) {
+    public static BaseCombatAttack createForcedMeleeAttack(Entity entity, Entity entity2, AttackXpMode attackXpMode, AttackBonusType attackBonusType, int n, int n2, int n3, boolean bl) {
         return new ForcedMeleeCombatAttack(entity, entity2, attackXpMode, attackBonusType, 97, true, 2655, 8);
     }
 
-    public static BaseCombatAttack a(Entity entity, Entity entity2, AttackXpMode attackXpMode, AttackBonusType attackBonusType, int n, int n2, int n3) {
+    public static BaseCombatAttack createMeleeAttack(Entity entity, Entity entity2, AttackXpMode attackXpMode, AttackBonusType attackBonusType, int n, int n2, int n3) {
         return new MeleeCombatAttack(entity, entity2, attackXpMode, attackBonusType, n, n3, n2);
     }
 
-    public static BaseCombatAttack a(Entity entity, Entity entity2, AttackXpMode attackXpMode, int n, WeaponProfile weaponProfile) {
+    public static BaseCombatAttack createWeaponProfileMeleeAttack(Entity entity, Entity entity2, AttackXpMode attackXpMode, int n, WeaponProfile weaponProfile) {
         n = -1;
         int n2 = 0;
         while (n2 < weaponProfile.getAttackAnimations().length) {
@@ -287,18 +287,18 @@ extends CombatAttack {
             throw new IllegalArgumentException("That weapon does not contain an attack style with the given mode!");
         }
         AttackStyleDefinition attackStyleDefinition = weaponProfile.getInterfaceDefinition().getAttackStyles()[n];
-        return BaseCombatAttack.a(entity, entity2, attackXpMode, attackStyleDefinition.getAttackBonusType(), 0, weaponProfile.getAttackDelay(), weaponProfile.getAttackAnimations()[n]);
+        return BaseCombatAttack.createMeleeAttack(entity, entity2, attackXpMode, attackStyleDefinition.getAttackBonusType(), 0, weaponProfile.getAttackDelay(), weaponProfile.getAttackAnimations()[n]);
     }
 
-    private static BaseCombatAttack a(Entity entity, Entity entity2, CombatType combatType, AttackXpMode attackXpMode, int n, int n2, int n3, GraphicEffect graphicEffect, GraphicEffect graphicEffect2, int n4, ProjectileTiming projectileTiming, int n5, CombatEffect combatEffect) {
+    private static BaseCombatAttack createProjectileAttackInternal(Entity entity, Entity entity2, CombatType combatType, AttackXpMode attackXpMode, int n, int n2, int n3, GraphicEffect graphicEffect, GraphicEffect graphicEffect2, int n4, ProjectileTiming projectileTiming, int n5, CombatEffect combatEffect) {
         return new ProjectileCombatAttack(entity, entity2, attackXpMode, combatType, projectileTiming, n4, n, 0, graphicEffect2, combatEffect, n3, n2, graphicEffect);
     }
 
-    private static BaseCombatAttack a(Entity entity, Entity entity2, CombatType combatType, AttackXpMode attackXpMode, int n, int n2, int n3, GraphicEffect graphicEffect, GraphicEffect graphicEffect2, int n4, ProjectileTiming projectileTiming, int n5, CombatEffect combatEffect, boolean bl) {
+    private static BaseCombatAttack createForcedProjectileAttackInternal(Entity entity, Entity entity2, CombatType combatType, AttackXpMode attackXpMode, int n, int n2, int n3, GraphicEffect graphicEffect, GraphicEffect graphicEffect2, int n4, ProjectileTiming projectileTiming, int n5, CombatEffect combatEffect, boolean bl) {
         return new ForcedProjectileCombatAttack(entity, entity2, attackXpMode, combatType, projectileTiming, n4, bl, n, 0, graphicEffect2, combatEffect, n3, n2, graphicEffect);
     }
 
-    public static BaseCombatAttack a(Entity entity, Entity entity2, CombatType combatType, AttackXpMode attackXpMode, int n, int n2, int n3, GraphicEffect graphicEffect, GraphicEffect graphicEffect2, int n4, ProjectileTiming projectileTiming, boolean bl, boolean bl2) {
+    public static BaseCombatAttack createFlaggedProjectileAttack(Entity entity, Entity entity2, CombatType combatType, AttackXpMode attackXpMode, int n, int n2, int n3, GraphicEffect graphicEffect, GraphicEffect graphicEffect2, int n4, ProjectileTiming projectileTiming, boolean bl, boolean bl2) {
         Entity entity3 = entity;
         bl2 = true;
         bl = false;
@@ -310,20 +310,20 @@ extends CombatAttack {
         return new FlaggedProjectileCombatAttack(entity4, entity2, attackXpMode, combatType, projectileTiming, n4, bl, n, bl2, 0, graphicEffect2, null, n3, n2, graphicEffect);
     }
 
-    public static BaseCombatAttack a(Entity entity, Entity entity2, CombatType combatType, AttackXpMode attackXpMode, int n, int n2, int n3, GraphicEffect graphicEffect, GraphicEffect graphicEffect2, int n4, ProjectileTiming projectileTiming) {
-        return BaseCombatAttack.a(entity, entity2, combatType, attackXpMode, n, n2, n3, graphicEffect, graphicEffect2, n4, projectileTiming, 0, null);
+    public static BaseCombatAttack createProjectileAttack(Entity entity, Entity entity2, CombatType combatType, AttackXpMode attackXpMode, int n, int n2, int n3, GraphicEffect graphicEffect, GraphicEffect graphicEffect2, int n4, ProjectileTiming projectileTiming) {
+        return BaseCombatAttack.createProjectileAttackInternal(entity, entity2, combatType, attackXpMode, n, n2, n3, graphicEffect, graphicEffect2, n4, projectileTiming, 0, null);
     }
 
-    public static BaseCombatAttack a(Entity entity, Entity entity2, CombatType combatType, AttackXpMode attackXpMode, int n, int n2, int n3, GraphicEffect graphicEffect, GraphicEffect graphicEffect2, int n4, ProjectileTiming projectileTiming, boolean bl) {
-        return BaseCombatAttack.a(entity, entity2, combatType, attackXpMode, 31, 4, n3, graphicEffect, graphicEffect2, 280, projectileTiming, 0, null, true);
+    public static BaseCombatAttack createKalphiteQueenMagicAttack(Entity entity, Entity entity2, CombatType combatType, AttackXpMode attackXpMode, int n, int n2, int n3, GraphicEffect graphicEffect, GraphicEffect graphicEffect2, int n4, ProjectileTiming projectileTiming, boolean bl) {
+        return BaseCombatAttack.createForcedProjectileAttackInternal(entity, entity2, combatType, attackXpMode, 31, 4, n3, graphicEffect, graphicEffect2, 280, projectileTiming, 0, null, true);
     }
 
-    public static BaseCombatAttack a(Entity entity, Entity entity2, CombatType combatType, AttackXpMode attackXpMode, int n, int n2, int n3, GraphicEffect graphicEffect, GraphicEffect graphicEffect2, int n4, ProjectileTiming projectileTiming, CombatEffect combatEffect) {
-        return BaseCombatAttack.a(entity, entity2, combatType, attackXpMode, n, n2, n3, graphicEffect, graphicEffect2, n4, projectileTiming, 0, combatEffect);
+    public static BaseCombatAttack createProjectileAttackWithEffect(Entity entity, Entity entity2, CombatType combatType, AttackXpMode attackXpMode, int n, int n2, int n3, GraphicEffect graphicEffect, GraphicEffect graphicEffect2, int n4, ProjectileTiming projectileTiming, CombatEffect combatEffect) {
+        return BaseCombatAttack.createProjectileAttackInternal(entity, entity2, combatType, attackXpMode, n, n2, n3, graphicEffect, graphicEffect2, n4, projectileTiming, 0, combatEffect);
     }
 
-    public static BaseCombatAttack a(Entity entity, Entity entity2, CombatType combatType, AttackXpMode attackXpMode, int n, int n2, int n3, GraphicEffect graphicEffect, GraphicEffect graphicEffect2, int n4, ProjectileTiming projectileTiming, CombatEffect combatEffect, boolean bl) {
-        return BaseCombatAttack.a(entity, entity2, combatType, attackXpMode, 31, n2, n3, graphicEffect, graphicEffect2, 289, projectileTiming, 0, combatEffect, true);
+    public static BaseCombatAttack createKalphiteQueenRangedAttackWithEffect(Entity entity, Entity entity2, CombatType combatType, AttackXpMode attackXpMode, int n, int n2, int n3, GraphicEffect graphicEffect, GraphicEffect graphicEffect2, int n4, ProjectileTiming projectileTiming, CombatEffect combatEffect, boolean bl) {
+        return BaseCombatAttack.createForcedProjectileAttackInternal(entity, entity2, combatType, attackXpMode, 31, n2, n3, graphicEffect, graphicEffect2, 289, projectileTiming, 0, combatEffect, true);
     }
 
     public static BaseCombatAttack createMagicAttack(Entity entity, Entity entity2, SpellDefinition spellDefinition) {

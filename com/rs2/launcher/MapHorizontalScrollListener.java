@@ -9,18 +9,18 @@ import java.awt.event.AdjustmentListener;
 
 public final class MapHorizontalScrollListener
 implements AdjustmentListener {
-    private /* synthetic */ ControlPanel a;
+    private /* synthetic */ ControlPanel controlPanel;
 
     public MapHorizontalScrollListener(ControlPanel controlPanel) {
-        this.a = controlPanel;
+        this.controlPanel = controlPanel;
     }
 
     @Override
     public final void adjustmentValueChanged(AdjustmentEvent adjustmentEvent) {
         int n;
-        this.a.d = n = adjustmentEvent.getValue();
-        int cfr_ignored_0 = this.a.c;
-        ControlPanel.b.repaint();
+        this.controlPanel.mapScrollX = n = adjustmentEvent.getValue();
+        int cfr_ignored_0 = this.controlPanel.mapScale;
+        ControlPanel.worldMapPanel.repaint();
     }
 }
 

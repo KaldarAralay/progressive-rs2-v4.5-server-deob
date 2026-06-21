@@ -10,7 +10,7 @@ import com.rs2.model.npc.Npc;
 import com.rs2.model.objects.DynamicObject;
 import com.rs2.model.objects.ObjectManager;
 import com.rs2.model.player.Player;
-import com.rs2.model.quest.QuestNpcIds;
+import com.rs2.model.quest.QuestConstants;
 import com.rs2.model.quest.QuestScript;
 import com.rs2.util.GameUtil;
 
@@ -88,7 +88,7 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.showInterface(InterfaceDefinition.interfaceCount <= 12140 ? 1689 : 12140);
         player2 = player;
-        player.j = false;
+        player.deferLevelUpInterfaces = false;
     }
 
     @Override
@@ -133,7 +133,7 @@ extends QuestScript {
         return false;
     }
 
-    private static boolean e(Player player) {
+    private static boolean hasBluriteSwordMaterials(Player player) {
         return player.getInventoryManager().containsItemAmount(668, 1) && player.getInventoryManager().containsItemAmount(2351, 2);
     }
 
@@ -301,7 +301,7 @@ extends QuestScript {
                 }
             }
         }
-        if (n == QuestNpcIds.n && n4 == 2) {
+        if (n == QuestConstants.RELDO_NPC_ID && n4 == 2) {
             if (n2 == 1) {
                 n2 = 100;
             }
@@ -488,7 +488,7 @@ extends QuestScript {
                 }
                 if (n2 == 2) {
                     player.getDialogueManager().showNpcOneLineDialogue("How are you doing finding those sword materials?", 591);
-                    if (!KnightsSwordQuest.e(player)) {
+                    if (!KnightsSwordQuest.hasBluriteSwordMaterials(player)) {
                         player.getDialogueManager().setNextDialogueStep(3);
                     } else {
                         player.getDialogueManager().setNextDialogueStep(4);
@@ -508,7 +508,7 @@ extends QuestScript {
                     player.getDialogueManager().showTwoLineStatement("You give the blurite ore and two iron bars to Thurgo. Thurgo starts", "to make the sword. Thurgo hands you a sword.");
                     return true;
                 }
-                if (n2 == 6 && KnightsSwordQuest.e(player)) {
+                if (n2 == 6 && KnightsSwordQuest.hasBluriteSwordMaterials(player)) {
                     player.getInventoryManager().removeItem(new ItemStack(668, 1));
                     player.getInventoryManager().removeItem(new ItemStack(2351, 2));
                     player.getInventoryManager().addOrDropItem(new ItemStack(667, 1));

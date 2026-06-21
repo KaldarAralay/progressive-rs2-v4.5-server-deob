@@ -49,9 +49,9 @@ implements PacketHandler {
             ((Player)object).packetSender.setSidebarInterface(3, 3213);
         }
         player.setOpenInterfaceId(0);
-        if (player.k.size() > 0) {
-            player.getSkillManager().showLevelUpInterface((Integer)player.k.get(0));
-            player.k.remove(0);
+        if (player.queuedLevelUpSkillIds.size() > 0) {
+            player.getSkillManager().showLevelUpInterface((Integer)player.queuedLevelUpSkillIds.get(0));
+            player.queuedLevelUpSkillIds.remove(0);
         }
     }
 }

@@ -30,7 +30,7 @@ public final class HopsPatchManager {
     public int[] patchStates = new int[4];
     public long[] lastUpdateTicks = new long[4];
     public double[] diseaseChanceMultipliers = new double[]{1.0, 1.0, 1.0, 1.0};
-    private boolean[] j = new boolean[4];
+    private boolean[] fullyGrownFlags = new boolean[4];
     public boolean[] protectionFlags = new boolean[4];
 
     public HopsPatchManager(Player player) {
@@ -128,7 +128,7 @@ public final class HopsPatchManager {
                     break block15;
                 }
                 Object object = HopsDefinition.forSeedId(this.cropIds[n]);
-                if (object == null || this.a(n)) break block15;
+                if (object == null || this.shouldStopGrowthCycle(n)) break block15;
                 int n5 = (int)(l / (long)object.getGrowthCycleTicks());
                 int n6 = this.growthStages[n] - 4;
                 if ((n5 -= n6) <= 0) break block15;
@@ -168,7 +168,7 @@ public final class HopsPatchManager {
                                 if (((HopsPatchManager)object).patchStates[n7] == 5 && ((HopsPatchManager)object).growthStages[n7] != 3) {
                                     ((HopsPatchManager)object).patchStates[n7] = 0;
                                 }
-                                if (!(((HopsPatchManager)object).patchStates[n7] != 0 && ((HopsPatchManager)object).patchStates[n7] != 1 || ((HopsPatchManager)object).growthStages[n7] < 4 || ((HopsPatchManager)object).j[n7] || (hopsDefinition = HopsDefinition.forSeedId(((HopsPatchManager)object).cropIds[n7])) == null)) {
+                                if (!(((HopsPatchManager)object).patchStates[n7] != 0 && ((HopsPatchManager)object).patchStates[n7] != 1 || ((HopsPatchManager)object).growthStages[n7] < 4 || ((HopsPatchManager)object).fullyGrownFlags[n7] || (hopsDefinition = HopsDefinition.forSeedId(((HopsPatchManager)object).cropIds[n7])) == null)) {
                                     double d = ((HopsPatchManager)object).diseaseChanceMultipliers[n7] * hopsDefinition.getDiseaseChance();
                                     double d2 = d * 100.0;
                                     int n10 = (int)d2;
@@ -185,7 +185,7 @@ public final class HopsPatchManager {
                             int n11 = n;
                             this.growthStages[n11] = this.growthStages[n11] + 1;
                         }
-                        if (this.a(n)) break block15;
+                        if (this.shouldStopGrowthCycle(n)) break block15;
                     }
                     ++n6;
                 }
@@ -199,7 +199,7 @@ public final class HopsPatchManager {
      * Enabled force condition propagation
      * Lifted jumps to return sites
      */
-    private boolean a(int n) {
+    private boolean shouldStopGrowthCycle(int n) {
         if (this.lastUpdateTicks[n] == 0L) return true;
         if (this.patchStates[n] == 3) return true;
         int n2 = n;
@@ -208,7 +208,7 @@ public final class HopsPatchManager {
         if (hopsDefinition == null) return false;
         int n3 = hopsPatchManager.growthStages[n2] - 4;
         if (hopsDefinition.getConfigStartStage() + n3 != hopsDefinition.getConfigEndStage()) return false;
-        hopsPatchManager.j[n2] = true;
+        hopsPatchManager.fullyGrownFlags[n2] = true;
         return true;
     }
 
@@ -521,7 +521,7 @@ public final class HopsPatchManager {
         this.diseaseChanceMultipliers[n] = 1.0;
         this.d[n] = 0;
         this.harvestAmounts[n] = 3;
-        this.j[n] = false;
+        this.fullyGrownFlags[n] = false;
         this.protectionFlags[n] = false;
     }
 

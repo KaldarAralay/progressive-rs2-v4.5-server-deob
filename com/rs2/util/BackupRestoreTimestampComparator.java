@@ -17,8 +17,8 @@ implements Comparator {
         stringArray = (File)stringArray;
         stringArray = stringArray.getName().split("-");
         stringArray2 = stringArray2.getName().split("-");
-        long l = GameplayHelper.b(Integer.parseInt(stringArray[0]), Integer.parseInt(stringArray[1]), Integer.parseInt(stringArray[2]), Integer.parseInt(stringArray[3]), Integer.parseInt(stringArray[4]));
-        long l2 = GameplayHelper.b(Integer.parseInt(stringArray2[0]), Integer.parseInt(stringArray2[1]), Integer.parseInt(stringArray2[2]), Integer.parseInt(stringArray2[3]), Integer.parseInt(stringArray2[4]));
+        long l = GameplayHelper.buildTimestampMillis(Integer.parseInt(stringArray[0]), Integer.parseInt(stringArray[1]), Integer.parseInt(stringArray[2]), Integer.parseInt(stringArray[3]), Integer.parseInt(stringArray[4]));
+        long l2 = GameplayHelper.buildTimestampMillis(Integer.parseInt(stringArray2[0]), Integer.parseInt(stringArray2[1]), Integer.parseInt(stringArray2[2]), Integer.parseInt(stringArray2[3]), Integer.parseInt(stringArray2[4]));
         return Long.compare(l2, l);
     }
 }

@@ -12,16 +12,16 @@ import com.rs2.util.RectangularArea;
 
 public final class EdgevilleTradeAdvertBotTask
 extends BotTaskDefinition {
-    private static Position aa = new Position(3094, 3491, 0);
-    private static BotRoute ab = null;
-    private static RectangularArea[] ac = new RectangularArea[]{new RectangularArea(3092, 3489, 3094, 3493), new RectangularArea(3093, 3494, 3097, 3497)};
+    private static Position tradeAdvertStartPosition = new Position(3094, 3491, 0);
+    private static BotRoute unusedTradeAdvertRoute = null;
+    private static RectangularArea[] tradeAdvertTaskAreas = new RectangularArea[]{new RectangularArea(3092, 3489, 3094, 3493), new RectangularArea(3093, 3494, 3097, 3497)};
 
     public EdgevilleTradeAdvertBotTask(int n) {
-        super(aa, (BotRoute)null, 0, false, 5);
+        super(tradeAdvertStartPosition, (BotRoute)null, 0, false, 5);
         n = 1;
         EdgevilleTradeAdvertBotTask edgevilleTradeAdvertBotTask = this;
         this.usesCombatTradeAdvertItems = true;
-        super.setTaskAreas(ac);
+        super.setTaskAreas(tradeAdvertTaskAreas);
     }
 
     @Override

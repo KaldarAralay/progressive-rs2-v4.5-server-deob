@@ -78,7 +78,7 @@ implements SandwichLadyRewardSet {
     public final void punishWrongChoice(Player player) {
         int n = GameUtil.randomInclusive(6);
         Player player2 = player;
-        player2.H.startNpcRelocation(player, 402, 2304, RandomEventTeleportLocations.a[n].getX(), RandomEventTeleportLocations.a[n].getY(), RandomEventTeleportLocations.a[n].getPlane(), this.getMessages()[2], true);
+        player2.H.startNpcRelocation(player, 402, 2304, RandomEventTeleportLocations.TELEPORT_DESTINATIONS[n].getX(), RandomEventTeleportLocations.TELEPORT_DESTINATIONS[n].getY(), RandomEventTeleportLocations.TELEPORT_DESTINATIONS[n].getPlane(), this.getMessages()[2], true);
     }
 }
 

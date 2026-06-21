@@ -103,7 +103,7 @@ public final class MovementQueue {
                             movementStep = (MovementStep)this.steps.poll();
                         }
                     }
-                    boolean bl2 = bl = this.entity.isPlayer() && ((Player)this.entity).aw;
+                    boolean bl2 = bl = this.entity.isPlayer() && ((Player)this.entity).forcedMovementActive;
                     if (object2 != null && ((MovementStep)object2).getDirection() != -1) {
                         n2 = directionDeltaX[((MovementStep)object2).getDirection()];
                         n = directionDeltaY[((MovementStep)object2).getDirection()];
@@ -136,11 +136,11 @@ public final class MovementQueue {
                 }
                 if (((Player)entity).getRunEnergyPercent() > 0) {
                     if (!ServerSettings.debugModeEnabled) {
-                        if (((Player)entity).dP || ((Player)entity).t) {
+                        if (((Player)entity).godModeEnabled || ((Player)entity).infiniteRunEnabled) {
                             ((Player)entity).setRunEnergyPercent(100);
                         } else {
                             object = object2 = entity;
-                            int n3 = GameUtil.clampRunWeightForEnergyDrain(0, 64, (int)((Player)object).al);
+                            int n3 = GameUtil.clampRunWeightForEnergyDrain(0, 64, (int)((Player)object).carriedWeight);
                             n3 = 67 + n3 * 67 / 64;
                             ((Player)entity).addRunEnergyRaw(-n3);
                         }
@@ -168,12 +168,12 @@ public final class MovementQueue {
                 EntityTargetMovement.clearMovementTarget(player);
                 this.clear();
             }
-            GameplayHelper.g(player);
+            GameplayHelper.refreshPlayerAreaOverlay(player);
             player.getQuestManager().handleMovementStep();
             DesertHeatManager.updateDesertHeatHazard(player);
             CaveLightManager.updateCaveLightHazards(player);
             Player player2 = player;
-            if (player.currentBotRoute != null && !player.dm && !player.dn) {
+            if (player.currentBotRoute != null && !player.botRouteActionPending && !player.botRouteTravelPending) {
                 player.continueBotRoute();
             }
             BankPinManager.a(player);
@@ -273,8 +273,8 @@ public final class MovementQueue {
                 Player player2 = player;
                 player2.packetSender.closeInterfaces();
             }
-            player.k.clear();
-            player.i = -1;
+            player.queuedLevelUpSkillIds.clear();
+            player.currentLevelUpSkillId = -1;
         }
         this.entity.getUpdateState().setFaceEntity(65535);
     }
@@ -296,7 +296,7 @@ public final class MovementQueue {
             }
             ++n5;
         }
-        if (!bl && !this.entity.a(this.entity.getPosition().getX(), this.entity.getPosition().getY(), this.entity.getPosition().getX() + n, this.entity.getPosition().getY() + n2, this.entity.getPosition().getPlane(), this.entity.getSize(), this.entity.getSize())) {
+        if (!bl && !this.entity.canTravelBetween(this.entity.getPosition().getX(), this.entity.getPosition().getY(), this.entity.getPosition().getX() + n, this.entity.getPosition().getY() + n2, this.entity.getPosition().getPlane(), this.entity.getSize(), this.entity.getSize())) {
             return false;
         }
         if (this.entity.isNpc()) {
@@ -330,7 +330,7 @@ public final class MovementQueue {
         if (this.entity.isPlayer()) {
             Player player = (Player)this.entity;
             object = player;
-            if (!player.aw) {
+            if (!player.forcedMovementActive) {
                 boolean bl3;
                 block15: {
                     int n7 = n2;

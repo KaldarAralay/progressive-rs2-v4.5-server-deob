@@ -11,17 +11,17 @@ import com.rs2.model.task.CycleEventContainer;
 
 final class NpcRespawnCombatEvent
 extends CycleEvent {
-    private final /* synthetic */ Npc a;
-    private final /* synthetic */ Entity b;
+    private final /* synthetic */ Npc respawningNpc;
+    private final /* synthetic */ Entity killer;
 
     NpcRespawnCombatEvent(Npc npc, Entity entity) {
-        this.a = npc;
-        this.b = entity;
+        this.respawningNpc = npc;
+        this.killer = entity;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        CombatManager.finishDeath(this.a, this.b, false);
+        CombatManager.finishDeath(this.respawningNpc, this.killer, false);
         cycleEventContainer.stop();
     }
 

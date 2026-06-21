@@ -208,10 +208,10 @@ public final class TreasureTrailManager {
     public static void advanceOrCompleteTrail(Player player, int n, String string, boolean bl, String string2) {
         Npc npc = World.getNpcs()[player.getInteractionTargetIndex()];
         player.getDialogueManager().setDialogueNpcId(npc != null ? npc.getNpcId() : 0);
-        player.av = new ItemStack[25];
+        player.sliderPuzzlePieces = new ItemStack[25];
         switch (n) {
             case 1: {
-                if (player.ar > 0 && GameUtil.randomInclusive(6) == 0 || player.ar >= 3) {
+                if (player.treasureTrailStepCount > 0 && GameUtil.randomInclusive(6) == 0 || player.treasureTrailStepCount >= 3) {
                     if (bl) {
                         DialogueManager.a(player, 10009, 1);
                         player.getDialogueManager().showNpcOneLineDialogue(string2, 588);
@@ -226,7 +226,7 @@ public final class TreasureTrailManager {
                 return;
             }
             case 2: {
-                if (player.ar >= 2 && GameUtil.randomInclusive(6) == 0 || player.ar >= 4) {
+                if (player.treasureTrailStepCount >= 2 && GameUtil.randomInclusive(6) == 0 || player.treasureTrailStepCount >= 4) {
                     if (bl) {
                         DialogueManager.a(player, 10009, 1);
                         player.getDialogueManager().showNpcOneLineDialogue(string2, 588);
@@ -241,7 +241,7 @@ public final class TreasureTrailManager {
                 return;
             }
             case 3: {
-                if (player.ar >= 3 && GameUtil.randomInclusive(6) == 0 || player.ar >= 5) {
+                if (player.treasureTrailStepCount >= 3 && GameUtil.randomInclusive(6) == 0 || player.treasureTrailStepCount >= 5) {
                     if (bl) {
                         DialogueManager.a(player, 10009, 1);
                         player.getDialogueManager().showNpcOneLineDialogue(string2, 588);
@@ -258,43 +258,43 @@ public final class TreasureTrailManager {
     }
 
     private static void awardNextClueScroll(Player player, int n) {
-        ++player.ar;
+        ++player.treasureTrailStepCount;
         int n2 = 1;
-        if (player.V != null) {
-            if (!player.getInventoryManager().containsItemStack(player.V[0])) {
+        if (player.clueRequiredItems != null) {
+            if (!player.getInventoryManager().containsItemStack(player.clueRequiredItems[0])) {
                 n2 = 0;
             }
             if (n2 != 0) {
                 n2 = 0;
-                while (n2 < player.V.length) {
-                    player.getInventoryManager().removeItem(player.V[n2]);
+                while (n2 < player.clueRequiredItems.length) {
+                    player.getInventoryManager().removeItem(player.clueRequiredItems[n2]);
                     ++n2;
                 }
-                player.V = null;
+                player.clueRequiredItems = null;
             } else {
                 return;
             }
         }
         player.getInventoryManager().addOrDropItem(new ItemStack(TreasureTrailManager.randomClueItemForLevel(n), 1));
-        String string = player.ar > 1 ? "steps" : "step";
+        String string = player.treasureTrailStepCount > 1 ? "steps" : "step";
         Player player2 = player;
-        player2.packetSender.sendGameMessage("You have completed " + player.ar + " " + string + " so far.");
+        player2.packetSender.sendGameMessage("You have completed " + player.treasureTrailStepCount + " " + string + " so far.");
     }
 
     public static void completeTreasureTrail(Player player, int n) {
-        ++player.ar;
+        ++player.treasureTrailStepCount;
         int n2 = 1;
-        if (player.V != null) {
-            if (!player.getInventoryManager().containsItemStack(player.V[0])) {
+        if (player.clueRequiredItems != null) {
+            if (!player.getInventoryManager().containsItemStack(player.clueRequiredItems[0])) {
                 n2 = 0;
             }
             if (n2 != 0) {
                 n2 = 0;
-                while (n2 < player.V.length) {
-                    player.getInventoryManager().removeItem(player.V[n2]);
+                while (n2 < player.clueRequiredItems.length) {
+                    player.getInventoryManager().removeItem(player.clueRequiredItems[n2]);
                     ++n2;
                 }
-                player.V = null;
+                player.clueRequiredItems = null;
             } else {
                 return;
             }
@@ -303,17 +303,17 @@ public final class TreasureTrailManager {
         switch (n) {
             case 1: {
                 itemStackArray = TreasureTrailManager.rollRewardItems(player, 1);
-                ++player.dW;
+                ++player.easyCluesCompleted;
                 break;
             }
             case 2: {
                 itemStackArray = TreasureTrailManager.rollRewardItems(player, 2);
-                ++player.dX;
+                ++player.mediumCluesCompleted;
                 break;
             }
             case 3: {
                 itemStackArray = TreasureTrailManager.rollRewardItems(player, 3);
-                ++player.dY;
+                ++player.hardCluesCompleted;
             }
         }
         Object object = new int[itemStackArray.length];
@@ -330,12 +330,12 @@ public final class TreasureTrailManager {
         }
         Player player2 = player;
         object = player2;
-        player2.packetSender.sendGameMessage("Well done, you've completed the Treasure Trail! (" + player.ar + " " + (player.ar < 2 ? "step" : "steps") + ")");
+        player2.packetSender.sendGameMessage("Well done, you've completed the Treasure Trail! (" + player.treasureTrailStepCount + " " + (player.treasureTrailStepCount < 2 ? "step" : "steps") + ")");
         Player player3 = player;
         object = player3;
         player3.packetSender.sendGameMessage("Your treasure is worth around " + GameUtil.formatNumber(n3) + " coins!");
-        player.ar = 0;
-        player.av = new ItemStack[25];
+        player.treasureTrailStepCount = 0;
+        player.sliderPuzzlePieces = new ItemStack[25];
         Player player4 = player;
         object = player4;
         player4.packetSender.sendItemContainer(6963, itemStackArray);

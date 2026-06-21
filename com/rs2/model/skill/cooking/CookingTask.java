@@ -26,9 +26,9 @@ extends CycleEvent {
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        if (!(this.player.isInterruptibleActionActive() && this.player.isCurrentActionSequence(this.actionSequence) && this.player.getInventoryManager().getContainer().containsItem(this.player.ei()) && this.remainingActions != 0)) {
+        if (!(this.player.isInterruptibleActionActive() && this.player.isCurrentActionSequence(this.actionSequence) && this.player.getInventoryManager().getContainer().containsItem(this.player.getSelectedSkillItemId()) && this.remainingActions != 0)) {
             if (this.player.botEnabled) {
-                CookableFoodDefinition cookableFoodDefinition = CookableFoodDefinition.forRawItemId(this.player.ei());
+                CookableFoodDefinition cookableFoodDefinition = CookableFoodDefinition.forRawItemId(this.player.getSelectedSkillItemId());
                 if (cookableFoodDefinition != null && this.player.getInventoryManager().getContainer().containsItem(cookableFoodDefinition.getBurntItemId())) {
                     ItemStack[] itemStackArray = this.player.getInventoryManager().getContainer().getItems();
                     int n = itemStackArray.length;
@@ -41,7 +41,7 @@ extends CycleEvent {
                         ++n2;
                     }
                 }
-                this.player.ah(0);
+                this.player.setSelectedSkillItemId(0);
                 this.player.currentBotTask.startWalkToBank(this.player);
             }
             cycleEventContainer.stop();
@@ -50,7 +50,7 @@ extends CycleEvent {
         Object object = this.player;
         if (object.interfaceAction.equals("cookFire") && !SkillActionHelper.isObjectPresent(this.player.getCookingObjectId(), this.player.getCookingManager().firePosition.getX(), this.player.getCookingManager().firePosition.getY(), this.player.getCookingManager().firePosition.getPlane())) {
             if (this.player.botEnabled) {
-                object = CookableFoodDefinition.forRawItemId(this.player.ei());
+                object = CookableFoodDefinition.forRawItemId(this.player.getSelectedSkillItemId());
                 if (object != null && this.player.getInventoryManager().getContainer().containsItem(((CookableFoodDefinition)((Object)object)).getBurntItemId())) {
                     ItemStack[] itemStackArray = this.player.getInventoryManager().getContainer().getItems();
                     int n = itemStackArray.length;

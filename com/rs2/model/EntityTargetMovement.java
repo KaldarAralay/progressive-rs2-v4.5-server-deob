@@ -229,7 +229,7 @@ public class EntityTargetMovement {
             }
             if (n4 != 0 || n5 != 0) {
                 boolean bl = false;
-                int[][] nArray = PetManager.a;
+                int[][] nArray = PetManager.petItemNpcPairs;
                 n3 = 0;
                 while (n3 < 6) {
                     int[] nArray2 = nArray[n3];

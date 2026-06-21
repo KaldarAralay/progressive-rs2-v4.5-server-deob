@@ -84,7 +84,7 @@ public class RunecraftingObjectHandler {
                 return true;
             }
             case 7133: {
-                player.getTeleportManager().a(2400, 4835, 0);
+                player.getTeleportManager().startDelayedTeleport(2400, 4835, 0);
                 return true;
             }
             case 7132: {
@@ -95,39 +95,39 @@ public class RunecraftingObjectHandler {
                     player.getDialogueManager().showOneLineStatement("You need to complete " + (String)object + " first.");
                     player.getDialogueManager().finishDialogue();
                 } else {
-                    player.getTeleportManager().a(2142, 4813, 0);
+                    player.getTeleportManager().startDelayedTeleport(2142, 4813, 0);
                 }
                 return true;
             }
             case 7129: {
-                player.getTeleportManager().a(2574, 4849, 0);
+                player.getTeleportManager().startDelayedTeleport(2574, 4849, 0);
                 return true;
             }
             case 7130: {
-                player.getTeleportManager().a(2655, 4830, 0);
+                player.getTeleportManager().startDelayedTeleport(2655, 4830, 0);
                 return true;
             }
             case 7131: {
-                player.getTeleportManager().a(2523, 4826, 0);
+                player.getTeleportManager().startDelayedTeleport(2523, 4826, 0);
                 return true;
             }
             case 7140: {
-                player.getTeleportManager().a(2793, 4828, 0);
+                player.getTeleportManager().startDelayedTeleport(2793, 4828, 0);
                 return true;
             }
             case 7139: {
-                player.getTeleportManager().a(2841, 4829, 0);
+                player.getTeleportManager().startDelayedTeleport(2841, 4829, 0);
                 return true;
             }
             case 7137: {
-                player.getTeleportManager().a(2726, 4832, 0);
+                player.getTeleportManager().startDelayedTeleport(2726, 4832, 0);
                 return true;
             }
             case 7136: {
                 if (player.getPlayerRights() < 2) {
                     player.packetSender.sendGameMessage("This has been disabled temporarily.");
                 } else {
-                    player.getTeleportManager().a(2208, 4830, 0);
+                    player.getTeleportManager().startDelayedTeleport(2208, 4830, 0);
                 }
                 return true;
             }
@@ -136,12 +136,12 @@ public class RunecraftingObjectHandler {
                     player.getDialogueManager().showOneLineStatement("You cannot bring combat items to Entrana!");
                     player.getDialogueManager().finishDialogue();
                 } else {
-                    player.getTeleportManager().a(2464, 4818, 0);
+                    player.getTeleportManager().startDelayedTeleport(2464, 4818, 0);
                 }
                 return true;
             }
             case 7134: {
-                player.getTeleportManager().a(2281, 4837, 0);
+                player.getTeleportManager().startDelayedTeleport(2281, 4837, 0);
                 return true;
             }
         }
@@ -312,7 +312,7 @@ public class RunecraftingObjectHandler {
         }
         GatheringToolDefinition gatheringToolDefinition = ItemCombinationHandler.forBrokenToolItemId(n2);
         if (n3 != -1 && gatheringToolDefinition != null) {
-            this.player.N = n2;
+            this.player.temporaryActionValue = n2;
             this.player.O = n3;
             DialogueManager.startDialogue(this.player, 10088);
             return true;

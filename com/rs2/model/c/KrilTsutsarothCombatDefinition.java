@@ -18,7 +18,7 @@ extends NpcCombatDefinition {
 
     @Override
     public final CombatAttack[] createAttacks(Entity entity, Entity entity2) {
-        return new CombatAttack[]{BaseCombatAttack.a(entity, entity2, AttackXpMode.MELEE_ACCURATE, AttackBonusType.SLASH, 46, 6, 6945), BaseCombatAttack.createMagicAttack(entity, entity2, SpellDefinition.KRIL_TSUTSAROTH_MAGIC_ATTACK)};
+        return new CombatAttack[]{BaseCombatAttack.createMeleeAttack(entity, entity2, AttackXpMode.MELEE_ACCURATE, AttackBonusType.SLASH, 46, 6, 6945), BaseCombatAttack.createMagicAttack(entity, entity2, SpellDefinition.KRIL_TSUTSAROTH_MAGIC_ATTACK)};
     }
 }
 

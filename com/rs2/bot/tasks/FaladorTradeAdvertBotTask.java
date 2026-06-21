@@ -12,13 +12,13 @@ import com.rs2.util.RectangularArea;
 
 public final class FaladorTradeAdvertBotTask
 extends BotTaskDefinition {
-    private static Position aa = new Position(3013, 3355, 0);
-    private static BotRoute ab = null;
-    private static RectangularArea[] ac = new RectangularArea[]{new RectangularArea(3009, 3359, 3018, 3366)};
+    private static Position tradeAdvertStartPosition = new Position(3013, 3355, 0);
+    private static BotRoute unusedTradeAdvertRoute = null;
+    private static RectangularArea[] tradeAdvertTaskAreas = new RectangularArea[]{new RectangularArea(3009, 3359, 3018, 3366)};
 
     public FaladorTradeAdvertBotTask(int n) {
-        super(aa, (BotRoute)null, 0, false, 30);
-        super.setTaskAreas(ac);
+        super(tradeAdvertStartPosition, (BotRoute)null, 0, false, 30);
+        super.setTaskAreas(tradeAdvertTaskAreas);
     }
 
     @Override

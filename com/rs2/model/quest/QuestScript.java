@@ -32,7 +32,7 @@ extends QuestHook {
     }
 
     public final void markQuestComplete(Player player) {
-        player.j = true;
+        player.deferLevelUpInterfaces = true;
         boolean bl = player.isMember();
         Player player2 = player;
         Object object = player2;
@@ -47,7 +47,7 @@ extends QuestHook {
         }
         if (ServerSettings.completeMissingQuestsMode == 2) {
             object = player;
-            if (((Player)object).packetSender.b()) {
+            if (((Player)object).packetSender.updateMissingQuestCompletionStates()) {
                 player.packetSender.sendGameMessage("You have completed all quests!");
             }
         }

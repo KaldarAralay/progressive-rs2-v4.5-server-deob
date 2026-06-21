@@ -21,7 +21,7 @@ extends NpcCombatDefinition {
 
     @Override
     public final CombatAttack[] createAttacks(Entity entity, Entity entity2) {
-        return new CombatAttack[]{BaseCombatAttack.a(entity, entity2, CombatType.RANGED, AttackXpMode.LONGRANGE, 69, 3, 6977, new GraphicEffect(-1, 0), new GraphicEffect(-1, 0), 1198, ProjectileTiming.a), BaseCombatAttack.a(entity, entity2, AttackXpMode.MELEE_ACCURATE, AttackBonusType.CRUSH, 26, 3, 6977), BaseCombatAttack.createMagicAttack(entity, entity2, SpellDefinition.KREE_ARRA_MAGIC_ATTACK)};
+        return new CombatAttack[]{BaseCombatAttack.createProjectileAttack(entity, entity2, CombatType.RANGED, AttackXpMode.LONGRANGE, 69, 3, 6977, new GraphicEffect(-1, 0), new GraphicEffect(-1, 0), 1198, ProjectileTiming.a), BaseCombatAttack.createMeleeAttack(entity, entity2, AttackXpMode.MELEE_ACCURATE, AttackBonusType.CRUSH, 26, 3, 6977), BaseCombatAttack.createMagicAttack(entity, entity2, SpellDefinition.KREE_ARRA_MAGIC_ATTACK)};
     }
 }
 

@@ -4,9 +4,9 @@
 package com.rs2.util.plugin;
 
 public enum PluginType {
-    a,
-    b,
-    c;
+    UNSPECIFIED,
+    GLOBAL,
+    PLAYER_LOCAL;
 
 }
 

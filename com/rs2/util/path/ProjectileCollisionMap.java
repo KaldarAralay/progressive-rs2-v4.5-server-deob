@@ -511,8 +511,8 @@ public final class ProjectileCollisionMap {
             }
             n2 = 0;
             while (n2 < n) {
-                object = GameplayHelper.a(cacheStore.readFile(4, nArray3[n2]));
-                Object object2 = GameplayHelper.a(cacheStore.readFile(4, nArray2[n2]));
+                object = GameplayHelper.inflateGzipCacheFile(cacheStore.readFile(4, nArray3[n2]));
+                Object object2 = GameplayHelper.inflateGzipCacheFile(cacheStore.readFile(4, nArray2[n2]));
                 if (object != null && object2 != null) {
                     try {
                         int n3;
@@ -530,13 +530,13 @@ public final class ProjectileCollisionMap {
                             while (n5 < 64) {
                                 n4 = 0;
                                 while (n4 < 64) {
-                                    while ((n3 = mapDataReader.a()) != 0) {
+                                    while ((n3 = mapDataReader.readUnsignedByte()) != 0) {
                                         if (n3 == 1) {
-                                            mapDataReader.a(1);
+                                            mapDataReader.skipByte(1);
                                             break;
                                         }
                                         if (n3 <= 49) {
-                                            mapDataReader.a(1);
+                                            mapDataReader.skipByte(1);
                                             continue;
                                         }
                                         if (n3 > 81) continue;
@@ -549,21 +549,21 @@ public final class ProjectileCollisionMap {
                             ++n8;
                         }
                         n8 = -1;
-                        while ((n5 = ((MapDataReader)object2).b()) != 0) {
+                        while ((n5 = ((MapDataReader)object2).readUnsignedSmart()) != 0) {
                             n8 += n5;
                             n4 = 0;
-                            while ((n3 = ((MapDataReader)object2).b()) != 0) {
+                            while ((n3 = ((MapDataReader)object2).readUnsignedSmart()) != 0) {
                                 int n9 = (n4 += n3 - 1) >> 6 & 0x3F;
                                 n5 = n4 & 0x3F;
                                 n3 = n4 >> 12;
-                                int n10 = ((MapDataReader)object2).a();
+                                int n10 = ((MapDataReader)object2).readUnsignedByte();
                                 int n11 = n10 >> 2;
                                 n10 &= 3;
                                 if (n9 < 0 || n9 >= 64 || n5 < 0 || n5 >= 64) continue;
                                 if ((nArray4[1][n9][n5] & 2) == 2) {
                                     --n3;
                                 }
-                                if (!GameplayHelper.b(n8) || n3 < 0 || n3 > 3) continue;
+                                if (!GameplayHelper.isObjectDefinitionIdValid(n8) || n3 < 0 || n3 > 3) continue;
                                 ObjectDefinition objectDefinition = ObjectDefinition.forId(n8);
                                 if (objectDefinition.projectileCollisionIgnored) continue;
                                 ProjectileCollisionMap.addObjectCollision(n8, n7 + n9, n6 + n5, n3, n10, n11, true);

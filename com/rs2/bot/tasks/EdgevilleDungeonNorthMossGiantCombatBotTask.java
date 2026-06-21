@@ -21,19 +21,19 @@ import java.util.ArrayList;
 
 public final class EdgevilleDungeonNorthMossGiantCombatBotTask
 extends BotTaskDefinition {
-    private static Position aa = new Position(3253, 3420, 0);
-    private static int[] ab = new int[]{1389, 1969};
-    private static BotRoute[] ac = new BotRoute[]{new BotRoute(new Position[]{new Position(3253, 3428, 0), new Position(3247, 3432, 0), new Position(3245, 3444, 0), new Position(3243, 3455, 0), new Position(3238, 3458, 0)}), new BotRoute(new Position[]{new Position(3243, 9870, 0), new Position(3244, 9890, 0), new Position(3246, 9892, 0)}), new BotRoute(new Position[]{new Position(3247, 9892, 0), new Position(3268, 9892, 0), new Position(3275, 9893, 0), new Position(3281, 9898, 0), new Position(3281, 9907, 0), new Position(3272, 9915, 0), new Position(3257, 9915, 0), new Position(3246, 9916, 0)}), new BotRoute(new Position[]{new Position(3245, 9916, 0), new Position(3241, 9911, 0)}), new BotRoute(new Position[]{new Position(3241, 9910, 0), new Position(3241, 9907, 0), new Position(3224, 9908, 0), new Position(3217, 9908, 0), new Position(3210, 9899, 0)}), new BotRoute(new Position[]{new Position(3210, 9897, 0), new Position(3208, 9890, 0), new Position(3188, 9890, 0), new Position(3180, 9895, 0), new Position(3164, 9894, 0), new Position(3159, 9896, 0)})};
+    private static Position routeStartPosition = new Position(3253, 3420, 0);
+    private static int[] ignoredLootItemIds = new int[]{1389, 1969};
+    private static BotRoute[] taskRouteSegments = new BotRoute[]{new BotRoute(new Position[]{new Position(3253, 3428, 0), new Position(3247, 3432, 0), new Position(3245, 3444, 0), new Position(3243, 3455, 0), new Position(3238, 3458, 0)}), new BotRoute(new Position[]{new Position(3243, 9870, 0), new Position(3244, 9890, 0), new Position(3246, 9892, 0)}), new BotRoute(new Position[]{new Position(3247, 9892, 0), new Position(3268, 9892, 0), new Position(3275, 9893, 0), new Position(3281, 9898, 0), new Position(3281, 9907, 0), new Position(3272, 9915, 0), new Position(3257, 9915, 0), new Position(3246, 9916, 0)}), new BotRoute(new Position[]{new Position(3245, 9916, 0), new Position(3241, 9911, 0)}), new BotRoute(new Position[]{new Position(3241, 9910, 0), new Position(3241, 9907, 0), new Position(3224, 9908, 0), new Position(3217, 9908, 0), new Position(3210, 9899, 0)}), new BotRoute(new Position[]{new Position(3210, 9897, 0), new Position(3208, 9890, 0), new Position(3188, 9890, 0), new Position(3180, 9895, 0), new Position(3164, 9894, 0), new Position(3159, 9896, 0)})};
 
     public EdgevilleDungeonNorthMossGiantCombatBotTask(int n) {
-        super(aa, ac, 1, false, 2);
+        super(routeStartPosition, taskRouteSegments, 1, false, 2);
         boolean bl = true;
         EdgevilleDungeonNorthMossGiantCombatBotTask edgevilleDungeonNorthMossGiantCombatBotTask = this;
         this.combatTask = true;
         super.setForcedCombatStyle(0);
-        int[] nArray = ab;
+        int[] nArray = ignoredLootItemIds;
         edgevilleDungeonNorthMossGiantCombatBotTask = this;
-        this.ignoredLootItemIds = nArray;
+        ((BotTaskDefinition)this).ignoredLootItemIds = nArray;
         int n2 = 10;
         edgevilleDungeonNorthMossGiantCombatBotTask = this;
         this.targetSearchRadius = n2;
@@ -91,14 +91,14 @@ extends BotTaskDefinition {
         ItemStack[] itemStackArray = new ItemStack[]{new ItemStack(player.botFoodItemId, 20)};
         player.botTaskRequiredItems = itemStackArray;
         player.getInventoryManager().addItem(itemStackArray[0]);
-        GameplayHelper.a(player, 0);
+        GameplayHelper.prepareBotCombatStyle(player, 0);
         player.getInventoryManager().refresh();
         player.getEquipmentManager().refresh();
     }
 
     @Override
     public final void prepareTaskCombatLoadout(Player player) {
-        GameplayHelper.b(player);
+        GameplayHelper.resetBotSkillsToBase(player);
         int n = 30 + GameUtil.randomInt(20);
         int n2 = n / 5 << 1;
         if (n2 == 0) {
@@ -143,7 +143,7 @@ extends BotTaskDefinition {
         player.botTaskState = "walk towards task";
         player.botPathWaypointIndex = 0;
         player.botPathSegmentIndex = 0;
-        player.currentBotRoute = ac[player.botPathSegmentIndex];
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex];
         player.continueBotRoute();
     }
 
@@ -152,8 +152,8 @@ extends BotTaskDefinition {
         player.setAutoRetaliate(false);
         player.botTaskState = "walk towards bank";
         player.botPathWaypointIndex = 0;
-        player.botPathSegmentIndex = ac.length - 1;
-        player.currentBotRoute = ac[player.botPathSegmentIndex].reversed();
+        player.botPathSegmentIndex = taskRouteSegments.length - 1;
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex].reversed();
         player.continueBotRoute();
     }
 
@@ -161,7 +161,7 @@ extends BotTaskDefinition {
     public final void continueWalkToTask(Player player, int n) {
         player.setAutoRetaliate(true);
         player.botPathWaypointIndex = n;
-        player.currentBotRoute = ac[player.botPathSegmentIndex];
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex];
         this.advanceTaskRouteSegment(player, true);
     }
 
@@ -169,7 +169,7 @@ extends BotTaskDefinition {
     public final void continueWalkToBank(Player player, int n) {
         player.setAutoRetaliate(false);
         player.botPathWaypointIndex = n;
-        player.currentBotRoute = ac[player.botPathSegmentIndex].reversed();
+        player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex].reversed();
         this.advanceTaskRouteSegment(player, true);
     }
 
@@ -179,7 +179,7 @@ extends BotTaskDefinition {
             if (!bl) {
                 ++((Player)object).botPathSegmentIndex;
             }
-            ((Player)object).currentBotRoute = ac[((Player)object).botPathSegmentIndex];
+            ((Player)object).currentBotRoute = taskRouteSegments[((Player)object).botPathSegmentIndex];
             if (!bl) {
                 ((Player)object).botPathWaypointIndex = 0;
             }
@@ -187,7 +187,7 @@ extends BotTaskDefinition {
             if (((Player)object).botPathSegmentIndex == 1 && ((Player)object).botPathWaypointIndex == 0 && n == 12854) {
                 ArrayList<Integer> arrayList = new ArrayList<Integer>();
                 arrayList.add(881);
-                ((Player)object).dm = true;
+                ((Player)object).botRouteActionPending = true;
                 if (((Player)object).interactWithBotObjectTargetsNoRetry(arrayList, false)) {
                     object = new NorthMossGiantDungeonEntryTickTask(this, 3, (Player)object);
                     World.getTaskScheduler().schedule((TickTask)object);
@@ -198,7 +198,7 @@ extends BotTaskDefinition {
                 ((Player)object).interactWithBotObjectTargetsNoRetry(arrayList, false);
                 return;
             }
-            if (((Player)object).botPathSegmentIndex == ac.length - 1) {
+            if (((Player)object).botPathSegmentIndex == taskRouteSegments.length - 1) {
                 ((Player)object).botTaskState = "walk to task";
                 ((Player)object).botTargetNpcId = 733;
                 return;
@@ -211,11 +211,11 @@ extends BotTaskDefinition {
                 --((Player)object).botPathSegmentIndex;
             }
             int n = GameUtil.getRegionId(((Entity)object).getPosition().getX(), ((Entity)object).getPosition().getY());
-            ((Player)object).currentBotRoute = ac[((Player)object).botPathSegmentIndex].reversed();
+            ((Player)object).currentBotRoute = taskRouteSegments[((Player)object).botPathSegmentIndex].reversed();
             if (!bl) {
                 ((Player)object).botPathWaypointIndex = 0;
             }
-            if (((Player)object).botPathSegmentIndex == ac.length - 2) {
+            if (((Player)object).botPathSegmentIndex == taskRouteSegments.length - 2) {
                 ((Player)object).botTargetNpcId = 733;
                 return;
             }
@@ -223,7 +223,7 @@ extends BotTaskDefinition {
                 ArrayList<Integer> arrayList = new ArrayList<Integer>();
                 arrayList.add(1755);
                 ((Player)object).interactWithBotObjectTargets(arrayList);
-                ((Player)object).dm = true;
+                ((Player)object).botRouteActionPending = true;
                 ((Player)object).botTaskState = "walk to bank";
                 return;
             }

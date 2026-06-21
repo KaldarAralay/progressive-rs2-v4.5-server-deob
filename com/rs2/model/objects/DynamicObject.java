@@ -19,10 +19,10 @@ public final class DynamicObject {
     public Player owner;
 
     public DynamicObject(int n, int n2, int n3, int n4, int n5, int n6, int n7, int n8) {
-        if (!GameplayHelper.b(n)) {
+        if (!GameplayHelper.isObjectDefinitionIdValid(n)) {
             n = ServerSettings.placeholderObjectId;
         }
-        if (!GameplayHelper.b(n7)) {
+        if (!GameplayHelper.isObjectDefinitionIdValid(n7)) {
             n7 = ServerSettings.placeholderObjectId;
         }
         ObjectManager.getInstance();

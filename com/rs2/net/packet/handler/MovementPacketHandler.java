@@ -42,7 +42,7 @@ implements PacketHandler {
             return;
         }
         if (incomingPacket.getOpcode() != 98) {
-            player.er();
+            player.resetInteractionState();
             if (player.getQuestState(0) != 1) {
                 object = player;
                 ((Player)object).packetSender.closeInterfaces();
@@ -56,7 +56,7 @@ implements PacketHandler {
                 }
                 player.getDuelController().resetDuel(true);
             }
-            PluginManager.c();
+            PluginManager.handleMovementPacketPlugins();
         }
         if (player.getEquipmentManager().getContainer().containsItem(6583) || player.getEquipmentManager().getContainer().containsItem(7927)) {
             player.getEquipmentManager().unequipSlot(12);
@@ -87,7 +87,7 @@ implements PacketHandler {
         player.getMovementQueue().clear();
         player.getMovementQueue().setRunPath(incomingPacket.getReader().readSignedByte(ByteTransform.NEGATE) == 1);
         int n4 = GameUtil.getRegionId(player.getPosition().getX(), player.getPosition().getY());
-        if (player.f == 0 || n4 == 9886 || n4 == 10142) {
+        if (player.movementSystemMode == 0 || n4 == 9886 || n4 == 10142) {
             player.getMovementQueue().addStep(new Position(n2, n3));
             n4 = 0;
             while (n4 < n) {

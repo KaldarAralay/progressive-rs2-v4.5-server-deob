@@ -10,23 +10,23 @@ import com.rs2.model.task.CycleEventContainer;
 
 final class DelayedPositionMoveTask
 extends CycleEvent {
-    private /* synthetic */ Player a;
-    private final /* synthetic */ Position b;
+    private /* synthetic */ Player player;
+    private final /* synthetic */ Position destination;
 
     DelayedPositionMoveTask(Player player, Position position) {
-        this.a = player;
-        this.b = position;
+        this.player = player;
+        this.destination = position;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        this.a.moveTo(this.b);
+        this.player.moveTo(this.destination);
         cycleEventContainer.stop();
     }
 
     @Override
     public final void onStop() {
-        this.a.setActionLocked(false);
+        this.player.setActionLocked(false);
     }
 }
 

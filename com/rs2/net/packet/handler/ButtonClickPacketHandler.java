@@ -127,14 +127,14 @@ implements PacketHandler {
                 case 10162: {
                     var5_14 = var1_1;
                     var5_14.packetSender.closeInterfaces();
-                    var1_1.W = 0;
-                    var1_1.X = 0;
+                    var1_1.activeBookItemId = 0;
+                    var1_1.activeBookPageIndex = 0;
                     break;
                 }
                 case 6020: {
                     var5_14 = var1_1;
                     var5_14.packetSender.closeInterfaces();
-                    var1_1.ak = -1;
+                    var1_1.npcTransformationId = -1;
                     var5_14 = var1_1;
                     var5_14.packetSender.refreshSidebarInterfaces();
                     var1_1.setAppearanceUpdateRequired(true);
@@ -442,10 +442,10 @@ implements PacketHandler {
             if (var1_1.getPrayerManager().handleButtonClick(var2_3) || var1_1.isActionLocked()) break block184;
             switch (var2_3) {
                 case 14175: {
-                    if (var1_1.fc() != null) {
-                        var3_8 = BarrowsRepairHandler.forItem(var1_1.fc());
+                    if (var1_1.getPendingDestroyItem() != null) {
+                        var3_8 = BarrowsRepairHandler.forItem(var1_1.getPendingDestroyItem());
                         if (var3_8 != null) {
-                            if (var1_1.getInventoryManager().getContainer().containsItem(var1_1.fc().getId())) {
+                            if (var1_1.getInventoryManager().getContainer().containsItem(var1_1.getPendingDestroyItem().getId())) {
                                 var5_14 = var1_1;
                                 var5_14.packetSender.sendSoundEffect(376, 1, 0);
                                 if (!ServerSettings.adminInteractionsAllowed && var1_1.getPlayerRights() >= 2) {
@@ -454,25 +454,25 @@ implements PacketHandler {
                                 } else {
                                     GroundItemManager.getInstance().spawn(new GroundItem(new ItemStack(var3_8.getFullyDegradedItemId(), 1), var1_1));
                                 }
-                                if (!var1_1.getInventoryManager().removeItemFromSlot(var1_1.fc(), var1_1.getSelectedItemSlot())) {
-                                    var1_1.getInventoryManager().removeItem(var1_1.fc());
+                                if (!var1_1.getInventoryManager().removeItemFromSlot(var1_1.getPendingDestroyItem(), var1_1.getSelectedItemSlot())) {
+                                    var1_1.getInventoryManager().removeItem(var1_1.getPendingDestroyItem());
                                 }
                             }
                             var1_1.getEquipmentManager().refreshCarriedValue();
                         } else {
-                            if (var1_1.fc().getDefinition().getName().toLowerCase().contains("progress hat")) {
+                            if (var1_1.getPendingDestroyItem().getDefinition().getName().toLowerCase().contains("progress hat")) {
                                 var1_1.resetMageTrainingArenaPizazzPoints();
                             }
-                            if (var1_1.fc().getDefinition().getName().toLowerCase().contains("clue scroll")) {
-                                var1_1.ar = 0;
+                            if (var1_1.getPendingDestroyItem().getDefinition().getName().toLowerCase().contains("clue scroll")) {
+                                var1_1.treasureTrailStepCount = 0;
                             }
-                            var1_1.getInventoryManager().removeItem(var1_1.fc());
+                            var1_1.getInventoryManager().removeItem(var1_1.getPendingDestroyItem());
                         }
                     }
-                    var1_1.a((ItemStack)null);
+                    var1_1.setPendingDestroyItem(null);
                 }
                 case 14176: {
-                    var1_1.a((ItemStack)null);
+                    var1_1.setPendingDestroyItem(null);
                     var5_14 = var1_1;
                     var5_14.packetSender.closeInterfaces();
                     break;

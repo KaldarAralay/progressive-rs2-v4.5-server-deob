@@ -9,18 +9,18 @@ import com.rs2.model.task.TickTask;
 
 final class DeathCleanupTask
 extends TickTask {
-    private final /* synthetic */ Entity a;
-    private final /* synthetic */ Entity b;
+    private final /* synthetic */ Entity defeatedEntity;
+    private final /* synthetic */ Entity killer;
 
     DeathCleanupTask(int n, Entity entity, Entity entity2) {
-        this.a = entity;
-        this.b = entity2;
+        this.defeatedEntity = entity;
+        this.killer = entity2;
         super(n);
     }
 
     @Override
     public final void execute() {
-        CombatManager.finishDeath(this.a, this.b, true);
+        CombatManager.finishDeath(this.defeatedEntity, this.killer, true);
         this.stop();
     }
 }

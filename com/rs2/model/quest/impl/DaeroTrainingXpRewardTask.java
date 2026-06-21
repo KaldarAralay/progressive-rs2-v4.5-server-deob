@@ -57,7 +57,7 @@ extends TickTask {
             this.b.getSkillManager().addQuestExperience(2, 20000.0);
             this.b.getSkillManager().addQuestExperience(3, 20000.0);
         }
-        if (!this.a.e(this.b, 17)) {
+        if (!this.a.isProgressFlagSet(this.b, 17)) {
             int n = this.d;
             this.b.questProgressFlags[n] = this.b.questProgressFlags[n] + GameUtil.bitFlag(17);
         }

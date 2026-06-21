@@ -459,7 +459,7 @@ public final class GameUtil {
             n4 = n2;
             while (n4 <= n6) {
                 Position position2 = new Position(n, n4, n7);
-                if (GameUtil.isWithinDistance(position2, position, 1) && position2.c(position)) {
+                if (GameUtil.isWithinDistance(position2, position, 1) && position2.isOrthogonallyAlignedWith(position)) {
                     return position2;
                 }
                 ++n4;

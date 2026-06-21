@@ -61,7 +61,7 @@ extends TickTask {
             case 1598: 
             case 1599: 
             case 3887: {
-                ShopManager.openShop(this.player, GameplayHelper.c(this.player.getInteractionTargetId()));
+                ShopManager.openShop(this.player, GameplayHelper.getNpcShopId(this.player.getInteractionTargetId()));
                 break;
             }
             case 2257: {

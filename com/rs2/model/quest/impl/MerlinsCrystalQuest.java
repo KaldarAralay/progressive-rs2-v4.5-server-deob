@@ -114,26 +114,26 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.showInterface(InterfaceDefinition.interfaceCount <= 12140 ? 1689 : 12140);
         player2 = player;
-        player.j = false;
+        player.deferLevelUpInterfaces = false;
     }
 
     @Override
     public final boolean handleItemOnObject(Player player, int n, int n2, int n3) {
         if (n == 28 && n2 == 68) {
             player.getDialogueManager().showTwoLineStatement("You pour insect repellent on the beehive. You see bees leaving the", "hive.");
-            player.N = 28;
+            player.temporaryActionValue = 28;
             player.getDialogueManager().finishDialogue();
             return true;
         }
         if (n == 1925 && n2 == 68) {
-            if (player.N != 28) {
+            if (player.temporaryActionValue != 28) {
                 player.applyDirectHit(2, HitType.NORMAL);
                 Player player2 = player;
                 player2.packetSender.sendGameMessage("Suddenly bees fly out of the hive and sting you.");
                 return true;
             }
             DialogueManager.continueContextDialogue(1, player, n2, 100, 0, player.getPosition().getX(), player.getPosition().getY());
-            player.N = 0;
+            player.temporaryActionValue = 0;
             return true;
         }
         if (n == 35 && n2 == 62) {
@@ -191,7 +191,7 @@ extends QuestScript {
             }
             if (n3 == 4) {
                 player.getDialogueManager().showOneLineStatement("You wait.");
-                player.e(new Position(2793, 9819, 0));
+                player.moveToPreservingInteractionState(new Position(2793, 9819, 0));
                 return true;
             }
             if (n3 == 5) {
@@ -260,7 +260,7 @@ extends QuestScript {
             }
             if (n3 == 21) {
                 player.getDialogueManager().showOneLineStatement("You feel the crate being put down.");
-                player.e(new Position(2778, 9839, 0));
+                player.moveToPreservingInteractionState(new Position(2778, 9839, 0));
                 return true;
             }
             if (n3 == 22) {

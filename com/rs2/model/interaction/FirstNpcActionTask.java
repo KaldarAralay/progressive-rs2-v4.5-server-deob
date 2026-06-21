@@ -135,7 +135,7 @@ extends TickTask {
             return;
         }
         if (this.player.getInteractionTargetId() >= 0) {
-            if (GameplayHelper.c(this.player.getInteractionTargetId()) >= 0) {
+            if (GameplayHelper.getNpcShopId(this.player.getInteractionTargetId()) >= 0) {
                 DialogueManager.continueDialogueWithNpcId(this.player, 10008, 1, 0, this.player.getInteractionTargetId());
                 this.stop();
                 return;

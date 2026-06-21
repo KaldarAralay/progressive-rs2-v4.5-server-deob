@@ -209,7 +209,7 @@ lbl74:
             }
             player.getInventoryManager().removeItem(itemStack);
         }
-        player.d(hajedyCartRoute.destination.copy());
+        player.scheduleDelayedMove(hajedyCartRoute.destination.copy());
         return true;
     }
 }

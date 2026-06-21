@@ -340,7 +340,7 @@ public final class GodBookHandler {
 
     public static boolean openRecitationDialogue(Player player, int n) {
         if (n == holyBookId || n == unholyBookId || n == bookOfBalanceId) {
-            player.N = n;
+            player.temporaryActionValue = n;
             DialogueManager.startDialogue(player, 13001);
             return true;
         }
@@ -348,7 +348,7 @@ public final class GodBookHandler {
     }
 
     public static void startRecitation(Player player, int n) {
-        int n2 = player.N;
+        int n2 = player.temporaryActionValue;
         int n3 = -1;
         player.O = 0;
         if (n2 == holyBookId) {

@@ -98,7 +98,7 @@ public final class RunecraftingHandler {
         int n2;
         int n3;
         block6: {
-            n3 = player.eA();
+            n3 = player.getAbyssMageNpcId();
             int n4 = 0;
             while (n4 < SCRYING_ORB_NPC_IDS.length) {
                 n2 = SCRYING_ORB_NPC_IDS[n4];
@@ -142,7 +142,7 @@ public final class RunecraftingHandler {
             player.packetSender.sendGameMessage("You need to complete " + (String)object + " to do this.");
             return;
         }
-        player.ap(((Npc)object).getNpcId());
+        player.setAbyssMageNpcId(((Npc)object).getNpcId());
         ((Npc)object).startAbyssMageTeleport(player, 2911, 4832, 0, "Senventior disthine molenko!");
     }
 

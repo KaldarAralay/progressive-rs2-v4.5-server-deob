@@ -35,7 +35,7 @@ extends CycleEvent {
         if (this.unlockPlayer) {
             this.player.setActionLocked(false);
         }
-        this.player.aw = false;
+        this.player.forcedMovementActive = false;
         this.player.moveTo(new Position(this.destinationX, this.destinationY, this.destinationPlane));
         this.player.getUpdateState().clearForcedMovement();
         this.player.setStandAnimationOverride(-1);

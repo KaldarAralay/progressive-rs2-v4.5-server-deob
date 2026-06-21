@@ -129,9 +129,9 @@ public final class BankManager {
                 }
                 if (player.botTaskReturnToBankRequested) {
                     if (BotTaskDefinition.leatherCraftingTasks.contains(player.currentBotTask) || BotTaskDefinition.tanningTasks.contains(player.currentBotTask) || BotTaskDefinition.spinningTasks.contains(player.currentBotTask) || BotTaskDefinition.cookingTasks.contains(player.currentBotTask) || BotTaskDefinition.smeltingTasks.contains(player.currentBotTask) || BotTaskDefinition.smithingTasks.contains(player.currentBotTask)) {
-                        GameplayHelper.a(player, true);
+                        GameplayHelper.selectAndStartProgressiveBotTask(player, true);
                     } else {
-                        GameplayHelper.c(player);
+                        GameplayHelper.selectAndStartNextProgressiveBotTask(player);
                     }
                     BankManager.depositInventory(player);
                     return;

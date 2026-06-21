@@ -97,13 +97,13 @@ public final class TelekineticTheatreController {
 
     public final void refreshCurrentMaze() {
         Object object = mazeEntryPositions[this.mazeIndex];
-        this.player.b(new Position(this.player.getPosition().getX(), this.player.getPosition().getY(), ((Position)object).getPlane()), true);
+        this.player.moveToInstancedPosition(new Position(this.player.getPosition().getX(), this.player.getPosition().getY(), ((Position)object).getPlane()), true);
         object = new Npc(this.guardianNpcId);
         Position position = guardianSpawnPositions[this.mazeIndex];
         Player player = this.player;
         if (player.H != null) {
             player = this.player;
-            GameplayHelper.a(player.H);
+            GameplayHelper.unregisterTemporaryNpc(player.H);
         }
         GameplayHelper.a(this.player, new Position(position.getX(), position.getY(), this.player.getPosition().getPlane()), (Npc)object, false, false);
         if (!this.mazeSolved) {
@@ -113,13 +113,13 @@ public final class TelekineticTheatreController {
 
     private void startCurrentMaze() {
         this.mazeSolved = false;
-        this.player.b(mazeEntryPositions[this.mazeIndex], true);
+        this.player.moveToInstancedPosition(mazeEntryPositions[this.mazeIndex], true);
         Object object = new Npc(this.guardianNpcId);
         Position position = guardianSpawnPositions[this.mazeIndex];
         Player player = this.player;
         if (player.H != null) {
             player = this.player;
-            GameplayHelper.a(player.H);
+            GameplayHelper.unregisterTemporaryNpc(player.H);
         }
         GameplayHelper.a(this.player, new Position(position.getX(), position.getY(), this.player.getPosition().getPlane()), (Npc)object, false, false);
         object = mazeItemSpawnPositions[this.mazeIndex];
@@ -153,7 +153,7 @@ public final class TelekineticTheatreController {
             Player player = telekineticTheatreController.player;
             if (player.H != null) {
                 player = telekineticTheatreController.player;
-                GameplayHelper.a(player.H);
+                GameplayHelper.unregisterTemporaryNpc(player.H);
             }
             player = telekineticTheatreController.player;
             player.packetSender.showWalkableInterface(-1);

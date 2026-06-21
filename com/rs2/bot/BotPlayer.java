@@ -45,9 +45,9 @@ extends Player {
         this.f(string);
         this.c("127.0.0.1");
         this.co = this.ei = System.currentTimeMillis();
-        this.ao(-1);
-        this.an(ServerSettings.clientBuild);
-        this.a(PlayerConnectionState.c);
+        this.setLoginMagicByte(-1);
+        this.setClientBuild(ServerSettings.clientBuild);
+        this.a(PlayerConnectionState.LOGIN_QUEUED);
         try {
             if (this.loadAndValidateLogin()) {
                 this.a("sbot", null, false);

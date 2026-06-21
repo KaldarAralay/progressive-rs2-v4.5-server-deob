@@ -60,7 +60,7 @@ extends TickTask {
                     object = this;
                     int n6 = player.getPosition().getX() - ((ObeliskTick)object).obelisk.basePosition.getX();
                     int n7 = player.getPosition().getY() - ((ObeliskTick)object).obelisk.basePosition.getY();
-                    player.getTeleportManager().a(positionArray4.basePosition.getX() + n6, positionArray4.basePosition.getY() + n7, positionArray4.basePosition.getPlane(), false, "Ancient magic teleports you somewhere in the wilderness");
+                    player.getTeleportManager().startDelayedTeleport(positionArray4.basePosition.getX() + n6, positionArray4.basePosition.getY() + n7, positionArray4.basePosition.getPlane(), false, "Ancient magic teleports you somewhere in the wilderness");
                 }
             }
             ++n5;

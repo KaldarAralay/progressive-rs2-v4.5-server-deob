@@ -23,11 +23,11 @@ import java.util.ArrayList;
 
 public final class WildernessRuniteMineBotTask
 extends BotTaskDefinition {
-    private static Position aa = new Position(3096, 3494, 0);
-    private static BotRoute ab = new BotRoute(new Position[]{new Position(3092, 3500, 0), new Position(3083, 3501, 0), new Position(3075, 3506, 0), new Position(3073, 3521, 0), new Position(3061, 3533, 0), new Position(3061, 3550, 0), new Position(3060, 3565, 0), new Position(3062, 3583, 0), new Position(3062, 3598, 0), new Position(3063, 3617, 0), new Position(3064, 3629, 0), new Position(3065, 3637, 0), new Position(3060, 3644, 0), new Position(3060, 3659, 0), new Position(3062, 3670, 0), new Position(3069, 3682, 0), new Position(3074, 3694, 0), new Position(3074, 3711, 0), new Position(3073, 3730, 0), new Position(3067, 3746, 0), new Position(3057, 3758, 0), new Position(3044, 3766, 0), new Position(3032, 3777, 0), new Position(3030, 3793, 0), new Position(3021, 3807, 0), new Position(3012, 3821, 0), new Position(3007, 3833, 0), new Position(3007, 3848, 0), new Position(3009, 3863, 0), new Position(3020, 3875, 0), new Position(3032, 3884, 0), new Position(3047, 3885, 0), new Position(3057, 3885, 0)});
+    private static Position routeStartPosition = new Position(3096, 3494, 0);
+    private static BotRoute taskRoute = new BotRoute(new Position[]{new Position(3092, 3500, 0), new Position(3083, 3501, 0), new Position(3075, 3506, 0), new Position(3073, 3521, 0), new Position(3061, 3533, 0), new Position(3061, 3550, 0), new Position(3060, 3565, 0), new Position(3062, 3583, 0), new Position(3062, 3598, 0), new Position(3063, 3617, 0), new Position(3064, 3629, 0), new Position(3065, 3637, 0), new Position(3060, 3644, 0), new Position(3060, 3659, 0), new Position(3062, 3670, 0), new Position(3069, 3682, 0), new Position(3074, 3694, 0), new Position(3074, 3711, 0), new Position(3073, 3730, 0), new Position(3067, 3746, 0), new Position(3057, 3758, 0), new Position(3044, 3766, 0), new Position(3032, 3777, 0), new Position(3030, 3793, 0), new Position(3021, 3807, 0), new Position(3012, 3821, 0), new Position(3007, 3833, 0), new Position(3007, 3848, 0), new Position(3009, 3863, 0), new Position(3020, 3875, 0), new Position(3032, 3884, 0), new Position(3047, 3885, 0), new Position(3057, 3885, 0)});
 
     public WildernessRuniteMineBotTask(int n) {
-        super(aa, ab, 0, false, 1);
+        super(routeStartPosition, taskRoute, 0, false, 1);
         this.usesEscapeMonitor = true;
     }
 
@@ -114,7 +114,7 @@ extends BotTaskDefinition {
 
     @Override
     public final void prepareTaskCombatLoadout(Player player) {
-        GameplayHelper.b(player);
+        GameplayHelper.resetBotSkillsToBase(player);
         int n = 1 + GameUtil.randomInt(99);
         int n2 = n / 5 << 1;
         if (n2 == 0) {

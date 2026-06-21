@@ -12,71 +12,71 @@ import com.rs2.util.GameUtil;
 
 final class RandomEventNpcReminderEvent
 extends CycleEvent {
-    private int a = 120;
-    private int b = -1;
-    private String c;
-    private final /* synthetic */ Npc d;
-    private final /* synthetic */ String[] e;
-    private final /* synthetic */ int f;
-    private final /* synthetic */ Player g;
+    private int reminderTicksRemaining = 120;
+    private int interactionGraceTicks = -1;
+    private String playerDisplayName;
+    private final /* synthetic */ Npc npc;
+    private final /* synthetic */ String[] reminderLines;
+    private final /* synthetic */ int ignorePenaltyNpcId;
+    private final /* synthetic */ Player player;
 
     RandomEventNpcReminderEvent(Player player, Npc npc, String[] stringArray, int n) {
-        this.g = player;
-        this.d = npc;
-        this.e = stringArray;
-        this.f = n;
-        this.c = GameUtil.formatDisplayName(player.getUsername());
+        this.player = player;
+        this.npc = npc;
+        this.reminderLines = stringArray;
+        this.ignorePenaltyNpcId = n;
+        this.playerDisplayName = GameUtil.formatDisplayName(player.getUsername());
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        if (this.d.getInteractionTarget() != null && this.d.getInteractionTarget() == this.d.getOwnerPlayer() && this.b < 0) {
-            this.b = 240;
+        if (this.npc.getInteractionTarget() != null && this.npc.getInteractionTarget() == this.npc.getOwnerPlayer() && this.interactionGraceTicks < 0) {
+            this.interactionGraceTicks = 240;
         }
-        if (this.b > 0) {
-            --this.b;
+        if (this.interactionGraceTicks > 0) {
+            --this.interactionGraceTicks;
             return;
         }
-        if (this.a > 0 && this.b < 0) {
-            switch (this.a) {
+        if (this.reminderTicksRemaining > 0 && this.interactionGraceTicks < 0) {
+            switch (this.reminderTicksRemaining) {
                 case 120: {
-                    this.d.getUpdateState().setForcedTextAndMarkUpdated(this.e[0].replaceAll("1", this.c));
+                    this.npc.getUpdateState().setForcedTextAndMarkUpdated(this.reminderLines[0].replaceAll("1", this.playerDisplayName));
                     break;
                 }
                 case 90: {
-                    this.d.getUpdateState().setForcedTextAndMarkUpdated(this.e[1].replaceAll("1", this.c));
+                    this.npc.getUpdateState().setForcedTextAndMarkUpdated(this.reminderLines[1].replaceAll("1", this.playerDisplayName));
                     break;
                 }
                 case 60: {
-                    this.d.getUpdateState().setForcedTextAndMarkUpdated(this.e[2].replaceAll("1", this.c));
+                    this.npc.getUpdateState().setForcedTextAndMarkUpdated(this.reminderLines[2].replaceAll("1", this.playerDisplayName));
                     break;
                 }
                 case 30: {
-                    this.d.getUpdateState().setForcedTextAndMarkUpdated(this.e[3].replaceAll("1", this.c));
+                    this.npc.getUpdateState().setForcedTextAndMarkUpdated(this.reminderLines[3].replaceAll("1", this.playerDisplayName));
                     break;
                 }
                 case 2: {
-                    if (this.d.getNpcId() != 409) break;
-                    this.d.getUpdateState().setAnimation(863);
+                    if (this.npc.getNpcId() != 409) break;
+                    this.npc.getUpdateState().setAnimation(863);
                 }
             }
-            --this.a;
+            --this.reminderTicksRemaining;
             return;
         }
-        GameplayHelper.a(this.d);
-        if (this.d.getOwnerPlayer() != null && this.b != 0) {
-            if (this.f == 2541) {
-                this.g.getSingleCombatTimer().setDelayTicks(0);
-                this.g.getSingleCombatTimer().reset();
-                GameplayHelper.a(this.g, new Npc(this.f + GameplayHelper.d(this.g.getCombatLevel())), true, false);
-            } else if (this.f > 0) {
-                this.g.getSingleCombatTimer().setDelayTicks(0);
-                this.g.getSingleCombatTimer().reset();
-                GameplayHelper.a(this.g, new Npc(this.f), true, false);
+        GameplayHelper.unregisterTemporaryNpc(this.npc);
+        if (this.npc.getOwnerPlayer() != null && this.interactionGraceTicks != 0) {
+            if (this.ignorePenaltyNpcId == 2541) {
+                this.player.getSingleCombatTimer().setDelayTicks(0);
+                this.player.getSingleCombatTimer().reset();
+                GameplayHelper.a(this.player, new Npc(this.ignorePenaltyNpcId + GameplayHelper.getRandomEventCombatLevelOffset(this.player.getCombatLevel())), true, false);
+            } else if (this.ignorePenaltyNpcId > 0) {
+                this.player.getSingleCombatTimer().setDelayTicks(0);
+                this.player.getSingleCombatTimer().reset();
+                GameplayHelper.a(this.player, new Npc(this.ignorePenaltyNpcId), true, false);
             } else {
-                Player player = this.g;
-                player.packetSender.sendStillGraphic(86, this.d.getPosition(), 0x640000);
-                player = this.g;
+                Player player = this.player;
+                player.packetSender.sendStillGraphic(86, this.npc.getPosition(), 0x640000);
+                player = this.player;
                 player.packetSender.sendSoundEffect(300, 1, 0);
             }
         }

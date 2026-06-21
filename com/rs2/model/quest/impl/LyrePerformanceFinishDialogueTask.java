@@ -10,17 +10,17 @@ import com.rs2.model.task.TickTask;
 
 final class LyrePerformanceFinishDialogueTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
     LyrePerformanceFinishDialogueTask(LyrePerformanceStartTask lyrePerformanceStartTask, int n, Player player) {
-        this.a = player;
+        this.player = player;
         super(4);
     }
 
     @Override
     public final void execute() {
-        this.a.setActionLocked(false);
-        DialogueManager.continueDialogue(this.a, 1269, 100, 0);
+        this.player.setActionLocked(false);
+        DialogueManager.continueDialogue(this.player, 1269, 100, 0);
         this.stop();
     }
 }

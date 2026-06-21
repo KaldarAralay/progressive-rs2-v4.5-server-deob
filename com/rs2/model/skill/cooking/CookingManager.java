@@ -57,7 +57,7 @@ public final class CookingManager {
                 object = this.player;
                 this.player.interfaceAction = object2;
                 this.firePosition = new Position(n3, n4, this.player.getPosition().getPlane());
-                this.player.ah(n);
+                this.player.setSelectedSkillItemId(n);
                 if (this.player.getQuestState(0) != 1 || this.player.getInventoryManager().getItemAmount(n) == 1 || ServerSettings.cacheVersion < 334) {
                     CookingManager.startCookingTask(this.player, 1);
                     return true;
@@ -76,7 +76,7 @@ public final class CookingManager {
                 object2 = "cookRange";
                 object = this.player;
                 this.player.interfaceAction = object2;
-                this.player.ah(n);
+                this.player.setSelectedSkillItemId(n);
                 if (this.player.botEnabled) {
                     CookingManager.startCookingTask(this.player, 28);
                     return true;
@@ -109,7 +109,7 @@ public final class CookingManager {
     }
 
     public static void cookSelectedItem(Player player) {
-        CookableFoodDefinition cookableFoodDefinition = CookableFoodDefinition.forRawItemId(player.ei());
+        CookableFoodDefinition cookableFoodDefinition = CookableFoodDefinition.forRawItemId(player.getSelectedSkillItemId());
         if (cookableFoodDefinition == null) {
             return;
         }
@@ -122,7 +122,7 @@ public final class CookingManager {
         }
         Player player2 = player;
         player2.packetSender.closeInterfaces();
-        player.getInventoryManager().removeItem(new ItemStack(player.ei()));
+        player.getInventoryManager().removeItem(new ItemStack(player.getSelectedSkillItemId()));
         player2 = player;
         if (player2.interfaceAction == "cookFire") {
             player.getUpdateState().setAnimation(897);
@@ -136,18 +136,18 @@ public final class CookingManager {
         player2.packetSender.sendSoundEffect(357, 1, 0);
         if (player.getQuestState(0) != 1) {
             if (player.getQuestState(0) == 13) {
-                CookingManager.processCookingResult(player, player.ei(), true);
+                CookingManager.processCookingResult(player, player.getSelectedSkillItemId(), true);
                 player.ea();
             } else if (player.getQuestState(0) == 14) {
-                CookingManager.processCookingResult(player, player.ei(), false);
+                CookingManager.processCookingResult(player, player.getSelectedSkillItemId(), false);
                 player.ea();
-            } else if (player.getQuestState(0) == 19 && player.ei() == 2307) {
-                CookingManager.processCookingResult(player, player.ei(), false);
+            } else if (player.getQuestState(0) == 19 && player.getSelectedSkillItemId() == 2307) {
+                CookingManager.processCookingResult(player, player.getSelectedSkillItemId(), false);
                 player2 = player;
                 player2.packetSender.sendEntityHintIcon(1, -1);
                 player.ea();
             } else {
-                CookingManager.processCookingResult(player, player.ei(), false);
+                CookingManager.processCookingResult(player, player.getSelectedSkillItemId(), false);
             }
             player.getQuestManager().refreshQuestJournal();
             return;
@@ -155,11 +155,11 @@ public final class CookingManager {
         if (!cookableFoodDefinition.canCookOnFire()) {
             player2 = player;
             if (player2.interfaceAction == "cookFire") {
-                CookingManager.processCookingResult(player, player.ei(), true);
+                CookingManager.processCookingResult(player, player.getSelectedSkillItemId(), true);
                 return;
             }
         }
-        CookingManager.processCookingResult(player, player.ei(), false);
+        CookingManager.processCookingResult(player, player.getSelectedSkillItemId(), false);
     }
 
     private static void processCookingResult(Player player, int n, boolean bl) {

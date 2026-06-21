@@ -18,7 +18,7 @@ extends NpcCombatDefinition {
 
     @Override
     public final CombatAttack[] createAttacks(Entity entity, Entity entity2) {
-        return new CombatAttack[]{BaseCombatAttack.a(entity, entity2, AttackXpMode.MELEE_ACCURATE, AttackBonusType.CRUSH, 5, 4, 422), BaseCombatAttack.a(entity, entity2, AttackXpMode.AGGRESSIVE, AttackBonusType.CRUSH, 5, 4, 422), BaseCombatAttack.createMagicAttack(entity, entity2, SpellDefinition.CURSE), BaseCombatAttack.createMagicAttack(entity, entity2, SpellDefinition.FIRE_STRIKE), BaseCombatAttack.createMagicAttack(entity, entity2, SpellDefinition.MELZAR_CABBAGE_SPELL), BaseCombatAttack.createMagicAttack(entity, entity2, SpellDefinition.WEAKEN)};
+        return new CombatAttack[]{BaseCombatAttack.createMeleeAttack(entity, entity2, AttackXpMode.MELEE_ACCURATE, AttackBonusType.CRUSH, 5, 4, 422), BaseCombatAttack.createMeleeAttack(entity, entity2, AttackXpMode.AGGRESSIVE, AttackBonusType.CRUSH, 5, 4, 422), BaseCombatAttack.createMagicAttack(entity, entity2, SpellDefinition.CURSE), BaseCombatAttack.createMagicAttack(entity, entity2, SpellDefinition.FIRE_STRIKE), BaseCombatAttack.createMagicAttack(entity, entity2, SpellDefinition.MELZAR_CABBAGE_SPELL), BaseCombatAttack.createMagicAttack(entity, entity2, SpellDefinition.WEAKEN)};
     }
 }
 

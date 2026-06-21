@@ -84,7 +84,7 @@ public final class MessageOfTheWeek {
             MessageOfTheWeek.saveCurrentMessageIndex();
             return;
         }
-        if (GameplayHelper.a(l2, l3) > 0 && (dateTime = new DateTime(l = l3)).dayOfWeek().get() == 1 || Server.messageOfTheWeekIndex == 250 || l2 == 0L) {
+        if (GameplayHelper.getDaysBetweenMidnights(l2, l3) > 0 && (dateTime = new DateTime(l = l3)).dayOfWeek().get() == 1 || Server.messageOfTheWeekIndex == 250 || l2 == 0L) {
             Server.messageOfTheWeekIndex = GameUtil.randomInt(normalMessages.length);
             MessageOfTheWeek.saveCurrentMessageIndex();
         }

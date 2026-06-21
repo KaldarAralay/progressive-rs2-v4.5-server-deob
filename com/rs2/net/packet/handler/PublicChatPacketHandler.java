@@ -22,7 +22,7 @@ implements PacketHandler {
         String string = ChatTextCodec.decode(byArray, n3);
         if (player.isMuted()) {
             object = player;
-            ((Player)object).packetSender.sendGameMessage("You are muted and cannot talk. Mute expires in: " + (GameplayHelper.b(System.currentTimeMillis(), player.getMuteExpires()) + 1) + " hours.");
+            ((Player)object).packetSender.sendGameMessage("You are muted and cannot talk. Mute expires in: " + (GameplayHelper.getHoursBetween(System.currentTimeMillis(), player.getMuteExpires()) + 1) + " hours.");
             return;
         }
         if (player.getQuestState(0) != 1) {

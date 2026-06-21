@@ -62,7 +62,7 @@ extends CycleEvent {
         int n7 = player2.getPosition().getX() + n6;
         int n8 = player2.getPosition().getY() + n5;
         int n9 = player2.getPosition().getPlane();
-        player2.aw = true;
+        player2.forcedMovementActive = true;
         CycleEventHandler.getInstance().schedule(player2, new AgilityQueuedMovementStepTask(player2, n6, n5, 1, n4, n), 1);
         CycleEventHandler.getInstance().schedule(player2, new AgilityQueuedMovementFinishTask(player2, n2, true, n7, n8, n9), n3 + 1);
         cycleEventContainer.stop();

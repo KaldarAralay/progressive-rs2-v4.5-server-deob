@@ -114,7 +114,7 @@ extends QuestScript {
         player2 = player;
         player2.packetSender.showInterface(InterfaceDefinition.interfaceCount <= 12140 ? 1689 : 12140);
         player2 = player;
-        player.j = false;
+        player.deferLevelUpInterfaces = false;
     }
 
     @Override
@@ -232,7 +232,7 @@ extends QuestScript {
     @Override
     public final boolean handleItemOnItem(Player player, int n, int n2, int n3) {
         Player player2 = player;
-        if (player2.getInventoryManager().containsItem(779) && player2.getInventoryManager().containsItem(780) && player2.getInventoryManager().containsItem(781) && FamilyCrestQuest.b(n) && FamilyCrestQuest.b(n2)) {
+        if (player2.getInventoryManager().containsItem(779) && player2.getInventoryManager().containsItem(780) && player2.getInventoryManager().containsItem(781) && FamilyCrestQuest.isCrestPiece(n) && FamilyCrestQuest.isCrestPiece(n2)) {
             player.getInventoryManager().removeItem(new ItemStack(779, 1));
             player.getInventoryManager().removeItem(new ItemStack(780, 1));
             player.getInventoryManager().removeItem(new ItemStack(781, 1));
@@ -282,7 +282,7 @@ extends QuestScript {
         return false;
     }
 
-    private static boolean b(int n) {
+    private static boolean isCrestPiece(int n) {
         return n == 779 || n == 780 || n == 781;
     }
 
@@ -322,15 +322,15 @@ extends QuestScript {
         return false;
     }
 
-    private static boolean e(Player player) {
+    private static boolean hasFamilyGauntlets(Player player) {
         return player.getInventoryManager().containsItem(778) || player.getInventoryManager().containsItem(775) || player.getInventoryManager().containsItem(776) || player.getInventoryManager().containsItem(777);
     }
 
-    private static boolean f(Player player) {
+    private static boolean hasAnyCalebFishIngredient(Player player) {
         return player.getInventoryManager().containsItem(373) || player.getInventoryManager().containsItem(365) || player.getInventoryManager().containsItem(361) || player.getInventoryManager().containsItem(329) || player.getInventoryManager().containsItem(315);
     }
 
-    private static boolean g(Player player) {
+    private static boolean hasAllCalebFishIngredients(Player player) {
         return player.getInventoryManager().containsItem(373) && player.getInventoryManager().containsItem(365) && player.getInventoryManager().containsItem(361) && player.getInventoryManager().containsItem(329) && player.getInventoryManager().containsItem(315);
     }
 
@@ -521,7 +521,7 @@ extends QuestScript {
             }
         }
         if (n == 666) {
-            if (n4 == 1 && FamilyCrestQuest.e(player) && player.familyCrestGauntletItemId != 775) {
+            if (n4 == 1 && FamilyCrestQuest.hasFamilyGauntlets(player) && player.familyCrestGauntletItemId != 775) {
                 if (n2 == 1) {
                     player.getDialogueManager().showNpcTwoLineDialogue("I hear you have brought the completed crest to my", "father. I must say, That was awfully impressive work.", 591);
                     return true;
@@ -681,15 +681,15 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 2) {
-                    if (!FamilyCrestQuest.f(player)) {
+                    if (!FamilyCrestQuest.hasAnyCalebFishIngredient(player)) {
                         player.getDialogueManager().showPlayerOneLineDialogue("I have none of them yet.", 591);
                         player.getDialogueManager().finishDialogue();
                     }
-                    if (FamilyCrestQuest.f(player) && !FamilyCrestQuest.g(player)) {
+                    if (FamilyCrestQuest.hasAnyCalebFishIngredient(player) && !FamilyCrestQuest.hasAllCalebFishIngredients(player)) {
                         player.getDialogueManager().showPlayerOneLineDialogue("I don't have all of them yet.", 591);
                         player.getDialogueManager().finishDialogue();
                     }
-                    if (FamilyCrestQuest.g(player)) {
+                    if (FamilyCrestQuest.hasAllCalebFishIngredients(player)) {
                         player.getDialogueManager().showPlayerOneLineDialogue("Got them all with me.", 591);
                     }
                     return true;
@@ -698,7 +698,7 @@ extends QuestScript {
                     player.getDialogueManager().showOneLineStatement("You exchange the fish for Caleb's piece of the crest.");
                     return true;
                 }
-                if (n2 == 4 && FamilyCrestQuest.g(player)) {
+                if (n2 == 4 && FamilyCrestQuest.hasAllCalebFishIngredients(player)) {
                     player.getInventoryManager().removeItem(new ItemStack(373, 1));
                     player.getInventoryManager().removeItem(new ItemStack(365, 1));
                     player.getInventoryManager().removeItem(new ItemStack(361, 1));
@@ -836,7 +836,7 @@ extends QuestScript {
             }
         }
         if (n == 663) {
-            if (n4 == 1 && FamilyCrestQuest.e(player) && player.familyCrestGauntletItemId != 776) {
+            if (n4 == 1 && FamilyCrestQuest.hasFamilyGauntlets(player) && player.familyCrestGauntletItemId != 776) {
                 if (n2 == 1) {
                     player.getDialogueManager().showNpcThreeLineDialogue("I have received word from my father of your assistance", "to our family in this matter. You have my thanks for", "restoring our honour.", 591);
                     return true;
@@ -1081,7 +1081,7 @@ extends QuestScript {
             }
         }
         if (n == 668) {
-            if (n4 == 1 && FamilyCrestQuest.e(player) && player.familyCrestGauntletItemId != 777) {
+            if (n4 == 1 && FamilyCrestQuest.hasFamilyGauntlets(player) && player.familyCrestGauntletItemId != 777) {
                 if (n2 == 1) {
                     player.getDialogueManager().showNpcOneLineDialogue("Hello again.", 591);
                     return true;
