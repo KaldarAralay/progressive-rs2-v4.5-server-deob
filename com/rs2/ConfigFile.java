@@ -48,6 +48,7 @@ public final class ConfigFile {
                         ServerSettings.wildyBotsIgnoreCombatForDeepWilderness = Integer.parseInt(stringArray[5]) == 1;
                     } else if (((String)object).equals("CACHE_VERSION")) {
                         ServerSettings.cacheVersion = Integer.parseInt(stringArray[0]);
+                        ServerSettings.clientBuild = ServerSettings.cacheVersion;
                         if (ServerSettings.cacheVersion <= 245) {
                             ServerSettings.placeholderObjectId = 2733;
                         }

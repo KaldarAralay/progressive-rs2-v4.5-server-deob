@@ -25,19 +25,19 @@ public final class LoginProtocol {
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public static void processLoginBuffer(Player player, ByteBuffer object) {
+    public static boolean processLoginBuffer(Player player, ByteBuffer object) {
         switch (player.getConnectionState()) {
             case HANDSHAKE: {
                 if (((Buffer)object).remaining() < 2) {
                     ((ByteBuffer)object).compact();
-                    return;
+                    return true;
                 }
                 int n = ((ByteBuffer)object).get() & 0xFF;
                 ((ByteBuffer)object).get();
                 if (n != 14) {
                     System.err.println("Invalid login request: " + n);
                     player.disconnect();
-                    return;
+                    return false;
                 }
                 PacketWriter handshakeResponse = PacketBuffer.allocateWriter(17);
                 handshakeResponse.writeLong(0L);
@@ -45,24 +45,26 @@ public final class LoginProtocol {
                 handshakeResponse.writeLong(new SecureRandom().nextLong());
                 player.writePacketBuffer(handshakeResponse.getBuffer());
                 player.setConnectionState(PlayerConnectionState.LOGIN_PAYLOAD);
-                return;
+                return false;
             }
             case LOGIN_PAYLOAD: {
                 if (((Buffer)object).remaining() < 2) {
                     ((ByteBuffer)object).compact();
-                    return;
+                    return true;
                 }
+                int loginPayloadStart = ((Buffer)object).position();
                 int n = ((ByteBuffer)object).get();
                 if (n != 16 && n != 18) {
                     System.err.println("Invalid login type: " + n);
                     player.disconnect();
-                    return;
+                    return false;
                 }
                 n = ((ByteBuffer)object).get() & 0xFF;
-                int n2 = n - 40;
+                int n2 = n - 44;
                 if (((Buffer)object).remaining() < n) {
+                    ((Buffer)object).position(loginPayloadStart);
                     ((ByteBuffer)object).compact();
-                    return;
+                    return true;
                 }
                 PacketReader packetReader = PacketBuffer.wrapReader((ByteBuffer)object);
                 player.setLoginMagicByte(packetReader.readSignedByte());
@@ -71,7 +73,7 @@ public final class LoginProtocol {
                 int n3 = packetReader.readInt();
                 if (-94395865 != n3) {
                     player.disconnect();
-                    return;
+                    return false;
                 }
                 n3 = 0;
                 while (n3 < 9) {
@@ -80,19 +82,19 @@ public final class LoginProtocol {
                 }
                 if (ServerSettings.rsaEnabled) {
                     n3 = ((ByteBuffer)object).get() & 0xFF;
-                    if (n3 != --n2) {
-                        System.err.println("Encrypted packet size zero or negative : " + n2);
+                    if (n3 <= 0 || n3 > ((Buffer)object).remaining()) {
+                        System.err.println("Encrypted packet size zero or negative : " + n3);
                         player.disconnect();
-                        return;
+                        return false;
                     }
-                    byte[] byArray = new byte[n2];
+                    byte[] byArray = new byte[n3];
                     ((ByteBuffer)object).get(byArray);
                     ByteBuffer byteBuffer = ByteBuffer.wrap(new BigInteger(byArray).modPow(ServerSettings.rsaPrivateExponent, ServerSettings.rsaModulus).toByteArray());
                     int n4 = byteBuffer.get() & 0xFF;
                     if (n4 != 10) {
                         System.err.println("Unable to decode RSA block properly!");
                         player.disconnect();
-                        return;
+                        return false;
                     }
                     long l = byteBuffer.getLong();
                     long l2 = byteBuffer.getLong();
@@ -116,7 +118,7 @@ public final class LoginProtocol {
                     if (n3 != 10) {
                         System.err.println("Unable to decode RSA block properly!");
                         player.disconnect();
-                        return;
+                        return false;
                     }
                     long l = packetReader.readLong();
                     long l3 = packetReader.readLong();
@@ -140,7 +142,7 @@ public final class LoginProtocol {
                 if (activeLoginUsernames.contains(player.getUsername())) {
                     System.out.println("Player was already logging in " + player.getUsername());
                     player.disconnect();
-                    return;
+                    return false;
                 }
                 activeLoginUsernames.add(player.getUsername());
                 if (!player.loadAndValidateLogin() || player.getConnectionState() != PlayerConnectionState.LOGIN_QUEUED) break;
@@ -154,10 +156,11 @@ public final class LoginProtocol {
                     catch (java.nio.channels.ClosedChannelException exception) {
                         player.disconnect();
                     }
-                    return;
+                    return false;
                 }
             }
         }
+        return false;
     }
 }
 

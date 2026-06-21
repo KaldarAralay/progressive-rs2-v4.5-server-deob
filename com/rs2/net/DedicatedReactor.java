@@ -32,8 +32,8 @@ extends Thread {
         Thread.currentThread().setName("DedicatedReactor");
         block3: while (!Thread.interrupted()) {
             DedicatedReactor dedicatedReactor = instance;
-            // MONITORENTER : dedicatedReactor
-            // MONITOREXIT : dedicatedReactor
+            synchronized (dedicatedReactor) {
+            }
             try {
                 this.selector.select();
                 Iterator<SelectionKey> iterator = this.selector.selectedKeys().iterator();
@@ -77,4 +77,3 @@ extends Thread {
         instance = dedicatedReactor;
     }
 }
-

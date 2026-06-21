@@ -721,6 +721,9 @@ implements ActionListener {
     }
 
     public static void refreshStatusDisplay() {
+        if (startServerButton == null || restartServerButton == null || shutdownServerButton == null || sendServerMessageButton == null || serverStatusLabel == null || usersOnlineLabel == null || serverNameStatusLabel == null || runtimeLabel == null) {
+            return;
+        }
         if (Server.serverStatus == 2) {
             serverStatusHtml = "<font color=green>Online";
             startServerButton.setEnabled(false);

@@ -217,7 +217,9 @@ public final class PacketDispatcher {
                 }
                 if (player.getConnectionState().compareTo(PlayerConnectionState.IN_GAME) < 0) {
                     player.getLoginProtocol();
-                    LoginProtocol.processLoginBuffer(player, player.getInboundBuffer());
+                    if (LoginProtocol.processLoginBuffer(player, player.getInboundBuffer())) {
+                        return;
+                    }
                     break;
                 }
                 if (player.getCurrentPacketOpcode() == -1) {
