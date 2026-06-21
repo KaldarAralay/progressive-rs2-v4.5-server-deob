@@ -7,17 +7,17 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 import com.rs2.net.packet.handler.PlayerInteractionPacketHandler;
 
-final class DelayedBotTradeRequestTask
+public final class DelayedBotTradeRequestTask
 extends TickTask {
     private final /* synthetic */ Player bot;
     private final /* synthetic */ String triggerMessage;
     private final /* synthetic */ Player targetPlayer;
 
-    DelayedBotTradeRequestTask(Player player, int n, Player player2, String string, Player player3) {
+    public DelayedBotTradeRequestTask(Player player, int n, Player player2, String string, Player player3) {
+        super(n);
         this.bot = player2;
         this.triggerMessage = string;
         this.targetPlayer = player3;
-        super(n);
     }
 
     @Override

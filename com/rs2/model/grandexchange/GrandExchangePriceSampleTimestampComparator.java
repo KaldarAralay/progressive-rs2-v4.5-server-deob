@@ -5,9 +5,15 @@ package com.rs2.model.grandexchange;
 
 import java.util.Comparator;
 
-final class GrandExchangePriceSampleTimestampComparator
+public final class GrandExchangePriceSampleTimestampComparator
 implements Comparator {
-    GrandExchangePriceSampleTimestampComparator() {
+    public GrandExchangePriceSampleTimestampComparator() {
     }
+    public final int compare(Object object, Object object2) {
+        GrandExchangePriceSample sample = (GrandExchangePriceSample)object;
+        GrandExchangePriceSample sample2 = (GrandExchangePriceSample)object2;
+        return Long.compare(sample2.timestampMillis, sample.timestampMillis);
+    }
+
 }
 

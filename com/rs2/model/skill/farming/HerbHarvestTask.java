@@ -13,14 +13,14 @@ import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.util.GameUtil;
 
-final class HerbHarvestTask
+public final class HerbHarvestTask
 extends CycleEvent {
     private /* synthetic */ HerbPatchManager manager;
     private final /* synthetic */ int actionSequence;
     private final /* synthetic */ HerbDefinition definition;
     private final /* synthetic */ HerbPatch patch;
 
-    HerbHarvestTask(HerbPatchManager herbPatchManager, int n, HerbDefinition herbDefinition, HerbPatch herbPatch) {
+    public HerbHarvestTask(HerbPatchManager herbPatchManager, int n, HerbDefinition herbDefinition, HerbPatch herbPatch) {
         this.manager = herbPatchManager;
         this.actionSequence = n;
         this.definition = herbDefinition;
@@ -43,7 +43,7 @@ extends CycleEvent {
             this.manager.harvestAmounts[n] = this.manager.harvestAmounts[n] - 1;
         }
         if (this.manager.harvestAmounts[this.patch.getIndex()] <= 0) {
-            HerbPatchManager.a(this.manager, this.patch.getIndex());
+            HerbPatchManager.resetPatch(this.manager, this.patch.getIndex());
             this.manager.growthStages[this.patch.getIndex()] = 3;
             this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.getElapsedMinutes();
             cycleEventContainer.stop();

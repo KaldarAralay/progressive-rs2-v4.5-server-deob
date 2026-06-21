@@ -37,7 +37,17 @@ public final class BarrowsManager {
     public static final int[] prayerDrainModelItemIds = new int[]{4761, 4762, 4763, 4764, 4765, 4766, 4767, 4768, 4769, 4770, 4771, 4772};
     public static final int[] prayerDrainModelInterfaceIds = new int[]{4537, 4538, 4539, 4540, 4541, 4542};
     private static int[] cryptNpcIds = new int[]{2031, 2032, 2033, 2034, 2035, 2036, 2037};
-    private static BarrowsTunnelRoom[] tunnelRooms = new BarrowsTunnelRoom[]{new BarrowsTunnelRoom(1, new int[]{2, 3, 4, 7}, new int[]{13, 10, 12, 11}, new RectangularArea(3529, 9706, 3540, 9717, 0)), new BarrowsTunnelRoom(2, new int[]{1, 3}, new int[]{13, 15}, new RectangularArea(3546, 9706, 3557, 9717, 0)), new BarrowsTunnelRoom(3, new int[]{1, 2, 6, 9}, new int[]{10, 15, 16, 17}, new RectangularArea(3563, 9706, 3574, 9717, 0)), new BarrowsTunnelRoom(4, new int[]{1, 7}, new int[]{12, 20}, new RectangularArea(3529, 9689, 3540, 9700, 0)), new BarrowsTunnelRoom(5, new int[]{2, 4, 6, 8}, new int[]{14, 18, 19, 21}, new RectangularArea(3546, 9689, 3557, 9700, 0)), new BarrowsTunnelRoom(6, new int[]{3, 9}, new int[]{16, 22}, new RectangularArea(3563, 9689, 3574, 9700, 0)), new BarrowsTunnelRoom(7, new int[]{1, 4, 8, 9}, new int[]{11, 20, 23, 25}, new RectangularArea(3529, 9672, 3540, 9683, 0)), new BarrowsTunnelRoom(8, new int[]{7, 9}, new int[]{23, 24}, new RectangularArea(3546, 9672, 3557, 9683, 0)), new BarrowsTunnelRoom(9, new int[]{3, 6, 7, 8}, new int[]{17, 22, 25, 24}, new RectangularArea(3563, 9672, 3574, 9683, 0))};
+    private static BarrowsTunnelRoom[] tunnelRooms = new BarrowsTunnelRoom[]{
+        new BarrowsTunnelRoom(1, new int[]{2, 3, 4, 7}, new int[]{13, 10, 12, 11}, new RectangularArea(3529, 9706, 3540, 9717, (byte)0)),
+        new BarrowsTunnelRoom(2, new int[]{1, 3}, new int[]{13, 15}, new RectangularArea(3546, 9706, 3557, 9717, (byte)0)),
+        new BarrowsTunnelRoom(3, new int[]{1, 2, 6, 9}, new int[]{10, 15, 16, 17}, new RectangularArea(3563, 9706, 3574, 9717, (byte)0)),
+        new BarrowsTunnelRoom(4, new int[]{1, 7}, new int[]{12, 20}, new RectangularArea(3529, 9689, 3540, 9700, (byte)0)),
+        new BarrowsTunnelRoom(5, new int[]{2, 4, 6, 8}, new int[]{14, 18, 19, 21}, new RectangularArea(3546, 9689, 3557, 9700, (byte)0)),
+        new BarrowsTunnelRoom(6, new int[]{3, 9}, new int[]{16, 22}, new RectangularArea(3563, 9689, 3574, 9700, (byte)0)),
+        new BarrowsTunnelRoom(7, new int[]{1, 4, 8, 9}, new int[]{11, 20, 23, 25}, new RectangularArea(3529, 9672, 3540, 9683, (byte)0)),
+        new BarrowsTunnelRoom(8, new int[]{7, 9}, new int[]{23, 24}, new RectangularArea(3546, 9672, 3557, 9683, (byte)0)),
+        new BarrowsTunnelRoom(9, new int[]{3, 6, 7, 8}, new int[]{17, 22, 25, 24}, new RectangularArea(3563, 9672, 3574, 9683, (byte)0))
+    };
     private static BarrowsDoorPuzzle[] doorPuzzles = new BarrowsDoorPuzzle[]{new BarrowsDoorPuzzle(new int[]{6716, 6717, 6718}, new int[]{6713, 6714, 6715}), new BarrowsDoorPuzzle(new int[]{6722, 6723, 6724}, new int[]{6719, 6720, 6721}), new BarrowsDoorPuzzle(new int[]{6728, 6729, 6730}, new int[]{6725, 6726, 6727}), new BarrowsDoorPuzzle(new int[]{6734, 6735, 6736}, new int[]{6731, 6732, 6733})};
 
     public static boolean handleTunnelDoorObject(Player player, int n, int n2, int n3) {
@@ -510,7 +520,7 @@ public final class BarrowsManager {
 
     private static void spawnRandomCryptNpc(Player player, Position position) {
         int n = cryptNpcIds[GameUtil.randomInt(7)];
-        GameplayHelper.a(player, position, new Npc(n), true, false);
+        GameplayHelper.spawnOwnedNpcAtPosition(player, position, new Npc(n), true, false);
     }
 
     /*
@@ -528,7 +538,7 @@ public final class BarrowsManager {
                     player2.packetSender.sendConfig(453, n2);
                     player.ep[453] = n2;
                     if (player.getBarrowsKilledBrothers()[player.getBarrowsTargetBrotherIndex()]) return true;
-                    GameplayHelper.a(player, new Npc(brotherSarcophagusNpcIds[player.getBarrowsTargetBrotherIndex()][1]), true, true);
+                    GameplayHelper.spawnOwnedNpcAdjacentToPlayer(player, new Npc(brotherSarcophagusNpcIds[player.getBarrowsTargetBrotherIndex()][1]), true, true);
                     return true;
                 }
                 if ((player.ep[453] & n2) != 0) {
@@ -556,7 +566,7 @@ public final class BarrowsManager {
                     int n5 = SkillActionHelper.getObjectType(n, n2, n3, player.getPosition().getPlane());
                     ObjectManager.getInstance().addDynamicObject(new DynamicObject(6775, n2, n3, player.getPosition().getPlane(), n4, n5, n, 500), true);
                     if (player.getBarrowsKilledBrothers()[player.getBarrowsTargetBrotherIndex()]) return true;
-                    GameplayHelper.a(player, new Npc(brotherSarcophagusNpcIds[player.getBarrowsTargetBrotherIndex()][1]), true, true);
+                    GameplayHelper.spawnOwnedNpcAdjacentToPlayer(player, new Npc(brotherSarcophagusNpcIds[player.getBarrowsTargetBrotherIndex()][1]), true, true);
                     return true;
                 }
             }
@@ -570,7 +580,7 @@ public final class BarrowsManager {
                     player5.packetSender.sendConfig(453, n2);
                     player.ep[453] = n2;
                     if (player.getBarrowsKilledBrothers()[player.getBarrowsTargetBrotherIndex()]) return true;
-                    GameplayHelper.a(player, new Npc(brotherSarcophagusNpcIds[player.getBarrowsTargetBrotherIndex()][1]), true, true);
+                    GameplayHelper.spawnOwnedNpcAdjacentToPlayer(player, new Npc(brotherSarcophagusNpcIds[player.getBarrowsTargetBrotherIndex()][1]), true, true);
                     return true;
                 }
                 if ((player.ep[453] & n2) != 0) {
@@ -599,7 +609,7 @@ public final class BarrowsManager {
                             DialogueManager.startDialogue(player, 10001);
                             return true;
                         }
-                        if (GameplayHelper.i(player, brotherSarcophagusNpcIds[n2][1])) {
+                        if (GameplayHelper.hasActiveTemporaryNpc(player, brotherSarcophagusNpcIds[n2][1])) {
                             Player player7 = player;
                             player7.packetSender.sendGameMessage("You must kill the the brother before searching this.");
                             return true;
@@ -609,7 +619,7 @@ public final class BarrowsManager {
                             player8.packetSender.sendGameMessage("You have already searched this sarcophagus.");
                             return true;
                         }
-                        GameplayHelper.a(player, new Npc(brotherSarcophagusNpcIds[n2][1]), true, true);
+                        GameplayHelper.spawnOwnedNpcAdjacentToPlayer(player, new Npc(brotherSarcophagusNpcIds[n2][1]), true, true);
                         if (n2 == player.getBarrowsTargetBrotherIndex()) return true;
                         Player player9 = player;
                         player9.packetSender.sendGameMessage("You don't find anything.");
@@ -680,119 +690,104 @@ public final class BarrowsManager {
         return false;
     }
 
-    /*
-     * Could not resolve type clashes
-     * Unable to fully structure code
-     */
-    private static void awardChestRewards(Player var0) {
-        var1_1 = new ArrayList<ItemStack>();
-        var2_2 = BarrowsManager.countKilledBrothers(var0);
-        var3_4 = var0.barrowsRewardPotential + (var2_2 << 1);
-        var4_5 = new ArrayList<Integer>();
-        var5_6 = 0;
-        if (true) ** GOTO lbl17
-        do {
-            if (var0.getBarrowsKilledBrothers()[var5_6]) {
-                var6_8 = 0;
-                while (var6_8 < BarrowsManager.brotherRewardItemIds[var5_6].length) {
-                    var4_5.add(BarrowsManager.brotherRewardItemIds[var5_6][var6_8]);
-                    ++var6_8;
-                }
-            }
-            ++var5_6;
-lbl17:
-            // 2 sources
+    private static void awardChestRewards(Player player) {
+        ArrayList<ItemStack> rewards = new ArrayList<ItemStack>();
+        int killedBrothers = BarrowsManager.countKilledBrothers(player);
+        int rewardPotential = player.barrowsRewardPotential + (killedBrothers << 1);
+        ArrayList<Integer> availableBarrowsItems = new ArrayList<Integer>();
 
-        } while (var5_6 < 6);
-        var5_6 = 0;
-        while (var5_6 < var2_2 + 1) {
-            var6_10 = 450 - var2_2 * 58;
-            var8_19 = var6_10 / ServerSettings.barrowsRewardRate;
-            var6_11 = (int)var8_19;
-            if (var2_2 > 0 && GameUtil.randomInt(var6_11) == 0) {
-                var6_11 = GameUtil.randomInt(var4_5.size());
-                var7_15 = (Integer)var4_5.get(var6_11);
-                var1_1.add(new ItemStack(var7_15, 1));
-                var4_5.remove(var6_11);
-            } else {
-                var6_12 = null;
-                var7_15 = GameUtil.randomOneToInclusive(1, var3_4);
-                var8_20 = -1;
-                for (Object var9_22 : BarrowsManager.rewardTable) {
-                    if (var9_22.rollThreshold <= var7_15) {
-                        var6_12 = var9_22;
+        for (int brotherIndex = 0; brotherIndex < 6; ++brotherIndex) {
+            if (!player.getBarrowsKilledBrothers()[brotherIndex]) {
+                continue;
+            }
+            for (int itemIndex = 0; itemIndex < BarrowsManager.brotherRewardItemIds[brotherIndex].length; ++itemIndex) {
+                availableBarrowsItems.add(BarrowsManager.brotherRewardItemIds[brotherIndex][itemIndex]);
+            }
+        }
+
+        for (int rollIndex = 0; rollIndex < killedBrothers + 1; ++rollIndex) {
+            int barrowsItemChance = (int)((double)(450 - killedBrothers * 58) / ServerSettings.barrowsRewardRate);
+            if (killedBrothers > 0 && GameUtil.randomInt(barrowsItemChance) == 0) {
+                int itemPoolIndex = GameUtil.randomInt(availableBarrowsItems.size());
+                rewards.add(new ItemStack(availableBarrowsItems.get(itemPoolIndex), 1));
+                availableBarrowsItems.remove(itemPoolIndex);
+                continue;
+            }
+
+            BarrowsRewardEntry selectedEntry = null;
+            int rewardRoll = GameUtil.randomOneToInclusive(1, rewardPotential);
+            int nextThreshold = -1;
+            for (Object object : BarrowsManager.rewardTable) {
+                BarrowsRewardEntry entry = (BarrowsRewardEntry)object;
+                if (entry.rollThreshold <= rewardRoll) {
+                    selectedEntry = entry;
+                    continue;
+                }
+                nextThreshold = entry.rollThreshold - 1;
+                break;
+            }
+            if (selectedEntry == null) {
+                continue;
+            }
+
+            int itemId = selectedEntry.itemId;
+            if (itemId == 985) {
+                itemId = GameUtil.randomInt(2) == 0 ? 985 : 987;
+            }
+
+            int minAmount = selectedEntry.minAmount;
+            int amount = 1;
+            double amountRange = selectedEntry.maxAmount - minAmount;
+            if (amountRange > 0.0) {
+                double rollRange = nextThreshold - selectedEntry.rollThreshold;
+                double rollOffset = rewardRoll - selectedEntry.rollThreshold;
+                amount = minAmount + (int)(amountRange / rollRange * rollOffset);
+            }
+
+            ItemStack reward = new ItemStack(itemId, amount);
+            if (reward.getDefinition().isStackable()) {
+                boolean merged = false;
+                for (ItemStack existingReward : rewards) {
+                    if (existingReward.getId() != itemId) {
                         continue;
                     }
-                    var8_20 = var9_22.rollThreshold - 1;
+                    merged = true;
+                    existingReward.setAmount(existingReward.getAmount() + amount);
                     break;
                 }
-                if (var6_12 != null) {
-                    var9_23 = var6_12.itemId;
-                    if (var9_23 == 985) {
-                        var9_23 = GameUtil.randomInt(2) == 0 ? 985 : 987;
-                    }
-                    var10_25 = var6_12.minAmount;
-                    var11_26 = var6_12.maxAmount;
-                    var17_27 = var11_26 - var10_25;
-                    var11_26 = 1;
-                    if (var17_27 > 0.0) {
-                        var20_29 = var8_20 - var6_12.rollThreshold;
-                        var22_31 = var17_27 / var20_29;
-                        var24_34 = var7_15 - var6_12.rollThreshold;
-                        var6_13 = (int)(var22_31 * var24_34);
-                        var11_26 = var10_25 + var6_13;
-                    }
-                    if ((var20_28 = new ItemStack(var9_23, var11_26)).getDefinition().isStackable()) {
-                        var21_30 = false;
-                        for (ItemStack var22_32 : var1_1) {
-                            var24_35 = var22_32.getId();
-                            if (var24_35 != var9_23) continue;
-                            var21_30 = true;
-                            var25_36 = var22_32.getAmount();
-                            var22_32.setAmount(var25_36 + var11_26);
-                            break;
-                        }
-                        if (!var21_30) {
-                            var1_1.add(var20_28);
-                        }
-                    } else {
-                        var1_1.add(var20_28);
-                    }
+                if (!merged) {
+                    rewards.add(reward);
                 }
+            } else {
+                rewards.add(reward);
             }
-            ++var5_6;
         }
-        if (var1_1.size() == 0) {
-            var2_3 = var0;
-            var2_3.packetSender.sendGameMessage("The chest was empty!");
+
+        if (rewards.size() == 0) {
+            player.packetSender.sendGameMessage("The chest was empty!");
         } else {
-            var5_7 = new ItemStack[var1_1.size()];
-            var6_14 = 0;
-            var8_21 = var1_1.iterator();
-            while (var8_21.hasNext()) {
-                var5_7[var6_14] = var7_17 = (ItemStack)var8_21.next();
-                ++var6_14;
+            ItemStack[] rewardItems = new ItemStack[rewards.size()];
+            int slot = 0;
+            for (ItemStack reward : rewards) {
+                rewardItems[slot] = reward;
+                ++slot;
             }
-            var2_3 = var0;
-            var2_3.packetSender.sendItemContainer(19555, var5_7);
-            var2_3 = var0;
-            var2_3.packetSender.showInterface(19550);
-            ++var0.barrowsRunsCompleted;
-            var7_18 = 0;
-            for (Object var8_21 : var1_1) {
-                var0.getInventoryManager().addOrDropItem((ItemStack)var8_21);
-                var6_14 = GrandExchangeManager.getGuidePrice(var8_21.getId());
-                var7_18 += var6_14 * var8_21.getAmount();
+            player.packetSender.sendItemContainer(19555, rewardItems);
+            player.packetSender.showInterface(19550);
+            ++player.barrowsRunsCompleted;
+            int chestValue = 0;
+            for (ItemStack reward : rewards) {
+                player.getInventoryManager().addOrDropItem(reward);
+                int guidePrice = GrandExchangeManager.getGuidePrice(reward.getId());
+                chestValue += guidePrice * reward.getAmount();
             }
-            var2_3 = var0;
-            var2_3.packetSender.sendGameMessage("Your chest is worth around " + GameUtil.formatNumber(var7_18) + " coins!");
+            player.packetSender.sendGameMessage("Your chest is worth around " + GameUtil.formatNumber(chestValue) + " coins!");
         }
-        var0.startBarrowsChestDamage();
-        var2_3 = var0;
-        CharacterFileManager.savePlayer(var2_3);
+        player.startBarrowsChestDamage();
+        CharacterFileManager.savePlayer(player);
     }
 
-    private static int countKilledBrothers(Player player) {
+    public static int countKilledBrothers(Player player) {
         int n = 0;
         boolean[] blArray = player.getBarrowsKilledBrothers();
         int n2 = blArray.length;
@@ -902,99 +897,70 @@ lbl17:
         ((Player)object).packetSender.showInterface(4543);
     }
 
-    /*
-     * Handled impossible loop by duplicating code
-     * Enabled aggressive block sorting
-     */
-    public static void generateTunnelRoute(Player player, boolean n) {
-        int n2 = 0;
-        int n3 = 0;
+    public static void generateTunnelRoute(Player player, boolean moveToEntry) {
+        int routeConfig = 0;
+        int currentRoomId = 0;
         player.barrowsDoorPuzzleSolved = false;
-        ArrayList<BarrowsTunnelRoom> arrayList = new ArrayList<BarrowsTunnelRoom>();
-        int n4 = 10;
-        while (n4 <= 25) {
-            n2 += (int)Math.pow(2.0, n4);
-            ++n4;
+        ArrayList<BarrowsTunnelRoom> routeRooms = new ArrayList<BarrowsTunnelRoom>();
+        for (int bitIndex = 10; bitIndex <= 25; ++bitIndex) {
+            routeConfig += (int)Math.pow(2.0, bitIndex);
         }
-        n4 = GameUtil.randomInt(4);
-        n2 += (int)Math.pow(2.0, n4 + 6);
-        int n5 = tunnelTargetRoomIds[n4];
-        if (n != 0) {
-            player.moveTo(tunnelEntryPositions[n4]);
+        int tunnelIndex = GameUtil.randomInt(4);
+        routeConfig += (int)Math.pow(2.0, tunnelIndex + 6);
+        int targetRoomId = tunnelTargetRoomIds[tunnelIndex];
+        if (moveToEntry) {
+            player.moveTo(tunnelEntryPositions[tunnelIndex]);
         }
-        n = 0;
-        while (n < tunnelRooms.length) {
-            BarrowsTunnelRoom barrowsTunnelRoom;
-            BarrowsTunnelRoom barrowsTunnelRoom2 = barrowsTunnelRoom = tunnelRooms[n];
-            if (barrowsTunnelRoom.roomBounds.contains(player.getPosition())) {
-                barrowsTunnelRoom2 = barrowsTunnelRoom;
-                n3 = barrowsTunnelRoom2.roomId;
+        for (int roomIndex = 0; roomIndex < tunnelRooms.length; ++roomIndex) {
+            BarrowsTunnelRoom room = tunnelRooms[roomIndex];
+            if (room.roomBounds.contains(player.getPosition())) {
+                currentRoomId = room.roomId;
                 break;
             }
-            ++n;
         }
-        int n6 = 5;
-        arrayList.add(tunnelRooms[n6 - 1]);
-        n = 0;
-        boolean bl = false;
-        while (n == 0 || !bl) {
-            BarrowsTunnelRoom barrowsTunnelRoom;
-            int n7;
-            ArrayList<Integer> arrayList2;
-            BarrowsTunnelRoom barrowsTunnelRoom3;
-            block16: {
-                BarrowsTunnelRoom barrowsTunnelRoom4;
-                block15: {
-                    barrowsTunnelRoom4 = null;
-                    if (arrayList.size() - 2 >= 0) {
-                        barrowsTunnelRoom4 = (BarrowsTunnelRoom)arrayList.get(arrayList.size() - 2);
+        int nextRoomId = 5;
+        routeRooms.add(tunnelRooms[nextRoomId - 1]);
+        boolean reachedTargetRoom = false;
+        boolean returnedToCurrentRoom = false;
+        while (!reachedTargetRoom || !returnedToCurrentRoom) {
+            BarrowsTunnelRoom previousRoom = null;
+            if (routeRooms.size() - 2 >= 0) {
+                previousRoom = routeRooms.get(routeRooms.size() - 2);
+            }
+            BarrowsTunnelRoom currentRouteRoom = routeRooms.get(routeRooms.size() - 1);
+            ArrayList<Integer> candidateConnectionIndexes = new ArrayList<Integer>();
+            for (int connectionIndex = 0; connectionIndex < currentRouteRoom.connectedRoomIds.length; ++connectionIndex) {
+                if (previousRoom != null) {
+                    if (connectionIndex != previousRoom.roomId) {
+                        candidateConnectionIndexes.add(connectionIndex);
                     }
-                    barrowsTunnelRoom3 = (BarrowsTunnelRoom)arrayList.get(arrayList.size() - 1);
-                    arrayList2 = new ArrayList<Integer>();
-                    n7 = 0;
-                    if (!true) break block15;
-                    barrowsTunnelRoom = barrowsTunnelRoom3;
-                    if (n7 >= barrowsTunnelRoom.connectedRoomIds.length) break block16;
+                } else {
+                    candidateConnectionIndexes.add(connectionIndex);
                 }
-                do {
-                    if (barrowsTunnelRoom4 != null) {
-                        barrowsTunnelRoom = barrowsTunnelRoom4;
-                        if (n7 != barrowsTunnelRoom.roomId) {
-                            arrayList2.add(n7);
-                        }
-                    } else {
-                        arrayList2.add(n7);
-                    }
-                    ++n7;
-                    barrowsTunnelRoom = barrowsTunnelRoom3;
-                } while (n7 < barrowsTunnelRoom.connectedRoomIds.length);
             }
-            int n8 = n7 = GameUtil.randomInt(arrayList2.size());
-            barrowsTunnelRoom = barrowsTunnelRoom3;
-            int n9 = barrowsTunnelRoom.connectedRoomIds[n8];
-            n8 = 0;
-            for (BarrowsTunnelRoom barrowsTunnelRoom5 : arrayList) {
-                barrowsTunnelRoom = barrowsTunnelRoom5;
-                barrowsTunnelRoom = barrowsTunnelRoom5;
-                if (barrowsTunnelRoom5.roomId != n9) continue;
-                n8 = 1;
+            int chosenConnectionIndex = GameUtil.randomInt(candidateConnectionIndexes.size());
+            int chosenRoomId = currentRouteRoom.connectedRoomIds[chosenConnectionIndex];
+            boolean alreadyInRoute = false;
+            for (BarrowsTunnelRoom routeRoom : routeRooms) {
+                if (routeRoom.roomId == chosenRoomId) {
+                    alreadyInRoute = true;
+                }
             }
-            if (n8 == 0) {
-                n8 = n7;
-                barrowsTunnelRoom = barrowsTunnelRoom3;
-                n2 -= (int)Math.pow(2.0, barrowsTunnelRoom.doorBitIndexes[n8]);
+            if (!alreadyInRoute) {
+                routeConfig -= (int)Math.pow(2.0, currentRouteRoom.doorBitIndexes[chosenConnectionIndex]);
             }
-            n6 = n9;
-            arrayList.add(tunnelRooms[n6 - 1]);
-            if (n9 == n5) {
-                n = 1;
+            nextRoomId = chosenRoomId;
+            routeRooms.add(tunnelRooms[nextRoomId - 1]);
+            if (chosenRoomId == targetRoomId) {
+                reachedTargetRoom = true;
             }
-            if (n9 != n3) continue;
-            bl = true;
+            if (chosenRoomId == currentRoomId) {
+                returnedToCurrentRoom = true;
+            }
         }
         Player player2 = player;
-        player2.packetSender.sendConfig(452, n2);
-        player.ep[452] = n2;
+        player2.packetSender.sendConfig(452, routeConfig);
+        player.ep[452] = routeConfig;
     }
 
     /*
@@ -1047,9 +1013,4 @@ lbl17:
             ++n;
         }
     }
-
-    static /* synthetic */ int countKilledBrothers(Player player) {
-        return BarrowsManager.countKilledBrothers(player);
-    }
 }
-

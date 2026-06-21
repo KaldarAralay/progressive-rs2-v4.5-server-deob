@@ -16,7 +16,7 @@ import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 import com.rs2.util.path.PathFinder;
 
-final class PickupItemTask
+public final class PickupItemTask
 extends TickTask {
     private /* synthetic */ ItemService itemService;
     private final /* synthetic */ Player player;
@@ -24,13 +24,13 @@ extends TickTask {
     private final /* synthetic */ int itemId;
     private final /* synthetic */ Position groundItemPosition;
 
-    PickupItemTask(ItemService itemService, int n, boolean bl, Player player, int n2, int n3, Position position) {
+    public PickupItemTask(ItemService itemService, int n, boolean bl, Player player, int n2, int n3, Position position) {
+        super(1, true);
         this.itemService = itemService;
         this.player = player;
         this.actionSequence = n2;
         this.itemId = n3;
         this.groundItemPosition = position;
-        super(1, true);
     }
 
     @Override

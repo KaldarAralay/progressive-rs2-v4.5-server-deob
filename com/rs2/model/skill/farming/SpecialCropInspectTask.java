@@ -9,13 +9,13 @@ import com.rs2.model.skill.farming.SpecialCropPatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class SpecialCropInspectTask
+public final class SpecialCropInspectTask
 extends CycleEvent {
     private /* synthetic */ SpecialCropPatchManager manager;
     private final /* synthetic */ SpecialCropPatch patch;
     private final /* synthetic */ SpecialCropGrowthDefinition growthDefinition;
 
-    SpecialCropInspectTask(SpecialCropPatchManager specialCropPatchManager, SpecialCropPatch specialCropPatch, SpecialCropGrowthDefinition specialCropGrowthDefinition) {
+    public SpecialCropInspectTask(SpecialCropPatchManager specialCropPatchManager, SpecialCropPatch specialCropPatch, SpecialCropGrowthDefinition specialCropGrowthDefinition) {
         this.manager = specialCropPatchManager;
         this.patch = specialCropPatch;
         this.growthDefinition = specialCropGrowthDefinition;

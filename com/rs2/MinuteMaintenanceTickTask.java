@@ -11,9 +11,9 @@ import com.rs2.model.player.Player;
 import com.rs2.model.skill.farming.FarmingPatchUtils;
 import com.rs2.model.task.TickTask;
 
-final class MinuteMaintenanceTickTask
+public final class MinuteMaintenanceTickTask
 extends TickTask {
-    MinuteMaintenanceTickTask(Server server, int n) {
+    public MinuteMaintenanceTickTask(Server server, int n) {
         super(100);
     }
 
@@ -37,7 +37,7 @@ extends TickTask {
                 ((Player)object).getFruitTreePatchManager().processGrowth();
                 ((Player)object).getSpecialTreePatchManager().processGrowth();
                 ((Player)object).getSpecialCropPatchManager().processGrowth();
-                Player player = object;
+                Player player = (Player)object;
                 object = ItemService.getInstance();
                 int n4 = 0;
                 while (n4 < 28) {

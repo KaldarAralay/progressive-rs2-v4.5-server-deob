@@ -9,17 +9,17 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class SarcophagusSneakTask
+public final class SarcophagusSneakTask
 extends CycleEvent {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
-    SarcophagusSneakTask(FirstObjectActionTask firstObjectActionTask, Player player) {
-        this.a = player;
+    public SarcophagusSneakTask(FirstObjectActionTask firstObjectActionTask, Player player) {
+        this.player = player;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        this.a.moveTo(new Position(3233, 2887));
+        this.player.moveTo(new Position(3233, 2887));
         cycleEventContainer.stop();
     }
 

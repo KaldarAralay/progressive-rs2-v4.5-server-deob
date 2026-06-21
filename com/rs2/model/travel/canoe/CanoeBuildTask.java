@@ -7,17 +7,15 @@ import com.rs2.model.player.Player;
 import com.rs2.model.skill.GatheringToolDefinition;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
-import com.rs2.model.travel.canoe.CanoeTravelManager;
-import com.rs2.model.travel.canoe.CanoeTypeDefinition;
 
-final class CanoeBuildTask
+public final class CanoeBuildTask
 extends CycleEvent {
     private final /* synthetic */ Player player;
     private final /* synthetic */ int actionSequence;
     private final /* synthetic */ CanoeTypeDefinition canoeType;
     private final /* synthetic */ GatheringToolDefinition gatheringTool;
 
-    CanoeBuildTask(Player player, int n, CanoeTypeDefinition canoeTypeDefinition, GatheringToolDefinition gatheringToolDefinition) {
+    public CanoeBuildTask(Player player, int n, CanoeTypeDefinition canoeTypeDefinition, GatheringToolDefinition gatheringToolDefinition) {
         this.player = player;
         this.actionSequence = n;
         this.canoeType = canoeTypeDefinition;
@@ -30,16 +28,11 @@ extends CycleEvent {
             cycleEventContainer.stop();
             return;
         }
-        Object object = this.canoeType;
-        this.player.getSkillManager().addExperience(8, object.experience);
-        object = this.canoeType;
-        this.player.ep[CanoeTravelManager.CANOE_CONFIG_ID] = object.configValue << (this.player.canoeStationIndex << 3);
-        object = this.player;
-        ((Player)object).packetSender.sendConfig(CanoeTravelManager.CANOE_CONFIG_ID, this.player.ep[CanoeTravelManager.CANOE_CONFIG_ID]);
-        object = this.canoeType;
-        this.player.builtCanoeTypeConfigValue = object.configValue;
-        object = this.player;
-        ((Player)object).packetSender.sendSoundEffect(473, 1, 0);
+        this.player.getSkillManager().addExperience(8, this.canoeType.experience);
+        this.player.ep[CanoeTravelManager.CANOE_CONFIG_ID] = this.canoeType.configValue << (this.player.canoeStationIndex << 3);
+        this.player.packetSender.sendConfig(CanoeTravelManager.CANOE_CONFIG_ID, this.player.ep[CanoeTravelManager.CANOE_CONFIG_ID]);
+        this.player.builtCanoeTypeConfigValue = this.canoeType.configValue;
+        this.player.packetSender.sendSoundEffect(473, 1, 0);
         this.player.getUpdateState().setAnimation(this.gatheringTool.getCanoeAnimationId(), 0);
         cycleEventContainer.stop();
     }
@@ -50,4 +43,3 @@ extends CycleEvent {
         this.player.getUpdateState().setAnimation(-1, 0);
     }
 }
-

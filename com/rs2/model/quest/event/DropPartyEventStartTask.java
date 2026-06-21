@@ -9,9 +9,9 @@ import com.rs2.model.quest.event.ServerMaintenanceEventHook;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 
-final class DropPartyEventStartTask
+public final class DropPartyEventStartTask
 extends TickTask {
-    DropPartyEventStartTask(ServerMaintenanceEventHook serverMaintenanceEventHook, int n) {
+    public DropPartyEventStartTask(ServerMaintenanceEventHook serverMaintenanceEventHook, int n) {
         super(500);
     }
 

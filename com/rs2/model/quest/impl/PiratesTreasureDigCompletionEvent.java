@@ -8,33 +8,33 @@ import com.rs2.model.quest.impl.PiratesTreasureQuest;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class PiratesTreasureDigCompletionEvent
+public final class PiratesTreasureDigCompletionEvent
 extends CycleEvent {
-    private /* synthetic */ PiratesTreasureQuest a;
-    private final /* synthetic */ Player b;
-    private final /* synthetic */ int c;
+    private /* synthetic */ PiratesTreasureQuest quest;
+    private final /* synthetic */ Player player;
+    private final /* synthetic */ int actionSequence;
 
-    PiratesTreasureDigCompletionEvent(PiratesTreasureQuest piratesTreasureQuest, Player player, int n) {
-        this.a = piratesTreasureQuest;
-        this.b = player;
-        this.c = n;
+    public PiratesTreasureDigCompletionEvent(PiratesTreasureQuest piratesTreasureQuest, Player player, int n) {
+        this.quest = piratesTreasureQuest;
+        this.player = player;
+        this.actionSequence = n;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        if (!this.b.isCurrentActionSequence(this.c)) {
+        if (!this.player.isCurrentActionSequence(this.actionSequence)) {
             cycleEventContainer.stop();
             return;
         }
-        Player player = this.b;
+        Player player = this.player;
         player.packetSender.sendGameMessage("and find the treasure.");
-        this.a.awardCompletionRewards(this.b);
+        this.quest.awardCompletionRewards(this.player);
         cycleEventContainer.stop();
     }
 
     @Override
     public final void onStop() {
-        this.b.resetAnimation();
+        this.player.resetAnimation();
     }
 }
 

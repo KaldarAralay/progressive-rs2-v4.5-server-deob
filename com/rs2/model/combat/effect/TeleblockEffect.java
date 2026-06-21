@@ -1,20 +1,14 @@
-/*
- * Decompiled with CFR 0.152.
- */
 package com.rs2.model.combat.effect;
 
 import com.rs2.model.Entity;
 import com.rs2.model.combat.CombatAction;
 import com.rs2.model.combat.CombatType;
-import com.rs2.model.combat.effect.CombatEffect;
-import com.rs2.model.combat.effect.CombatEffectTask;
 import com.rs2.model.player.Player;
 
-public final class TeleblockEffect
-extends CombatEffect {
+public final class TeleblockEffect extends CombatEffect {
     private int durationTicks = 500;
 
-    public TeleblockEffect(int n) {
+    public TeleblockEffect(int durationTicks) {
     }
 
     @Override
@@ -27,23 +21,22 @@ extends CombatEffect {
     }
 
     @Override
-    public final void onApply(CombatAction object, CombatEffectTask object2) {
-        object2 = ((CombatAction)object).getTarget();
-        ((CombatAction)object).getAttacker();
-        if (((Entity)object2).isPlayer()) {
-            object = (Player)object2;
-            ((Player)object).packetSender.sendGameMessage("You have been teleblocked!");
+    public final void onApply(CombatAction combatAction, CombatEffectTask combatEffectTask) {
+        Entity target = combatAction.getTarget();
+        combatAction.getAttacker();
+        if (target.isPlayer()) {
+            ((Player)target).packetSender.sendGameMessage("You have been teleblocked!");
         }
-        if (((Entity)object2).isProtectedFrom(CombatType.MAGIC)) {
-            ((Entity)object2).getTeleblockTimer().setDelayTicks(this.durationTicks / 2);
+        if (target.isProtectedFrom(CombatType.MAGIC)) {
+            target.getTeleblockTimer().setDelayTicks(this.durationTicks / 2);
         } else {
-            ((Entity)object2).getTeleblockTimer().setDelayTicks(this.durationTicks);
+            target.getTeleblockTimer().setDelayTicks(this.durationTicks);
         }
-        ((Entity)object2).getTeleblockTimer().reset();
+        target.getTeleblockTimer().reset();
     }
 
     @Override
-    public final CombatEffectTask createTask(Entity entity, Entity entity2) {
+    public final CombatEffectTask createTask(Entity entity, Entity target) {
         return null;
     }
 
@@ -52,4 +45,3 @@ extends CombatEffect {
         return object instanceof TeleblockEffect;
     }
 }
-

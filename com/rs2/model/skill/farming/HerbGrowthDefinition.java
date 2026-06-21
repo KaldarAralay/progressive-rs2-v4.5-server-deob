@@ -42,11 +42,9 @@ public enum HerbGrowthDefinition {
     /*
      * WARNING - void declaration
      */
-    private HerbGrowthDefinition() {
-        void var4_1;
-        void var3_2;
-        this.cropId = var3_2;
-        this.growthMessages = var4_1;
+    private HerbGrowthDefinition(int n2, String[][] stringArray) {
+        this.cropId = n2;
+        this.growthMessages = stringArray;
     }
 
     public static HerbGrowthDefinition forCropId(int n) {

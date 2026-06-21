@@ -31,24 +31,22 @@ public enum FishingSpotDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private FishingSpotDefinition(int n, int n2, int[] nArray3, int[] nArray4, double[] dArray, int[] nArray5, int[] nArray6) {
-        void var11_9;
-        void var10_8;
-        this.spotNpcIds = (int[])n;
+    private FishingSpotDefinition(int[] nArray, int n2, int n3, int n4, int[] nArray2, int[] nArray3, double[] dArray, int[] nArray4, int[] nArray5) {
+        this.spotNpcIds = nArray;
         this.toolItem = new ItemStack(n2);
-        this.baitItem = nArray3 == -1 ? null : new ItemStack((int)nArray3);
-        this.animationId = (int)nArray4;
-        this.requiredLevels = (int[])dArray;
-        ItemStack[] itemStackArray = new ItemStack[nArray5.length];
-        int n3 = 0;
-        while (n3 < nArray5.length) {
-            itemStackArray[n3] = new ItemStack(nArray5[n3]);
-            ++n3;
+        this.baitItem = n3 == -1 ? null : new ItemStack(n3);
+        this.animationId = n4;
+        this.requiredLevels = nArray2;
+        ItemStack[] itemStackArray = new ItemStack[nArray3.length];
+        int n = 0;
+        while (n < nArray3.length) {
+            itemStackArray[n] = new ItemStack(nArray3[n]);
+            ++n;
         }
         this.catchItems = itemStackArray;
-        this.experienceRewards = nArray6;
-        this.chanceLowValues = var10_8;
-        this.chanceHighValues = var11_9;
+        this.experienceRewards = dArray;
+        this.chanceLowValues = nArray4;
+        this.chanceHighValues = nArray5;
     }
 
     public final ItemStack getBaitItem() {

@@ -187,7 +187,7 @@ public class GameplayHelper {
         player.setPoisonDamage(0.0);
         player.getPrayerManager().deactivateAll();
         player.botCombatState = null;
-        player.ad();
+        player.clearCombatEffectTasks();
         player.eq();
         player.getDamageContributions().clear();
     }
@@ -243,12 +243,12 @@ public class GameplayHelper {
                     bl2 = true;
                     if (((ArrayList)object2).size() > 0) {
                         if (((ItemStack)((ArrayList)object2).get(0)).getId() == 983) {
-                            player.deferredBotTask = object;
+                            player.deferredBotTask = (BotTaskDefinition)object;
                             object = (BotTaskDefinition)BotTaskDefinition.brassKeyTasks.get(0);
                             bl2 = true;
                         } else if ((object2 = BotTaskPlanner.selectShopPurchaseTask(player, ((ItemStack)((ArrayList)object2).get(0)).getId(), ((ItemStack)((ArrayList)object2).get(0)).getAmount())) != null) {
                             BotTaskPlanner.resetBotTaskGoals(player);
-                            player.deferredBotTask = object;
+                            player.deferredBotTask = (BotTaskDefinition)object;
                             object = object2;
                             bl2 = true;
                         } else {
@@ -350,12 +350,12 @@ public class GameplayHelper {
             bl2 = true;
             if (((ArrayList)object3).size() > 0) {
                 if (((ItemStack)((ArrayList)object3).get(0)).getId() == 983) {
-                    player.deferredBotTask = object;
+                    player.deferredBotTask = (BotTaskDefinition)object;
                     object = (BotTaskDefinition)BotTaskDefinition.brassKeyTasks.get(0);
                     bl2 = true;
                 } else if ((object3 = BotTaskPlanner.selectShopPurchaseTask(player, ((ItemStack)((ArrayList)object3).get(0)).getId(), ((ItemStack)((ArrayList)object3).get(0)).getAmount())) != null) {
                     BotTaskPlanner.resetBotTaskGoals(player);
-                    player.deferredBotTask = object;
+                    player.deferredBotTask = (BotTaskDefinition)object;
                     object = object3;
                     bl2 = true;
                 } else {
@@ -366,48 +366,48 @@ public class GameplayHelper {
                 if (!BotTaskPlanner.prepareCookingTaskRequirements(player)) {
                     Object var4_10 = null;
                     object3 = player;
-                    player.currentBotTask = var4_10;
+                    player.currentBotTask = null;
                     bl2 = false;
                 }
             } else if (BotTaskDefinition.spinningTasks.contains(object)) {
                 if (!BotTaskPlanner.prepareSpinningTaskRequirements(player)) {
                     Object var4_11 = null;
                     object3 = player;
-                    player.currentBotTask = var4_11;
+                    player.currentBotTask = null;
                     bl2 = false;
                 }
             } else if (BotTaskDefinition.tanningTasks.contains(object)) {
                 if (!BotTaskPlanner.prepareTanningTaskRequirements(player, false)) {
                     Object var4_12 = null;
                     object3 = player;
-                    player.currentBotTask = var4_12;
+                    player.currentBotTask = null;
                     bl2 = false;
                 }
             } else if (BotTaskDefinition.leatherCraftingTasks.contains(object)) {
                 if (!BotTaskPlanner.prepareLeatherCraftingTaskRequirements(player)) {
                     Object var4_13 = null;
                     object3 = player;
-                    player.currentBotTask = var4_13;
+                    player.currentBotTask = null;
                     bl2 = false;
                 }
             } else if (BotTaskDefinition.smeltingTasks.contains(object)) {
                 if (!BotTaskPlanner.hasSmeltingTaskMaterial(player)) {
                     Object var4_14 = null;
                     object3 = player;
-                    player.currentBotTask = var4_14;
+                    player.currentBotTask = null;
                     bl2 = false;
                 }
             } else if (BotTaskDefinition.smithingTasks.contains(object) && !BotTaskPlanner.prepareSmithingTaskRequirements(player)) {
                 Object var4_15 = null;
                 object3 = player;
-                player.currentBotTask = var4_15;
+                player.currentBotTask = null;
                 bl2 = false;
             }
             if (!bl2) continue;
             bl3 = true;
         }
         player.botTaskReturnToBankRequested = false;
-        BotTaskDefinition botTaskDefinition = object;
+        BotTaskDefinition botTaskDefinition = (BotTaskDefinition)object;
         Player player3 = player;
         player.currentBotTask = botTaskDefinition;
         BotTaskPlanner.configureCurrentBotTaskGoals(player);
@@ -429,49 +429,45 @@ public class GameplayHelper {
     }
 
     public static void startNextBotTask(Player player) {
-        Object object;
-        Object object2;
-        Object object3;
-        block5: {
-            Object object4;
-            object3 = player;
-            double d = 0.0;
-            object2 = ((Player)object3).currentBotTask;
-            object = new ArrayList<BotTaskDefinition>();
-            for (BotTaskDefinition botTaskDefinition : ((Player)object3).botMode == 2 ? BotTaskDefinition.tradeAdvertTaskPool : BotTaskDefinition.progressiveTaskPool) {
-                if (object2 != null && botTaskDefinition == object2) continue;
-                ((ArrayList)object).add(botTaskDefinition);
-                d += (double)botTaskDefinition.selectionWeight;
-            }
-            double d2 = Math.random() * d;
-            double d3 = 0.0;
-            Iterator iterator = ((ArrayList)object).iterator();
-            while (iterator.hasNext()) {
-                double d4;
-                object3 = (BotTaskDefinition)iterator.next();
-                d3 += (double)((BotTaskDefinition)object3).selectionWeight;
-                if (!(d4 >= d2)) continue;
-                object4 = object3;
-                break block5;
-            }
-            object4 = object3 = ((ArrayList)object).size() > 0 ? (BotTaskDefinition)((ArrayList)object).get(0) : object2;
+        BotTaskDefinition currentTask = player.currentBotTask;
+        double totalWeight = 0.0;
+        ArrayList<BotTaskDefinition> availableTasks = new ArrayList<BotTaskDefinition>();
+        ArrayList taskPool = player.botMode == 2 ? BotTaskDefinition.tradeAdvertTaskPool : BotTaskDefinition.progressiveTaskPool;
+        Iterator taskIterator = taskPool.iterator();
+        while (taskIterator.hasNext()) {
+            BotTaskDefinition botTaskDefinition = (BotTaskDefinition)taskIterator.next();
+            if (currentTask != null && botTaskDefinition == currentTask) continue;
+            availableTasks.add(botTaskDefinition);
+            totalWeight += (double)botTaskDefinition.selectionWeight;
+        }
+        double roll = Math.random() * totalWeight;
+        double cumulativeWeight = 0.0;
+        BotTaskDefinition selectedTask = null;
+        Iterator availableIterator = availableTasks.iterator();
+        while (availableIterator.hasNext()) {
+            BotTaskDefinition botTaskDefinition = (BotTaskDefinition)availableIterator.next();
+            cumulativeWeight += (double)botTaskDefinition.selectionWeight;
+            if (cumulativeWeight < roll) continue;
+            selectedTask = botTaskDefinition;
+            break;
+        }
+        if (selectedTask == null) {
+            selectedTask = availableTasks.size() > 0 ? (BotTaskDefinition)availableTasks.get(0) : currentTask;
         }
         if (player.currentBotTask != null) {
             player.currentBotTask.assignedBotPlayers.remove(player);
         }
         player.botTaskReturnToBankRequested = false;
         player.botEnabled = true;
-        ((BotTaskDefinition)object3).assignedBotPlayers.add(player);
-        object = object3;
-        object2 = player;
-        player.currentBotTask = object;
-        if (!BotTaskDefinition.shopTasks.contains(object3)) {
+        selectedTask.assignedBotPlayers.add(player);
+        player.currentBotTask = selectedTask;
+        if (!BotTaskDefinition.shopTasks.contains(selectedTask)) {
             player.botTaskRequiredItems = null;
         }
-        ((BotTaskDefinition)object3).startTask(player);
+        selectedTask.startTask(player);
         player.botTaskStartTimeMillis = System.currentTimeMillis();
-        int n = player.botMode == 2 ? 16 : 106;
-        player.botTaskDurationMinutes = n = 15 + GameUtil.randomInt(n);
+        int durationRange = player.botMode == 2 ? 16 : 106;
+        player.botTaskDurationMinutes = 15 + GameUtil.randomInt(durationRange);
         if (player.currentBotTask.usesEscapeMonitor) {
             player.currentBotTask.startEscapeMonitor(player);
         }
@@ -489,8 +485,7 @@ public class GameplayHelper {
         DropPartyBotManager.dropPartyActive = true;
         int n = GameUtil.randomInt(BotTaskDefinition.dropPartyTaskPool.size());
         Object object = (BotTaskDefinition)BotTaskDefinition.dropPartyTaskPool.get(n);
-        object = new DropPartyBotJoinTask(1, (BotTaskDefinition)object);
-        World.getTaskScheduler().schedule((TickTask)object);
+        World.getTaskScheduler().schedule(new DropPartyBotJoinTask(1, (BotTaskDefinition)object));
     }
 
     public static void startClanWarsBotEvent() {
@@ -554,44 +549,37 @@ public class GameplayHelper {
         BotCombatLoadoutManager.equipRandomCape(player);
     }
 
-    /*
-     * WARNING - void declaration
-     */
-    public static BotTaskDefinition selectAvailableBotTask(Player object2, ArrayList iterator, boolean bl) {
-        BotTaskDefinition botTaskDefinition;
-        void botTaskDefinition2;
-        if (botTaskDefinition2 != false) {
-            int n = 1000;
-            BotTaskDefinition botTaskDefinition3 = null;
-            Iterator iterator2 = ((ArrayList)((Object)botTaskDefinition)).iterator();
-            while (iterator2.hasNext()) {
-                BotTaskDefinition botTaskDefinition4 = (BotTaskDefinition)iterator2.next();
-                if (!botTaskDefinition4.isAvailableFor((Player)object2, false)) continue;
-                botTaskDefinition = botTaskDefinition4;
-                int d2 = GameUtil.getDistance(((Entity)object2).getPosition(), botTaskDefinition.startPosition);
-                if (d2 >= n) continue;
-                n = d2;
-                botTaskDefinition3 = botTaskDefinition4;
+    public static BotTaskDefinition selectAvailableBotTask(Player player, ArrayList tasks, boolean nearestStart) {
+        if (nearestStart) {
+            int closestDistance = 1000;
+            BotTaskDefinition closestTask = null;
+            Iterator iterator = tasks.iterator();
+            while (iterator.hasNext()) {
+                BotTaskDefinition task = (BotTaskDefinition)iterator.next();
+                if (!task.isAvailableFor(player, false)) continue;
+                int distance = GameUtil.getDistance(player.getPosition(), task.startPosition);
+                if (distance >= closestDistance) continue;
+                closestDistance = distance;
+                closestTask = task;
             }
-            return botTaskDefinition3;
+            return closestTask;
         }
-        double d = 0.0;
-        BotTaskDefinition botTaskDefinition5 = ((Player)object2).currentBotTask;
-        ArrayList<BotTaskDefinition> arrayList = new ArrayList<BotTaskDefinition>();
-        Iterator iterator3 = ((ArrayList)((Object)botTaskDefinition)).iterator();
-        while (iterator3.hasNext()) {
-            BotTaskDefinition botTaskDefinition6 = (BotTaskDefinition)iterator3.next();
-            if (botTaskDefinition5 != null && botTaskDefinition6 == botTaskDefinition5 || !botTaskDefinition6.isAvailableFor((Player)object2, false)) continue;
-            arrayList.add(botTaskDefinition6);
-            d += (double)botTaskDefinition6.selectionWeight;
+        double totalWeight = 0.0;
+        BotTaskDefinition currentTask = player.currentBotTask;
+        ArrayList<BotTaskDefinition> availableTasks = new ArrayList<BotTaskDefinition>();
+        Iterator iterator = tasks.iterator();
+        while (iterator.hasNext()) {
+            BotTaskDefinition task = (BotTaskDefinition)iterator.next();
+            if (currentTask != null && task == currentTask || !task.isAvailableFor(player, false)) continue;
+            availableTasks.add(task);
+            totalWeight += (double)task.selectionWeight;
         }
-        double d2 = Math.random() * d;
-        double d3 = 0.0;
-        for (BotTaskDefinition botTaskDefinition7 : arrayList) {
-            double d4;
-            d3 += (double)botTaskDefinition7.selectionWeight;
-            if (!(d4 >= d2)) continue;
-            return botTaskDefinition7;
+        double roll = Math.random() * totalWeight;
+        double cumulativeWeight = 0.0;
+        for (BotTaskDefinition task : availableTasks) {
+            cumulativeWeight += (double)task.selectionWeight;
+            if (cumulativeWeight < roll) continue;
+            return task;
         }
         return null;
     }
@@ -637,214 +625,210 @@ public class GameplayHelper {
         return n < objectDefinitionCount;
     }
 
-    /*
-     * Unable to fully structure code
-     */
     public static void loadObjectDefinitions() {
-        var0 = CacheStore.getInstance();
-        var1_1 = null;
+        CacheStore cacheStore = CacheStore.getInstance();
+        ByteArrayReader reader = null;
         try {
-            var1_1 = new ByteArrayReader(new CacheArchive(var0.readFile(0, 2)).getFileBytes("loc.dat"));
+            reader = new ByteArrayReader(new CacheArchive(cacheStore.readFile(0, 2)).getFileBytes("loc.dat"));
         }
-        catch (IOException v0) {
-            var2_2 = v0;
-            v0.printStackTrace();
+        catch (Exception exception) {
+            exception.printStackTrace();
         }
-        GameplayHelper.objectDefinitionCount = var2_3 = var0.getDefinitionIndex().getObjectDefinitionEntries().length;
-        ObjectDefinition.definitionsById = new ObjectDefinition[var2_3];
-        var1_1.position = 2;
-        var3_4 = 0;
-        while (var3_4 < var2_3) {
-            var1_1.position = var0.getDefinitionIndex().getObjectDefinitionEntry(var3_4).getDataOffset();
-            var5_7 = var3_4;
-            var4_5 = var1_1;
-            var5_6 = ObjectDefinition.forId(var5_7);
-            var6_8 = 2;
-            var5_6.name = null;
-            var5_6.description = null;
-            var5_6.length = 1;
-            var5_6.width = 1;
-            var5_6.solid = true;
-            var5_6.h = true;
-            var5_6.interactive = false;
-            var5_6.blocksProjectiles = true;
-            var5_6.b = 0;
-            block3: while (true) {
-                if ((var7_9 = var4_5.readUnsignedByte()) == 0) {
-                    if (var5_6.name == null) {
-                        var5_6.name = "";
+        GameplayHelper.objectDefinitionCount = cacheStore.getDefinitionIndex().getObjectDefinitionEntries().length;
+        ObjectDefinition.definitionsById = new ObjectDefinition[objectDefinitionCount];
+        reader.position = 2;
+        int objectId = 0;
+        while (objectId < objectDefinitionCount) {
+            reader.position = cacheStore.getDefinitionIndex().getObjectDefinitionEntry(objectId).getDataOffset();
+            ObjectDefinition definition = ObjectDefinition.forId(objectId);
+            int collisionType = 2;
+            definition.name = null;
+            definition.description = null;
+            definition.length = 1;
+            definition.width = 1;
+            definition.solid = true;
+            definition.h = true;
+            definition.interactive = false;
+            definition.blocksProjectiles = true;
+            definition.b = 0;
+            while (true) {
+                int opcode = reader.readUnsignedByte();
+                if (opcode == 0) {
+                    if (definition.name == null) {
+                        definition.name = "";
                     }
                     break;
                 }
-                if (var7_9 == 1) {
-                    var7_9 = var4_5.readUnsignedByte();
-                    if (var7_9 <= 0) continue;
-                    var8_10 = 0;
-                    while (true) {
-                        if (var8_10 >= var7_9) continue block3;
-                        var4_5.readUnsignedShort();
-                        var4_5.readUnsignedByte();
-                        ++var8_10;
+                if (opcode == 1) {
+                    int count = reader.readUnsignedByte();
+                    int i = 0;
+                    while (i < count) {
+                        reader.readUnsignedShort();
+                        reader.readUnsignedByte();
+                        ++i;
+                    }
+                    continue;
+                }
+                if (opcode == 2) {
+                    definition.name = reader.readString();
+                    continue;
+                }
+                if (opcode == 3) {
+                    definition.description = new String(reader.readLineBytes());
+                    continue;
+                }
+                if (opcode == 5) {
+                    int count = reader.readUnsignedByte();
+                    int i = 0;
+                    while (i < count) {
+                        reader.readUnsignedShort();
+                        ++i;
+                    }
+                    continue;
+                }
+                if (opcode == 14) {
+                    definition.width = reader.readUnsignedByte();
+                    continue;
+                }
+                if (opcode == 15) {
+                    definition.length = reader.readUnsignedByte();
+                    continue;
+                }
+                if (opcode == 17) {
+                    definition.solid = false;
+                    collisionType = 0;
+                    continue;
+                }
+                if (opcode == 18) {
+                    definition.h = false;
+                    continue;
+                }
+                if (opcode == 19) {
+                    definition.interactive = reader.readUnsignedByte() == 1;
+                    continue;
+                }
+                if (opcode == 21 || opcode == 22 || opcode == 23) continue;
+                if (opcode == 24) {
+                    reader.readUnsignedShort();
+                    continue;
+                }
+                if (opcode == 28) {
+                    reader.readUnsignedByte();
+                    continue;
+                }
+                if (opcode == 29) {
+                    reader.readByte();
+                    continue;
+                }
+                if (opcode == 39) {
+                    reader.readByte();
+                    continue;
+                }
+                if (opcode >= 30 && opcode < 39) {
+                    reader.readString();
+                    definition.interactive = true;
+                    continue;
+                }
+                if (opcode == 40) {
+                    int count = reader.readUnsignedByte();
+                    int i = 0;
+                    while (i < count) {
+                        reader.readUnsignedShort();
+                        reader.readUnsignedShort();
+                        ++i;
+                    }
+                    continue;
+                }
+                if (opcode == 60) {
+                    reader.readUnsignedShort();
+                    continue;
+                }
+                if (opcode == 62) continue;
+                if (opcode == 64) {
+                    definition.blocksProjectiles = false;
+                    continue;
+                }
+                if (opcode == 65) {
+                    reader.readUnsignedShort();
+                    continue;
+                }
+                if (opcode == 66) {
+                    reader.readUnsignedShort();
+                    continue;
+                }
+                if (opcode == 67) {
+                    reader.readUnsignedShort();
+                    continue;
+                }
+                if (opcode == 68) {
+                    reader.readUnsignedShort();
+                    continue;
+                }
+                if (opcode == 69) {
+                    definition.b = reader.readUnsignedByte();
+                    continue;
+                }
+                if (opcode == 70) {
+                    reader.readShort();
+                    continue;
+                }
+                if (opcode == 71) {
+                    reader.readShort();
+                    continue;
+                }
+                if (opcode == 72) {
+                    reader.readShort();
+                    continue;
+                }
+                if (opcode == 73 || opcode == 74) continue;
+                if (opcode == 75) {
+                    reader.readUnsignedByte();
+                    continue;
+                }
+                if (opcode == 77) {
+                    reader.readUnsignedShort();
+                    reader.readUnsignedShort();
+                    int count = reader.readUnsignedByte();
+                    int i = 0;
+                    while (i <= count) {
+                        reader.readUnsignedShort();
+                        ++i;
                     }
                 }
-                if (var7_9 == 2) {
-                    var5_6.name = var4_5.readString();
-                    continue;
-                }
-                if (var7_9 == 3) {
-                    var5_6.description = new String(var4_5.readLineBytes());
-                    continue;
-                }
-                if (var7_9 == 5) {
-                    var7_9 = var4_5.readUnsignedByte();
-                    if (var7_9 <= 0) continue;
-                    var8_10 = 0;
-                    while (true) {
-                        if (var8_10 >= var7_9) continue block3;
-                        var4_5.readUnsignedShort();
-                        ++var8_10;
-                    }
-                }
-                if (var7_9 == 14) {
-                    var5_6.width = var4_5.readUnsignedByte();
-                    continue;
-                }
-                if (var7_9 == 15) {
-                    var5_6.length = var4_5.readUnsignedByte();
-                    continue;
-                }
-                if (var7_9 == 17) {
-                    var5_6.solid = false;
-                    var6_8 = 0;
-                    continue;
-                }
-                if (var7_9 == 18) {
-                    var5_6.h = false;
-                    continue;
-                }
-                if (var7_9 == 19) {
-                    var5_6.interactive = var4_5.readUnsignedByte() == 1;
-                    continue;
-                }
-                if (var7_9 == 21 || var7_9 == 22 || var7_9 == 23) continue;
-                if (var7_9 == 24) {
-                    var4_5.readUnsignedShort();
-                    continue;
-                }
-                if (var7_9 == 28) {
-                    var4_5.readUnsignedByte();
-                    continue;
-                }
-                if (var7_9 == 29) {
-                    var4_5.readByte();
-                    continue;
-                }
-                if (var7_9 == 39) {
-                    var4_5.readByte();
-                    continue;
-                }
-                if (var7_9 >= 30 && var7_9 < 39) {
-                    var4_5.readString();
-                    var5_6.interactive = true;
-                    continue;
-                }
-                if (var7_9 == 40) {
-                    var7_9 = var4_5.readUnsignedByte();
-                    var8_10 = 0;
-                    while (true) {
-                        if (var8_10 >= var7_9) continue block3;
-                        var4_5.readUnsignedShort();
-                        var4_5.readUnsignedShort();
-                        ++var8_10;
-                    }
-                }
-                if (var7_9 == 60) {
-                    var4_5.readUnsignedShort();
-                    continue;
-                }
-                if (var7_9 == 62) continue;
-                if (var7_9 == 64) {
-                    var5_6.blocksProjectiles = false;
-                    continue;
-                }
-                if (var7_9 == 65) {
-                    var4_5.readUnsignedShort();
-                    continue;
-                }
-                if (var7_9 == 66) {
-                    var4_5.readUnsignedShort();
-                    continue;
-                }
-                if (var7_9 == 67) {
-                    var4_5.readUnsignedShort();
-                    continue;
-                }
-                if (var7_9 == 68) {
-                    var4_5.readUnsignedShort();
-                    continue;
-                }
-                if (var7_9 == 69) {
-                    var5_6.b = var4_5.readUnsignedByte();
-                    continue;
-                }
-                if (var7_9 == 70) {
-                    var4_5.readShort();
-                    continue;
-                }
-                if (var7_9 == 71) {
-                    var4_5.readShort();
-                    continue;
-                }
-                if (var7_9 == 72) {
-                    var4_5.readShort();
-                    continue;
-                }
-                if (var7_9 == 73 || var7_9 == 74) continue;
-                if (var7_9 == 75) {
-                    var4_5.readUnsignedByte();
-                    continue;
-                }
-                if (var7_9 != 77) continue;
-                var4_5.readUnsignedShort();
-                var4_5.readUnsignedShort();
-                var7_9 = var4_5.readUnsignedByte();
-                var8_10 = 0;
-                while (true) {
-                    if (var8_10 > var7_9) ** break;
-                    var4_5.readUnsignedShort();
-                    ++var8_10;
-                }
-                break;
             }
-            var5_6.k = var6_8 <= 1 || var6_8 == 2 && var5_6.solid == false;
-            var5_6.projectileCollisionIgnored = var5_6.isProjectileCollisionIgnored();
-            ++var3_4;
+            definition.k = collisionType <= 1 || collisionType == 2 && !definition.solid;
+            definition.projectileCollisionIgnored = definition.isProjectileCollisionIgnored();
+            ++objectId;
         }
     }
 
-    public static byte[] inflateGzipCacheFile(CacheFile object) {
-        Object object2 = new byte[((CacheFile)object).getBuffer().remaining()];
-        ((CacheFile)object).getBuffer().get((byte[])object2);
-        new GZIPInputStream(new ByteArrayInputStream((byte[])object2));
-        object = new byte[999999];
-        int n = 0;
-        object2 = new GZIPInputStream(new ByteArrayInputStream((byte[])object2));
-        while (true) {
-            if (n == 999999) {
-                System.out.println("Error inflating data.\nGZIP buffer overflow.");
-                break;
+    public static byte[] inflateGzipCacheFile(CacheFile cacheFile) {
+        byte[] compressedBytes = new byte[cacheFile.getBuffer().remaining()];
+        cacheFile.getBuffer().get(compressedBytes);
+        try {
+            byte[] inflatedBuffer = new byte[999999];
+            int length = 0;
+            GZIPInputStream gzipInputStream = new GZIPInputStream(new ByteArrayInputStream(compressedBytes));
+            while (true) {
+                if (length == 999999) {
+                    System.out.println("Error inflating data.\nGZIP buffer overflow.");
+                    break;
+                }
+                int readCount = gzipInputStream.read(inflatedBuffer, length, 999999 - length);
+                if (readCount == -1) break;
+                length += readCount;
             }
-            int n2 = object2.read((byte[])object, n, 999999 - n);
-            if (n2 == -1) break;
-            n += n2;
+            byte[] inflatedBytes = new byte[length];
+            System.arraycopy(inflatedBuffer, 0, inflatedBytes, 0, length);
+            if (inflatedBytes.length < 10) {
+                return null;
+            }
+            return inflatedBytes;
         }
-        byte[] byArray = new byte[n];
-        System.arraycopy(object, 0, byArray, 0, n);
-        object2 = byArray;
-        if (byArray.length < 10) {
+        catch (IOException exception) {
+            exception.printStackTrace();
             return null;
         }
-        return object2;
     }
 
     public static int getNpcShopId(int n) {
@@ -970,7 +954,7 @@ public class GameplayHelper {
         }
     }
 
-    public static void h(Player player) {
+    public static void refreshRubberChickenPlayerOption(Player player) {
         if (player.getEquipmentManager().getItemIdAtSlot(3) == 4566) {
             player.packetSender.sendPlayerOption("Whack", 5, false);
             return;
@@ -1025,38 +1009,38 @@ public class GameplayHelper {
                 return;
             }
         }
-        GameplayHelper.a(player, new Npc(skillRandomEventNpc.getBaseNpcId() + GameplayHelper.getRandomEventCombatLevelOffset(player.getCombatLevel())), true, true);
+        GameplayHelper.spawnOwnedNpcAdjacentToPlayer(player, new Npc(skillRandomEventNpc.getBaseNpcId() + GameplayHelper.getRandomEventCombatLevelOffset(player.getCombatLevel())), true, true);
     }
 
-    public static void a(Player object, String string) {
+    public static void openProductionInterface(Player object, String string) {
         Object object2;
         if (string == "potteryUnfired") {
             if (!ItemDefinition.isDefined(4438)) {
-                GameplayHelper.a((Player)object, 1787, 1789, 1791, "Pot", "Pie Dish", "Bowl");
+                GameplayHelper.showThreeOptionProductionInterface((Player)object, 1787, 1789, 1791, "Pot", "Pie Dish", "Bowl");
             } else {
-                GameplayHelper.a((Player)object, 1787, 1789, 1791, 5352, 4438, "Pot", "Pie Dish", "Bowl", "Plant pot", "Pot lid");
+                GameplayHelper.showFiveOptionProductionInterface((Player)object, 1787, 1789, 1791, 5352, 4438, "Pot", "Pie Dish", "Bowl", "Plant pot", "Pot lid");
             }
         } else if (string == "potteryFired") {
             if (!ItemDefinition.isDefined(4438)) {
-                GameplayHelper.a((Player)object, 1931, 2313, 1923, "Pot", "Pie Dish", "Bowl");
+                GameplayHelper.showThreeOptionProductionInterface((Player)object, 1931, 2313, 1923, "Pot", "Pie Dish", "Bowl");
             } else {
-                GameplayHelper.a((Player)object, 1931, 2313, 1923, 5350, 4440, "Pot", "Pie Dish", "Bowl", "Plant pot", "Pot lid");
+                GameplayHelper.showFiveOptionProductionInterface((Player)object, 1931, 2313, 1923, 5350, 4440, "Pot", "Pie Dish", "Bowl", "Plant pot", "Pot lid");
             }
         } else if (string == "silverCrafting") {
             if (!ItemDefinition.isDefined(5525)) {
-                GameplayHelper.a((Player)object, 1714, 2961, "Unstrung symbol", "Silver sickle");
+                GameplayHelper.showTwoOptionProductionInterface((Player)object, 1714, 2961, "Unstrung symbol", "Silver sickle");
             } else {
-                GameplayHelper.a((Player)object, 1714, 2961, 5525, "Unstrung symbol", "Silver sickle", "Tiara");
+                GameplayHelper.showThreeOptionProductionInterface((Player)object, 1714, 2961, 5525, "Unstrung symbol", "Silver sickle", "Tiara");
             }
         } else if (string == "spinning") {
             if (!ItemDefinition.isDefined(6051)) {
-                GameplayHelper.a((Player)object, 1737, 1779, "Wool", "Flax");
+                GameplayHelper.showTwoOptionProductionInterface((Player)object, 1737, 1779, "Wool", "Flax");
             } else {
-                GameplayHelper.a((Player)object, 1737, 1779, 6051, "Wool", "Flax", "Magic tree");
+                GameplayHelper.showThreeOptionProductionInterface((Player)object, 1737, 1779, 6051, "Wool", "Flax", "Magic tree");
             }
         } else if (string == "glassMaking") {
             if (!ItemDefinition.isDefined(4529)) {
-                GameplayHelper.a((Player)object, 229, 567, 1919, "Vial", "Orb", "Beer Glass");
+                GameplayHelper.showThreeOptionProductionInterface((Player)object, 229, 567, 1919, "Vial", "Orb", "Beer Glass");
             } else if (!ItemDefinition.isDefined(6667)) {
                 object2 = object;
                 ((Player)object2).packetSender.showChatboxInterface(11462);
@@ -1068,21 +1052,21 @@ public class GameplayHelper {
             object2 = object;
             ((Player)object2).packetSender.showInterface(2311);
         } else if (string == "hardLeather") {
-            GameplayHelper.a((Player)object, 1131, "Hard leather body");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 1131, "Hard leather body");
         } else if (string == "dramenBranch") {
-            GameplayHelper.a((Player)object, 772, "Dramen staff");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 772, "Dramen staff");
         } else if (string == "greenLeather") {
-            GameplayHelper.a((Player)object, 1065, 1099, 1135, "Vamb", "Chaps", "Body");
+            GameplayHelper.showThreeOptionProductionInterface((Player)object, 1065, 1099, 1135, "Vamb", "Chaps", "Body");
         } else if (string == "blueLeather") {
-            GameplayHelper.a((Player)object, 2487, 2493, 2499, "Vamb", "Chaps", "Body");
+            GameplayHelper.showThreeOptionProductionInterface((Player)object, 2487, 2493, 2499, "Vamb", "Chaps", "Body");
         } else if (string == "redLeather") {
-            GameplayHelper.a((Player)object, 2489, 2495, 2501, "Vamb", "Chaps", "Body");
+            GameplayHelper.showThreeOptionProductionInterface((Player)object, 2489, 2495, 2501, "Vamb", "Chaps", "Body");
         } else if (string == "blackLeather") {
-            GameplayHelper.a((Player)object, 2491, 2497, 2503, "Vamb", "Chaps", "Body");
+            GameplayHelper.showThreeOptionProductionInterface((Player)object, 2491, 2497, 2503, "Vamb", "Chaps", "Body");
         } else if (string == "snakeskin1") {
-            GameplayHelper.a((Player)object, 6326, 6328, "Bandana", "Boots");
+            GameplayHelper.showTwoOptionProductionInterface((Player)object, 6326, 6328, "Bandana", "Boots");
         } else if (string == "snakeskin2") {
-            GameplayHelper.a((Player)object, 6330, 6324, 6322, "Vamb", "Chaps", "Body");
+            GameplayHelper.showThreeOptionProductionInterface((Player)object, 6330, 6324, 6322, "Vamb", "Chaps", "Body");
         } else if (string == "weaving") {
             Object object3;
             String string2 = "Basket";
@@ -1106,96 +1090,94 @@ public class GameplayHelper {
             object2 = object3;
             ((Player)object2).packetSender.showChatboxInterface(8880);
         } else if (string == "shaft") {
-            GameplayHelper.a((Player)object, 53, "Headless arrows");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 53, "Headless arrows");
         } else if (string == "bronzeArrow") {
-            GameplayHelper.a((Player)object, 882, "Bronze arrows");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 882, "Bronze arrows");
         } else if (string == "ironArrow") {
-            GameplayHelper.a((Player)object, 884, "Iron arrows");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 884, "Iron arrows");
         } else if (string == "steelArrow") {
-            GameplayHelper.a((Player)object, 886, "Steel arrows");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 886, "Steel arrows");
         } else if (string == "mithrilArrow") {
-            GameplayHelper.a((Player)object, 888, "Mithril arrows");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 888, "Mithril arrows");
         } else if (string == "adamantArrow") {
-            GameplayHelper.a((Player)object, 890, "Adamant arrows");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 890, "Adamant arrows");
         } else if (string == "runeArrow") {
-            GameplayHelper.a((Player)object, 892, "Rune arrows");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 892, "Rune arrows");
         } else if (string == "bronzeDart") {
-            GameplayHelper.a((Player)object, 806, "Bronze darts");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 806, "Bronze darts");
         } else if (string == "ironDart") {
-            GameplayHelper.a((Player)object, 807, "Iron darts");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 807, "Iron darts");
         } else if (string == "steelDart") {
-            GameplayHelper.a((Player)object, 808, "Steel darts");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 808, "Steel darts");
         } else if (string == "mithrilDart") {
-            GameplayHelper.a((Player)object, 809, "Mithril darts");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 809, "Mithril darts");
         } else if (string == "adamantDart") {
-            GameplayHelper.a((Player)object, 810, "Adamant darts");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 810, "Adamant darts");
         } else if (string == "runeDart") {
-            GameplayHelper.a((Player)object, 811, "Rune darts");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 811, "Rune darts");
         } else if (string == "bronzeBrutalArrow") {
-            GameplayHelper.a((Player)object, 4773, "Bronze brutal arrows");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 4773, "Bronze brutal arrows");
         } else if (string == "ironBrutalArrow") {
-            GameplayHelper.a((Player)object, 4778, "Iron brutal arrows");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 4778, "Iron brutal arrows");
         } else if (string == "steelBrutalArrow") {
-            GameplayHelper.a((Player)object, 4783, "Black brutal arrows");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 4783, "Black brutal arrows");
         } else if (string == "blackBrutalArrow") {
-            GameplayHelper.a((Player)object, 4788, "Steel brutal arrows");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 4788, "Steel brutal arrows");
         } else if (string == "mithrilBrutalArrow") {
-            GameplayHelper.a((Player)object, 4793, "Mithril brutal arrows");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 4793, "Mithril brutal arrows");
         } else if (string == "adamantBrutalArrow") {
-            GameplayHelper.a((Player)object, 4798, "Adamant brutal arrows");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 4798, "Adamant brutal arrows");
         } else if (string == "runeBrutalArrow") {
-            GameplayHelper.a((Player)object, 4803, "Rune brutal arrows");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 4803, "Rune brutal arrows");
         } else if (string == "shortBow") {
-            GameplayHelper.a((Player)object, 841, "Shortbow");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 841, "Shortbow");
         } else if (string == "longBow") {
-            GameplayHelper.a((Player)object, 839, "Longbow");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 839, "Longbow");
         } else if (string == "oakShortBow") {
-            GameplayHelper.a((Player)object, 843, "Oak shortbow");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 843, "Oak shortbow");
         } else if (string == "oakLongBow") {
-            GameplayHelper.a((Player)object, 845, "Oak longbow");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 845, "Oak longbow");
         } else if (string == "compositeOgre") {
-            GameplayHelper.a((Player)object, 4827, "Composite Ogre bow");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 4827, "Composite Ogre bow");
         } else if (string == "willowShortBow") {
-            GameplayHelper.a((Player)object, 849, "Willow shortbow");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 849, "Willow shortbow");
         } else if (string == "willowLongBow") {
-            GameplayHelper.a((Player)object, 849, "Willow longbow");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 849, "Willow longbow");
         } else if (string == "mapleShortBow") {
-            GameplayHelper.a((Player)object, 853, "Maple shortbow");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 853, "Maple shortbow");
         } else if (string == "mapleLongBow") {
-            GameplayHelper.a((Player)object, 851, "Maple longbow");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 851, "Maple longbow");
         } else if (string == "yewShortBow") {
-            GameplayHelper.a((Player)object, 857, "Yew shortbow");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 857, "Yew shortbow");
         } else if (string == "yewLongBow") {
-            GameplayHelper.a((Player)object, 855, "Yew longbow");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 855, "Yew longbow");
         } else if (string == "magicShortBow") {
-            GameplayHelper.a((Player)object, 861, "Magic shortbow");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 861, "Magic shortbow");
         } else if (string == "magicLongBow") {
-            GameplayHelper.a((Player)object, 859, "Magic longbow");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 859, "Magic longbow");
         } else if (string == "normalCutting") {
-            GameplayHelper.a((Player)object, 52, 50, 48, "Arrow shafts", "Shortbow", "Longbow");
+            GameplayHelper.showThreeOptionProductionInterface((Player)object, 52, 50, 48, "Arrow shafts", "Shortbow", "Longbow");
         } else if (string == "oakCutting") {
-            GameplayHelper.a((Player)object, 54, 56, "Oak shortbow", "Oak longbow");
+            GameplayHelper.showTwoOptionProductionInterface((Player)object, 54, 56, "Oak shortbow", "Oak longbow");
         } else if (string == "acheyCutting") {
-            GameplayHelper.a((Player)object, 4825, "Unstrung comp bow");
+            GameplayHelper.showOneOptionProductionInterface((Player)object, 4825, "Unstrung comp bow");
         } else if (string == "willowCutting") {
-            GameplayHelper.a((Player)object, 60, 58, "Willow shortbow", "Willow longbow");
+            GameplayHelper.showTwoOptionProductionInterface((Player)object, 60, 58, "Willow shortbow", "Willow longbow");
         } else if (string == "mapleCutting") {
-            GameplayHelper.a((Player)object, 64, 62, "Maple shortbow", "Maple longbow");
+            GameplayHelper.showTwoOptionProductionInterface((Player)object, 64, 62, "Maple shortbow", "Maple longbow");
         } else if (string == "yewCutting") {
-            GameplayHelper.a((Player)object, 68, 66, "Yew shortbow", "Yew longbow");
+            GameplayHelper.showTwoOptionProductionInterface((Player)object, 68, 66, "Yew shortbow", "Yew longbow");
         } else if (string == "magicCutting") {
-            GameplayHelper.a((Player)object, 72, 70, "Magic shortbow", "Magic longbow");
+            GameplayHelper.showTwoOptionProductionInterface((Player)object, 72, 70, "Magic shortbow", "Magic longbow");
         } else if (string == "dairyChurn") {
             object2 = object;
             ((Player)object2).packetSender.showChatboxInterface(15336);
         }
         Player player = object;
-        object = string;
-        object2 = player;
-        player.interfaceAction = object;
+        player.interfaceAction = string;
     }
 
-    public static void a(Player player, int n, int n2, int n3, int n4, int n5, String string, String string2, String string3, String string4, String string5, String string6) {
+    public static void showSplitbarkProductionInterface(Player player, int n, int n2, int n3, int n4, int n5, String string, String string2, String string3, String string4, String string5, String string6) {
         Player player2 = player;
         player2.packetSender.sendInterfaceModel(8941, 120, 3385);
         player2 = player;
@@ -1222,7 +1204,7 @@ public class GameplayHelper {
         player2.packetSender.showChatboxInterface(8938);
     }
 
-    public static void a(Player player, int n, int n2, int n3, int n4, int n5, String string, String string2, String string3, String string4, String string5) {
+    public static void showFiveOptionProductionInterface(Player player, int n, int n2, int n3, int n4, int n5, String string, String string2, String string3, String string4, String string5) {
         Player player2 = player;
         player2.packetSender.sendInterfaceModel(8941, 120, n);
         player2 = player;
@@ -1247,7 +1229,7 @@ public class GameplayHelper {
         player2.packetSender.showChatboxInterface(8938);
     }
 
-    public static void a(Player player, int n, int n2, int n3, String string, String string2, String string3) {
+    public static void showThreeOptionProductionInterface(Player player, int n, int n2, int n3, String string, String string2, String string3) {
         if (ServerSettings.cacheVersion < 274) {
             Player player2 = player;
             player2.packetSender.setInterfaceHiddenFlag(1, 2476);
@@ -1281,7 +1263,7 @@ public class GameplayHelper {
         player3.packetSender.showChatboxInterface(8880);
     }
 
-    public static void a(Player player, int n, int n2, String string, String string2) {
+    public static void showTwoOptionProductionInterface(Player player, int n, int n2, String string, String string2) {
         if (ServerSettings.cacheVersion < 274) {
             Player player2 = player;
             player2.packetSender.setInterfaceHiddenFlag(1, 2465);
@@ -1309,7 +1291,7 @@ public class GameplayHelper {
         player3.packetSender.showChatboxInterface(8866);
     }
 
-    public static void a(Player player, int n, String string) {
+    public static void showOneOptionProductionInterface(Player player, int n, String string) {
         if (ServerSettings.cacheVersion < 334) {
             Player player2 = player;
             player2.packetSender.sendGameMessage("This action does not currently work on this build!");
@@ -1323,13 +1305,12 @@ public class GameplayHelper {
         player3.packetSender.showChatboxInterface(4429);
     }
 
-    public static String a(String string) {
-        Object object = new String[]{"a", "e", "i", "o", "u", "y"};
-        String[] stringArray = object;
+    public static String getIndefiniteArticle(String string) {
+        String[] stringArray = new String[]{"a", "e", "i", "o", "u", "y"};
         int n = 0;
         while (n < 6) {
-            object = stringArray[n];
-            if (string.toLowerCase().startsWith((String)object)) {
+            String vowel = stringArray[n];
+            if (string.toLowerCase().startsWith(vowel)) {
                 return "an";
             }
             ++n;
@@ -1340,7 +1321,7 @@ public class GameplayHelper {
     /*
      * Enabled aggressive block sorting
      */
-    public static boolean a(Player player, int n, int n2, int n3) {
+    public static boolean handleAgilityObjectAction(Player player, int n, int n2, int n3) {
         int n4;
         int n5 = n3;
         int n6 = n2;
@@ -1417,7 +1398,7 @@ public class GameplayHelper {
             }
             case 2282: {
                 if (n6 != 2551 || n5 != 3550) break;
-                AgilityObstacleHandler.a(player2, 22, 0, -5, 1, 60, -1, 751);
+                AgilityObstacleHandler.startQueuedObstacleMovement(player2, 22, 0, -5, 1, 60, -1, 751);
                 Player player3 = player2;
                 player3.packetSender.sendObjectAnimation(2551, 3550, 0, 127);
                 player2.bN = 1;
@@ -1500,7 +1481,7 @@ public class GameplayHelper {
             }
             case 2283: {
                 if (n6 != 3005 || n5 != 3952) break;
-                AgilityObstacleHandler.a(player2, 20, 0, 7, 1, 60, -1, 751);
+                AgilityObstacleHandler.startQueuedObstacleMovement(player2, 20, 0, 7, 1, 60, -1, 751);
                 Player player5 = player2;
                 player5.packetSender.sendObjectAnimation(2551, 3550, 0, 127);
                 player5 = player2;
@@ -1752,7 +1733,7 @@ public class GameplayHelper {
         return false;
     }
 
-    public static boolean d(Player player, int n) {
+    public static boolean handleFlourDoughButton(Player player, int n) {
         Player player2 = player;
         if (player2.interfaceAction != "flour") {
             return false;
@@ -1823,7 +1804,7 @@ public class GameplayHelper {
         return false;
     }
 
-    public static boolean a(Player player, int n, int n2, int n3, int n4) {
+    public static boolean handleLeatherCraftingItemUse(Player player, int n, int n2, int n3, int n4) {
         int n5 = n3 = n == 2370 ? n4 : n3;
         if (n == 2370 || n2 == 2370) {
             if (!ServerSettings.craftingEnabled) {
@@ -1867,50 +1848,50 @@ public class GameplayHelper {
                 return true;
             }
             if (n == 1741 || n2 == 1741) {
-                GameplayHelper.a(player, "normalLeather");
+                GameplayHelper.openProductionInterface(player, "normalLeather");
                 return true;
             }
             if (n == 1743 || n2 == 1743) {
                 Object object = "hardLeather";
                 if (ServerSettings.cacheVersion < 334) {
-                    String string = object;
+                    String string = (String)object;
                     object = player;
                     player.interfaceAction = string;
-                    GameplayHelper.a(player, 2799, 1);
+                    GameplayHelper.handleCraftedArmorButton(player, 2799, 1);
                 } else {
-                    GameplayHelper.a(player, (String)object);
+                    GameplayHelper.openProductionInterface(player, (String)object);
                 }
                 return true;
             }
             if (n == 1745 || n2 == 1745) {
-                GameplayHelper.a(player, "greenLeather");
+                GameplayHelper.openProductionInterface(player, "greenLeather");
                 return true;
             }
             if (n == 2505 || n2 == 2505) {
-                GameplayHelper.a(player, "blueLeather");
+                GameplayHelper.openProductionInterface(player, "blueLeather");
                 return true;
             }
             if (n == 2507 || n2 == 2507) {
-                GameplayHelper.a(player, "redLeather");
+                GameplayHelper.openProductionInterface(player, "redLeather");
                 return true;
             }
             if (n == 2509 || n2 == 2509) {
-                GameplayHelper.a(player, "blackLeather");
+                GameplayHelper.openProductionInterface(player, "blackLeather");
                 return true;
             }
             if (n == 6287 || n2 == 6287) {
-                GameplayHelper.a(player, "snakeskin1");
+                GameplayHelper.openProductionInterface(player, "snakeskin1");
                 return true;
             }
             if (n == 6289 || n2 == 6289) {
-                GameplayHelper.a(player, "snakeskin2");
+                GameplayHelper.openProductionInterface(player, "snakeskin2");
                 return true;
             }
         }
         return false;
     }
 
-    public static boolean a(Player player, int n, int n2) {
+    public static boolean handleCraftedArmorButton(Player player, int n, int n2) {
         Enum enum_;
         int n3;
         int n4;
@@ -2078,7 +2059,7 @@ public class GameplayHelper {
         return false;
     }
 
-    public static void i(Player player) {
+    public static void openTanningInterface(Player player) {
         if (!ServerSettings.craftingEnabled) {
             Player player2 = player;
             player2.packetSender.sendGameMessage("This skill is currently disabled.");
@@ -2087,7 +2068,7 @@ public class GameplayHelper {
         int n = player.getInteractionTargetId() == 1041 ? 2 : 1;
         Object object = "tanning";
         Player player3 = player;
-        player.interfaceAction = object;
+        player.interfaceAction = (String)object;
         player3 = player;
         player3.packetSender.showInterface(14670 >= InterfaceDefinition.interfaceCount ? 679 : 14670);
         player3 = player;
@@ -2143,16 +2124,16 @@ public class GameplayHelper {
         while (n2 < 8) {
             if (!bl) {
                 Player player4 = player;
-                player4.packetSender.sendInterfaceText(stringArray[n2 / 2], (int)object[n2]);
+                player4.packetSender.sendInterfaceText(stringArray[n2 / 2], ((int[])object)[n2]);
                 bl = true;
             } else {
                 Player player5;
                 if (player.getInventoryManager().getItemAmount(995) > 0) {
                     player5 = player;
-                    player5.packetSender.sendInterfaceText(stringArray2[n2 / 2], (int)object[n2]);
+                    player5.packetSender.sendInterfaceText(stringArray2[n2 / 2], ((int[])object)[n2]);
                 } else {
                     player5 = player;
-                    player5.packetSender.sendInterfaceText(stringArray2[n2 / 2], (int)object[n2]);
+                    player5.packetSender.sendInterfaceText(stringArray2[n2 / 2], ((int[])object)[n2]);
                 }
                 bl = false;
             }
@@ -2160,7 +2141,7 @@ public class GameplayHelper {
         }
     }
 
-    public static void b(Player object, int n, int n2, int n3, int n4) {
+    public static void tanHide(Player object, int n, int n2, int n3, int n4) {
         int n5;
         int n6 = n5 = ((Player)object).getInteractionTargetId() == 1041 ? 2 : 1;
         if (n > ((Player)object).getInventoryManager().getContainer().getItemAmount(n3)) {
@@ -2196,12 +2177,11 @@ public class GameplayHelper {
         ((Player)object).getInventoryManager().removeItem(new ItemStack(n3, n));
         ((Player)object).getInventoryManager().addItem(new ItemStack(n4, n));
         Player player2 = object;
-        object = "";
         player = player2;
-        player2.interfaceAction = object;
+        player2.interfaceAction = "";
     }
 
-    public static boolean b(Player player, int n, int n2) {
+    public static boolean handleFarmingPatchObjectAction(Player player, int n, int n2) {
         if (player.getAllotmentPatchManager().harvestPatch(n, n2)) {
             return true;
         }
@@ -2409,23 +2389,14 @@ public class GameplayHelper {
     }
 
     public static boolean handleTiaraCrafting(Player player, int n, int n2) {
-        Object object;
-        Object object2;
-        block6: {
-            RunecraftingAltarDefinition[] runecraftingAltarDefinitionArray = RunecraftingAltarDefinition.values();
-            int n3 = runecraftingAltarDefinitionArray.length;
-            int n4 = 0;
-            while (n4 < n3) {
-                RunecraftingAltarDefinition runecraftingAltarDefinition = runecraftingAltarDefinitionArray[n4];
-                if (n == runecraftingAltarDefinition.getTalismanItemId() && n2 == runecraftingAltarDefinition.getAltarObjectId()) {
-                    object2 = runecraftingAltarDefinition;
-                    break block6;
-                }
-                ++n4;
+        RunecraftingAltarDefinition altarDefinition = null;
+        for (RunecraftingAltarDefinition candidate : RunecraftingAltarDefinition.values()) {
+            if (n == candidate.getTalismanItemId() && n2 == candidate.getAltarObjectId()) {
+                altarDefinition = candidate;
+                break;
             }
-            object2 = object = null;
         }
-        if (object2 == null) {
+        if (altarDefinition == null) {
             return false;
         }
         if (!ServerSettings.runecraftingEnabled) {
@@ -2433,30 +2404,30 @@ public class GameplayHelper {
             return true;
         }
         if (player.getQuestState(14) != 1) {
-            object = QuestDefinition.forId(14);
-            object = ((QuestDefinition)object).getName();
-            player.packetSender.sendGameMessage("You need to complete " + (String)object + " to do this.");
+            QuestDefinition questDefinition = QuestDefinition.forId(14);
+            String string = questDefinition.getName();
+            player.packetSender.sendGameMessage("You need to complete " + string + " to do this.");
             return true;
         }
         if (player.getInventoryManager().containsItem(5525)) {
             player.getInventoryManager().removeItem(new ItemStack(5525, 1));
-            player.getInventoryManager().removeItem(new ItemStack(((RunecraftingAltarDefinition)((Object)object)).getTalismanItemId(), 1));
-            player.getInventoryManager().addItem(new ItemStack(((RunecraftingAltarDefinition)((Object)object)).getTiaraItemId(), 1));
-            player.getSkillManager().addExperience(20, ((RunecraftingAltarDefinition)((Object)object)).getTiaraExperience());
+            player.getInventoryManager().removeItem(new ItemStack(altarDefinition.getTalismanItemId(), 1));
+            player.getInventoryManager().addItem(new ItemStack(altarDefinition.getTiaraItemId(), 1));
+            player.getSkillManager().addExperience(20, altarDefinition.getTiaraExperience());
             player.packetSender.sendGameMessage("You bind the power of the talisman into the tiara.");
         }
         return true;
     }
 
-    public static void f(Player player, int n) {
+    public static void refreshRunecraftingTiaraConfig(Player player, int n) {
         Object object = new int[][]{{5527, 1}, {5529, 2}, {5531, 4}, {5535, 8}, {5537, 16}, {5533, 32}, {5539, 64}, {5543, 512}, {5541, 256}, {5545, 128}, {5547, 1024}, {5551, 2048}, {5549, 4096}};
-        int[][] nArrayArray = object;
+        int[][] nArrayArray = (int[][])object;
         int n2 = 0;
         while (n2 < 13) {
             int[] nArray = nArrayArray[n2];
             object = nArray;
             if (nArray[0] == n) {
-                player.packetSender.sendConfig(491, (int)object[1]);
+                player.packetSender.sendConfig(491, nArray[1]);
                 return;
             }
             ++n2;
@@ -2464,7 +2435,7 @@ public class GameplayHelper {
         player.packetSender.sendConfig(491, 0);
     }
 
-    public static boolean g(Player player, int n) {
+    public static boolean handleAnagramClueNpc(Player player, int n) {
         AnagramClue anagramClue = AnagramClue.forNpcId(n);
         if (anagramClue == null) {
             return false;
@@ -2516,7 +2487,7 @@ public class GameplayHelper {
         return true;
     }
 
-    public static int e(int n) {
+    public static int randomAnagramClueItemForLevel(int n) {
         int n2 = new Random().nextInt(AnagramClue.values().length);
         while (AnagramClue.values()[n2].getLevel() != n) {
             n2 = new Random().nextInt(AnagramClue.values().length);
@@ -2672,13 +2643,14 @@ public class GameplayHelper {
                 }
                 if (bl) {
                     player2 = object;
-                    object = CoordinateClueHandler.formatPositionAsCoordinate(player2.getPosition().getX(), player2.getPosition().getY())[0];
-                    String string = CoordinateClueHandler.formatPositionAsCoordinate(player2.getPosition().getX(), player2.getPosition().getY())[1];
-                    player2.getDialogueManager().showTwoLineStatement((String)object, string);
+                    String[] coordinateLines = CoordinateClueHandler.formatPositionAsCoordinate(player2.getPosition().getX(), player2.getPosition().getY());
+                    String coordinateLine = coordinateLines[0];
+                    String string = coordinateLines[1];
+                    player2.getDialogueManager().showTwoLineStatement(coordinateLine, string);
                     player = player2;
                     player.packetSender.sendGameMessage("the sextant displays:");
                     player = player2;
-                    player.packetSender.sendGameMessage((String)object);
+                    player.packetSender.sendGameMessage(coordinateLine);
                     player = player2;
                     player.packetSender.sendGameMessage(string);
                 }
@@ -2688,7 +2660,7 @@ public class GameplayHelper {
         return false;
     }
 
-    public static void f() {
+    public static void loadNpcSpawns() {
         int n = 0;
         new StringBuilder("0");
         try {
@@ -2834,7 +2806,7 @@ public class GameplayHelper {
                         n7 += 768;
                         n6 += 5120;
                     }
-                    GameplayHelper.a(n9, n7, n6, n5, n8);
+                    GameplayHelper.spawnNpc(n9, n7, n6, n5, n8);
                     NpcDefinition npcDefinition = NpcDefinition.forId(n9);
                     npcDefinition.getDropTableNpcIdOverride();
                 }
@@ -2849,12 +2821,12 @@ public class GameplayHelper {
         }
     }
 
-    public static void a(int n, int n2, int n3, int n4, int n5) {
+    public static void spawnNpc(int n, int n2, int n3, int n4, int n5) {
         if (n == 767 || n == 1826) {
             WalkingCollisionMap.addObjectCollision(2620, n2, n3, n4, 0, 10, true);
         }
         Npc npc = new Npc(n);
-        npc.a(new Position(n2, n3, n4));
+        npc.moveTo(new Position(n2, n3, n4));
         npc.setSpawnPosition(new Position(n2, n3, n4));
         npc.setRespawnEnabled(true);
         npc.setSpawnMinPosition(new Position(n2 - npc.getDefinition().getSpawnRadius(), n3 - npc.getDefinition().getSpawnRadius()));
@@ -2881,8 +2853,8 @@ public class GameplayHelper {
         World.registerNpc(npc);
     }
 
-    public static void a(Npc npc, int n, int n2, int n3, int n4) {
-        npc.a(new Position(n, n2, n3));
+    public static void spawnNonRespawningNpc(Npc npc, int n, int n2, int n3, int n4) {
+        npc.moveTo(new Position(n, n2, n3));
         npc.setSpawnPosition(new Position(n, n2, n3));
         npc.setRespawnEnabled(false);
         npc.setSpawnMinPosition(new Position(n - npc.getDefinition().getSpawnRadius(), n2 - npc.getDefinition().getSpawnRadius()));
@@ -2894,16 +2866,14 @@ public class GameplayHelper {
         World.registerNpc(npc);
     }
 
-    public static void a(Player player, Position object, Npc npc, boolean bl, boolean bl2) {
-        npc.a((Position)object);
+    public static void spawnOwnedNpcAtPosition(Player player, Position object, Npc npc, boolean bl, boolean bl2) {
+        npc.moveTo((Position)object);
         npc.setSpawnPosition((Position)object);
         npc.setMovementMode(NpcMovementMode.STATIONARY);
         npc.setSpawnX(((Position)object).getX());
         npc.setSpawnY(((Position)object).getY());
         World.registerNpc(npc);
-        Npc npc2 = npc;
-        object = player;
-        player.H = npc2;
+        player.H = npc;
         npc.setOwnerPlayerIndex(player.getIndex());
         npc.getUpdateState().setFacePosition(player.getPosition());
         if (bl) {
@@ -2911,7 +2881,7 @@ public class GameplayHelper {
         }
     }
 
-    public static void a(Player player, Npc npc, boolean bl, boolean bl2) {
+    public static void spawnOwnedNpcAdjacentToPlayer(Player player, Npc npc, boolean bl, boolean bl2) {
         int n = 0;
         int n2 = 0;
         if (player.canStepToOffset(1, 0)) {
@@ -2929,7 +2899,7 @@ public class GameplayHelper {
         }
         n = player.getPosition().getX() + n;
         n2 = player.getPosition().getY() + n2;
-        npc.a(new Position(n, n2, player.getPosition().getPlane()));
+        npc.moveTo(new Position(n, n2, player.getPosition().getPlane()));
         npc.setSpawnPosition(new Position(n, n2, player.getPosition().getPlane()));
         npc.setMovementMode(NpcMovementMode.STATIONARY);
         npc.setSpawnX(n);
@@ -2955,8 +2925,8 @@ public class GameplayHelper {
         }
     }
 
-    public static void a(Player player, Npc npc, int n, int n2, int n3, int n4, boolean bl, boolean bl2) {
-        npc.a(new Position(n, n2, n3));
+    public static void spawnRoamingNpcFacingPlayer(Player player, Npc npc, int n, int n2, int n3, int n4, boolean bl, boolean bl2) {
+        npc.moveTo(new Position(n, n2, n3));
         npc.setSpawnPosition(new Position(n, n2, n3));
         npc.setMovementMode(NpcMovementMode.ROAMING);
         npc.setSpawnX(n);
@@ -2971,8 +2941,8 @@ public class GameplayHelper {
         }
     }
 
-    public static void b(Npc npc, int n, int n2, int n3, int n4) {
-        npc.a(new Position(n, n2, n3));
+    public static void spawnNpcWithRemovalDelay(Npc npc, int n, int n2, int n3, int n4) {
+        npc.moveTo(new Position(n, n2, n3));
         npc.setSpawnPosition(new Position(n, n2, n3));
         npc.setSpawnX(n);
         npc.setSpawnY(n2);
@@ -2981,7 +2951,7 @@ public class GameplayHelper {
         World.registerNpc(npc);
     }
 
-    public static boolean b(Player player, Npc npc, int n, int n2, int n3, int n4, boolean bl, boolean bl2) {
+    public static boolean replaceOwnedRoamingNpcAtPosition(Player player, Npc npc, int n, int n2, int n3, int n4, boolean bl, boolean bl2) {
         Player player2 = player;
         if (player2.H != null) {
             player2 = player;
@@ -2992,7 +2962,7 @@ public class GameplayHelper {
                 World.unregisterNpc(player2.H);
             }
         }
-        npc.a(new Position(n, n2, n3));
+        npc.moveTo(new Position(n, n2, n3));
         npc.setSpawnPosition(new Position(n, n2, n3));
         npc.setMovementMode(NpcMovementMode.ROAMING);
         npc.setSpawnX(n);
@@ -3021,8 +2991,8 @@ public class GameplayHelper {
         return true;
     }
 
-    public static void c(Player player, Npc npc, int n, int n2, int n3, int n4, boolean bl, boolean bl2) {
-        npc.a(new Position(n, n2, 0));
+    public static void spawnOwnedGroundPlaneNpcAtPosition(Player player, Npc npc, int n, int n2, int n3, int n4, boolean bl, boolean bl2) {
+        npc.moveTo(new Position(n, n2, 0));
         npc.setSpawnPosition(new Position(n, n2, 0));
         npc.setMovementMode(NpcMovementMode.ROAMING);
         npc.setSpawnX(n);
@@ -3044,7 +3014,7 @@ public class GameplayHelper {
         }
     }
 
-    public static boolean i(Player player, int n) {
+    public static boolean hasActiveTemporaryNpc(Player player, int n) {
         Player player2 = player;
         if (player2.H != null) {
             player2 = player;
@@ -3058,8 +3028,8 @@ public class GameplayHelper {
         return false;
     }
 
-    public static void a(Entity entity, Npc npc, Position position, boolean bl, String string) {
-        npc.a(position);
+    public static void spawnNpcTargetingEntityAtPosition(Entity entity, Npc npc, Position position, boolean bl, String string) {
+        npc.moveTo(position);
         npc.setMovementMode(NpcMovementMode.STATIONARY);
         npc.setSpawnX(position.getX());
         npc.setSpawnY(position.getY());
@@ -3075,9 +3045,7 @@ public class GameplayHelper {
 
     public static void unregisterTemporaryNpc(Npc npc) {
         if (npc.getOwnerPlayer() != null) {
-            Object var2_1 = null;
-            Player player = npc.getOwnerPlayer();
-            npc.getOwnerPlayer().H = var2_1;
+            npc.getOwnerPlayer().H = null;
         }
         npc.setActive(false);
         EntityTargetMovement.clearMovementTarget(npc);
@@ -3625,57 +3593,51 @@ public class GameplayHelper {
             player3.packetSender.sendInterfaceText("Other player accepted.", 3535);
             return;
         }
-        Object object = new ItemStack[28];
+        ItemStack[] playerTradeItems = new ItemStack[28];
         int n = 0;
         while (n < 28) {
             ItemStack itemStack = player.getTradeOfferContainer().getItemAt(n);
             if (itemStack != null) {
-                object[n] = itemStack;
+                playerTradeItems[n] = itemStack;
                 player.getTradeOfferContainer().remove(itemStack);
                 player2.getInventoryManager().addItem(itemStack);
             }
             ++n;
         }
-        ItemStack[] itemStackArray = new ItemStack[28];
-        boolean bl = false;
-        while (bl < 28 != 0) {
-            object = player2.getTradeOfferContainer().getItemAt(bl ? 1 : 0);
-            if (object != null) {
-                itemStackArray[bl] = object;
-                player2.getTradeOfferContainer().remove((ItemStack)object);
-                player.getInventoryManager().addItem((ItemStack)object);
+        ItemStack[] partnerTradeItems = new ItemStack[28];
+        n = 0;
+        while (n < 28) {
+            ItemStack itemStack = player2.getTradeOfferContainer().getItemAt(n);
+            if (itemStack != null) {
+                partnerTradeItems[n] = itemStack;
+                player2.getTradeOfferContainer().remove(itemStack);
+                player.getInventoryManager().addItem(itemStack);
             }
-            bl += 1;
+            ++n;
         }
         player.setTradeState(TradeState.NONE);
         player2.setTradeState(TradeState.NONE);
-        object = player;
-        object.packetSender.sendGameMessage("You accept the trade.");
-        object = player2;
-        object.packetSender.sendGameMessage("You accept the trade.");
-        object = player;
-        object.packetSender.closeInterfaces();
-        object = player2;
-        object.packetSender.closeInterfaces();
+        player.packetSender.sendGameMessage("You accept the trade.");
+        player2.packetSender.sendGameMessage("You accept the trade.");
+        player.packetSender.closeInterfaces();
+        player2.packetSender.closeInterfaces();
         player.setTradePartner(null);
         player2.setTradePartner(null);
         player2.pendingTradeTarget = null;
         player.pendingTradeTarget = null;
-        object = player;
-        CharacterFileManager.savePlayer((Player)object);
-        object = player2;
-        CharacterFileManager.savePlayer((Player)object);
-        bl = false;
+        CharacterFileManager.savePlayer(player);
+        CharacterFileManager.savePlayer(player2);
+        boolean bothPlayersAreBots = false;
         if (player.botEnabled && player2.botEnabled) {
-            bl = true;
+            bothPlayersAreBots = true;
         }
         if (player.tradeAdvertMode != -1) {
             BotTaskDefinition cfr_ignored_0 = player.currentBotTask;
-            BotTaskDefinition.completeTradeAdvertOffer(player, bl);
+            BotTaskDefinition.completeTradeAdvertOffer(player, bothPlayersAreBots);
         }
         if (player2.tradeAdvertMode != -1) {
             BotTaskDefinition cfr_ignored_1 = player2.currentBotTask;
-            BotTaskDefinition.completeTradeAdvertOffer(player2, bl);
+            BotTaskDefinition.completeTradeAdvertOffer(player2, bothPlayersAreBots);
         }
     }
 
@@ -3800,23 +3762,27 @@ public class GameplayHelper {
         if (player2.interfaceAction.equals("operate") ? player.getEquipmentManager().getItemIdAtSlot(player.getSelectedItemSlot()) != player.getSelectedItemId() : !player.getInventoryManager().containsItem(player.getSelectedItemId())) {
             return false;
         }
-        int n = player.getTeleportManager().castItemTeleport(position);
-        if (player.botEnabled && n == 0 && player.botCombatState.startsWith("escape")) {
+        boolean teleportStarted = player.getTeleportManager().castItemTeleport(position);
+        if (player.botEnabled && !teleportStarted && player.botCombatState.startsWith("escape")) {
             player.botCombatState = "tele";
             BotCombatEscapeHandler.startBotCombatWalkingEscape(player);
-        } else if (player.botEnabled && n == 0 && player.botCombatState.equals("tele")) {
+        } else if (player.botEnabled && !teleportStarted && player.botCombatState.equals("tele")) {
             player.botCombatState = "run";
         }
-        if (n == 0) {
+        if (!teleportStarted) {
             return false;
         }
         player2 = player;
         if (player.interfaceAction.equals("operate")) {
-            if (player.getEquipmentManager().removeItem(new ItemStack(player.getSelectedItemId())) && (n = GameplayHelper.getNextDegradedJewelryItemId(player.getSelectedItemId())) > 0) {
-                player.getEquipmentManager().setSlotItem(n, player.getSelectedItemSlot());
+            int nextItemId;
+            if (player.getEquipmentManager().removeItem(new ItemStack(player.getSelectedItemId())) && (nextItemId = GameplayHelper.getNextDegradedJewelryItemId(player.getSelectedItemId())) > 0) {
+                player.getEquipmentManager().setSlotItem(nextItemId, player.getSelectedItemSlot());
             }
-        } else if (player.getInventoryManager().removeItem(new ItemStack(player.getSelectedItemId())) && (n = GameplayHelper.getNextDegradedJewelryItemId(player.getSelectedItemId())) > 0) {
-            player.getInventoryManager().addItem(new ItemStack(n));
+        } else {
+            int nextItemId;
+            if (player.getInventoryManager().removeItem(new ItemStack(player.getSelectedItemId())) && (nextItemId = GameplayHelper.getNextDegradedJewelryItemId(player.getSelectedItemId())) > 0) {
+                player.getInventoryManager().addItem(new ItemStack(nextItemId));
+            }
         }
         return true;
     }
@@ -3846,22 +3812,21 @@ public class GameplayHelper {
         return 0;
     }
 
-    public static void appendLogLine(String string, String object) {
-        object = "./data/logs/" + (String)object + ".txt";
+    public static void appendLogLine(String string, String logName) {
+        String path = "./data/logs/" + logName + ".txt";
         try {
-            object = new BufferedWriter(new FileWriter((String)object, true));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(path, true));
             try {
-                ((Writer)object).write(string);
-                ((BufferedWriter)object).newLine();
+                writer.write(string);
+                writer.newLine();
             }
             finally {
-                ((BufferedWriter)object).close();
+                writer.close();
             }
             return;
         }
-        catch (IOException iOException) {
-            object = iOException;
-            iOException.printStackTrace();
+        catch (IOException exception) {
+            exception.printStackTrace();
             return;
         }
     }
@@ -3892,9 +3857,8 @@ public class GameplayHelper {
     }
 
     public static String formatDateDayMonthYear(long l) {
-        Object object = new DateTime(l);
-        object = String.valueOf(((AbstractDateTime)object).getDayOfMonth()) + "-" + ((AbstractDateTime)object).getMonthOfYear() + "-" + ((AbstractDateTime)object).getYear();
-        return object;
+        DateTime dateTime = new DateTime(l);
+        return String.valueOf(dateTime.getDayOfMonth()) + "-" + dateTime.getMonthOfYear() + "-" + dateTime.getYear();
     }
 
     public static String formatDurationHoursMinutes(long l) {
@@ -3902,4 +3866,3 @@ public class GameplayHelper {
         return string;
     }
 }
-

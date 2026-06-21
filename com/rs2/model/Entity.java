@@ -85,11 +85,11 @@ public abstract class Entity {
     private DelayTimer poisonImmunityTimer = new DelayTimer(0);
     private DelayTimer movementLockImmunityTimer = new DelayTimer(0);
     private DelayTimer antifireTimer = new DelayTimer(0);
-    private List combatEffectTasks;
+    private List<CombatEffectTask> combatEffectTasks;
     private DelayTimer chargeCooldownTimer;
     private DelayTimer chargeSpellTimer;
     private MovementQueue movementQueue;
-    private Queue damageContributions;
+    private Queue<DamageContribution> damageContributions;
     private int size;
     private int walkDirection;
     private int runDirection;
@@ -100,11 +100,11 @@ public abstract class Entity {
 
     public Entity() {
         new ArrayList();
-        this.combatEffectTasks = new LinkedList();
+        this.combatEffectTasks = new LinkedList<CombatEffectTask>();
         this.chargeCooldownTimer = new DelayTimer(0);
         this.chargeSpellTimer = new DelayTimer(0);
         this.movementQueue = new MovementQueue(this);
-        this.damageContributions = new PriorityQueue(1, new DamageContributionComparator(this));
+        this.damageContributions = new PriorityQueue<DamageContribution>(1, new DamageContributionComparator(this));
         this.walkDirection = -1;
         this.runDirection = -1;
         this.attributes = new HashMap();
@@ -146,9 +146,8 @@ public abstract class Entity {
     }
 
     public final boolean isMoving() {
-        Object object = this;
-        object = ((Entity)object).movementQueue.getSteps();
-        return !object.isEmpty() && ((MovementStep)object.peek()).getDirection() != -1;
+        Queue steps = this.movementQueue.getSteps();
+        return !steps.isEmpty() && ((MovementStep)steps.peek()).getDirection() != -1;
     }
 
     public final boolean isRunningMovement() {
@@ -235,10 +234,8 @@ public abstract class Entity {
             Q.addPoint(2994, 3523);
         }
         if (ServerSettings.cacheVersion > 245) {
-            Entity entity;
             Entity entity2 = this;
-            entity2 = this;
-            if (Q.contains(entity.position.getX(), entity2.position.getY())) {
+            if (Q.contains(this.position.getX(), entity2.position.getY())) {
                 return true;
             }
         }
@@ -365,12 +362,8 @@ public abstract class Entity {
     }
 
     public final void setInteractionTarget(Entity entity) {
-        Entity entity2;
-        if (this.isNpc() && entity != null && !(entity2 = (Npc)this).isFaceEntityUpdateDisabled()) {
-            Entity entity3 = this;
-            entity2 = entity3;
-            entity2 = entity;
-            entity3.updateState.setFaceEntityId(entity2.encodedIndex);
+        if (this.isNpc() && entity != null && !((Npc)this).isFaceEntityUpdateDisabled()) {
+            this.updateState.setFaceEntityId(entity.encodedIndex);
         }
         this.interactionTarget = entity;
     }
@@ -469,14 +462,15 @@ public abstract class Entity {
     public final Entity getTopDamageContributor() {
         DamageContribution damageContribution = (DamageContribution)this.damageContributions.peek();
         if (damageContribution != null) {
-            if (this.damageContributions.size() > 1 && damageContribution.a() != null && damageContribution.a().isPlayer()) {
-                Player player = (Player)damageContribution.a();
+            Entity contributor = damageContribution.resolve();
+            if (this.damageContributions.size() > 1 && contributor != null && contributor.isPlayer()) {
+                Player player = (Player)contributor;
                 if (player.gameMode != 0) {
                     player.packetSender.sendGameMessage("You are not playing on normal gamemode and cannot receive the loot.");
                     return null;
                 }
             }
-            return damageContribution.a();
+            return contributor;
         }
         return null;
     }
@@ -484,8 +478,11 @@ public abstract class Entity {
     public final ArrayList getDamageContributorList() {
         ArrayList<Entity> arrayList = new ArrayList<Entity>();
         for (DamageContribution damageContribution : this.damageContributions) {
-            if (damageContribution.a() == null) continue;
-            arrayList.add(damageContribution.a());
+            Entity contributor = damageContribution.resolve();
+            if (contributor == null) {
+                continue;
+            }
+            arrayList.add(contributor);
         }
         return arrayList;
     }
@@ -513,62 +510,53 @@ public abstract class Entity {
 
     public final DamageContribution getDamageContribution(Entity entity) {
         for (DamageContribution damageContribution : this.damageContributions) {
-            if (damageContribution.a() != entity) continue;
+            if (damageContribution.resolve() != entity) {
+                continue;
+            }
             return damageContribution;
         }
         return null;
     }
 
     public final int collectCombatAttackOptions(List list, Entity entity, int n) {
-        Object object;
-        Object object2;
-        Object object3;
-        CombatAttack[] combatAttackArray = this.combatAttackProvider.createAttacks((Entity)this, entity);
-        int n2 = combatAttackArray.length;
-        int n3 = -1;
-        int n4 = 0;
-        while (n4 < combatAttackArray.length) {
-            object3 = combatAttackArray[n4];
-            ((CombatAttack)object3).prepare();
-            BaseCombatAttack baseCombatAttack = (BaseCombatAttack)object3;
-            if (baseCombatAttack != null && baseCombatAttack.getHitDefinitions() != null) {
-                object2 = baseCombatAttack.getHitDefinitions();
-                int n5 = ((HitDefinition[])object2).length;
-                int n6 = 0;
-                while (n6 < n5) {
-                    object = object2[n6];
-                    if (object != null && ((HitDefinition)object).getAttackStyle().getXpMode() == AttackXpMode.KBD_SPECIAL) {
-                        n3 = n4;
-                    }
-                    ++n6;
+        CombatAttack[] combatAttackArray = this.combatAttackProvider.createAttacks(this, entity);
+        int usableAttackCount = combatAttackArray.length;
+        int kbdSpecialIndex = -1;
+        for (int attackIndex = 0; attackIndex < combatAttackArray.length; ++attackIndex) {
+            CombatAttack combatAttack = combatAttackArray[attackIndex];
+            combatAttack.prepare();
+            BaseCombatAttack baseCombatAttack = (BaseCombatAttack)combatAttack;
+            if (baseCombatAttack == null || baseCombatAttack.getHitDefinitions() == null) {
+                continue;
+            }
+            HitDefinition[] hitDefinitions = baseCombatAttack.getHitDefinitions();
+            for (HitDefinition hitDefinition : hitDefinitions) {
+                if (hitDefinition != null && hitDefinition.getAttackStyle().getXpMode() == AttackXpMode.KBD_SPECIAL) {
+                    kbdSpecialIndex = attackIndex;
                 }
             }
-            ++n4;
         }
-        if (n3 != -1) {
-            object3 = entity;
-            Object object4 = this;
-            object4 = new CombatAttack[]{BaseCombatAttack.createProjectileAttackWithEffect((Entity)object4, (Entity)object3, CombatType.MAGIC, AttackXpMode.KBD_SPECIAL, 50, 4, 81, new GraphicEffect(-1, 0), new GraphicEffect(-1, 0), 394, ProjectileTiming.a, new PoisonEffect(8.0)), BaseCombatAttack.createProjectileAttackWithEffect((Entity)object4, (Entity)object3, CombatType.MAGIC, AttackXpMode.KBD_SPECIAL, 50, 4, 81, new GraphicEffect(-1, 0), new GraphicEffect(-1, 0), 395, ProjectileTiming.a, new MovementLockEffect(10)), BaseCombatAttack.createProjectileAttackWithEffect((Entity)object4, (Entity)object3, CombatType.MAGIC, AttackXpMode.KBD_SPECIAL, 50, 4, 81, new GraphicEffect(-1, 0), new GraphicEffect(-1, 0), 396, ProjectileTiming.a, new StatDrainEffect(-1, 2))};
-            int n7 = GameUtil.randomInt(3);
-            object4 = object4[n7];
-            object4.prepare();
-            combatAttackArray[n3] = object4;
+        if (kbdSpecialIndex != -1) {
+            CombatAttack[] kbdSpecialAttacks = new CombatAttack[]{
+                BaseCombatAttack.createProjectileAttackWithEffect(this, entity, CombatType.MAGIC, AttackXpMode.KBD_SPECIAL, 50, 4, 81, new GraphicEffect(-1, 0), new GraphicEffect(-1, 0), 394, ProjectileTiming.a, new PoisonEffect(8.0)),
+                BaseCombatAttack.createProjectileAttackWithEffect(this, entity, CombatType.MAGIC, AttackXpMode.KBD_SPECIAL, 50, 4, 81, new GraphicEffect(-1, 0), new GraphicEffect(-1, 0), 395, ProjectileTiming.a, new MovementLockEffect(10)),
+                BaseCombatAttack.createProjectileAttackWithEffect(this, entity, CombatType.MAGIC, AttackXpMode.KBD_SPECIAL, 50, 4, 81, new GraphicEffect(-1, 0), new GraphicEffect(-1, 0), 396, ProjectileTiming.a, new StatDrainEffect(-1, 2))
+            };
+            CombatAttack selectedAttack = kbdSpecialAttacks[GameUtil.randomInt(3)];
+            selectedAttack.prepare();
+            combatAttackArray[kbdSpecialIndex] = selectedAttack;
         }
-        object = combatAttackArray;
-        int n8 = combatAttackArray.length;
-        int n9 = 0;
-        while (n9 < n8) {
-            CombatAttack combatAttack = object[n9];
+        for (CombatAttack combatAttack : combatAttackArray) {
             CombatAttackState combatAttackState = combatAttack.getState();
             if (this.isNpc() && entity.isPlayer()) {
                 Npc npc = (Npc)this;
-                object2 = (Player)entity;
+                Player player = (Player)entity;
                 if (npc.getNpcId() == 1264) {
-                    if (((Player)object2).getActivePrayers()[14]) {
+                    if (player.getActivePrayers()[14]) {
                         if (combatAttack.getCombatType() == CombatType.MELEE) {
                             combatAttackState = CombatAttackState.a;
                         }
-                    } else if (((Player)object2).getActivePrayers()[12] && combatAttack.getCombatType() != CombatType.MELEE) {
+                    } else if (player.getActivePrayers()[12] && combatAttack.getCombatType() != CombatType.MELEE) {
                         combatAttackState = CombatAttackState.a;
                     }
                 }
@@ -584,26 +572,25 @@ public abstract class Entity {
                         }
                     }
                 }
-                --n2;
+                --usableAttackCount;
                 if (this.isPlayer() && ((Player)this).isSpecialAttackEnabled()) {
                     ((Player)this).setSpecialAttackEnabled(false);
                     ((Player)this).refreshSpecialAttackWidgets();
                 }
-            } else {
-                int n10 = combatAttack.getAttackRange();
-                if (this.isMoving() && !this.isRunningMovement() && entity.isMoving() && !entity.isRunningMovement()) {
-                    ++n10;
-                } else if (this.isMoving() && this.isRunningMovement() && entity.isMoving() && entity.isRunningMovement()) {
-                    n10 += 2;
-                }
-                if (!EntityTargetMovement.canReachTarget((Entity)this, entity, n10)) {
-                    combatAttackState = CombatAttackState.b;
-                }
-                list.add(new SmithingHandler(combatAttack, combatAttackState));
+                continue;
             }
-            ++n9;
+            int attackRange = combatAttack.getAttackRange();
+            if (this.isMoving() && !this.isRunningMovement() && entity.isMoving() && !entity.isRunningMovement()) {
+                ++attackRange;
+            } else if (this.isMoving() && this.isRunningMovement() && entity.isMoving() && entity.isRunningMovement()) {
+                attackRange += 2;
+            }
+            if (!EntityTargetMovement.canReachTarget(this, entity, attackRange)) {
+                combatAttackState = CombatAttackState.b;
+            }
+            list.add(new SmithingHandler(combatAttack, combatAttackState));
         }
-        return n2;
+        return usableAttackCount;
     }
 
     public final void setActiveCycleEvent(CycleEvent cycleEvent) {
@@ -627,18 +614,13 @@ public abstract class Entity {
     }
 
     public final boolean canApplyCombatEffect(CombatEffect combatEffect) {
-        boolean bl;
-        block1: {
-            CombatEffect combatEffect2 = combatEffect;
-            Object object2 = this;
-            for (Object object2 : ((Entity)object2).combatEffectTasks) {
-                if (!((CombatEffectTask)object2).getEffect().equals(combatEffect2)) continue;
-                bl = true;
-                break block1;
+        for (CombatEffectTask combatEffectTask : this.combatEffectTasks) {
+            if (!combatEffectTask.getEffect().equals(combatEffect)) {
+                continue;
             }
-            bl = false;
+            return false;
         }
-        return !bl && combatEffect.canApplyTo(this);
+        return combatEffect.canApplyTo(this);
     }
 
     public final void clearCombatEffectTasks() {
@@ -646,7 +628,7 @@ public abstract class Entity {
     }
 
     public final void clearCombatEffectTasks(Class clazz) {
-        LinkedList linkedList = new LinkedList();
+        LinkedList<CombatEffectTask> linkedList = new LinkedList<CombatEffectTask>();
         linkedList.addAll(this.combatEffectTasks);
         for (CombatEffectTask combatEffectTask : linkedList) {
             if (clazz != null && combatEffectTask.getEffect().getClass() != clazz) continue;
@@ -699,64 +681,30 @@ public abstract class Entity {
         this.queuePathTo(new Position(n, n2, entity.position.getPlane()), true);
     }
 
-    public final void queuePathTo(Position object, boolean bl) {
-        Object object2 = new DirectPathStrategy();
-        object = object2.buildPath(this, (Position)object, bl);
-        object2 = this;
-        ((Entity)object2).movementQueue.clear();
-        while (!((PathResult)object).getSteps().isEmpty()) {
-            PathStep pathStep = (PathStep)((PathResult)object).getSteps().poll();
-            Entity entity = this;
-            object2 = entity;
-            object2 = this;
-            entity.movementQueue.addStep(new Position(pathStep.getX(), pathStep.getY(), ((Entity)object2).position.getPlane()));
+    public final void queuePathTo(Position position, boolean bl) {
+        PathResult pathResult = new DirectPathStrategy().buildPath(this, position, bl);
+        this.movementQueue.clear();
+        while (!pathResult.getSteps().isEmpty()) {
+            PathStep pathStep = (PathStep)pathResult.getSteps().poll();
+            this.movementQueue.addStep(new Position(pathStep.getX(), pathStep.getY(), this.position.getPlane()));
         }
-        object2 = this;
-        ((Entity)object2).movementQueue.removeFirstStep();
+        this.movementQueue.removeFirstStep();
     }
 
     public final EntityTargetMovement getTargetMovement() {
         return this.targetMovement;
     }
 
-    public final boolean isWithinReach(Entity object, int n) {
-        Entity entity = this;
-        Entity entity2 = entity;
-        Entity entity3 = this;
-        entity2 = entity3;
-        Entity entity4 = this;
-        entity2 = entity4;
-        entity2 = this;
-        Rectangle rectangle = new Rectangle(entity.position.getX() - n, entity3.position.getY() - n, 2 * n + entity4.size, 2 * n + entity2.size);
-        Entity entity5 = object;
-        entity2 = entity5;
-        Entity entity6 = object;
-        entity2 = entity6;
-        Entity entity7 = object;
-        entity2 = entity7;
-        entity2 = object;
-        object = new Rectangle(entity5.position.getX(), entity6.position.getY(), entity7.size, entity2.size);
-        return rectangle.intersects((Rectangle)object);
+    public final boolean isWithinReach(Entity entity, int n) {
+        Rectangle sourceArea = new Rectangle(this.position.getX() - n, this.position.getY() - n, 2 * n + this.size, 2 * n + this.size);
+        Rectangle targetArea = new Rectangle(entity.position.getX(), entity.position.getY(), entity.size, entity.size);
+        return sourceArea.intersects(targetArea);
     }
 
-    public final boolean isOverlapping(Entity object) {
-        Entity entity = this;
-        Entity entity2 = entity;
-        Entity entity3 = this;
-        entity2 = entity3;
-        Entity entity4 = this;
-        entity2 = entity4;
-        entity2 = this;
-        Rectangle rectangle = new Rectangle(entity.position.getX(), entity3.position.getY(), entity4.size, entity2.size);
-        Entity entity5 = object;
-        entity2 = entity5;
-        Entity entity6 = object;
-        entity2 = entity6;
-        Entity entity7 = object;
-        entity2 = entity7;
-        entity2 = object;
-        object = new Rectangle(entity5.position.getX(), entity6.position.getY(), entity7.size, entity2.size);
-        return rectangle.intersects((Rectangle)object);
+    public final boolean isOverlapping(Entity entity) {
+        Rectangle sourceArea = new Rectangle(this.position.getX(), this.position.getY(), this.size, this.size);
+        Rectangle targetArea = new Rectangle(entity.position.getX(), entity.position.getY(), entity.size, entity.size);
+        return sourceArea.intersects(targetArea);
     }
 
     public final void beginInterruptibleAction() {

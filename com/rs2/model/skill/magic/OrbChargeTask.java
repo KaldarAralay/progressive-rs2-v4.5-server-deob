@@ -7,28 +7,28 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class OrbChargeTask
+public final class OrbChargeTask
 extends CycleEvent {
-    private int a;
-    private final /* synthetic */ Player b;
+    private int remainingCasts;
+    private final /* synthetic */ Player player;
 
-    OrbChargeTask(int n, Player player) {
-        this.b = player;
-        this.a = n;
+    public OrbChargeTask(int n, Player player) {
+        this.player = player;
+        this.remainingCasts = n;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        if (this.a == 0 || !this.b.B.tryStartCast()) {
+        if (this.remainingCasts == 0 || !this.player.B.tryStartCast()) {
             cycleEventContainer.stop();
             return;
         }
-        --this.a;
+        --this.remainingCasts;
     }
 
     @Override
     public final void onStop() {
-        this.b.resetAnimation();
+        this.player.resetAnimation();
     }
 }
 

@@ -12,9 +12,9 @@ import com.rs2.model.combat.hit.HitType;
 import com.rs2.model.combat.special.BandosGodswordSpecialDefinition;
 import com.rs2.model.player.Player;
 
-final class BandosGodswordSpecialAttack
+public final class BandosGodswordSpecialAttack
 extends WeaponCombatAttack {
-    BandosGodswordSpecialAttack(BandosGodswordSpecialDefinition bandosGodswordSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile) {
+    public BandosGodswordSpecialAttack(BandosGodswordSpecialDefinition bandosGodswordSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile) {
         super(player, entity, weaponProfile);
     }
 

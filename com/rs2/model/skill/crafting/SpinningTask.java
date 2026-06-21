@@ -9,14 +9,14 @@ import com.rs2.model.skill.crafting.SpinningRecipe;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class SpinningTask
+public final class SpinningTask
 extends CycleEvent {
     private int remainingActions;
     private final /* synthetic */ Player player;
     private final /* synthetic */ int actionSequence;
     private final /* synthetic */ SpinningRecipe recipe;
 
-    SpinningTask(SpinningRecipe spinningRecipe, int n, Player player, int n2) {
+    public SpinningTask(SpinningRecipe spinningRecipe, int n, Player player, int n2) {
         this.recipe = spinningRecipe;
         this.player = player;
         this.actionSequence = n2;
@@ -33,8 +33,7 @@ extends CycleEvent {
             return;
         }
         this.player.getUpdateState().setAnimation(896);
-        object = this.player;
-        ((Player)object).packetSender.sendGameMessage("You make the " + new ItemStack(this.recipe.getIngredientItemId()).getDefinition().getName() + " into a " + new ItemStack(this.recipe.getProductItemId()).getDefinition().getName() + ".");
+        this.player.packetSender.sendGameMessage("You make the " + new ItemStack(this.recipe.getIngredientItemId()).getDefinition().getName() + " into a " + new ItemStack(this.recipe.getProductItemId()).getDefinition().getName() + ".");
         this.player.getInventoryManager().removeItem(new ItemStack(this.recipe.getIngredientItemId()));
         this.player.getInventoryManager().addItem(new ItemStack(this.recipe.getProductItemId()));
         this.player.getSkillManager().addExperience(12, this.recipe.getExperience());

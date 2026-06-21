@@ -9,17 +9,17 @@ import com.rs2.model.shop.ShopDefinition;
 import com.rs2.model.shop.ShopManager;
 import com.rs2.model.task.TickTask;
 
-final class ShopRestockTask
+public final class ShopRestockTask
 extends TickTask {
     private final /* synthetic */ ShopDefinition shopDefinition;
     private final /* synthetic */ int itemId;
     private final /* synthetic */ int slotIndex;
 
-    ShopRestockTask(int n, ShopDefinition shopDefinition, int n2, int n3) {
+    public ShopRestockTask(int n, ShopDefinition shopDefinition, int n2, int n3) {
+        super(n);
         this.shopDefinition = shopDefinition;
         this.itemId = n2;
         this.slotIndex = n3;
-        super(n);
     }
 
     @Override

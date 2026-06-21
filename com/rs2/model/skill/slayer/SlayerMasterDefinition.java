@@ -38,13 +38,11 @@ public enum SlayerMasterDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private SlayerMasterDefinition(int n3, int n4, String string, SlayerAssignmentDefinition[] slayerAssignmentDefinitionArray) {
-        void var8_6;
-        void var7_5;
-        this.npcId = n3;
-        this.requiredCombatLevel = n4;
-        this.locationName = var7_5;
-        this.assignments = var8_6;
+    private SlayerMasterDefinition(int n2, int n3, int n4, int n5, String string2, SlayerAssignmentDefinition[] slayerAssignmentDefinitionArray) {
+        this.npcId = n2;
+        this.requiredCombatLevel = n3;
+        this.locationName = string2;
+        this.assignments = slayerAssignmentDefinitionArray;
     }
 
     public static SlayerMasterDefinition forNpcId(int n) {

@@ -12,9 +12,9 @@ import com.rs2.model.combat.hit.HitType;
 import com.rs2.model.combat.special.DarklightSpecialDefinition;
 import com.rs2.model.player.Player;
 
-final class DarklightSpecialAttack
+public final class DarklightSpecialAttack
 extends WeaponCombatAttack {
-    DarklightSpecialAttack(DarklightSpecialDefinition darklightSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile) {
+    public DarklightSpecialAttack(DarklightSpecialDefinition darklightSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile) {
         super(player, entity, weaponProfile);
     }
 

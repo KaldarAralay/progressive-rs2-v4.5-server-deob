@@ -19,46 +19,36 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
-            stringArray = new String[]{"I can start this quest by speaking to Hassan at the palace", "in Al-Kharid."};
-            return stringArray;
+            return new String[]{"I can start this quest by speaking to Hassan at the palace", "in Al-Kharid."};
         }
         if (n == 2) {
-            stringArray = new String[]{"I should go talk to Osman outside the palace in", "Al-Kharid."};
-            return stringArray;
+            return new String[]{"I should go talk to Osman outside the palace in", "Al-Kharid."};
         }
         if (n == 3) {
-            stringArray = new String[]{"Osman told me find Leela near Draynor Village and", "get these items:", "Rope", "Pink skirt", "Blonde wig", "Skin paste", "", "He also told me to bring imprint of the key and a", "bronze bar to him."};
-            return stringArray;
+            return new String[]{"Osman told me find Leela near Draynor Village and", "get these items:", "Rope", "Pink skirt", "Blonde wig", "Skin paste", "", "He also told me to bring imprint of the key and a", "bronze bar to him."};
         }
         if (n == 4) {
-            stringArray = new String[]{"Leela told me I need the following items to help", "the prince escape:", "Rope", "Skirt", "Blonde wig", "Skin paste", "Key"};
-            return stringArray;
+            return new String[]{"Leela told me I need the following items to help", "the prince escape:", "Rope", "Skirt", "Blonde wig", "Skin paste", "Key"};
         }
         if (n == 5) {
-            stringArray = new String[]{"Leela told me I need the following items to help", "the prince escape:", "Rope", "Skirt", "Blonde wig", "Skin paste", "Key - I can get this from Leela"};
-            return stringArray;
+            return new String[]{"Leela told me I need the following items to help", "the prince escape:", "Rope", "Skirt", "Blonde wig", "Skin paste", "Key - I can get this from Leela"};
         }
         if (n == 6) {
-            stringArray = new String[]{"I should now go talk to Prison guard Joe and", "find a weakness in him."};
-            return stringArray;
+            return new String[]{"I should now go talk to Prison guard Joe and", "find a weakness in him."};
         }
         if (n == 7) {
-            stringArray = new String[]{"Prison guard Joe seems to like beer, maybe I", "should get him drunk."};
-            return stringArray;
+            return new String[]{"Prison guard Joe seems to like beer, maybe I", "should get him drunk."};
         }
         if (n == 8) {
-            stringArray = new String[]{"Prison guard Joe is drunk, I should now tie up Lady", "Keli with a rope, and then go rescue Prince Ali."};
-            return stringArray;
+            return new String[]{"Prison guard Joe is drunk, I should now tie up Lady", "Keli with a rope, and then go rescue Prince Ali."};
         }
         if (n == 9) {
-            stringArray = new String[]{"I should go talk to Hassan at the palace in Al-Kharid", "to finish this quest."};
-            return stringArray;
+            return new String[]{"I should go talk to Hassan at the palace in Al-Kharid", "to finish this quest."};
         }
         if (n == 1) {
-            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "3 Quest Points", "700 Coins"};
-            return stringArray;
+            return new String[]{"Quest Completed!", "", "You were awarded:", "3 Quest Points", "700 Coins"};
         }
         return null;
     }
@@ -162,7 +152,7 @@ extends QuestScript {
                 }
                 if (n2 == 4) {
                     player.getDialogueManager().showNpcThreeLineDialogue("I need the services of someone, yes. If you are", "interested, see the spymaster, Osman. I manage the", "finances here. Come to me when you need payment.", 591);
-                    this.d(player);
+                    this.startQuest(player);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }

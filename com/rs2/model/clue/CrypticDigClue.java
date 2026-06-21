@@ -58,13 +58,11 @@ public enum CrypticDigClue {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private CrypticDigClue(Position position, int n) {
-        void var6_4;
-        void var5_3;
-        this.clueTextLines = position;
-        this.clueItemId = n;
-        this.position = var5_3;
-        this.level = var6_4;
+    private CrypticDigClue(String[] stringArray, int n2, Position position, int n3) {
+        this.clueTextLines = stringArray;
+        this.clueItemId = n2;
+        this.position = position;
+        this.level = n3;
     }
 
     public final String[] getClueTextLines() {

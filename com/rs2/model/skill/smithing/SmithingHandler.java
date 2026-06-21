@@ -127,32 +127,25 @@ public class SmithingHandler {
     }
 
     public static void startSmithingTask(Player player, int n, int n2) {
-        Object object;
-        Object object2;
-        Object object3;
-        SmithingBarDefinition smithingBarDefinition;
-        block14: {
-            smithingBarDefinition = player.getSelectedSmithingBarDefinition();
-            if (smithingBarDefinition == null) {
-                return;
-            }
-            int n3 = n;
-            object3 = smithingBarDefinition;
-            object2 = object3.getSmithableItems();
-            int n4 = ((SmithableItemDefinition[])object2).length;
-            int n5 = 0;
-            while (n5 < n4) {
-                object3 = object2[n5];
-                if (object3 != null && ((SmithableItemDefinition)((Object)object3)).getProductItemId() == n3) {
-                    object = object3;
-                    break block14;
-                }
-                ++n5;
-            }
-            object = object3 = null;
+        SmithingBarDefinition smithingBarDefinition = player.getSelectedSmithingBarDefinition();
+        if (smithingBarDefinition == null) {
+            return;
         }
-        if (object != null) {
-            if (!ItemDefinition.isDefined(((SmithableItemDefinition)((Object)object3)).getProductItemId())) {
+        int productItemId = n;
+        SmithableItemDefinition smithableItemDefinition = null;
+        SmithableItemDefinition[] smithableItems = smithingBarDefinition.getSmithableItems();
+        int count = smithableItems.length;
+        int index = 0;
+        while (index < count) {
+            SmithableItemDefinition candidate = smithableItems[index];
+            if (candidate != null && candidate.getProductItemId() == productItemId) {
+                smithableItemDefinition = candidate;
+                break;
+            }
+            ++index;
+        }
+        if (smithableItemDefinition != null) {
+            if (!ItemDefinition.isDefined(smithableItemDefinition.getProductItemId())) {
                 return;
             }
             ItemStack itemStack = new ItemStack(n);
@@ -167,38 +160,33 @@ public class SmithingHandler {
                 }
             }
             String string = itemStack.getDefinition().getName().toLowerCase();
-            if (!SkillActionHelper.checkSkillRequirement(player, 13, ((SmithableItemDefinition)((Object)object3)).getRequiredLevel(), "smith " + string)) {
+            if (!SkillActionHelper.checkSkillRequirement(player, 13, smithableItemDefinition.getRequiredLevel(), "smith " + string)) {
                 return;
             }
             if (!player.getInventoryManager().getContainer().containsItem(2347)) {
-                object2 = player;
-                object2.packetSender.sendGameMessage("You need a hammer to smith on an anvil.");
+                player.packetSender.sendGameMessage("You need a hammer to smith on an anvil.");
                 if (player.botEnabled) {
                     player.currentBotTask.startWalkToBank(player);
                 }
                 return;
             }
             if (player.getQuestState(0) != 1 && itemStack.getId() != 1205) {
-                object2 = player;
-                object2.packetSender.sendGameMessage("You can only smith daggers here.");
+                player.packetSender.sendGameMessage("You can only smith daggers here.");
                 return;
             }
-            ItemStack itemStack2 = new ItemStack(player.getSelectedSmithingBarItemId(), ((SmithableItemDefinition)((Object)object3)).getBarCount());
+            ItemStack itemStack2 = new ItemStack(player.getSelectedSmithingBarItemId(), smithableItemDefinition.getBarCount());
             if (!player.getInventoryManager().containsItemStack(itemStack2)) {
-                object2 = player;
-                object2.packetSender.sendGameMessage("You need at least " + ((SmithableItemDefinition)((Object)object3)).getBarCount() + " bars to make " + string + ".");
+                player.packetSender.sendGameMessage("You need at least " + smithableItemDefinition.getBarCount() + " bars to make " + string + ".");
                 if (player.botEnabled) {
                     player.currentBotTask.startWalkToBank(player);
                 }
                 return;
             }
-            object2 = player;
-            object2.packetSender.closeInterfaces();
+            player.packetSender.closeInterfaces();
             int n6 = player.nextActionSequence();
-            object2 = player;
-            object2.packetSender.sendSoundEffect(468, 1, 0);
+            player.packetSender.sendSoundEffect(468, 1, 0);
             player.getUpdateState().setAnimation(898);
-            player.setActiveCycleEvent(new SmithingTask(n2, player, n6, itemStack2, n, (SmithableItemDefinition)((Object)object3), smithingBarDefinition, itemStack));
+            player.setActiveCycleEvent(new SmithingTask(n2, player, n6, itemStack2, n, smithableItemDefinition, smithingBarDefinition, itemStack));
             CycleEventHandler.getInstance().schedule(player, player.getActiveCycleEvent(), 5);
         }
     }

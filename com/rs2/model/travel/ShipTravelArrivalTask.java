@@ -8,15 +8,15 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 import com.rs2.model.travel.ShipRoute;
 
-final class ShipTravelArrivalTask
+public final class ShipTravelArrivalTask
 extends TickTask {
     private final /* synthetic */ ShipRoute route;
     private final /* synthetic */ Player player;
 
-    ShipTravelArrivalTask(int n, ShipRoute shipRoute, Player player) {
+    public ShipTravelArrivalTask(int n, ShipRoute shipRoute, Player player) {
+        super(n);
         this.route = shipRoute;
         this.player = player;
-        super(n);
     }
 
     @Override

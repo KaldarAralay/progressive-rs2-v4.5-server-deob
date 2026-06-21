@@ -36,13 +36,14 @@ public final class AbyssManager {
         return -1;
     }
 
-    public static void rollAbyssPouchDrop(Player object, Npc npc) {
-        if (AbyssManager.getMissingPouchItemId((Player)object) == -1) {
+    public static void rollAbyssPouchDrop(Player player, Npc npc) {
+        int missingPouchItemId = AbyssManager.getMissingPouchItemId(player);
+        if (missingPouchItemId == -1) {
             return;
         }
         if ((npc.getDefinition().getName().equalsIgnoreCase("leech") || npc.getDefinition().getName().equalsIgnoreCase("guardian") || npc.getDefinition().getName().equalsIgnoreCase("walker")) && GameUtil.randomInclusive(100) == 5) {
-            object = new GroundItem(new ItemStack(AbyssManager.getMissingPouchItemId((Player)object)), (Entity)object, npc.getPosition());
-            GroundItemManager.getInstance().spawn((GroundItem)object);
+            GroundItem groundItem = new GroundItem(new ItemStack(missingPouchItemId), player, npc.getPosition());
+            GroundItemManager.getInstance().spawn(groundItem);
         }
     }
 
@@ -126,29 +127,24 @@ public final class AbyssManager {
 
     public static void sendObstacleSuccessMessage(Player player, String object) {
         if (object == "chopTendrils") {
-            object = player;
-            ((Player)object).packetSender.sendGameMessage("...and manage to chop down the tendrils.");
+            player.packetSender.sendGameMessage("...and manage to chop down the tendrils.");
             return;
         }
         if (object == "mineRock") {
-            object = player;
-            ((Player)object).packetSender.sendGameMessage("...and manage to break through the rock.");
+            player.packetSender.sendGameMessage("...and manage to break through the rock.");
             return;
         }
         if (object == "crossGap") {
-            object = player;
-            ((Player)object).packetSender.sendGameMessage("...and you manage to crawl through.");
+            player.packetSender.sendGameMessage("...and you manage to crawl through.");
             player.getUpdateState().setAnimation(1332);
             return;
         }
         if (object == "blockade") {
-            object = player;
-            ((Player)object).packetSender.sendGameMessage("...and manage to burn it down and get past.");
+            player.packetSender.sendGameMessage("...and manage to burn it down and get past.");
             return;
         }
         if (object == "distractEye") {
-            object = player;
-            ((Player)object).packetSender.sendGameMessage("...and sneak past while they're not looking.");
+            player.packetSender.sendGameMessage("...and sneak past while they're not looking.");
         }
     }
 
@@ -166,9 +162,9 @@ public final class AbyssManager {
             return;
         }
         if (object == "distractEye") {
-            object = new int[]{855, 856, 857, 858, 859, 860, 861, 862, 863, 864, 865, 866, 2113, 2109, 2111, 2106, 2107, 2108, 1368, 2105, 2110, 2112, 2127, 2128, 1131, 1130, 1129, 1128, 1745, 3544, 3543, 2836};
+            int[] animations = new int[]{855, 856, 857, 858, 859, 860, 861, 862, 863, 864, 865, 866, 2113, 2109, 2111, 2106, 2107, 2108, 1368, 2105, 2110, 2112, 2127, 2128, 1131, 1130, 1129, 1128, 1745, 3544, 3543, 2836};
             int n = new Random().nextInt(32);
-            player.getUpdateState().setAnimation((int)object[n]);
+            player.getUpdateState().setAnimation(animations[n]);
             return;
         }
         if (object == "crossGap") {

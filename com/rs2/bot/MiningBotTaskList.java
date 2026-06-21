@@ -6,9 +6,9 @@ package com.rs2.bot;
 import com.rs2.bot.BotTaskDefinition;
 import java.util.ArrayList;
 
-final class MiningBotTaskList
+public final class MiningBotTaskList
 extends ArrayList {
-    MiningBotTaskList() {
+    public MiningBotTaskList() {
         this.add(BotTaskDefinition.getAlKharidMineTask());
         this.add(BotTaskDefinition.getCraftingGuildMineTask());
         this.add(BotTaskDefinition.dwarvenMineTask);

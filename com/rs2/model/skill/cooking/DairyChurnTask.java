@@ -10,13 +10,13 @@ import com.rs2.model.skill.cooking.DairyChurnRecipe;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class DairyChurnTask
+public final class DairyChurnTask
 extends CycleEvent {
     private final /* synthetic */ Player player;
     private final /* synthetic */ int actionSequence;
     private final /* synthetic */ DairyChurnRecipe recipe;
 
-    DairyChurnTask(Player player, int n, DairyChurnRecipe dairyChurnRecipe) {
+    public DairyChurnTask(Player player, int n, DairyChurnRecipe dairyChurnRecipe) {
         this.player = player;
         this.actionSequence = n;
         this.recipe = dairyChurnRecipe;

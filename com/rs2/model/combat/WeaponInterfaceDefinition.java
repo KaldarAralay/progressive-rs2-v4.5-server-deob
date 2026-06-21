@@ -40,26 +40,22 @@ public enum WeaponInterfaceDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private WeaponInterfaceDefinition(int[] nArray, int n3, int n4, int n5, AttackStyleDefinition[] attackStyleDefinitionArray) {
-        void var9_7;
-        void var8_6;
-        this.sidebarInterfaceId = (int)nArray;
+    private WeaponInterfaceDefinition(int n2, int n3, int[] nArray, int n4, int n5, int n6, AttackStyleDefinition[] attackStyleDefinitionArray) {
+        this.sidebarInterfaceId = n2;
         this.attackSoundId = n3;
-        this.weaponTextWidgetIds = (int[])n4;
-        this.specialBarWidgetId = n5;
-        this.specialAttackButtonId = var8_6;
-        this.specialEnergyWidgetId = (int)attackStyleDefinitionArray;
-        this.attackStyles = var9_7;
+        this.weaponTextWidgetIds = nArray;
+        this.specialBarWidgetId = n4;
+        this.specialAttackButtonId = n6;
+        this.specialEnergyWidgetId = n5;
+        this.attackStyles = attackStyleDefinitionArray;
     }
 
     /*
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private WeaponInterfaceDefinition(int[] nArray, int n3, int n4, AttackStyleDefinition[] attackStyleDefinitionArray) {
-        this((String)cfr_renamed_0, n2, (int)nArray, n3, (int[])n4, -1, -1, -1, (AttackStyleDefinition[])cfr_renamed_2);
-        void cfr_renamed_2;
-        void cfr_renamed_0;
+    private WeaponInterfaceDefinition(int n2, int n3, int[] nArray, int n4, int n5, AttackStyleDefinition[] attackStyleDefinitionArray) {
+        this(n2, n3, nArray, -1, -1, -1, attackStyleDefinitionArray);
     }
 
     public final int getSpecialAttackButtonId() {

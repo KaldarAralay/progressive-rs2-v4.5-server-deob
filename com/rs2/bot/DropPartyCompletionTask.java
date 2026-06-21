@@ -8,13 +8,13 @@ import com.rs2.model.Position;
 import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 
-final class DropPartyCompletionTask
+public final class DropPartyCompletionTask
 extends TickTask {
     private final /* synthetic */ Player participant;
 
-    DropPartyCompletionTask(int n, Player player) {
-        this.participant = player;
+    public DropPartyCompletionTask(int n, Player player) {
         super(10);
+        this.participant = player;
     }
 
     @Override

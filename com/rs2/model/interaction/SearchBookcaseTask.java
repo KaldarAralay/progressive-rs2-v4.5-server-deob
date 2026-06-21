@@ -8,24 +8,24 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class SearchBookcaseTask
+public final class SearchBookcaseTask
 extends CycleEvent {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
-    SearchBookcaseTask(FirstObjectActionTask firstObjectActionTask, Player player) {
-        this.a = player;
+    public SearchBookcaseTask(FirstObjectActionTask firstObjectActionTask, Player player) {
+        this.player = player;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        Player player = this.a;
+        Player player = this.player;
         player.packetSender.sendGameMessage("None of them look very interesting.");
         cycleEventContainer.stop();
     }
 
     @Override
     public final void onStop() {
-        this.a.setActionLocked(false);
+        this.player.setActionLocked(false);
     }
 }
 

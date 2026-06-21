@@ -7,15 +7,15 @@ import com.rs2.model.GameplayHelper;
 import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 
-final class PostLoginSyncTask
+public final class PostLoginSyncTask
 extends TickTask {
     private /* synthetic */ Player a;
     private final /* synthetic */ Player b;
 
-    PostLoginSyncTask(Player player, int n, Player player2) {
+    public PostLoginSyncTask(Player player, int n, Player player2) {
+        super(3);
         this.a = player;
         this.b = player2;
-        super(3);
     }
 
     @Override

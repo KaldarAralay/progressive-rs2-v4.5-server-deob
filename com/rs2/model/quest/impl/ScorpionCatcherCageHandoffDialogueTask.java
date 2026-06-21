@@ -8,19 +8,19 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.ScorpionCatcherQuest;
 import com.rs2.model.task.TickTask;
 
-final class ScorpionCatcherCageHandoffDialogueTask
+public final class ScorpionCatcherCageHandoffDialogueTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
-    ScorpionCatcherCageHandoffDialogueTask(ScorpionCatcherQuest scorpionCatcherQuest, int n, Player player) {
-        this.a = player;
+    public ScorpionCatcherCageHandoffDialogueTask(ScorpionCatcherQuest scorpionCatcherQuest, int n, Player player) {
         super(4);
+        this.player = player;
     }
 
     @Override
     public final void execute() {
-        this.a.setActionLocked(false);
-        DialogueManager.continueDialogue(this.a, 389, 10, 0);
+        this.player.setActionLocked(false);
+        DialogueManager.continueDialogue(this.player, 389, 10, 0);
         this.stop();
     }
 }

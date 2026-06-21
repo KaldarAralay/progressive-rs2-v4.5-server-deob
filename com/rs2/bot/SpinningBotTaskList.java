@@ -6,9 +6,9 @@ package com.rs2.bot;
 import com.rs2.bot.BotTaskDefinition;
 import java.util.ArrayList;
 
-final class SpinningBotTaskList
+public final class SpinningBotTaskList
 extends ArrayList {
-    SpinningBotTaskList() {
+    public SpinningBotTaskList() {
         this.add(BotTaskDefinition.getLumbridgeWoolSpinningTask());
         this.add(BotTaskDefinition.getSeersFlaxSpinningTask());
     }

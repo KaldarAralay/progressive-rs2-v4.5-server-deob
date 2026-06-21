@@ -9,22 +9,22 @@ import com.rs2.model.quest.impl.ErnestTheChickenQuest;
 import com.rs2.model.quest.impl.PouletmorphMachineTransformTask;
 import com.rs2.model.task.TickTask;
 
-final class PouletmorphMachineStartTask
+public final class PouletmorphMachineStartTask
 extends TickTask {
     private TickTask b;
     final /* synthetic */ ErnestTheChickenQuest a;
-    private final /* synthetic */ Player c;
+    private final /* synthetic */ Player player;
 
-    PouletmorphMachineStartTask(ErnestTheChickenQuest ernestTheChickenQuest, int n, Player player) {
-        this.a = ernestTheChickenQuest;
-        this.c = player;
+    public PouletmorphMachineStartTask(ErnestTheChickenQuest ernestTheChickenQuest, int n, Player player) {
         super(n);
+        this.a = ernestTheChickenQuest;
+        this.player = player;
         this.b = new PouletmorphMachineTransformTask(this, 1, player);
     }
 
     @Override
     public final void execute() {
-        Player player = this.c;
+        Player player = this.player;
         player.packetSender.sendGameMessage("Oddenstein starts up the machine.");
         World.getTaskScheduler().schedule(this.b);
         this.stop();

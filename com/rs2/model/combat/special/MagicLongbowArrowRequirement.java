@@ -6,9 +6,9 @@ package com.rs2.model.combat.special;
 import com.rs2.model.combat.requirement.EquipmentItemRequirement;
 import com.rs2.model.combat.special.MagicLongbowSpecialAttack;
 
-final class MagicLongbowArrowRequirement
+public final class MagicLongbowArrowRequirement
 extends EquipmentItemRequirement {
-    MagicLongbowArrowRequirement(MagicLongbowSpecialAttack magicLongbowSpecialAttack, int n, int n2, int n3, boolean bl) {
+    public MagicLongbowArrowRequirement(MagicLongbowSpecialAttack magicLongbowSpecialAttack, int n, int n2, int n3, boolean bl) {
         super(n, n2, 2, true);
     }
 

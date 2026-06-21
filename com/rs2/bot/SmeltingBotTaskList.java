@@ -6,9 +6,9 @@ package com.rs2.bot;
 import com.rs2.bot.BotTaskDefinition;
 import java.util.ArrayList;
 
-final class SmeltingBotTaskList
+public final class SmeltingBotTaskList
 extends ArrayList {
-    SmeltingBotTaskList() {
+    public SmeltingBotTaskList() {
         this.add(BotTaskDefinition.getAlKharidSteelSmeltingTask());
         this.add(BotTaskDefinition.getFaladorSteelSmeltingTask());
     }

@@ -10,14 +10,14 @@ import com.rs2.model.skill.farming.SpecialTreePatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class SpecialTreePlantingTask
+public final class SpecialTreePlantingTask
 extends CycleEvent {
     private /* synthetic */ SpecialTreePatchManager manager;
     private final /* synthetic */ SpecialTreePatch patch;
     private final /* synthetic */ int saplingId;
     private final /* synthetic */ SpecialTreeDefinition definition;
 
-    SpecialTreePlantingTask(SpecialTreePatchManager specialTreePatchManager, SpecialTreePatch specialTreePatch, int n, SpecialTreeDefinition specialTreeDefinition) {
+    public SpecialTreePlantingTask(SpecialTreePatchManager specialTreePatchManager, SpecialTreePatch specialTreePatch, int n, SpecialTreeDefinition specialTreeDefinition) {
         this.manager = specialTreePatchManager;
         this.patch = specialTreePatch;
         this.saplingId = n;

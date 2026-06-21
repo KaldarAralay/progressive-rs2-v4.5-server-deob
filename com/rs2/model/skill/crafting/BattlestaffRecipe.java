@@ -38,13 +38,11 @@ public enum BattlestaffRecipe {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private BattlestaffRecipe(int n3, double d) {
-        void var6_4;
-        void var5_3;
-        this.orbItemId = n3;
-        this.battlestaffItemId = (int)d;
-        this.requiredLevel = (byte)var5_3;
-        this.experience = var6_4;
+    private BattlestaffRecipe(int n2, int n3, int n4, double d) {
+        this.orbItemId = n2;
+        this.battlestaffItemId = n3;
+        this.requiredLevel = (byte)n4;
+        this.experience = d;
     }
 
     public final int getOrbItemId() {

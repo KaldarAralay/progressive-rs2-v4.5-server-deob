@@ -39,11 +39,11 @@ public final class LoginProtocol {
                     player.disconnect();
                     return;
                 }
-                object = PacketBuffer.allocateWriter(17);
-                ((PacketWriter)object).writeLong(0L);
-                ((PacketWriter)object).writeByte(0);
-                ((PacketWriter)object).writeLong(new SecureRandom().nextLong());
-                player.writePacketBuffer(((PacketWriter)object).getBuffer());
+                PacketWriter handshakeResponse = PacketBuffer.allocateWriter(17);
+                handshakeResponse.writeLong(0L);
+                handshakeResponse.writeByte(0);
+                handshakeResponse.writeLong(new SecureRandom().nextLong());
+                player.writePacketBuffer(handshakeResponse.getBuffer());
                 player.setConnectionState(PlayerConnectionState.LOGIN_PAYLOAD);
                 return;
             }
@@ -96,19 +96,18 @@ public final class LoginProtocol {
                     }
                     long l = byteBuffer.getLong();
                     long l2 = byteBuffer.getLong();
-                    object = new int[]{(int)(l >> 32), (int)l, (int)(l2 >> 32), (int)l2};
-                    player.setInboundCipher(new IsaacCipher((int[])object));
+                    int[] isaacSeed = new int[]{(int)(l >> 32), (int)l, (int)(l2 >> 32), (int)l2};
+                    player.setInboundCipher(new IsaacCipher(isaacSeed));
                     int n5 = 0;
                     while (n5 < 4) {
-                        Object object2 = object;
                         int n6 = n5++;
-                        object2[n6] = object2[n6] + 50;
+                        isaacSeed[n6] = isaacSeed[n6] + 50;
                     }
-                    player.setOutboundCipher(new IsaacCipher((int[])object));
+                    player.setOutboundCipher(new IsaacCipher(isaacSeed));
                     byteBuffer.getInt();
                     String string = TextUtil.readLine(byteBuffer).trim();
-                    object = TextUtil.readLine(byteBuffer).trim();
-                    player.setSubmittedPassword((String)object);
+                    String string2 = TextUtil.readLine(byteBuffer).trim();
+                    player.setSubmittedPassword(string2);
                     player.setUsername(TextUtil.capitalizeFirst(string));
                     player.sessionStartMillis = System.currentTimeMillis();
                 } else {
@@ -149,7 +148,12 @@ public final class LoginProtocol {
                 synchronized (dedicatedReactor) {
                     DedicatedReactor.getInstance().getSelector().wakeup();
                     player.getSelectionKey().interestOps(player.getSelectionKey().interestOps() & 0xFFFFFFFE);
-                    player.getSocketChannel().register(Server.getInstance().getSelector(), 1, player);
+                    try {
+                        player.getSocketChannel().register(Server.getInstance().getSelector(), 1, player);
+                    }
+                    catch (java.nio.channels.ClosedChannelException exception) {
+                        player.disconnect();
+                    }
                     return;
                 }
             }

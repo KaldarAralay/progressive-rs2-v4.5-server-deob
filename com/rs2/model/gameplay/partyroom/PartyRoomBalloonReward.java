@@ -20,5 +20,9 @@ public final class PartyRoomBalloonReward {
     /* synthetic */ PartyRoomBalloonReward(ItemStack itemStack, Position position, byte by) {
         this(itemStack, position);
     }
+
+    PartyRoomBalloonReward(ItemStack itemStack, Position position, int n) {
+        this(itemStack, position);
+    }
 }
 

@@ -13,9 +13,9 @@ import com.rs2.model.combat.hit.HitType;
 import com.rs2.model.combat.special.DragonDaggerSpecialDefinition;
 import com.rs2.model.player.Player;
 
-final class DragonDaggerSpecialAttack
+public final class DragonDaggerSpecialAttack
 extends WeaponCombatAttack {
-    DragonDaggerSpecialAttack(DragonDaggerSpecialDefinition dragonDaggerSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile) {
+    public DragonDaggerSpecialAttack(DragonDaggerSpecialDefinition dragonDaggerSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile) {
         super(player, entity, weaponProfile);
     }
 

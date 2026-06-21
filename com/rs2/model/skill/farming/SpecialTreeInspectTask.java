@@ -9,13 +9,13 @@ import com.rs2.model.skill.farming.SpecialTreePatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class SpecialTreeInspectTask
+public final class SpecialTreeInspectTask
 extends CycleEvent {
     private /* synthetic */ SpecialTreePatchManager manager;
     private final /* synthetic */ SpecialTreePatch patch;
     private final /* synthetic */ SpecialTreeGrowthDefinition growthDefinition;
 
-    SpecialTreeInspectTask(SpecialTreePatchManager specialTreePatchManager, SpecialTreePatch specialTreePatch, SpecialTreeGrowthDefinition specialTreeGrowthDefinition) {
+    public SpecialTreeInspectTask(SpecialTreePatchManager specialTreePatchManager, SpecialTreePatch specialTreePatch, SpecialTreeGrowthDefinition specialTreeGrowthDefinition) {
         this.manager = specialTreePatchManager;
         this.patch = specialTreePatch;
         this.growthDefinition = specialTreeGrowthDefinition;

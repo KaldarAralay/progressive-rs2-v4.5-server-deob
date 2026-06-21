@@ -10,22 +10,22 @@ import com.rs2.model.quest.impl.PiratesTreasureQuest;
 import com.rs2.model.quest.impl.RumBananaCratePromptTask;
 import com.rs2.model.task.TickTask;
 
-final class RumBananaCrateSearchTask
+public final class RumBananaCrateSearchTask
 extends TickTask {
     private TickTask a;
-    private final /* synthetic */ Player b;
+    private final /* synthetic */ Player player;
 
-    RumBananaCrateSearchTask(PiratesTreasureQuest piratesTreasureQuest, int n, Player player) {
-        this.b = player;
+    public RumBananaCrateSearchTask(PiratesTreasureQuest piratesTreasureQuest, int n, Player player) {
         super(3);
+        this.player = player;
         this.a = new RumBananaCratePromptTask(this, 2, player);
     }
 
     @Override
     public final void execute() {
-        this.b.getInventoryManager().addOrDropItem(new ItemStack(431, 1));
-        this.b.getUpdateState().setAnimation(832);
-        Player player = this.b;
+        this.player.getInventoryManager().addOrDropItem(new ItemStack(431, 1));
+        this.player.getUpdateState().setAnimation(832);
+        Player player = this.player;
         player.packetSender.sendGameMessage("You find your bottle of rum in amongst the bananas.");
         World.getTaskScheduler().schedule(this.a);
         this.stop();

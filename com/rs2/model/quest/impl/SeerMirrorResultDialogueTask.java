@@ -8,19 +8,19 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.SeerMirrorGazeTask;
 import com.rs2.model.task.TickTask;
 
-final class SeerMirrorResultDialogueTask
+public final class SeerMirrorResultDialogueTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
-    SeerMirrorResultDialogueTask(SeerMirrorGazeTask seerMirrorGazeTask, int n, Player player) {
-        this.a = player;
+    public SeerMirrorResultDialogueTask(SeerMirrorGazeTask seerMirrorGazeTask, int n, Player player) {
         super(4);
+        this.player = player;
     }
 
     @Override
     public final void execute() {
-        this.a.setActionLocked(false);
-        DialogueManager.continueDialogue(this.a, 388, 8, 0);
+        this.player.setActionLocked(false);
+        DialogueManager.continueDialogue(this.player, 388, 8, 0);
         this.stop();
     }
 }

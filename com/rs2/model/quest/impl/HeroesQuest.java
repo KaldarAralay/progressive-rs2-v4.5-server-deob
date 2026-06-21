@@ -24,53 +24,51 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
-            n = stringArray.getSkillManager().getBaseLevel(15);
-            int n2 = stringArray.getSkillManager().getBaseLevel(14);
-            int n3 = stringArray.getSkillManager().getBaseLevel(10);
-            int n4 = stringArray.getSkillManager().getBaseLevel(7);
+            n = player.getSkillManager().getBaseLevel(15);
+            int n2 = player.getSkillManager().getBaseLevel(14);
+            int n3 = player.getSkillManager().getBaseLevel(10);
+            int n4 = player.getSkillManager().getBaseLevel(7);
             boolean bl = false;
-            if (stringArray.getQuestPoints() >= 56 && stringArray.getQuestState(16) == 1 && stringArray.getQuestState(58) == 1 && stringArray.getQuestState(5) == 1 && stringArray.getQuestState(61) == 1 && stringArray.getQuestState(29) == 1) {
+            if (player.getQuestPoints() >= 56 && player.getQuestState(16) == 1 && player.getQuestState(58) == 1 && player.getQuestState(5) == 1 && player.getQuestState(61) == 1 && player.getQuestState(29) == 1) {
                 bl = true;
             }
             if (bl) {
-                stringArray = new String[]{"I can start this quest by speaking to Achietties at the", "Heroes' Guild located North of Taverley", "as all reguired quests are complete, and I have enough QP.", "To complete this quest I need:", String.valueOf(n >= 25 ? "@str@" : "") + "Level 25 Herblore", String.valueOf(n2 >= 50 ? "@str@" : "") + "Level 50 Mining", String.valueOf(n3 >= 53 ? "@str@" : "") + "Level 53 Fishing", String.valueOf(n4 >= 53 ? "@str@" : "") + "Level 53 Cooking"};
-                return stringArray;
+                return new String[]{"I can start this quest by speaking to Achietties at the", "Heroes' Guild located North of Taverley", "as all reguired quests are complete, and I have enough QP.", "To complete this quest I need:", String.valueOf(n >= 25 ? "@str@" : "") + "Level 25 Herblore", String.valueOf(n2 >= 50 ? "@str@" : "") + "Level 50 Mining", String.valueOf(n3 >= 53 ? "@str@" : "") + "Level 53 Fishing", String.valueOf(n4 >= 53 ? "@str@" : "") + "Level 53 Cooking"};
             }
-            stringArray = new String[]{"I can start this quest by speaking to Achietties at the", "Heroes' Guild located North of Taverley.", "To start this quest I need:", String.valueOf(stringArray.getQuestPoints() >= 56 ? "@str@" : "") + "56 Quest Points", String.valueOf(stringArray.getQuestState(16) == 1 ? "@str@" : "") + "Complete Shield of Arrav", String.valueOf(stringArray.getQuestState(58) == 1 ? "@str@" : "") + "Complete Lost City", String.valueOf(stringArray.getQuestState(5) == 1 ? "@str@" : "") + "Complete Dragon Slayer", String.valueOf(stringArray.getQuestState(61) == 1 ? "@str@" : "") + "Complete Merlin's Crystal", String.valueOf(stringArray.getQuestState(29) == 1 ? "@str@" : "") + "Complete Druidic Ritual", "To complete this quest I need:", String.valueOf(n >= 25 ? "@str@" : "") + "Level 25 Herblore", String.valueOf(n2 >= 50 ? "@str@" : "") + "Level 50 Mining", String.valueOf(n3 >= 53 ? "@str@" : "") + "Level 53 Fishing", String.valueOf(n4 >= 53 ? "@str@" : "") + "Level 53 Cooking"};
-            return stringArray;
+            return new String[]{"I can start this quest by speaking to Achietties at the", "Heroes' Guild located North of Taverley.", "To start this quest I need:", String.valueOf(player.getQuestPoints() >= 56 ? "@str@" : "") + "56 Quest Points", String.valueOf(player.getQuestState(16) == 1 ? "@str@" : "") + "Complete Shield of Arrav", String.valueOf(player.getQuestState(58) == 1 ? "@str@" : "") + "Complete Lost City", String.valueOf(player.getQuestState(5) == 1 ? "@str@" : "") + "Complete Dragon Slayer", String.valueOf(player.getQuestState(61) == 1 ? "@str@" : "") + "Complete Merlin's Crystal", String.valueOf(player.getQuestState(29) == 1 ? "@str@" : "") + "Complete Druidic Ritual", "To complete this quest I need:", String.valueOf(n >= 25 ? "@str@" : "") + "Level 25 Herblore", String.valueOf(n2 >= 50 ? "@str@" : "") + "Level 50 Mining", String.valueOf(n3 >= 53 ? "@str@" : "") + "Level 53 Fishing", String.valueOf(n4 >= 53 ? "@str@" : "") + "Level 53 Cooking"};
         }
         if (n == 2 || n == 8) {
-            String[] stringArray2 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(stringArray.ownsItem(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(stringArray.ownsItem(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(stringArray.ownsItem(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (stringArray.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", HeroesQuest.hasAllHeroesGuildEntryItems((Player)stringArray) ? "I should bring the items to Achietties now." : ""};
+            String[] stringArray2 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(player.ownsItem(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(player.ownsItem(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(player.ownsItem(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (player.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", HeroesQuest.hasAllHeroesGuildEntryItems(player) ? "I should bring the items to Achietties now." : ""};
             return stringArray2;
         }
         if (n == 3) {
-            String[] stringArray3 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(stringArray.ownsItem(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(stringArray.ownsItem(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(stringArray.ownsItem(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (stringArray.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", "@str@I spoke to " + (stringArray.dv == 1 ? "Katrine" : "Straven") + " about the Master Thieves Armband.", String.valueOf(stringArray.dv == 1 ? "She" : "He") + " told me I can get one by stealing Pete's Candlestick", "I should use the password " + (stringArray.dv == 1 ? "she" : "he") + " gave me at Brimhaven"};
+            String[] stringArray3 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(player.ownsItem(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(player.ownsItem(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(player.ownsItem(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (player.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", "@str@I spoke to " + (player.dv == 1 ? "Katrine" : "Straven") + " about the Master Thieves Armband.", String.valueOf(player.dv == 1 ? "She" : "He") + " told me I can get one by stealing Pete's Candlestick", "I should use the password " + (player.dv == 1 ? "she" : "he") + " gave me at Brimhaven"};
             return stringArray3;
         }
-        if (n == 4 && stringArray.dv == 1) {
-            String[] stringArray4 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(stringArray.ownsItem(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(stringArray.ownsItem(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(stringArray.ownsItem(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (stringArray.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", "@str@I spoke to " + (stringArray.dv == 1 ? "Katrine" : "Straven") + " about the Master Thieves Armband.", "I should impersonate Hartigen the Black Knight to gain", "access to the mansion."};
+        if (n == 4 && player.dv == 1) {
+            String[] stringArray4 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(player.ownsItem(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(player.ownsItem(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(player.ownsItem(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (player.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", "@str@I spoke to " + (player.dv == 1 ? "Katrine" : "Straven") + " about the Master Thieves Armband.", "I should impersonate Hartigen the Black Knight to gain", "access to the mansion."};
             return stringArray4;
         }
-        if (n == 4 && stringArray.dv == 2) {
-            String[] stringArray5 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(stringArray.ownsItem(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(stringArray.ownsItem(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(stringArray.ownsItem(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (stringArray.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", "@str@I spoke to " + (stringArray.dv == 1 ? "Katrine" : "Straven") + " about the Master Thieves Armband.", "I should go talk to Charlie the Cook in the back", "of the bar."};
+        if (n == 4 && player.dv == 2) {
+            String[] stringArray5 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(player.ownsItem(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(player.ownsItem(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(player.ownsItem(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (player.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", "@str@I spoke to " + (player.dv == 1 ? "Katrine" : "Straven") + " about the Master Thieves Armband.", "I should go talk to Charlie the Cook in the back", "of the bar."};
             return stringArray5;
         }
-        if (n == 5 && stringArray.dv == 1) {
-            String[] stringArray6 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(stringArray.ownsItem(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(stringArray.ownsItem(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(stringArray.ownsItem(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (stringArray.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", "@str@I spoke to " + (stringArray.dv == 1 ? "Katrine" : "Straven") + " about the Master Thieves Armband.", "I should go talk to Grip."};
+        if (n == 5 && player.dv == 1) {
+            String[] stringArray6 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(player.ownsItem(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(player.ownsItem(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(player.ownsItem(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (player.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", "@str@I spoke to " + (player.dv == 1 ? "Katrine" : "Straven") + " about the Master Thieves Armband.", "I should go talk to Grip."};
             return stringArray6;
         }
-        if (n == 5 && stringArray.dv == 2) {
-            String[] stringArray7 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(stringArray.ownsItem(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(stringArray.ownsItem(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(stringArray.ownsItem(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (stringArray.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", "@str@I spoke to " + (stringArray.dv == 1 ? "Katrine" : "Straven") + " about the Master Thieves Armband.", "Charlie told me that there is a side entrance to the mansion", "that I can use."};
+        if (n == 5 && player.dv == 2) {
+            String[] stringArray7 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(player.ownsItem(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(player.ownsItem(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(player.ownsItem(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (player.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", "@str@I spoke to " + (player.dv == 1 ? "Katrine" : "Straven") + " about the Master Thieves Armband.", "Charlie told me that there is a side entrance to the mansion", "that I can use."};
             return stringArray7;
         }
-        if (n == 6 && stringArray.dv == 1) {
-            String[] stringArray8 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(stringArray.ownsItem(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(stringArray.ownsItem(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(stringArray.ownsItem(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (stringArray.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", "@str@I spoke to " + (stringArray.dv == 1 ? "Katrine" : "Straven") + " about the Master Thieves Armband.", stringArray.ownsItem(1586) ? "I should find out what the key Grip gave me opens." : "I should talk to Grip."};
+        if (n == 6 && player.dv == 1) {
+            String[] stringArray8 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(player.ownsItem(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(player.ownsItem(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(player.ownsItem(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (player.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", "@str@I spoke to " + (player.dv == 1 ? "Katrine" : "Straven") + " about the Master Thieves Armband.", player.ownsItem(1586) ? "I should find out what the key Grip gave me opens." : "I should talk to Grip."};
             return stringArray8;
         }
-        if (n == 7 && stringArray.dv == 1) {
-            String[] stringArray9 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(stringArray.ownsItem(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(stringArray.ownsItem(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(stringArray.ownsItem(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (stringArray.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", "@str@I spoke to " + (stringArray.dv == 1 ? "Katrine" : "Straven") + " about the Master Thieves Armband.", "I should now give the other candlestick to my partner and", "then return to Katrine."};
+        if (n == 7 && player.dv == 1) {
+            String[] stringArray9 = new String[]{"Achietties will let me into the Heroes' Guild if I can get:", String.valueOf(player.ownsItem(1583) ? "@str@" : "") + "An Entranan Firebird Feather - I should check on Entrana", String.valueOf(player.ownsItem(2149) ? "@str@" : "") + "A cooked lava eel - I should speak to a fishing expert", String.valueOf(player.ownsItem(1579) ? "@str@" : "") + "A Master Thieves Armband - the " + (player.dv == 1 ? "Black Arm" : "Phoenix") + " Gang can help me", "@str@I spoke to " + (player.dv == 1 ? "Katrine" : "Straven") + " about the Master Thieves Armband.", "I should now give the other candlestick to my partner and", "then return to Katrine."};
             return stringArray9;
         }
         if (n == 1) {
@@ -274,11 +272,11 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean handleNpcKill(Player object, int n, int n2) {
+    public final boolean handleNpcKill(Player player, int n, int n2) {
         if (n == 792) {
-            object = Npc.findByDefinitionId(792);
-            object = new GroundItem(new ItemStack(1588, 1), ((Entity)object).getPosition(), false, true);
-            GroundItemManager.getInstance().spawn((GroundItem)object);
+            Npc npc = Npc.findByDefinitionId(792);
+            GroundItem groundItem = new GroundItem(new ItemStack(1588, 1), npc.getPosition(), false, true);
+            GroundItemManager.getInstance().spawn(groundItem);
             return true;
         }
         return false;
@@ -349,7 +347,7 @@ extends QuestScript {
                 }
                 if (n2 == 5) {
                     player.getDialogueManager().showNpcFourLineDialogue("Well, you have a lot of quest points, and you have done", "all of the required quests, so you may now begin the", "tasks to meet the entry requirements for membership in", "the Heroes' Guild. The three items required", 591);
-                    this.d(player);
+                    this.startQuest(player);
                     return true;
                 }
             }

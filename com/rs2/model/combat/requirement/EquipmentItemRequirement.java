@@ -32,15 +32,16 @@ extends CombatCostRequirement {
     }
 
     @Override
-    final boolean isSatisfiedBy(Entity object) {
-        if (!((Entity)object).isPlayer()) {
+    final boolean isSatisfiedBy(Entity entity) {
+        if (!entity.isPlayer()) {
             return true;
         }
-        object = (Player)object;
-        if ((object = ((Player)object).getEquipmentManager().getContainer().getItems()[this.equipmentSlot]) == null) {
+        Player player = (Player)entity;
+        ItemStack itemStack = player.getEquipmentManager().getContainer().getItems()[this.equipmentSlot];
+        if (itemStack == null) {
             return false;
         }
-        return ((ItemStack)object).getId() == this.itemId && ((ItemStack)object).getAmount() >= this.amount;
+        return itemStack.getId() == this.itemId && itemStack.getAmount() >= this.amount;
     }
 }
 

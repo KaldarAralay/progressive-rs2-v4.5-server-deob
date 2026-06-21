@@ -8,14 +8,14 @@ import com.rs2.model.skill.farming.CompostBinManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class CompostBinEmptyTask
+public final class CompostBinEmptyTask
 extends CycleEvent {
     private /* synthetic */ CompostBinManager manager;
     private final /* synthetic */ int actionSequence;
     private final /* synthetic */ int binIndex;
     private final /* synthetic */ int compostItemId;
 
-    CompostBinEmptyTask(CompostBinManager compostBinManager, int n, int n2, int n3) {
+    public CompostBinEmptyTask(CompostBinManager compostBinManager, int n, int n2, int n3) {
         this.manager = compostBinManager;
         this.actionSequence = n;
         this.binIndex = n2;
@@ -38,10 +38,9 @@ extends CycleEvent {
         this.manager.states[n] = this.manager.states[n] - 1;
         if (this.manager.states[this.binIndex] < 16) {
             int n2 = this.binIndex;
-            object = this.manager;
-            ((CompostBinManager)object).states[n2] = 0;
-            ((CompostBinManager)object).itemIds[n2] = 0;
-            ((CompostBinManager)object).lastUpdateTicks[n2] = 0L;
+            this.manager.states[n2] = 0;
+            this.manager.itemIds[n2] = 0;
+            this.manager.lastUpdateTicks[n2] = 0L;
         }
         this.manager.refreshConfig();
     }

@@ -8,9 +8,9 @@ import com.rs2.model.gameplay.magetrainingarena.AlchemistPlaygroundController;
 import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 
-final class AlchemistPlaygroundRotationTask
+public final class AlchemistPlaygroundRotationTask
 extends TickTask {
-    AlchemistPlaygroundRotationTask(int n) {
+    public AlchemistPlaygroundRotationTask(int n) {
         super(70);
     }
 

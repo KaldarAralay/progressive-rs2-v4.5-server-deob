@@ -7,12 +7,12 @@ import com.rs2.model.skill.farming.TreePatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class TreeStumpRegrowthTask
+public final class TreeStumpRegrowthTask
 extends CycleEvent {
     private /* synthetic */ TreePatchManager manager;
     private final /* synthetic */ int patchIndex;
 
-    TreeStumpRegrowthTask(TreePatchManager treePatchManager, int n) {
+    public TreeStumpRegrowthTask(TreePatchManager treePatchManager, int n) {
         this.manager = treePatchManager;
         this.patchIndex = n;
     }

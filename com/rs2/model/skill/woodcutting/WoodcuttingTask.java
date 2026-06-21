@@ -24,7 +24,7 @@ import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.util.GameUtil;
 
-final class WoodcuttingTask
+public final class WoodcuttingTask
 extends CycleEvent {
     private final /* synthetic */ Player player;
     private final /* synthetic */ int actionSequence;
@@ -34,7 +34,7 @@ extends CycleEvent {
     private final /* synthetic */ GatheringToolDefinition gatheringTool;
     private final /* synthetic */ int treeObjectId;
 
-    WoodcuttingTask(Player player, int n, TreeDefinition treeDefinition, int n2, int n3, GatheringToolDefinition gatheringToolDefinition, int n4) {
+    public WoodcuttingTask(Player player, int n, TreeDefinition treeDefinition, int n2, int n3, GatheringToolDefinition gatheringToolDefinition, int n4) {
         this.player = player;
         this.actionSequence = n;
         this.treeDefinition = treeDefinition;
@@ -55,24 +55,23 @@ extends CycleEvent {
                 return;
             }
             object = new Position(this.x, this.y, this.player.getPosition().getPlane());
-            Object object2 = this.treeDefinition;
-            if (object2.getEntNpcIds() == null) {
+            TreeDefinition treeDefinition = this.treeDefinition;
+            if (treeDefinition.getEntNpcIds() == null) {
                 bl = false;
             } else {
-                boolean bl2;
-                int[] nArray = object2.getEntNpcIds();
+                int[] nArray = treeDefinition.getEntNpcIds();
                 int n2 = nArray.length;
                 int n3 = 0;
                 while (n3 < n2) {
                     int n4 = nArray[n3];
-                    object2 = Npc.findByDefinitionIdAtPosition(n4, (Position)object);
-                    if (object2 != null) {
+                    Npc entNpc = Npc.findByDefinitionIdAtPosition(n4, (Position)object);
+                    if (entNpc != null) {
                         bl = true;
                         break block39;
                     }
                     ++n3;
                 }
-                bl = bl2 = false;
+                bl = false;
             }
         }
         if (bl) {

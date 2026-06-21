@@ -16,18 +16,15 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
-            stringArray = new String[]{"I can start this quest by speaking to Doric who is North of", "Falador", "", "There aren't any requirements but Level 15 Mining will help"};
-            return stringArray;
+            return new String[]{"I can start this quest by speaking to Doric who is North of", "Falador", "", "There aren't any requirements but Level 15 Mining will help"};
         }
         if (n == 2) {
-            stringArray = new String[]{"I should bring these items to Doric at his house in", "North of Falador:", "6 x Clay", "4 x Copper ore", "2 x iron ore"};
-            return stringArray;
+            return new String[]{"I should bring these items to Doric at his house in", "North of Falador:", "6 x Clay", "4 x Copper ore", "2 x iron ore"};
         }
         if (n == 1) {
-            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "1 Quest Point", "1300 Mining XP", "180 Coins", "Use of Doric's Anvils"};
-            return stringArray;
+            return new String[]{"Quest Completed!", "", "You were awarded:", "1 Quest Point", "1300 Mining XP", "180 Coins", "Use of Doric's Anvils"};
         }
         return null;
     }
@@ -99,7 +96,7 @@ extends QuestScript {
                 if (n2 == 6) {
                     if (n3 == 1) {
                         player.getDialogueManager().showPlayerOneLineDialogue("Yes, I will get you the materials.", 591);
-                        this.d(player);
+                        this.startQuest(player);
                         player.getDialogueManager().setNextDialogueStep(7);
                         return true;
                     }

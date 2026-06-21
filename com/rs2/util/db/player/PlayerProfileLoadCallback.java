@@ -9,7 +9,7 @@ import com.rs2.util.db.DatabaseCallback;
 import com.rs2.util.db.player.PlayerLoadQueryFactory;
 import java.sql.ResultSet;
 
-final class PlayerProfileLoadCallback
+public final class PlayerProfileLoadCallback
 implements DatabaseCallback {
     private /* synthetic */ PlayerLoadQueryFactory factory;
 
@@ -18,7 +18,7 @@ implements DatabaseCallback {
     }
 
     @Override
-    public final void onResult(ResultSet object) {
+    public final void onResult(ResultSet object) throws java.sql.SQLException {
         if (object.next()) {
             String string;
             ResultSet resultSet = object;
@@ -78,7 +78,6 @@ implements DatabaseCallback {
             PlayerLoadQueryFactory.getPlayer(this.factory).setSpellbook(object.getBoolean("using_ancients") ? Spellbook.ANCIENT : Spellbook.MODERN);
             PlayerLoadQueryFactory.getPlayer(this.factory).setBrimhavenOpen(object.getBoolean("brimhaven_open"));
             boolean bl = object.getBoolean("killed_clue_attacker");
-            object = PlayerLoadQueryFactory.getPlayer(this.factory);
             PlayerLoadQueryFactory.getPlayer(this.factory).killedClueAttacker = bl;
         }
     }
@@ -88,7 +87,7 @@ implements DatabaseCallback {
         exception.printStackTrace();
     }
 
-    /* synthetic */ PlayerProfileLoadCallback(PlayerLoadQueryFactory playerLoadQueryFactory, byte by) {
+    public /* synthetic */ PlayerProfileLoadCallback(PlayerLoadQueryFactory playerLoadQueryFactory, byte by) {
         this(playerLoadQueryFactory);
     }
 }

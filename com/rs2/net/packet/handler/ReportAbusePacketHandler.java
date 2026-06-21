@@ -15,63 +15,43 @@ public final class ReportAbusePacketHandler
 implements PacketHandler {
     @Override
     public final void handle(Player player, IncomingPacket incomingPacket) {
-        Player player2;
-        Player player3;
-        Object object;
-        int n;
-        boolean bl;
-        byte by;
-        long l;
-        block7: {
-            l = incomingPacket.getReader().readLong();
-            by = (byte)incomingPacket.getReader().readUnsignedByte(false);
-            bl = (byte)incomingPacket.getReader().readUnsignedByte(false) == 1;
-            long l2 = l;
-            Player[] playerArray = World.getPlayers();
-            n = playerArray.length;
-            int n2 = 0;
-            while (n2 < n) {
-                object = playerArray[n2];
-                if (object != null && ((Player)object).getNameHash() == l2) {
-                    player3 = object;
-                    break block7;
-                }
-                ++n2;
+        long reportedNameHash = incomingPacket.getReader().readLong();
+        int reportType = incomingPacket.getReader().readUnsignedByte(false);
+        boolean mutePlayer = incomingPacket.getReader().readUnsignedByte(false) == 1;
+        Player reportedPlayer = null;
+        Player[] playerArray = World.getPlayers();
+        int count = playerArray.length;
+        int index = 0;
+        while (index < count) {
+            Player candidate = playerArray[index];
+            if (candidate != null && candidate.getNameHash() == reportedNameHash) {
+                reportedPlayer = candidate;
+                break;
             }
-            player3 = player2 = null;
+            ++index;
         }
-        if (player3 == null) {
-            Player player4 = player;
-            player4.packetSender.sendGameMessage("You cannot report offline players.");
+        if (reportedPlayer == null) {
+            player.packetSender.sendGameMessage("You cannot report offline players.");
             return;
         }
-        if (player.getNameHash() == l) {
-            Player player5 = player;
-            player5.packetSender.sendGameMessage("You cannot report yourself!");
+        if (player.getNameHash() == reportedNameHash) {
+            player.packetSender.sendGameMessage("You cannot report yourself!");
             return;
         }
-        Player player6 = player;
-        if (System.currentTimeMillis() - player6.dR < 60000L) {
-            Player player7 = player;
-            player7.packetSender.sendGameMessage("You can only report a player once every 60 seconds.");
+        if (System.currentTimeMillis() - player.dR < 60000L) {
+            player.packetSender.sendGameMessage("You can only report a player once every 60 seconds.");
             return;
         }
-        Player player8 = player;
-        player8.packetSender.sendGameMessage("Thank-you, your abuse report has been received.");
-        if (bl && player.getPlayerRights() > 0 && player2.getPlayerRights() == 0) {
-            if (player2.isMuted()) {
+        player.packetSender.sendGameMessage("Thank-you, your abuse report has been received.");
+        if (mutePlayer && player.getPlayerRights() > 0 && reportedPlayer.getPlayerRights() == 0) {
+            if (reportedPlayer.isMuted()) {
                 return;
             }
-            n = 48;
-            long l3 = System.currentTimeMillis();
-            object = new DateTime(l3);
-            object = ((DateTime)object).plusHours(48);
-            player2.setMuteExpires(((BaseDateTime)object).getMillis());
+            DateTime muteExpires = new DateTime(System.currentTimeMillis()).plusHours(48);
+            reportedPlayer.setMuteExpires(muteExpires.getMillis());
         }
-        long l4 = System.currentTimeMillis();
-        Player player9 = player;
-        player.dR = l4;
-        GameplayHelper.appendLogLine(String.valueOf(System.currentTimeMillis()) + "\u00a7" + player.getUsername() + "\u00a7" + player.getPosition().getX() + "\u00a7" + player.getPosition().getY() + "\u00a7" + player.getPosition().getPlane() + "\u00a7" + player2.getUsername() + "\u00a7" + player2.getPosition().getX() + "\u00a7" + player2.getPosition().getY() + "\u00a7" + player2.getPosition().getPlane() + "\u00a7" + by + "\u00a7" + (bl ? 1 : 0), "reports");
+        player.dR = System.currentTimeMillis();
+        GameplayHelper.appendLogLine(String.valueOf(System.currentTimeMillis()) + "\u00a7" + player.getUsername() + "\u00a7" + player.getPosition().getX() + "\u00a7" + player.getPosition().getY() + "\u00a7" + player.getPosition().getPlane() + "\u00a7" + reportedPlayer.getUsername() + "\u00a7" + reportedPlayer.getPosition().getX() + "\u00a7" + reportedPlayer.getPosition().getY() + "\u00a7" + reportedPlayer.getPosition().getPlane() + "\u00a7" + reportType + "\u00a7" + (mutePlayer ? 1 : 0), "reports");
     }
 }
 

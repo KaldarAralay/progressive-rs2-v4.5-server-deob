@@ -38,14 +38,12 @@ public enum GemBoltTipDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private GemBoltTipDefinition(int n3, int n4, double d) {
-        void var7_5;
-        void var6_4;
-        this.gemItemId = n3;
-        this.boltTipItemId = n4;
-        this.boltTipAmount = (int)d;
-        this.requiredLevel = var6_4;
-        this.experience = var7_5;
+    private GemBoltTipDefinition(int n2, int n3, int n4, int n5, double d) {
+        this.gemItemId = n2;
+        this.boltTipItemId = n3;
+        this.boltTipAmount = n4;
+        this.requiredLevel = n5;
+        this.experience = d;
     }
 
     public final int getGemItemId() {

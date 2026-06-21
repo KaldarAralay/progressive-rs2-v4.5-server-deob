@@ -21,13 +21,11 @@ public enum CanoeStation {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private CanoeStation(int n, int[] nArray) {
-        void var6_4;
-        void var5_3;
-        this.displayName = (String)n;
-        this.destination = nArray;
-        this.buttonId = var5_3;
-        this.destinationInterfaceIds = var6_4;
+    private CanoeStation(String string2, Position position, int n2, int[] nArray) {
+        this.displayName = string2;
+        this.destination = position;
+        this.buttonId = n2;
+        this.destinationInterfaceIds = nArray;
     }
 }
 

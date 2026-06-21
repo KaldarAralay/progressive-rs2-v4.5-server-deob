@@ -21,7 +21,7 @@ public final class ItemContainerTab {
     }
 
     /* synthetic */ ItemContainerTab(boolean bl) {
-        this(0);
+        this((byte)0);
     }
 
     /* synthetic */ ItemContainerTab(char c) {

@@ -6,9 +6,9 @@ package com.rs2.bot;
 import com.rs2.bot.BotTaskDefinition;
 import java.util.ArrayList;
 
-final class SheepShearingBotTaskList
+public final class SheepShearingBotTaskList
 extends ArrayList {
-    SheepShearingBotTaskList() {
+    public SheepShearingBotTaskList() {
         this.add(BotTaskDefinition.getDraynorSheepShearingTask());
     }
 }

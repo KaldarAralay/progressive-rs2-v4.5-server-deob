@@ -137,7 +137,7 @@ public final class TreePatchManager {
                 }
                 Object object = FarmedTreeDefinition.forSaplingId(this.treeIds[n]);
                 if (object == null || this.shouldStopGrowthCycle(n)) break block12;
-                int n5 = (int)(l / (long)object.getGrowthCycleTicks());
+                int n5 = (int)(l / (long)((FarmedTreeDefinition)object).getGrowthCycleTicks());
                 int n6 = this.growthStages[n] - 4;
                 if ((n5 -= n6) <= 0) break block12;
                 n6 = 0;
@@ -299,7 +299,7 @@ public final class TreePatchManager {
         if (object == null) {
             return false;
         }
-        FarmedTreeDefinition farmedTreeDefinition = FarmedTreeDefinition.forSaplingId(this.treeIds[object.getIndex()]);
+        FarmedTreeDefinition farmedTreeDefinition = FarmedTreeDefinition.forSaplingId(this.treeIds[((TreePatch)object).getIndex()]);
         if (farmedTreeDefinition == null) {
             return false;
         }
@@ -308,7 +308,7 @@ public final class TreePatchManager {
             ((Player)object).packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
-        if (this.patchStates[object.getIndex()] != 0) {
+        if (this.patchStates[((TreePatch)object).getIndex()] != 0) {
             return false;
         }
         this.player.getUpdateState().setAnimation(832);
@@ -417,7 +417,7 @@ public final class TreePatchManager {
         if (object == null) {
             return false;
         }
-        FarmedTreeDefinition farmedTreeDefinition = FarmedTreeDefinition.forSaplingId(this.treeIds[object.getIndex()]);
+        FarmedTreeDefinition farmedTreeDefinition = FarmedTreeDefinition.forSaplingId(this.treeIds[((TreePatch)object).getIndex()]);
         if (farmedTreeDefinition == null) {
             return false;
         }
@@ -426,12 +426,12 @@ public final class TreePatchManager {
             ((Player)object).packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
-        if (this.patchStates[object.getIndex()] != 2) {
+        if (this.patchStates[((TreePatch)object).getIndex()] != 2) {
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("This plant doesn't need to be resurrected.");
             return true;
         }
-        this.player.setPendingCropResurrectionTarget("tree", object.getIndex());
+        this.player.setPendingCropResurrectionTarget("tree", ((TreePatch)object).getIndex());
         return true;
     }
 
@@ -440,7 +440,7 @@ public final class TreePatchManager {
             Object object = FarmedTreeDefinition.forSaplingId(this.treeIds[this.player.pendingCropResurrectionPatchIndex]);
             this.patchStates[this.player.pendingCropResurrectionPatchIndex] = 0;
             int n = this.growthStages[this.player.pendingCropResurrectionPatchIndex] - 4;
-            this.lastUpdateTicks[this.player.pendingCropResurrectionPatchIndex] = Server.getElapsedMinutes() - (long)(object.getGrowthCycleTicks() * n);
+            this.lastUpdateTicks[this.player.pendingCropResurrectionPatchIndex] = Server.getElapsedMinutes() - (long)(((FarmedTreeDefinition)object).getGrowthCycleTicks() * n);
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("You succesfully resurrected the crop.");
         } else {
@@ -459,7 +459,7 @@ public final class TreePatchManager {
         if (object == null || n3 != 5329 && n3 != 7409) {
             return false;
         }
-        FarmedTreeDefinition farmedTreeDefinition = FarmedTreeDefinition.forSaplingId(this.treeIds[object.getIndex()]);
+        FarmedTreeDefinition farmedTreeDefinition = FarmedTreeDefinition.forSaplingId(this.treeIds[((TreePatch)object).getIndex()]);
         if (farmedTreeDefinition == null) {
             return false;
         }
@@ -468,14 +468,14 @@ public final class TreePatchManager {
             ((Player)object).packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
-        if (this.patchStates[object.getIndex()] != 1) {
+        if (this.patchStates[((TreePatch)object).getIndex()] != 1) {
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("This area doesn't need to be pruned.");
             return true;
         }
         this.player.getUpdateState().setAnimation(2275);
         this.player.setActionLocked(true);
-        this.patchStates[object.getIndex()] = 0;
+        this.patchStates[((TreePatch)object).getIndex()] = 0;
         CycleEventHandler.getInstance().schedule(this.player, new TreePruneTask(this), 15);
         return true;
     }
@@ -539,12 +539,12 @@ public final class TreePatchManager {
         if (object == null) {
             return false;
         }
-        FarmedTreeDefinition farmedTreeDefinition = FarmedTreeDefinition.forSaplingId(this.treeIds[object.getIndex()]);
+        FarmedTreeDefinition farmedTreeDefinition = FarmedTreeDefinition.forSaplingId(this.treeIds[((TreePatch)object).getIndex()]);
         if (farmedTreeDefinition == null) {
             return false;
         }
         int n3 = farmedTreeDefinition.getTreeObjectId();
-        if (!this.fullyGrownFlags[object.getIndex()]) {
+        if (!this.fullyGrownFlags[((TreePatch)object).getIndex()]) {
             return false;
         }
         if (ItemCombinationHandler.findUsableGatheringTool(this.player, 8) == null) {

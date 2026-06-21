@@ -1,5 +1,5 @@
 /*
- * Decompiled with CFR 0.152.
+ * Source recovery overlay: make remapped event accessible to recovered callers.
  */
 package com.rs2.model.objects.functions;
 
@@ -11,7 +11,7 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class ObjectToggleEvent
+public final class ObjectToggleEvent
 extends CycleEvent {
     private final /* synthetic */ int restoreObjectId;
     private final /* synthetic */ WorldObject worldObject;
@@ -20,7 +20,7 @@ extends CycleEvent {
     private final /* synthetic */ int toggledOrientation;
     private final /* synthetic */ Player player;
 
-    ObjectToggleEvent(int n, WorldObject worldObject, int n2, int n3, int n4, Player player) {
+    public ObjectToggleEvent(int n, WorldObject worldObject, int n2, int n3, int n4, Player player) {
         this.restoreObjectId = n;
         this.worldObject = worldObject;
         this.objectType = n2;
@@ -33,15 +33,15 @@ extends CycleEvent {
     public final void execute(CycleEventContainer cycleEventContainer) {
         ObjectManager.getInstance();
         if (ObjectManager.findDynamicObjectByIdAt(this.restoreObjectId, this.worldObject.getPosition().getX(), this.worldObject.getPosition().getY(), this.worldObject.getPosition().getPlane()) != null) {
-            int n = this.objectType;
-            int n2 = this.worldObject.getPosition().getPlane();
-            int n3 = this.worldObject.getPosition().getY();
-            int n4 = this.worldObject.getPosition().getX();
-            int n5 = this.restoreObjectId;
+            int objectType = this.objectType;
+            int plane = this.worldObject.getPosition().getPlane();
+            int y = this.worldObject.getPosition().getY();
+            int x = this.worldObject.getPosition().getX();
+            int objectId = this.restoreObjectId;
             ObjectManager objectManager = ObjectManager.getInstance();
-            DynamicObject dynamicObject = ObjectManager.findDynamicObjectByIdAt(n5, n4, n3, n2);
+            DynamicObject dynamicObject = ObjectManager.findDynamicObjectByIdAt(objectId, x, y, plane);
             if (dynamicObject != null) {
-                ObjectManager.removeObjectCollision(dynamicObject.getWorldObject().getObjectId(), n4, n3, n2, n, dynamicObject.getWorldObject().getOrientation());
+                ObjectManager.removeObjectCollision(dynamicObject.getWorldObject().getObjectId(), x, y, plane, objectType, dynamicObject.getWorldObject().getOrientation());
                 ObjectManager.activeDynamicObjects.remove(dynamicObject);
                 objectManager.revertDynamicObject(dynamicObject);
             }
@@ -62,4 +62,3 @@ extends CycleEvent {
         this.player.setActionLocked(false);
     }
 }
-

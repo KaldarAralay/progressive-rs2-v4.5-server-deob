@@ -8,11 +8,11 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JOptionPane;
 
-final class ControlPanelWindowCloseListener
+public final class ControlPanelWindowCloseListener
 extends WindowAdapter {
     private /* synthetic */ ControlPanel controlPanel;
 
-    ControlPanelWindowCloseListener(ControlPanel controlPanel) {
+    public ControlPanelWindowCloseListener(ControlPanel controlPanel) {
         this.controlPanel = controlPanel;
     }
 

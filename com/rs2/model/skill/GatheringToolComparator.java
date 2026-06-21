@@ -6,11 +6,11 @@ package com.rs2.model.skill;
 import com.rs2.model.skill.GatheringToolDefinition;
 import java.util.Comparator;
 
-final class GatheringToolComparator
+public final class GatheringToolComparator
 implements Comparator {
     private final /* synthetic */ int a;
 
-    GatheringToolComparator(int n) {
+    public GatheringToolComparator(int n) {
         this.a = n;
     }
 

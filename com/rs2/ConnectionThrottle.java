@@ -13,7 +13,7 @@ public final class ConnectionThrottle {
         if (!ConnectionThrottleSettings.connectionsEnabled) {
             return false;
         }
-        Integer n = connectionCountsByHost.putIfAbsent(string, 1);
+        Integer n = (Integer)connectionCountsByHost.putIfAbsent(string, 1);
         if (n != null && n == 3) {
             return false;
         }

@@ -6,9 +6,9 @@ package com.rs2.model.combat.requirement;
 import com.rs2.model.combat.attack.MagicCombatAttack;
 import com.rs2.model.combat.requirement.MembersRequirement;
 
-final class MagicCombatMembersRequirement
+public final class MagicCombatMembersRequirement
 extends MembersRequirement {
-    MagicCombatMembersRequirement(MagicCombatAttack magicCombatAttack) {
+    public MagicCombatMembersRequirement(MagicCombatAttack magicCombatAttack) {
     }
 
     @Override

@@ -10,7 +10,7 @@ import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.model.task.CycleEventHandler;
 
-final class AgilityQueuedMovementTask
+public final class AgilityQueuedMovementTask
 extends CycleEvent {
     private final /* synthetic */ Player player;
     private final /* synthetic */ int deltaX;
@@ -20,7 +20,7 @@ extends CycleEvent {
     private final /* synthetic */ int experience;
     private final /* synthetic */ int animationId;
 
-    AgilityQueuedMovementTask(Player player, int n, int n2, int n3, int n4, int n5, int n6) {
+    public AgilityQueuedMovementTask(Player player, int n, int n2, int n3, int n4, int n5, int n6) {
         this.player = player;
         this.deltaX = n;
         this.deltaY = n2;

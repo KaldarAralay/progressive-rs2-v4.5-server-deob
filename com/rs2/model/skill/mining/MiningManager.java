@@ -106,7 +106,7 @@ public final class MiningManager {
         object = this.player;
         ((Player)object).packetSender.sendGameMessage("You swing your pick at the rock.");
         if (this.player.getQuestState(0) != 1) {
-            this.player.getDialogueManager().a("Please wait.", "", "Your character is now attempting to mine the rock.", "This should only take a few seconds.", "", true);
+            this.player.getDialogueManager().showTutorialInstructionOverlay("Please wait.", "", "Your character is now attempting to mine the rock.", "This should only take a few seconds.", "", true);
         }
         int n4 = this.player.nextActionSequence();
         MineableRockDefinition mineableRockDefinition = MineableRockDefinition.forObjectId(n);
@@ -201,8 +201,7 @@ public final class MiningManager {
     }
 
     public final boolean prospectRock(int n) {
-        Object object = new int[]{10587, 10585, 10586, 14832, 14833, 14834, 10944, 10945, 9723, 9724, 9725, 11555, 11552, 11553, 11554, 11557, 11556, 450, 451, 452};
-        int[] nArray = object;
+        int[] nArray = new int[]{10587, 10585, 10586, 14832, 14833, 14834, 10944, 10945, 9723, 9724, 9725, 11555, 11552, 11553, 11554, 11557, 11556, 450, 451, 452};
         int n2 = 0;
         while (n2 < 20) {
             int n3 = nArray[n2];
@@ -216,20 +215,19 @@ public final class MiningManager {
             ++n2;
         }
         MineableRockDefinition mineableRockDefinition = MineableRockDefinition.forObjectId(n);
-        object = (Object)mineableRockDefinition;
         if (mineableRockDefinition == null) {
             return false;
         }
         if (this.player.getQuestState(0) != 1) {
-            this.player.getDialogueManager().a("Please wait.", "", "Your character is now attempting to prospect the rock. This", "should only take a few seconds.", "", true);
+            this.player.getDialogueManager().showTutorialInstructionOverlay("Please wait.", "", "Your character is now attempting to prospect the rock. This", "should only take a few seconds.", "", true);
         }
         Player player = this.player;
         player.packetSender.sendGameMessage("You examine the rock for ores...");
         this.player.setActionLocked(true);
-        int n4 = MiningManager.rollMinedItemId(n, MineableRockDefinition.getOreItemId((MineableRockDefinition)((Object)object)));
+        int n4 = MiningManager.rollMinedItemId(n, MineableRockDefinition.getOreItemId(mineableRockDefinition));
         ItemService.getInstance();
-        object = ItemService.getItemName(n4).toLowerCase().replaceAll("ore", "").trim();
-        CycleEventHandler.getInstance().schedule(this.player, new ProspectingTask(this, n, (String)object), 5);
+        String oreName = ItemService.getItemName(n4).toLowerCase().replaceAll("ore", "").trim();
+        CycleEventHandler.getInstance().schedule(this.player, new ProspectingTask(this, n, oreName), 5);
         return true;
     }
 

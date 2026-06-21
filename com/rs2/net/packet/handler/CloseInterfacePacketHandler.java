@@ -12,41 +12,27 @@ import com.rs2.net.packet.PacketHandler;
 public final class CloseInterfacePacketHandler
 implements PacketHandler {
     @Override
-    public final void handle(Player player, IncomingPacket object) {
-        block10: {
-            block9: {
-                GameplayHelper.declineTrade(player);
-                PartyRoomManager.returnStagedChestItems(player);
-                object = player;
-                if (((Player)object).interfaceAction == "flour") {
-                    GameplayHelper.d(player, 53204);
-                }
-                object = player;
-                if (((Player)object).interfaceAction == "duel") break block9;
-                object = player;
-                if (((Player)object).interfaceAction != "duel2") break block10;
+    public final void handle(Player player, IncomingPacket incomingPacket) {
+        GameplayHelper.declineTrade(player);
+        PartyRoomManager.returnStagedChestItems(player);
+        if (player.interfaceAction == "flour") {
+            GameplayHelper.handleFlourDoughButton(player, 53204);
+        }
+        if ((player.interfaceAction == "duel" || player.interfaceAction == "duel2") && !player.isInDuelArena()) {
+            if (player.getDuelSession().getOpponent() != null && player.getDuelSession().getOpponent().isRegistered()) {
+                player.getDuelSession().getOpponent().getDuelController().resetDuel(true);
+                player.getDuelSession().getOpponent().packetSender.sendGameMessage("Other played declined the duel.");
             }
-            if (!player.isInDuelArena()) {
-                if (player.getDuelSession().getOpponent() != null && player.getDuelSession().getOpponent().isRegistered()) {
-                    player.getDuelSession().getOpponent().getDuelController().resetDuel(true);
-                    object = player.getDuelSession().getOpponent();
-                    ((Player)object).packetSender.sendGameMessage("Other played declined the duel.");
-                }
-                player.getDuelController().resetDuel(true);
-            }
+            player.getDuelController().resetDuel(true);
         }
         player.getAttributes().put("isBanking", Boolean.FALSE);
         player.getAttributes().put("isShopping", Boolean.FALSE);
-        String string = "";
-        object = player;
-        player.interfaceAction = string;
+        player.interfaceAction = "";
         if (player.getQuestState(0) != 1) {
-            object = player;
-            ((Player)object).packetSender.closeInterfaces();
+            player.packetSender.closeInterfaces();
         }
         if (player.getQuestState(0) == 1) {
-            object = player;
-            ((Player)object).packetSender.setSidebarInterface(3, 3213);
+            player.packetSender.setSidebarInterface(3, 3213);
         }
         player.setOpenInterfaceId(0);
         if (player.queuedLevelUpSkillIds.size() > 0) {
@@ -55,4 +41,3 @@ implements PacketHandler {
         }
     }
 }
-

@@ -13,7 +13,7 @@ import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.util.GameUtil;
 
-final class TelekineticGrabTask
+public final class TelekineticGrabTask
 extends CycleEvent {
     private final /* synthetic */ Player caster;
     private final /* synthetic */ int actionSequence;
@@ -21,7 +21,7 @@ extends CycleEvent {
     private final /* synthetic */ Position targetPosition;
     private final /* synthetic */ SpellDefinition telegrabSpell;
 
-    TelekineticGrabTask(Player player, int n, int n2, Position position, SpellDefinition spellDefinition) {
+    public TelekineticGrabTask(Player player, int n, int n2, Position position, SpellDefinition spellDefinition) {
         this.caster = player;
         this.actionSequence = n;
         this.itemId = n2;

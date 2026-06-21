@@ -12,9 +12,9 @@ import com.rs2.model.combat.attack.BaseCombatAttack;
 import com.rs2.model.combat.attack.CombatAttack;
 import com.rs2.model.npc.combat.NpcCombatDefinition;
 
-final class DagannothSupremeCombatDefinition
+public final class DagannothSupremeCombatDefinition
 extends NpcCombatDefinition {
-    DagannothSupremeCombatDefinition() {
+    public DagannothSupremeCombatDefinition() {
     }
 
     @Override

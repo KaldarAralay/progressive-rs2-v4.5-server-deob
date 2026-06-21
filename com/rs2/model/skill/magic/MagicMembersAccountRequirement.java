@@ -6,9 +6,9 @@ package com.rs2.model.skill.magic;
 import com.rs2.model.combat.requirement.MembersRequirement;
 import com.rs2.model.skill.magic.MagicSpellAction;
 
-final class MagicMembersAccountRequirement
+public final class MagicMembersAccountRequirement
 extends MembersRequirement {
-    MagicMembersAccountRequirement(MagicSpellAction magicSpellAction) {
+    public MagicMembersAccountRequirement(MagicSpellAction magicSpellAction) {
     }
 
     @Override

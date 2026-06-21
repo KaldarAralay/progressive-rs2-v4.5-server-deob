@@ -48,16 +48,16 @@ public class ItemContainer {
         if (n > this.tabs.size() - 1) {
             return;
         }
-        Object object = (ItemContainerTab)this.tabs.get(n);
-        object = ((ItemContainerTab)object).items.iterator();
-        while (object.hasNext()) {
-            ItemStack itemStack = (ItemStack)object.next();
+        ItemContainerTab itemContainerTab = (ItemContainerTab)this.tabs.get(n);
+        Iterator iterator = itemContainerTab.items.iterator();
+        while (iterator.hasNext()) {
+            ItemStack itemStack = (ItemStack)iterator.next();
             if (itemStack == null) {
-                object.remove();
+                iterator.remove();
                 continue;
             }
             if (itemStack.getId() != -1) continue;
-            object.remove();
+            iterator.remove();
         }
     }
 
@@ -74,8 +74,8 @@ public class ItemContainer {
                     continue;
                 }
                 object2 = object3;
-                for (Object object3 : ((ItemContainerTab)object2).items) {
-                    if (object3 == null || ((ItemStack)object3).getId() == -1) continue;
+                for (Object itemObject : ((ItemContainerTab)object2).items) {
+                    if (itemObject == null || ((ItemStack)itemObject).getId() == -1) continue;
                     bl = false;
                     break;
                 }
@@ -137,7 +137,7 @@ public class ItemContainer {
             arrayList.addAll(itemContainerTab.items);
             ++n;
         }
-        return arrayList.toArray(new ItemStack[0]);
+        return (ItemStack[])arrayList.toArray(new ItemStack[0]);
     }
 
     public final boolean addToTab(ItemStack itemStack, int n) {
@@ -406,9 +406,11 @@ public class ItemContainer {
                 ++n3;
             }
         } else {
-            for (ItemContainerTab itemContainerTab : this.tabs) {
+            for (Object itemContainerTabObject : this.tabs) {
+                ItemContainerTab itemContainerTab = (ItemContainerTab)itemContainerTabObject;
                 if (itemContainerTab == null) continue;
-                for (ItemStack itemStack : itemContainerTab.items) {
+                for (Object itemStackObject : itemContainerTab.items) {
+                    ItemStack itemStack = (ItemStack)itemStackObject;
                     if (itemStack == null || itemStack.getId() == -1) continue;
                     ++n;
                 }
@@ -426,7 +428,8 @@ public class ItemContainer {
                 return;
             }
         } else {
-            for (ItemContainerTab itemContainerTab : this.tabs) {
+            for (Object itemContainerTabObject : this.tabs) {
+                ItemContainerTab itemContainerTab = (ItemContainerTab)itemContainerTabObject;
                 if (itemContainerTab == null) continue;
                 itemContainerTab.items.clear();
             }
@@ -601,9 +604,11 @@ public class ItemContainer {
                 ++n4;
             }
         } else {
-            for (ItemContainerTab itemContainerTab : this.tabs) {
+            for (Object itemContainerTabObject : this.tabs) {
+                ItemContainerTab itemContainerTab = (ItemContainerTab)itemContainerTabObject;
                 if (itemContainerTab == null) continue;
-                for (ItemStack itemStack : itemContainerTab.items) {
+                for (Object itemStackObject : itemContainerTab.items) {
+                    ItemStack itemStack = (ItemStack)itemStackObject;
                     if (itemStack == null || itemStack.getId() != n) continue;
                     n2 += itemStack.getAmount();
                 }
@@ -625,9 +630,11 @@ public class ItemContainer {
                 ++n3;
             }
         } else {
-            for (ItemContainerTab itemContainerTab : this.tabs) {
+            for (Object itemContainerTabObject : this.tabs) {
+                ItemContainerTab itemContainerTab = (ItemContainerTab)itemContainerTabObject;
                 if (itemContainerTab == null) continue;
-                for (ItemStack itemStack : itemContainerTab.items) {
+                for (Object itemStackObject : itemContainerTab.items) {
+                    ItemStack itemStack = (ItemStack)itemStackObject;
                     if (itemStack == null || itemStack.getId() != n) continue;
                     return itemStack;
                 }
@@ -726,9 +733,9 @@ public class ItemContainer {
     }
 
     private void notifySlotsUpdated(int[] object) {
-        object = this.updateListeners.iterator();
-        while (object.hasNext()) {
-            object.next();
+        Iterator iterator = this.updateListeners.iterator();
+        while (iterator.hasNext()) {
+            iterator.next();
         }
     }
 

@@ -10,20 +10,20 @@ import com.rs2.util.db.DatabaseCallback;
 import java.io.File;
 import java.sql.ResultSet;
 
-final class ConverterUidLookupCallback
+public final class ConverterUidLookupCallback
 implements DatabaseCallback {
     private final /* synthetic */ File characterDirectory;
     private final /* synthetic */ Player player;
     private final /* synthetic */ String username;
 
-    ConverterUidLookupCallback(File file, Player player, String string) {
+    public ConverterUidLookupCallback(File file, Player player, String string) {
         this.characterDirectory = file;
         this.player = player;
         this.username = string;
     }
 
     @Override
-    public final void onResult(ResultSet resultSet) {
+    public final void onResult(ResultSet resultSet) throws java.sql.SQLException {
         try {
             try {
                 StringBuilder stringBuilder = new StringBuilder("Converting player file [");

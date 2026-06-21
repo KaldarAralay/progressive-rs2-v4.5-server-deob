@@ -1,29 +1,23 @@
-/*
- * Decompiled with CFR 0.152.
- */
 package com.rs2.model.combat.effect;
 
 import com.rs2.model.Entity;
 import com.rs2.model.combat.CombatAction;
-import com.rs2.model.combat.effect.CombatEffect;
-import com.rs2.model.combat.effect.CombatEffectTask;
 import com.rs2.model.npc.Npc;
 import com.rs2.model.player.Player;
 
-public final class StatDrainEffect
-extends CombatEffect {
+public final class StatDrainEffect extends CombatEffect {
     private int skillId;
     private int fixedDrainAmount;
     private double drainFraction;
 
-    public StatDrainEffect(int n, double d) {
-        this.skillId = n;
-        this.drainFraction = d;
+    public StatDrainEffect(int skillId, double drainFraction) {
+        this.skillId = skillId;
+        this.drainFraction = drainFraction;
     }
 
-    public StatDrainEffect(int n, int n2) {
-        this.skillId = n;
-        this.fixedDrainAmount = n2;
+    public StatDrainEffect(int skillId, int fixedDrainAmount) {
+        this.skillId = skillId;
+        this.fixedDrainAmount = fixedDrainAmount;
     }
 
     public final int getSkillId() {
@@ -40,86 +34,78 @@ extends CombatEffect {
     }
 
     @Override
-    public final void onApply(CombatAction object, CombatEffectTask object2) {
-        if (((Entity)(object = ((CombatAction)object).getTarget())).isPlayer()) {
-            object2 = (Player)object;
+    public final void onApply(CombatAction combatAction, CombatEffectTask combatEffectTask) {
+        Entity target = combatAction.getTarget();
+        if (target.isPlayer()) {
+            Player player = (Player)target;
             if (this.skillId != -1) {
-                int n = this.calculateDrainAmount(this.getBaseLevelForSkill((Entity)object));
-                int[] nArray = ((Player)object2).getSkillManager().getCurrentLevels();
-                int n2 = this.skillId;
-                nArray[n2] = nArray[n2] - n;
-                if (((Player)object2).getSkillManager().getCurrentLevels()[this.skillId] < 0) {
-                    ((Player)object2).getSkillManager().getCurrentLevels()[this.skillId] = 0;
+                int drainAmount = this.calculateDrainAmount(this.getBaseLevelForSkill(target));
+                int[] currentLevels = player.getSkillManager().getCurrentLevels();
+                currentLevels[this.skillId] = currentLevels[this.skillId] - drainAmount;
+                if (player.getSkillManager().getCurrentLevels()[this.skillId] < 0) {
+                    player.getSkillManager().getCurrentLevels()[this.skillId] = 0;
                 }
-                ((Player)object2).getSkillManager().refreshSkill(this.skillId);
+                player.getSkillManager().refreshSkill(this.skillId);
                 return;
             }
-            int n = 0;
-            while (n < ((Player)object2).getSkillManager().getCurrentLevels().length - 1) {
-                int n3 = this.calculateDrainAmount(StatDrainEffect.getBaseLevel((Entity)object, n));
-                int[] nArray = ((Player)object2).getSkillManager().getCurrentLevels();
-                int n4 = n;
-                nArray[n4] = nArray[n4] - n3;
-                if (((Player)object2).getSkillManager().getCurrentLevels()[n] < 0) {
-                    ((Player)object2).getSkillManager().getCurrentLevels()[n] = 0;
+            for (int index = 0; index < player.getSkillManager().getCurrentLevels().length - 1; ++index) {
+                int drainAmount = this.calculateDrainAmount(StatDrainEffect.getBaseLevel(target, index));
+                int[] currentLevels = player.getSkillManager().getCurrentLevels();
+                currentLevels[index] = currentLevels[index] - drainAmount;
+                if (player.getSkillManager().getCurrentLevels()[index] < 0) {
+                    player.getSkillManager().getCurrentLevels()[index] = 0;
                 }
-                ++n;
             }
-            ((Player)object2).getSkillManager().refreshAllSkills();
+            player.getSkillManager().refreshAllSkills();
             return;
         }
-        object2 = (Npc)object;
+        Npc npc = (Npc)target;
         if (this.skillId != -1) {
-            int n = this.calculateDrainAmount(this.getBaseLevelForSkill((Entity)object));
+            int drainAmount = this.calculateDrainAmount(this.getBaseLevelForSkill(target));
             if (this.skillId == 0) {
-                int n5 = ((Npc)object2).getCurrentAttackLevel();
-                int n6 = n5 - n;
-                if (n6 < 0) {
-                    n6 = 0;
+                int level = npc.getCurrentAttackLevel() - drainAmount;
+                if (level < 0) {
+                    level = 0;
                 }
-                ((Npc)object2).setCurrentAttackLevel(n6);
+                npc.setCurrentAttackLevel(level);
                 return;
             }
             if (this.skillId == 2) {
-                int n7 = ((Npc)object2).getCurrentStrengthLevel();
-                int n8 = n7 - n;
-                if (n8 < 0) {
-                    n8 = 0;
+                int level = npc.getCurrentStrengthLevel() - drainAmount;
+                if (level < 0) {
+                    level = 0;
                 }
-                ((Npc)object2).setCurrentStrengthLevel(n8);
+                npc.setCurrentStrengthLevel(level);
                 return;
             }
             if (this.skillId == 1) {
-                int n9 = ((Npc)object2).getCurrentDefenceLevel();
-                int n10 = n9 - n;
-                if (n10 < 0) {
-                    n10 = 0;
+                int level = npc.getCurrentDefenceLevel() - drainAmount;
+                if (level < 0) {
+                    level = 0;
                 }
-                ((Npc)object2).setCurrentDefenceLevel(n10);
+                npc.setCurrentDefenceLevel(level);
                 return;
             }
             if (this.skillId == 6) {
-                int n11 = ((Npc)object2).getCurrentMagicLevel();
-                int n12 = n11 - n;
-                if (n12 < 0) {
-                    n12 = 0;
+                int level = npc.getCurrentMagicLevel() - drainAmount;
+                if (level < 0) {
+                    level = 0;
                 }
-                ((Npc)object2).setCurrentMagicLevel(n12);
+                npc.setCurrentMagicLevel(level);
                 return;
             }
             if (this.skillId == 4) {
-                int n13 = ((Npc)object2).getCurrentRangedLevel();
-                int n14 = n13 - n;
-                if (n14 < 0) {
-                    n14 = 0;
+                int level = npc.getCurrentRangedLevel() - drainAmount;
+                if (level < 0) {
+                    level = 0;
                 }
-                ((Npc)object2).setCurrentRangedLevel(n14);
+                npc.setCurrentRangedLevel(level);
             }
         }
     }
 
     @Override
-    public final CombatEffectTask createTask(Entity entity, Entity entity2) {
+    public final CombatEffectTask createTask(Entity entity, Entity target) {
         return null;
     }
 
@@ -132,35 +118,33 @@ extends CombatEffect {
         return StatDrainEffect.getBaseLevel(entity, this.skillId);
     }
 
-    private static int getBaseLevel(Entity entity, int n) {
+    private static int getBaseLevel(Entity entity, int skillId) {
         if (entity.isPlayer()) {
-            entity = (Player)entity;
-            return ((Player)entity).getSkillManager().getBaseLevel(n);
+            return ((Player)entity).getSkillManager().getBaseLevel(skillId);
         }
-        entity = (Npc)entity;
-        if (n == 0) {
-            return ((Npc)entity).getBaseAttackLevel();
+        Npc npc = (Npc)entity;
+        if (skillId == 0) {
+            return npc.getBaseAttackLevel();
         }
-        if (n == 2) {
-            return ((Npc)entity).getBaseStrengthLevel();
+        if (skillId == 2) {
+            return npc.getBaseStrengthLevel();
         }
-        if (n == 1) {
-            return ((Npc)entity).getBaseDefenceLevel();
+        if (skillId == 1) {
+            return npc.getBaseDefenceLevel();
         }
-        if (n == 6) {
-            return ((Npc)entity).getBaseMagicLevel();
+        if (skillId == 6) {
+            return npc.getBaseMagicLevel();
         }
-        if (n == 4) {
-            return ((Npc)entity).getBaseRangedLevel();
+        if (skillId == 4) {
+            return npc.getBaseRangedLevel();
         }
         return 0;
     }
 
-    private int calculateDrainAmount(int n) {
+    private int calculateDrainAmount(int baseLevel) {
         if (this.fixedDrainAmount > 0) {
             return this.fixedDrainAmount;
         }
-        return (int)Math.ceil((double)n * this.drainFraction);
+        return (int)Math.ceil((double)baseLevel * this.drainFraction);
     }
 }
-

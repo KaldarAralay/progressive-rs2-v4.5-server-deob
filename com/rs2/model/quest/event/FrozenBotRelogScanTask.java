@@ -12,9 +12,9 @@ import com.rs2.model.task.TickTask;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-final class FrozenBotRelogScanTask
+public final class FrozenBotRelogScanTask
 extends TickTask {
-    FrozenBotRelogScanTask(ServerMaintenanceEventHook serverMaintenanceEventHook, int n) {
+    public FrozenBotRelogScanTask(ServerMaintenanceEventHook serverMaintenanceEventHook, int n) {
         super(100);
     }
 
@@ -42,8 +42,7 @@ extends TickTask {
                 ((Player)object).packetSender.sendLogout();
                 ((Player)object).disconnect();
             }
-            object = new FrozenBotReloginTask(this, 30, arrayList);
-            World.getTaskScheduler().schedule((TickTask)object);
+            World.getTaskScheduler().schedule(new FrozenBotReloginTask(this, 30, arrayList));
         }
     }
 }

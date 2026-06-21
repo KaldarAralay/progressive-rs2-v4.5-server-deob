@@ -10,12 +10,12 @@ import com.rs2.model.skill.farming.FlowerPatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class ScarecrowPlantingTask
+public final class ScarecrowPlantingTask
 extends CycleEvent {
     private /* synthetic */ FlowerPatchManager manager;
     private final /* synthetic */ FlowerPatch patch;
 
-    ScarecrowPlantingTask(FlowerPatchManager flowerPatchManager, FlowerPatch flowerPatch) {
+    public ScarecrowPlantingTask(FlowerPatchManager flowerPatchManager, FlowerPatch flowerPatch) {
         this.manager = flowerPatchManager;
         this.patch = flowerPatch;
     }

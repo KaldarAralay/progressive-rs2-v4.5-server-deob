@@ -8,11 +8,11 @@ import com.rs2.model.skill.farming.FlowerPatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class FlowerCureTask
+public final class FlowerCureTask
 extends CycleEvent {
     private /* synthetic */ FlowerPatchManager manager;
 
-    FlowerCureTask(FlowerPatchManager flowerPatchManager) {
+    public FlowerCureTask(FlowerPatchManager flowerPatchManager) {
         this.manager = flowerPatchManager;
     }
 

@@ -20,7 +20,7 @@ public final class PlayerLoadQueryFactory {
     }
 
     public final DatabaseCallback createProfileLoadCallback() {
-        return new PlayerProfileLoadCallback(this, 0);
+        return new PlayerProfileLoadCallback(this, (byte)0);
     }
 
     public final DatabaseCallback createBankLoadCallback() {
@@ -40,7 +40,7 @@ public final class PlayerLoadQueryFactory {
     }
 
     public final DatabaseCallback createSkillsLoadCallback() {
-        return new PlayerSkillsLoadCallback(this, 0);
+        return new PlayerSkillsLoadCallback(this, (byte)0);
     }
 
     public final DatabaseQuery createContainerLoadQuery(int n) {

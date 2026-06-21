@@ -57,15 +57,13 @@ public final class CaveLightManager {
             player.swampGasFlareState = 1;
             Player player2 = player;
             player2.packetSender.sendGameMessage("Your " + ((ItemStack)object).getDefinition().getName().toLowerCase() + " flares brightly!");
-            object = new SwampGasExplosionTask(7, player);
-            World.getTaskScheduler().schedule((TickTask)object);
+            World.getTaskScheduler().schedule(new SwampGasExplosionTask(7, player));
         }
         if (player.activeEnvironmentalHazardId == 1657) {
             return true;
         }
         if (CaveLightManager.isInCaveInsectRegion(player)) {
-            object = new CaveInsectSwarmTask(15, player);
-            World.getTaskScheduler().schedule((TickTask)object);
+            World.getTaskScheduler().schedule(new CaveInsectSwarmTask(15, player));
             player.activeEnvironmentalHazardId = 1657;
             return true;
         }

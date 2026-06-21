@@ -41,7 +41,7 @@ public final class DuelInterfaceManager {
             player.packetSender.showInterface(6412);
             object = "duel2";
             player = this.player;
-            this.player.interfaceAction = object;
+            this.player.interfaceAction = (String)object;
             this.player.getDuelController().setAccepted(false);
             object = this;
             player = ((DuelInterfaceManager)object).player;
@@ -151,7 +151,8 @@ public final class DuelInterfaceManager {
 
     private int countEquipmentItemsToRemove() {
         int n = 0;
-        for (ItemStack itemStack : this.player.getDuelSession().getEquipmentToRemove()) {
+        for (Object itemObject : this.player.getDuelSession().getEquipmentToRemove()) {
+            ItemStack itemStack = (ItemStack)itemObject;
             if (itemStack.getId() <= 0) continue;
             ++n;
         }

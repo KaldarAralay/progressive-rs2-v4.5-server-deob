@@ -9,7 +9,6 @@ import com.rs2.model.ground.GroundItemManager;
 import com.rs2.model.item.ItemContainer;
 import com.rs2.model.item.ItemContainerType;
 import com.rs2.model.item.ItemStack;
-import com.rs2.model.player.Player;
 
 public final class InventoryManager {
     private Player player;
@@ -21,31 +20,24 @@ public final class InventoryManager {
 
     public final void refresh() {
         ItemStack[] itemStackArray = this.container.getRawItems();
-        Player player = this.player;
-        player.packetSender.sendItemContainer(3214, itemStackArray);
+        this.player.packetSender.sendItemContainer(3214, itemStackArray);
     }
 
     public final void sendToInterface(int n) {
         ItemStack[] itemStackArray = this.container.getRawItems();
-        Player player = this.player;
-        player.packetSender.sendItemContainer(n, itemStackArray);
+        this.player.packetSender.sendItemContainer(n, itemStackArray);
     }
 
-    public final int addItemPartial(ItemStack object) {
-        if (!this.hasSpaceFor((ItemStack)object)) {
-            object = this.player;
-            ((Player)object).packetSender.sendGameMessage("Not enough space in your inventory.");
-            object = this.player;
-            ((Player)object).packetSender.sendSoundEffect(1878, 1, 0);
+    public final int addItemPartial(ItemStack itemStack) {
+        if (!this.hasSpaceFor(itemStack)) {
+            this.sendNoSpaceMessage();
             return 0;
         }
-        int n = ((ItemStack)object).getAmount();
-        if (!((ItemStack)object).getDefinition().isStackable() && n > this.container.getFreeSlots()) {
+        int n = itemStack.getAmount();
+        if (!itemStack.getDefinition().isStackable() && n > this.container.getFreeSlots()) {
             n = this.container.getFreeSlots();
         }
-        ItemStack itemStack = new ItemStack(((ItemStack)object).getId(), n, ((ItemStack)object).getMetadata());
-        object = this.container;
-        ((ItemContainer)object).add(itemStack, -1);
+        this.container.add(new ItemStack(itemStack.getId(), n, itemStack.getMetadata()), -1);
         this.refresh();
         this.player.getEquipmentManager().refreshCarriedValue();
         return n;
@@ -65,15 +57,12 @@ public final class InventoryManager {
         }
     }
 
-    public final boolean addItem(ItemStack object) {
-        if (object == null || !((ItemStack)object).isValid()) {
+    public final boolean addItem(ItemStack itemStack) {
+        if (itemStack == null || !itemStack.isValid()) {
             return false;
         }
-        if (!this.hasSpaceFor((ItemStack)object)) {
-            object = this.player;
-            ((Player)object).packetSender.sendGameMessage("Not enough space in your inventory.");
-            object = this.player;
-            ((Player)object).packetSender.sendSoundEffect(1878, 1, 0);
+        if (!this.hasSpaceFor(itemStack)) {
+            this.sendNoSpaceMessage();
             if (this.player.botEnabled) {
                 if (this.player.botCombatState != null && this.player.botCombatState.equals("loot arrows")) {
                     this.player.botCombatState = null;
@@ -90,56 +79,46 @@ public final class InventoryManager {
             }
             return false;
         }
-        int n = ((ItemStack)object).getAmount();
-        if (!((ItemStack)object).getDefinition().isStackable() && n > this.container.getFreeSlots()) {
+        int n = itemStack.getAmount();
+        if (!itemStack.getDefinition().isStackable() && n > this.container.getFreeSlots()) {
             n = this.container.getFreeSlots();
-            int n2 = ((ItemStack)object).getAmount() - n;
+            int n2 = itemStack.getAmount() - n;
             int n3 = 0;
             while (n3 < n2) {
-                GroundItemManager.getInstance().spawn(new GroundItem(new ItemStack(((ItemStack)object).getId(), 1, ((ItemStack)object).getMetadata()), this.player));
+                GroundItemManager.getInstance().spawn(new GroundItem(new ItemStack(itemStack.getId(), 1, itemStack.getMetadata()), this.player));
                 ++n3;
             }
         }
-        ItemStack itemStack = new ItemStack(((ItemStack)object).getId(), n, ((ItemStack)object).getMetadata());
-        object = this.container;
-        ((ItemContainer)object).add(itemStack, -1);
+        this.container.add(new ItemStack(itemStack.getId(), n, itemStack.getMetadata()), -1);
         this.refresh();
         this.player.getEquipmentManager().refreshCarriedValue();
         return true;
     }
 
-    public final boolean addItemUpToFreeSlots(ItemStack object) {
-        if (!((ItemStack)object).isValid()) {
+    public final boolean addItemUpToFreeSlots(ItemStack itemStack) {
+        if (!itemStack.isValid()) {
             return false;
         }
-        if (!this.hasSpaceFor((ItemStack)object)) {
-            object = this.player;
-            ((Player)object).packetSender.sendGameMessage("Not enough space in your inventory.");
-            object = this.player;
-            ((Player)object).packetSender.sendSoundEffect(1878, 1, 0);
+        if (!this.hasSpaceFor(itemStack)) {
+            this.sendNoSpaceMessage();
             return false;
         }
-        int n = ((ItemStack)object).getAmount();
+        int n = itemStack.getAmount();
         if (n >= this.container.getFreeSlots()) {
             n = this.container.getFreeSlots();
         }
-        ItemStack itemStack = new ItemStack(((ItemStack)object).getId(), n, ((ItemStack)object).getMetadata());
-        object = this.container;
-        ((ItemContainer)object).add(itemStack, -1);
+        this.container.add(new ItemStack(itemStack.getId(), n, itemStack.getMetadata()), -1);
         this.refresh();
         this.player.getEquipmentManager().refreshCarriedValue();
         return true;
     }
 
-    public final boolean canAddItem(ItemStack object) {
-        if (object == null) {
+    public final boolean canAddItem(ItemStack itemStack) {
+        if (itemStack == null) {
             return false;
         }
-        if (!this.hasSpaceFor((ItemStack)object)) {
-            object = this.player;
-            ((Player)object).packetSender.sendGameMessage("Not enough space in your inventory.");
-            object = this.player;
-            ((Player)object).packetSender.sendSoundEffect(1878, 1, 0);
+        if (!this.hasSpaceFor(itemStack)) {
+            this.sendNoSpaceMessage();
             return false;
         }
         return true;
@@ -181,25 +160,22 @@ public final class InventoryManager {
         return false;
     }
 
-    public final void setItemInSlot(ItemStack object, int n) {
-        if (object == null || !((ItemStack)object).isValid()) {
+    public final void setItemInSlot(ItemStack itemStack, int n) {
+        if (itemStack == null || !itemStack.isValid()) {
             return;
         }
-        if (((ItemStack)object).getDefinition().isStackable() && this.container.indexOfItem(((ItemStack)object).getId()) >= 0) {
-            n = this.container.indexOfItem(((ItemStack)object).getId());
-            ItemStack itemStack = this.container.getItemAt(n);
-            this.container.setItem(n, new ItemStack(((ItemStack)object).getId(), ((ItemStack)object).getAmount() + itemStack.getAmount(), ((ItemStack)object).getMetadata()));
+        if (itemStack.getDefinition().isStackable() && this.container.indexOfItem(itemStack.getId()) >= 0) {
+            n = this.container.indexOfItem(itemStack.getId());
+            ItemStack itemStack2 = this.container.getItemAt(n);
+            this.container.setItem(n, new ItemStack(itemStack.getId(), itemStack.getAmount() + itemStack2.getAmount(), itemStack.getMetadata()));
             this.refresh();
             return;
         }
         if (this.container.getFirstFreeSlot() == -1) {
-            object = this.player;
-            ((Player)object).packetSender.sendGameMessage("Not enough space in your inventory.");
-            object = this.player;
-            ((Player)object).packetSender.sendSoundEffect(1878, 1, 0);
+            this.sendNoSpaceMessage();
             return;
         }
-        this.container.setItem(n, (ItemStack)object);
+        this.container.setItem(n, itemStack);
         this.refresh();
     }
 
@@ -264,21 +240,22 @@ public final class InventoryManager {
     }
 
     public final boolean containsItem(int n) {
-        InventoryManager inventoryManager = this;
-        return inventoryManager.container.indexOfItem(n) >= 0;
+        return this.container.indexOfItem(n) >= 0;
     }
 
     public final boolean containsItemAmount(int n, int n2) {
         if (!this.containsItem(n)) {
             return false;
         }
-        InventoryManager inventoryManager = this;
-        return inventoryManager.container.getItemAmount(n) >= n2;
+        return this.container.getItemAmount(n) >= n2;
     }
 
     public final int getItemAmount(int n) {
-        InventoryManager inventoryManager = this.player.getInventoryManager();
-        return inventoryManager.container.getItemAmount(n);
+        return this.player.getInventoryManager().container.getItemAmount(n);
+    }
+
+    private void sendNoSpaceMessage() {
+        this.player.packetSender.sendGameMessage("Not enough space in your inventory.");
+        this.player.packetSender.sendSoundEffect(1878, 1, 0);
     }
 }
-

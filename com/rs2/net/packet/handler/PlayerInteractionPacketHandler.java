@@ -4,7 +4,6 @@
 package com.rs2.net.packet.handler;
 
 import com.rs2.ServerSettings;
-import com.rs2.model.Entity;
 import com.rs2.model.GameplayHelper;
 import com.rs2.model.World;
 import com.rs2.model.combat.CombatManager;
@@ -17,207 +16,164 @@ import com.rs2.net.packet.ByteOrder;
 import com.rs2.net.packet.ByteTransform;
 import com.rs2.net.packet.IncomingPacket;
 import com.rs2.net.packet.PacketHandler;
-import com.rs2.net.packet.handler.DeferredTradeRequestTask;
-import com.rs2.net.packet.handler.DuelRequestTask;
-import com.rs2.net.packet.handler.FollowPlayerTask;
-import com.rs2.net.packet.handler.ItemOnPlayerTask;
-import com.rs2.net.packet.handler.TradeRequestTask;
 import com.rs2.util.GameUtil;
 
 public final class PlayerInteractionPacketHandler
 implements PacketHandler {
-    /*
-     * Enabled aggressive block sorting
-     */
     @Override
-    public final void handle(Player object, IncomingPacket object2) {
-        if (((Player)object).isActionLocked()) {
+    public final void handle(Player player, IncomingPacket incomingPacket) {
+        if (player.isActionLocked()) {
             return;
         }
-        Object object3 = object;
-        ((Player)object3).packetSender.closeInterfaces();
-        ((Player)object).resetInteractionState();
-        switch (((IncomingPacket)object2).getOpcode()) {
-            case 73: 
-            case 136: 
+        player.packetSender.closeInterfaces();
+        player.resetInteractionState();
+        switch (incomingPacket.getOpcode()) {
+            case 73:
+            case 136:
             case 139: {
-                object3 = object2;
-                object2 = object;
-                object = this;
-                int n = ((IncomingPacket)object3).getReader().readSignedShort(true, ByteOrder.LITTLE);
-                if (n < 0) return;
-                if (n > World.getPlayers().length) {
+                int targetIndex = incomingPacket.getReader().readSignedShort(true, ByteOrder.LITTLE);
+                if (targetIndex < 0 || targetIndex > World.getPlayers().length) {
                     return;
                 }
-                Player player = World.getPlayers()[n];
-                if (player == null) return;
-                if (!GameUtil.isWithinDistance(((Entity)object2).getPosition(), player.getPosition(), 15)) {
+                Player targetPlayer = World.getPlayers()[targetIndex];
+                if (targetPlayer == null || !GameUtil.isWithinDistance(player.getPosition(), targetPlayer.getPosition(), 15)) {
                     return;
                 }
-                int n2 = ((Entity)object2).nextActionSequence();
-                if (player.getTradePartner() == object2) {
-                    GameplayHelper.declineTrade((Player)object2);
-                } else if (player.getOpenInterfaceId() > 0) {
-                    Object object4 = object2;
-                    ((Player)object4).packetSender.sendGameMessage("This player is busy.");
+                int actionSequence = player.nextActionSequence();
+                if (targetPlayer.getTradePartner() == player) {
+                    GameplayHelper.declineTrade(player);
+                } else if (targetPlayer.getOpenInterfaceId() > 0) {
+                    player.packetSender.sendGameMessage("This player is busy.");
                     return;
                 }
-                ((Entity)object2).setInteractionTarget(player);
-                ((Entity)object2).setAttackRange(1);
-                ((Entity)object2).setMovementTarget(player);
-                World.scheduleTickTask(new TradeRequestTask((PlayerInteractionPacketHandler)object, 1, player, (Player)object2, n2));
+                player.setInteractionTarget(targetPlayer);
+                player.setAttackRange(1);
+                player.setMovementTarget(targetPlayer);
+                World.scheduleTickTask(new TradeRequestTask(this, 1, targetPlayer, player, actionSequence));
                 return;
             }
             case 153: {
-                int n = ((IncomingPacket)object2).getReader().readSignedShort(true, ByteOrder.LITTLE);
-                if (n < 0) return;
-                if (n > World.getPlayers().length) {
+                int targetIndex = incomingPacket.getReader().readSignedShort(true, ByteOrder.LITTLE);
+                if (targetIndex < 0 || targetIndex > World.getPlayers().length) {
                     return;
                 }
-                Player player = World.getPlayers()[n];
-                if (player == null) return;
-                if (!GameUtil.isWithinDistance(((Entity)object).getPosition(), player.getPosition(), 15)) {
+                Player targetPlayer = World.getPlayers()[targetIndex];
+                if (targetPlayer == null || !GameUtil.isWithinDistance(player.getPosition(), targetPlayer.getPosition(), 15)) {
                     return;
                 }
-                ((Entity)object).getUpdateState().setFaceEntity(player.getEncodedIndex());
-                ((Entity)object).setAttackRange(1);
-                ((Entity)object).setMovementTarget(player);
+                player.getUpdateState().setFaceEntity(targetPlayer.getEncodedIndex());
+                player.setAttackRange(1);
+                player.setMovementTarget(targetPlayer);
                 return;
             }
             case 128: {
-                object3 = object2;
-                object2 = object;
-                object = this;
-                int n = ((IncomingPacket)object3).getReader().readSignedShort();
-                if (n < 0) return;
-                if (n > World.getPlayers().length) {
+                int targetIndex = incomingPacket.getReader().readSignedShort();
+                if (targetIndex < 0 || targetIndex > World.getPlayers().length) {
                     return;
                 }
-                Player player = World.getPlayers()[n];
-                if (player == null) return;
-                if (!GameUtil.isWithinDistance(((Entity)object2).getPosition(), player.getPosition(), 15)) {
+                Player targetPlayer = World.getPlayers()[targetIndex];
+                if (targetPlayer == null || !GameUtil.isWithinDistance(player.getPosition(), targetPlayer.getPosition(), 15)) {
                     return;
                 }
-                int n3 = ((Entity)object2).nextActionSequence();
-                ((Player)object2).setQueuedCombatSpell(null);
-                ((Entity)object2).getUpdateState().setFaceEntity(player.getEncodedIndex());
-                if (!((Entity)object2).isInDuelArena() && !((Entity)object2).isInWilderness()) {
-                    Object object5 = object;
-                    int n4 = n3;
-                    object = player;
-                    Object object6 = object2;
-                    Object object7 = object5;
+                int actionSequence = player.nextActionSequence();
+                player.setQueuedCombatSpell(null);
+                player.getUpdateState().setFaceEntity(targetPlayer.getEncodedIndex());
+                if (!player.isInDuelArena() && !player.isInWilderness()) {
                     if (ServerSettings.duelingDisabled) {
-                        Object object8 = object6;
-                        ((Player)object8).packetSender.sendGameMessage("This feature is currently disabled.");
+                        player.packetSender.sendGameMessage("This feature is currently disabled.");
                         return;
                     }
-                    if (((Player)object).getOpenInterfaceId() > 0) {
-                        Object object9 = object6;
-                        ((Player)object9).packetSender.sendGameMessage("This player is busy.");
+                    if (targetPlayer.getOpenInterfaceId() > 0) {
+                        player.packetSender.sendGameMessage("This player is busy.");
                         return;
                     }
-                    ((Entity)object6).setInteractionTarget((Entity)object);
-                    ((Entity)object6).setAttackRange(1);
-                    ((Entity)object6).setMovementTarget((Entity)object);
-                    World.scheduleTickTask(new DuelRequestTask((PlayerInteractionPacketHandler)object7, 1, (Player)object, (Player)object6, n4));
+                    player.setInteractionTarget(targetPlayer);
+                    player.setAttackRange(1);
+                    player.setMovementTarget(targetPlayer);
+                    World.scheduleTickTask(new DuelRequestTask(this, 1, targetPlayer, player, actionSequence));
                     return;
                 }
-                CombatManager.startCombat((Entity)object2, player);
+                CombatManager.startCombat(player, targetPlayer);
                 return;
             }
             case 249: {
-                int n = ((IncomingPacket)object2).getReader().readSignedShort(true, ByteTransform.ADD);
-                if (n < 0) return;
-                if (n > World.getPlayers().length) {
+                int targetIndex = incomingPacket.getReader().readSignedShort(true, ByteTransform.ADD);
+                if (targetIndex < 0 || targetIndex > World.getPlayers().length) {
                     return;
                 }
-                Player player = World.getPlayers()[n];
-                if (player == null) return;
-                if (!GameUtil.isWithinDistance(((Entity)object).getPosition(), player.getPosition(), 15)) {
+                Player targetPlayer = World.getPlayers()[targetIndex];
+                if (targetPlayer == null || !GameUtil.isWithinDistance(player.getPosition(), targetPlayer.getPosition(), 15)) {
                     return;
                 }
-                int n5 = ((IncomingPacket)object2).getReader().readSignedShort(true, ByteOrder.LITTLE);
-                SpellDefinition spellDefinition = Spellbook.getSpellForButtonId((Player)object, n5);
+                int spellButtonId = incomingPacket.getReader().readSignedShort(true, ByteOrder.LITTLE);
+                SpellDefinition spellDefinition = Spellbook.getSpellForButtonId(player, spellButtonId);
                 if (spellDefinition == null) {
-                    if (((Player)object).getPlayerRights() <= 1) return;
-                    if (!ServerSettings.debugModeEnabled) return;
-                    System.out.println("Magic ID: " + n5);
+                    if (player.getPlayerRights() > 1 && ServerSettings.debugModeEnabled) {
+                        System.out.println("Magic ID: " + spellButtonId);
+                    }
                     return;
                 }
-                if (!((Entity)object).isInMageArena()) {
-                    if (spellDefinition == SpellDefinition.SARADOMIN_STRIKE && ((Player)object).mageArenaSaradominStrikeCastsRemaining > 0) {
-                        Object object10 = object;
-                        ((Player)object10).packetSender.sendGameMessage("You need to cast this spell " + ((Player)object).mageArenaSaradominStrikeCastsRemaining + " times at Mage arena first.");
+                if (!player.isInMageArena()) {
+                    if (spellDefinition == SpellDefinition.SARADOMIN_STRIKE && player.mageArenaSaradominStrikeCastsRemaining > 0) {
+                        player.packetSender.sendGameMessage("You need to cast this spell " + player.mageArenaSaradominStrikeCastsRemaining + " times at Mage arena first.");
                         return;
                     }
-                    if (spellDefinition == SpellDefinition.FLAMES_OF_ZAMORAK && ((Player)object).mageArenaFlamesOfZamorakCastsRemaining > 0) {
-                        Object object11 = object;
-                        ((Player)object11).packetSender.sendGameMessage("You need to cast this spell " + ((Player)object).mageArenaFlamesOfZamorakCastsRemaining + " times at Mage arena first.");
+                    if (spellDefinition == SpellDefinition.FLAMES_OF_ZAMORAK && player.mageArenaFlamesOfZamorakCastsRemaining > 0) {
+                        player.packetSender.sendGameMessage("You need to cast this spell " + player.mageArenaFlamesOfZamorakCastsRemaining + " times at Mage arena first.");
                         return;
                     }
-                    if (spellDefinition == SpellDefinition.CLAWS_OF_GUTHIX && ((Player)object).mageArenaClawsOfGuthixCastsRemaining > 0) {
-                        Object object12 = object;
-                        ((Player)object12).packetSender.sendGameMessage("You need to cast this spell " + ((Player)object).mageArenaClawsOfGuthixCastsRemaining + " times at Mage arena first.");
+                    if (spellDefinition == SpellDefinition.CLAWS_OF_GUTHIX && player.mageArenaClawsOfGuthixCastsRemaining > 0) {
+                        player.packetSender.sendGameMessage("You need to cast this spell " + player.mageArenaClawsOfGuthixCastsRemaining + " times at Mage arena first.");
                         return;
                     }
                 }
-                ((Player)object).setQueuedCombatSpell(spellDefinition);
+                player.setQueuedCombatSpell(spellDefinition);
                 if (spellDefinition != SpellDefinition.TELEOTHER_CAMELOT && spellDefinition != SpellDefinition.TELEOTHER_FALADOR && spellDefinition != SpellDefinition.TELEOTHER_LUMBRIDGE) {
-                    CombatManager.startCombat((Entity)object, player);
+                    CombatManager.startCombat(player, targetPlayer);
                     return;
                 }
-                MagicSpellAction.castTeleotherSpell((Player)object, player, spellDefinition);
+                MagicSpellAction.castTeleotherSpell(player, targetPlayer, spellDefinition);
                 return;
             }
             case 14: {
-                object3 = object2;
-                object2 = object;
-                object = this;
-                int n = ((IncomingPacket)object3).getReader().readSignedShort();
-                if (n < 0) return;
-                if (n > World.getPlayers().length) {
+                int targetIndex = incomingPacket.getReader().readSignedShort();
+                if (targetIndex < 0 || targetIndex > World.getPlayers().length) {
                     return;
                 }
-                Player player = World.getPlayers()[n];
-                if (player == null) return;
-                if (!GameUtil.isWithinDistance(((Entity)object2).getPosition(), player.getPosition(), 15)) {
+                Player targetPlayer = World.getPlayers()[targetIndex];
+                if (targetPlayer == null || !GameUtil.isWithinDistance(player.getPosition(), targetPlayer.getPosition(), 15)) {
                     return;
                 }
-                int n6 = ((IncomingPacket)object3).getReader().readSignedShort(ByteOrder.LITTLE);
-                ItemStack itemStack = ((Player)object2).getInventoryManager().getContainer().getItemAt(n6);
-                if (itemStack == null) return;
-                int n7 = ((Entity)object2).nextActionSequence();
-                if (player.getOpenInterfaceId() > 0) {
-                    Object object13 = object2;
-                    ((Player)object13).packetSender.sendGameMessage("This player is busy.");
+                int inventorySlot = incomingPacket.getReader().readSignedShort(ByteOrder.LITTLE);
+                ItemStack itemStack = player.getInventoryManager().getContainer().getItemAt(inventorySlot);
+                if (itemStack == null) {
                     return;
                 }
-                ((Entity)object2).setInteractionTarget(player);
-                ((Entity)object2).setAttackRange(1);
-                ((Entity)object2).setMovementTarget(player);
-                World.scheduleTickTask(new ItemOnPlayerTask((PlayerInteractionPacketHandler)object, 1, player, (Player)object2, n7, itemStack, n6));
+                int actionSequence = player.nextActionSequence();
+                if (targetPlayer.getOpenInterfaceId() > 0) {
+                    player.packetSender.sendGameMessage("This player is busy.");
+                    return;
+                }
+                player.setInteractionTarget(targetPlayer);
+                player.setAttackRange(1);
+                player.setMovementTarget(targetPlayer);
+                World.scheduleTickTask(new ItemOnPlayerTask(this, 1, targetPlayer, player, actionSequence, itemStack, inventorySlot));
                 return;
             }
             case 39: {
-                object3 = object2;
-                object2 = object;
-                object = this;
-                int n = ((IncomingPacket)object3).getReader().readSignedShort(true, ByteOrder.LITTLE);
-                if (n < 0) return;
-                if (n > World.getPlayers().length) {
+                int targetIndex = incomingPacket.getReader().readSignedShort(true, ByteOrder.LITTLE);
+                if (targetIndex < 0 || targetIndex > World.getPlayers().length) {
                     return;
                 }
-                Player player = World.getPlayers()[n];
-                if (player == null) return;
-                if (!GameUtil.isWithinDistance(((Entity)object2).getPosition(), player.getPosition(), 15)) {
+                Player targetPlayer = World.getPlayers()[targetIndex];
+                if (targetPlayer == null || !GameUtil.isWithinDistance(player.getPosition(), targetPlayer.getPosition(), 15)) {
                     return;
                 }
-                ((Entity)object2).setInteractionTarget(player);
-                ((Entity)object2).setAttackRange(1);
-                ((Entity)object2).setMovementTarget(player);
-                int n8 = ((Entity)object2).nextActionSequence();
-                World.scheduleTickTask(new FollowPlayerTask((PlayerInteractionPacketHandler)object, 1, player, (Player)object2, n8));
+                player.setInteractionTarget(targetPlayer);
+                player.setAttackRange(1);
+                player.setMovementTarget(targetPlayer);
+                int actionSequence = player.nextActionSequence();
+                World.scheduleTickTask(new FollowPlayerTask(this, 1, targetPlayer, player, actionSequence));
                 return;
             }
         }
@@ -244,4 +200,3 @@ implements PacketHandler {
         World.scheduleTickTask(new DeferredTradeRequestTask(1, player2, player, n));
     }
 }
-

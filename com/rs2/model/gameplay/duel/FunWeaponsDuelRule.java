@@ -7,9 +7,10 @@ import com.rs2.ServerSettings;
 import com.rs2.model.gameplay.duel.DuelRule;
 import com.rs2.model.player.Player;
 
-final class FunWeaponsDuelRule
+public final class FunWeaponsDuelRule
 extends DuelRule {
-    FunWeaponsDuelRule(int n2, int n3, int n4) {
+    public FunWeaponsDuelRule(int n2, int n3, int n4) {
+        super(n2, n3, n4);
     }
 
     @Override

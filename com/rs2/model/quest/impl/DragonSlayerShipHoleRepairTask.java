@@ -9,17 +9,17 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.DragonSlayerQuest;
 import com.rs2.model.task.TickTask;
 
-final class DragonSlayerShipHoleRepairTask
+public final class DragonSlayerShipHoleRepairTask
 extends TickTask {
     private final /* synthetic */ int a;
-    private final /* synthetic */ Player b;
+    private final /* synthetic */ Player player;
     private final /* synthetic */ int c;
 
-    DragonSlayerShipHoleRepairTask(DragonSlayerQuest dragonSlayerQuest, int n, int n2, Player player, int n3) {
-        this.a = n2;
-        this.b = player;
-        this.c = n3;
+    public DragonSlayerShipHoleRepairTask(DragonSlayerQuest dragonSlayerQuest, int n, int n2, Player player, int n3) {
         super(2);
+        this.a = n2;
+        this.player = player;
+        this.c = n3;
     }
 
     @Override
@@ -34,21 +34,21 @@ extends TickTask {
         if ((this.a & 2) == 0) {
             n = 2;
         }
-        this.b.setActionLocked(false);
-        this.b.getInventoryManager().removeItem(new ItemStack(960, 1));
-        this.b.getInventoryManager().removeItem(new ItemStack(1539, 30));
+        this.player.setActionLocked(false);
+        this.player.getInventoryManager().removeItem(new ItemStack(960, 1));
+        this.player.getInventoryManager().removeItem(new ItemStack(1539, 30));
         if (n == 2) {
-            this.b.getDialogueManager().showTwoLineStatement("You nail a plank over the hole, but you still need more planks to", "close the hole completely.");
-            this.b.addQuestState(this.c, n);
+            this.player.getDialogueManager().showTwoLineStatement("You nail a plank over the hole, but you still need more planks to", "close the hole completely.");
+            this.player.addQuestState(this.c, n);
         }
         if (n == 4) {
-            this.b.getDialogueManager().showTwoLineStatement("You nail a plank over the hole, but you still need one more plank to", "close the hole completely.");
-            this.b.addQuestState(this.c, n);
+            this.player.getDialogueManager().showTwoLineStatement("You nail a plank over the hole, but you still need one more plank to", "close the hole completely.");
+            this.player.addQuestState(this.c, n);
         }
         if (n == 8) {
-            this.b.moveTo(new Position(this.b.getPosition().getX(), this.b.getPosition().getY(), 2));
-            this.b.getDialogueManager().showTwoLineStatement("You nail a final plank over the hole. You have successfully patched", "the hole in the ship.");
-            this.b.addQuestState(this.c, n);
+            this.player.moveTo(new Position(this.player.getPosition().getX(), this.player.getPosition().getY(), 2));
+            this.player.getDialogueManager().showTwoLineStatement("You nail a final plank over the hole. You have successfully patched", "the hole in the ship.");
+            this.player.addQuestState(this.c, n);
         }
         this.stop();
     }

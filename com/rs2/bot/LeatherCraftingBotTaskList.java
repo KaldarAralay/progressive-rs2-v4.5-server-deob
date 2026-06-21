@@ -6,9 +6,9 @@ package com.rs2.bot;
 import com.rs2.bot.tasks.LeatherCraftingBotTask;
 import java.util.ArrayList;
 
-final class LeatherCraftingBotTaskList
+public final class LeatherCraftingBotTaskList
 extends ArrayList {
-    LeatherCraftingBotTaskList() {
+    public LeatherCraftingBotTaskList() {
         this.add(new LeatherCraftingBotTask(1));
     }
 }

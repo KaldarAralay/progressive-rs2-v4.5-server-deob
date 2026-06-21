@@ -12,9 +12,9 @@ import com.rs2.model.combat.attack.BaseCombatAttack;
 import com.rs2.model.combat.attack.CombatAttack;
 import com.rs2.model.npc.combat.NpcCombatDefinition;
 
-final class BandosSpiritualRangerCombatDefinition
+public final class BandosSpiritualRangerCombatDefinition
 extends NpcCombatDefinition {
-    BandosSpiritualRangerCombatDefinition() {
+    public BandosSpiritualRangerCombatDefinition() {
     }
 
     @Override

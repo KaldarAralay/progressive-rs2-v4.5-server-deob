@@ -29,28 +29,28 @@ public final class TeleportManager {
         this.player = player;
     }
 
-    public final boolean castSpellbookTeleport(Position object) {
+    public final boolean castSpellbookTeleport(Position position) {
         if (this.player.getEnchantmentChamberController().isInsideChamber() || this.player.getAlchemistPlaygroundController().isInsidePlayground() || this.player.getCreatureGraveyardController().isInsideGraveyard() || this.player.getTelekineticTheatreController().isInsideTheatre()) {
-            object = this.player;
-            ((Player)object).packetSender.sendGameMessage("You can't teleport out of here.");
+            Player player = this.player;
+            player.packetSender.sendGameMessage("You can't teleport out of here.");
             return false;
         }
         if (this.player.isInWilderness() && this.player.getWildernessLevel() > 20) {
-            object = this.player;
-            ((Player)object).packetSender.sendGameMessage("You can't teleport above level 20 in the wilderness.");
+            Player player = this.player;
+            player.packetSender.sendGameMessage("You can't teleport above level 20 in the wilderness.");
             return false;
         }
         if (this.player.isTeleblocked()) {
-            object = this.player;
-            ((Player)object).packetSender.sendGameMessage("A magical force prevents you from teleporting.");
+            Player player = this.player;
+            player.packetSender.sendGameMessage("A magical force prevents you from teleporting.");
             return false;
         }
         if (this.player.isInTeleportRestrictedArea()) {
-            object = this.player;
-            ((Player)object).packetSender.sendGameMessage("You can't teleport from here.");
+            Player player = this.player;
+            player.packetSender.sendGameMessage("You can't teleport from here.");
             return false;
         }
-        this.startMagicTeleportTask(((Position)object).getX(), ((Position)object).getY(), ((Position)object).getPlane(), this.player.getSpellbook() == Spellbook.ANCIENT);
+        this.startMagicTeleportTask(position.getX(), position.getY(), position.getPlane(), this.player.getSpellbook() == Spellbook.ANCIENT);
         return true;
     }
 

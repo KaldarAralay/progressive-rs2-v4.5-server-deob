@@ -18,34 +18,30 @@ public final class RunecraftingHandler {
     public static int PURE_ESSENCE_ITEM_ID = 7936;
     private static int[] SCRYING_ORB_NPC_IDS = new int[]{171, 300, 462, 553, 844};
 
-    public static void craftRunesAtAltar(Player player, RuneDefinition object) {
+    public static void craftRunesAtAltar(Player player, RuneDefinition runeDefinition) {
         if (!ServerSettings.runecraftingEnabled) {
-            object = player;
-            ((Player)object).packetSender.sendGameMessage("This skill is currently disabled.");
+            player.packetSender.sendGameMessage("This skill is currently disabled.");
             return;
         }
         if (player.getQuestState(14) != 1) {
             QuestDefinition questDefinition = QuestDefinition.forId(14);
             String string = questDefinition.getName();
-            object = player;
-            ((Player)object).packetSender.sendGameMessage("You need to complete " + string + " to do this.");
+            player.packetSender.sendGameMessage("You need to complete " + string + " to do this.");
             return;
         }
-        if (!SkillActionHelper.checkSkillRequirement(player, 20, ((RuneDefinition)((Object)object)).getRequiredLevel(), "craft this rune")) {
+        if (!SkillActionHelper.checkSkillRequirement(player, 20, runeDefinition.getRequiredLevel(), "craft this rune")) {
             return;
         }
         int n = player.getInventoryManager().getItemAmount(1436);
         int n2 = player.getInventoryManager().getItemAmount(PURE_ESSENCE_ITEM_ID);
-        double d = ((RuneDefinition)((Object)object)).getMultipleRunesLevelInterval() < 0 ? 0 : player.getSkillManager().getBaseLevel(20) / ((RuneDefinition)((Object)object)).getMultipleRunesLevelInterval();
+        double d = runeDefinition.getMultipleRunesLevelInterval() < 0 ? 0 : player.getSkillManager().getBaseLevel(20) / runeDefinition.getMultipleRunesLevelInterval();
         int n3 = (int)Math.floor(d) + 1;
-        if (((RuneDefinition)((Object)object)).getRuneItemId() >= 560) {
+        if (runeDefinition.getRuneItemId() >= 560) {
             if (n2 <= 0) {
                 if (PURE_ESSENCE_ITEM_ID != 1436) {
-                    object = player;
-                    ((Player)object).packetSender.sendGameMessage("You need pure essence to make these kinds of runes.");
+                    player.packetSender.sendGameMessage("You need pure essence to make these kinds of runes.");
                 } else {
-                    object = player;
-                    ((Player)object).packetSender.sendGameMessage("You need rune essence to make runes.");
+                    player.packetSender.sendGameMessage("You need rune essence to make runes.");
                 }
                 if (player.botEnabled) {
                     player.currentBotTask.startWalkToBank(player);
@@ -53,16 +49,14 @@ public final class RunecraftingHandler {
                 return;
             }
             player.getInventoryManager().removeItem(new ItemStack(PURE_ESSENCE_ITEM_ID, n2));
-            player.getInventoryManager().addItem(new ItemStack(((RuneDefinition)((Object)object)).getRuneItemId(), n2 * n3));
-            player.getSkillManager().addExperience(20, ((RuneDefinition)((Object)object)).getExperience() * (double)n2);
+            player.getInventoryManager().addItem(new ItemStack(runeDefinition.getRuneItemId(), n2 * n3));
+            player.getSkillManager().addExperience(20, runeDefinition.getExperience() * (double)n2);
         } else {
             if (n2 <= 0 && n <= 0) {
                 if (PURE_ESSENCE_ITEM_ID != 1436) {
-                    object = player;
-                    ((Player)object).packetSender.sendGameMessage("You need rune or pure essence to make these kinds of runes.");
+                    player.packetSender.sendGameMessage("You need rune or pure essence to make these kinds of runes.");
                 } else {
-                    object = player;
-                    ((Player)object).packetSender.sendGameMessage("You need rune essence to make runes.");
+                    player.packetSender.sendGameMessage("You need rune essence to make runes.");
                 }
                 if (player.botEnabled) {
                     player.currentBotTask.startWalkToBank(player);
@@ -77,18 +71,17 @@ public final class RunecraftingHandler {
                 }
                 ++n4;
             }
-            player.getInventoryManager().addItem(new ItemStack(((RuneDefinition)((Object)object)).getRuneItemId(), n * n3));
-            player.getSkillManager().addExperience(20, ((RuneDefinition)((Object)object)).getExperience() * (double)n);
+            player.getInventoryManager().addItem(new ItemStack(runeDefinition.getRuneItemId(), n * n3));
+            player.getSkillManager().addExperience(20, runeDefinition.getExperience() * (double)n);
             if (PURE_ESSENCE_ITEM_ID != 1436) {
-                player.getInventoryManager().addItem(new ItemStack(((RuneDefinition)((Object)object)).getRuneItemId(), n2 * n3));
-                player.getSkillManager().addExperience(20, ((RuneDefinition)((Object)object)).getExperience() * (double)n2);
+                player.getInventoryManager().addItem(new ItemStack(runeDefinition.getRuneItemId(), n2 * n3));
+                player.getSkillManager().addExperience(20, runeDefinition.getExperience() * (double)n2);
             }
             if (player.botEnabled) {
                 player.currentBotTask.startWalkToBank(player);
             }
         }
-        object = player;
-        ((Player)object).packetSender.sendSoundEffect(481, 1, 0);
+        player.packetSender.sendSoundEffect(481, 1, 0);
         player.getUpdateState().setAnimation(791);
         player.getUpdateState().setGraphicHeight100(186);
     }
@@ -135,64 +128,47 @@ public final class RunecraftingHandler {
         }
     }
 
-    public static void startAbyssMageTeleport(Player player, Npc object) {
+    public static void startAbyssMageTeleport(Player player, Npc npc) {
         if (player.getQuestState(14) != 1) {
-            object = QuestDefinition.forId(14);
-            object = ((QuestDefinition)object).getName();
-            player.packetSender.sendGameMessage("You need to complete " + (String)object + " to do this.");
+            QuestDefinition questDefinition = QuestDefinition.forId(14);
+            String string = questDefinition.getName();
+            player.packetSender.sendGameMessage("You need to complete " + string + " to do this.");
             return;
         }
-        player.setAbyssMageNpcId(((Npc)object).getNpcId());
-        ((Npc)object).startAbyssMageTeleport(player, 2911, 4832, 0, "Senventior disthine molenko!");
+        player.setAbyssMageNpcId(npc.getNpcId());
+        npc.startAbyssMageTeleport(player, 2911, 4832, 0, "Senventior disthine molenko!");
     }
 
     public static boolean locateTalismanDirection(Player player, int n) {
-        Object object;
-        Object object2;
-        Object object3;
-        int n2;
-        Object object4;
-        block7: {
-            object4 = RunecraftingAltarDefinition.values();
-            int n3 = ((RunecraftingAltarDefinition[])object4).length;
-            n2 = 0;
-            while (n2 < n3) {
-                RunecraftingAltarDefinition runecraftingAltarDefinition;
-                object3 = runecraftingAltarDefinition = object4[n2];
-                if (n == object3.talismanItemId) {
-                    object2 = runecraftingAltarDefinition;
-                    break block7;
-                }
-                ++n2;
+        RunecraftingAltarDefinition altarDefinition = null;
+        for (RunecraftingAltarDefinition candidate : RunecraftingAltarDefinition.values()) {
+            if (n == candidate.talismanItemId) {
+                altarDefinition = candidate;
+                break;
             }
-            object2 = object = null;
         }
-        if (object2 == null) {
+        if (altarDefinition == null) {
             return false;
         }
-        RunecraftingAltarDefinition runecraftingAltarDefinition = object;
-        object3 = runecraftingAltarDefinition;
-        object3 = object;
-        n2 = object3.ruinsPosition.getY();
-        int n4 = runecraftingAltarDefinition.ruinsPosition.getX();
-        object = player;
+        int n2 = altarDefinition.ruinsPosition.getY();
+        int n4 = altarDefinition.ruinsPosition.getX();
         String string = "";
-        object4 = "";
-        if (((Entity)object).getPosition().getX() >= n4) {
+        String string2 = "";
+        if (player.getPosition().getX() >= n4) {
             string = "west";
         }
-        if (((Entity)object).getPosition().getY() > n2) {
-            object4 = "South";
+        if (player.getPosition().getY() > n2) {
+            string2 = "South";
         }
-        if (((Entity)object).getPosition().getX() < n4) {
+        if (player.getPosition().getX() < n4) {
             string = "east";
         }
-        if (((Entity)object).getPosition().getY() <= n2) {
-            object4 = "North";
+        if (player.getPosition().getY() <= n2) {
+            string2 = "North";
         }
-        object3 = object;
-        ((Player)object3).packetSender.sendGameMessage("You feel a slight pull towards " + (String)object4 + "-" + string + "...");
+        player.packetSender.sendGameMessage("You feel a slight pull towards " + string2 + "-" + string + "...");
         return true;
     }
+
 }
 

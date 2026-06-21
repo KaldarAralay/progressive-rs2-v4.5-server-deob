@@ -7,20 +7,20 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class GnomeGliderLandingTask
+public final class GnomeGliderLandingTask
 extends CycleEvent {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
-    GnomeGliderLandingTask(Player player) {
-        this.a = player;
+    public GnomeGliderLandingTask(Player player) {
+        this.player = player;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        this.a.setActionLocked(false);
-        Player player = this.a;
+        this.player.setActionLocked(false);
+        Player player = this.player;
         player.packetSender.closeInterfaces();
-        player = this.a;
+        player = this.player;
         player.packetSender.sendConfig(153, -1);
         cycleEventContainer.stop();
     }

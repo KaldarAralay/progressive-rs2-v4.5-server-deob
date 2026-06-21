@@ -21,16 +21,14 @@ public enum CanoeTypeDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private CanoeTypeDefinition(int n3, int n4, int[] nArray, int n5, boolean bl) {
-        void var9_7;
-        void var8_6;
-        this.buttonId = n3;
+    private CanoeTypeDefinition(int n2, int n3, int n4, int n5, int[] nArray, int n6, boolean bl) {
+        this.buttonId = n2;
         this.configValue = n5;
-        this.requiredLevel = n4;
-        this.experience = (int)nArray;
-        this.levelInterfaceIds = (int[])bl;
-        this.travelRange = var8_6;
-        this.canEnterWilderness = var9_7;
+        this.requiredLevel = n3;
+        this.experience = n4;
+        this.levelInterfaceIds = nArray;
+        this.travelRange = n6;
+        this.canEnterWilderness = bl;
     }
 }
 

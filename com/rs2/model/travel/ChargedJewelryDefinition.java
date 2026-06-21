@@ -14,9 +14,8 @@ public enum ChargedJewelryDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private ChargedJewelryDefinition() {
-        void var3_2;
-        this.itemIdsByDescendingCharge = var3_2;
+    private ChargedJewelryDefinition(int[] nArray) {
+        this.itemIdsByDescendingCharge = nArray;
     }
 
     public final int[] getItemIdsByDescendingCharge() {

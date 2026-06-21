@@ -8,7 +8,7 @@ import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.net.packet.PacketSender;
 
-final class AgilityMovementCompletionEvent
+public final class AgilityMovementCompletionEvent
 extends CycleEvent {
     private boolean delayElapsed = false;
     private /* synthetic */ PacketSender packetSender;
@@ -17,7 +17,7 @@ extends CycleEvent {
     private final /* synthetic */ boolean restoreRunning;
     private final /* synthetic */ boolean clearForcedMovementFlag;
 
-    AgilityMovementCompletionEvent(PacketSender packetSender, String string, double d, boolean bl, boolean bl2) {
+    public AgilityMovementCompletionEvent(PacketSender packetSender, String string, double d, boolean bl, boolean bl2) {
         this.packetSender = packetSender;
         this.completionMessage = string;
         this.experience = d;

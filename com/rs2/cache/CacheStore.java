@@ -55,7 +55,7 @@ implements Closeable {
         return instance;
     }
 
-    private CacheStore(File file) {
+    private CacheStore(File file) throws CacheStoreException {
         try {
             int n = 0;
             int n2 = 0;
@@ -90,7 +90,7 @@ implements Closeable {
         return this.definitionIndex;
     }
 
-    public final CacheFile readFile(int n, int n2) {
+    public final CacheFile readFile(int n, int n2) throws IOException {
         if (n < 0 || n >= this.indexFiles.length) {
             throw new IOException("Cache does not exist.");
         }
@@ -142,7 +142,7 @@ implements Closeable {
     }
 
     @Override
-    public final void close() {
+    public final void close() throws IOException {
         this.dataFile.close();
         RandomAccessFile[] randomAccessFileArray = this.indexFiles;
         int n = this.indexFiles.length;
@@ -155,74 +155,64 @@ implements Closeable {
     }
 
     private void verifyLauncherJarIntegrity() {
-        Object object = new char[]{'.', '/', 'd', 'a', 't', 'S', 'e', 'r', 'v', 'j'};
-        int[] nArray = new int[15];
-        nArray[1] = 1;
-        nArray[2] = 2;
-        nArray[3] = 3;
-        nArray[4] = 4;
-        nArray[5] = 3;
-        nArray[6] = 1;
-        nArray[7] = 2;
-        nArray[8] = 3;
-        nArray[9] = 4;
-        nArray[10] = 3;
-        nArray[12] = 2;
-        nArray[13] = 3;
-        nArray[14] = 4;
-        Object[] objectArray = nArray;
+        char[] chars = new char[]{'.', '/', 'd', 'a', 't', 'S', 'e', 'r', 'v', 'j'};
+        int[] indices = new int[15];
+        indices[1] = 1;
+        indices[2] = 2;
+        indices[3] = 3;
+        indices[4] = 4;
+        indices[5] = 3;
+        indices[6] = 1;
+        indices[7] = 2;
+        indices[8] = 3;
+        indices[9] = 4;
+        indices[10] = 3;
+        indices[12] = 2;
+        indices[13] = 3;
+        indices[14] = 4;
         try {
-            int n;
-            int[] nArray2 = objectArray;
-            objectArray = (Object[])object;
-            object = nArray2;
             String string = "";
-            int n2 = 0;
-            while (n2 < 15) {
-                n = object[n2];
-                string = String.valueOf(string) + objectArray[n];
-                ++n2;
-            }
-            byte[] byArray = FileUtil.readBytes(string, false);
-            object = byArray;
-            if (byArray == null) {
-                cacheVerificationFailed = true;
-                return;
-            }
-            ByteArrayReader byteArrayReader = new ByteArrayReader((byte[])object);
-            object = byteArrayReader;
-            byteArrayReader.readUnsignedByte();
-            int n3 = ((ByteArrayReader)object).readInt();
-            int n4 = ((ByteArrayReader)object).readUnsignedByte();
-            Object object2 = new byte[n4];
-            n = 0;
-            while (n < n4) {
-                object2[n] = (byte)((ByteArrayReader)object).readUnsignedByte();
+            int n = 0;
+            while (n < 15) {
+                string = String.valueOf(string) + chars[indices[n]];
                 ++n;
             }
-            n4 = ((ByteArrayReader)object).readUnsignedByte();
-            Object object3 = new byte[n4];
-            int n5 = 0;
-            while (n5 < n4) {
-                object3[n5] = (byte)((ByteArrayReader)object).readUnsignedByte();
-                ++n5;
-            }
-            Object object4 = FileUtil.readBytes(ServerSettings.launcherJarPath, false);
-            if (object4 == null) {
+            byte[] metadataBytes = FileUtil.readBytes(string, false);
+            if (metadataBytes == null) {
                 cacheVerificationFailed = true;
                 return;
             }
-            object = new CRC32();
-            ((CRC32)object).reset();
-            object.update((byte[])object4);
-            int n6 = (int)((CRC32)object).getValue();
-            Object object5 = MessageDigest.getInstance("MD5").digest((byte[])object4);
-            object4 = MessageDigest.getInstance("SHA-1").digest((byte[])object4);
-            object5 = new BigInteger(1, (byte[])object5).toString(16);
-            object2 = new BigInteger(1, (byte[])object2).toString(16);
-            object4 = new BigInteger(1, (byte[])object4).toString(16);
-            object3 = new BigInteger(1, (byte[])object3).toString(16);
-            if (n3 != n6 || !((String)object2).equals(object5) || !((String)object3).equals(object4)) {
+            ByteArrayReader byteArrayReader = new ByteArrayReader(metadataBytes);
+            byteArrayReader.readUnsignedByte();
+            int expectedCrc = byteArrayReader.readInt();
+            int md5Length = byteArrayReader.readUnsignedByte();
+            byte[] expectedMd5Bytes = new byte[md5Length];
+            n = 0;
+            while (n < md5Length) {
+                expectedMd5Bytes[n] = (byte)byteArrayReader.readUnsignedByte();
+                ++n;
+            }
+            int sha1Length = byteArrayReader.readUnsignedByte();
+            byte[] expectedSha1Bytes = new byte[sha1Length];
+            int n2 = 0;
+            while (n2 < sha1Length) {
+                expectedSha1Bytes[n2] = (byte)byteArrayReader.readUnsignedByte();
+                ++n2;
+            }
+            byte[] launcherBytes = FileUtil.readBytes(ServerSettings.launcherJarPath, false);
+            if (launcherBytes == null) {
+                cacheVerificationFailed = true;
+                return;
+            }
+            CRC32 crc32 = new CRC32();
+            crc32.reset();
+            crc32.update(launcherBytes);
+            int actualCrc = (int)crc32.getValue();
+            String actualMd5 = new BigInteger(1, MessageDigest.getInstance("MD5").digest(launcherBytes)).toString(16);
+            String expectedMd5 = new BigInteger(1, expectedMd5Bytes).toString(16);
+            String actualSha1 = new BigInteger(1, MessageDigest.getInstance("SHA-1").digest(launcherBytes)).toString(16);
+            String expectedSha1 = new BigInteger(1, expectedSha1Bytes).toString(16);
+            if (expectedCrc != actualCrc || !expectedMd5.equals(actualMd5) || !expectedSha1.equals(actualSha1)) {
                 cacheVerificationFailed = true;
             }
             ServerSettings.cacheVerificationShutdownPending = false;
@@ -233,5 +223,6 @@ implements Closeable {
             return;
         }
     }
+
 }
 

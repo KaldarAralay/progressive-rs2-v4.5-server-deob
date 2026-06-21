@@ -18,5 +18,9 @@ public final class CharacterFileBankTab {
     /* synthetic */ CharacterFileBankTab(byte by) {
         this();
     }
+
+    CharacterFileBankTab(int n) {
+        this();
+    }
 }
 

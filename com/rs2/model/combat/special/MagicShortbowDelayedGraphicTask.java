@@ -8,13 +8,13 @@ import com.rs2.model.combat.special.MagicShortbowSpecialAttack;
 import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 
-final class MagicShortbowDelayedGraphicTask
+public final class MagicShortbowDelayedGraphicTask
 extends TickTask {
     private final /* synthetic */ Player player;
 
-    MagicShortbowDelayedGraphicTask(MagicShortbowSpecialAttack magicShortbowSpecialAttack, int n, Player player) {
-        this.player = player;
+    public MagicShortbowDelayedGraphicTask(MagicShortbowSpecialAttack magicShortbowSpecialAttack, int n, Player player) {
         super(1);
+        this.player = player;
     }
 
     @Override

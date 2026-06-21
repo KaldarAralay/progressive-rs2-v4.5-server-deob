@@ -8,15 +8,15 @@ import com.rs2.bot.combat.BotPvpCombatHandler;
 import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 
-final class BotPvpOpponentTargetCombatTickTask
+public final class BotPvpOpponentTargetCombatTickTask
 extends TickTask {
     private final /* synthetic */ Player target;
     private final /* synthetic */ Player bot;
 
-    BotPvpOpponentTargetCombatTickTask(int n, Player player, Player player2) {
+    public BotPvpOpponentTargetCombatTickTask(int n, Player player, Player player2) {
+        super(1);
         this.target = player;
         this.bot = player2;
-        super(1);
     }
 
     @Override

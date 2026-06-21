@@ -11,13 +11,13 @@ import com.rs2.model.skill.farming.HerbPatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class HerbClearingTask
+public final class HerbClearingTask
 extends CycleEvent {
     private /* synthetic */ HerbPatchManager manager;
     private final /* synthetic */ int animationId;
     private final /* synthetic */ HerbPatch patch;
 
-    HerbClearingTask(HerbPatchManager herbPatchManager, int n, HerbPatch herbPatch) {
+    public HerbClearingTask(HerbPatchManager herbPatchManager, int n, HerbPatch herbPatch) {
         this.manager = herbPatchManager;
         this.animationId = n;
         this.patch = herbPatch;
@@ -47,7 +47,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        HerbPatchManager.a(this.manager, this.patch.getIndex());
+        HerbPatchManager.resetPatch(this.manager, this.patch.getIndex());
         Player player = HerbPatchManager.getPlayer(this.manager);
         player.packetSender.sendGameMessage("You clear the patch.");
         HerbPatchManager.getPlayer(this.manager).setActionLocked(false);

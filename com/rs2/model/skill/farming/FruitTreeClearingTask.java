@@ -11,13 +11,13 @@ import com.rs2.model.skill.farming.FruitTreePatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class FruitTreeClearingTask
+public final class FruitTreeClearingTask
 extends CycleEvent {
     private /* synthetic */ FruitTreePatchManager manager;
     private final /* synthetic */ int animationId;
     private final /* synthetic */ FruitTreePatch patch;
 
-    FruitTreeClearingTask(FruitTreePatchManager fruitTreePatchManager, int n, FruitTreePatch fruitTreePatch) {
+    public FruitTreeClearingTask(FruitTreePatchManager fruitTreePatchManager, int n, FruitTreePatch fruitTreePatch) {
         this.manager = fruitTreePatchManager;
         this.animationId = n;
         this.patch = fruitTreePatch;
@@ -47,7 +47,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        FruitTreePatchManager.a(this.manager, this.patch.getIndex());
+        FruitTreePatchManager.resetPatch(this.manager, this.patch.getIndex());
         Player player = FruitTreePatchManager.getPlayer(this.manager);
         player.packetSender.sendGameMessage("You clear the patch.");
         FruitTreePatchManager.getPlayer(this.manager).setActionLocked(false);

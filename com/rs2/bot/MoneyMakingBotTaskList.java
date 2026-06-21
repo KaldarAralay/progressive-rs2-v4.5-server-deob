@@ -6,9 +6,9 @@ package com.rs2.bot;
 import com.rs2.bot.BotTaskDefinition;
 import java.util.ArrayList;
 
-final class MoneyMakingBotTaskList
+public final class MoneyMakingBotTaskList
 extends ArrayList {
-    MoneyMakingBotTaskList() {
+    public MoneyMakingBotTaskList() {
         this.add(BotTaskDefinition.getFaladorWineOfZamorakTelegrabTask());
         this.add(BotTaskDefinition.wizardsTowerLesserDemonMagicTask);
         this.add(BotTaskDefinition.seersFlaxPickingTask);

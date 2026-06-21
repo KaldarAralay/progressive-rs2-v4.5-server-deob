@@ -134,7 +134,7 @@ public final class HerbPatchManager {
                         ++n2;
                     }
                 }
-                if ((object = HerbDefinition.forSeedId(this.cropIds[n])) != null && !this.a(n)) {
+                if ((object = HerbDefinition.forSeedId(this.cropIds[n])) != null && !this.shouldStopGrowthCycle(n)) {
                     n2 = (int)(l / (long)((HerbDefinition)((Object)object)).getGrowthCycleTicks());
                     int n5 = this.growthStages[n] - 4;
                     if ((n5 = n2 - n5) > 0) {
@@ -154,7 +154,7 @@ public final class HerbPatchManager {
                                     if (((HerbPatchManager)object).patchStates[n2] == 4 && ((HerbPatchManager)object).growthStages[n2] != 3) {
                                         ((HerbPatchManager)object).patchStates[n2] = 0;
                                     }
-                                    boolean bl = super.b(n2);
+                                    boolean bl = ((HerbPatchManager)object).hasReachedFinalConfigStage(n2);
                                     if (((HerbPatchManager)object).patchStates[n2] == 0 && ((HerbPatchManager)object).growthStages[n2] >= 4 && ((HerbPatchManager)object).growthStages[n2] <= 7 && !bl && (herbDefinition = HerbDefinition.forSeedId(((HerbPatchManager)object).cropIds[n2])) != null) {
                                         double d = ((HerbPatchManager)object).diseaseChanceMultipliers[n2] * herbDefinition.getDiseaseChance();
                                         double d2 = d * 100.0;
@@ -169,7 +169,7 @@ public final class HerbPatchManager {
                                     int n9 = n;
                                     this.growthStages[n9] = this.growthStages[n9] + 1;
                                 }
-                                if (this.a(n)) break;
+                                if (this.shouldStopGrowthCycle(n)) break;
                             }
                             ++n6;
                         }
@@ -181,11 +181,11 @@ public final class HerbPatchManager {
         this.refreshConfig();
     }
 
-    private boolean a(int n) {
-        return this.lastUpdateTicks[n] == 0L || this.patchStates[n] == 2 || this.b(n);
+    private boolean shouldStopGrowthCycle(int n) {
+        return this.lastUpdateTicks[n] == 0L || this.patchStates[n] == 2 || this.hasReachedFinalConfigStage(n);
     }
 
-    private boolean b(int n) {
+    private boolean hasReachedFinalConfigStage(int n) {
         int n2 = this.growthStages[n] - 4;
         HerbDefinition herbDefinition = HerbDefinition.forSeedId(this.cropIds[n]);
         if (herbDefinition.getConfigEndStage() == herbDefinition.getConfigStartStage() + n2) {
@@ -276,17 +276,17 @@ public final class HerbPatchManager {
     }
 
     public final boolean harvestPatch(int n, int n2) {
-        Object object = HerbPatch.forPosition(new Position(n, n2));
-        if (object == null) {
+        HerbPatch herbPatch = HerbPatch.forPosition(new Position(n, n2));
+        if (herbPatch == null) {
             return false;
         }
-        HerbDefinition herbDefinition = HerbDefinition.forSeedId(this.cropIds[object.getIndex()]);
+        HerbDefinition herbDefinition = HerbDefinition.forSeedId(this.cropIds[herbPatch.getIndex()]);
         if (herbDefinition == null) {
             return false;
         }
         if (!ServerSettings.farmingEnabled) {
-            object = this.player;
-            ((Player)object).packetSender.sendGameMessage("This skill is currently disabled.");
+            Player player = this.player;
+            player.packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
         if (!this.player.getInventoryManager().getContainer().containsItem(5329)) {
@@ -295,7 +295,7 @@ public final class HerbPatchManager {
         }
         int n3 = this.player.nextActionSequence();
         this.player.getUpdateState().setAnimation(2282);
-        this.player.setActiveCycleEvent(new HerbHarvestTask(this, n3, herbDefinition, (HerbPatch)((Object)object)));
+        this.player.setActiveCycleEvent(new HerbHarvestTask(this, n3, herbDefinition, herbPatch));
         CycleEventHandler.getInstance().schedule(this.player, this.player.getActiveCycleEvent(), 3);
         return true;
     }
@@ -340,7 +340,7 @@ public final class HerbPatchManager {
             return true;
         }
         HerbGrowthDefinition herbGrowthDefinition = HerbGrowthDefinition.forCropId(this.cropIds[herbPatch.getIndex()]);
-        Object object = HerbDefinition.forSeedId(this.cropIds[herbPatch.getIndex()]);
+        HerbDefinition herbDefinition = HerbDefinition.forSeedId(this.cropIds[herbPatch.getIndex()]);
         if (this.patchStates[herbPatch.getIndex()] == 1) {
             this.player.getDialogueManager().showTwoLineStatement("This plant is diseased. Use a plant cure on it to cure it, ", "or clear the patch with a spade.");
             return true;
@@ -361,9 +361,9 @@ public final class HerbPatchManager {
                 return true;
             }
             this.player.getDialogueManager().showTwoLineStatement("This is an herb patch. The soil has not been treated.", "The patch is empty and weeded.");
-        } else if (herbGrowthDefinition != null && object != null) {
-            object = this.player;
-            ((Player)object).packetSender.sendGameMessage("You bend down and start to inspect the patch...");
+        } else if (herbGrowthDefinition != null && herbDefinition != null) {
+            Player player = this.player;
+            player.packetSender.sendGameMessage("You bend down and start to inspect the patch...");
             this.player.getUpdateState().setAnimation(1331);
             this.player.setActionLocked(true);
             CycleEventHandler.getInstance().schedule(this.player, new HerbInspectTask(this, herbPatch, herbGrowthDefinition), 5);
@@ -372,13 +372,13 @@ public final class HerbPatchManager {
     }
 
     public final boolean openSkillGuide(int n, int n2) {
-        Object object = HerbPatch.forPosition(new Position(n, n2));
-        if (object == null) {
+        HerbPatch herbPatch = HerbPatch.forPosition(new Position(n, n2));
+        if (herbPatch == null) {
             return false;
         }
         if (!ServerSettings.farmingEnabled) {
-            object = this.player;
-            ((Player)object).packetSender.sendGameMessage("This skill is currently disabled.");
+            Player player = this.player;
+            player.packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
         this.player.getSkillGuideManager().showFarmingGuide(7);
@@ -387,36 +387,36 @@ public final class HerbPatchManager {
     }
 
     public final boolean startResurrection(int n, int n2) {
-        Object object = HerbPatch.forPosition(new Position(n, n2));
-        if (object == null) {
+        HerbPatch herbPatch = HerbPatch.forPosition(new Position(n, n2));
+        if (herbPatch == null) {
             return false;
         }
-        HerbDefinition herbDefinition = HerbDefinition.forSeedId(this.cropIds[object.getIndex()]);
+        HerbDefinition herbDefinition = HerbDefinition.forSeedId(this.cropIds[herbPatch.getIndex()]);
         if (herbDefinition == null) {
             return false;
         }
         if (!ServerSettings.farmingEnabled) {
-            object = this.player;
-            ((Player)object).packetSender.sendGameMessage("This skill is currently disabled.");
+            Player player = this.player;
+            player.packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
-        if (this.patchStates[object.getIndex()] != 2) {
-            object = this.player;
-            ((Player)object).packetSender.sendGameMessage("This plant doesn't need to be resurrected.");
+        if (this.patchStates[herbPatch.getIndex()] != 2) {
+            Player player = this.player;
+            player.packetSender.sendGameMessage("This plant doesn't need to be resurrected.");
             return true;
         }
-        this.player.setPendingCropResurrectionTarget("herb", object.getIndex());
+        this.player.setPendingCropResurrectionTarget("herb", herbPatch.getIndex());
         return true;
     }
 
     public final boolean finishResurrection(boolean bl) {
         if (bl) {
-            Object object = HerbDefinition.forSeedId(this.cropIds[this.player.pendingCropResurrectionPatchIndex]);
+            HerbDefinition herbDefinition = HerbDefinition.forSeedId(this.cropIds[this.player.pendingCropResurrectionPatchIndex]);
             this.patchStates[this.player.pendingCropResurrectionPatchIndex] = 0;
             int n = this.growthStages[this.player.pendingCropResurrectionPatchIndex] - 4;
-            this.lastUpdateTicks[this.player.pendingCropResurrectionPatchIndex] = Server.getElapsedMinutes() - (long)(object.getGrowthCycleTicks() * n);
-            object = this.player;
-            ((Player)object).packetSender.sendGameMessage("You succesfully resurrected the crop.");
+            this.lastUpdateTicks[this.player.pendingCropResurrectionPatchIndex] = Server.getElapsedMinutes() - (long)(herbDefinition.getGrowthCycleTicks() * n);
+            Player player = this.player;
+            player.packetSender.sendGameMessage("You succesfully resurrected the crop.");
         } else {
             this.resetPatch(this.player.pendingCropResurrectionPatchIndex);
             this.growthStages[this.player.pendingCropResurrectionPatchIndex] = 3;
@@ -429,29 +429,29 @@ public final class HerbPatchManager {
     }
 
     public final boolean curePatch(int n, int n2, int n3) {
-        Object object = HerbPatch.forPosition(new Position(n, n2));
-        if (object == null || n3 != 6036) {
+        HerbPatch herbPatch = HerbPatch.forPosition(new Position(n, n2));
+        if (herbPatch == null || n3 != 6036) {
             return false;
         }
-        HerbDefinition herbDefinition = HerbDefinition.forSeedId(this.cropIds[object.getIndex()]);
+        HerbDefinition herbDefinition = HerbDefinition.forSeedId(this.cropIds[herbPatch.getIndex()]);
         if (herbDefinition == null) {
             return false;
         }
         if (!ServerSettings.farmingEnabled) {
-            object = this.player;
-            ((Player)object).packetSender.sendGameMessage("This skill is currently disabled.");
+            Player player = this.player;
+            player.packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
-        if (this.patchStates[object.getIndex()] != 1) {
-            object = this.player;
-            ((Player)object).packetSender.sendGameMessage("This plant doesn't need to be cured.");
+        if (this.patchStates[herbPatch.getIndex()] != 1) {
+            Player player = this.player;
+            player.packetSender.sendGameMessage("This plant doesn't need to be cured.");
             return true;
         }
         this.player.getInventoryManager().removeItem(new ItemStack(n3));
         this.player.getInventoryManager().addItem(new ItemStack(229));
         this.player.getUpdateState().setAnimation(2288);
         this.player.setActionLocked(true);
-        CycleEventHandler.getInstance().schedule(this.player, new HerbCureTask(this, (HerbPatch)((Object)object)), 7);
+        CycleEventHandler.getInstance().schedule(this.player, new HerbCureTask(this, herbPatch), 7);
         return true;
     }
 
@@ -467,8 +467,7 @@ public final class HerbPatchManager {
         return herbPatchManager.player;
     }
 
-    static /* synthetic */ void a(HerbPatchManager herbPatchManager, int n) {
+    static /* synthetic */ void resetPatch(HerbPatchManager herbPatchManager, int n) {
         herbPatchManager.resetPatch(n);
     }
 }
-

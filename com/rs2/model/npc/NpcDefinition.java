@@ -195,8 +195,8 @@ public final class NpcDefinition {
                     ((NpcDefinition)object).blockAnimationId = npcDefinition.blockAnimationId;
                     ((NpcDefinition)object).deathAnimationId = npcDefinition.deathAnimationId;
                 }
-                Object object3 = object;
-                World.getNpcDefinitions()[((NpcDefinition)object3).id] = object;
+                NpcDefinition npcDefinition2 = (NpcDefinition)object;
+                World.getNpcDefinitions()[npcDefinition2.id] = npcDefinition2;
                 ++n5;
             }
         }
@@ -209,9 +209,9 @@ public final class NpcDefinition {
         try {
             byteArrayReader = new ByteArrayReader(new CacheArchive(((CacheStore)object2).readFile(0, 2)).getFileBytes("npc.dat"));
         }
-        catch (IOException iOException) {
-            object = iOException;
-            iOException.printStackTrace();
+        catch (Exception exception) {
+            object = exception;
+            exception.printStackTrace();
         }
         cacheDefinitionCount = n = ((CacheStore)object2).getDefinitionIndex().getNpcDefinitionEntries().length;
         byteArrayReader.position = 2;
@@ -705,19 +705,19 @@ public final class NpcDefinition {
         return this.attackable;
     }
 
-    static /* synthetic */ int getAttackBonusTypeId(NpcDefinition npcDefinition) {
+    public static /* synthetic */ int getAttackBonusTypeId(NpcDefinition npcDefinition) {
         return npcDefinition.attackBonusTypeId;
     }
 
-    static /* synthetic */ int getDefaultMaxHit(NpcDefinition npcDefinition) {
+    public static /* synthetic */ int getDefaultMaxHit(NpcDefinition npcDefinition) {
         return npcDefinition.maxHit;
     }
 
-    static /* synthetic */ int getDefaultAttackDelay(NpcDefinition npcDefinition) {
+    public static /* synthetic */ int getDefaultAttackDelay(NpcDefinition npcDefinition) {
         return npcDefinition.attackDelay;
     }
 
-    static /* synthetic */ int getDefaultAttackAnimationId(NpcDefinition npcDefinition) {
+    public static /* synthetic */ int getDefaultAttackAnimationId(NpcDefinition npcDefinition) {
         return npcDefinition.attackAnimationId;
     }
 }

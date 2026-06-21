@@ -8,11 +8,11 @@ import com.rs2.model.skill.farming.HopsPatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class HopsCureTask
+public final class HopsCureTask
 extends CycleEvent {
     private /* synthetic */ HopsPatchManager manager;
 
-    HopsCureTask(HopsPatchManager hopsPatchManager) {
+    public HopsCureTask(HopsPatchManager hopsPatchManager) {
         this.manager = hopsPatchManager;
     }
 

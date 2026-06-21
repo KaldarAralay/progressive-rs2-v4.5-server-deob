@@ -15,9 +15,8 @@ public enum HitType {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private HitType() {
-        void var3_2;
-        this.clientId = var3_2;
+    private HitType(int n2) {
+        this.clientId = n2;
     }
 
     public final int getClientId() {

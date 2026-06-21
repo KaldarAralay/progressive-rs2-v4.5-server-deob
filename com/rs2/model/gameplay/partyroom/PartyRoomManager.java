@@ -51,29 +51,29 @@ public final class PartyRoomManager {
         return activeBalloonObjects.size() > 0;
     }
 
-    public static boolean startBalloonBonanza(Player object) {
+    public static boolean startBalloonBonanza(Player player) {
         ArrayList<ItemStack> arrayList;
         int n;
         if (PartyRoomManager.hasActiveDropParty()) {
             return false;
         }
-        if (((Player)object).getInventoryManager().containsItemAmount(995, 1000)) {
-            ((Player)object).getInventoryManager().removeItem(new ItemStack(995, 1000));
+        if (player.getInventoryManager().containsItemAmount(995, 1000)) {
+            player.getInventoryManager().removeItem(new ItemStack(995, 1000));
             balloonDropPending = true;
             balloonRewards.clear();
-            object = new ArrayList();
+            ArrayList positions = new ArrayList();
             int n2 = 2730;
             while (n2 < 2745) {
                 n = 3462;
                 while (n < 3476) {
                     if (n != 3468 || n2 < 2735 || n2 > 2740) {
-                        ((ArrayList)object).add(new Position(n2, n));
+                        positions.add(new Position(n2, n));
                     }
                     ++n;
                 }
                 ++n2;
             }
-            Collections.shuffle(object);
+            Collections.shuffle(positions);
             arrayList = new ArrayList<ItemStack>();
             n = 0;
             while (n < partyChestContainer.g()) {
@@ -92,12 +92,11 @@ public final class PartyRoomManager {
             } else if (partyChestValue >= 1000000) {
                 n = 1000;
             }
-        } else {
-            return false;
+            balloonDropTask = new PartyRoomBalloonSpawnTask(n, positions, arrayList);
+            World.getTaskScheduler().schedule(balloonDropTask);
+            return true;
         }
-        balloonDropTask = new PartyRoomBalloonSpawnTask(n, (ArrayList)object, arrayList);
-        World.getTaskScheduler().schedule(balloonDropTask);
-        return true;
+        return false;
     }
 
     public static boolean startNightlyDance(Player player) {
@@ -109,7 +108,7 @@ public final class PartyRoomManager {
             int n = 2735;
             while (n <= 2740) {
                 Npc npc = new Npc(660);
-                GameplayHelper.b(npc, n, 3468, 0, 1000);
+                GameplayHelper.spawnNpcWithRemovalDelay(npc, n, 3468, 0, 1000);
                 ++n;
             }
         } else {
@@ -172,8 +171,8 @@ public final class PartyRoomManager {
                     n7 = ((PartyRoomBalloonReward)object2).rewardItem.getAmount();
                 }
                 object2 = partyRoomBalloonReward;
-                object = new GroundItem(new ItemStack(n8, n7), (Entity)object, ((PartyRoomBalloonReward)object2).balloonPosition);
-                GroundItemManager.getInstance().spawn((GroundItem)object);
+                GroundItem groundItem = new GroundItem(new ItemStack(n8, n7), (Entity)object, ((PartyRoomBalloonReward)object2).balloonPosition);
+                GroundItemManager.getInstance().spawn(groundItem);
                 iterator.remove();
                 break;
             }

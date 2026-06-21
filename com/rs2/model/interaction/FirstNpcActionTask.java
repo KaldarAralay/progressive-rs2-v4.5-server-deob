@@ -16,17 +16,17 @@ import com.rs2.model.skill.woodcutting.WoodcuttingHandler;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 
-final class FirstNpcActionTask
+public final class FirstNpcActionTask
 extends TickTask {
     private final /* synthetic */ Player player;
     private final /* synthetic */ int actionSequence;
     private final /* synthetic */ Npc npc;
 
-    FirstNpcActionTask(int n, boolean bl, Player player, int n2, Npc npc) {
+    public FirstNpcActionTask(int n, boolean bl, Player player, int n2, Npc npc) {
+        super(1, true);
         this.player = player;
         this.actionSequence = n2;
         this.npc = npc;
-        super(1, true);
     }
 
     @Override
@@ -114,7 +114,7 @@ extends TickTask {
             return;
         }
         if (TreeDefinition.forEntNpcId(this.npc.getNpcId()) != null) {
-            WoodcuttingHandler.a(this.player, this.npc.getNpcId(), this.npc.getPosition().getX(), this.npc.getPosition().getY(), true);
+            WoodcuttingHandler.startWoodcutting(this.player, this.npc.getNpcId(), this.npc.getPosition().getX(), this.npc.getPosition().getY(), true);
             this.stop();
             return;
         }
@@ -122,7 +122,7 @@ extends TickTask {
             this.stop();
             return;
         }
-        if (GameplayHelper.g(this.player, this.player.getInteractionTargetId())) {
+        if (GameplayHelper.handleAnagramClueNpc(this.player, this.player.getInteractionTargetId())) {
             this.stop();
             return;
         }

@@ -8,22 +8,22 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.MonkeyMadnessQuest;
 import com.rs2.model.task.TickTask;
 
-final class ApeAtollGuardCaptureTask
+public final class ApeAtollGuardCaptureTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
-    ApeAtollGuardCaptureTask(MonkeyMadnessQuest monkeyMadnessQuest, int n, Player player) {
-        this.a = player;
+    public ApeAtollGuardCaptureTask(MonkeyMadnessQuest monkeyMadnessQuest, int n, Player player) {
         super(3);
+        this.player = player;
     }
 
     @Override
     public final void execute() {
-        this.a.ai = false;
-        this.a.setActionLocked(false);
-        this.a.moveTo(new Position(2772, 2794, 0));
-        this.a.resetAnimation();
-        Player player = this.a;
+        this.player.ai = false;
+        this.player.setActionLocked(false);
+        this.player.moveTo(new Position(2772, 2794, 0));
+        this.player.resetAnimation();
+        Player player = this.player;
         player.packetSender.showWalkableInterface(-1);
         this.stop();
     }

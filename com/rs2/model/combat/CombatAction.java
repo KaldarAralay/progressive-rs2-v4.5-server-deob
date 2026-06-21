@@ -48,44 +48,30 @@ public class CombatAction {
     private Entity projectileSource;
 
     public static boolean handlePickpocketAttempt(Player player, Npc npc) {
-        Object object;
-        int n;
-        int n2;
-        Object object2;
-        String string;
-        String string2;
-        block9: {
-            if (player == null || player.isStunned() || !player.getSkillManager().tryStartActionDelay(2200)) {
-                return true;
-            }
-            string2 = npc.getDefinition().getName().toLowerCase();
-            string = string2.toLowerCase();
-            object2 = PickpocketDefinition.values();
-            n2 = ((PickpocketDefinition[])object2).length;
-            n = 0;
-            while (n < n2) {
-                PickpocketDefinition pickpocketDefinition = object2[n];
-                String[] stringArray = pickpocketDefinition.getNpcNames();
-                int n3 = stringArray.length;
-                int n4 = 0;
-                while (n4 < n3) {
-                    String string3 = stringArray[n4];
-                    if (string.equalsIgnoreCase(string3)) {
-                        object = pickpocketDefinition;
-                        break block9;
-                    }
-                    ++n4;
-                }
-                ++n;
-            }
-            object = string = null;
+        if (player == null || player.isStunned() || !player.getSkillManager().tryStartActionDelay(2200)) {
+            return true;
         }
-        if (object == null) {
+        String npcName = npc.getDefinition().getName().toLowerCase();
+        PickpocketDefinition definition = null;
+        PickpocketDefinition[] definitions = PickpocketDefinition.class.getEnumConstants();
+        if (definitions != null) {
+            for (PickpocketDefinition candidate : definitions) {
+                for (String name : candidate.getNpcNames()) {
+                    if (npcName.equalsIgnoreCase(name)) {
+                        definition = candidate;
+                        break;
+                    }
+                }
+                if (definition != null) {
+                    break;
+                }
+            }
+        }
+        if (definition == null) {
             return false;
         }
         if (!ServerSettings.thievingEnabled) {
-            object2 = player;
-            object2.packetSender.sendGameMessage("This skill is currently disabled.");
+            player.packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
         if (!player.isMember()) {
@@ -96,20 +82,19 @@ public class CombatAction {
             player.packetSender.sendGameMessage("You need to be in members world to access members content.");
             return true;
         }
-        if (!SkillActionHelper.checkSkillRequirement(player, 17, ((PickpocketDefinition)((Object)string)).getRequiredLevel(), "pickpocket this npc")) {
+        if (!SkillActionHelper.checkSkillRequirement(player, 17, definition.getRequiredLevel(), "pickpocket this npc")) {
             return true;
         }
-        int bl = ((PickpocketDefinition)((Object)string)).getSuccessChanceLow();
-        n = ((PickpocketDefinition)((Object)string)).getSuccessChanceHigh();
-        boolean bl2 = GameUtil.rollLevelScaledChance(bl, n, player.getSkillManager().getCurrentLevels()[17]);
-        ItemStack itemStack = ((PickpocketDefinition)((Object)string)).getRareRewards() != null && GameUtil.randomInclusive(30) == 0 ? ((PickpocketDefinition)((Object)string)).getRareRewards()[GameUtil.randomExclusive(((PickpocketDefinition)((Object)string)).getRareRewards().length)] : ((PickpocketDefinition)((Object)string)).getCommonRewards()[GameUtil.randomExclusive(((PickpocketDefinition)((Object)string)).getCommonRewards().length)];
-        itemStack = new ItemStack(itemStack.getId(), itemStack.getAmount());
-        n2 = GameUtil.randomBetweenInclusive(((PickpocketDefinition)((Object)string)).getMinDamage(), ((PickpocketDefinition)((Object)string)).getMaxDamage());
+        int lowChance = definition.getSuccessChanceLow();
+        int highChance = definition.getSuccessChanceHigh();
+        boolean successful = GameUtil.rollLevelScaledChance(lowChance, highChance, player.getSkillManager().getCurrentLevels()[17]);
+        ItemStack reward = definition.getRareRewards() != null && GameUtil.randomInclusive(30) == 0 ? definition.getRareRewards()[GameUtil.randomExclusive(definition.getRareRewards().length)] : definition.getCommonRewards()[GameUtil.randomExclusive(definition.getCommonRewards().length)];
+        reward = new ItemStack(reward.getId(), reward.getAmount());
+        int damage = GameUtil.randomBetweenInclusive(definition.getMinDamage(), definition.getMaxDamage());
         player.setActionLocked(true);
         player.getUpdateState().setAnimation(881);
-        object2 = player;
-        object2.packetSender.sendGameMessage("You attempt to pick the " + string2 + "'s pocket.");
-        CycleEventHandler.getInstance().schedule(player, new PickpocketTask(bl2, player, npc, itemStack, (PickpocketDefinition)((Object)string), string2, n2), 2);
+        player.packetSender.sendGameMessage("You attempt to pick the " + npcName + "'s pocket.");
+        CycleEventHandler.getInstance().schedule(player, new PickpocketTask(successful, player, npc, reward, definition, npcName, damage), 2);
         return true;
     }
 
@@ -485,32 +470,32 @@ public class CombatAction {
         }
         if (this.hitDefinition.getProjectile() != null) {
             if (this.projectileSource != null) {
-                new WoodcuttingHandler(this.projectileSource, this.target, this.hitDefinition.getProjectile()).a();
+                new WoodcuttingHandler(this.projectileSource, this.target, this.hitDefinition.getProjectile()).sendProjectileToNearbyPlayers();
             } else {
-                new WoodcuttingHandler(this.attacker, this.target, this.hitDefinition.getProjectile()).a();
+                new WoodcuttingHandler(this.attacker, this.target, this.hitDefinition.getProjectile()).sendProjectileToNearbyPlayers();
             }
         }
         this.delay = this.hitDefinition.calculateDelay(this.attacker != null ? this.attacker.getPosition() : null, this.target.getPosition());
         CombatManager.getInstance().queueAction(this);
         if (this.target != null && this.attacker != null) {
-            n = this.attacker.isPlayer() ? ((Player)this.attacker).getQuestManager().getQuestDamageOverride(this.attacker, this.target) : ((Player)this.target).getQuestManager().getQuestDamageOverride(this.attacker, this.target);
+            int questDamageOverride = this.attacker.isPlayer() ? ((Player)this.attacker).getQuestManager().getQuestDamageOverride(this.attacker, this.target) : ((Player)this.target).getQuestManager().getQuestDamageOverride(this.attacker, this.target);
             if (this.attacker.isInMageArena() && this.hitDefinition.getAttackStyle().getCombatType() != CombatType.MAGIC) {
-                n = 0;
+                questDamageOverride = 0;
             }
-            if (n != -1) {
-                this.damage = n;
+            if (questDamageOverride != -1) {
+                this.damage = questDamageOverride;
             }
         }
         if (this.hitDefinition.getSpell() != null && (this.hitDefinition.getSpell() == SpellDefinition.FLAMES_OF_ZAMORAK || this.hitDefinition.getSpell() == SpellDefinition.SARADOMIN_STRIKE || this.hitDefinition.getSpell() == SpellDefinition.CLAWS_OF_GUTHIX)) {
-            n = 0;
+            int godSpellSoundId = 0;
             if (this.hitDefinition.getSpell() == SpellDefinition.FLAMES_OF_ZAMORAK) {
-                int n7 = n = this.hitSuccessful ? 290 : 293;
+                godSpellSoundId = this.hitSuccessful ? 290 : 293;
             }
             if (this.hitDefinition.getSpell() == SpellDefinition.SARADOMIN_STRIKE) {
-                int n8 = n = this.hitSuccessful ? 297 : 299;
+                godSpellSoundId = this.hitSuccessful ? 297 : 299;
             }
             if (this.hitDefinition.getSpell() == SpellDefinition.CLAWS_OF_GUTHIX) {
-                int n9 = n = this.hitSuccessful ? 291 : 296;
+                godSpellSoundId = this.hitSuccessful ? 291 : 296;
             }
             if (this.attacker.isPlayer()) {
                 entity = (Player)this.getAttacker();
@@ -536,11 +521,11 @@ public class CombatAction {
                     }
                 }
                 entity2 = entity;
-                ((Player)entity2).packetSender.sendSoundEffect(n, 1, 0);
+                ((Player)entity2).packetSender.sendSoundEffect(godSpellSoundId, 1, 0);
             }
             if (this.target.isPlayer()) {
                 entity2 = entity = (Player)this.getTarget();
-                ((Player)entity).packetSender.sendSoundEffect(n, 1, 0);
+                ((Player)entity).packetSender.sendSoundEffect(godSpellSoundId, 1, 0);
             }
         }
         if (this.hitSuccessful && this.target.isPlayer()) {
@@ -756,15 +741,15 @@ public class CombatAction {
                 this.hitDefinition.addEffect(this.hitDefinition.getSpell().getPostHitEffect());
             }
             if (this.hitDefinition.getEffects() != null && this.hitDefinition.getEffects().size() > 0) {
-                for (Object object32 : this.hitDefinition.getEffects()) {
-                    if (!this.target.canApplyCombatEffect((CombatEffect)object32)) continue;
-                    ((CombatEffect)object32).apply(this);
+                for (Object effectObject : this.hitDefinition.getEffects()) {
+                    if (!this.target.canApplyCombatEffect((CombatEffect)effectObject)) continue;
+                    ((CombatEffect)effectObject).apply(this);
                 }
             }
             if (this.hitDefinition.getEffects() != null && this.hitDefinition.getEffects().size() > 0) {
-                for (Object object32 : this.hitDefinition.getEffects()) {
-                    if (object32 == null) continue;
-                    ((CombatEffect)object32).afterApply(this);
+                for (Object effectObject : this.hitDefinition.getEffects()) {
+                    if (effectObject == null) continue;
+                    ((CombatEffect)effectObject).afterApply(this);
                 }
             }
             return;
@@ -821,7 +806,8 @@ public class CombatAction {
                     this.damage = 0;
                 }
                 if (this.hitDefinition.getEffects() != null) {
-                    for (CombatEffect combatEffect : this.hitDefinition.getEffects()) {
+                    for (Object effectObject : this.hitDefinition.getEffects()) {
+                        CombatEffect combatEffect = (CombatEffect)effectObject;
                         if (!this.target.canApplyCombatEffect(combatEffect)) continue;
                         combatEffect.apply(this);
                     }
@@ -856,7 +842,8 @@ public class CombatAction {
                     }
                 }
                 if (this.hitDefinition.getEffects() != null) {
-                    for (CombatEffect combatEffect : this.hitDefinition.getEffects()) {
+                    for (Object effectObject : this.hitDefinition.getEffects()) {
+                        CombatEffect combatEffect = (CombatEffect)effectObject;
                         if (!this.target.canApplyCombatEffect(combatEffect)) continue;
                         combatEffect.apply(this);
                     }
@@ -871,7 +858,8 @@ public class CombatAction {
             this.damage = n4;
         }
         if ((this.damage > 0 || this.hitDefinition.getMaxDamage() <= 0) && this.hitDefinition.getEffects() != null && this.hitDefinition.getEffects().size() > 0) {
-            for (CombatEffect combatEffect : this.hitDefinition.getEffects()) {
+            for (Object effectObject : this.hitDefinition.getEffects()) {
+                CombatEffect combatEffect = (CombatEffect)effectObject;
                 if (combatEffect == null || !this.target.canApplyCombatEffect(combatEffect)) continue;
                 combatEffect.apply(this);
             }

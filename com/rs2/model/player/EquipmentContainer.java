@@ -7,13 +7,13 @@ import com.rs2.model.item.ItemContainer;
 import com.rs2.model.item.ItemContainerType;
 import com.rs2.model.player.EquipmentManager;
 
-final class EquipmentContainer
+public final class EquipmentContainer
 extends ItemContainer {
     private /* synthetic */ EquipmentManager a;
 
-    EquipmentContainer(EquipmentManager equipmentManager, ItemContainerType itemContainerType, int n) {
-        this.a = equipmentManager;
+    public EquipmentContainer(EquipmentManager equipmentManager, ItemContainerType itemContainerType, int n) {
         super(itemContainerType, 14);
+        this.a = equipmentManager;
     }
 
     public final void i() {

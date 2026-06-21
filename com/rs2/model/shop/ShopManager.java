@@ -27,16 +27,15 @@ public final class ShopManager {
     private static List shopDefinitions = new ArrayList(40);
 
     public static void refreshShopForPlayers(int n) {
-        ItemStack[] itemStackArray = (ItemStack[])shopDefinitions.get(n);
+        ShopDefinition shopDefinition = (ShopDefinition)shopDefinitions.get(n);
         Player[] playerArray = World.getPlayers();
         int n2 = playerArray.length;
         int n3 = 0;
         while (n3 < n2) {
             Player player = playerArray[n3];
             if (player != null && player.getCurrentShopId() == n) {
-                ItemStack[] itemStackArray2 = itemStackArray;
-                itemStackArray2 = itemStackArray2.getStock().getRawItems();
-                player.packetSender.sendItemContainer(3900, itemStackArray2);
+                ItemStack[] itemStackArray = shopDefinition.getStock().getRawItems();
+                player.packetSender.sendItemContainer(3900, itemStackArray);
             }
             ++n3;
         }
@@ -47,8 +46,8 @@ public final class ShopManager {
         if (n >= shopDefinitions.toArray().length) {
             return;
         }
-        ItemStack[] itemStackArray = (ItemStack[])shopDefinitions.get(n);
-        if (itemStackArray.isMembersOnly()) {
+        ShopDefinition shopDefinition = (ShopDefinition)shopDefinitions.get(n);
+        if (shopDefinition.isMembersOnly()) {
             if (player.isMember()) {
                 if (ServerSettings.freeToPlayWorld) {
                     player.packetSender.sendGameMessage("You need to be in members world to access members content.");
@@ -59,13 +58,13 @@ public final class ShopManager {
                 return;
             }
         }
-        String string = itemStackArray.getName();
-        if (itemStackArray.getCurrency() == ShopCurrency.DONATOR_POINTS) {
+        String string = shopDefinition.getName();
+        if (shopDefinition.getCurrency() == ShopCurrency.DONATOR_POINTS) {
             string = "<img=2>" + string + "<img=2>";
             player2 = player;
             player2.packetSender.sendGameMessage("You have " + player.getDonatorPoints() + " Donator points.");
         }
-        itemStackArray = itemStackArray.getStock().getRawItems();
+        ItemStack[] itemStackArray = shopDefinition.getStock().getRawItems();
         player.getInventoryManager().sendToInterface(3823);
         player2 = player;
         player2.packetSender.sendItemContainer(3900, itemStackArray);
@@ -110,17 +109,17 @@ public final class ShopManager {
         ItemContainer itemContainer = player.getInventoryManager().getContainer();
         ItemStack itemStack = shopDefinition.getStock().getItemAt(n);
         if (shopDefinition.getCurrency() == ShopCurrency.ITEM_CURRENCY) {
-            n7 = shopDefinition.getCurrencyItemId();
+            n6 = shopDefinition.getCurrencyItemId();
         } else {
             ShopDefinition shopDefinition2 = shopDefinition;
             object = player;
             switch (shopDefinition2.getCurrency()) {
                 case DONATOR_POINTS: {
-                    n7 = ((Player)object).getDonatorPoints();
+                    n6 = ((Player)object).getDonatorPoints();
                     break;
                 }
                 default: {
-                    n7 = n6 = -1;
+                    n6 = -1;
                 }
             }
         }

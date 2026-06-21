@@ -9,7 +9,7 @@ import com.rs2.model.skill.magic.TeleportManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class StandardTeleportTask
+public final class StandardTeleportTask
 extends CycleEvent {
     private int ticksRemaining = 8;
     private /* synthetic */ TeleportManager teleportManager;
@@ -18,7 +18,7 @@ extends CycleEvent {
     private final /* synthetic */ int destinationPlane;
     private final /* synthetic */ String arrivalMessage;
 
-    StandardTeleportTask(TeleportManager teleportManager, int n, int n2, int n3, String string) {
+    public StandardTeleportTask(TeleportManager teleportManager, int n, int n2, int n3, String string) {
         this.teleportManager = teleportManager;
         this.destinationX = n;
         this.destinationY = n2;

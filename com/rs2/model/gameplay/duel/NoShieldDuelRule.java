@@ -7,9 +7,10 @@ import com.rs2.model.gameplay.duel.DuelRule;
 import com.rs2.model.item.ItemStack;
 import com.rs2.model.player.Player;
 
-final class NoShieldDuelRule
+public final class NoShieldDuelRule
 extends DuelRule {
-    NoShieldDuelRule(int n2, int n3, int n4) {
+    public NoShieldDuelRule(int n2, int n3, int n4) {
+        super(n2, n3, n4);
     }
 
     @Override

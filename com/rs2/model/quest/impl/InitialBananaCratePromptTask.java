@@ -7,18 +7,18 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.PiratesTreasureQuest;
 import com.rs2.model.task.TickTask;
 
-final class InitialBananaCratePromptTask
+public final class InitialBananaCratePromptTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
-    InitialBananaCratePromptTask(PiratesTreasureQuest piratesTreasureQuest, int n, Player player) {
-        this.a = player;
+    public InitialBananaCratePromptTask(PiratesTreasureQuest piratesTreasureQuest, int n, Player player) {
         super(2);
+        this.player = player;
     }
 
     @Override
     public final void execute() {
-        this.a.getDialogueManager().showTwoOptionsWithTitle("Do you want to take a banana?", "Yes.", "No.");
+        this.player.getDialogueManager().showTwoOptionsWithTitle("Do you want to take a banana?", "Yes.", "No.");
         this.stop();
     }
 }

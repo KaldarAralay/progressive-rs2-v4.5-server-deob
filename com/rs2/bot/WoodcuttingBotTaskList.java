@@ -6,9 +6,9 @@ package com.rs2.bot;
 import com.rs2.bot.BotTaskDefinition;
 import java.util.ArrayList;
 
-final class WoodcuttingBotTaskList
+public final class WoodcuttingBotTaskList
 extends ArrayList {
-    WoodcuttingBotTaskList() {
+    public WoodcuttingBotTaskList() {
         this.add(BotTaskDefinition.draynorWillowWoodcuttingTask);
         this.add(BotTaskDefinition.getEdgevilleYewWoodcuttingTask());
         this.add(BotTaskDefinition.getFaladorYewWoodcuttingTask());

@@ -105,7 +105,7 @@ public final class TelekineticTheatreController {
             player = this.player;
             GameplayHelper.unregisterTemporaryNpc(player.H);
         }
-        GameplayHelper.a(this.player, new Position(position.getX(), position.getY(), this.player.getPosition().getPlane()), (Npc)object, false, false);
+        GameplayHelper.spawnOwnedNpcAtPosition(this.player, new Position(position.getX(), position.getY(), this.player.getPosition().getPlane()), (Npc)object, false, false);
         if (!this.mazeSolved) {
             this.spawnMazeItem();
         }
@@ -121,7 +121,7 @@ public final class TelekineticTheatreController {
             player = this.player;
             GameplayHelper.unregisterTemporaryNpc(player.H);
         }
-        GameplayHelper.a(this.player, new Position(position.getX(), position.getY(), this.player.getPosition().getPlane()), (Npc)object, false, false);
+        GameplayHelper.spawnOwnedNpcAtPosition(this.player, new Position(position.getX(), position.getY(), this.player.getPosition().getPlane()), (Npc)object, false, false);
         object = mazeItemSpawnPositions[this.mazeIndex];
         object = new GroundItem(new ItemStack(this.mazeItemId, 1), this.player, new Position(((Position)object).getX(), ((Position)object).getY(), this.player.getPosition().getPlane()));
         GroundItemManager.getInstance().spawn((GroundItem)object);

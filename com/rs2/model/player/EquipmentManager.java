@@ -29,10 +29,10 @@ public final class EquipmentManager {
     }
 
     public final void refresh() {
-        Object object = this.container.getRawItems();
+        ItemStack[] rawItems = this.container.getRawItems();
         Player player = this.player;
-        player.packetSender.sendItemContainer(1688, (ItemStack[])object);
-        object = object[3];
+        player.packetSender.sendItemContainer(1688, rawItems);
+        ItemStack object = rawItems[3];
         if (object != null && ((ItemStack)object).getDefinition().isMembersOnly() && ServerSettings.freeToPlayWorld) {
             object = null;
         }
@@ -90,13 +90,13 @@ public final class EquipmentManager {
 
     public final void finishBulkEquipmentRemoval() {
         this.refresh();
-        GameplayHelper.f(this.player, -1);
+        GameplayHelper.refreshRunecraftingTiaraConfig(this.player, -1);
         this.player.nextActionSequence();
         this.player.setWeaponProfile(null);
         this.player.setSpecialAttackDefinition(null);
         this.player.setAutocastSpell(null);
         this.refreshCarriedValue();
-        GameplayHelper.h(this.player);
+        GameplayHelper.refreshRubberChickenPlayerOption(this.player);
         this.player.setAppearanceUpdateRequired(true);
     }
 
@@ -239,57 +239,58 @@ public final class EquipmentManager {
                 ++n2;
             }
         }
-        int n8 = 0;
+        boolean blockedByDuelRule = false;
         switch (n3) {
             case 0: {
-                n8 = DuelRule.NO_HELMET.isEnabledFor(this.player);
+                blockedByDuelRule = DuelRule.NO_HELMET.isEnabledFor(this.player);
                 break;
             }
             case 1: {
-                n8 = DuelRule.NO_CAPE.isEnabledFor(this.player);
+                blockedByDuelRule = DuelRule.NO_CAPE.isEnabledFor(this.player);
                 break;
             }
             case 2: {
-                n8 = DuelRule.NO_AMULET.isEnabledFor(this.player);
+                blockedByDuelRule = DuelRule.NO_AMULET.isEnabledFor(this.player);
                 break;
             }
             case 13: {
-                n8 = DuelRule.NO_AMMO.isEnabledFor(this.player);
+                blockedByDuelRule = DuelRule.NO_AMMO.isEnabledFor(this.player);
                 break;
             }
             case 3: {
-                n8 = !DuelRule.NO_WEAPON.isEnabledFor(this.player) && (!itemStack.getDefinition().isTwoHanded() || !DuelRule.NO_SHIELD.isEnabledFor(this.player)) ? 0 : 1;
+                blockedByDuelRule = DuelRule.NO_WEAPON.isEnabledFor(this.player) || itemStack.getDefinition().isTwoHanded() && DuelRule.NO_SHIELD.isEnabledFor(this.player);
                 break;
             }
             case 4: {
-                n8 = DuelRule.NO_BODY.isEnabledFor(this.player);
+                blockedByDuelRule = DuelRule.NO_BODY.isEnabledFor(this.player);
                 break;
             }
             case 5: {
-                n8 = DuelRule.NO_SHIELD.isEnabledFor(this.player);
+                blockedByDuelRule = DuelRule.NO_SHIELD.isEnabledFor(this.player);
                 break;
             }
             case 7: {
-                n8 = DuelRule.NO_LEGS.isEnabledFor(this.player);
+                blockedByDuelRule = DuelRule.NO_LEGS.isEnabledFor(this.player);
                 break;
             }
             case 9: {
-                n8 = DuelRule.NO_GLOVES.isEnabledFor(this.player);
+                blockedByDuelRule = DuelRule.NO_GLOVES.isEnabledFor(this.player);
                 break;
             }
             case 10: {
-                n8 = DuelRule.NO_BOOTS.isEnabledFor(this.player);
+                blockedByDuelRule = DuelRule.NO_BOOTS.isEnabledFor(this.player);
                 break;
             }
             case 12: {
-                n8 = DuelRule.NO_RING.isEnabledFor(this.player);
+                blockedByDuelRule = DuelRule.NO_RING.isEnabledFor(this.player);
             }
         }
-        if (n8 != 0) {
+        if (blockedByDuelRule) {
             Player player = this.player;
             player.packetSender.sendGameMessage("You cannot wear this during this fight!");
             return;
         }
+        int n8;
         n2 = 0;
         if (itemStack.getDefinition().isStackable()) {
             n8 = n3;
@@ -371,8 +372,8 @@ public final class EquipmentManager {
             this.player.npcTransformationId = 1463;
             this.player.setAppearanceUpdateRequired(true);
         }
-        GameplayHelper.h(this.player);
-        GameplayHelper.f(this.player, itemStack.getId());
+        GameplayHelper.refreshRubberChickenPlayerOption(this.player);
+        GameplayHelper.refreshRunecraftingTiaraConfig(this.player, itemStack.getId());
         Player player = this.player;
         player.packetSender.sendSoundEffect(this.equipSoundIds[GameUtil.randomInt(this.equipSoundIds.length)], 1, 0);
         this.player.setAppearanceUpdateRequired(true);
@@ -401,7 +402,7 @@ public final class EquipmentManager {
             this.player.setAppearanceUpdateRequired(true);
         }
         if (n == 0) {
-            GameplayHelper.f(this.player, -1);
+            GameplayHelper.refreshRunecraftingTiaraConfig(this.player, -1);
         }
         object = this.player.getEquipmentManager();
         if (!((EquipmentManager)object).container.containsItem(itemStack.getId())) {
@@ -427,7 +428,7 @@ public final class EquipmentManager {
         this.refreshCarriedValue();
         object = this.player;
         ((Player)object).packetSender.sendSoundEffect(this.equipSoundIds[GameUtil.randomInt(this.equipSoundIds.length)], 1, 0);
-        GameplayHelper.h(this.player);
+        GameplayHelper.refreshRubberChickenPlayerOption(this.player);
         this.player.setAppearanceUpdateRequired(true);
     }
 
@@ -628,275 +629,36 @@ public final class EquipmentManager {
         return true;
     }
 
-    /*
-     * Unable to fully structure code
-     */
     public final void refreshBarrowsSetEffects() {
-        block39: {
-            block40: {
-                block42: {
-                    block41: {
-                        block38: {
-                            block37: {
-                                block34: {
-                                    block36: {
-                                        block35: {
-                                            block33: {
-                                                block32: {
-                                                    block29: {
-                                                        block31: {
-                                                            block30: {
-                                                                block28: {
-                                                                    block27: {
-                                                                        block24: {
-                                                                            block26: {
-                                                                                block25: {
-                                                                                    block23: {
-                                                                                        block22: {
-                                                                                            block19: {
-                                                                                                block21: {
-                                                                                                    block20: {
-                                                                                                        block18: {
-                                                                                                            block17: {
-                                                                                                                block14: {
-                                                                                                                    block16: {
-                                                                                                                        block15: {
-                                                                                                                            block13: {
-                                                                                                                                block12: {
-                                                                                                                                    var1_1 = this;
-                                                                                                                                    var2_2 = var1_1.player.getEquipmentManager();
-                                                                                                                                    if (var2_2.container.getItemAt(0) == null) break block12;
-                                                                                                                                    var2_2 = var1_1.player.getEquipmentManager();
-                                                                                                                                    if (var2_2.container.getItemAt(7) == null) break block12;
-                                                                                                                                    var2_2 = var1_1.player.getEquipmentManager();
-                                                                                                                                    if (var2_2.container.getItemAt(4) == null) break block12;
-                                                                                                                                    var2_2 = var1_1.player.getEquipmentManager();
-                                                                                                                                    if (var2_2.container.getItemAt(3) != null) break block13;
-                                                                                                                                }
-                                                                                                                                v0 = false;
-                                                                                                                                break block14;
-                                                                                                                            }
-                                                                                                                            var2_2 = var1_1.player.getEquipmentManager();
-                                                                                                                            if (!var2_2.container.getItemAt(0).getDefinition().getName().toLowerCase().contains("ahrims hood")) ** GOTO lbl-1000
-                                                                                                                            var2_2 = var1_1.player.getEquipmentManager();
-                                                                                                                            if (var2_2.container.getItemAt(4).getDefinition().getName().toLowerCase().contains("ahrims top")) break block15;
-                                                                                                                            var2_2 = var1_1.player.getEquipmentManager();
-                                                                                                                            if (!var2_2.container.getItemAt(4).getDefinition().getName().toLowerCase().contains("ahrims robetop")) ** GOTO lbl-1000
-                                                                                                                        }
-                                                                                                                        var2_2 = var1_1.player.getEquipmentManager();
-                                                                                                                        if (var2_2.container.getItemAt(7).getDefinition().getName().toLowerCase().contains("ahrims skirt")) break block16;
-                                                                                                                        var2_2 = var1_1.player.getEquipmentManager();
-                                                                                                                        if (!var2_2.container.getItemAt(7).getDefinition().getName().toLowerCase().contains("ahrims robeskirt")) ** GOTO lbl-1000
-                                                                                                                    }
-                                                                                                                    var2_2 = var1_1.player.getEquipmentManager();
-                                                                                                                    if (var2_2.container.getItemAt(3).getDefinition().getName().toLowerCase().contains("ahrims staff")) {
-                                                                                                                        v0 = true;
-                                                                                                                    } else lbl-1000:
-                                                                                                                    // 4 sources
+        this.player.setAhrimSetEffectActive(this.isEquippedSet("ahrims hood", "ahrims top", "ahrims robetop", "ahrims skirt", "ahrims robeskirt", "ahrims staff"));
+        this.player.setKarilSetEffectActive(this.isEquippedSet("karils coif", "karils top", "karils leathertop", "karils skirt", "karils leatherskirt", "karils x-bow", "karils crossbow"));
+        this.player.setDharokSetEffectActive(this.isEquippedSet("dharoks helm", "dharoks body", "dharoks platebody", "dharoks legs", "dharoks platelegs", "dharoks axe", "dharoks greataxe"));
+        this.player.setVeracSetEffectActive(this.isEquippedSet("veracs helm", "veracs top", "veracs brassard", "veracs skirt", "veracs plateskirt", "veracs flail"));
+        this.player.setToragSetEffectActive(this.isEquippedSet("torags helm", "torags body", "torags platebody", "torags legs", "torags platelegs", "torags hammer", "torags hammers"));
+        this.player.setGuthanSetEffectActive(this.isEquippedSet("guthans helm", "guthans body", "guthans platebody", "guthans skirt", "guthans chainskirt", "guthans spear", "guthans warspear"));
+    }
 
-                                                                                                                    {
-                                                                                                                        v0 = false;
-                                                                                                                    }
-                                                                                                                }
-                                                                                                                this.player.setAhrimSetEffectActive(v0);
-                                                                                                                var1_1 = this;
-                                                                                                                var2_2 = var1_1.player.getEquipmentManager();
-                                                                                                                if (var2_2.container.getItemAt(0) == null) break block17;
-                                                                                                                var2_2 = var1_1.player.getEquipmentManager();
-                                                                                                                if (var2_2.container.getItemAt(7) == null) break block17;
-                                                                                                                var2_2 = var1_1.player.getEquipmentManager();
-                                                                                                                if (var2_2.container.getItemAt(4) == null) break block17;
-                                                                                                                var2_2 = var1_1.player.getEquipmentManager();
-                                                                                                                if (var2_2.container.getItemAt(3) != null) break block18;
-                                                                                                            }
-                                                                                                            v1 = false;
-                                                                                                            break block19;
-                                                                                                        }
-                                                                                                        var2_2 = var1_1.player.getEquipmentManager();
-                                                                                                        if (!var2_2.container.getItemAt(0).getDefinition().getName().toLowerCase().contains("karils coif")) ** GOTO lbl-1000
-                                                                                                        var2_2 = var1_1.player.getEquipmentManager();
-                                                                                                        if (var2_2.container.getItemAt(4).getDefinition().getName().toLowerCase().contains("karils top")) break block20;
-                                                                                                        var2_2 = var1_1.player.getEquipmentManager();
-                                                                                                        if (!var2_2.container.getItemAt(4).getDefinition().getName().toLowerCase().contains("karils leathertop")) ** GOTO lbl-1000
-                                                                                                    }
-                                                                                                    var2_2 = var1_1.player.getEquipmentManager();
-                                                                                                    if (var2_2.container.getItemAt(7).getDefinition().getName().toLowerCase().contains("karils skirt")) break block21;
-                                                                                                    var2_2 = var1_1.player.getEquipmentManager();
-                                                                                                    if (!var2_2.container.getItemAt(7).getDefinition().getName().toLowerCase().contains("karils leatherskirt")) ** GOTO lbl-1000
-                                                                                                }
-                                                                                                var2_2 = var1_1.player.getEquipmentManager();
-                                                                                                if (var2_2.container.getItemAt(3).getDefinition().getName().toLowerCase().contains("karils x-bow")) ** GOTO lbl-1000
-                                                                                                var2_2 = var1_1.player.getEquipmentManager();
-                                                                                                if (var2_2.container.getItemAt(3).getDefinition().getName().toLowerCase().contains("karils crossbow")) lbl-1000:
-                                                                                                // 2 sources
+    private boolean isEquippedSet(String helmName, String bodyName, String alternateBodyName, String legsName, String alternateLegsName, String weaponName) {
+        return this.hasEquippedName(0, helmName)
+            && this.hasEquippedName(4, bodyName, alternateBodyName)
+            && this.hasEquippedName(7, legsName, alternateLegsName)
+            && this.hasEquippedName(3, weaponName);
+    }
 
-                                                                                                {
-                                                                                                    v1 = true;
-                                                                                                } else lbl-1000:
-                                                                                                // 4 sources
+    private boolean isEquippedSet(String helmName, String bodyName, String alternateBodyName, String legsName, String alternateLegsName, String weaponName, String alternateWeaponName) {
+        return this.hasEquippedName(0, helmName)
+            && this.hasEquippedName(4, bodyName, alternateBodyName)
+            && this.hasEquippedName(7, legsName, alternateLegsName)
+            && this.hasEquippedName(3, weaponName, alternateWeaponName);
+    }
 
-                                                                                                {
-                                                                                                    v1 = false;
-                                                                                                }
-                                                                                            }
-                                                                                            this.player.setKarilSetEffectActive(v1);
-                                                                                            var1_1 = this;
-                                                                                            var2_2 = var1_1.player.getEquipmentManager();
-                                                                                            if (var2_2.container.getItemAt(0) == null) break block22;
-                                                                                            var2_2 = var1_1.player.getEquipmentManager();
-                                                                                            if (var2_2.container.getItemAt(7) == null) break block22;
-                                                                                            var2_2 = var1_1.player.getEquipmentManager();
-                                                                                            if (var2_2.container.getItemAt(4) == null) break block22;
-                                                                                            var2_2 = var1_1.player.getEquipmentManager();
-                                                                                            if (var2_2.container.getItemAt(3) != null) break block23;
-                                                                                        }
-                                                                                        v2 = false;
-                                                                                        break block24;
-                                                                                    }
-                                                                                    var2_2 = var1_1.player.getEquipmentManager();
-                                                                                    if (!var2_2.container.getItemAt(0).getDefinition().getName().toLowerCase().contains("dharoks helm")) ** GOTO lbl-1000
-                                                                                    var2_2 = var1_1.player.getEquipmentManager();
-                                                                                    if (var2_2.container.getItemAt(4).getDefinition().getName().toLowerCase().contains("dharoks body")) break block25;
-                                                                                    var2_2 = var1_1.player.getEquipmentManager();
-                                                                                    if (!var2_2.container.getItemAt(4).getDefinition().getName().toLowerCase().contains("dharoks platebody")) ** GOTO lbl-1000
-                                                                                }
-                                                                                var2_2 = var1_1.player.getEquipmentManager();
-                                                                                if (var2_2.container.getItemAt(7).getDefinition().getName().toLowerCase().contains("dharoks legs")) break block26;
-                                                                                var2_2 = var1_1.player.getEquipmentManager();
-                                                                                if (!var2_2.container.getItemAt(7).getDefinition().getName().toLowerCase().contains("dharoks platelegs")) ** GOTO lbl-1000
-                                                                            }
-                                                                            var2_2 = var1_1.player.getEquipmentManager();
-                                                                            if (var2_2.container.getItemAt(3).getDefinition().getName().toLowerCase().contains("dharoks axe")) ** GOTO lbl-1000
-                                                                            var2_2 = var1_1.player.getEquipmentManager();
-                                                                            if (var2_2.container.getItemAt(3).getDefinition().getName().toLowerCase().contains("dharoks greataxe")) lbl-1000:
-                                                                            // 2 sources
+    private boolean hasEquippedName(int slot, String nameFragment) {
+        ItemStack itemStack = this.container.getItemAt(slot);
+        return itemStack != null && itemStack.getDefinition().getName().toLowerCase().contains(nameFragment);
+    }
 
-                                                                            {
-                                                                                v2 = true;
-                                                                            } else lbl-1000:
-                                                                            // 4 sources
-
-                                                                            {
-                                                                                v2 = false;
-                                                                            }
-                                                                        }
-                                                                        this.player.setDharokSetEffectActive(v2);
-                                                                        var1_1 = this;
-                                                                        var2_2 = var1_1.player.getEquipmentManager();
-                                                                        if (var2_2.container.getItemAt(0) == null) break block27;
-                                                                        var2_2 = var1_1.player.getEquipmentManager();
-                                                                        if (var2_2.container.getItemAt(7) == null) break block27;
-                                                                        var2_2 = var1_1.player.getEquipmentManager();
-                                                                        if (var2_2.container.getItemAt(4) == null) break block27;
-                                                                        var2_2 = var1_1.player.getEquipmentManager();
-                                                                        if (var2_2.container.getItemAt(3) != null) break block28;
-                                                                    }
-                                                                    v3 = false;
-                                                                    break block29;
-                                                                }
-                                                                var2_2 = var1_1.player.getEquipmentManager();
-                                                                if (!var2_2.container.getItemAt(0).getDefinition().getName().toLowerCase().contains("veracs helm")) ** GOTO lbl-1000
-                                                                var2_2 = var1_1.player.getEquipmentManager();
-                                                                if (var2_2.container.getItemAt(4).getDefinition().getName().toLowerCase().contains("veracs top")) break block30;
-                                                                var2_2 = var1_1.player.getEquipmentManager();
-                                                                if (!var2_2.container.getItemAt(4).getDefinition().getName().toLowerCase().contains("veracs brassard")) ** GOTO lbl-1000
-                                                            }
-                                                            var2_2 = var1_1.player.getEquipmentManager();
-                                                            if (var2_2.container.getItemAt(7).getDefinition().getName().toLowerCase().contains("veracs skirt")) break block31;
-                                                            var2_2 = var1_1.player.getEquipmentManager();
-                                                            if (!var2_2.container.getItemAt(7).getDefinition().getName().toLowerCase().contains("veracs plateskirt")) ** GOTO lbl-1000
-                                                        }
-                                                        var2_2 = var1_1.player.getEquipmentManager();
-                                                        if (var2_2.container.getItemAt(3).getDefinition().getName().toLowerCase().contains("veracs flail")) {
-                                                            v3 = true;
-                                                        } else lbl-1000:
-                                                        // 4 sources
-
-                                                        {
-                                                            v3 = false;
-                                                        }
-                                                    }
-                                                    this.player.setVeracSetEffectActive(v3);
-                                                    var1_1 = this;
-                                                    var2_2 = var1_1.player.getEquipmentManager();
-                                                    if (var2_2.container.getItemAt(0) == null) break block32;
-                                                    var2_2 = var1_1.player.getEquipmentManager();
-                                                    if (var2_2.container.getItemAt(7) == null) break block32;
-                                                    var2_2 = var1_1.player.getEquipmentManager();
-                                                    if (var2_2.container.getItemAt(4) == null) break block32;
-                                                    var2_2 = var1_1.player.getEquipmentManager();
-                                                    if (var2_2.container.getItemAt(3) != null) break block33;
-                                                }
-                                                v4 = false;
-                                                break block34;
-                                            }
-                                            var2_2 = var1_1.player.getEquipmentManager();
-                                            if (!var2_2.container.getItemAt(0).getDefinition().getName().toLowerCase().contains("torags helm")) ** GOTO lbl-1000
-                                            var2_2 = var1_1.player.getEquipmentManager();
-                                            if (var2_2.container.getItemAt(4).getDefinition().getName().toLowerCase().contains("torags body")) break block35;
-                                            var2_2 = var1_1.player.getEquipmentManager();
-                                            if (!var2_2.container.getItemAt(4).getDefinition().getName().toLowerCase().contains("torags platebody")) ** GOTO lbl-1000
-                                        }
-                                        var2_2 = var1_1.player.getEquipmentManager();
-                                        if (var2_2.container.getItemAt(7).getDefinition().getName().toLowerCase().contains("torags legs")) break block36;
-                                        var2_2 = var1_1.player.getEquipmentManager();
-                                        if (!var2_2.container.getItemAt(7).getDefinition().getName().toLowerCase().contains("torags platelegs")) ** GOTO lbl-1000
-                                    }
-                                    var2_2 = var1_1.player.getEquipmentManager();
-                                    if (var2_2.container.getItemAt(3).getDefinition().getName().toLowerCase().contains("torags hammer")) ** GOTO lbl-1000
-                                    var2_2 = var1_1.player.getEquipmentManager();
-                                    if (var2_2.container.getItemAt(3).getDefinition().getName().toLowerCase().contains("torags hammers")) lbl-1000:
-                                    // 2 sources
-
-                                    {
-                                        v4 = true;
-                                    } else lbl-1000:
-                                    // 4 sources
-
-                                    {
-                                        v4 = false;
-                                    }
-                                }
-                                this.player.setToragSetEffectActive(v4);
-                                var1_1 = this;
-                                var2_2 = var1_1.player.getEquipmentManager();
-                                if (var2_2.container.getItemAt(0) == null) break block37;
-                                var2_2 = var1_1.player.getEquipmentManager();
-                                if (var2_2.container.getItemAt(7) == null) break block37;
-                                var2_2 = var1_1.player.getEquipmentManager();
-                                if (var2_2.container.getItemAt(4) == null) break block37;
-                                var2_2 = var1_1.player.getEquipmentManager();
-                                if (var2_2.container.getItemAt(3) != null) break block38;
-                            }
-                            v5 = false;
-                            break block39;
-                        }
-                        var2_2 = var1_1.player.getEquipmentManager();
-                        if (!var2_2.container.getItemAt(0).getDefinition().getName().toLowerCase().contains("guthans helm")) break block40;
-                        var2_2 = var1_1.player.getEquipmentManager();
-                        if (var2_2.container.getItemAt(4).getDefinition().getName().toLowerCase().contains("guthans body")) break block41;
-                        var2_2 = var1_1.player.getEquipmentManager();
-                        if (!var2_2.container.getItemAt(4).getDefinition().getName().toLowerCase().contains("guthans platebody")) break block40;
-                    }
-                    var2_2 = var1_1.player.getEquipmentManager();
-                    if (var2_2.container.getItemAt(7).getDefinition().getName().toLowerCase().contains("guthans skirt")) break block42;
-                    var2_2 = var1_1.player.getEquipmentManager();
-                    if (!var2_2.container.getItemAt(7).getDefinition().getName().toLowerCase().contains("guthans chainskirt")) break block40;
-                }
-                var2_2 = var1_1.player.getEquipmentManager();
-                if (var2_2.container.getItemAt(3).getDefinition().getName().toLowerCase().contains("guthans spear")) ** GOTO lbl-1000
-            }
-            var2_2 = var1_1.player.getEquipmentManager();
-            if (!var2_2.container.getItemAt(3).getDefinition().getName().toLowerCase().contains("guthans warspear")) {
-                v5 = false;
-            } else lbl-1000:
-            // 2 sources
-
-            {
-                v5 = true;
-            }
-        }
-        this.player.setGuthanSetEffectActive(v5);
+    private boolean hasEquippedName(int slot, String nameFragment, String alternateNameFragment) {
+        return this.hasEquippedName(slot, nameFragment) || this.hasEquippedName(slot, alternateNameFragment);
     }
 
     public final void refreshWeaponAmmunitionState() {
@@ -921,4 +683,3 @@ public final class EquipmentManager {
         return equipmentManager.player;
     }
 }
-

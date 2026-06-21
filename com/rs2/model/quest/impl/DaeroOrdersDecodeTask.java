@@ -8,19 +8,19 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.MonkeyMadnessQuest;
 import com.rs2.model.task.TickTask;
 
-final class DaeroOrdersDecodeTask
+public final class DaeroOrdersDecodeTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
-    DaeroOrdersDecodeTask(MonkeyMadnessQuest monkeyMadnessQuest, int n, Player player) {
-        this.a = player;
+    public DaeroOrdersDecodeTask(MonkeyMadnessQuest monkeyMadnessQuest, int n, Player player) {
         super(4);
+        this.player = player;
     }
 
     @Override
     public final void execute() {
-        this.a.setActionLocked(false);
-        DialogueManager.continueDialogue(this.a, 1407, 3, 0);
+        this.player.setActionLocked(false);
+        DialogueManager.continueDialogue(this.player, 1407, 3, 0);
         this.stop();
     }
 }

@@ -60,8 +60,7 @@ extends BotTaskDefinition {
 
     @Override
     public final void startCustomTaskAction(Player object) {
-        object = new DraynorGeneralStoreTradeTickTask(this, 2, (Player)object);
-        World.getTaskScheduler().schedule((TickTask)object);
+        World.getTaskScheduler().schedule(new DraynorGeneralStoreTradeTickTask(this, 2, (Player)object));
     }
 
     @Override

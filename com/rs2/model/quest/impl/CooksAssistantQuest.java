@@ -16,10 +16,9 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
-            stringArray = new String[]{"I can start this quest by speaking to the Cook in the", "Kitchen on the ground floor of Lumbridge Castle."};
-            return stringArray;
+            return new String[]{"I can start this quest by speaking to the Cook in the", "Kitchen on the ground floor of Lumbridge Castle."};
         }
         if (n >= 2 && n < 9) {
             int n2 = n - 2;
@@ -27,12 +26,10 @@ extends QuestScript {
             return stringArray2;
         }
         if (n == 9) {
-            stringArray = new String[]{"I should talk to the Cook in the Kitchen of Lumbridge", "Castle to finish this quest."};
-            return stringArray;
+            return new String[]{"I should talk to the Cook in the Kitchen of Lumbridge", "Castle to finish this quest."};
         }
         if (n == 1) {
-            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "1 Quest Point", "300 Cooking XP"};
-            return stringArray;
+            return new String[]{"Quest Completed!", "", "You were awarded:", "1 Quest Point", "300 Cooking XP"};
         }
         return null;
     }
@@ -176,7 +173,7 @@ extends QuestScript {
                 }
                 if (n2 == 10) {
                     player.getDialogueManager().showFourOptions("Where do I find some flour?", "How about milk?", "And eggs? Where are they found?", "Actually, I know where to find this stuff.");
-                    this.d(player);
+                    this.startQuest(player);
                     player.getDialogueManager().setNextDialogueStep(3);
                     return true;
                 }

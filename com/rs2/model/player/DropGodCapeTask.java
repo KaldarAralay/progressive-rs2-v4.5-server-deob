@@ -11,15 +11,15 @@ import com.rs2.model.item.ItemStack;
 import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 
-final class DropGodCapeTask
+public final class DropGodCapeTask
 extends TickTask {
     private final /* synthetic */ Player player;
     private final /* synthetic */ int capeAnimationId;
 
-    DropGodCapeTask(Player player, int n, Player player2, int n2) {
+    public DropGodCapeTask(Player player, int n, Player player2, int n2) {
+        super(4);
         this.player = player2;
         this.capeAnimationId = n2;
-        super(4);
     }
 
     @Override

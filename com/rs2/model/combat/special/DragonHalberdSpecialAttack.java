@@ -12,13 +12,13 @@ import com.rs2.model.combat.hit.HitType;
 import com.rs2.model.combat.special.DragonHalberdSpecialDefinition;
 import com.rs2.model.player.Player;
 
-final class DragonHalberdSpecialAttack
+public final class DragonHalberdSpecialAttack
 extends WeaponCombatAttack {
     private final /* synthetic */ Entity primaryTarget;
 
-    DragonHalberdSpecialAttack(DragonHalberdSpecialDefinition dragonHalberdSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile, Entity entity2) {
-        this.primaryTarget = entity2;
+    public DragonHalberdSpecialAttack(DragonHalberdSpecialDefinition dragonHalberdSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile, Entity entity2) {
         super(player, entity, weaponProfile);
+        this.primaryTarget = entity2;
     }
 
     @Override

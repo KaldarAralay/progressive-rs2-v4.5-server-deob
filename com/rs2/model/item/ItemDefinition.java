@@ -79,7 +79,7 @@ public class ItemDefinition {
             int n3 = 0;
             while (n3 < n2) {
                 object = ItemDefinition.forId(n3);
-                ItemDefinition.definitionsById[n3] = object;
+                ItemDefinition.definitionsById[n3] = (ItemDefinition)object;
                 n = byteArrayReader.readUnsignedByte();
                 if (n != 200) {
                     int n4;
@@ -213,9 +213,8 @@ public class ItemDefinition {
         try {
             byteArrayReader = new ByteArrayReader(new CacheArchive(cacheStore.readFile(0, 2)).getFileBytes("obj.dat"));
         }
-        catch (IOException iOException) {
-            IOException iOException2 = iOException;
-            iOException.printStackTrace();
+        catch (Exception exception) {
+            exception.printStackTrace();
         }
         definitionCount = cacheStore.getDefinitionIndex().getItemDefinitionEntries().length;
         int n7 = 0;
@@ -750,20 +749,20 @@ public class ItemDefinition {
         return bl;
     }
 
-    public static int findIdByName(String object) {
-        object = ((String)object).toLowerCase();
+    public static int findIdByName(String name) {
+        String normalizedName = name.toLowerCase();
         ItemDefinition[] itemDefinitionArray = definitionsById;
         int n = definitionsById.length;
         int n2 = 0;
         while (n2 < n) {
             ItemDefinition itemDefinition = itemDefinitionArray[n2];
-            if (itemDefinition.getName().toLowerCase().equalsIgnoreCase((String)object)) {
-                object = itemDefinition;
-                return ((ItemDefinition)object).id;
+            if (itemDefinition != null && itemDefinition.getName() != null && itemDefinition.getName().toLowerCase().equalsIgnoreCase(normalizedName)) {
+                return itemDefinition.id;
             }
             ++n2;
         }
         return 0;
     }
+
 }
 

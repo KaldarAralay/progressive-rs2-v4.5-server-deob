@@ -10,13 +10,13 @@ import com.rs2.model.gameplay.CaveLightManager;
 import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 
-final class CaveInsectSwarmTask
+public final class CaveInsectSwarmTask
 extends TickTask {
     private final /* synthetic */ Player player;
 
-    CaveInsectSwarmTask(int n, Player player) {
-        this.player = player;
+    public CaveInsectSwarmTask(int n, Player player) {
         super(15);
+        this.player = player;
     }
 
     @Override
@@ -38,8 +38,7 @@ extends TickTask {
                 this.player.applyDirectHit(1, HitType.NORMAL);
                 this.player.getRecentCombatTimer().setTargetDelay(null, 17);
                 this.player.caveInsectSwarmStage = 2;
-                object = new CaveInsectDamageTask(this, 3, this.player);
-                World.getTaskScheduler().schedule((TickTask)object);
+                World.getTaskScheduler().schedule(new CaveInsectDamageTask(this, 3, this.player));
                 return;
             }
         } else {

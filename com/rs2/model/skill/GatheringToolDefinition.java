@@ -34,19 +34,15 @@ public enum GatheringToolDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private GatheringToolDefinition(double d, int[] nArray, int n3, int n22, int n4, int n5) {
-        void var11_8;
-        void var10_7;
-        void cfr_renamed_3;
-        void var4_2;
-        this.toolItemId = (int)d;
-        this.requiredLevel = var4_2;
-        this.toolSpeed = (double)nArray;
-        this.animationIds = cfr_renamed_3;
+    private GatheringToolDefinition(int n2, int n3, double d, int[] nArray, int n4, int n5, int n6, int n7) {
+        this.toolItemId = n2;
+        this.requiredLevel = n3;
+        this.toolSpeed = d;
+        this.animationIds = nArray;
         this.graphicId = n4;
         this.toolHeadItemId = n5;
-        this.brokenToolItemId = var10_7;
-        this.skillId = var11_8;
+        this.brokenToolItemId = n6;
+        this.skillId = n7;
     }
 
     public final int getToolItemId() {
@@ -86,9 +82,8 @@ public enum GatheringToolDefinition {
     }
 
     public final int getRepairCostCoins() {
-        Object object = this;
-        object = new ItemStack(object.brokenToolItemId, 1);
-        return ((ItemStack)object).getDefinition().getValue();
+        ItemStack itemStack = new ItemStack(this.brokenToolItemId, 1);
+        return itemStack.getDefinition().getValue();
     }
 }
 

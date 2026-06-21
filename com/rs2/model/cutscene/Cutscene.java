@@ -23,20 +23,16 @@ public class Cutscene {
     private Player player;
 
     public Cutscene(Player player, ArrayList object) {
-        Object object2;
         this.player = player;
         if (object != null) {
-            object2 = ((ArrayList)object).iterator();
-            while (object2.hasNext()) {
-                Object object3 = object = (Npc)object2.next();
-                object = this;
-                ((Cutscene)object).npcs.add(object3);
+            for (Object npcObject : object) {
+                this.npcs.add((Npc)npcObject);
             }
         }
-        object = new CutsceneSceneSetupStep(this, this, 4, player);
-        object2 = new CutsceneDialogueStartStep(this, this, 1, player);
-        this.addStep((CutsceneStep)object);
-        this.addStep((CutsceneStep)object2);
+        CutsceneStep sceneSetupStep = new CutsceneSceneSetupStep(this, this, 4, player);
+        CutsceneStep dialogueStartStep = new CutsceneDialogueStartStep(this, this, 1, player);
+        this.addStep(sceneSetupStep);
+        this.addStep(dialogueStartStep);
         this.addCustomSteps();
     }
 
@@ -74,43 +70,35 @@ public class Cutscene {
     }
 
     public final void startCutscene() {
-        Cutscene cutscene = this;
         this.player.cutsceneActive = true;
-        Object object = cutscene.player;
-        ((Player)object).packetSender.sendMinimapState(2);
-        object = cutscene.player;
-        ((Player)object).packetSender.showInterface(8677);
-        object = cutscene.player;
-        Object object2 = new int[]{QuestConstants.COMBAT_TAB_INTERFACE[0], QuestConstants.STATS_TAB_INTERFACE[0], QuestConstants.QUEST_TAB_INTERFACE[0], QuestConstants.INVENTORY_TAB_INTERFACE[0], QuestConstants.EQUIPMENT_TAB_INTERFACE[0], QuestConstants.PRAYER_TAB_INTERFACE[0], QuestConstants.MAGIC_TAB_INTERFACE[0], QuestConstants.OPTIONS_TAB_INTERFACE[0], QuestConstants.EMOTES_TAB_INTERFACE[0]};
-        object = ((Player)object).packetSender;
+        PacketSender packetSender = this.player.packetSender;
+        packetSender.sendMinimapState(2);
+        packetSender.showInterface(8677);
+        int[] sidebarInterfaces = new int[]{QuestConstants.COMBAT_TAB_INTERFACE[0], QuestConstants.STATS_TAB_INTERFACE[0], QuestConstants.QUEST_TAB_INTERFACE[0], QuestConstants.INVENTORY_TAB_INTERFACE[0], QuestConstants.EQUIPMENT_TAB_INTERFACE[0], QuestConstants.PRAYER_TAB_INTERFACE[0], QuestConstants.MAGIC_TAB_INTERFACE[0], QuestConstants.OPTIONS_TAB_INTERFACE[0], QuestConstants.EMOTES_TAB_INTERFACE[0]};
         int n = 0;
         while (n < 9) {
-            ((PacketSender)object).setSidebarInterface(object2[n], -1);
+            packetSender.setSidebarInterface(sidebarInterfaces[n], -1);
             ++n;
         }
-        cutscene.player.getMovementLockTimer().setDelayTicks(cutscene.getMovementLockDurationMillis());
-        if (cutscene.npcs != null) {
-            object2 = cutscene.npcs.iterator();
-            while (object2.hasNext()) {
-                object = (Npc)object2.next();
-                ((Entity)object).getMovementLockTimer().setDelayTicks(cutscene.getMovementLockDurationMillis());
+        this.player.getMovementLockTimer().setDelayTicks(this.getMovementLockDurationMillis());
+        if (this.npcs != null) {
+            for (Object npcObject : this.npcs) {
+                ((Npc)npcObject).getMovementLockTimer().setDelayTicks(this.getMovementLockDurationMillis());
             }
         }
         int n2 = 0;
-        object2 = this.steps.iterator();
-        while (object2.hasNext()) {
-            object = (CutsceneStep)object2.next();
-            n2 += ((CutsceneStep)object).getDelayTicks();
-            object = new CutsceneStepTask(this, n2, (CutsceneStep)object);
-            World.getTaskScheduler().schedule((TickTask)object);
+        for (Object stepObject : this.steps) {
+            CutsceneStep cutsceneStep = (CutsceneStep)stepObject;
+            n2 += cutsceneStep.getDelayTicks();
+            World.getTaskScheduler().schedule(new CutsceneStepTask(this, n2, cutsceneStep));
         }
-        object = new CutsceneEndTask(this, this.getTotalDelayTicks());
-        World.getTaskScheduler().schedule((TickTask)object);
+        World.getTaskScheduler().schedule(new CutsceneEndTask(this, this.getTotalDelayTicks()));
     }
 
     private int getMovementLockDurationMillis() {
         int n = 0;
-        for (CutsceneStep cutsceneStep : this.steps) {
+        for (Object stepObject : this.steps) {
+            CutsceneStep cutsceneStep = (CutsceneStep)stepObject;
             n += cutsceneStep.getDelayTicks();
         }
         return n * 600;
@@ -118,7 +106,8 @@ public class Cutscene {
 
     private int getTotalDelayTicks() {
         int n = 0;
-        for (CutsceneStep cutsceneStep : this.steps) {
+        for (Object stepObject : this.steps) {
+            CutsceneStep cutsceneStep = (CutsceneStep)stepObject;
             n += cutsceneStep.getDelayTicks();
         }
         return n;

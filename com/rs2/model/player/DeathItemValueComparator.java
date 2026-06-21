@@ -8,9 +8,9 @@ import com.rs2.model.item.ItemStack;
 import com.rs2.model.player.Player;
 import java.util.Comparator;
 
-final class DeathItemValueComparator
+public final class DeathItemValueComparator
 implements Comparator {
-    DeathItemValueComparator(Player player) {
+    public DeathItemValueComparator(Player player) {
     }
 
     public final /* synthetic */ int compare(Object object, Object object2) {

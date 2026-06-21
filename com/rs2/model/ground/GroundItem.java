@@ -25,7 +25,6 @@ public final class GroundItem {
     public GroundItem(ItemStack object, Position position, int n, boolean bl) {
         this.item = object;
         position = position.copy();
-        object = this;
         this.position = position;
         this.timer = new ElapsedTicks();
         this.visibility = GroundItemVisibility.PUBLIC;
@@ -36,7 +35,6 @@ public final class GroundItem {
     public GroundItem(ItemStack object, Position position, boolean bl) {
         this.item = object;
         position = position.copy();
-        object = this;
         this.position = position;
         this.timer = new ElapsedTicks();
         this.visibility = GroundItemVisibility.PUBLIC;
@@ -46,7 +44,6 @@ public final class GroundItem {
     public GroundItem(ItemStack object, Position position, boolean bl, boolean bl2) {
         this.item = object;
         position = position.copy();
-        object = this;
         this.position = position;
         this.timer = new ElapsedTicks();
         this.visibility = GroundItemVisibility.PUBLIC;
@@ -57,7 +54,6 @@ public final class GroundItem {
     public GroundItem(ItemStack object, Position position, boolean bl, Entity entity) {
         this.item = object;
         position = position.copy();
-        object = this;
         this.position = position;
         this.timer = new ElapsedTicks();
         if (entity != null) {

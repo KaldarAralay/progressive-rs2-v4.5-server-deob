@@ -8,12 +8,12 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class DoorResetEvent
+public final class DoorResetEvent
 extends CycleEvent {
     private final /* synthetic */ Player player;
     private final /* synthetic */ DoorHandler door;
 
-    DoorResetEvent(Player player, DoorHandler doorHandler) {
+    public DoorResetEvent(Player player, DoorHandler doorHandler) {
         this.player = player;
         this.door = doorHandler;
     }

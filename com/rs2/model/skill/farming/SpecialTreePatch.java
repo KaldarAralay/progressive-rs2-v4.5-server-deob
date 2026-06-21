@@ -20,12 +20,10 @@ public enum SpecialTreePatch {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private SpecialTreePatch(int n3) {
-        void var5_3;
-        void var4_2;
-        this.index = n3;
-        this.bounds = var4_2;
-        this.objectId = var5_3;
+    private SpecialTreePatch(int n2, Position[] positionArray, int n3) {
+        this.index = n2;
+        this.bounds = positionArray;
+        this.objectId = n3;
     }
 
     public static SpecialTreePatch forPosition(Position position) {

@@ -15,7 +15,7 @@ import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.util.GameUtil;
 
-final class FiremakingTask
+public final class FiremakingTask
 extends CycleEvent {
     private final /* synthetic */ Player player;
     private final /* synthetic */ int actionSequence;
@@ -26,7 +26,7 @@ extends CycleEvent {
     private final /* synthetic */ int fireY;
     private final /* synthetic */ int plane;
 
-    FiremakingTask(FiremakingHandler firemakingHandler, Player player, int n, GroundItem groundItem, int n2, FiremakingLog firemakingLog, int n3, int n4, int n5) {
+    public FiremakingTask(FiremakingHandler firemakingHandler, Player player, int n, GroundItem groundItem, int n2, FiremakingLog firemakingLog, int n3, int n4, int n5) {
         this.player = player;
         this.actionSequence = n;
         this.groundItem = groundItem;

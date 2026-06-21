@@ -48,15 +48,13 @@ public enum SilverCraftingRecipe {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private SilverCraftingRecipe(int n3, int n4, int n5, double d) {
-        void var8_6;
-        void var7_5;
-        this.buttonId = n3;
+    private SilverCraftingRecipe(int n2, int n3, int n4, int n5, int n6, double d) {
+        this.buttonId = n2;
         this.barItemId = 2355;
-        this.productItemId = n5;
-        this.quantity = (int)d;
-        this.requiredLevel = var7_5;
-        this.experience = var8_6;
+        this.productItemId = n4;
+        this.quantity = n5;
+        this.requiredLevel = n6;
+        this.experience = d;
     }
 
     public final int getBarItemId() {

@@ -8,30 +8,30 @@ import com.rs2.model.quest.impl.VampireSlayerQuest;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 
-final class DraynorManorCandlesBurnTask
+public final class DraynorManorCandlesBurnTask
 extends TickTask {
     private /* synthetic */ VampireSlayerQuest a;
-    private final /* synthetic */ Player b;
+    private final /* synthetic */ Player player;
 
-    DraynorManorCandlesBurnTask(VampireSlayerQuest vampireSlayerQuest, int n, Player player) {
-        this.a = vampireSlayerQuest;
-        this.b = player;
+    public DraynorManorCandlesBurnTask(VampireSlayerQuest vampireSlayerQuest, int n, Player player) {
         super(5);
+        this.a = vampireSlayerQuest;
+        this.player = player;
     }
 
     @Override
     public final void execute() {
-        if (!this.b.isRegistered()) {
+        if (!this.player.isRegistered()) {
             this.stop();
             return;
         }
-        if (this.a.b.containsExclusive(this.b.getPosition())) {
-            Player player = this.b;
+        if (this.a.b.containsExclusive(this.player.getPosition())) {
+            Player player = this.player;
             player.packetSender.sendGameMessage("The candles burn your feet!");
-            this.b.getUpdateState().setForcedText(this.a.a[GameUtil.randomInclusive(this.a.a.length - 1)]);
+            this.player.getUpdateState().setForcedText(this.a.a[GameUtil.randomInclusive(this.a.a.length - 1)]);
             return;
         }
-        this.b.eq = -1;
+        this.player.eq = -1;
         this.stop();
     }
 }

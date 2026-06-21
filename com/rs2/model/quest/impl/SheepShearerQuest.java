@@ -16,10 +16,9 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
-            stringArray = new String[]{"I can start this quest by speaking to Farmer Fred at his", "farm just a little way North West of Lumbridge"};
-            return stringArray;
+            return new String[]{"I can start this quest by speaking to Farmer Fred at his", "farm just a little way North West of Lumbridge"};
         }
         if (n >= 2 && n < 22) {
             int n2 = 22 - n;
@@ -27,12 +26,10 @@ extends QuestScript {
             return stringArray2;
         }
         if (n == 22) {
-            stringArray = new String[]{"I should talk to Farmer Fred at his farm to", "finish this quest."};
-            return stringArray;
+            return new String[]{"I should talk to Farmer Fred at his farm to", "finish this quest."};
         }
         if (n == 1) {
-            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "1 Quest Point", "150 Crafting XP", "60 Coins"};
-            return stringArray;
+            return new String[]{"Quest Completed!", "", "You were awarded:", "1 Quest Point", "150 Crafting XP", "60 Coins"};
         }
         return null;
     }
@@ -104,7 +101,7 @@ extends QuestScript {
                 if (n2 == 8) {
                     if (n3 == 1) {
                         player.getDialogueManager().showPlayerOneLineDialogue("Yes okay. I can do that.", 591);
-                        this.d(player);
+                        this.startQuest(player);
                         player.getDialogueManager().setNextDialogueStep(10);
                         return true;
                     }

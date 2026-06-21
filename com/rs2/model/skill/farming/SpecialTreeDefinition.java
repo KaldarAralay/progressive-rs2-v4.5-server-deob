@@ -41,25 +41,20 @@ public enum SpecialTreeDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private SpecialTreeDefinition(int n3, int n4, int n5, double d, double d2, double d3, int n6, int n222, int n7, double n222, int n8, int n9) {
-        void cfr_renamed_7;
-        void var19_14;
-        void var16_11;
-        void cfr_renamed_8;
-        void var7_5;
-        this.saplingId = n3;
-        this.produceItemId = n4;
-        this.requiredLevel = (int)d;
-        this.totalGrowthTicks = var7_5;
+    private SpecialTreeDefinition(int n2, int n3, int n4, int n5, int n6, double d, double d2, double d3, int n7, int n8, int n9, double d4, int n10, int n11) {
+        this.saplingId = n2;
+        this.produceItemId = n3;
+        this.requiredLevel = n5;
+        this.totalGrowthTicks = n6;
         this.diseaseChance = 0.15;
-        this.plantingExperience = d3;
-        this.harvestExperience = n6;
+        this.plantingExperience = d2;
+        this.harvestExperience = d3;
         this.configStartStage = n7;
-        this.configEndStage = cfr_renamed_8;
-        this.healthCheckConfigStage = var16_11;
-        this.healthCheckExperience = n8;
-        this.diseasedConfigOffset = var19_14;
-        this.deadConfigOffset = cfr_renamed_7;
+        this.configEndStage = n8;
+        this.healthCheckConfigStage = n9;
+        this.healthCheckExperience = d4;
+        this.diseasedConfigOffset = n10;
+        this.deadConfigOffset = n11;
     }
 
     public static SpecialTreeDefinition forSaplingId(int n) {

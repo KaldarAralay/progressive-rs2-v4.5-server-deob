@@ -9,9 +9,9 @@ import com.rs2.model.combat.attack.CombatAttack;
 import com.rs2.model.npc.combat.NpcCombatDefinition;
 import com.rs2.model.skill.magic.SpellDefinition;
 
-final class AirWizardCombatDefinition
+public final class AirWizardCombatDefinition
 extends NpcCombatDefinition {
-    AirWizardCombatDefinition() {
+    public AirWizardCombatDefinition() {
     }
 
     @Override

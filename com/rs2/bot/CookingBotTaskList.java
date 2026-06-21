@@ -6,9 +6,9 @@ package com.rs2.bot;
 import com.rs2.bot.BotTaskDefinition;
 import java.util.ArrayList;
 
-final class CookingBotTaskList
+public final class CookingBotTaskList
 extends ArrayList {
-    CookingBotTaskList() {
+    public CookingBotTaskList() {
         this.add(BotTaskDefinition.getVarrockLobsterCookingTask());
         this.add(BotTaskDefinition.getAlKharidLobsterCookingTask());
         this.add(BotTaskDefinition.getCatherbyLobsterCookingTask());

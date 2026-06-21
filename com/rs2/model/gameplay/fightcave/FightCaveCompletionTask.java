@@ -6,13 +6,13 @@ package com.rs2.model.gameplay.fightcave;
 import com.rs2.model.gameplay.fightcave.FightCaveController;
 import com.rs2.model.task.TickTask;
 
-final class FightCaveCompletionTask
+public final class FightCaveCompletionTask
 extends TickTask {
     private /* synthetic */ FightCaveController controller;
 
-    FightCaveCompletionTask(FightCaveController fightCaveController, int n) {
-        this.controller = fightCaveController;
+    public FightCaveCompletionTask(FightCaveController fightCaveController, int n) {
         super(3);
+        this.controller = fightCaveController;
     }
 
     @Override

@@ -39,8 +39,8 @@ public final class ClanWarsBotManager {
     private static List clanWarsTeamTagPool = Arrays.asList("RoT", "LiT");
     private static RectangularArea[] clanWarsTeamSpawnAreas = new RectangularArea[]{new RectangularArea(3198, 3885, 3208, 3895), new RectangularArea(3302, 3891, 3312, 3901)};
     public static Position clanWarsRallyPosition = new Position(3255, 3893, 0);
-    public static ArrayList clanWarsTeamOneBots = new ArrayList();
-    public static ArrayList clanWarsTeamTwoBots = new ArrayList();
+    public static ArrayList<Player> clanWarsTeamOneBots = new ArrayList<Player>();
+    public static ArrayList<Player> clanWarsTeamTwoBots = new ArrayList<Player>();
 
     private static void prepareClanWarsCombatant(Player player) {
         int n;
@@ -128,7 +128,7 @@ public final class ClanWarsBotManager {
             player2.getEquipmentManager().getContainer().setItem(1, new ItemStack(clanWarsTeamTwoCapeId));
         }
         player2 = player;
-        Object object = clanWarsTeamOneBots.contains(player2) ? clanWarsTeamSpawnAreas[0] : clanWarsTeamSpawnAreas[1];
+        RectangularArea object = clanWarsTeamOneBots.contains(player2) ? clanWarsTeamSpawnAreas[0] : clanWarsTeamSpawnAreas[1];
         int n5 = 0;
         n2 = 0;
         n = 1;
@@ -146,8 +146,7 @@ public final class ClanWarsBotManager {
         }
         player.moveTo(new Position(n5, n2, 0));
         Player player3 = player;
-        object = new ClanWarsBotCombatTickTask(3, player3);
-        World.getTaskScheduler().schedule((TickTask)object);
+        World.getTaskScheduler().schedule(new ClanWarsBotCombatTickTask(3, player3));
     }
 
     public static void processClanWarsBotEvent() {

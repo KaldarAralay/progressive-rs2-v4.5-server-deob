@@ -3,7 +3,6 @@
  */
 package com.rs2.model.skill.slayer;
 
-import com.rs2.model.Entity;
 import com.rs2.model.GameplayHelper;
 import com.rs2.model.Position;
 import com.rs2.model.npc.Npc;
@@ -11,14 +10,14 @@ import com.rs2.model.skill.slayer.SlayerManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class ZygomiteSpawnTask
+public final class ZygomiteSpawnTask
 extends CycleEvent {
     private /* synthetic */ SlayerManager slayerManager;
     private final /* synthetic */ Npc sourceNpc;
     private final /* synthetic */ int spawnX;
     private final /* synthetic */ int spawnY;
 
-    ZygomiteSpawnTask(SlayerManager slayerManager, Npc npc, int n, int n2) {
+    public ZygomiteSpawnTask(SlayerManager slayerManager, Npc npc, int n, int n2) {
         this.slayerManager = slayerManager;
         this.sourceNpc = npc;
         this.spawnX = n;
@@ -28,7 +27,7 @@ extends CycleEvent {
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
         this.sourceNpc.setActive(false);
-        GameplayHelper.a((Entity)SlayerManager.getPlayer(this.slayerManager), this.sourceNpc.getDefinition().getId() == 3344 ? SlayerManager.ZYGOMITE_SPAWN_A : SlayerManager.ZYGOMITE_SPAWN_B, new Position(this.spawnX, this.spawnY), false, null);
+        GameplayHelper.spawnNpcTargetingEntityAtPosition(SlayerManager.getPlayer(this.slayerManager), this.sourceNpc.getDefinition().getId() == 3344 ? SlayerManager.ZYGOMITE_SPAWN_A : SlayerManager.ZYGOMITE_SPAWN_B, new Position(this.spawnX, this.spawnY), false, null);
         cycleEventContainer.stop();
     }
 

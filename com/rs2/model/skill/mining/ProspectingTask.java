@@ -8,13 +8,13 @@ import com.rs2.model.skill.mining.MiningManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class ProspectingTask
+public final class ProspectingTask
 extends CycleEvent {
     private /* synthetic */ MiningManager manager;
     private final /* synthetic */ int rockObjectId;
     private final /* synthetic */ String oreName;
 
-    ProspectingTask(MiningManager miningManager, int n, String string) {
+    public ProspectingTask(MiningManager miningManager, int n, String string) {
         this.manager = miningManager;
         this.rockObjectId = n;
         this.oreName = string;

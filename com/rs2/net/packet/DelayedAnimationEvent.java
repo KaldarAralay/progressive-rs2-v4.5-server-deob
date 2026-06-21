@@ -7,12 +7,12 @@ import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.net.packet.PacketSender;
 
-final class DelayedAnimationEvent
+public final class DelayedAnimationEvent
 extends CycleEvent {
     private /* synthetic */ PacketSender packetSender;
     private final /* synthetic */ int animationId;
 
-    DelayedAnimationEvent(PacketSender packetSender, int n) {
+    public DelayedAnimationEvent(PacketSender packetSender, int n) {
         this.packetSender = packetSender;
         this.animationId = n;
     }

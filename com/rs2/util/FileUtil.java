@@ -53,8 +53,8 @@ public final class FileUtil {
         }
     }
 
-    public static boolean exists(String object) {
-        return ((File)(object = new File((String)object))).exists();
+    public static boolean exists(String path) {
+        return new File(path).exists();
     }
 }
 

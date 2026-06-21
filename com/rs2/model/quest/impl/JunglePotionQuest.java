@@ -19,38 +19,30 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
-            stringArray = new String[]{"I can start this quest by speaking to Trufitus Shakaya", "who lives in the main hut in Tai Bwo Wannai", "village on the island of Karamja."};
-            return stringArray;
+            return new String[]{"I can start this quest by speaking to Trufitus Shakaya", "who lives in the main hut in Tai Bwo Wannai", "village on the island of Karamja."};
         }
         if (n == 2) {
-            stringArray = new String[]{"I should go look for snake weed, which can be found near", "the vines south-west of the village."};
-            return stringArray;
+            return new String[]{"I should go look for snake weed, which can be found near", "the vines south-west of the village."};
         }
         if (n == 3) {
-            stringArray = new String[]{"I should go look for ardrigal, which can be found from the", "peninsula east of the village."};
-            return stringArray;
+            return new String[]{"I should go look for ardrigal, which can be found from the", "peninsula east of the village."};
         }
         if (n == 4) {
-            stringArray = new String[]{"I should go look for sito foil, which can be found where", "ground is blackened by living flame."};
-            return stringArray;
+            return new String[]{"I should go look for sito foil, which can be found where", "ground is blackened by living flame."};
         }
         if (n == 5) {
-            stringArray = new String[]{"I should go look for volencia moss, which can be found near", "the rocks south-east of the village."};
-            return stringArray;
+            return new String[]{"I should go look for volencia moss, which can be found near", "the rocks south-east of the village."};
         }
         if (n == 6) {
-            stringArray = new String[]{"I should go look for rogues purse, which can be found in", "caverns located in the northern part of the island."};
-            return stringArray;
+            return new String[]{"I should go look for rogues purse, which can be found in", "caverns located in the northern part of the island."};
         }
         if (n == 7) {
-            stringArray = new String[]{"I should speak with Trufitus to finish this quest."};
-            return stringArray;
+            return new String[]{"I should speak with Trufitus to finish this quest."};
         }
         if (n == 1) {
-            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "1 Quest Point", "775 Herblore  XP"};
-            return stringArray;
+            return new String[]{"Quest Completed!", "", "You were awarded:", "1 Quest Point", "775 Herblore  XP"};
         }
         return null;
     }
@@ -238,7 +230,7 @@ extends QuestScript {
                 }
                 if (n2 == 14) {
                     player.getDialogueManager().showNpcTwoLineDialogue("That is excellent Bwana! The first herb that you need", "to gather is called", 591);
-                    this.d(player);
+                    this.startQuest(player);
                     return true;
                 }
             }

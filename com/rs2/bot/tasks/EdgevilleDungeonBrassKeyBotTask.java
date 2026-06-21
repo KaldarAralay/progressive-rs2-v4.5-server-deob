@@ -46,8 +46,7 @@ extends BotTaskDefinition {
     @Override
     public final void startCustomTaskAction(Player object) {
         ((Player)object).refreshRegionState();
-        object = new BrassKeyPickupTickTask(this, 2, (Player)object);
-        World.getTaskScheduler().schedule((TickTask)object);
+        World.getTaskScheduler().schedule(new BrassKeyPickupTickTask(this, 2, (Player)object));
     }
 
     @Override
@@ -139,23 +138,22 @@ extends BotTaskDefinition {
     }
 
     @Override
-    public final void advanceTaskRouteSegment(Player player, boolean n) {
-        if (player.botTaskState.equals("walk towards task") || player.botTaskState.equals("walk to task") && n != 0) {
-            if (n == 0) {
+    public final void advanceTaskRouteSegment(Player player, boolean continuing) {
+        if (player.botTaskState.equals("walk towards task") || player.botTaskState.equals("walk to task") && continuing) {
+            if (!continuing) {
                 ++player.botPathSegmentIndex;
             }
             player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex];
-            if (n == 0) {
+            if (!continuing) {
                 player.botPathWaypointIndex = 0;
             }
-            n = GameUtil.getRegionId(player.getPosition().getX(), player.getPosition().getY());
-            if (player.botPathSegmentIndex == 1 && player.botTaskState.equals("walk towards task") && n == 12342) {
+            int regionId = GameUtil.getRegionId(player.getPosition().getX(), player.getPosition().getY());
+            if (player.botPathSegmentIndex == 1 && player.botTaskState.equals("walk towards task") && regionId == 12342) {
                 Object object = new ArrayList<Integer>();
                 ((ArrayList)object).add(1568);
                 player.botRouteActionPending = true;
                 if (player.interactWithBotObjectTargetsNoRetry((ArrayList)object, false)) {
-                    object = new BrassKeyDungeonEntryTickTask(this, 3, player);
-                    World.getTaskScheduler().schedule((TickTask)object);
+                    World.getTaskScheduler().schedule(new BrassKeyDungeonEntryTickTask(this, 3, player));
                 } else {
                     ((ArrayList)object).clear();
                     ((ArrayList)object).add(1570);
@@ -166,12 +164,12 @@ extends BotTaskDefinition {
                 player.botTaskState = "walk to task";
                 return;
             }
-        } else if (player.botTaskState.equals("walk towards bank") || player.botTaskState.equals("walk to bank") && n != 0) {
-            if (n == 0) {
+        } else if (player.botTaskState.equals("walk towards bank") || player.botTaskState.equals("walk to bank") && continuing) {
+            if (!continuing) {
                 --player.botPathSegmentIndex;
             }
             player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex].reversed();
-            if (n == 0) {
+            if (!continuing) {
                 player.botPathWaypointIndex = 0;
             }
             if (player.botPathSegmentIndex == 0 && player.botTaskState.equals("walk towards bank")) {

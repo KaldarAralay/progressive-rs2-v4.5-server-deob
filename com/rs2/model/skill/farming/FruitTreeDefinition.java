@@ -49,26 +49,21 @@ public enum FruitTreeDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private FruitTreeDefinition(int n3, int n4, int[] nArray, int n5, double d, double n6222, double n6222, int n6222, int n7, int n8, int n9, int n10, double d2, int n6222, int n11) {
-        void cfr_renamed_7;
-        void var19_15;
-        void cfr_renamed_12;
-        void cfr_renamed_6;
-        void cfr_renamed_5;
-        this.saplingId = n3;
-        this.produceItemId = n4;
+    private FruitTreeDefinition(int n2, int n3, int n4, int n5, int[] nArray, int n6, double d, double d2, double d3, int n7, int n8, int n9, int n10, int n11, double d4, int n12, int n13) {
+        this.saplingId = n2;
+        this.produceItemId = n3;
         this.requiredLevel = n5;
-        this.protectionPayment = (int[])d;
+        this.protectionPayment = nArray;
         this.totalGrowthTicks = 960;
-        this.diseaseChance = cfr_renamed_5;
-        this.plantingExperience = cfr_renamed_6;
-        this.harvestExperience = cfr_renamed_12;
-        this.configStartStage = n8;
-        this.configEndStage = n9;
-        this.matureConfigStage = n10;
-        this.stumpConfigStage = (int)d2;
-        this.healthCheckConfigStage = var19_15;
-        this.healthCheckExperience = cfr_renamed_7;
+        this.diseaseChance = d;
+        this.plantingExperience = d2;
+        this.harvestExperience = d3;
+        this.configStartStage = n7;
+        this.configEndStage = n8;
+        this.matureConfigStage = n9;
+        this.stumpConfigStage = n10;
+        this.healthCheckConfigStage = n11;
+        this.healthCheckExperience = d4;
         this.diseasedConfigOffset = 12;
         this.deadConfigOffset = 18;
     }

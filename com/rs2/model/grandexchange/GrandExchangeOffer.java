@@ -74,7 +74,7 @@ public final class GrandExchangeOffer {
         int n3 = ((GameplayHelper)BotTradeAdvertManager.tradeAdvertOfferPool.get(n2)).getTradeAdvertItemId();
         ItemDefinition.forId(n3);
         double d2 = GrandExchangeManager.getGuidePrice(n3);
-        if (d < 1.0) {
+        if (d2 < 1.0) {
             d2 = 1.0;
         }
         int n4 = GameUtil.rollPriceFluctuationPercent(11);
@@ -158,11 +158,13 @@ public final class GrandExchangeOffer {
                 break;
             }
         }
-        for (GrandExchangeOffer grandExchangeOffer22 : pendingBuyOfferRemovals) {
-            buyOffers.remove(grandExchangeOffer22);
+        for (Object pendingBuyOfferObject : pendingBuyOfferRemovals) {
+            GrandExchangeOffer pendingBuyOffer = (GrandExchangeOffer)pendingBuyOfferObject;
+            buyOffers.remove(pendingBuyOffer);
         }
-        for (GrandExchangeOffer grandExchangeOffer22 : pendingSellOfferRemovals) {
-            sellOffers.remove(grandExchangeOffer22);
+        for (Object pendingSellOfferObject : pendingSellOfferRemovals) {
+            GrandExchangeOffer pendingSellOffer = (GrandExchangeOffer)pendingSellOfferObject;
+            sellOffers.remove(pendingSellOffer);
         }
     }
 
@@ -223,16 +225,18 @@ public final class GrandExchangeOffer {
                 break;
             }
         }
-        for (GrandExchangeOffer grandExchangeOffer9 : pendingBuyOfferRemovals) {
-            buyOffers.remove(grandExchangeOffer9);
-            if (!serverOffers.contains(grandExchangeOffer9)) continue;
-            serverOffers.remove(grandExchangeOffer9);
+        for (Object pendingBuyOfferObject : pendingBuyOfferRemovals) {
+            GrandExchangeOffer pendingBuyOffer = (GrandExchangeOffer)pendingBuyOfferObject;
+            buyOffers.remove(pendingBuyOffer);
+            if (!serverOffers.contains(pendingBuyOffer)) continue;
+            serverOffers.remove(pendingBuyOffer);
             ++n;
         }
-        for (GrandExchangeOffer grandExchangeOffer10 : pendingSellOfferRemovals) {
-            sellOffers.remove(grandExchangeOffer10);
-            if (!serverOffers.contains(grandExchangeOffer10)) continue;
-            serverOffers.remove(grandExchangeOffer10);
+        for (Object pendingSellOfferObject : pendingSellOfferRemovals) {
+            GrandExchangeOffer pendingSellOffer = (GrandExchangeOffer)pendingSellOfferObject;
+            sellOffers.remove(pendingSellOffer);
+            if (!serverOffers.contains(pendingSellOffer)) continue;
+            serverOffers.remove(pendingSellOffer);
             ++n;
         }
         int n2 = 0;
@@ -316,31 +320,31 @@ public final class GrandExchangeOffer {
             }
         }
         if (object4 != null && object3 != null) {
-            GrandExchangeOffer.settleRecordVsRecordMatch(object4, grandExchangeOffer2, object3, grandExchangeOffer);
+            GrandExchangeOffer.settleRecordVsRecordMatch((CharacterFileRecord)object4, grandExchangeOffer2, (CharacterFileRecord)object3, grandExchangeOffer);
             return;
         }
         if (object2 != null && object != null) {
             ((Player)object2).grandExchangeSettlementInProgress = true;
             ((Player)object).grandExchangeSettlementInProgress = true;
-            GrandExchangeOffer.settlePlayerVsPlayerMatch(object2, grandExchangeOffer2, (Player)object, grandExchangeOffer);
+            GrandExchangeOffer.settlePlayerVsPlayerMatch((Player)object2, grandExchangeOffer2, (Player)object, grandExchangeOffer);
             ((Player)object2).grandExchangeSettlementInProgress = false;
             ((Player)object).grandExchangeSettlementInProgress = false;
             return;
         }
         if (object4 != null && object != null) {
             ((Player)object).grandExchangeSettlementInProgress = true;
-            GrandExchangeOffer.settleRecordVsPlayerMatch(object4, grandExchangeOffer2, (Player)object, grandExchangeOffer);
+            GrandExchangeOffer.settleRecordVsPlayerMatch((CharacterFileRecord)object4, grandExchangeOffer2, (Player)object, grandExchangeOffer);
             ((Player)object).grandExchangeSettlementInProgress = false;
             return;
         }
         if (object2 != null && object3 != null) {
             ((Player)object2).grandExchangeSettlementInProgress = true;
-            GrandExchangeOffer.settlePlayerVsRecordMatch(object2, grandExchangeOffer2, object3, grandExchangeOffer);
+            GrandExchangeOffer.settlePlayerVsRecordMatch((Player)object2, grandExchangeOffer2, (CharacterFileRecord)object3, grandExchangeOffer);
             ((Player)object2).grandExchangeSettlementInProgress = false;
             return;
         }
         if (object4 != null && string.equals("[SERVER]")) {
-            GrandExchangeOffer.settleRecordVsRecordMatch(object4, grandExchangeOffer2, object3, grandExchangeOffer);
+            GrandExchangeOffer.settleRecordVsRecordMatch((CharacterFileRecord)object4, grandExchangeOffer2, (CharacterFileRecord)object3, grandExchangeOffer);
             return;
         }
         if (object2 != null && string.equals("[SERVER]")) {
@@ -351,7 +355,7 @@ public final class GrandExchangeOffer {
         }
         if (string2.equals("[SERVER]") && object != null) {
             ((Player)object).grandExchangeSettlementInProgress = true;
-            GrandExchangeOffer.settleRecordVsPlayerMatch(object4, grandExchangeOffer2, (Player)object, grandExchangeOffer);
+            GrandExchangeOffer.settleRecordVsPlayerMatch((CharacterFileRecord)object4, grandExchangeOffer2, (Player)object, grandExchangeOffer);
             ((Player)object).grandExchangeSettlementInProgress = false;
             return;
         }

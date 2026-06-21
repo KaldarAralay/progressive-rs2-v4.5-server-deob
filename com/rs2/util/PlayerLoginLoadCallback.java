@@ -15,16 +15,16 @@ import com.rs2.util.db.DatabaseService;
 import com.rs2.util.db.player.PlayerLoadQueryFactory;
 import java.sql.ResultSet;
 
-final class PlayerLoginLoadCallback
+public final class PlayerLoginLoadCallback
 implements DatabaseCallback {
     private final /* synthetic */ Player player;
 
-    PlayerLoginLoadCallback(Player player) {
+    public PlayerLoginLoadCallback(Player player) {
         this.player = player;
     }
 
     @Override
-    public final void onResult(ResultSet resultSet) {
+    public final void onResult(ResultSet resultSet) throws java.sql.SQLException {
         if (!this.processUidLookupResult(resultSet)) {
             this.player.disconnect();
         }
@@ -35,7 +35,7 @@ implements DatabaseCallback {
      * Enabled unnecessary exception pruning
      * Enabled aggressive exception aggregation
      */
-    private boolean processUidLookupResult(ResultSet object) {
+    private boolean processUidLookupResult(ResultSet object) throws java.sql.SQLException {
         if (!object.next()) {
             this.player.setLoginResponseCode(3);
             this.player.sendLoginResponse();

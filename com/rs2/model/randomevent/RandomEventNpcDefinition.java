@@ -17,12 +17,10 @@ public enum RandomEventNpcDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private RandomEventNpcDefinition(String[] stringArray) {
-        void var5_3;
-        void var4_2;
-        this.npcId = (int)stringArray;
-        this.ignorePenaltyNpcId = var4_2;
-        this.reminderLines = var5_3;
+    private RandomEventNpcDefinition(int n2, int n3, String[] stringArray) {
+        this.npcId = n2;
+        this.ignorePenaltyNpcId = n3;
+        this.reminderLines = stringArray;
     }
 }
 

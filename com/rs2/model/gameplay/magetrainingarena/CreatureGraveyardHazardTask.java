@@ -10,9 +10,9 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 
-final class CreatureGraveyardHazardTask
+public final class CreatureGraveyardHazardTask
 extends TickTask {
-    CreatureGraveyardHazardTask(int n) {
+    public CreatureGraveyardHazardTask(int n) {
         super(20);
     }
 

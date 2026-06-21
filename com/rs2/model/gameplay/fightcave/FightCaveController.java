@@ -48,9 +48,10 @@ public final class FightCaveController {
         if (n > 0) {
             ((FightCaveController)object2).player.getInventoryManager().addOrDropItem(new ItemStack(6529, n));
         }
-        for (Object object2 : this.player.getFightCaveNpcs()) {
-            ((Npc)object2).setActive(false);
-            World.unregisterNpc((Npc)object2);
+        for (Object fightCaveNpcObject : this.player.getFightCaveNpcs()) {
+            Npc npc = (Npc)fightCaveNpcObject;
+            npc.setActive(false);
+            World.unregisterNpc(npc);
         }
     }
 

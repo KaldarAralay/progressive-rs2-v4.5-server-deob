@@ -20,22 +20,18 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
-            stringArray = new String[]{"I can start this quest by speaking to Hetty in her house in", "Rimmington, West of Port Sarim"};
-            return stringArray;
+            return new String[]{"I can start this quest by speaking to Hetty in her house in", "Rimmington, West of Port Sarim"};
         }
         if (n == 2) {
-            stringArray = new String[]{"I should bring these items to Hetty at her house in", "Rimmington, West of Port Sarim:", "Eye of newt", "Rat's tail", "Onion", "Burnt meat"};
-            return stringArray;
+            return new String[]{"I should bring these items to Hetty at her house in", "Rimmington, West of Port Sarim:", "Eye of newt", "Rat's tail", "Onion", "Burnt meat"};
         }
         if (n == 3) {
-            stringArray = new String[]{"I should drink from the cauldron at Hetty's house to", "finish this quest."};
-            return stringArray;
+            return new String[]{"I should drink from the cauldron at Hetty's house to", "finish this quest."};
         }
         if (n == 1) {
-            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "1 Quest Point", "325 Magic XP"};
-            return stringArray;
+            return new String[]{"Quest Completed!", "", "You were awarded:", "1 Quest Point", "325 Magic XP"};
         }
         return null;
     }
@@ -68,8 +64,8 @@ extends QuestScript {
     @Override
     public final boolean handleNpcDeathDrop(Player object, int n, Position position, int n2) {
         if (n == 47 && n2 == 2) {
-            object = new GroundItem(new ItemStack(300, 1), (Entity)object, position);
-            GroundItemManager.getInstance().spawn((GroundItem)object);
+            GroundItem groundItem = new GroundItem(new ItemStack(300, 1), (Entity)object, position);
+            GroundItemManager.getInstance().spawn(groundItem);
             return true;
         }
         return false;
@@ -163,7 +159,7 @@ extends QuestScript {
                 if (n2 == 12) {
                     if (n3 == 1) {
                         player.getDialogueManager().showPlayerOneLineDialogue("Yes I'd like to improve my magic.", 591);
-                        this.d(player);
+                        this.startQuest(player);
                         player.getDialogueManager().setNextDialogueStep(10);
                         return true;
                     }

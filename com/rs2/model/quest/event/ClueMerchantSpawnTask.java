@@ -10,13 +10,13 @@ import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 import com.rs2.util.path.WalkingCollisionMap;
 
-final class ClueMerchantSpawnTask
+public final class ClueMerchantSpawnTask
 extends TickTask {
     private /* synthetic */ ServerMaintenanceEventHook a;
 
-    ClueMerchantSpawnTask(ServerMaintenanceEventHook serverMaintenanceEventHook, int n) {
-        this.a = serverMaintenanceEventHook;
+    public ClueMerchantSpawnTask(ServerMaintenanceEventHook serverMaintenanceEventHook, int n) {
         super(1500);
+        this.a = serverMaintenanceEventHook;
     }
 
     @Override
@@ -34,7 +34,7 @@ extends TickTask {
                 bl = WalkingCollisionMap.getTileFlags(n2, n3 = 3145 + GameUtil.randomInt(370), 0) != 0;
             }
             Npc npc = new Npc(3886);
-            GameplayHelper.b(npc, n2, n3, 0, 1500);
+            GameplayHelper.spawnNpcWithRemovalDelay(npc, n2, n3, 0, 1500);
             ++n;
         }
     }

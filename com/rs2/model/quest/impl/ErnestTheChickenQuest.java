@@ -29,26 +29,21 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
-            stringArray = new String[]{"I can start this quest by speaking to Veronica who is", "outside Draynor Manor", "", "There aren't any requirements for this quest"};
-            return stringArray;
+            return new String[]{"I can start this quest by speaking to Veronica who is", "outside Draynor Manor", "", "There aren't any requirements for this quest"};
         }
         if (n == 2) {
-            stringArray = new String[]{"I should go into Draynor Manor and look for Ernest"};
-            return stringArray;
+            return new String[]{"I should go into Draynor Manor and look for Ernest"};
         }
         if (n == 3 || n == 4) {
-            stringArray = new String[]{"I should bring these items to Professor Oddenstein:", "Pressure gauge", "Rubber tube", "Oil can"};
-            return stringArray;
+            return new String[]{"I should bring these items to Professor Oddenstein:", "Pressure gauge", "Rubber tube", "Oil can"};
         }
         if (n == 5) {
-            stringArray = new String[]{"I should talk to Professor Oddenstein to", "finish this quest."};
-            return stringArray;
+            return new String[]{"I should talk to Professor Oddenstein to", "finish this quest."};
         }
         if (n == 1) {
-            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "4 Quest Points", "300 Coins"};
-            return stringArray;
+            return new String[]{"Quest Completed!", "", "You were awarded:", "4 Quest Points", "300 Coins"};
         }
         return null;
     }
@@ -662,7 +657,7 @@ extends QuestScript {
                     if (n3 == 1) {
                         player.getDialogueManager().showPlayerOneLineDialogue("Aha, sounds like a quest. I'll help.", 591);
                         player.getDialogueManager().setNextDialogueStep(4);
-                        this.d(player);
+                        this.startQuest(player);
                         return true;
                     }
                     player.getDialogueManager().showOneLineStatement("This option is currently missing...");
@@ -821,14 +816,11 @@ extends QuestScript {
                     ((Player)object).packetSender.sendGameMessage("You give a rubber tube, a pressure gauge,");
                     object = player;
                     ((Player)object).packetSender.sendGameMessage("and a can of oil to the professor.");
-                    object = Npc.findByDefinitionId(286);
-                    ((Entity)object).getMovementQueue().addStep(new Position(((Entity)object).getPosition().getX() < 3108 ? 3107 : 3111, 3367, 2));
-                    Object object2 = ((Entity)object).getPosition();
-                    object = new Position(((Entity)object).getPosition().getX() < 3108 ? 3107 : 3111, 3367, 2);
-                    Position position = object2;
-                    object2 = object;
-                    object = position;
-                    int n5 = GameUtil.getDistance(position, (Position)object2);
+                    Npc npc = Npc.findByDefinitionId(286);
+                    npc.getMovementQueue().addStep(new Position(npc.getPosition().getX() < 3108 ? 3107 : 3111, 3367, 2));
+                    Position position = npc.getPosition();
+                    Position position2 = new Position(npc.getPosition().getX() < 3108 ? 3107 : 3111, 3367, 2);
+                    int n5 = GameUtil.getDistance(position, position2);
                     double d = 100.0 + (double)n5 * 45.0;
                     d = Math.ceil(d * 12.0 / 600.0);
                     if (n5 > 1) {

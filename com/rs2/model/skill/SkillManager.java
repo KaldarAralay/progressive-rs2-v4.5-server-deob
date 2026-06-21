@@ -517,7 +517,7 @@ public final class SkillManager {
         double d3 = (d2 + 1.3 * (1.5 * (double)n7)) / 4.0;
         double d4 = (d2 + 1.3 * (1.5 * (double)n6)) / 4.0;
         double d5 = (d2 + 1.3 * (double)(n + n3)) / 4.0;
-        if (d >= d4 && d5 >= d3) {
+        if (d5 >= d4 && d5 >= d3) {
             return (int)d5;
         }
         if (d4 >= d5 && d4 >= d3) {
@@ -539,7 +539,7 @@ public final class SkillManager {
         double d3 = (d2 + 1.3 * (1.5 * (double)n7)) / 4.0;
         double d4 = (d2 + 1.3 * (1.5 * (double)n6)) / 4.0;
         double d5 = (d2 + 1.3 * (double)(n + n3)) / 4.0;
-        if (d >= d4 && d5 >= d3) {
+        if (d5 >= d4 && d5 >= d3) {
             return (int)d5;
         }
         if (d4 >= d5 && d4 >= d3) {

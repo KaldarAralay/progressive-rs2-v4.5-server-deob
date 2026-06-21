@@ -10,7 +10,7 @@ import com.rs2.model.skill.crafting.PotteryRecipe;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class PotteryWheelTask
+public final class PotteryWheelTask
 extends CycleEvent {
     private int remainingActions;
     private final /* synthetic */ Player player;
@@ -18,7 +18,7 @@ extends CycleEvent {
     private final /* synthetic */ PotteryRecipe recipe;
     private final /* synthetic */ ItemStack productItem;
 
-    PotteryWheelTask(PotteryRecipe potteryRecipe, int n, Player player, int n2, ItemStack itemStack) {
+    public PotteryWheelTask(PotteryRecipe potteryRecipe, int n, Player player, int n2, ItemStack itemStack) {
         this.recipe = potteryRecipe;
         this.player = player;
         this.actionSequence = n2;
@@ -34,8 +34,7 @@ extends CycleEvent {
         }
         ((CycleEventContainer)object).setTickDelay(3);
         this.player.getUpdateState().setAnimation(894);
-        object = this.player;
-        ((Player)object).packetSender.sendGameMessage("You make the soft clay into " + GameplayHelper.a(new ItemStack(this.recipe.getUnfiredItemId()).getDefinition().getName().toLowerCase()) + " " + new ItemStack(this.recipe.getUnfiredItemId()).getDefinition().getName().toLowerCase() + ".");
+        this.player.packetSender.sendGameMessage("You make the soft clay into " + GameplayHelper.getIndefiniteArticle(new ItemStack(this.recipe.getUnfiredItemId()).getDefinition().getName().toLowerCase()) + " " + new ItemStack(this.recipe.getUnfiredItemId()).getDefinition().getName().toLowerCase() + ".");
         this.player.getInventoryManager().removeItem(new ItemStack(1761));
         this.player.getInventoryManager().addItem(this.productItem);
         this.player.getSkillManager().addExperience(12, this.recipe.getWheelExperience());

@@ -9,7 +9,7 @@ import com.rs2.model.skill.fletching.AmmunitionFletchingDefinition;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class AmmunitionFletchingTask
+public final class AmmunitionFletchingTask
 extends CycleEvent {
     private final /* synthetic */ Player player;
     private final /* synthetic */ int actionSequence;
@@ -17,7 +17,7 @@ extends CycleEvent {
     private final /* synthetic */ int consumedAmount;
     private final /* synthetic */ int productDivisor;
 
-    AmmunitionFletchingTask(Player player, int n, AmmunitionFletchingDefinition ammunitionFletchingDefinition, int n2, int n3) {
+    public AmmunitionFletchingTask(Player player, int n, AmmunitionFletchingDefinition ammunitionFletchingDefinition, int n2, int n3) {
         this.player = player;
         this.actionSequence = n;
         this.definition = ammunitionFletchingDefinition;

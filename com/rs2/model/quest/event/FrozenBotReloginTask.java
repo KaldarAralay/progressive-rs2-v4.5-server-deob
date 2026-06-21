@@ -9,18 +9,19 @@ import com.rs2.model.quest.event.FrozenBotRelogScanTask;
 import com.rs2.model.task.TickTask;
 import java.util.ArrayList;
 
-final class FrozenBotReloginTask
+public final class FrozenBotReloginTask
 extends TickTask {
     private final /* synthetic */ ArrayList a;
 
-    FrozenBotReloginTask(FrozenBotRelogScanTask frozenBotRelogScanTask, int n, ArrayList arrayList) {
-        this.a = arrayList;
+    public FrozenBotReloginTask(FrozenBotRelogScanTask frozenBotRelogScanTask, int n, ArrayList arrayList) {
         super(30);
+        this.a = arrayList;
     }
 
     @Override
     public final void execute() {
-        for (String string : this.a) {
+        for (Object reloginNameObject : this.a) {
+            String string = (String)reloginNameObject;
             int n = ServerSettings.skillingBotsEnabled ? 0 : 4;
             BotPlayer.createNamedBot(string, "zxcvbn", n);
         }

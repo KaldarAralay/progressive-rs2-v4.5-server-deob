@@ -34,11 +34,9 @@ public enum FruitTreeGrowthDefinition {
     /*
      * WARNING - void declaration
      */
-    private FruitTreeGrowthDefinition() {
-        void var4_1;
-        void var3_2;
-        this.treeId = var3_2;
-        this.growthMessages = var4_1;
+    private FruitTreeGrowthDefinition(int n2, String[][] stringArray) {
+        this.treeId = n2;
+        this.growthMessages = stringArray;
     }
 
     public static FruitTreeGrowthDefinition forTreeId(int n) {

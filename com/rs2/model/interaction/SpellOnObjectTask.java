@@ -14,7 +14,7 @@ import com.rs2.model.skill.magic.SpellDefinition;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 
-final class SpellOnObjectTask
+public final class SpellOnObjectTask
 extends TickTask {
     private final /* synthetic */ Player player;
     private final /* synthetic */ int actionSequence;
@@ -24,7 +24,8 @@ extends TickTask {
     private final /* synthetic */ int objectPlane;
     private final /* synthetic */ SpellDefinition spell;
 
-    SpellOnObjectTask(int n, boolean bl, Player player, int n2, int n3, int n4, int n5, int n6, SpellDefinition spellDefinition) {
+    public SpellOnObjectTask(int n, boolean bl, Player player, int n2, int n3, int n4, int n5, int n6, SpellDefinition spellDefinition) {
+        super(1, true);
         this.player = player;
         this.actionSequence = n2;
         this.objectId = n3;
@@ -32,7 +33,6 @@ extends TickTask {
         this.objectY = n5;
         this.objectPlane = n6;
         this.spell = spellDefinition;
-        super(1, true);
     }
 
     @Override

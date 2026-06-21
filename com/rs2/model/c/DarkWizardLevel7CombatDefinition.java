@@ -9,9 +9,9 @@ import com.rs2.model.combat.attack.CombatAttack;
 import com.rs2.model.npc.combat.NpcCombatDefinition;
 import com.rs2.model.skill.magic.SpellDefinition;
 
-final class DarkWizardLevel7CombatDefinition
+public final class DarkWizardLevel7CombatDefinition
 extends NpcCombatDefinition {
-    DarkWizardLevel7CombatDefinition() {
+    public DarkWizardLevel7CombatDefinition() {
     }
 
     @Override

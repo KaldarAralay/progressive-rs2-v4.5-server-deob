@@ -47,17 +47,17 @@ public final class PotionHandler {
         }
         if (this.player.getSkillManager().tryStartDrinkDelay(600) && !this.player.isDead()) {
             int[] nArray = definitions[this.selectedDefinitionIndex].getDoseItemIds();
-            Object object = definitions[this.selectedDefinitionIndex].getSkillIds();
+            int[] skillIds = definitions[this.selectedDefinitionIndex].getSkillIds();
             int[] nArray2 = definitions[this.selectedDefinitionIndex].getFlatBoosts();
             double[] dArray = definitions[this.selectedDefinitionIndex].getPercentBoosts();
             int n3 = 0;
-            while (n3 < ((int[])object).length) {
+            while (n3 < skillIds.length) {
                 int n4;
                 int n5;
                 int n6;
                 int n7;
                 if (definitions[this.selectedDefinitionIndex].getEffectMode() == PotionEffectMode.BOOST) {
-                    n7 = object[n3];
+                    n7 = skillIds[n3];
                     n6 = this.player.getSkillManager().getCurrentLevels()[n7];
                     n4 = n5 = this.player.getSkillManager().getBaseLevel(n7);
                     n4 = (int)((double)n5 + (double)n5 * dArray[n3]);
@@ -72,7 +72,7 @@ public final class PotionHandler {
                         this.player.getSkillManager().refreshSkill(n7);
                     }
                 } else if (definitions[this.selectedDefinitionIndex].getEffectMode() == PotionEffectMode.RESTORE) {
-                    n7 = object[n3];
+                    n7 = skillIds[n3];
                     n6 = this.player.getSkillManager().getCurrentLevels()[n7];
                     n5 = this.player.getSkillManager().getBaseLevel(n7);
                     n4 = (int)((double)n6 + (double)n5 * dArray[n3]);
@@ -90,102 +90,101 @@ public final class PotionHandler {
                 ++n3;
             }
             int n9 = n;
-            object = this;
             switch (n9) {
                 case 175: 
                 case 177: 
                 case 179: 
                 case 2446: {
-                    object.player.clearCombatEffectTasks(PoisonEffect.class);
-                    object.player.getPoisonImmunityTimer().setDelayTicks(150);
-                    object.player.getPoisonImmunityTimer().reset();
-                    object.player.setPoisonDamage(0.0);
+                    this.player.clearCombatEffectTasks(PoisonEffect.class);
+                    this.player.getPoisonImmunityTimer().setDelayTicks(150);
+                    this.player.getPoisonImmunityTimer().reset();
+                    this.player.setPoisonDamage(0.0);
                     break;
                 }
                 case 3008: 
                 case 3010: 
                 case 3012: 
                 case 3014: {
-                    object.player.addRunEnergyPercent(10);
+                    this.player.addRunEnergyPercent(10);
                     break;
                 }
                 case 181: 
                 case 183: 
                 case 185: 
                 case 2448: {
-                    object.player.clearCombatEffectTasks(PoisonEffect.class);
-                    object.player.getPoisonImmunityTimer().setDelayTicks(600);
-                    object.player.getPoisonImmunityTimer().reset();
-                    object.player.setPoisonDamage(0.0);
+                    this.player.clearCombatEffectTasks(PoisonEffect.class);
+                    this.player.getPoisonImmunityTimer().setDelayTicks(600);
+                    this.player.getPoisonImmunityTimer().reset();
+                    this.player.setPoisonDamage(0.0);
                     break;
                 }
                 case 3016: 
                 case 3018: 
                 case 3020: 
                 case 3022: {
-                    object.player.addRunEnergyPercent(20);
+                    this.player.addRunEnergyPercent(20);
                     break;
                 }
                 case 5943: 
                 case 5945: 
                 case 5947: 
                 case 5949: {
-                    object.player.clearCombatEffectTasks(PoisonEffect.class);
-                    object.player.getPoisonImmunityTimer().setDelayTicks(900);
-                    object.player.getPoisonImmunityTimer().reset();
-                    object.player.setPoisonDamage(0.0);
+                    this.player.clearCombatEffectTasks(PoisonEffect.class);
+                    this.player.getPoisonImmunityTimer().setDelayTicks(900);
+                    this.player.getPoisonImmunityTimer().reset();
+                    this.player.setPoisonDamage(0.0);
                     break;
                 }
                 case 2452: 
                 case 2454: 
                 case 2456: 
                 case 2458: {
-                    object.player.getAntifireTimer().setDelayTicks(600);
-                    object.player.getAntifireTimer().reset();
+                    this.player.getAntifireTimer().setDelayTicks(600);
+                    this.player.getAntifireTimer().reset();
                     break;
                 }
                 case 5952: 
                 case 5954: 
                 case 5956: 
                 case 5958: {
-                    object.player.clearCombatEffectTasks(PoisonEffect.class);
-                    object.player.getPoisonImmunityTimer().setDelayTicks(1200);
-                    object.player.getPoisonImmunityTimer().reset();
-                    object.player.setPoisonDamage(0.0);
+                    this.player.clearCombatEffectTasks(PoisonEffect.class);
+                    this.player.getPoisonImmunityTimer().setDelayTicks(1200);
+                    this.player.getPoisonImmunityTimer().reset();
+                    this.player.setPoisonDamage(0.0);
                     break;
                 }
                 case 6685: 
                 case 6687: 
                 case 6689: 
                 case 6691: {
-                    object.player.heal(2);
-                    Player player = object.player;
-                    player.packetSender.modifySkillLevel(3, (int)(2.0 + (double)object.player.getSkillManager().getBaseLevel(3) * 0.15), true);
-                    player = object.player;
-                    player.packetSender.modifySkillLevel(1, (int)(2.0 + (double)object.player.getSkillManager().getBaseLevel(1) * 0.2), true);
-                    player = object.player;
-                    player.packetSender.modifySkillLevel(0, (int)(-(2.0 + (double)object.player.getSkillManager().getBaseLevel(0) * 0.1)), false);
-                    player = object.player;
-                    player.packetSender.modifySkillLevel(2, (int)(-(2.0 + (double)object.player.getSkillManager().getBaseLevel(2) * 0.1)), false);
-                    player = object.player;
-                    player.packetSender.modifySkillLevel(6, (int)(-(2.0 + (double)object.player.getSkillManager().getBaseLevel(6) * 0.1)), false);
-                    player = object.player;
-                    player.packetSender.modifySkillLevel(4, (int)(-(2.0 + (double)object.player.getSkillManager().getBaseLevel(4) * 0.1)), false);
+                    this.player.heal(2);
+                    Player player = this.player;
+                    player.packetSender.modifySkillLevel(3, (int)(2.0 + (double)this.player.getSkillManager().getBaseLevel(3) * 0.15), true);
+                    player = this.player;
+                    player.packetSender.modifySkillLevel(1, (int)(2.0 + (double)this.player.getSkillManager().getBaseLevel(1) * 0.2), true);
+                    player = this.player;
+                    player.packetSender.modifySkillLevel(0, (int)(-(2.0 + (double)this.player.getSkillManager().getBaseLevel(0) * 0.1)), false);
+                    player = this.player;
+                    player.packetSender.modifySkillLevel(2, (int)(-(2.0 + (double)this.player.getSkillManager().getBaseLevel(2) * 0.1)), false);
+                    player = this.player;
+                    player.packetSender.modifySkillLevel(6, (int)(-(2.0 + (double)this.player.getSkillManager().getBaseLevel(6) * 0.1)), false);
+                    player = this.player;
+                    player.packetSender.modifySkillLevel(4, (int)(-(2.0 + (double)this.player.getSkillManager().getBaseLevel(4) * 0.1)), false);
                     break;
                 }
                 case 189: 
                 case 191: 
                 case 193: 
                 case 2450: {
-                    Player player = object.player;
-                    player.packetSender.modifySkillLevel(0, (int)((double)object.player.getSkillManager().getBaseLevel(0) * 0.2) + 2, true);
-                    player = object.player;
-                    player.packetSender.modifySkillLevel(2, (int)((double)object.player.getSkillManager().getBaseLevel(2) * 0.12) + 2, true);
-                    player = object.player;
-                    player.packetSender.modifySkillLevel(5, (int)((double)object.player.getSkillManager().getBaseLevel(5) * 0.1), true);
-                    player = object.player;
-                    player.packetSender.modifySkillLevel(1, -((int)((double)object.player.getSkillManager().getBaseLevel(1) * 0.1) + 2), false);
-                    object.player.applyDirectHit((int)((double)object.player.getSkillManager().getCurrentLevels()[3] * 0.12), HitType.NORMAL);
+                    Player player = this.player;
+                    player.packetSender.modifySkillLevel(0, (int)((double)this.player.getSkillManager().getBaseLevel(0) * 0.2) + 2, true);
+                    player = this.player;
+                    player.packetSender.modifySkillLevel(2, (int)((double)this.player.getSkillManager().getBaseLevel(2) * 0.12) + 2, true);
+                    player = this.player;
+                    player.packetSender.modifySkillLevel(5, (int)((double)this.player.getSkillManager().getBaseLevel(5) * 0.1), true);
+                    player = this.player;
+                    player.packetSender.modifySkillLevel(1, -((int)((double)this.player.getSkillManager().getBaseLevel(1) * 0.1) + 2), false);
+                    this.player.applyDirectHit((int)((double)this.player.getSkillManager().getCurrentLevels()[3] * 0.12), HitType.NORMAL);
                 }
             }
             this.player.getUpdateState().setAnimation(n == 3801 ? 1330 : 829, 0);

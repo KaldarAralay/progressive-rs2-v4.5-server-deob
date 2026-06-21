@@ -6,13 +6,13 @@ package com.rs2.model.cutscene;
 import com.rs2.model.cutscene.Cutscene;
 import com.rs2.model.task.TickTask;
 
-final class CutsceneEndTask
+public final class CutsceneEndTask
 extends TickTask {
     private /* synthetic */ Cutscene cutscene;
 
-    CutsceneEndTask(Cutscene cutscene, int n) {
-        this.cutscene = cutscene;
+    public CutsceneEndTask(Cutscene cutscene, int n) {
         super(n);
+        this.cutscene = cutscene;
     }
 
     @Override

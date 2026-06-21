@@ -1,5 +1,5 @@
 /*
- * Decompiled with CFR 0.152.
+ * Source recovery overlay: make remapped event accessible to recovered callers.
  */
 package com.rs2.model.objects.functions;
 
@@ -8,12 +8,12 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class DelayedObjectMoveEvent
+public final class DelayedObjectMoveEvent
 extends CycleEvent {
     private final /* synthetic */ Player player;
     private final /* synthetic */ Position destination;
 
-    DelayedObjectMoveEvent(Player player, Position position) {
+    public DelayedObjectMoveEvent(Player player, Position position) {
         this.player = player;
         this.destination = position;
     }
@@ -32,4 +32,3 @@ extends CycleEvent {
         this.player.setActionLocked(false);
     }
 }
-

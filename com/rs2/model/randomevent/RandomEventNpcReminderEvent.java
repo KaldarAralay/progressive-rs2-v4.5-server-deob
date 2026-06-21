@@ -10,7 +10,7 @@ import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.util.GameUtil;
 
-final class RandomEventNpcReminderEvent
+public final class RandomEventNpcReminderEvent
 extends CycleEvent {
     private int reminderTicksRemaining = 120;
     private int interactionGraceTicks = -1;
@@ -20,7 +20,7 @@ extends CycleEvent {
     private final /* synthetic */ int ignorePenaltyNpcId;
     private final /* synthetic */ Player player;
 
-    RandomEventNpcReminderEvent(Player player, Npc npc, String[] stringArray, int n) {
+    public RandomEventNpcReminderEvent(Player player, Npc npc, String[] stringArray, int n) {
         this.player = player;
         this.npc = npc;
         this.reminderLines = stringArray;
@@ -68,11 +68,11 @@ extends CycleEvent {
             if (this.ignorePenaltyNpcId == 2541) {
                 this.player.getSingleCombatTimer().setDelayTicks(0);
                 this.player.getSingleCombatTimer().reset();
-                GameplayHelper.a(this.player, new Npc(this.ignorePenaltyNpcId + GameplayHelper.getRandomEventCombatLevelOffset(this.player.getCombatLevel())), true, false);
+                GameplayHelper.spawnOwnedNpcAdjacentToPlayer(this.player, new Npc(this.ignorePenaltyNpcId + GameplayHelper.getRandomEventCombatLevelOffset(this.player.getCombatLevel())), true, false);
             } else if (this.ignorePenaltyNpcId > 0) {
                 this.player.getSingleCombatTimer().setDelayTicks(0);
                 this.player.getSingleCombatTimer().reset();
-                GameplayHelper.a(this.player, new Npc(this.ignorePenaltyNpcId), true, false);
+                GameplayHelper.spawnOwnedNpcAdjacentToPlayer(this.player, new Npc(this.ignorePenaltyNpcId), true, false);
             } else {
                 Player player = this.player;
                 player.packetSender.sendStillGraphic(86, this.npc.getPosition(), 0x640000);

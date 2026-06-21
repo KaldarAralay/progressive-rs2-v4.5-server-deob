@@ -12,7 +12,7 @@ import com.rs2.model.quest.impl.LyrePerformanceSecondLineTask;
 import com.rs2.model.quest.impl.LyrePerformanceThirdLineTask;
 import com.rs2.model.task.TickTask;
 
-final class LyrePerformanceStartTask
+public final class LyrePerformanceStartTask
 extends TickTask {
     private TickTask secondLineTask;
     final TickTask thirdLineTask;
@@ -22,11 +22,11 @@ extends TickTask {
     private final /* synthetic */ int performanceLineIndex;
     private final /* synthetic */ Player player;
 
-    LyrePerformanceStartTask(FremennikTrialsQuest fremennikTrialsQuest, int n, int n2, Player player, int n3, int n4) {
+    public LyrePerformanceStartTask(FremennikTrialsQuest fremennikTrialsQuest, int n, int n2, Player player, int n3, int n4) {
+        super(2);
         this.quest = fremennikTrialsQuest;
         this.performanceLineIndex = n2;
         this.player = player;
-        super(2);
         this.secondLineTask = new LyrePerformanceSecondLineTask(this, 4, player, n2);
         this.thirdLineTask = new LyrePerformanceThirdLineTask(this, 4, player, n2);
         this.heckleTask = new LyrePerformanceHeckleTask(this, 4, n3, n4, player, n2);

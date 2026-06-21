@@ -14,7 +14,7 @@ import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.util.GameUtil;
 
-final class PickpocketTask
+public final class PickpocketTask
 extends CycleEvent {
     private final /* synthetic */ boolean success;
     private final /* synthetic */ Player player;
@@ -24,7 +24,7 @@ extends CycleEvent {
     private final /* synthetic */ String npcName;
     private final /* synthetic */ int damage;
 
-    PickpocketTask(boolean bl, Player player, Npc npc, ItemStack itemStack, PickpocketDefinition pickpocketDefinition, String string, int n) {
+    public PickpocketTask(boolean bl, Player player, Npc npc, ItemStack itemStack, PickpocketDefinition pickpocketDefinition, String string, int n) {
         this.success = bl;
         this.player = player;
         this.npc = npc;

@@ -10,7 +10,7 @@ import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.util.GameUtil;
 
-final class PotteryOvenTask
+public final class PotteryOvenTask
 extends CycleEvent {
     private int remainingActions;
     private final /* synthetic */ Player player;
@@ -18,7 +18,7 @@ extends CycleEvent {
     private final /* synthetic */ PotteryRecipe recipe;
     private final /* synthetic */ ItemStack productItem;
 
-    PotteryOvenTask(PotteryRecipe potteryRecipe, int n, Player player, int n2, ItemStack itemStack) {
+    public PotteryOvenTask(PotteryRecipe potteryRecipe, int n, Player player, int n2, ItemStack itemStack) {
         this.recipe = potteryRecipe;
         this.player = player;
         this.actionSequence = n2;
@@ -34,8 +34,7 @@ extends CycleEvent {
         }
         this.player.getUpdateState().setAnimation(896);
         this.player.getInventoryManager().removeItem(new ItemStack(this.recipe.getUnfiredItemId()));
-        object = this.player;
-        ((Player)object).packetSender.sendGameMessage("You put a " + new ItemStack(this.recipe.getUnfiredItemId()).getDefinition().getName() + " in the oven.");
+        this.player.packetSender.sendGameMessage("You put a " + new ItemStack(this.recipe.getUnfiredItemId()).getDefinition().getName() + " in the oven.");
         boolean bl = GameUtil.rollLevelScaledChance(180, 800, this.player.getSkillManager().getCurrentLevels()[12]);
         if (bl) {
             Player player = this.player;

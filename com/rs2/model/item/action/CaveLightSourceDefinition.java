@@ -42,14 +42,12 @@ public enum CaveLightSourceDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private CaveLightSourceDefinition(boolean bl, boolean bl2, int n3, int n4) {
-        void var8_6;
-        void var7_5;
-        this.firemakingLevelRequirement = bl ? 1 : 0;
-        this.unlitItemId = var7_5;
-        this.litItemId = var8_6;
-        this.lightLevel = bl2 ? 1 : 0;
-        this.flaresInSwampGas = n3;
+    private CaveLightSourceDefinition(int n2, int n3, boolean bl, boolean bl2, int n4, int n5) {
+        this.firemakingLevelRequirement = n2;
+        this.unlitItemId = n4;
+        this.litItemId = n5;
+        this.lightLevel = n3;
+        this.flaresInSwampGas = bl;
     }
 
     public final int getFiremakingLevelRequirement() {

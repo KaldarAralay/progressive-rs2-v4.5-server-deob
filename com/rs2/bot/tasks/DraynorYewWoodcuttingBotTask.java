@@ -50,7 +50,6 @@ extends BotTaskDefinition {
             ++n3;
         }
         n = 30;
-        object = this;
         this.targetSearchRadius = n;
     }
 

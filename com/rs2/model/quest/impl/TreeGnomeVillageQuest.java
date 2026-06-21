@@ -31,55 +31,43 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
-        int n2 = stringArray.getQuestState(this.getQuestId()) - 5;
+    public final String[] buildQuestJournal(Player player, int n) {
+        int n2 = player.getQuestState(this.getQuestId()) - 5;
         if (n == 0) {
-            stringArray = new String[]{"I can start this quest by speaking to Bolren at the center", "of the Tree Gnome maze, West of Port Khazard", "", "I need to be able to defeat a level 112 Warlord"};
-            return stringArray;
+            return new String[]{"I can start this quest by speaking to Bolren at the center", "of the Tree Gnome maze, West of Port Khazard", "", "I need to be able to defeat a level 112 Warlord"};
         }
         if (n == 2) {
-            stringArray = new String[]{"I should speak with Commander Montai, who can be found", "somewhere in the battlefield."};
-            return stringArray;
+            return new String[]{"I should speak with Commander Montai, who can be found", "somewhere in the battlefield."};
         }
         if (n == 3) {
-            stringArray = new String[]{"Commander Montai asked me to bring: 6 x Logs."};
-            return stringArray;
+            return new String[]{"Commander Montai asked me to bring: 6 x Logs."};
         }
         if (n == 4) {
-            stringArray = new String[]{"I should speak with Commander Montai for further", "instructions."};
-            return stringArray;
+            return new String[]{"I should speak with Commander Montai for further", "instructions."};
         }
         if (n >= 5 && n < 19) {
-            stringArray = new String[]{"I need to find the tracker gnomes to get the coordinates:", String.valueOf((n2 & GameUtil.bitFlag(1)) == 0 || n2 == 0 ? "" : "@str@") + "Tracker gnome 1", String.valueOf((n2 & GameUtil.bitFlag(2)) == 0 || n2 == 0 ? "" : "@str@") + "Tracker gnome 2", String.valueOf((n2 & GameUtil.bitFlag(3)) == 0 || n2 == 0 ? "" : "@str@") + "Tracker gnome 3"};
-            return stringArray;
+            return new String[]{"I need to find the tracker gnomes to get the coordinates:", String.valueOf((n2 & GameUtil.bitFlag(1)) == 0 || n2 == 0 ? "" : "@str@") + "Tracker gnome 1", String.valueOf((n2 & GameUtil.bitFlag(2)) == 0 || n2 == 0 ? "" : "@str@") + "Tracker gnome 2", String.valueOf((n2 & GameUtil.bitFlag(3)) == 0 || n2 == 0 ? "" : "@str@") + "Tracker gnome 3"};
         }
         if (n == 19) {
-            stringArray = new String[]{"I should fire the ballista."};
-            return stringArray;
+            return new String[]{"I should fire the ballista."};
         }
         if (n == 20) {
-            if (!stringArray.ownsItem(587)) {
-                stringArray = new String[]{"I should go search the stronghold for the orb."};
-                return stringArray;
+            if (!player.ownsItem(587)) {
+                return new String[]{"I should go search the stronghold for the orb."};
             }
-            stringArray = new String[]{"I should bring the orb to King Bolren."};
-            return stringArray;
+            return new String[]{"I should bring the orb to King Bolren."};
         }
         if (n == 21) {
-            if (!stringArray.ownsItem(588)) {
-                stringArray = new String[]{"I need to find the Khazard warlord and bring back the orbs."};
-                return stringArray;
+            if (!player.ownsItem(588)) {
+                return new String[]{"I need to find the Khazard warlord and bring back the orbs."};
             }
-            stringArray = new String[]{"I should bring the orbs to King Bolren."};
-            return stringArray;
+            return new String[]{"I should bring the orbs to King Bolren."};
         }
         if (n == 22) {
-            stringArray = new String[]{"I should speak with King Bolren to finish this quest."};
-            return stringArray;
+            return new String[]{"I should speak with King Bolren to finish this quest."};
         }
         if (n == 1) {
-            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "2 Quest Points", "11,450 Attack XP"};
-            return stringArray;
+            return new String[]{"Quest Completed!", "", "You were awarded:", "2 Quest Points", "11,450 Attack XP"};
         }
         return null;
     }
@@ -291,7 +279,7 @@ extends QuestScript {
                 if (n2 == 16) {
                     if (n3 == 1) {
                         player.getDialogueManager().showPlayerOneLineDialogue("I would be glad to help.", 591);
-                        this.d(player);
+                        this.startQuest(player);
                         player.getDialogueManager().setNextDialogueStep(17);
                         return true;
                     }

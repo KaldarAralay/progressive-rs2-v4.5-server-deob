@@ -36,18 +36,17 @@ public final class BarrowsRepairHandler {
         return false;
     }
 
-    public static boolean repairItem(Player object, ItemStack itemStack) {
+    public static boolean repairItem(Player player, ItemStack itemStack) {
         int n = BarrowsRepairHandler.calculateRepairCost(itemStack);
-        if (!((Player)object).getInventoryManager().containsItemStack(new ItemStack(995, n)) && n > 0) {
-            ((Player)object).packetSender.sendGameMessage("You don't have enough coins to fix that.");
+        if (!player.getInventoryManager().containsItemStack(new ItemStack(995, n)) && n > 0) {
+            player.packetSender.sendGameMessage("You don't have enough coins to fix that.");
             return false;
         }
-        ((Player)object).getInventoryManager().removeItem(new ItemStack(995, n));
-        ((Player)object).getInventoryManager().removeItemFromSlot(itemStack, ((Player)object).getSelectedItemSlot());
-        InventoryManager inventoryManager = ((Player)object).getInventoryManager();
-        object = itemStack;
-        object = BarrowsRepairHandler.forItem((ItemStack)object);
-        inventoryManager.addItem(new ItemStack(object == null ? -1 : ((BarrowsRepairHandler)object).repairedItemId, 1));
+        player.getInventoryManager().removeItem(new ItemStack(995, n));
+        player.getInventoryManager().removeItemFromSlot(itemStack, player.getSelectedItemSlot());
+        InventoryManager inventoryManager = player.getInventoryManager();
+        BarrowsRepairHandler repairDefinition = BarrowsRepairHandler.forItem(itemStack);
+        inventoryManager.addItem(new ItemStack(repairDefinition == null ? -1 : repairDefinition.repairedItemId, 1));
         return true;
     }
 

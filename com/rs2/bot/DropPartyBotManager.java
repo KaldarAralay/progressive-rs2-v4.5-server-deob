@@ -54,8 +54,7 @@ public final class DropPartyBotManager {
             if (n3 == 0 && GameUtil.randomInt(3) == 0) {
                 BotCombatHelper.pickupVisibleGroundItem((Player)object, groundItem.getItem().getId(), groundItem.getPosition());
             } else if (n3 < n4) {
-                object = new DropPartyGroundItemPickupTask(n2, (Player)object, groundItem);
-                World.getTaskScheduler().schedule((TickTask)object);
+                World.getTaskScheduler().schedule(new DropPartyGroundItemPickupTask(n2, (Player)object, groundItem));
             }
             ++n;
         }
@@ -64,33 +63,29 @@ public final class DropPartyBotManager {
     public static void finishLeaderDrops(Player object) {
         ((Player)object).queuePublicChatMessage("All dropped, good luck to all.");
         ((Player)object).botTaskState = "wait for new task";
-        object = new DropPartyLeaderCleanupTask(10, (Player)object);
-        World.getTaskScheduler().schedule((TickTask)object);
+        World.getTaskScheduler().schedule(new DropPartyLeaderCleanupTask(10, (Player)object));
     }
 
     public static void finishDropPartyParticipant(Player object) {
         ((Player)object).botTaskState = "wait for new task";
-        object = new DropPartyCompletionTask(10, (Player)object);
-        World.getTaskScheduler().schedule((TickTask)object);
+        World.getTaskScheduler().schedule(new DropPartyCompletionTask(10, (Player)object));
     }
 
-    public static void startDropPartyTick(Player object) {
-        ((Player)object).botPublicChatMessage = "Follow for Drop party!";
-        ((Player)object).botPublicChatColor = GameUtil.randomInt(12);
+    public static void startDropPartyTick(Player player) {
+        player.botPublicChatMessage = "Follow for Drop party!";
+        player.botPublicChatColor = GameUtil.randomInt(12);
         int[] nArray = new int[3];
         nArray[1] = 1;
         nArray[2] = 3;
-        Object object2 = nArray;
+        int[] object2 = nArray;
         int n = GameUtil.randomInt(3);
-        ((Player)object).botPublicChatEffect = object2[n];
-        if (((Player)object).dropPartyLeader) {
-            object2 = new DropPartyLeaderTickTask(3, (Player)object);
-            World.getTaskScheduler().schedule((TickTask)object2);
+        player.botPublicChatEffect = object2[n];
+        if (player.dropPartyLeader) {
+            World.getTaskScheduler().schedule(new DropPartyLeaderTickTask(3, player));
             return;
         }
-        object2 = (Player)dropPartyParticipants.get(0);
-        object = new DropPartyFollowerTickTask(3, (Player)object, (Player)object2);
-        World.getTaskScheduler().schedule((TickTask)object);
+        Player player2 = (Player)dropPartyParticipants.get(0);
+        World.getTaskScheduler().schedule(new DropPartyFollowerTickTask(3, player, player2));
     }
 
     public static void prepareDropPartyCombatLoadout(Player player) {
@@ -157,36 +152,33 @@ public final class DropPartyBotManager {
         player.getEquipmentManager().getContainer().clear();
         if (player.dropPartyLeader) {
             int n2;
-            Object object;
-            Object object22;
-            Object object32;
             n = 0;
-            ArrayList<Object> arrayList = new ArrayList<Object>();
+            ArrayList<GameplayHelper> arrayList = new ArrayList<GameplayHelper>();
             for (Object object32 : dropPartyRewardPool) {
-                arrayList.add(object32);
+                arrayList.add((GameplayHelper)object32);
             }
-            object32 = new ArrayList();
+            ArrayList<GameplayHelper> object32 = new ArrayList<GameplayHelper>();
             for (Object object22 : valuableDropPartyRewardPool) {
-                ((ArrayList)object32).add(object22);
+                object32.add((GameplayHelper)object22);
             }
-            object22 = new ArrayList();
-            Object object4 = arrayList;
+            ArrayList<GameplayHelper> object22 = new ArrayList<GameplayHelper>();
+            ArrayList<GameplayHelper> object4 = arrayList;
             int n3 = 0;
             while (n3 < leaderDropItemCount) {
                 int n4;
                 if (n3 == leaderDropItemCount - 1 && n < valuableDropMinValue) {
                     object4 = object32;
                 }
-                int n5 = GameUtil.randomInt(((ArrayList)object4).size());
-                object = (GameplayHelper)((ArrayList)object4).get(n5);
-                ((ArrayList)object22).add(object);
+                int n5 = GameUtil.randomInt(object4.size());
+                GameplayHelper object = (GameplayHelper)object4.get(n5);
+                object22.add(object);
                 arrayList.remove(object);
-                if (((ArrayList)object32).contains(object)) {
-                    ((ArrayList)object32).remove(object);
+                if (object32.contains(object)) {
+                    object32.remove(object);
                 }
-                if ((n4 = GrandExchangeManager.getGuidePrice(((GameplayHelper)object).getTradeAdvertItemId())) > n) {
+                if ((n4 = GrandExchangeManager.getGuidePrice(object.getTradeAdvertItemId())) > n) {
                     n = n4;
-                    player.botAdvertItemId = ((GameplayHelper)object).getTradeAdvertItemId();
+                    player.botAdvertItemId = object.getTradeAdvertItemId();
                 }
                 ++n3;
             }
@@ -221,9 +213,9 @@ public final class DropPartyBotManager {
             }
             targetDropPartySize = n2;
             Collections.shuffle(object22);
-            object = ((ArrayList)object22).iterator();
-            while (object.hasNext()) {
-                GameplayHelper gameplayHelper = (GameplayHelper)object.next();
+            Iterator<GameplayHelper> iterator = object22.iterator();
+            while (iterator.hasNext()) {
+                GameplayHelper gameplayHelper = iterator.next();
                 player.getInventoryManager().addItem(new ItemStack(gameplayHelper.getTradeAdvertItemId(), 1));
             }
             ItemDefinition itemDefinition = ItemDefinition.forId(player.botAdvertItemId);
@@ -237,15 +229,16 @@ public final class DropPartyBotManager {
             BotCombatLoadoutManager.prepareMagicLoadout(player2);
         } else if (player2.botCombatStyle == 1) {
             BotCombatLoadoutManager.prepareRangedLoadout(player2);
-            int n6 = player2.getSkillManager().getCurrentLevels()[4] >= 40 ? 1731 : (n = GameUtil.randomInt(3) == 0 ? 1478 : 1729);
+            int n6 = player2.getSkillManager().getCurrentLevels()[4] >= 40 ? 1731 : (GameUtil.randomInt(3) == 0 ? 1478 : 1729);
             if (!BotCombatHelper.isFreeToPlayWorld() && player2.getCombatLevel() >= 60 && GameUtil.randomInt(2) == 0) {
-                n = 1712;
+                n6 = 1712;
             }
-            player2.getEquipmentManager().getContainer().setItem(2, new ItemStack(n));
+            player2.getEquipmentManager().getContainer().setItem(2, new ItemStack(n6));
         }
         BotCombatLoadoutManager.equipRandomCape(player2);
         player.getInventoryManager().refresh();
         player.getEquipmentManager().refresh();
     }
+
 }
 

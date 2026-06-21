@@ -214,8 +214,7 @@ extends Entity {
                                                 if (((Npc)object2).skipNextPathAdvance) {
                                                     ((Npc)object2).skipNextPathAdvance = false;
                                                 } else if (((Npc)object2).npcId == 1454) {
-                                                    object = new NpcSequenceAdvanceTask((Npc)object2, 10);
-                                                    World.getTaskScheduler().schedule((TickTask)object);
+                                                    World.getTaskScheduler().schedule(new NpcSequenceAdvanceTask((Npc)object2, 10));
                                                 } else if (((Npc)object2).npcId == 1431 || ((Npc)object2).npcId == 1432) {
                                                     if (((Npc)object2).scriptedPathStage == 5) {
                                                         int n4 = scriptedStageCursor;
@@ -234,8 +233,7 @@ extends Entity {
                                                         ((Npc)scriptedStageNpcs.get(scriptedStageCursor)).scriptedPathStage = 0;
                                                         ((Npc)object).queueStageAdvancePath(((Npc)object).scriptedPathStage);
                                                     } else {
-                                                        object = new NpcStageAdvanceTask((Npc)object2, 10);
-                                                        World.getTaskScheduler().schedule((TickTask)object);
+                                                        World.getTaskScheduler().schedule(new NpcStageAdvanceTask((Npc)object2, 10));
                                                     }
                                                 } else {
                                                     ((Entity)object2).setScriptedMovementEnabled(false);
@@ -501,16 +499,13 @@ extends Entity {
         ((Player)object).H = npc2;
         this.getUpdateState().setAnimation(717);
         ((Player)object).getTeleportManager().startStandardTeleport(3105, 3934, 0, null);
-        object = new MageArenaChallengeStartTask(this, 12, (Player)object, npc);
-        World.getTaskScheduler().schedule((TickTask)object);
+        World.getTaskScheduler().schedule(new MageArenaChallengeStartTask(this, 12, (Player)object, npc));
     }
 
     public final void startAbyssMageTeleport(Player player, int n, int n2, int n3, String string) {
         player.getDialogueManager().finishDialogue();
-        Entity entity = player;
-        entity.packetSender.closeInterfaces();
-        entity = this;
-        int n4 = ((Npc)entity).definition.getId();
+        player.packetSender.closeInterfaces();
+        int n4 = this.definition.getId();
         n4 = n4 == 171 ? 200 : 717;
         this.getUpdateState().setAnimation(n4);
         this.getUpdateState().setGraphic(108);
@@ -522,18 +517,15 @@ extends Entity {
 
     public final void startNpcRelocation(Player player, int n, int n2, int n3, int n4, int n5, String string, boolean bl) {
         player.getDialogueManager().finishDialogue();
-        Entity entity = player;
-        entity.packetSender.closeInterfaces();
+        player.packetSender.closeInterfaces();
         this.getUpdateState().setAnimation(402);
         player.getUpdateState().setAnimation(2304);
-        entity = player;
-        entity.packetSender.showInterface(8677);
-        entity = this;
+        player.packetSender.showInterface(8677);
         if (string != null) {
             this.getUpdateState().setForcedText(string);
         }
         player.setActionLocked(true);
-        CycleEventHandler.getInstance().schedule(player, new NpcRelocationEvent(this, player, n3, n4, n5, bl, (Npc)entity), 4);
+        CycleEventHandler.getInstance().schedule(player, new NpcRelocationEvent(this, player, n3, n4, n5, bl, this), 4);
     }
 
     public final void resetAfterUpdate() {
@@ -590,16 +582,11 @@ extends Entity {
         }
     }
 
-    public final void queueScriptedPath(Position[] object) {
+    public final void queueScriptedPath(Position[] positions) {
         this.setScriptedMovementEnabled(true);
         this.getMovementQueue().clear();
-        Position[] positionArray = object;
-        int n = ((Position[])object).length;
-        int n2 = 0;
-        while (n2 < n) {
-            object = positionArray[n2];
-            this.getMovementQueue().addStep((Position)object);
-            ++n2;
+        for (Position position : positions) {
+            this.getMovementQueue().addStep(position);
         }
         this.scriptedPathTargetX = ((MovementStep)this.getMovementQueue().getSteps().getLast()).getX();
         this.scriptedPathTargetY = ((MovementStep)this.getMovementQueue().getSteps().getLast()).getY();
@@ -936,33 +923,26 @@ extends Entity {
     }
 
     @Override
-    public final boolean isProtectedFrom(CombatType object) {
-        if (object == CombatType.MELEE) {
-            object = this;
-            return ((Npc)object).definition.isProtectedFromMelee();
+    public final boolean isProtectedFrom(CombatType combatType) {
+        if (combatType == CombatType.MELEE) {
+            return this.definition.isProtectedFromMelee();
         }
-        if (object == CombatType.RANGED) {
-            object = this;
-            return ((Npc)object).definition.isProtectedFromRanged();
+        if (combatType == CombatType.RANGED) {
+            return this.definition.isProtectedFromRanged();
         }
-        if (object == CombatType.MAGIC) {
-            object = this;
-            return ((Npc)object).definition.isProtectedFromMagic();
+        if (combatType == CombatType.MAGIC) {
+            return this.definition.isProtectedFromMagic();
         }
         return false;
     }
 
     @Override
     public final void moveTo(Position position) {
-        boolean bl = false;
-        Npc npc = this;
-        this.active = bl;
+        this.active = false;
         this.b = true;
-        this.a(position);
+        this.setPosition(position);
         this.getMovementQueue().clear();
-        bl = true;
-        npc = this;
-        this.active = bl;
+        this.active = true;
     }
 
     @Override
@@ -1342,13 +1322,13 @@ extends Entity {
         return true;
     }
 
-    public static boolean isUndead(Entity object) {
-        if (((Entity)object).isPlayer()) {
+    public static boolean isUndead(Entity entity) {
+        if (entity.isPlayer()) {
             return false;
         }
-        object = (Npc)object;
-        object = ((Npc)object).definition.getName().toLowerCase();
-        return ((String)object).contains("spectre") || ((String)object).contains("banshee") || ((String)object).contains("shade") || ((String)object).contains("zombie") || ((String)object).contains("skeleton") || ((String)object).contains("ghost") || ((String)object).contains("crawling hand") || ((String)object).contains("skeletal hand") || ((String)object).contains("zombie hand") || ((String)object).contains("zogre") || ((String)object).contains("skorge") || ((String)object).contains("ankous");
+        String npcName = ((Npc)entity).definition.getName().toLowerCase();
+        return npcName.contains("spectre") || npcName.contains("banshee") || npcName.contains("shade") || npcName.contains("zombie") || npcName.contains("skeleton") || npcName.contains("ghost") || npcName.contains("crawling hand") || npcName.contains("skeletal hand") || npcName.contains("zombie hand") || npcName.contains("zogre") || npcName.contains("skorge") || npcName.contains("ankous");
     }
+
 }
 

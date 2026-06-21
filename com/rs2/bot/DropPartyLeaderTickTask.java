@@ -14,13 +14,13 @@ import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 import com.rs2.util.path.PathFinder;
 
-final class DropPartyLeaderTickTask
+public final class DropPartyLeaderTickTask
 extends TickTask {
     private final /* synthetic */ Player leader;
 
-    DropPartyLeaderTickTask(int n, Player player) {
-        this.leader = player;
+    public DropPartyLeaderTickTask(int n, Player player) {
         super(3);
+        this.leader = player;
     }
 
     @Override
@@ -35,14 +35,14 @@ extends TickTask {
             if (this.getIntervalTicks() != 8) {
                 this.leader.queuePublicChatMessage("Dropping now!");
                 this.setIntervalTicks(8);
-                for (Object object22 : DropPartyBotManager.dropPartyParticipants) {
-                    if (object22 == this.leader) continue;
-                    ((Player)object22).botTaskState = "do task";
-                    EntityTargetMovement.clearMovementTarget((Entity)object22);
-                    ((Entity)object22).getMovementQueue().clear();
+                for (Object participantObject : DropPartyBotManager.dropPartyParticipants) {
+                    if (participantObject == this.leader) continue;
+                    ((Player)participantObject).botTaskState = "do task";
+                    EntityTargetMovement.clearMovementTarget((Entity)participantObject);
+                    ((Entity)participantObject).getMovementQueue().clear();
                     object = this.leader.currentBotTask.getRandomTaskAreaPosition();
                     PathFinder.getInstance();
-                    PathFinder.findPath((Player)object22, ((Position)object).getX(), ((Position)object).getY(), true, 0, 0);
+                    PathFinder.findPath((Player)participantObject, ((Position)object).getX(), ((Position)object).getY(), true, 0, 0);
                 }
             }
             if (GameUtil.randomInt(2) == 0) {

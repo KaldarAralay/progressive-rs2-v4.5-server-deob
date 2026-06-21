@@ -18,7 +18,7 @@ public final class DatabaseService {
     private final String username;
     private final String password;
 
-    public DatabaseService(int n, String string, String string2, String string3, String string4) {
+    public DatabaseService(int n, String string, String string2, String string3, String string4) throws ClassNotFoundException {
         Class.forName(string);
         this.executor = Executors.newFixedThreadPool(8);
         this.threadContextLocal = new ThreadLocal();
@@ -34,7 +34,7 @@ public final class DatabaseService {
         this.executor.execute(databaseQuery);
     }
 
-    protected final Connection openConnection() {
+    protected final Connection openConnection() throws java.sql.SQLException {
         return DriverManager.getConnection(this.jdbcUrl, this.username, this.password);
     }
 

@@ -22,18 +22,17 @@ public class BotWorldRouteChoice {
         return this.reversed;
     }
 
-    public static boolean showCrypticDigClue(Player stringArray, int n) {
+    public static boolean showCrypticDigClue(Player player, int n) {
         CrypticDigClue crypticDigClue = CrypticDigClue.forClueItemId(n);
         if (crypticDigClue == null) {
             return false;
         }
-        String[] stringArray2 = stringArray;
-        stringArray.packetSender.showInterface(6965);
+        String[] stringArray2;
+        player.packetSender.showInterface(6965);
         int n2 = 0;
         while (n2 < crypticDigClue.getClueTextLines().length) {
             int[] nArray;
-            stringArray2 = stringArray;
-            PacketSender packetSender = stringArray.packetSender;
+            PacketSender packetSender = player.packetSender;
             String string = crypticDigClue.getClueTextLines()[n2];
             stringArray2 = crypticDigClue.getClueTextLines();
             switch (stringArray2.length) {

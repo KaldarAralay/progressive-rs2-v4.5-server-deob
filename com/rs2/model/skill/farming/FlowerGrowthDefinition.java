@@ -32,11 +32,9 @@ public enum FlowerGrowthDefinition {
     /*
      * WARNING - void declaration
      */
-    private FlowerGrowthDefinition() {
-        void var4_1;
-        void var3_2;
-        this.cropId = var3_2;
-        this.growthMessages = var4_1;
+    private FlowerGrowthDefinition(int n2, String[][] stringArray) {
+        this.cropId = n2;
+        this.growthMessages = stringArray;
     }
 
     public static FlowerGrowthDefinition forCropId(int n) {

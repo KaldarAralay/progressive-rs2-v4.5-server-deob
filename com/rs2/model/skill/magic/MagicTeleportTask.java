@@ -10,7 +10,7 @@ import com.rs2.model.skill.magic.TeleportManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class MagicTeleportTask
+public final class MagicTeleportTask
 extends CycleEvent {
     private int ticksRemaining = 6;
     private /* synthetic */ TeleportManager teleportManager;
@@ -19,7 +19,7 @@ extends CycleEvent {
     private final /* synthetic */ int destinationY;
     private final /* synthetic */ int destinationPlane;
 
-    MagicTeleportTask(TeleportManager teleportManager, boolean bl, int n, int n2, int n3) {
+    public MagicTeleportTask(TeleportManager teleportManager, boolean bl, int n, int n2, int n3) {
         this.teleportManager = teleportManager;
         this.ancientSpellbookTeleport = bl;
         this.destinationX = n;

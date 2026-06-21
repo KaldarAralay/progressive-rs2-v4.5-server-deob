@@ -7,17 +7,17 @@ import com.rs2.util.db.DatabaseQuery;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-final class ConverterUidLookupQuery
+public final class ConverterUidLookupQuery
 extends DatabaseQuery {
     private final /* synthetic */ String username;
 
-    ConverterUidLookupQuery(String string, String string2) {
-        this.username = string2;
+    public ConverterUidLookupQuery(String string, String string2) {
         super(string);
+        this.username = string2;
     }
 
     @Override
-    public final ResultSet executeStatement(PreparedStatement preparedStatement) {
+    public final ResultSet executeStatement(PreparedStatement preparedStatement) throws java.sql.SQLException {
         preparedStatement.setString(1, this.username);
         return preparedStatement.executeQuery();
     }

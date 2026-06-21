@@ -77,8 +77,8 @@ extends BotTaskDefinition {
         player.botFoodItemId = 315;
         player.getBankContainer().addToTab(new ItemStack(player.botFoodItemId, 1000), 0);
         Object object = new ItemStack[]{new ItemStack(player.botFoodItemId, 10)};
-        player.botTaskRequiredItems = object;
-        player.getInventoryManager().addItem(object[0]);
+        player.botTaskRequiredItems = (ItemStack[])object;
+        player.getInventoryManager().addItem(((ItemStack[])object)[0]);
         object = player;
         GameplayHelper.prepareBotCombatStyle((Player)object, -1);
         player.getInventoryManager().refresh();
@@ -177,8 +177,7 @@ extends BotTaskDefinition {
                 ((ArrayList)object).add(881);
                 player.botRouteActionPending = true;
                 if (player.interactWithBotObjectTargetsNoRetry((ArrayList)object, false)) {
-                    object = new VarrockSewerGiantRatDungeonEntryTickTask(this, 3, player);
-                    World.getTaskScheduler().schedule((TickTask)object);
+                    World.getTaskScheduler().schedule(new VarrockSewerGiantRatDungeonEntryTickTask(this, 3, player));
                 } else {
                     ((ArrayList)object).clear();
                     ((ArrayList)object).add(882);

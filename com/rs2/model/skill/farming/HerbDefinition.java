@@ -52,20 +52,17 @@ public enum HerbDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private HerbDefinition(int n3, int n4, double d, double n522, double n522, int n522, int n6, int n7, int n8) {
-        void var15_11;
-        void cfr_renamed_6;
-        void cfr_renamed_5;
-        this.seedId = n3;
-        this.produceItemId = n4;
-        this.requiredLevel = (int)d;
+    private HerbDefinition(int n2, int n3, int n4, int n5, double d, double d2, double d3, int n6, int n7, int n8, int n9) {
+        this.seedId = n2;
+        this.produceItemId = n3;
+        this.requiredLevel = n4;
         this.totalGrowthTicks = 80;
         this.diseaseChance = 0.211;
-        this.plantingExperience = cfr_renamed_5;
-        this.harvestExperience = cfr_renamed_6;
-        this.configStartStage = n7;
-        this.configEndStage = n8;
-        this.harvestChanceLow = var15_11;
+        this.plantingExperience = d2;
+        this.harvestExperience = d3;
+        this.configStartStage = n6;
+        this.configEndStage = n7;
+        this.harvestChanceLow = n8;
         this.harvestChanceHigh = 80;
     }
 

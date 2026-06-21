@@ -33,6 +33,7 @@ import com.rs2.model.quest.QuestDefinition;
 import com.rs2.model.randomevent.RandomEventManager;
 import com.rs2.model.randomevent.sandwichlady.SandwichLadyFoodOffer;
 import com.rs2.model.shop.ShopManager;
+import com.rs2.model.skill.GatheringToolDefinition;
 import com.rs2.model.skill.ItemCombinationHandler;
 import com.rs2.model.skill.farming.FarmingFarmerDefinition;
 import com.rs2.model.skill.farming.FarmingFarmerHandler;
@@ -459,7 +460,7 @@ public class DialogueManager {
         }
     }
 
-    public final void a(String string, int n) {
+    public final void showItemIdMessage(String string, int n) {
         Object object = this.player;
         ((Player)object).packetSender.sendInterfaceModel(307, 150, n);
         object = this.player;
@@ -563,175 +564,62 @@ public class DialogueManager {
         }
     }
 
-    /*
-     * Unable to fully structure code
-     */
-    public final void showNpcOneLineDialogue(String var1_1, int var2_2) {
-        var5_3 = this;
-        if (var5_3.dialogueNpcId < 0) ** GOTO lbl-1000
-        var5_3 = this;
-        if (var5_3.dialogueNpcId > 6433) lbl-1000:
-        // 2 sources
-
-        {
-            v0 = 0;
-        } else {
-            var5_3 = this;
-            v0 = var5_3.dialogueNpcId;
-        }
-        var3_4 = v0;
-        var4_5 = World.getNpcDefinitions()[var3_4];
-        var4_5 = var4_5.getName();
-        var5_3 = this.player;
-        var5_3.packetSender.sendInterfaceAnimation(4883, var2_2);
-        var5_3 = this.player;
-        var5_3.packetSender.sendInterfaceText((String)var4_5, 4884);
-        var5_3 = this.player;
-        var5_3.packetSender.sendInterfaceText(var1_1, 4885);
-        var5_3 = this.player;
-        var5_3.packetSender.sendNpcHeadOnInterface(var3_4, 4883);
-        var5_3 = this.player;
-        var5_3.packetSender.showChatboxInterface(4882);
+    public final void showNpcOneLineDialogue(String line, int animationId) {
+        int npcId = this.dialogueNpcId < 0 || this.dialogueNpcId > 6433 ? 0 : this.dialogueNpcId;
+        String npcName = World.getNpcDefinitions()[npcId].getName();
+        this.player.packetSender.sendInterfaceAnimation(4883, animationId);
+        this.player.packetSender.sendInterfaceText(npcName, 4884);
+        this.player.packetSender.sendInterfaceText(line, 4885);
+        this.player.packetSender.sendNpcHeadOnInterface(npcId, 4883);
+        this.player.packetSender.showChatboxInterface(4882);
     }
 
-    /*
-     * Unable to fully structure code
-     */
-    public final void showNpcTwoLineDialogue(String var1_1, String var2_2, int var3_3) {
-        var6_4 = this;
-        if (var6_4.dialogueNpcId < 0) ** GOTO lbl-1000
-        var6_4 = this;
-        if (var6_4.dialogueNpcId > 6433) lbl-1000:
-        // 2 sources
-
-        {
-            v0 = 0;
-        } else {
-            var6_4 = this;
-            v0 = var6_4.dialogueNpcId;
-        }
-        var4_5 = v0;
-        var5_6 = World.getNpcDefinitions()[var4_5];
-        var5_6 = var5_6.getName();
-        var6_4 = this.player;
-        var6_4.packetSender.sendInterfaceAnimation(4888, var3_3);
-        var6_4 = this.player;
-        var6_4.packetSender.sendInterfaceText((String)var5_6, 4889);
-        var6_4 = this.player;
-        var6_4.packetSender.sendInterfaceText(var1_1, 4890);
-        var6_4 = this.player;
-        var6_4.packetSender.sendInterfaceText(var2_2, 4891);
-        var6_4 = this.player;
-        var6_4.packetSender.sendNpcHeadOnInterface(var4_5, 4888);
-        var6_4 = this.player;
-        var6_4.packetSender.showChatboxInterface(4887);
+    public final void showNpcTwoLineDialogue(String line1, String line2, int animationId) {
+        int npcId = this.dialogueNpcId < 0 || this.dialogueNpcId > 6433 ? 0 : this.dialogueNpcId;
+        String npcName = World.getNpcDefinitions()[npcId].getName();
+        this.player.packetSender.sendInterfaceAnimation(4888, animationId);
+        this.player.packetSender.sendInterfaceText(npcName, 4889);
+        this.player.packetSender.sendInterfaceText(line1, 4890);
+        this.player.packetSender.sendInterfaceText(line2, 4891);
+        this.player.packetSender.sendNpcHeadOnInterface(npcId, 4888);
+        this.player.packetSender.showChatboxInterface(4887);
     }
 
-    /*
-     * Unable to fully structure code
-     */
-    public final void showNpcThreeLineDialogue(String var1_1, String var2_2, String var3_3, int var4_4) {
-        var7_5 = this;
-        if (var7_5.dialogueNpcId < 0) ** GOTO lbl-1000
-        var7_5 = this;
-        if (var7_5.dialogueNpcId > 6433) lbl-1000:
-        // 2 sources
-
-        {
-            v0 = 0;
-        } else {
-            var7_5 = this;
-            v0 = var7_5.dialogueNpcId;
-        }
-        var5_6 = v0;
-        var6_7 = World.getNpcDefinitions()[var5_6];
-        var6_7 = var6_7.getName();
-        var7_5 = this.player;
-        var7_5.packetSender.sendInterfaceAnimation(4894, var4_4);
-        var7_5 = this.player;
-        var7_5.packetSender.sendInterfaceText((String)var6_7, 4895);
-        var7_5 = this.player;
-        var7_5.packetSender.sendInterfaceText(var1_1, 4896);
-        var7_5 = this.player;
-        var7_5.packetSender.sendInterfaceText(var2_2, 4897);
-        var7_5 = this.player;
-        var7_5.packetSender.sendInterfaceText(var3_3, 4898);
-        var7_5 = this.player;
-        var7_5.packetSender.sendNpcHeadOnInterface(var5_6, 4894);
-        var7_5 = this.player;
-        var7_5.packetSender.showChatboxInterface(4893);
+    public final void showNpcThreeLineDialogue(String line1, String line2, String line3, int animationId) {
+        int npcId = this.dialogueNpcId < 0 || this.dialogueNpcId > 6433 ? 0 : this.dialogueNpcId;
+        String npcName = World.getNpcDefinitions()[npcId].getName();
+        this.player.packetSender.sendInterfaceAnimation(4894, animationId);
+        this.player.packetSender.sendInterfaceText(npcName, 4895);
+        this.player.packetSender.sendInterfaceText(line1, 4896);
+        this.player.packetSender.sendInterfaceText(line2, 4897);
+        this.player.packetSender.sendInterfaceText(line3, 4898);
+        this.player.packetSender.sendNpcHeadOnInterface(npcId, 4894);
+        this.player.packetSender.showChatboxInterface(4893);
     }
 
-    /*
-     * Unable to fully structure code
-     */
-    public final void showNpcFourLineDialogue(String var1_1, String var2_2, String var3_3, String var4_4, int var5_5) {
-        var8_6 = this;
-        if (var8_6.dialogueNpcId < 0) ** GOTO lbl-1000
-        var8_6 = this;
-        if (var8_6.dialogueNpcId > 6433) lbl-1000:
-        // 2 sources
-
-        {
-            v0 = 0;
-        } else {
-            var8_6 = this;
-            v0 = var8_6.dialogueNpcId;
-        }
-        var6_7 = v0;
-        var7_8 = World.getNpcDefinitions()[var6_7];
-        var7_8 = var7_8.getName();
-        var8_6 = this.player;
-        var8_6.packetSender.sendInterfaceAnimation(4901, var5_5);
-        var8_6 = this.player;
-        var8_6.packetSender.sendInterfaceText((String)var7_8, 4902);
-        var8_6 = this.player;
-        var8_6.packetSender.sendInterfaceText(var1_1, 4903);
-        var8_6 = this.player;
-        var8_6.packetSender.sendInterfaceText(var2_2, 4904);
-        var8_6 = this.player;
-        var8_6.packetSender.sendInterfaceText(var3_3, 4905);
-        var8_6 = this.player;
-        var8_6.packetSender.sendInterfaceText(var4_4, 4906);
-        var8_6 = this.player;
-        var8_6.packetSender.sendNpcHeadOnInterface(var6_7, 4901);
-        var8_6 = this.player;
-        var8_6.packetSender.showChatboxInterface(4900);
+    public final void showNpcFourLineDialogue(String line1, String line2, String line3, String line4, int animationId) {
+        int npcId = this.dialogueNpcId < 0 || this.dialogueNpcId > 6433 ? 0 : this.dialogueNpcId;
+        String npcName = World.getNpcDefinitions()[npcId].getName();
+        this.player.packetSender.sendInterfaceAnimation(4901, animationId);
+        this.player.packetSender.sendInterfaceText(npcName, 4902);
+        this.player.packetSender.sendInterfaceText(line1, 4903);
+        this.player.packetSender.sendInterfaceText(line2, 4904);
+        this.player.packetSender.sendInterfaceText(line3, 4905);
+        this.player.packetSender.sendInterfaceText(line4, 4906);
+        this.player.packetSender.sendNpcHeadOnInterface(npcId, 4901);
+        this.player.packetSender.showChatboxInterface(4900);
     }
 
-    /*
-     * Unable to fully structure code
-     */
-    public final void showAlternateNpcThreeLineDialogue(String var1_1, String var2_2, String var3_3, int var4_4) {
-        var6_5 = this;
-        if (var6_5.dialogueNpcId < 0) ** GOTO lbl-1000
-        var6_5 = this;
-        if (var6_5.dialogueNpcId > 6433) lbl-1000:
-        // 2 sources
-
-        {
-            v0 = 0;
-        } else {
-            var6_5 = this;
-            v0 = var6_5.dialogueNpcId;
-        }
-        var4_4 = v0;
-        var5_6 = World.getNpcDefinitions()[var4_4];
-        var5_6 = var5_6.getName();
-        var6_5 = this.player;
-        var6_5.packetSender.sendInterfaceAnimation(12384, 591);
-        var6_5 = this.player;
-        var6_5.packetSender.sendInterfaceText((String)var5_6, 12385);
-        var6_5 = this.player;
-        var6_5.packetSender.sendInterfaceText(var1_1, 12386);
-        var6_5 = this.player;
-        var6_5.packetSender.sendInterfaceText(var2_2, 12387);
-        var6_5 = this.player;
-        var6_5.packetSender.sendInterfaceText(var3_3, 12388);
-        var6_5 = this.player;
-        var6_5.packetSender.sendNpcHeadOnInterface(var4_4, 12384);
-        var6_5 = this.player;
-        var6_5.packetSender.showChatboxInterface(12383);
+    public final void showAlternateNpcThreeLineDialogue(String line1, String line2, String line3, int animationId) {
+        int npcId = this.dialogueNpcId < 0 || this.dialogueNpcId > 6433 ? 0 : this.dialogueNpcId;
+        String npcName = World.getNpcDefinitions()[npcId].getName();
+        this.player.packetSender.sendInterfaceAnimation(12384, 591);
+        this.player.packetSender.sendInterfaceText(npcName, 12385);
+        this.player.packetSender.sendInterfaceText(line1, 12386);
+        this.player.packetSender.sendInterfaceText(line2, 12387);
+        this.player.packetSender.sendInterfaceText(line3, 12388);
+        this.player.packetSender.sendNpcHeadOnInterface(npcId, 12384);
+        this.player.packetSender.showChatboxInterface(12383);
     }
 
     public final void showPlayerOneLineDialogue(String string, int n) {
@@ -798,7 +686,7 @@ public class DialogueManager {
         player.packetSender.showChatboxInterface(986);
     }
 
-    public final void a(String string, String string2, String string3, String string4, String string5, boolean bl) {
+    public final void showTutorialInstructionOverlay(String string, String string2, String string3, String string4, String string5, boolean bl) {
         Player player = this.player;
         player.packetSender.sendInterfaceText(string, 6180);
         player = this.player;
@@ -1197,7 +1085,7 @@ public class DialogueManager {
     /*
      * Enabled aggressive block sorting
      */
-    public static boolean b(Player player, int n, int n2) {
+    public static boolean continueUtilityNpcDialogue(Player player, int n, int n2) {
         switch (n) {
             case 2260: {
                 DialogueManager dialogueManager = player.getDialogueManager();
@@ -1623,10 +1511,53 @@ public class DialogueManager {
         return false;
     }
 
-    /*
-     * Unable to fully structure code
-     */
     public static boolean continueDialogueWithNpcId(Player var0, int var1_1, int var2_17, int var3_18, int var4_19) {
+        Npc var1_2 = null;
+        Npc var1_3 = null;
+        Player var1_4 = null;
+        int[] var1_5 = null;
+        GatheringToolDefinition var1_6 = null;
+        GatheringToolDefinition var1_7 = null;
+        ItemStack var1_8 = null;
+        ItemStack var1_9 = null;
+        QuestDefinition var1_10 = null;
+        QuestDefinition var1_11 = null;
+        Npc var1_12 = null;
+        ItemStack var1_13 = null;
+        QuestDefinition var1_14 = null;
+        Npc var1_15 = null;
+        SandwichLadyFoodOffer var1_16 = null;
+        String var6_20 = null;
+        int var6_21 = 0;
+        TenthSquadSigilTeleportTask var6_22 = null;
+        String var6_23 = null;
+        String var6_24 = null;
+        String var6_25 = null;
+        String var6_26 = null;
+        long var6_27 = 0L;
+        int var6_28 = 0;
+        String var6_29 = null;
+        boolean var6_30 = false;
+        String var7_31 = null;
+        int var7_32 = 0;
+        int var7_33 = 0;
+        int var7_34 = 0;
+        int var7_35 = 0;
+        int var7_36 = 0;
+        int var7_37 = 0;
+        FarmingFarmerDefinition var7_38 = null;
+        Npc var8_39 = null;
+        ItemStack[] var8_40 = null;
+        SlayerMasterDefinition var8_41 = null;
+        double var9_42 = 0.0;
+        double var9_43 = 0.0;
+        double var9_44 = 0.0;
+        double var9_45 = 0.0;
+        SlayerMonsterGuide var9_46 = null;
+        SlayerMonsterGuide var9_47 = null;
+        ItemStack[] var9_48 = null;
+        ItemStack var9_49 = null;
+        ItemStack var10_50 = null;
         var0.getDialogueManager().setDialogueStep(var2_17);
         var0.getDialogueManager().setDialogueId(var1_1);
         var0.getDialogueManager().setDialogueType(0);
@@ -1634,7 +1565,7 @@ public class DialogueManager {
         if (var0.getQuestManager().handleNpcDialogue(var1_1, var2_17, var3_18, var4_19)) {
             return true;
         }
-        if (DialogueManager.b(var0, var1_1, var3_18)) {
+        if (DialogueManager.continueUtilityNpcDialogue(var0, var1_1, var3_18)) {
             return true;
         }
         block0 : switch (var1_1) {
@@ -2615,7 +2546,7 @@ public class DialogueManager {
                     case 5: {
                         var0.getDialogueManager().finishDialogue();
                         var0.setInterfaceAction("splitbark");
-                        GameplayHelper.a(var0, 3385, 3387, 3389, 3391, 3393, "Helm", "Body", "Legs", "Gauntlets", "Boots", "Splitbark Armour");
+        GameplayHelper.showSplitbarkProductionInterface(var0, 3385, 3387, 3389, 3391, 3393, "Helm", "Body", "Legs", "Gauntlets", "Boots", "Splitbark Armour");
                         return true;
                     }
                     case 6: {
@@ -3479,7 +3410,7 @@ public class DialogueManager {
                     }
                     case 17: {
                         var0.getInventoryManager().addOrDropItem(new ItemStack(2576, 1));
-                        var0.getDialogueManager().a("The professor has given you a navigation chart.", 2576);
+                        var0.getDialogueManager().showItemIdMessage("The professor has given you a navigation chart.", 2576);
                         return true;
                     }
                     case 18: {
@@ -3561,7 +3492,7 @@ public class DialogueManager {
                     }
                     case 9: {
                         var0.getInventoryManager().addOrDropItem(new ItemStack(2575, 1));
-                        var0.getDialogueManager().a("Brother Kojo has given you a watch.", 2575);
+                        var0.getDialogueManager().showItemIdMessage("Brother Kojo has given you a watch.", 2575);
                         var0.getDialogueManager().finishDialogue();
                         return true;
                     }
@@ -3615,7 +3546,7 @@ public class DialogueManager {
                     }
                     case 11: {
                         var0.getInventoryManager().addOrDropItem(new ItemStack(2574, 1));
-                        var0.getDialogueManager().a("Murphy has given you his old sextant.", 2574);
+                        var0.getDialogueManager().showItemIdMessage("Murphy has given you his old sextant.", 2574);
                         return true;
                     }
                     case 12: {
@@ -5225,29 +5156,24 @@ public class DialogueManager {
                     case 3: {
                         switch (var3_18) {
                             case 1: {
-                                if (var0.getSkillManager().getCurrentLevels()[3] >= var0.getSkillManager().getBaseLevel(3)) ** GOTO lbl2783
-                                if (var0.getInteractionTarget() == null || var0.getInteractionTarget().isDead()) ** GOTO lbl2786
+                                if (var0.getSkillManager().getCurrentLevels()[3] >= var0.getSkillManager().getBaseLevel(3)) {
+                                    var0.getDialogueManager().showNpcOneLineDialogue("You already have full hp.", 591);
+                                    var0.getDialogueManager().finishDialogue();
+                                    return true;
+                                }
+                                if (var0.getInteractionTarget() == null || var0.getInteractionTarget().isDead()) {
+                                    break block0;
+                                }
                                 var0.getInteractionTarget().getUpdateState().setAnimation(717);
                                 var0.getDialogueManager().showNpcOneLineDialogue("Sure, here you go.", 591);
                                 var0.heal((int)((double)var0.getSkillManager().getBaseLevel(3) * 0.3));
                                 var0.getUpdateState().setGraphic(84);
-                                ** GOTO lbl2784
-lbl2783:
-                                // 1 sources
-
-                                var0.getDialogueManager().showNpcOneLineDialogue("You already have full hp.", 591);
-lbl2784:
-                                // 2 sources
-
                                 var0.getDialogueManager().finishDialogue();
                                 return true;
                             }
                         }
                     }
                 }
-lbl2786:
-                // 3 sources
-
                 break;
             }
             case 2257: {
@@ -5404,19 +5330,17 @@ lbl2786:
             case 380: {
                 switch (var0.getDialogueManager().getDialogueStep()) {
                     case 1: {
-                        if (var0.getPosition().getX() <= 2815) ** GOTO lbl2919
+                        if (var0.getPosition().getX() <= 2815) {
+                            var0.getDialogueManager().showNpcTwoLineDialogue("Would you like to sail back to Ardougne?", "It will cost 30gp.", 591);
+                            return true;
+                        }
                         if (!var0.botEnabled) {
                             var0.getDialogueManager().showNpcTwoLineDialogue("Would you like to sail back to Port Sarim?", "It will cost 30gp.", 591);
-                        } else {
-                            TravelManager.handleShipRoute(var0, ShipRoute.KARAMJA_TO_PORT_SARIM);
-                            var0.getDialogueManager().markDialogueInactive();
-                            break;
-lbl2919:
-                            // 1 sources
-
-                            var0.getDialogueManager().showNpcTwoLineDialogue("Would you like to sail back to Ardougne?", "It will cost 30gp.", 591);
+                            return true;
                         }
-                        return true;
+                        TravelManager.handleShipRoute(var0, ShipRoute.KARAMJA_TO_PORT_SARIM);
+                        var0.getDialogueManager().markDialogueInactive();
+                        break block0;
                     }
                     case 2: {
                         var0.getDialogueManager().showTwoOptions("Yes please.", "No thanks.");
@@ -5745,7 +5669,7 @@ lbl2919:
                                 return true;
                             }
                             case 3: {
-                                GameplayHelper.i(var0);
+                    GameplayHelper.openTanningInterface(var0);
                                 return true;
                             }
                         }
@@ -6698,16 +6622,12 @@ lbl2919:
                                 if (var0.getSlayerManager().slayerMasterId == 3887 && !var0.skulled) {
                                     var0.addPvpCombatReference(var0, 2000);
                                     var0.getPacketSender().sendGameMessage("You are now skulled!");
-                                } else {
-                                    ** GOTO lbl3882
                                 }
+                                break block0;
                             }
                         }
                     }
                 }
-lbl3882:
-                // 5 sources
-
                 break;
             }
             case 70: 
@@ -6915,4 +6835,3 @@ lbl3882:
         return false;
     }
 }
-

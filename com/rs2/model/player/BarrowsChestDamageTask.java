@@ -8,13 +8,13 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 
-final class BarrowsChestDamageTask
+public final class BarrowsChestDamageTask
 extends TickTask {
     private /* synthetic */ Player player;
 
-    BarrowsChestDamageTask(Player player, int n) {
-        this.player = player;
+    public BarrowsChestDamageTask(Player player, int n) {
         super(50);
+        this.player = player;
     }
 
     @Override

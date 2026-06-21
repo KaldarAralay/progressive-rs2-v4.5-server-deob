@@ -8,7 +8,7 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class AgilityMovementFinishTask
+public final class AgilityMovementFinishTask
 extends CycleEvent {
     private final /* synthetic */ Player player;
     private final /* synthetic */ int experience;
@@ -17,7 +17,7 @@ extends CycleEvent {
     private final /* synthetic */ int destinationY;
     private final /* synthetic */ int destinationPlane;
 
-    AgilityMovementFinishTask(Player player, int n, boolean bl, int n2, int n3, int n4) {
+    public AgilityMovementFinishTask(Player player, int n, boolean bl, int n2, int n3, int n4) {
         this.player = player;
         this.experience = n;
         this.unlockPlayer = bl;

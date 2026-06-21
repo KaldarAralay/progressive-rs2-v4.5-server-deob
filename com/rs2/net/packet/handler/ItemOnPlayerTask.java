@@ -11,7 +11,7 @@ import com.rs2.model.task.TickTask;
 import com.rs2.net.packet.handler.PlayerInteractionPacketHandler;
 import com.rs2.util.GameUtil;
 
-final class ItemOnPlayerTask
+public final class ItemOnPlayerTask
 extends TickTask {
     private final /* synthetic */ Player targetPlayer;
     private final /* synthetic */ Player requestingPlayer;
@@ -19,13 +19,13 @@ extends TickTask {
     private final /* synthetic */ ItemStack usedItem;
     private final /* synthetic */ int inventorySlot;
 
-    ItemOnPlayerTask(PlayerInteractionPacketHandler playerInteractionPacketHandler, int n, Player player, Player player2, int n2, ItemStack itemStack, int n3) {
+    public ItemOnPlayerTask(PlayerInteractionPacketHandler playerInteractionPacketHandler, int n, Player player, Player player2, int n2, ItemStack itemStack, int n3) {
+        super(1);
         this.targetPlayer = player;
         this.requestingPlayer = player2;
         this.actionSequence = n2;
         this.usedItem = itemStack;
         this.inventorySlot = n3;
-        super(1);
     }
 
     @Override

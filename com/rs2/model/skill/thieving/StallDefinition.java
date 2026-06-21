@@ -34,14 +34,12 @@ public enum StallDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private StallDefinition(int n, int n2, int n3) {
-        void var7_5;
-        void var6_4;
-        this.objectIds = (int[])n;
-        this.rewards = (ItemStack[])n2;
-        this.requiredLevel = n3;
-        this.experience = var6_4;
-        this.respawnTicks = var7_5;
+    private StallDefinition(int[] nArray, ItemStack[] itemStackArray, int n2, int n3, int n4) {
+        this.objectIds = nArray;
+        this.rewards = itemStackArray;
+        this.requiredLevel = n2;
+        this.experience = n3;
+        this.respawnTicks = n4;
     }
 
     public final int[] getObjectIds() {

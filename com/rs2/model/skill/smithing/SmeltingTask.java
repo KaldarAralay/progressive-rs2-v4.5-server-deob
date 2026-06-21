@@ -9,7 +9,7 @@ import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.util.GameUtil;
 
-final class SmeltingTask
+public final class SmeltingTask
 extends CycleEvent {
     private int remainingActions;
     private int ticksUntilSmelt;
@@ -22,7 +22,7 @@ extends CycleEvent {
     private final /* synthetic */ ItemStack outputBar;
     private final /* synthetic */ int experience;
 
-    SmeltingTask(int n, Player player, int n2, ItemStack itemStack, boolean bl, ItemStack itemStack2, int n3, ItemStack itemStack3, int n4) {
+    public SmeltingTask(int n, Player player, int n2, ItemStack itemStack, boolean bl, ItemStack itemStack2, int n3, ItemStack itemStack3, int n4) {
         this.player = player;
         this.actionSequence = n2;
         this.primaryOre = itemStack;

@@ -9,12 +9,12 @@ import com.rs2.model.skill.farming.HerbPatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class HerbCureTask
+public final class HerbCureTask
 extends CycleEvent {
     private /* synthetic */ HerbPatchManager manager;
     private final /* synthetic */ HerbPatch patch;
 
-    HerbCureTask(HerbPatchManager herbPatchManager, HerbPatch herbPatch) {
+    public HerbCureTask(HerbPatchManager herbPatchManager, HerbPatch herbPatch) {
         this.manager = herbPatchManager;
         this.patch = herbPatch;
     }

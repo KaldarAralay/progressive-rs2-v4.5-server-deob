@@ -7,7 +7,7 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class AgilityQueuedMovementStepTask
+public final class AgilityQueuedMovementStepTask
 extends CycleEvent {
     private final /* synthetic */ Player player;
     private final /* synthetic */ int forcedMovementEndXOffset;
@@ -16,7 +16,7 @@ extends CycleEvent {
     private final /* synthetic */ int forcedMovementEndDelay;
     private final /* synthetic */ int forcedMovementDirection;
 
-    AgilityQueuedMovementStepTask(Player player, int n, int n2, int n3, int n4, int n5) {
+    public AgilityQueuedMovementStepTask(Player player, int n, int n2, int n3, int n4, int n5) {
         this.player = player;
         this.forcedMovementEndXOffset = n;
         this.forcedMovementEndYOffset = n2;

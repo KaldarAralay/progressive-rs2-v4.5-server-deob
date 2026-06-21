@@ -7,47 +7,47 @@ import com.rs2.model.Entity;
 import com.rs2.model.task.CycleEvent;
 
 public final class CycleEventContainer {
-    private Entity a;
-    private boolean b;
-    private int c;
-    private CycleEvent d;
-    private int e;
+    private Entity entity;
+    private boolean active;
+    private int tickDelay;
+    private CycleEvent event;
+    private int elapsedTicks;
 
     public CycleEventContainer(Entity entity, CycleEvent cycleEvent, int n) {
-        this.a = entity;
-        this.d = cycleEvent;
-        this.b = true;
-        this.e = 0;
-        this.c = n;
+        this.entity = entity;
+        this.event = cycleEvent;
+        this.active = true;
+        this.elapsedTicks = 0;
+        this.tickDelay = n;
     }
 
     public final void execute() {
-        this.d.execute(this);
+        this.event.execute(this);
     }
 
     public final void stop() {
-        this.b = false;
-        this.d.onStop();
+        this.active = false;
+        this.event.onStop();
     }
 
     public final boolean tick() {
-        if (++this.e >= this.c) {
-            this.e = 0;
+        if (++this.elapsedTicks >= this.tickDelay) {
+            this.elapsedTicks = 0;
             return true;
         }
         return false;
     }
 
     public final Entity getEntity() {
-        return this.a;
+        return this.entity;
     }
 
     public final boolean isActive() {
-        return this.b;
+        return this.active;
     }
 
     public final void setTickDelay(int n) {
-        this.c = n;
+        this.tickDelay = n;
     }
 }
 

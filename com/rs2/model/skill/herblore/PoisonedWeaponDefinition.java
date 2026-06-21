@@ -76,13 +76,11 @@ public enum PoisonedWeaponDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private PoisonedWeaponDefinition(int n3, int n4) {
-        void var6_4;
-        void var5_3;
-        this.unpoisonedItemId = n3;
-        this.poisonedItemId = n4;
-        this.poisonPlusItemId = var5_3;
-        this.poisonPlusPlusItemId = var6_4;
+    private PoisonedWeaponDefinition(int n2, int n3, int n4, int n5) {
+        this.unpoisonedItemId = n2;
+        this.poisonedItemId = n3;
+        this.poisonPlusItemId = n4;
+        this.poisonPlusPlusItemId = n5;
     }
 
     public final int getPoisonedItemId() {

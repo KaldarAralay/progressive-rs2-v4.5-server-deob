@@ -23,8 +23,7 @@ public class CacheArchiveEntry {
     private int dataOffset;
 
     public static void startTradeOfferTick(Player object) {
-        object = new BotTradeOfferTickTask(3, (Player)object);
-        World.getTaskScheduler().schedule((TickTask)object);
+        World.getTaskScheduler().schedule(new BotTradeOfferTickTask(3, (Player)object));
     }
 
     public static void completeTradeAdvertOffer(Player object, boolean bl) {
@@ -42,14 +41,12 @@ public class CacheArchiveEntry {
         if (((Player)object).tradeAdvertMode == 1) {
             if (!((Player)object).getInventoryManager().containsItem(995) || ((Player)object).tradeAdvertScam) {
                 ((Player)object).botTaskState = "wait for new task";
-                object = new BotTradeCoinShortageResetTask(10, (Player)object);
-                World.getTaskScheduler().schedule((TickTask)object);
+                World.getTaskScheduler().schedule(new BotTradeCoinShortageResetTask(10, (Player)object));
                 return;
             }
         } else if (!((Player)object).getInventoryManager().containsItem(((Player)object).botAdvertItemId) || ((Player)object).tradeAdvertScam) {
             ((Player)object).botTaskState = "wait for new task";
-            object = new BotTradeItemShortageResetTask(10, (Player)object);
-            World.getTaskScheduler().schedule((TickTask)object);
+            World.getTaskScheduler().schedule(new BotTradeItemShortageResetTask(10, (Player)object));
         }
     }
 

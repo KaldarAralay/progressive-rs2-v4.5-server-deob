@@ -88,8 +88,7 @@ public class ObjectDefinition {
         if (this.objectId == 6771 || this.objectId == 6772 || this.objectId == 6773 || this.objectId == 6821 || this.objectId == 6822 || this.objectId == 6823) {
             return false;
         }
-        Object object = new int[]{2440, 2441, 2442, 2443, 2637, 9563, 9565, 14462, 14464, 14465, 14466, 14467, 14468, 14470, 14502, 11754, 3007, 980, 997, 4262, 14437, 14438, 4437, 4439, 3487, 3457};
-        int[] nArray = object;
+        int[] nArray = new int[]{2440, 2441, 2442, 2443, 2637, 9563, 9565, 14462, 14464, 14465, 14466, 14467, 14468, 14470, 14502, 11754, 3007, 980, 997, 4262, 14437, 14438, 4437, 4439, 3487, 3457};
         int n = 0;
         while (n < 26) {
             int n2 = nArray[n];
@@ -99,13 +98,12 @@ public class ObjectDefinition {
             ++n;
         }
         if (this.name != null) {
-            object = this.name.toLowerCase();
-            Object object2 = new String[]{"fungus", "mushroom", "sarcophagus", "counter", "plant", "altar", "pew", "log", "stump", "stool", "sign", "cart", "chest", "rock", "bush", "hedge", "chair", "table", "crate", "barrel", "box", "skeleton", "corpse", "vent", "stone", "rockslide"};
-            String[] stringArray = object2;
+            String objectName = this.name.toLowerCase();
+            String[] stringArray = new String[]{"fungus", "mushroom", "sarcophagus", "counter", "plant", "altar", "pew", "log", "stump", "stool", "sign", "cart", "chest", "rock", "bush", "hedge", "chair", "table", "crate", "barrel", "box", "skeleton", "corpse", "vent", "stone", "rockslide"};
             int n3 = 0;
             while (n3 < 26) {
-                object2 = stringArray[n3];
-                if (((String)object).contains((CharSequence)object2)) {
+                String ignoredNameFragment = stringArray[n3];
+                if (objectName.contains(ignoredNameFragment)) {
                     return true;
                 }
                 ++n3;

@@ -13,12 +13,12 @@ import com.rs2.util.GameUtil;
 public final class DirectPathStrategy
 implements PathStrategy {
     @Override
-    public final PathResult buildPath(Entity object, Position position, boolean bl) {
+    public final PathResult buildPath(Entity entity, Position position, boolean bl) {
         PathResult pathResult = new PathResult();
-        object = ((Entity)object).getPosition().copy();
-        Position position2 = ((Position)object).copy();
-        int n = position.getX() - ((Position)object).getX();
-        int n2 = position.getY() - ((Position)object).getY();
+        Position currentPosition = entity.getPosition().copy();
+        Position previousPosition = currentPosition.copy();
+        int n = position.getX() - currentPosition.getX();
+        int n2 = position.getY() - currentPosition.getY();
         int n3 = 0;
         int n4 = 0;
         int n5 = 0;
@@ -54,22 +54,23 @@ implements PathStrategy {
         n = 0;
         while (n <= n7) {
             n2 += n8;
-            if (!position2.equals(object) && bl && !GameUtil.hasClearPath((Position)object, position2, true)) {
+            if (!previousPosition.equals(currentPosition) && bl && !GameUtil.hasClearPath(currentPosition, previousPosition, true)) {
                 return pathResult;
             }
-            position2 = ((Position)object).copy();
-            pathResult.getSteps().add(new PathStep(((Position)object).getX(), ((Position)object).getY()));
+            previousPosition = currentPosition.copy();
+            pathResult.getSteps().add(new PathStep(currentPosition.getX(), currentPosition.getY()));
             if (n2 >= n7) {
                 n2 -= n7;
-                ((Position)object).setX(((Position)object).getX() + n3);
-                ((Position)object).setY(((Position)object).getY() + n4);
+                currentPosition.setX(currentPosition.getX() + n3);
+                currentPosition.setY(currentPosition.getY() + n4);
             } else {
-                ((Position)object).setX(((Position)object).getX() + n5);
-                ((Position)object).setY(((Position)object).getY() + n6);
+                currentPosition.setX(currentPosition.getX() + n5);
+                currentPosition.setY(currentPosition.getY() + n6);
             }
             ++n;
         }
         return pathResult;
     }
+
 }
 

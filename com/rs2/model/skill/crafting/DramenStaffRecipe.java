@@ -36,14 +36,14 @@ public enum DramenStaffRecipe {
         return (DramenStaffRecipe)((Object)definitionsByButtonId.get(n));
     }
 
-    private DramenStaffRecipe(int n3, int n4, int n5, int n6, double d) {
-        this.buttonId = n3;
-        this.ingredientItemId = 771;
-        this.productItemId = 772;
-        this.quantity = n6;
-        this.ingredientAmount = 1;
-        this.requiredLevel = 31;
-        this.experience = 0.0;
+    private DramenStaffRecipe(int buttonId, int ingredientItemId, int productItemId, int quantity, int ingredientAmount, int requiredLevel, double experience) {
+        this.buttonId = buttonId;
+        this.ingredientItemId = ingredientItemId;
+        this.productItemId = productItemId;
+        this.quantity = quantity;
+        this.ingredientAmount = ingredientAmount;
+        this.requiredLevel = requiredLevel;
+        this.experience = experience;
     }
 
     public final int getIngredientItemId() {

@@ -18,15 +18,15 @@ import com.rs2.model.combat.special.MagicLongbowSpecialDefinition;
 import com.rs2.model.item.ItemStack;
 import com.rs2.model.player.Player;
 
-final class MagicLongbowSpecialAttack
+public final class MagicLongbowSpecialAttack
 extends WeaponCombatAttack {
     private final /* synthetic */ WeaponProfile sourceWeaponProfile;
     private final /* synthetic */ Player player;
 
-    MagicLongbowSpecialAttack(MagicLongbowSpecialDefinition magicLongbowSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile, WeaponProfile weaponProfile2, Player player2) {
+    public MagicLongbowSpecialAttack(MagicLongbowSpecialDefinition magicLongbowSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile, WeaponProfile weaponProfile2, Player player2) {
+        super(player, entity, weaponProfile);
         this.sourceWeaponProfile = weaponProfile2;
         this.player = player2;
-        super(player, entity, weaponProfile);
     }
 
     @Override

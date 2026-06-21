@@ -7,9 +7,9 @@ import com.rs2.model.combat.requirement.SpellRuneCostRequirement;
 import com.rs2.model.skill.magic.MagicSpellAction;
 import com.rs2.model.skill.magic.SpellDefinition;
 
-final class RuneRequirement
+public final class RuneRequirement
 extends SpellRuneCostRequirement {
-    RuneRequirement(MagicSpellAction magicSpellAction, SpellDefinition spellDefinition) {
+    public RuneRequirement(MagicSpellAction magicSpellAction, SpellDefinition spellDefinition) {
         super(spellDefinition);
     }
 

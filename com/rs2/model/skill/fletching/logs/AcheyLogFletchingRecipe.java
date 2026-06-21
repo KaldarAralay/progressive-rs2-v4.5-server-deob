@@ -35,13 +35,13 @@ public enum AcheyLogFletchingRecipe {
         return (AcheyLogFletchingRecipe)((Object)recipesByButtonId.get(n));
     }
 
-    private AcheyLogFletchingRecipe(int n3, int n4, int n5, double d) {
-        this.buttonId = n3;
-        this.logItemId = 2862;
-        this.productItemId = 4825;
-        this.menuQuantity = (int)d;
-        this.requiredLevel = 30;
-        this.experience = 45.0;
+    private AcheyLogFletchingRecipe(int buttonId, int logItemId, int productItemId, int menuQuantity, int requiredLevel, double experience) {
+        this.buttonId = buttonId;
+        this.logItemId = logItemId;
+        this.productItemId = productItemId;
+        this.menuQuantity = menuQuantity;
+        this.requiredLevel = requiredLevel;
+        this.experience = experience;
     }
 
     public final int getLogItemId() {

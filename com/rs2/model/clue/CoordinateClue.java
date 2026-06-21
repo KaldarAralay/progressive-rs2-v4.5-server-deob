@@ -99,17 +99,15 @@ public enum CoordinateClue {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private CoordinateClue(int n3, int n4, int n5, String string, String string2, int n6) {
-        void var10_8;
-        void var9_7;
-        this.clueItemId = n3;
-        this.latitudeDegrees = n4;
-        this.latitudeMinutes = n5;
-        this.longitudeDegrees = (int)string;
-        this.longitudeMinutes = (int)string2;
-        this.latitudeDirection = (String)n6;
-        this.longitudeDirection = var9_7;
-        this.level = var10_8;
+    private CoordinateClue(int n2, int n3, int n4, int n5, int n6, String string2, String string3, int n7) {
+        this.clueItemId = n2;
+        this.latitudeDegrees = n3;
+        this.latitudeMinutes = n4;
+        this.longitudeDegrees = n5;
+        this.longitudeMinutes = n6;
+        this.latitudeDirection = string2;
+        this.longitudeDirection = string3;
+        this.level = n7;
     }
 
     public final int getClueItemId() {

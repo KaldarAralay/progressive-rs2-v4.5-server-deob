@@ -13,14 +13,14 @@ import com.rs2.model.skill.farming.SpecialCropPatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class SpecialCropHarvestTask
+public final class SpecialCropHarvestTask
 extends CycleEvent {
     private /* synthetic */ SpecialCropPatchManager manager;
     private final /* synthetic */ int actionSequence;
     private final /* synthetic */ SpecialCropPatch patch;
     private final /* synthetic */ SpecialCropDefinition definition;
 
-    SpecialCropHarvestTask(SpecialCropPatchManager specialCropPatchManager, int n, SpecialCropPatch specialCropPatch, SpecialCropDefinition specialCropDefinition) {
+    public SpecialCropHarvestTask(SpecialCropPatchManager specialCropPatchManager, int n, SpecialCropPatch specialCropPatch, SpecialCropDefinition specialCropDefinition) {
         this.manager = specialCropPatchManager;
         this.actionSequence = n;
         this.patch = specialCropPatch;
@@ -50,7 +50,7 @@ extends CycleEvent {
         SpecialCropPatchManager.getPlayer(this.manager).getSkillManager().addExperience(19, this.definition.getHarvestExperience());
         switch (this.definition) {
             case BELLADONNA: {
-                SpecialCropPatchManager.a(this.manager, this.patch.getIndex());
+                SpecialCropPatchManager.resetPatch(this.manager, this.patch.getIndex());
                 this.manager.growthStages[this.patch.getIndex()] = 3;
                 this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.getElapsedMinutes();
                 break;
@@ -64,7 +64,7 @@ extends CycleEvent {
                 int n = this.patch.getIndex();
                 this.manager.growthStages[n] = this.manager.growthStages[n] + 1;
                 if (this.manager.growthStages[this.patch.getIndex()] != 16) break;
-                SpecialCropPatchManager.a(this.manager, this.patch.getIndex());
+                SpecialCropPatchManager.resetPatch(this.manager, this.patch.getIndex());
                 this.manager.growthStages[this.patch.getIndex()] = 3;
                 this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.getElapsedMinutes();
             }

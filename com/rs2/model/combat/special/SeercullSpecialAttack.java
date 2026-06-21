@@ -18,15 +18,15 @@ import com.rs2.model.combat.special.SeercullSpecialDefinition;
 import com.rs2.model.item.ItemStack;
 import com.rs2.model.player.Player;
 
-final class SeercullSpecialAttack
+public final class SeercullSpecialAttack
 extends WeaponCombatAttack {
     private final /* synthetic */ WeaponProfile sourceWeaponProfile;
     private final /* synthetic */ Player player;
 
-    SeercullSpecialAttack(SeercullSpecialDefinition seercullSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile, WeaponProfile weaponProfile2, Player player2) {
+    public SeercullSpecialAttack(SeercullSpecialDefinition seercullSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile, WeaponProfile weaponProfile2, Player player2) {
+        super(player, entity, weaponProfile);
         this.sourceWeaponProfile = weaponProfile2;
         this.player = player2;
-        super(player, entity, weaponProfile);
     }
 
     @Override

@@ -72,110 +72,84 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
-            if (stringArray.getQuestState(46) == 1 && stringArray.getQuestState(95) == 1) {
-                stringArray = new String[]{"In The Grand Tree, I exposed the treachery of King", "Narnode Shareen's then High Tree Guardian, Glough.", "Glough has since been deposed. To start this quest I must", "check how King Shareen is faring.", "", "To complete this quest I need:", "-To be able to defeat a level 195 Jungle Demon"};
-                return stringArray;
+            if (player.getQuestState(46) == 1 && player.getQuestState(95) == 1) {
+                return new String[]{"In The Grand Tree, I exposed the treachery of King", "Narnode Shareen's then High Tree Guardian, Glough.", "Glough has since been deposed. To start this quest I must", "check how King Shareen is faring.", "", "To complete this quest I need:", "-To be able to defeat a level 195 Jungle Demon"};
             }
-            stringArray = new String[]{"To start this quest I need to:", String.valueOf(stringArray.getQuestState(46) == 1 ? "@str@" : "") + "-Complete The Grand Tree quest", String.valueOf(stringArray.getQuestState(95) == 1 ? "@str@" : "") + "-Complete The Tree Gnome Village quest", "", "To complete this quest I need:", "-To be able to defeat a level 195 Jungle Demon"};
-            return stringArray;
+            return new String[]{"To start this quest I need to:", String.valueOf(player.getQuestState(46) == 1 ? "@str@" : "") + "-Complete The Grand Tree quest", String.valueOf(player.getQuestState(95) == 1 ? "@str@" : "") + "-Complete The Tree Gnome Village quest", "", "To complete this quest I need:", "-To be able to defeat a level 195 Jungle Demon"};
         }
         if (n == 2) {
-            if (stringArray.ownsItem(4004)) {
-                stringArray = new String[]{"I should go investigate the Karamja shipyard."};
-                return stringArray;
+            if (player.ownsItem(4004)) {
+                return new String[]{"I should go investigate the Karamja shipyard."};
             }
-            stringArray = new String[]{"I should speak with King Narnode."};
-            return stringArray;
+            return new String[]{"I should speak with King Narnode."};
         }
         if (n == 3) {
-            stringArray = new String[]{"I should go investigate the Karamja shipyard."};
-            return stringArray;
+            return new String[]{"I should go investigate the Karamja shipyard."};
         }
         if (n == 4) {
-            if (n == 4 && stringArray.ownsItem(4005)) {
-                stringArray = new String[]{"I should bring Kings orders to Daero who should", "be somewhere in the Grand Tree."};
-                return stringArray;
+            if (n == 4 && player.ownsItem(4005)) {
+                return new String[]{"I should bring Kings orders to Daero who should", "be somewhere in the Grand Tree."};
             }
-            stringArray = new String[]{"I should report back to King Narnode."};
-            return stringArray;
+            return new String[]{"I should report back to King Narnode."};
         }
         if (n == 5 || n == 6) {
-            stringArray = new String[]{"I should speak with Daero."};
-            return stringArray;
+            return new String[]{"I should speak with Daero."};
         }
         if (n == 7) {
-            stringArray = new String[]{"The code to power the hangar needs to be solved."};
-            return stringArray;
+            return new String[]{"The code to power the hangar needs to be solved."};
         }
         if (n == 8) {
-            stringArray = new String[]{"I should speak with Daero in the hangar."};
-            return stringArray;
+            return new String[]{"I should speak with Daero in the hangar."};
         }
         if (n == 9) {
-            stringArray = new String[]{"I should speak with Waydar."};
-            return stringArray;
+            return new String[]{"I should speak with Waydar."};
         }
         if (n == 10) {
-            stringArray = new String[]{"I should go and look for the 10th squad."};
-            return stringArray;
+            return new String[]{"I should go and look for the 10th squad."};
         }
         if (n == 11) {
-            stringArray = new String[]{"I should go and look for the 10th squad."};
-            return stringArray;
+            return new String[]{"I should go and look for the 10th squad."};
         }
         if (n == 12) {
-            stringArray = new String[]{"I should try to escape."};
-            return stringArray;
+            return new String[]{"I should try to escape."};
         }
-        if (!(n != 13 || this.isProgressFlagSet((Player)stringArray, 18) || this.isProgressFlagSet((Player)stringArray, 2) || this.isProgressFlagSet((Player)stringArray, 6) || this.isProgressFlagSet((Player)stringArray, 12))) {
-            stringArray = new String[]{"I should find and speak with Zooknock."};
-            return stringArray;
+        if (!(n != 13 || this.isProgressFlagSet(player, 18) || this.isProgressFlagSet(player, 2) || this.isProgressFlagSet(player, 6) || this.isProgressFlagSet(player, 12))) {
+            return new String[]{"I should find and speak with Zooknock."};
         }
-        if (n == 13 && this.isProgressFlagSet((Player)stringArray, 2)) {
-            stringArray = new String[]{"Zooknock told me for the amulet he needs:", String.valueOf(this.isProgressFlagSet((Player)stringArray, 3) ? "@str@" : "") + "Gold bar", String.valueOf(this.isProgressFlagSet((Player)stringArray, 5) ? "@str@" : "") + "Monkey amulet mould", String.valueOf(this.isProgressFlagSet((Player)stringArray, 4) ? "@str@" : "") + "Something to do monkey speech"};
-            return stringArray;
+        if (n == 13 && this.isProgressFlagSet(player, 2)) {
+            return new String[]{"Zooknock told me for the amulet he needs:", String.valueOf(this.isProgressFlagSet(player, 3) ? "@str@" : "") + "Gold bar", String.valueOf(this.isProgressFlagSet(player, 5) ? "@str@" : "") + "Monkey amulet mould", String.valueOf(this.isProgressFlagSet(player, 4) ? "@str@" : "") + "Something to do monkey speech"};
         }
-        if (n == 13 && this.isProgressFlagSet((Player)stringArray, 12)) {
-            stringArray = new String[]{"Zooknock told me for the talisman he needs:", String.valueOf(this.isProgressFlagSet((Player)stringArray, 13) ? "@str@" : "") + "Some kind of monkey remains", String.valueOf(this.isProgressFlagSet((Player)stringArray, 14) ? "@str@" : "") + "Authentic magical monkey talisman"};
-            return stringArray;
+        if (n == 13 && this.isProgressFlagSet(player, 12)) {
+            return new String[]{"Zooknock told me for the talisman he needs:", String.valueOf(this.isProgressFlagSet(player, 13) ? "@str@" : "") + "Some kind of monkey remains", String.valueOf(this.isProgressFlagSet(player, 14) ? "@str@" : "") + "Authentic magical monkey talisman"};
         }
-        if (n == 13 && this.isProgressFlagSet((Player)stringArray, 18)) {
-            stringArray = new String[]{"I should speak with Garkor."};
-            return stringArray;
+        if (n == 13 && this.isProgressFlagSet(player, 18)) {
+            return new String[]{"I should speak with Garkor."};
         }
         if (n == 14) {
-            stringArray = new String[]{"I need to find a way to speak with Awowogei."};
-            return stringArray;
+            return new String[]{"I need to find a way to speak with Awowogei."};
         }
         if (n == 15) {
-            stringArray = new String[]{"I should find and speak with Kruk."};
-            return stringArray;
+            return new String[]{"I should find and speak with Kruk."};
         }
         if (n == 16) {
-            stringArray = new String[]{"I should speak with Awowogei."};
-            return stringArray;
+            return new String[]{"I should speak with Awowogei."};
         }
         if (n == 17) {
-            stringArray = new String[]{"I should bring a monkey from Ardougne Zoo to Awowogei."};
-            return stringArray;
+            return new String[]{"I should bring a monkey from Ardougne Zoo to Awowogei."};
         }
         if (n == 18 || n == 19) {
-            stringArray = new String[]{"I should speak with Garkor."};
-            return stringArray;
+            return new String[]{"I should speak with Garkor."};
         }
         if (n == 20) {
-            stringArray = new String[]{"I should prepare myself for battle and then wear", "the squad sigil when ready."};
-            return stringArray;
+            return new String[]{"I should prepare myself for battle and then wear", "the squad sigil when ready."};
         }
         if (n == 21 || n == 22) {
-            stringArray = new String[]{"I should speak with King Narnode."};
-            return stringArray;
+            return new String[]{"I should speak with King Narnode."};
         }
         if (n == 1) {
-            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "3 Quest Points", "10,000 coins", "3 diamonds", "", this.isProgressFlagSet((Player)stringArray, 17) ? "" : "I should speak with Daero for my training."};
-            return stringArray;
+            return new String[]{"Quest Completed!", "", "You were awarded:", "3 Quest Points", "10,000 coins", "3 diamonds", "", this.isProgressFlagSet(player, 17) ? "" : "I should speak with Daero for my training."};
         }
         return null;
     }
@@ -234,8 +208,7 @@ extends QuestScript {
             if (player.activeEnvironmentalHazardId == 1425) {
                 return true;
             }
-            object = new ApeAtollDungeonHazardDamageTask(this, 25, player);
-            World.getTaskScheduler().schedule((TickTask)object);
+            World.getTaskScheduler().schedule(new ApeAtollDungeonHazardDamageTask(this, 25, player));
             player.activeEnvironmentalHazardId = 1425;
             return true;
         }
@@ -249,8 +222,7 @@ extends QuestScript {
             Player player = object;
             player.packetSender.sendSoundEffect(469, 1, 0);
             ((Player)object).setActionLocked(true);
-            object = new MonkeyAmuletSmithingTask(this, 4, (Player)object);
-            World.getTaskScheduler().schedule((TickTask)object);
+            World.getTaskScheduler().schedule(new MonkeyAmuletSmithingTask(this, 4, (Player)object));
             return true;
         }
         return false;
@@ -362,8 +334,7 @@ extends QuestScript {
                 Player player = object;
                 player.packetSender.sendGameMessage("You attempt to pick the lock.");
                 boolean bl = GameUtil.randomInt(3) == 0;
-                object = new ShipyardGateLockpickTask(this, 3, (Player)object, bl);
-                World.getTaskScheduler().schedule((TickTask)object);
+                World.getTaskScheduler().schedule(new ShipyardGateLockpickTask(this, 3, (Player)object, bl));
             }
             return true;
         }
@@ -377,8 +348,7 @@ extends QuestScript {
                 player.setActionLocked(true);
                 Object object = player;
                 ((Player)object).packetSender.sendGameMessage("You search the crate.");
-                object = new MonkeyDenturesCrateSearchTask(this, 2, player);
-                World.getTaskScheduler().schedule((TickTask)object);
+                World.getTaskScheduler().schedule(new MonkeyDenturesCrateSearchTask(this, 2, player));
                 return true;
             }
             if (n3 == 2) {
@@ -402,8 +372,7 @@ extends QuestScript {
                 player.setActionLocked(true);
                 Object object = player;
                 ((Player)object).packetSender.sendGameMessage("You search the crate.");
-                object = new ShipyardCrateHoleSearchTask(this, 2, player);
-                World.getTaskScheduler().schedule((TickTask)object);
+                World.getTaskScheduler().schedule(new ShipyardCrateHoleSearchTask(this, 2, player));
                 return true;
             }
             if (n3 == 2) {
@@ -423,8 +392,7 @@ extends QuestScript {
                 player.setActionLocked(true);
                 Object object = player;
                 ((Player)object).packetSender.showInterface(8677);
-                object = new ShipyardCrateTunnelDescentTask(this, 5, player);
-                World.getTaskScheduler().schedule((TickTask)object);
+                World.getTaskScheduler().schedule(new ShipyardCrateTunnelDescentTask(this, 5, player));
                 return true;
             }
         }
@@ -433,8 +401,7 @@ extends QuestScript {
                 player.setActionLocked(true);
                 Object object = player;
                 ((Player)object).packetSender.sendGameMessage("You search the crate.");
-                object = new MonkeyAmuletMouldCrateSearchTask(this, 2, player);
-                World.getTaskScheduler().schedule((TickTask)object);
+                World.getTaskScheduler().schedule(new MonkeyAmuletMouldCrateSearchTask(this, 2, player));
                 return true;
             }
             if (n3 == 2) {
@@ -462,8 +429,7 @@ extends QuestScript {
             object = player;
             ((Player)object).packetSender.sendGameMessage("sound...");
             player.setQuestState(this.getQuestId(), 8);
-            object = new DaeroPuzzleCompletionTeleportTask(this, 5, player);
-            World.getTaskScheduler().schedule((TickTask)object);
+            World.getTaskScheduler().schedule(new DaeroPuzzleCompletionTeleportTask(this, 5, player));
             player.getDialogueManager().finishDialogue();
             return true;
         }
@@ -592,8 +558,7 @@ extends QuestScript {
         player.packetSender.showWalkableInterface(8677);
         ((Entity)object).getUpdateState().setAnimation(2304);
         ((Player)object).setActionLocked(true);
-        object = new ApeAtollGuardCaptureTask(this, 3, (Player)object);
-        World.getTaskScheduler().schedule((TickTask)object);
+        World.getTaskScheduler().schedule(new ApeAtollGuardCaptureTask(this, 3, (Player)object));
     }
 
     @Override
@@ -612,8 +577,7 @@ extends QuestScript {
                     ((Player)object).packetSender.showWalkableInterface(8677);
                     entity.getUpdateState().setAnimation(2304);
                     ((Player)entity).setActionLocked(true);
-                    object = new ApeAtollGuardCaptureDialogueTask(this, 10, (Player)entity, n);
-                    World.getTaskScheduler().schedule((TickTask)object);
+                    World.getTaskScheduler().schedule(new ApeAtollGuardCaptureDialogueTask(this, 10, (Player)entity, n));
                     return 0;
                 }
             }
@@ -731,7 +695,7 @@ extends QuestScript {
                 if (n2 == 18) {
                     if (n3 == 1) {
                         player.getDialogueManager().showPlayerOneLineDialogue("Ok, I'll do it.", 591);
-                        this.d(player);
+                        this.startQuest(player);
                         player.getDialogueManager().setNextDialogueStep(19);
                         return true;
                     }
@@ -2736,9 +2700,10 @@ extends QuestScript {
                 if (n2 == 2) {
                     Npc npc = new Npc(1472);
                     new Npc(1472).a = player;
-                    GameplayHelper.b(player, npc, 2702, 9176, player.getPosition().getPlane(), -1, true, true);
+                    GameplayHelper.replaceOwnedRoamingNpcAtPosition(player, npc, 2702, 9176, player.getPosition().getPlane(), -1, true, true);
                     npc.getUpdateState().setGraphic(86, 25);
-                    for (Npc npc2 : player.temporaryCutsceneNpcs) {
+                    for (Object temporaryNpc : player.temporaryCutsceneNpcs) {
+                        Npc npc2 = (Npc)temporaryNpc;
                         if (npc2 == null) continue;
                         CombatManager.startCombat(npc2, npc);
                     }

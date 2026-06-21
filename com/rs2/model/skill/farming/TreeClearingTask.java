@@ -12,13 +12,13 @@ import com.rs2.model.skill.farming.TreePatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class TreeClearingTask
+public final class TreeClearingTask
 extends CycleEvent {
     private /* synthetic */ TreePatchManager manager;
     private final /* synthetic */ int animationId;
     private final /* synthetic */ TreePatch patch;
 
-    TreeClearingTask(TreePatchManager treePatchManager, int n, TreePatch treePatch) {
+    public TreeClearingTask(TreePatchManager treePatchManager, int n, TreePatch treePatch) {
         this.manager = treePatchManager;
         this.animationId = n;
         this.patch = treePatch;

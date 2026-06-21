@@ -13,32 +13,32 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public final class CycleEventHandler {
-    private static CycleEventHandler a;
-    private Queue b = new LinkedList();
-    private Queue c = new LinkedList();
+    private static CycleEventHandler instance;
+    private Queue activeEvents = new LinkedList();
+    private Queue pendingEvents = new LinkedList();
 
     public static CycleEventHandler getInstance() {
-        if (a == null) {
-            a = new CycleEventHandler();
+        if (instance == null) {
+            instance = new CycleEventHandler();
         }
-        return a;
+        return instance;
     }
 
-    public final CycleEventContainer schedule(Entity entity, CycleEvent object, int n) {
-        object = new CycleEventContainer(entity, (CycleEvent)object, n);
+    public final CycleEventContainer schedule(Entity entity, CycleEvent cycleEvent, int n) {
+        CycleEventContainer cycleEventContainer = new CycleEventContainer(entity, cycleEvent, n);
         if (entity.getIndex() == -1) {
-            return object;
+            return cycleEventContainer;
         }
-        this.c.add(object);
-        return object;
+        this.pendingEvents.add(cycleEventContainer);
+        return cycleEventContainer;
     }
 
     public final void process() {
         ProfilerTimer profilerTimer = ProfilerRegistry.getTimer("cycleEvents");
         profilerTimer.start();
-        this.b.addAll(this.c);
-        this.c.clear();
-        Iterator iterator = this.b.iterator();
+        this.activeEvents.addAll(this.pendingEvents);
+        this.pendingEvents.clear();
+        Iterator iterator = this.activeEvents.iterator();
         while (iterator.hasNext()) {
             CycleEventContainer cycleEventContainer = (CycleEventContainer)iterator.next();
             if (cycleEventContainer == null) continue;

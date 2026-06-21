@@ -12,9 +12,9 @@ public enum HajedyCartRoute {
     int fareCoins;
     Position destination;
 
-    private HajedyCartRoute(int n2) {
-        this.destination = (Position)n2;
-        this.fareCoins = 0;
+    private HajedyCartRoute(Position destination, int fareCoins, int unused) {
+        this.destination = destination;
+        this.fareCoins = fareCoins;
     }
 }
 

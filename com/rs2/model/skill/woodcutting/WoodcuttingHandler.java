@@ -34,7 +34,7 @@ public class WoodcuttingHandler {
     private Position f;
     private int g;
 
-    public static void a(Player player, int n, int n2, int n3, boolean bl) {
+    public static void startWoodcutting(Player player, int n, int n2, int n3, boolean bl) {
         Object object;
         Object object2;
         Object object3;
@@ -89,7 +89,7 @@ public class WoodcuttingHandler {
             }
         }
         if (player.getQuestState(0) != 1) {
-            player.getDialogueManager().a("Please wait.", "", "Your character is now attempting to cut down the tree. Sit back", "for a moment while he does all the hard work.", "", true);
+            player.getDialogueManager().showTutorialInstructionOverlay("Please wait.", "", "Your character is now attempting to cut down the tree. Sit back", "for a moment while he does all the hard work.", "", true);
         } else {
             object = player;
             ((Player)object).packetSender.sendGameMessage("You swing your axe at the " + (object3 == TreeDefinition.VINES ? "vines" : "tree") + ".");
@@ -106,7 +106,7 @@ public class WoodcuttingHandler {
                 object2 = new Npc(n4);
                 object = SkillActionHelper.findWorldObjectById(n, n2, n3, player.getPosition().getPlane());
                 ObjectManager.getInstance().addDynamicObject(new DynamicObject(ServerSettings.placeholderObjectId, n2, n3, player.getPosition().getPlane(), ((WorldObject)object).getOrientation(), ((WorldObject)object).getType(), n, 15), true);
-                GameplayHelper.b((Npc)object2, n2, n3, player.getPosition().getPlane(), 15);
+                GameplayHelper.spawnNpcWithRemovalDelay((Npc)object2, n2, n3, player.getPosition().getPlane(), 15);
             }
         }
         int n5 = player.nextActionSequence();
@@ -134,7 +134,7 @@ public class WoodcuttingHandler {
         this(entity, entity2, entity2.getPosition(), projectileDefinition);
     }
 
-    public void a() {
+    public void sendProjectileToNearbyPlayers() {
         if (this.e.getProjectileId() == -1) {
             return;
         }

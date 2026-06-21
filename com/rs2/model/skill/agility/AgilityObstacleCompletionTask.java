@@ -7,7 +7,7 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class AgilityObstacleCompletionTask
+public final class AgilityObstacleCompletionTask
 extends CycleEvent {
     private final /* synthetic */ Player player;
     private final /* synthetic */ int deltaX;
@@ -18,7 +18,7 @@ extends CycleEvent {
     private final /* synthetic */ double experience;
     private final /* synthetic */ String completionMessage;
 
-    AgilityObstacleCompletionTask(Player player, int n, int n2, int n3, int n4, int n5, double d, String string) {
+    public AgilityObstacleCompletionTask(Player player, int n, int n2, int n3, int n4, int n5, double d, String string) {
         this.player = player;
         this.deltaX = n;
         this.deltaY = n2;

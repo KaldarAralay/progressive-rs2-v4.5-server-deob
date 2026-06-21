@@ -6,9 +6,9 @@ package com.rs2.model.combat.requirement;
 import com.rs2.model.combat.attack.MagicCombatAttack;
 import com.rs2.model.combat.requirement.EquipmentItemRequirement;
 
-final class GodStaffRequirement
+public final class GodStaffRequirement
 extends EquipmentItemRequirement {
-    GodStaffRequirement(MagicCombatAttack magicCombatAttack, int n, int n2, int n3, boolean bl) {
+    public GodStaffRequirement(MagicCombatAttack magicCombatAttack, int n, int n2, int n3, boolean bl) {
         super(3, n2, 1, false);
     }
 

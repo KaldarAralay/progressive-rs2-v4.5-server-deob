@@ -6,9 +6,9 @@ package com.rs2.bot;
 import com.rs2.bot.BotTaskDefinition;
 import java.util.ArrayList;
 
-final class SmithingBotTaskList
+public final class SmithingBotTaskList
 extends ArrayList {
-    SmithingBotTaskList() {
+    public SmithingBotTaskList() {
         this.add(BotTaskDefinition.varrockSteelDaggerSmithingTask);
     }
 }

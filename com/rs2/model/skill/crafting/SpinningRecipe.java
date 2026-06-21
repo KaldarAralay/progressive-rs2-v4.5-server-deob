@@ -48,15 +48,13 @@ public enum SpinningRecipe {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private SpinningRecipe(int n3, int n4, int n5, double d) {
-        void var8_6;
-        void var7_5;
-        this.buttonId = n3;
-        this.ingredientItemId = n4;
-        this.productItemId = n5;
-        this.quantity = (int)d;
-        this.requiredLevel = var7_5;
-        this.experience = var8_6;
+    private SpinningRecipe(int n2, int n3, int n4, int n5, int n6, double d) {
+        this.buttonId = n2;
+        this.ingredientItemId = n3;
+        this.productItemId = n4;
+        this.quantity = n5;
+        this.requiredLevel = n6;
+        this.experience = d;
     }
 
     public final int getIngredientItemId() {

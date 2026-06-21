@@ -28,7 +28,7 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         int n2 = n - 7;
         if (n == 0) {
             String[] stringArray2 = new String[]{"I can start this quest by speaking to King Arthur at", "Camelot Castle, just North West of Catherby", "I must be able to defeat a level 37 enemy"};
@@ -59,7 +59,7 @@ extends QuestScript {
             String string2 = "";
             String string3 = "";
             String string4 = "";
-            if ((n2 & 1) != 0 && !stringArray.ownsItem(38) && !stringArray.ownsItem(32) && ((n2 & 2) == 0 || (n2 & 2) != 0 && (n2 & 4) != 0)) {
+            if ((n2 & 1) != 0 && !player.ownsItem(38) && !player.ownsItem(32) && ((n2 & 2) == 0 || (n2 & 2) != 0 && (n2 & 4) != 0)) {
                 string = "Candle maker agreed to make me a black candle";
                 string2 = "if I brought him bucket full of wax.";
             }
@@ -70,13 +70,12 @@ extends QuestScript {
             if ((n2 & 2) != 0 && (n2 & 1) != 0 && (n2 & 4) == 0) {
                 string = "Lady of the lake told me to go upstairs of the";
                 string2 = "jewellery store in Port Sarim.";
-                if (!stringArray.ownsItem(38) && !stringArray.ownsItem(32)) {
+                if (!player.ownsItem(38) && !player.ownsItem(32)) {
                     string3 = "Candle maker agreed to make me a black candle";
                     string4 = "if I brought him bucket full of wax.";
                 }
             }
-            stringArray = new String[]{"Morgan le faye told me that I need the following", "things to untrap Merlin:", String.valueOf(stringArray.ownsItem(35) ? "@str@" : "") + "Excalibur, from the lady of the lake.", String.valueOf((n2 & 8) != 0 ? "@str@" : "") + "Some magic words, from one of the chaos altars.", String.valueOf(stringArray.getInventoryManager().containsItemAmount(530, 1) ? "@str@" : "") + "Bat bones", String.valueOf(stringArray.getInventoryManager().containsItemAmount(32, 1) ? "@str@" : "") + "Lit black candle", "", string, string2, "", string3, string4};
-            return stringArray;
+            return new String[]{"Morgan le faye told me that I need the following", "things to untrap Merlin:", String.valueOf(player.ownsItem(35) ? "@str@" : "") + "Excalibur, from the lady of the lake.", String.valueOf((n2 & 8) != 0 ? "@str@" : "") + "Some magic words, from one of the chaos altars.", String.valueOf(player.getInventoryManager().containsItemAmount(530, 1) ? "@str@" : "") + "Bat bones", String.valueOf(player.getInventoryManager().containsItemAmount(32, 1) ? "@str@" : "") + "Lit black candle", "", string, string2, "", string3, string4};
         }
         if (n == 23) {
             String[] stringArray8 = new String[]{"I should now be able to shatter the crystal", "with excalibur."};
@@ -139,13 +138,11 @@ extends QuestScript {
         if (n == 35 && n2 == 62) {
             if (n3 == 23) {
                 new DynamicObject(ServerSettings.placeholderObjectId, 2767, 3493, player.getPosition().getPlane(), 0, 10, n2, 100);
-                Entity entity = new Npc(249);
-                GameplayHelper.b(player, entity, 2767, 3493, 2, -1, false, false);
+                Npc npc = new Npc(249);
+                GameplayHelper.replaceOwnedRoamingNpcAtPosition(player, npc, 2767, 3493, 2, -1, false, false);
                 DialogueManager.continueDialogue(player, 249, 1, 0);
-                entity = player;
-                ((Player)entity).packetSender.sendGameMessage("You attempt to smash the crystal...");
-                entity = player;
-                ((Player)entity).packetSender.sendGameMessage("... and it shatters under the force of Excalibur!");
+                player.packetSender.sendGameMessage("You attempt to smash the crystal...");
+                player.packetSender.sendGameMessage("... and it shatters under the force of Excalibur!");
             }
             return true;
         }
@@ -305,8 +302,7 @@ extends QuestScript {
                 ((Player)object).setActionLocked(true);
                 Player player = object;
                 player.packetSender.queueRelativeMovementStep(-2, 0, true);
-                object = new MerlinsCrystalThrantaxSummonTask(this, 3, (Player)object);
-                World.getTaskScheduler().schedule((TickTask)object);
+                World.getTaskScheduler().schedule(new MerlinsCrystalThrantaxSummonTask(this, 3, (Player)object));
                 return true;
             }
         }
@@ -338,11 +334,11 @@ extends QuestScript {
                         if (player2.H.getNpcId() != 252) {
                             player2 = player;
                             if (player2.H.getNpcId() != 250) {
-                                GameplayHelper.b(player, npc, 3016, 3247, 0, -1, false, false);
+                                GameplayHelper.replaceOwnedRoamingNpcAtPosition(player, npc, 3016, 3247, 0, -1, false, false);
                             }
                         }
                     } else {
-                        GameplayHelper.b(player, npc, 3016, 3247, 0, -1, false, false);
+                        GameplayHelper.replaceOwnedRoamingNpcAtPosition(player, npc, 3016, 3247, 0, -1, false, false);
                     }
                     DialogueManager.continueDialogue(player, 252, 100, 0);
                 }
@@ -386,7 +382,7 @@ extends QuestScript {
                 CombatManager.stopCombat(entity2);
                 CombatManager.stopCombat(entity);
                 entity2 = new Npc(248);
-                GameplayHelper.b((Player)entity, (Npc)entity2, 2770, 3403, 2, 86, false, false);
+                GameplayHelper.replaceOwnedRoamingNpcAtPosition((Player)entity, (Npc)entity2, 2770, 3403, 2, 86, false, false);
                 DialogueManager.continueDialogue((Player)entity, 248, 100, 0);
                 return true;
             }
@@ -467,7 +463,7 @@ extends QuestScript {
                 }
                 if (n2 == 12) {
                     player.getDialogueManager().showNpcOneLineDialogue("Talk to my knights if you need any help.", 591);
-                    this.d(player);
+                    this.startQuest(player);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }

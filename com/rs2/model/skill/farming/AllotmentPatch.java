@@ -25,12 +25,10 @@ public enum AllotmentPatch {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private AllotmentPatch(int n3) {
-        void var5_3;
-        void var4_2;
-        this.index = n3;
-        this.bounds = var4_2;
-        this.objectId = var5_3;
+    private AllotmentPatch(int n2, Position[] positionArray, int n3) {
+        this.index = n2;
+        this.bounds = positionArray;
+        this.objectId = n3;
     }
 
     public static AllotmentPatch forPosition(Position position) {
@@ -47,7 +45,7 @@ public enum AllotmentPatch {
                     if (FarmingPatchUtils.containsPosition(allotmentPatch.bounds[0], allotmentPatch3.bounds[1], position)) break block3;
                     allotmentPatch3 = allotmentPatch;
                     allotmentPatch3 = allotmentPatch;
-                    if (!FarmingPatchUtils.containsPosition(allotmentPatch2.bounds[2], allotmentPatch3.bounds[3], position)) break block4;
+                    if (!FarmingPatchUtils.containsPosition(allotmentPatch.bounds[2], allotmentPatch3.bounds[3], position)) break block4;
                 }
                 return allotmentPatch;
             }

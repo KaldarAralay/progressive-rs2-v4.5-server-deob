@@ -40,18 +40,16 @@ public enum FlowerDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private FlowerDefinition(int n3, int n4, double d, double d2, double d3, int n5, int n22) {
-        void var14_9;
-        void var13_8;
-        this.seedId = n3;
-        this.produceItemId = n4;
-        this.requiredLevel = (int)d;
+    private FlowerDefinition(int n2, int n3, int n4, int n5, double d, double d2, double d3, int n6, int n7) {
+        this.seedId = n2;
+        this.produceItemId = n3;
+        this.requiredLevel = n4;
         this.totalGrowthTicks = 20;
-        this.diseaseChance = d2;
-        this.plantingExperience = d3;
-        this.harvestExperience = n5;
-        this.configStartStage = var13_8;
-        this.configEndStage = var14_9;
+        this.diseaseChance = d;
+        this.plantingExperience = d2;
+        this.harvestExperience = d3;
+        this.configStartStage = n6;
+        this.configEndStage = n7;
     }
 
     public static FlowerDefinition forSeedId(int n) {

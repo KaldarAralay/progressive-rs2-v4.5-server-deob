@@ -10,15 +10,15 @@ import com.rs2.model.shop.ShopManager;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 
-final class ArdougnePlatebodyShopTradeTickTask
+public final class ArdougnePlatebodyShopTradeTickTask
 extends TickTask {
     private final /* synthetic */ Player player;
     private final /* synthetic */ ItemStack shopItem;
 
-    ArdougnePlatebodyShopTradeTickTask(ArdougnePlatebodyShopBotTask ardougnePlatebodyShopBotTask, int n, Player player, ItemStack itemStack) {
+    public ArdougnePlatebodyShopTradeTickTask(ArdougnePlatebodyShopBotTask ardougnePlatebodyShopBotTask, int n, Player player, ItemStack itemStack) {
+        super(2);
         this.player = player;
         this.shopItem = itemStack;
-        super(2);
     }
 
     @Override

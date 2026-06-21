@@ -500,8 +500,7 @@ public final class PrayerManager {
         boolean bl = ((Entity)object).isInMultiCombatArea();
         int n = player.getSkillManager().getBaseLevel(5) / 4;
         HitDefinition hitDefinition = new HitDefinition(null, HitType.NORMAL, n).enableRandomDamage().setAlwaysHits(true);
-        object = new RetributionPrayerTask(3, player, bl, (Entity)object, entity, hitDefinition);
-        World.getTaskScheduler().schedule((TickTask)object);
+        World.getTaskScheduler().schedule(new RetributionPrayerTask(3, player, bl, (Entity)object, entity, hitDefinition));
     }
 
     public static void triggerRedemption(Player player, Entity entity, int n) {

@@ -13,14 +13,14 @@ import com.rs2.model.skill.farming.SpecialTreePatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class SpecialTreeHarvestTask
+public final class SpecialTreeHarvestTask
 extends CycleEvent {
     private /* synthetic */ SpecialTreePatchManager manager;
     private final /* synthetic */ int actionSequence;
     private final /* synthetic */ SpecialTreePatch patch;
     private final /* synthetic */ SpecialTreeDefinition definition;
 
-    SpecialTreeHarvestTask(SpecialTreePatchManager specialTreePatchManager, int n, SpecialTreePatch specialTreePatch, SpecialTreeDefinition specialTreeDefinition) {
+    public SpecialTreeHarvestTask(SpecialTreePatchManager specialTreePatchManager, int n, SpecialTreePatch specialTreePatch, SpecialTreeDefinition specialTreeDefinition) {
         this.manager = specialTreePatchManager;
         this.actionSequence = n;
         this.patch = specialTreePatch;
@@ -38,7 +38,7 @@ extends CycleEvent {
             player.packetSender.sendGameMessage("You examine the plant for signs of disease and find that it's in perfect health.");
             SpecialTreePatchManager.getPlayer(this.manager).getSkillManager().addExperience(19, this.definition.getHealthCheckExperience());
             this.manager.patchStates[this.patch.getIndex()] = 0;
-            this.manager.f[this.patch.getIndex()] = this.definition == SpecialTreeDefinition.CALQUAT;
+            this.manager.calquatRegrowthFlags[this.patch.getIndex()] = this.definition == SpecialTreeDefinition.CALQUAT;
             this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.getElapsedMinutes() - (long)this.definition.getTotalGrowthTicks();
             this.manager.recalculateRegrowthStage(this.patch.getIndex());
             cycleEventContainer.stop();

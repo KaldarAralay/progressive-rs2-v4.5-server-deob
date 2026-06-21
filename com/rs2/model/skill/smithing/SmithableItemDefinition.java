@@ -152,28 +152,24 @@ public enum SmithableItemDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private SmithableItemDefinition(int n3, String string) {
-        void var6_4;
-        void var5_3;
-        this.productItemId = var5_3;
+    private SmithableItemDefinition(int n2, int n3, int n4, String string2) {
+        this.productItemId = n4;
         this.outputAmount = 1;
-        this.requiredLevel = n3;
-        this.barCount = (int)string;
-        this.displayName = var6_4;
+        this.requiredLevel = n2;
+        this.barCount = n3;
+        this.displayName = string2;
     }
 
     /*
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private SmithableItemDefinition(int n3, int n4, String string) {
-        void var7_5;
-        void var6_4;
-        this.productItemId = (int)string;
-        this.outputAmount = var6_4;
-        this.requiredLevel = n3;
+    private SmithableItemDefinition(int n2, int n3, int n4, int n5, String string2) {
+        this.productItemId = n4;
+        this.outputAmount = n5;
+        this.requiredLevel = n2;
         this.barCount = 1;
-        this.displayName = var7_5;
+        this.displayName = string2;
     }
 
     public final int getProductItemId() {

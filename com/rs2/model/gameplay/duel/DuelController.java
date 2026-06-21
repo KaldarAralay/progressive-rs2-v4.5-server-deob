@@ -43,9 +43,9 @@ public final class DuelController {
         player.setDuelRequestTarget(null);
     }
 
-    public final void resetDuel(boolean n) {
-        if (n != 0) {
-            n = 0;
+    public final void resetDuel(boolean returnStakedItems) {
+        if (returnStakedItems) {
+            int n = 0;
             while (n < this.player.getDuelSession().getStakedItems().size()) {
                 this.player.getInventoryManager().addItem((ItemStack)this.player.getDuelSession().getStakedItems().get(n));
                 ++n;

@@ -9,13 +9,13 @@ import com.rs2.model.skill.farming.FruitTreePatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class FruitTreeInspectTask
+public final class FruitTreeInspectTask
 extends CycleEvent {
     private /* synthetic */ FruitTreePatchManager manager;
     private final /* synthetic */ FruitTreePatch patch;
     private final /* synthetic */ FruitTreeGrowthDefinition growthDefinition;
 
-    FruitTreeInspectTask(FruitTreePatchManager fruitTreePatchManager, FruitTreePatch fruitTreePatch, FruitTreeGrowthDefinition fruitTreeGrowthDefinition) {
+    public FruitTreeInspectTask(FruitTreePatchManager fruitTreePatchManager, FruitTreePatch fruitTreePatch, FruitTreeGrowthDefinition fruitTreeGrowthDefinition) {
         this.manager = fruitTreePatchManager;
         this.patch = fruitTreePatch;
         this.growthDefinition = fruitTreeGrowthDefinition;

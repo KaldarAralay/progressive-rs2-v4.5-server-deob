@@ -8,11 +8,11 @@ import com.rs2.model.skill.guide.SkillGuideEntry;
 import java.util.ArrayList;
 
 public final class SkillGuideCategory {
-    String name;
+    public String name;
     private int e;
-    ArrayList entries = new ArrayList();
-    boolean prefixEntriesWithName;
-    boolean skipItemDefinitionLookup;
+    public ArrayList entries = new ArrayList();
+    public boolean prefixEntriesWithName;
+    public boolean skipItemDefinitionLookup;
     private boolean f;
 
     public SkillGuideCategory(String string) {
@@ -67,4 +67,3 @@ public final class SkillGuideCategory {
         return "" + this.e;
     }
 }
-

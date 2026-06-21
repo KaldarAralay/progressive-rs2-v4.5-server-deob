@@ -12,7 +12,7 @@ import com.rs2.model.combat.attack.BaseCombatAttack;
 import com.rs2.model.combat.hit.HitDefinition;
 import com.rs2.model.combat.hit.HitType;
 
-final class ForcedMeleeCombatAttack
+public final class ForcedMeleeCombatAttack
 extends BaseCombatAttack {
     private final /* synthetic */ AttackXpMode xpMode;
     private final /* synthetic */ AttackBonusType attackBonusType;
@@ -21,14 +21,14 @@ extends BaseCombatAttack {
     private final /* synthetic */ int animationId;
     private final /* synthetic */ int attackDelay;
 
-    ForcedMeleeCombatAttack(Entity entity, Entity entity2, AttackXpMode attackXpMode, AttackBonusType attackBonusType, int n, boolean bl, int n2, int n3) {
+    public ForcedMeleeCombatAttack(Entity entity, Entity entity2, AttackXpMode attackXpMode, AttackBonusType attackBonusType, int n, boolean bl, int n2, int n3) {
+        super(entity, entity2);
         this.xpMode = attackXpMode;
         this.attackBonusType = attackBonusType;
         this.maxHit = n;
         this.deferProtectionPrayerReduction = bl;
         this.animationId = n2;
         this.attackDelay = n3;
-        super(entity, entity2);
     }
 
     @Override

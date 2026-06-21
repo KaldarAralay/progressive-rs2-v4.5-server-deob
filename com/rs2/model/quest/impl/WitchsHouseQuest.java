@@ -29,26 +29,21 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
-            stringArray = new String[]{"I can start this quest by speaking to the little boy", "standing by the long garden just north of taverley", "I must be able to defeat a level 53 enemy"};
-            return stringArray;
+            return new String[]{"I can start this quest by speaking to the little boy", "standing by the long garden just north of taverley", "I must be able to defeat a level 53 enemy"};
         }
         if (n == 2) {
-            stringArray = new String[]{"I should find a way to enter the witches house."};
-            return stringArray;
+            return new String[]{"I should find a way to enter the witches house."};
         }
         if (n == 3) {
-            stringArray = new String[]{"I should be able to get to the ball with the clues", "from the diary."};
-            return stringArray;
+            return new String[]{"I should be able to get to the ball with the clues", "from the diary."};
         }
         if (n == 4) {
-            stringArray = new String[]{"I should now take the ball back to the boy."};
-            return stringArray;
+            return new String[]{"I should now take the ball back to the boy."};
         }
         if (n == 1) {
-            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "4 Quest Points", "6325 Hitpoints XP"};
-            return stringArray;
+            return new String[]{"Quest Completed!", "", "You were awarded:", "4 Quest Points", "6325 Hitpoints XP"};
         }
         return null;
     }
@@ -183,20 +178,20 @@ extends QuestScript {
             }
             player.getInventoryManager().removeItem(new ItemStack(1985, 1));
             Npc npc = new Npc(901);
-            GameplayHelper.a(player, new Position(2903, 3466, 0), npc, false, false);
+            GameplayHelper.spawnOwnedNpcAtPosition(player, new Position(2903, 3466, 0), npc, false, false);
             player.getDialogueManager().showOneLineStatement("A mouse runs out of a hole.");
             player.getDialogueManager().finishDialogue();
             return true;
         }
         if (n == 2411 && n2 == 2863) {
             if (player.getInventoryManager().containsItem(2411)) {
-                Entity entity = player;
-                entity.packetSender.openSingleDoor(n2, 2934, 3463, 0);
-                entity = player;
-                entity.packetSender.queueRelativeMovementStep(player.getPosition().getX() < 2934 ? 1 : -1, 0, true);
+                Player player2 = player;
+                player2.packetSender.openSingleDoor(n2, 2934, 3463, 0);
+                player2 = player;
+                player2.packetSender.queueRelativeMovementStep(player.getPosition().getX() < 2934 ? 1 : -1, 0, true);
                 if (n3 == 3) {
-                    entity = new Npc(897);
-                    GameplayHelper.a(player, new Position(2935, 3462, 0), (Npc)entity, false, false);
+                    Npc npc = new Npc(897);
+                    GameplayHelper.spawnOwnedNpcAtPosition(player, new Position(2935, 3462, 0), npc, false, false);
                 }
             } else {
                 Player player2 = player;
@@ -210,12 +205,10 @@ extends QuestScript {
     @Override
     public final boolean handleItemOnNpc(Player player, int n, int n2, int n3) {
         if (n2 == 2410 && n == 901) {
-            Entity entity = player;
-            if (entity.H.getNpcId() == 901) {
+            if (player.H.getNpcId() == 901) {
                 player.getDialogueManager().showFourLineStatement("You attach the magnet to the mouse's harness. The mouse finishes", "the cheese and runs back into its hole. You hear some odd noises", "from inside the walls. There is a strange whirring noise from above", "the door frame.");
-                entity = player;
-                entity = entity.H;
-                GameplayHelper.unregisterTemporaryNpc((Npc)entity);
+                Npc npc = player.H;
+                GameplayHelper.unregisterTemporaryNpc(npc);
                 player.pendingGameMode = 2410;
                 player.getInventoryManager().removeItem(new ItemStack(2410, 1));
                 player.getDialogueManager().finishDialogue();
@@ -237,7 +230,7 @@ extends QuestScript {
                 entity2 = entity;
                 ((Player)entity2).packetSender.sendGameMessage("The shapeshifter turns into a spider!");
                 entity2 = new Npc(898);
-                GameplayHelper.a((Player)entity, new Position(2935, 3462, 0), (Npc)entity2, false, false);
+                GameplayHelper.spawnOwnedNpcAtPosition((Player)entity, new Position(2935, 3462, 0), (Npc)entity2, false, false);
                 return true;
             }
             if (((Npc)entity2).getNpcId() == 898) {
@@ -248,7 +241,7 @@ extends QuestScript {
                 entity2 = entity;
                 ((Player)entity2).packetSender.sendGameMessage("The shapeshifter turns into a bear!");
                 entity2 = new Npc(899);
-                GameplayHelper.a((Player)entity, new Position(2935, 3462, 0), (Npc)entity2, false, false);
+                GameplayHelper.spawnOwnedNpcAtPosition((Player)entity, new Position(2935, 3462, 0), (Npc)entity2, false, false);
                 return true;
             }
             if (((Npc)entity2).getNpcId() == 899) {
@@ -259,7 +252,7 @@ extends QuestScript {
                 entity2 = entity;
                 ((Player)entity2).packetSender.sendGameMessage("The shapeshifter turns into a wolf!");
                 entity2 = new Npc(900);
-                GameplayHelper.a((Player)entity, new Position(2935, 3462, 0), (Npc)entity2, false, false);
+                GameplayHelper.spawnOwnedNpcAtPosition((Player)entity, new Position(2935, 3462, 0), (Npc)entity2, false, false);
                 return true;
             }
         }
@@ -425,7 +418,7 @@ extends QuestScript {
                 }
                 if (n2 == 8) {
                     player.getDialogueManager().showNpcOneLineDialogue("Thanks mister!", 591);
-                    this.d(player);
+                    this.startQuest(player);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }

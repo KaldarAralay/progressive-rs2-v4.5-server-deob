@@ -82,156 +82,109 @@ public final class BotCombatEscapeHandler {
         return false;
     }
 
-    /*
-     * Enabled aggressive block sorting
-     */
-    static void processBotCombatEscape(Player arrayList) {
-        boolean bl;
-        boolean bl2;
-        boolean bl3;
-        boolean bl4;
-        boolean bl5;
-        boolean bl6;
-        Object object;
-        if (((Player)((Object)arrayList)).botFoodItemId != -1 && (object = FoodDefinition.forItemId(((Player)((Object)arrayList)).botFoodItemId)) != null) {
-            int n = ((FoodDefinition)((Object)object)).getHealAmount();
-            int n2 = ((Player)((Object)arrayList)).getSkillManager().getCurrentLevels()[3] + n;
-            ((Player)((Object)arrayList)).getSkillManager();
-            if (n2 <= SkillManager.getLevelForExperience(((Player)((Object)arrayList)).getSkillManager().getExperience()[3]) && !((Player)((Object)arrayList)).botFoodDepleted) {
-                if (((Player)((Object)arrayList)).botEatDelayTicks < 3) {
-                    ++((Player)((Object)arrayList)).botEatDelayTicks;
-                } else {
-                    BotCombatHelper.eatBotFood(arrayList);
-                    ((Player)((Object)arrayList)).botEatDelayTicks = 0;
+    static void processBotCombatEscape(Player player) {
+        if (player.botFoodItemId != -1) {
+            FoodDefinition food = FoodDefinition.forItemId(player.botFoodItemId);
+            if (food != null) {
+                int healAmount = food.getHealAmount();
+                int healedLevel = player.getSkillManager().getCurrentLevels()[3] + healAmount;
+                player.getSkillManager();
+                if (healedLevel <= SkillManager.getLevelForExperience(player.getSkillManager().getExperience()[3]) && !player.botFoodDepleted) {
+                    if (player.botEatDelayTicks < 3) {
+                        ++player.botEatDelayTicks;
+                    } else {
+                        BotCombatHelper.eatBotFood(player);
+                        player.botEatDelayTicks = 0;
+                    }
                 }
             }
         }
-        if (((Entity)((Object)arrayList)).getPoisonDamage() > 0.0) {
-            BotCombatHelper.drinkAntipoisonPotion(arrayList);
+        if (player.getPoisonDamage() > 0.0) {
+            BotCombatHelper.drinkAntipoisonPotion(player);
         }
-        if (!((Entity)((Object)arrayList)).getRecentCombatTimer().hasElapsed()) {
-            if (((Player)((Object)arrayList)).getSkillManager().getCurrentLevels()[5] > 1 && !((Player)((Object)arrayList)).getActivePrayers()[8]) {
-                ((Player)((Object)arrayList)).getSkillManager();
-                if (SkillManager.getLevelForExperience(((Player)((Object)arrayList)).getSkillManager().getExperience()[5]) >= 25) {
-                    ((Player)((Object)arrayList)).getPrayerManager().togglePrayer(8);
+        if (!player.getRecentCombatTimer().hasElapsed()) {
+            if (player.getSkillManager().getCurrentLevels()[5] > 1 && !player.getActivePrayers()[8]) {
+                player.getSkillManager();
+                if (SkillManager.getLevelForExperience(player.getSkillManager().getExperience()[5]) >= 25) {
+                    player.getPrayerManager().togglePrayer(8);
                 }
             }
-            if (BotCombatHelper.hasPrayerLevelForCombatStyle(arrayList, ((Player)((Object)arrayList)).botOpponentCombatStyle)) {
-                BotCombatHelper.toggleProtectionPrayerForOpponentStyle(arrayList);
+            if (BotCombatHelper.hasPrayerLevelForCombatStyle(player, player.botOpponentCombatStyle)) {
+                BotCombatHelper.toggleProtectionPrayerForOpponentStyle(player);
             }
         } else {
-            ((Player)((Object)arrayList)).getPrayerManager().deactivateAll();
+            player.getPrayerManager().deactivateAll();
         }
-        if (((Entity)((Object)arrayList)).getPosition().getY() < 3760 && ((Player)((Object)arrayList)).botCombatState != null && ((Player)((Object)arrayList)).botCombatState.equals("tele") && ((Player)((Object)arrayList)).getEquipmentManager().getItemIdAtSlot(2) == 1712 && !((Entity)((Object)arrayList)).isTeleblocked()) {
-            BotCombatHelper.operateGloryTeleport(arrayList);
+        if (player.getPosition().getY() < 3760 && player.botCombatState != null && player.botCombatState.equals("tele") && player.getEquipmentManager().getItemIdAtSlot(2) == 1712 && !player.isTeleblocked()) {
+            BotCombatHelper.operateGloryTeleport(player);
         }
-        if (((Entity)((Object)arrayList)).getPosition().getY() < 3680 && ((Player)((Object)arrayList)).botCombatState != null && ((Player)((Object)arrayList)).botCombatState.equals("tele") && !((Entity)((Object)arrayList)).isTeleblocked()) {
-            if (((Player)((Object)arrayList)).getSpellbook() == Spellbook.MODERN) {
-                MagicSpellAction.castSelfSpell(arrayList, SpellDefinition.VARROCK_TELEPORT);
-            } else if (((Player)((Object)arrayList)).getSpellbook() == Spellbook.ANCIENT) {
-                MagicSpellAction.castSelfSpell(arrayList, SpellDefinition.PADDEWWA_TELEPORT);
+        if (player.getPosition().getY() < 3680 && player.botCombatState != null && player.botCombatState.equals("tele") && !player.isTeleblocked()) {
+            if (player.getSpellbook() == Spellbook.MODERN) {
+                MagicSpellAction.castSelfSpell(player, SpellDefinition.VARROCK_TELEPORT);
+            } else if (player.getSpellbook() == Spellbook.ANCIENT) {
+                MagicSpellAction.castSelfSpell(player, SpellDefinition.PADDEWWA_TELEPORT);
             }
         }
-        if (BotCombatHelper.isPlayerInAnyArea(object = arrayList, chaosTempleEscapeAreas) || ((Player)object).botEscapeRouteName.equals("chaos temple")) {
-            if (!((Player)object).botEscapeRouteName.equals("chaos temple")) {
-                ((Player)object).botEscapeRouteName = "chaos temple";
-                ((Player)object).botPathWaypointIndex = 0;
+        if (BotCombatHelper.isPlayerInAnyArea(player, chaosTempleEscapeAreas) || player.botEscapeRouteName.equals("chaos temple")) {
+            if (!player.botEscapeRouteName.equals("chaos temple")) {
+                player.botEscapeRouteName = "chaos temple";
+                player.botPathWaypointIndex = 0;
             }
-            bl6 = true;
-        } else {
-            bl6 = false;
-        }
-        if (bl6) {
-            object = arrayList;
-            BotCombatHelper.advanceBotEscapeWaypoints(object, chaosTempleEscapeWaypoints);
+            BotCombatHelper.advanceBotEscapeWaypoints(player, chaosTempleEscapeWaypoints);
             return;
         }
-        object = arrayList;
-        if (BotCombatHelper.isPlayerInAnyArea(object, runeRockEscapeAreas) || ((Player)object).botEscapeRouteName.equals("rune rocks")) {
-            if (!((Player)object).botEscapeRouteName.equals("rune rocks")) {
-                ((Player)object).botEscapeRouteName = "rune rocks";
-                ((Player)object).botPathWaypointIndex = 0;
+        if (BotCombatHelper.isPlayerInAnyArea(player, runeRockEscapeAreas) || player.botEscapeRouteName.equals("rune rocks")) {
+            if (!player.botEscapeRouteName.equals("rune rocks")) {
+                player.botEscapeRouteName = "rune rocks";
+                player.botPathWaypointIndex = 0;
             }
-            bl5 = true;
-        } else {
-            bl5 = false;
-        }
-        if (bl5) {
-            object = arrayList;
-            BotCombatHelper.advanceBotEscapeWaypoints(object, runeRockEscapeWaypoints);
+            BotCombatHelper.advanceBotEscapeWaypoints(player, runeRockEscapeWaypoints);
             return;
         }
-        object = arrayList;
-        if (BotCombatHelper.isPlayerInAnyArea(object, p2pGateSouthEscapeAreas) || ((Player)object).botEscapeRouteName.equals("escape south of p2p gates")) {
-            if (!((Player)object).botEscapeRouteName.equals("escape south of p2p gates")) {
-                ((Player)object).botEscapeRouteName = "escape south of p2p gates";
-                ((Player)object).botPathWaypointIndex = 0;
+        if (BotCombatHelper.isPlayerInAnyArea(player, p2pGateSouthEscapeAreas) || player.botEscapeRouteName.equals("escape south of p2p gates")) {
+            if (!player.botEscapeRouteName.equals("escape south of p2p gates")) {
+                player.botEscapeRouteName = "escape south of p2p gates";
+                player.botPathWaypointIndex = 0;
             }
-            bl4 = true;
-        } else {
-            bl4 = false;
-        }
-        if (bl4) {
-            object = arrayList;
-            BotCombatHelper.advanceBotEscapeWaypoints(object, p2pGateSouthEscapeWaypoints);
+            BotCombatHelper.advanceBotEscapeWaypoints(player, p2pGateSouthEscapeWaypoints);
             return;
         }
-        object = arrayList;
-        if (BotCombatHelper.isPlayerInAnyArea(object, p2pGateSouthwestEscapeAreas) || ((Player)object).botEscapeRouteName.equals("escape south west of p2p gates")) {
-            if (!((Player)object).botEscapeRouteName.equals("escape south west of p2p gates")) {
-                ((Player)object).botEscapeRouteName = "escape south west of p2p gates";
-                ((Player)object).botPathWaypointIndex = 0;
+        if (BotCombatHelper.isPlayerInAnyArea(player, p2pGateSouthwestEscapeAreas) || player.botEscapeRouteName.equals("escape south west of p2p gates")) {
+            if (!player.botEscapeRouteName.equals("escape south west of p2p gates")) {
+                player.botEscapeRouteName = "escape south west of p2p gates";
+                player.botPathWaypointIndex = 0;
             }
-            bl3 = true;
-        } else {
-            bl3 = false;
-        }
-        if (bl3) {
-            object = arrayList;
-            BotCombatHelper.advanceBotEscapeWaypoints(object, p2pGateSouthwestEscapeWaypoints);
+            BotCombatHelper.advanceBotEscapeWaypoints(player, p2pGateSouthwestEscapeWaypoints);
             return;
         }
-        object = arrayList;
-        if (BotCombatHelper.isPlayerInAnyArea(object, ruinsNorthEscapeAreas) || ((Player)object).botEscapeRouteName.equals("escape north of ruins")) {
-            if (!((Player)object).botEscapeRouteName.equals("escape north of ruins")) {
-                ((Player)object).botEscapeRouteName = "escape north of ruins";
-                ((Player)object).botPathWaypointIndex = 0;
+        if (BotCombatHelper.isPlayerInAnyArea(player, ruinsNorthEscapeAreas) || player.botEscapeRouteName.equals("escape north of ruins")) {
+            if (!player.botEscapeRouteName.equals("escape north of ruins")) {
+                player.botEscapeRouteName = "escape north of ruins";
+                player.botPathWaypointIndex = 0;
             }
-            bl2 = true;
-        } else {
-            bl2 = false;
-        }
-        if (bl2) {
-            object = arrayList;
-            BotCombatHelper.advanceBotEscapeWaypoints(object, ruinsNorthEscapeWaypoints);
+            BotCombatHelper.advanceBotEscapeWaypoints(player, ruinsNorthEscapeWaypoints);
             return;
         }
-        object = arrayList;
-        if (((Entity)object).getPosition().getY() >= 3904 || ((Player)object).botEscapeRouteName.equals("escape p2p gates")) {
-            if (!((Player)object).botEscapeRouteName.equals("escape p2p gates")) {
-                ((Player)object).botEscapeRouteName = "escape p2p gates";
-                ((Player)object).botPathWaypointIndex = 0;
+        if (player.getPosition().getY() < 3904 && !player.botEscapeRouteName.equals("escape p2p gates")) {
+            if (player.botEscapeRouteName.equals("")) {
+                BotCombatEscapeHandler.walkFallbackEscapePath(player);
+                player.botPathWaypointIndex = -1;
             }
-            bl = true;
-        } else {
-            bl = false;
-        }
-        if (!bl) {
-            if (!((Player)((Object)arrayList)).botEscapeRouteName.equals("")) return;
-            BotCombatEscapeHandler.walkFallbackEscapePath(arrayList);
-            ((Player)((Object)arrayList)).botPathWaypointIndex = -1;
             return;
         }
-        object = arrayList;
-        arrayList = new Position(3224, 3904);
-        if (GameUtil.isWithinDistance(((Entity)object).getPosition(), (Position)((Object)arrayList), 1)) {
-            arrayList = new ArrayList<Integer>();
-            arrayList.add(1597);
-            arrayList.add(1596);
-            ((Player)object).interactWithBotObjectTargets(arrayList);
+        if (!player.botEscapeRouteName.equals("escape p2p gates")) {
+            player.botEscapeRouteName = "escape p2p gates";
+            player.botPathWaypointIndex = 0;
+        }
+        Position gatePosition = new Position(3224, 3904);
+        if (GameUtil.isWithinDistance(player.getPosition(), gatePosition, 1)) {
+            ArrayList<Integer> objectTargets = new ArrayList<Integer>();
+            objectTargets.add(1597);
+            objectTargets.add(1596);
+            player.interactWithBotObjectTargets(objectTargets);
             return;
         }
-        BotCombatHelper.walkBotTowardPosition((Player)object, new Position(3224, 3904));
+        BotCombatHelper.walkBotTowardPosition(player, gatePosition);
     }
 
     private static void walkFallbackEscapePath(Player player) {

@@ -16,26 +16,21 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
-            stringArray = new String[]{"I can start this quest by speaking to Kaqemeex who is at", "the Druids Circle just North of Taverley."};
-            return stringArray;
+            return new String[]{"I can start this quest by speaking to Kaqemeex who is at", "the Druids Circle just North of Taverley."};
         }
         if (n == 2) {
-            stringArray = new String[]{"I should go and speak with Sanfew, who can be found in", "Taverley."};
-            return stringArray;
+            return new String[]{"I should go and speak with Sanfew, who can be found in", "Taverley."};
         }
         if (n == 3) {
-            stringArray = new String[]{"I should go and dip the following meats in the", "cauldron of thunder, located somewhere underground", "south of Taverley. And then bring the meats back to Sanfew.", "Raw bear meat", "Raw rat meat", "Raw beef", "Raw chicken"};
-            return stringArray;
+            return new String[]{"I should go and dip the following meats in the", "cauldron of thunder, located somewhere underground", "south of Taverley. And then bring the meats back to Sanfew.", "Raw bear meat", "Raw rat meat", "Raw beef", "Raw chicken"};
         }
         if (n == 4) {
-            stringArray = new String[]{"I should go and speak with Kaqemeex to finish this quest."};
-            return stringArray;
+            return new String[]{"I should go and speak with Kaqemeex to finish this quest."};
         }
         if (n == 1) {
-            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "4 Quest Points", "Herblore skill", "250 Herblore XP"};
-            return stringArray;
+            return new String[]{"Quest Completed!", "", "You were awarded:", "4 Quest Points", "Herblore skill", "250 Herblore XP"};
         }
         return null;
     }
@@ -153,7 +148,7 @@ extends QuestScript {
                 if (n2 == 9) {
                     if (n3 == 1) {
                         player.getDialogueManager().showPlayerOneLineDialogue("Ok, I will try and help.", 591);
-                        this.d(player);
+                        this.startQuest(player);
                         player.getDialogueManager().setNextDialogueStep(10);
                         return true;
                     }

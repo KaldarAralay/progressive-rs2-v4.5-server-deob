@@ -9,13 +9,13 @@ import com.rs2.model.skill.fletching.BowStringingDefinition;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class BowStringingTask
+public final class BowStringingTask
 extends CycleEvent {
     private final /* synthetic */ Player player;
     private final /* synthetic */ int actionSequence;
     private final /* synthetic */ BowStringingDefinition definition;
 
-    BowStringingTask(Player player, int n, BowStringingDefinition bowStringingDefinition) {
+    public BowStringingTask(Player player, int n, BowStringingDefinition bowStringingDefinition) {
         this.player = player;
         this.actionSequence = n;
         this.definition = bowStringingDefinition;

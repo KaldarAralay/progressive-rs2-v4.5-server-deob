@@ -53,16 +53,14 @@ public enum MultiIngredientFoodRecipe {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private MultiIngredientFoodRecipe(int n3, int n4, int n5, int n6, double d, boolean n7, int n8, int n9) {
-        void cfr_renamed_5;
-        void var8_7;
-        this.firstIngredientItemId = n3;
-        this.secondIngredientItemId = n4;
-        this.baseItemId = n5;
-        this.firstStageProductItemId = n6;
-        this.finalProductItemId = (int)d;
-        this.requiredLevel = var8_7;
-        this.experience = cfr_renamed_5;
+    private MultiIngredientFoodRecipe(int n2, int n3, int n4, int n5, int n6, int n7, double d, boolean bl, int n8, int n9) {
+        this.firstIngredientItemId = n2;
+        this.secondIngredientItemId = n3;
+        this.baseItemId = n4;
+        this.firstStageProductItemId = n5;
+        this.finalProductItemId = n6;
+        this.requiredLevel = n7;
+        this.experience = d;
         this.putIntoMessage = true;
         this.firstStageReturnedItemId = 0;
         this.finalStageReturnedItemId = 0;

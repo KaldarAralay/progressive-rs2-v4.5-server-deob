@@ -27,9 +27,8 @@ public enum AttackXpMode {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private AttackXpMode() {
-        void var3_2;
-        this.skillIds = var3_2;
+    private AttackXpMode(int ... nArray) {
+        this.skillIds = nArray;
     }
 
     public final int[] getSkillIds() {

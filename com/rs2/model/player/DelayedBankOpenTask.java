@@ -7,18 +7,18 @@ import com.rs2.model.player.BankManager;
 import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 
-final class DelayedBankOpenTask
+public final class DelayedBankOpenTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
-    DelayedBankOpenTask(int n, Player player) {
-        this.a = player;
+    public DelayedBankOpenTask(int n, Player player) {
         super(n);
+        this.player = player;
     }
 
     @Override
     public final void execute() {
-        BankManager.openBank(this.a, this.a);
+        BankManager.openBank(this.player, this.player);
         this.stop();
     }
 }

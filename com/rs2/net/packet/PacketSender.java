@@ -59,17 +59,16 @@ public final class PacketSender {
         return this;
     }
 
-    public final void sendMusicTrack(MusicTrackDefinition object) {
-        this.sendInterfaceText(((MusicTrackDefinition)object).getName(), 4439);
-        int n = ((MusicTrackDefinition)object).getTrackId();
-        object = this;
-        if (!((PacketSender)object).player.isBot && ((PacketSender)object).player.ax != n) {
-            ((PacketSender)object).player.ax = n;
+    public final void sendMusicTrack(MusicTrackDefinition musicTrackDefinition) {
+        this.sendInterfaceText(musicTrackDefinition.getName(), 4439);
+        int n = musicTrackDefinition.getTrackId();
+        if (!this.player.isBot && this.player.ax != n) {
+            this.player.ax = n;
             if (n != -1) {
                 PacketWriter packetWriter = PacketBuffer.allocateWriter(3);
-                packetWriter.writeOpcode(((PacketSender)object).player.getOutboundCipher(), 74);
+                packetWriter.writeOpcode(this.player.getOutboundCipher(), 74);
                 packetWriter.writeShort(n, ByteOrder.LITTLE);
-                ((PacketSender)object).player.writePacketBuffer(packetWriter.getBuffer());
+                this.player.writePacketBuffer(packetWriter.getBuffer());
             }
         }
     }
@@ -185,12 +184,12 @@ public final class PacketSender {
         this.sendPlayerIndex();
         Object object3 = this;
         if (((PacketSender)object3).player.isBot) {
-            packetSender2 = object3;
+            packetSender2 = (PacketSender)object3;
         } else {
             PacketWriter packetWriter = PacketBuffer.allocateWriter(1);
             packetWriter.writeOpcode(((PacketSender)object3).player.getOutboundCipher(), 107);
             ((PacketSender)object3).player.writePacketBuffer(packetWriter.getBuffer());
-            packetSender2 = object3;
+            packetSender2 = (PacketSender)object3;
         }
         this.sendMapRegion();
         this.sendRunEnergy();
@@ -219,7 +218,7 @@ public final class PacketSender {
         }
         object3 = this;
         if (((PacketSender)object3).player.isBot) {
-            packetSender = object3;
+            packetSender = (PacketSender)object3;
         } else {
             PacketWriter packetWriter = PacketBuffer.allocateWriter(4);
             packetWriter.writeOpcode(((PacketSender)object3).player.getOutboundCipher(), 206);
@@ -227,7 +226,7 @@ public final class PacketSender {
             packetWriter.writeByte(((PacketSender)object3).player.getPrivateChatMode());
             packetWriter.writeByte(((PacketSender)object3).player.getTradeMode());
             ((PacketSender)object3).player.writePacketBuffer(packetWriter.getBuffer());
-            packetSender = object3;
+            packetSender = (PacketSender)object3;
         }
         this.player.getEquipmentManager().refreshCarriedValue();
         this.player.getCompostBinManager().processRotting();
@@ -265,7 +264,7 @@ public final class PacketSender {
                 n3 = 0;
                 boolean bl = ((PacketSender)object3).player.isMember();
                 n3 = 200;
-                PacketSender packetSender4 = object3;
+                PacketSender packetSender4 = (PacketSender)object3;
                 if (packetSender4.player.isBot) {
                     packetSender3 = packetSender4;
                 } else {
@@ -327,25 +326,24 @@ public final class PacketSender {
         return this;
     }
 
-    private static int packLastLoginAddress(String stringArray) {
+    private static int packLastLoginAddress(String address) {
         int n = 0;
         int n2 = 0;
         String[] stringArray2 = new String[4];
-        String[] stringArray3 = stringArray.split(Pattern.quote("."));
+        String[] stringArray3 = address.split(Pattern.quote("."));
         int n3 = stringArray3.length;
         int n4 = 0;
         while (n4 < n3) {
-            stringArray = stringArray3[n4];
-            stringArray2[n2] = stringArray;
+            String part = stringArray3[n4];
+            stringArray2[n2] = part;
             ++n2;
             ++n4;
         }
-        stringArray = String.valueOf(stringArray2[1]) + "." + stringArray2[0] + "." + stringArray2[3] + "." + stringArray2[2];
-        stringArray = stringArray.split(Pattern.quote("."));
-        int n5 = stringArray.length;
+        String[] reorderedParts = (String.valueOf(stringArray2[1]) + "." + stringArray2[0] + "." + stringArray2[3] + "." + stringArray2[2]).split(Pattern.quote("."));
+        int n5 = reorderedParts.length;
         n3 = 0;
         while (n3 < n5) {
-            String string = stringArray[n3];
+            String string = reorderedParts[n3];
             n <<= 8;
             n |= Integer.parseInt(string);
             ++n3;
@@ -422,17 +420,13 @@ public final class PacketSender {
         return this;
     }
 
-    /*
-     * WARNING - void declaration
-     */
     public final int modifySkillLevelReturningRemainder(int n, int n2, boolean bl) {
-        void var3_7;
-        boolean bl2 = false;
+        int remainder = 0;
         int n3 = this.player.getSkillManager().getBaseLevel(n);
         int n4 = this.player.getSkillManager().getCurrentLevels()[n];
         if (n2 < 0) {
             if (n4 + n2 < 0) {
-                int n5 = n4 + n2;
+                remainder = n4 + n2;
                 this.player.getSkillManager().getCurrentLevels()[n] = 0;
             } else {
                 int[] nArray = this.player.getSkillManager().getCurrentLevels();
@@ -440,7 +434,7 @@ public final class PacketSender {
                 nArray[n6] = nArray[n6] + n2;
             }
         } else if (n4 + n2 > n3) {
-            int n7 = n2 - (n3 - n4);
+            remainder = n2 - (n3 - n4);
             this.player.getSkillManager().getCurrentLevels()[n] = n3;
         } else {
             int[] nArray = this.player.getSkillManager().getCurrentLevels();
@@ -448,7 +442,7 @@ public final class PacketSender {
             nArray[n8] = nArray[n8] + n2;
         }
         this.player.getSkillManager().refreshSkill(n);
-        return Math.abs((int)var3_7);
+        return Math.abs(remainder);
     }
 
     public final PacketSender queueAgilityMovement(int n, int n2, boolean bl, int n3, int n4, int n5, double d, boolean bl2, String string) {
@@ -486,8 +480,8 @@ public final class PacketSender {
         Position[] positionArray = object;
         n = 0;
         while (n < 2) {
-            object = positionArray[n];
-            this.player.getMovementQueue().addStep((Position)object);
+            Position position = positionArray[n];
+            this.player.getMovementQueue().addStep(position);
             ++n;
         }
         this.player.getMovementQueue().removeFirstStep();
@@ -853,20 +847,20 @@ public final class PacketSender {
         } else {
             this.sendLocalPosition((Position)object);
         }
-        object = PacketBuffer.allocateWriter(16);
-        ((PacketWriter)object).writeOpcode(this.player.getOutboundCipher(), 117);
-        ((PacketWriter)object).writeByte(50);
-        ((PacketWriter)object).writeByte(by);
-        ((PacketWriter)object).writeByte(by2);
-        ((PacketWriter)object).writeShort(n2);
-        ((PacketWriter)object).writeShort(n3);
-        ((PacketWriter)object).writeByte(n6);
-        ((PacketWriter)object).writeByte(n7);
-        ((PacketWriter)object).writeShort(n4);
-        ((PacketWriter)object).writeShort(n5);
-        ((PacketWriter)object).writeByte(n8);
-        ((PacketWriter)object).writeByte(64);
-        this.player.writePacketBuffer(((PacketWriter)object).getBuffer());
+        PacketWriter packetWriter = PacketBuffer.allocateWriter(16);
+        packetWriter.writeOpcode(this.player.getOutboundCipher(), 117);
+        packetWriter.writeByte(50);
+        packetWriter.writeByte(by);
+        packetWriter.writeByte(by2);
+        packetWriter.writeShort(n2);
+        packetWriter.writeShort(n3);
+        packetWriter.writeByte(n6);
+        packetWriter.writeByte(n7);
+        packetWriter.writeShort(n4);
+        packetWriter.writeShort(n5);
+        packetWriter.writeByte(n8);
+        packetWriter.writeByte(64);
+        this.player.writePacketBuffer(packetWriter.getBuffer());
         return this;
     }
 
@@ -1580,97 +1574,52 @@ public final class PacketSender {
         }
     }
 
-    /*
-     * Unable to fully structure code
-     */
-    private static void a(LoadedWorldObject var0, boolean var1_1, boolean var2_2) {
-        block24: {
-            block22: {
-                block25: {
-                    block23: {
-                        block21: {
-                            block19: {
-                                block20: {
-                                    var3_3 = 0;
-                                    var4_4 = 0;
-                                    if (var0.getOrientation() != 0) break block19;
-                                    if (var1_1 != 0 || var2_2 == 0) break block20;
-                                    var3_3 = -2;
-                                    ** GOTO lbl-1000
-                                }
-                                var3_3 = -1;
-                                break block21;
-                            }
-                            if (var0.getOrientation() == 1) {
-                                if (var1_1 == 0 && var2_2 != 0) {
-                                    var3_3 = -1;
-                                    var4_4 = 2;
-                                } else {
-                                    var4_4 = 1;
-                                }
-                            } else if (var0.getOrientation() == 2) {
-                                if (var1_1 == 0 && var2_2 != 0) {
-                                    var3_3 = 2;
-                                    var4_4 = 1;
-                                } else {
-                                    var3_3 = 1;
-                                }
-                            } else if (var0.getOrientation() == 3) {
-                                ** if (var1_1 != 0 || var2_2 == 0) goto lbl-1000
-lbl-1000:
-                                // 1 sources
-
-                                {
-                                    var3_3 = -1;
-                                    var4_4 = -2;
-                                    ** GOTO lbl32
-                                }
-                            }
-                            break block21;
-lbl-1000:
-                            // 2 sources
-
-                            {
-                                var4_4 = -1;
-                            }
-                        }
-                        new DynamicObject(ServerSettings.placeholderObjectId, var0.getPosition().getX(), var0.getPosition().getY(), var0.getPosition().getPlane(), var0.getOrientation(), var0.getType(), var0.getWorldObject().getObjectId(), 1, false);
-                        v0 = var0.getWorldObject().getObjectId();
-                        v1 = var0.getPosition().getX() + var3_3;
-                        v2 = var0.getPosition().getY() + var4_4;
-                        v3 = var0.getPosition().getPlane();
-                        var3_3 = var2_2;
-                        var2_2 = var1_1;
-                        var1_1 = var0.getOrientation();
-                        if (var2_2 == 0) break block22;
-                        if (var1_1 != 0) break block23;
-                        v4 = 3;
-                        break block24;
-                    }
-                    if (var1_1 == 1) ** GOTO lbl-1000
-                    if (var1_1 != 2) break block25;
-                    v4 = 1;
-                    break block24;
-                }
-                if (var1_1 != 3) ** GOTO lbl-1000
-                ** GOTO lbl-1000
+    private static void a(LoadedWorldObject loadedWorldObject, boolean firstDoor, boolean wideOffset) {
+        int xOffset = 0;
+        int yOffset = 0;
+        int orientation = loadedWorldObject.getOrientation();
+        if (orientation == 0) {
+            xOffset = !firstDoor && wideOffset ? -2 : -1;
+        } else if (orientation == 1) {
+            if (!firstDoor && wideOffset) {
+                xOffset = -1;
+                yOffset = 2;
+            } else {
+                yOffset = 1;
             }
-            if (var1_1 == 0) {
-                v4 = var3_3 != 0 ? 3 : 1;
-            } else if (var1_1 == 1) {
-                v4 = var3_3 != 0 ? 0 : 2;
-            } else if (var1_1 == 2) {
-                v4 = var3_3 != 0 ? 1 : 3;
-            } else if (var1_1 == 3) {
-                v4 = var3_3 != 0 ? 0 : 2;
-            } else lbl-1000:
-            // 4 sources
-
-            {
-                v4 = 0;
+        } else if (orientation == 2) {
+            if (!firstDoor && wideOffset) {
+                xOffset = 2;
+                yOffset = 1;
+            } else {
+                xOffset = 1;
+            }
+        } else if (orientation == 3) {
+            if (!firstDoor && wideOffset) {
+                xOffset = -1;
+                yOffset = -2;
+            } else {
+                yOffset = -1;
             }
         }
-        new DynamicObject(v0, v1, v2, v3, v4, var0.getType(), ServerSettings.placeholderObjectId, 1, false);
+        new DynamicObject(ServerSettings.placeholderObjectId, loadedWorldObject.getPosition().getX(), loadedWorldObject.getPosition().getY(), loadedWorldObject.getPosition().getPlane(), orientation, loadedWorldObject.getType(), loadedWorldObject.getWorldObject().getObjectId(), 1, false);
+        int openedOrientation = 0;
+        if (firstDoor) {
+            if (orientation == 0) {
+                openedOrientation = 3;
+            } else if (orientation == 2) {
+                openedOrientation = 1;
+            }
+        } else if (orientation == 0) {
+            openedOrientation = wideOffset ? 3 : 1;
+        } else if (orientation == 1) {
+            openedOrientation = wideOffset ? 0 : 2;
+        } else if (orientation == 2) {
+            openedOrientation = wideOffset ? 1 : 3;
+        } else if (orientation == 3) {
+            openedOrientation = wideOffset ? 0 : 2;
+        }
+        new DynamicObject(loadedWorldObject.getWorldObject().getObjectId(), loadedWorldObject.getPosition().getX() + xOffset, loadedWorldObject.getPosition().getY() + yOffset, loadedWorldObject.getPosition().getPlane(), openedOrientation, loadedWorldObject.getType(), ServerSettings.placeholderObjectId, 1, false);
     }
 
     public final void openWestShiftedDoubleDoorPair(int n, int n2, int n3, int n4, int n5, int n6, int n7) {
@@ -1719,4 +1668,3 @@ lbl-1000:
         return packetSender.player;
     }
 }
-

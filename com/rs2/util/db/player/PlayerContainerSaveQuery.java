@@ -10,21 +10,21 @@ import com.rs2.util.db.player.PlayerSaveQueryFactory;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-final class PlayerContainerSaveQuery
+public final class PlayerContainerSaveQuery
 extends DatabaseQuery {
     private ItemContainer container;
     private int containerId;
     private /* synthetic */ PlayerSaveQueryFactory factory;
 
     public PlayerContainerSaveQuery(PlayerSaveQueryFactory playerSaveQueryFactory, ItemContainer itemContainer, int n) {
-        this.factory = playerSaveQueryFactory;
         super(PlayerSaveQueryFactory.getContainerSaveSql(n, itemContainer.g()));
+        this.factory = playerSaveQueryFactory;
         this.container = itemContainer;
         this.containerId = n;
     }
 
     @Override
-    public final ResultSet executeStatement(PreparedStatement preparedStatement) {
+    public final ResultSet executeStatement(PreparedStatement preparedStatement) throws java.sql.SQLException {
         int n = 1;
         int n2 = 0;
         while (n2 < this.container.g()) {

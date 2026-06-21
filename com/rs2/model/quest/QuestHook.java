@@ -39,10 +39,10 @@ public abstract class QuestHook {
         this.enabled = true;
     }
 
-    public static int calculateProjectileTravelTicks(Position position, Position object) {
-        int n = GameUtil.getDistance(position, (Position)object);
-        object = ProjectileTiming.d;
-        double d = (double)(((ProjectileTiming)object).getStartDelay() + ((ProjectileTiming)object).getSpeed()) + (double)n * 5.0;
+    public static int calculateProjectileTravelTicks(Position position, Position targetPosition) {
+        int n = GameUtil.getDistance(position, targetPosition);
+        ProjectileTiming projectileTiming = ProjectileTiming.d;
+        double d = (double)(projectileTiming.getStartDelay() + projectileTiming.getSpeed()) + (double)n * 5.0;
         d = Math.ceil(d * 12.0 / 600.0);
         if (n > 1) {
             d += 1.0;

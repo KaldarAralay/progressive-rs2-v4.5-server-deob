@@ -9,7 +9,7 @@ import com.rs2.model.skill.herblore.PoisonedWeaponDefinition;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class WeaponPoisonTask
+public final class WeaponPoisonTask
 extends CycleEvent {
     private int outputItemId = 0;
     private final /* synthetic */ int poisonTier;
@@ -17,7 +17,7 @@ extends CycleEvent {
     private final /* synthetic */ Player player;
     private final /* synthetic */ int weaponItemId;
 
-    WeaponPoisonTask(int n, PoisonedWeaponDefinition poisonedWeaponDefinition, Player player, int n2) {
+    public WeaponPoisonTask(int n, PoisonedWeaponDefinition poisonedWeaponDefinition, Player player, int n2) {
         this.poisonTier = n;
         this.weaponDefinition = poisonedWeaponDefinition;
         this.player = player;

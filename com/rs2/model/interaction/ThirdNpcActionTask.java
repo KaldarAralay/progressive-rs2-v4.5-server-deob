@@ -18,17 +18,17 @@ import com.rs2.model.skill.runecrafting.RunecraftingHandler;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 
-final class ThirdNpcActionTask
+public final class ThirdNpcActionTask
 extends TickTask {
     private final /* synthetic */ Player player;
     private final /* synthetic */ int actionSequence;
     private final /* synthetic */ Npc npc;
 
-    ThirdNpcActionTask(int n, boolean bl, Player player, int n2, Npc npc) {
+    public ThirdNpcActionTask(int n, boolean bl, Player player, int n2, Npc npc) {
+        super(1, true);
         this.player = player;
         this.actionSequence = n2;
         this.npc = npc;
-        super(1, true);
     }
 
     @Override

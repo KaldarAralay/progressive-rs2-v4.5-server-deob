@@ -37,8 +37,14 @@ public final class LanDiscoveryService {
 
     static /* synthetic */ DatagramSocket getSocket() {
         if (socket == null) {
-            socket = new DatagramSocket(8002, InetAddress.getByName("0.0.0.0"));
-            socket.setBroadcast(true);
+            try {
+                socket = new DatagramSocket(8002, InetAddress.getByName("0.0.0.0"));
+                socket.setBroadcast(true);
+            }
+            catch (Exception exception) {
+                exception.printStackTrace();
+                throw new IllegalStateException(exception);
+            }
         }
         return socket;
     }

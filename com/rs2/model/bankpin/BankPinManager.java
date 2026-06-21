@@ -30,7 +30,7 @@ public class BankPinManager {
     private boolean changingPin = false;
     private boolean deletingPin = false;
     private BankPinEntryMode entryMode = BankPinEntryMode.a;
-    private BankPinProtectedAction protectedAction = BankPinProtectedAction.a;
+    private BankPinProtectedAction protectedAction = BankPinProtectedAction.BANK;
     private int[] digitButtonIds = new int[]{14883, 14884, 14885, 14886, 14887, 14888, 14889, 14890, 14891, 14892};
     private static /* synthetic */ int[] m;
     private static /* synthetic */ int[] n;
@@ -39,14 +39,10 @@ public class BankPinManager {
         this.player = player;
     }
 
-    /*
-     * Unable to fully structure code
-     */
-    public final boolean handleButtonClick(int var1_1) {
-        switch (var1_1) {
+    public final boolean handleButtonClick(int buttonId) {
+        switch (buttonId) {
             case 14922: {
-                var2_3 = this.player;
-                var2_3.packetSender.closeInterfaces();
+                this.player.packetSender.closeInterfaces();
                 return true;
             }
             case 14921: {
@@ -54,94 +50,60 @@ public class BankPinManager {
                 return true;
             }
         }
-        switch (BankPinManager.q()[this.entryMode.ordinal()]) {
-            case 1: {
-                var2_4 = 0;
-                while (var2_4 < 10) {
-                    if (var1_1 != var2_4 + 14873) ** GOTO lbl62
-                    var2_5 = this.player;
-                    var2_5.packetSender.sendSoundEffect(1827, 1, 0);
-                    var2_6 = this.decodeDigitButton(var1_1);
-                    var1_2 = this;
-                    var1_2.player.setBankPinEntryDigit(var2_6, var1_2.currentDigitIndex);
-                    if (var1_2.currentDigitIndex + 1 >= 4) ** GOTO lbl25
-                    var1_2.setCurrentDigitIndex(var1_2.currentDigitIndex + 1);
-                    ** GOTO lbl61
-lbl25:
-                    // 1 sources
 
-                    var2_7 = var1_2;
-                    var3_10 = 0;
-                    while (var3_10 < 4) {
-                        if (var2_7.currentPin[var3_10] >= 0) ** GOTO lbl31
-                        v0 = true;
-                        ** GOTO lbl37
-lbl31:
-                        // 1 sources
-
-                        if (var2_7.currentPin[var3_10] == var2_7.player.getBankPinEntryDigits()[var3_10]) ** GOTO lbl34
-                        v0 = false;
-                        ** GOTO lbl37
-lbl34:
-                        // 1 sources
-
-                        ++var3_10;
-                    }
-                    v0 = true;
-lbl37:
-                    // 3 sources
-
-                    if (!v0) {
-                        var2_7 = var1_2.player;
-                        var2_7.packetSender.sendGameMessage("You've entered an incorrect pin, please try again.");
-                        var1_2.resetPinEntryInterface();
-                        var1_2.setCurrentDigitIndex(0);
-                        var1_2.player.resetBankPinEntryDigits();
-                        var2_7 = var1_2.player;
-                        var2_7.packetSender.sendSoundEffect(1828, 1, 0);
-                    } else {
-                        var2_7 = var1_2.player;
-                        var2_7.packetSender.sendGameMessage("You have successfully verified your bank pin.");
-                        var3_10 = 1;
-                        var2_7 = var1_2;
-                        var1_2.verified = true;
-                        var2_7 = var1_2;
-                        switch (BankPinManager.r()[var2_7.protectedAction.ordinal()]) {
-                            case 1: {
-                                BankManager.openBank(var2_7.player);
-                            }
-                        }
-                        var2_7 = var1_2.player;
-                        var2_7.packetSender.sendSoundEffect(1257, 1, 0);
-                    }
-lbl61:
-                    // 3 sources
-
+        if (this.entryMode == BankPinEntryMode.a) {
+            for (int digitButton = 0; digitButton < 10; ++digitButton) {
+                if (buttonId != digitButton + 14873) {
+                    continue;
+                }
+                this.player.packetSender.sendSoundEffect(1827, 1, 0);
+                this.player.setBankPinEntryDigit(this.decodeDigitButton(buttonId), this.currentDigitIndex);
+                if (this.currentDigitIndex + 1 < 4) {
+                    this.setCurrentDigitIndex(this.currentDigitIndex + 1);
                     return true;
-lbl62:
-                    // 1 sources
+                }
 
-                    ++var2_4;
-                }
-                break;
-            }
-            case 2: {
-                var2_8 = 0;
-                while (var2_8 < 10) {
-                    if (var1_1 == var2_8 + 14873) {
-                        this.pendingPin[this.currentDigitIndex] = this.decodeDigitButton(var1_1);
-                        var2_9 = this.player;
-                        var2_9.packetSender.sendSoundEffect(1827, 1, 0);
-                        if (this.currentDigitIndex + 1 < 4) {
-                            this.setCurrentDigitIndex(this.currentDigitIndex + 1);
-                        } else {
-                            DialogueManager.continueDialogue(this.player, 494, 11, 0);
-                        }
-                        return true;
+                boolean correctPin = true;
+                for (int digitIndex = 0; digitIndex < 4; ++digitIndex) {
+                    if (this.currentPin[digitIndex] < 0) {
+                        break;
                     }
-                    ++var2_8;
+                    if (this.currentPin[digitIndex] != this.player.getBankPinEntryDigits()[digitIndex]) {
+                        correctPin = false;
+                        break;
+                    }
                 }
-                break;
+
+                if (!correctPin) {
+                    this.player.packetSender.sendGameMessage("You've entered an incorrect pin, please try again.");
+                    this.resetPinEntryInterface();
+                    this.setCurrentDigitIndex(0);
+                    this.player.resetBankPinEntryDigits();
+                    this.player.packetSender.sendSoundEffect(1828, 1, 0);
+                    return true;
+                }
+
+                this.player.packetSender.sendGameMessage("You have successfully verified your bank pin.");
+                this.verified = true;
+                if (this.protectedAction == BankPinProtectedAction.BANK) {
+                    BankManager.openBank(this.player);
+                }
+                this.player.packetSender.sendSoundEffect(1257, 1, 0);
+                return true;
+            }
+        } else if (this.entryMode == BankPinEntryMode.b) {
+            for (int digitButton = 0; digitButton < 10; ++digitButton) {
+                if (buttonId != digitButton + 14873) {
+                    continue;
+                }
+                this.pendingPin[this.currentDigitIndex] = this.decodeDigitButton(buttonId);
+                this.player.packetSender.sendSoundEffect(1827, 1, 0);
+                if (this.currentDigitIndex + 1 < 4) {
+                    this.setCurrentDigitIndex(this.currentDigitIndex + 1);
+                } else {
+                    DialogueManager.continueDialogue(this.player, 494, 11, 0);
+                }
+                return true;
             }
         }
         return false;
@@ -370,7 +332,7 @@ lbl62:
         }
         int[] nArray = new int[BankPinProtectedAction.values().length];
         try {
-            nArray[BankPinProtectedAction.a.ordinal()] = 1;
+            nArray[BankPinProtectedAction.BANK.ordinal()] = 1;
         }
         catch (NoSuchFieldError noSuchFieldError) {}
         n = nArray;
@@ -427,7 +389,7 @@ lbl62:
                                 bl = true;
                             }
                             object = ((ItemStack)object3).getDefinition().getName();
-                            String string = object;
+                            String string = (String)object;
                             String string2 = ".";
                             String string3 = "@bla@You ";
                             if (bl) {
@@ -577,4 +539,3 @@ lbl62:
         return false;
     }
 }
-

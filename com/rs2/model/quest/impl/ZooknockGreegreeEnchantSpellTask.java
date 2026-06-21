@@ -8,19 +8,19 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.MonkeyMadnessQuest;
 import com.rs2.model.task.TickTask;
 
-final class ZooknockGreegreeEnchantSpellTask
+public final class ZooknockGreegreeEnchantSpellTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
-    ZooknockGreegreeEnchantSpellTask(MonkeyMadnessQuest monkeyMadnessQuest, int n, Player player) {
-        this.a = player;
+    public ZooknockGreegreeEnchantSpellTask(MonkeyMadnessQuest monkeyMadnessQuest, int n, Player player) {
         super(3);
+        this.player = player;
     }
 
     @Override
     public final void execute() {
-        this.a.setActionLocked(false);
-        DialogueManager.continueDialogue(this.a, 1425, 117, 0);
+        this.player.setActionLocked(false);
+        DialogueManager.continueDialogue(this.player, 1425, 117, 0);
         this.stop();
     }
 }

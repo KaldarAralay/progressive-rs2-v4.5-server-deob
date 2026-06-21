@@ -7,15 +7,15 @@ import com.rs2.model.Entity;
 import com.rs2.model.combat.CombatManager;
 import com.rs2.model.task.TickTask;
 
-final class DeathCleanupTask
+public final class DeathCleanupTask
 extends TickTask {
     private final /* synthetic */ Entity defeatedEntity;
     private final /* synthetic */ Entity killer;
 
-    DeathCleanupTask(int n, Entity entity, Entity entity2) {
+    public DeathCleanupTask(int n, Entity entity, Entity entity2) {
+        super(n);
         this.defeatedEntity = entity;
         this.killer = entity2;
-        super(n);
     }
 
     @Override

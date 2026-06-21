@@ -60,7 +60,7 @@ public final class BirdNestSearchHandler {
             }
         }
         int n2 = GameUtil.randomInclusive(100);
-        int n3 = n2 <= 60 ? nArray3[GameUtil.randomInclusive(nArray3.length - 1)] : (n2 <= 80 ? object[GameUtil.randomInclusive(((int[])object).length - 1)] : (n2 <= 95 ? nArray2[GameUtil.randomInclusive(nArray2.length - 1)] : nArray[GameUtil.randomInclusive(0)]));
+        int n3 = n2 <= 60 ? nArray3[GameUtil.randomInclusive(nArray3.length - 1)] : (n2 <= 80 ? ((int[])object)[GameUtil.randomInclusive(((int[])object).length - 1)] : (n2 <= 95 ? nArray2[GameUtil.randomInclusive(nArray2.length - 1)] : nArray[GameUtil.randomInclusive(0)]));
         Player player2 = player;
         object = player2;
         player2.packetSender.sendGameMessage("You search the nest...and find something in it!");

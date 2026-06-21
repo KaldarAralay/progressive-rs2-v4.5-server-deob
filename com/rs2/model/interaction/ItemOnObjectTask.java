@@ -31,7 +31,7 @@ import com.rs2.model.skill.smithing.SmithingHandler;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 
-final class ItemOnObjectTask
+public final class ItemOnObjectTask
 extends TickTask {
     private final /* synthetic */ Player player;
     private final /* synthetic */ int actionSequence;
@@ -41,7 +41,8 @@ extends TickTask {
     private final /* synthetic */ int objectPlane;
     private final /* synthetic */ int itemId;
 
-    ItemOnObjectTask(int n, boolean bl, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
+    public ItemOnObjectTask(int n, boolean bl, Player player, int n2, int n3, int n4, int n5, int n6, int n7) {
+        super(1, true);
         this.player = player;
         this.actionSequence = n2;
         this.objectId = n3;
@@ -49,7 +50,6 @@ extends TickTask {
         this.objectY = n5;
         this.objectPlane = n6;
         this.itemId = n7;
-        super(1, true);
     }
 
     @Override
@@ -492,7 +492,7 @@ extends TickTask {
                     break;
                 }
                 if (this.itemId == 2355) {
-                    GameplayHelper.a(this.player, "silverCrafting");
+                    GameplayHelper.openProductionInterface(this.player, "silverCrafting");
                     break;
                 }
                 ItemService.getInstance();
@@ -505,7 +505,7 @@ extends TickTask {
             }
             case 2642: {
                 if (this.itemId != 1761) break;
-                GameplayHelper.a(this.player, "potteryUnfired");
+                GameplayHelper.openProductionInterface(this.player, "potteryUnfired");
                 break;
             }
             case 2643: 
@@ -514,7 +514,7 @@ extends TickTask {
                     CraftingHandler.startPotteryFiring(this.player, this.itemId);
                     break;
                 }
-                GameplayHelper.a(this.player, "potteryFired");
+                GameplayHelper.openProductionInterface(this.player, "potteryFired");
                 break;
             }
             default: {

@@ -6,13 +6,13 @@ package com.rs2.model.quest.event;
 import com.rs2.model.quest.event.HalloweenMaskDropEventHook;
 import com.rs2.model.task.TickTask;
 
-final class HalloweenMaskDropRefreshTask
+public final class HalloweenMaskDropRefreshTask
 extends TickTask {
     private /* synthetic */ HalloweenMaskDropEventHook a;
 
-    HalloweenMaskDropRefreshTask(HalloweenMaskDropEventHook halloweenMaskDropEventHook, int n) {
-        this.a = halloweenMaskDropEventHook;
+    public HalloweenMaskDropRefreshTask(HalloweenMaskDropEventHook halloweenMaskDropEventHook, int n) {
         super(n);
+        this.a = halloweenMaskDropEventHook;
     }
 
     @Override

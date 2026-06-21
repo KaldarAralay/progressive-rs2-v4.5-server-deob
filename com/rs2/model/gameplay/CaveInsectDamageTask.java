@@ -9,13 +9,13 @@ import com.rs2.model.gameplay.CaveLightManager;
 import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 
-final class CaveInsectDamageTask
+public final class CaveInsectDamageTask
 extends TickTask {
     private final /* synthetic */ Player player;
 
-    CaveInsectDamageTask(CaveInsectSwarmTask caveInsectSwarmTask, int n, Player player) {
-        this.player = player;
+    public CaveInsectDamageTask(CaveInsectSwarmTask caveInsectSwarmTask, int n, Player player) {
         super(3);
+        this.player = player;
     }
 
     @Override

@@ -11,40 +11,40 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.MonkeyMadnessQuest;
 import com.rs2.model.task.TickTask;
 
-final class AwowogeiAllianceCutsceneStartTask
+public final class AwowogeiAllianceCutsceneStartTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
-    AwowogeiAllianceCutsceneStartTask(MonkeyMadnessQuest monkeyMadnessQuest, int n, Player player) {
-        this.a = player;
+    public AwowogeiAllianceCutsceneStartTask(MonkeyMadnessQuest monkeyMadnessQuest, int n, Player player) {
         super(5);
+        this.player = player;
     }
 
     @Override
     public final void execute() {
         Position position = new Position(2980, 3045, 1);
         position.getPlane();
-        int n = position.getPlane() + 4 + (this.a.getIndex() << 2);
-        this.a.cutsceneReturnPosition = new Position(2807, 2761, 0);
+        int n = position.getPlane() + 4 + (this.player.getIndex() << 2);
+        this.player.cutsceneReturnPosition = new Position(2807, 2761, 0);
         Npc npc = new Npc(1448);
         Npc npc2 = new Npc(1428);
         Npc npc3 = new Npc(1409);
-        GameplayHelper.a(npc, 2678, 4579, n, 5);
-        GameplayHelper.a(npc2, 2677, 4580, n, 0);
-        GameplayHelper.a(npc3, 2677, 4578, n, 2);
-        this.a.temporaryCutsceneNpcs.add(npc);
-        this.a.temporaryCutsceneNpcs.add(npc2);
-        this.a.temporaryCutsceneNpcs.add(npc3);
-        this.a.moveTo(new Position(2690, 4578, n));
-        Player player = this.a;
+        GameplayHelper.spawnNonRespawningNpc(npc, 2678, 4579, n, 5);
+        GameplayHelper.spawnNonRespawningNpc(npc2, 2677, 4580, n, 0);
+        GameplayHelper.spawnNonRespawningNpc(npc3, 2677, 4578, n, 2);
+        this.player.temporaryCutsceneNpcs.add(npc);
+        this.player.temporaryCutsceneNpcs.add(npc2);
+        this.player.temporaryCutsceneNpcs.add(npc3);
+        this.player.moveTo(new Position(2690, 4578, n));
+        Player player = this.player;
         player.packetSender.sendMapRegion();
-        player = this.a;
+        player = this.player;
         player.packetSender.sendCameraLookAt(2100, 3300, 500, 0, 100);
-        player = this.a;
+        player = this.player;
         player.packetSender.sendCameraPosition(8000, 3500, 0, 0, 100);
-        player = this.a;
+        player = this.player;
         player.packetSender.showWalkableInterface(-1);
-        DialogueManager.continueDialogue(this.a, 1428, 100, 0);
+        DialogueManager.continueDialogue(this.player, 1428, 100, 0);
         this.stop();
     }
 }

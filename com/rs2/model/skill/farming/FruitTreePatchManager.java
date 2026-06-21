@@ -64,7 +64,7 @@ public final class FruitTreePatchManager {
                     break;
                 }
                 default: {
-                    n2 = object == null ? -1 : (n3 == 6 ? ((FruitTreeDefinition)((Object)object)).getStumpConfigStage() : (FruitTreePatchManager.a(n3, (FruitTreeDefinition)((Object)object), n5) == 3 ? ((FruitTreeDefinition)((Object)object)).getHealthCheckConfigStage() : FruitTreePatchManager.a(n3, (FruitTreeDefinition)((Object)object), n5)));
+                    n2 = object == null ? -1 : (n3 == 6 ? ((FruitTreeDefinition)((Object)object)).getStumpConfigStage() : (FruitTreePatchManager.getConfigStageForPatchState(n3, (FruitTreeDefinition)((Object)object), n5) == 3 ? ((FruitTreeDefinition)((Object)object)).getHealthCheckConfigStage() : FruitTreePatchManager.getConfigStageForPatchState(n3, (FruitTreeDefinition)((Object)object), n5)));
                 }
             }
             nArray[n] = n2;
@@ -75,7 +75,7 @@ public final class FruitTreePatchManager {
         player.packetSender.sendConfig(503, n6);
     }
 
-    private static int a(int n, FruitTreeDefinition fruitTreeDefinition, int n2) {
+    private static int getConfigStageForPatchState(int n, FruitTreeDefinition fruitTreeDefinition, int n2) {
         n2 -= 4;
         n2 = fruitTreeDefinition.getConfigStartStage() + n2;
         switch (n) {
@@ -440,7 +440,7 @@ public final class FruitTreePatchManager {
         if (object == null) {
             return false;
         }
-        FruitTreeDefinition fruitTreeDefinition = FruitTreeDefinition.forSaplingId(this.treeIds[object.getIndex()]);
+        FruitTreeDefinition fruitTreeDefinition = FruitTreeDefinition.forSaplingId(this.treeIds[((FruitTreePatch)object).getIndex()]);
         if (fruitTreeDefinition == null) {
             return false;
         }
@@ -449,12 +449,12 @@ public final class FruitTreePatchManager {
             ((Player)object).packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
-        if (this.patchStates[object.getIndex()] != 2) {
+        if (this.patchStates[((FruitTreePatch)object).getIndex()] != 2) {
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("This plant doesn't need to be resurrected.");
             return true;
         }
-        this.player.setPendingCropResurrectionTarget("fruittree", object.getIndex());
+        this.player.setPendingCropResurrectionTarget("fruittree", ((FruitTreePatch)object).getIndex());
         return true;
     }
 
@@ -463,7 +463,7 @@ public final class FruitTreePatchManager {
             Object object = FruitTreeDefinition.forSaplingId(this.treeIds[this.player.pendingCropResurrectionPatchIndex]);
             this.patchStates[this.player.pendingCropResurrectionPatchIndex] = 0;
             int n = this.growthStages[this.player.pendingCropResurrectionPatchIndex] - 4;
-            this.lastUpdateTicks[this.player.pendingCropResurrectionPatchIndex] = Server.getElapsedMinutes() - (long)(object.getGrowthCycleTicks() * n);
+            this.lastUpdateTicks[this.player.pendingCropResurrectionPatchIndex] = Server.getElapsedMinutes() - (long)(((FruitTreeDefinition)object).getGrowthCycleTicks() * n);
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("You succesfully resurrected the crop.");
         } else {
@@ -482,7 +482,7 @@ public final class FruitTreePatchManager {
         if (object == null || n3 != 5329 && n3 != 7409) {
             return false;
         }
-        FruitTreeDefinition fruitTreeDefinition = FruitTreeDefinition.forSaplingId(this.treeIds[object.getIndex()]);
+        FruitTreeDefinition fruitTreeDefinition = FruitTreeDefinition.forSaplingId(this.treeIds[((FruitTreePatch)object).getIndex()]);
         if (fruitTreeDefinition == null) {
             return false;
         }
@@ -491,14 +491,14 @@ public final class FruitTreePatchManager {
             ((Player)object).packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
-        if (this.patchStates[object.getIndex()] != 1) {
+        if (this.patchStates[((FruitTreePatch)object).getIndex()] != 1) {
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("This area doesn't need to be pruned.");
             return true;
         }
         this.player.getUpdateState().setAnimation(2275);
         this.player.setActionLocked(true);
-        this.patchStates[object.getIndex()] = 0;
+        this.patchStates[((FruitTreePatch)object).getIndex()] = 0;
         CycleEventHandler.getInstance().schedule(this.player, new FruitTreePruneTask(this), 15);
         return true;
     }
@@ -515,7 +515,7 @@ public final class FruitTreePatchManager {
         return fruitTreePatchManager.player;
     }
 
-    static /* synthetic */ void a(FruitTreePatchManager fruitTreePatchManager, int n) {
+    static /* synthetic */ void resetPatch(FruitTreePatchManager fruitTreePatchManager, int n) {
         fruitTreePatchManager.resetPatch(n);
     }
 }

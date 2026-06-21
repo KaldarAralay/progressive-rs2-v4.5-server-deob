@@ -10,9 +10,9 @@ import com.rs2.model.combat.attack.BaseCombatAttack;
 import com.rs2.model.combat.attack.CombatAttack;
 import com.rs2.model.npc.combat.NpcCombatDefinition;
 
-final class YtHurKotCombatDefinition
+public final class YtHurKotCombatDefinition
 extends NpcCombatDefinition {
-    YtHurKotCombatDefinition() {
+    public YtHurKotCombatDefinition() {
     }
 
     @Override

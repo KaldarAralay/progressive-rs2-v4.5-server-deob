@@ -9,25 +9,25 @@ import com.rs2.model.quest.impl.GertrudesCatQuest;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 
-final class KittenCrateSearchTask
+public final class KittenCrateSearchTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
-    KittenCrateSearchTask(GertrudesCatQuest gertrudesCatQuest, int n, Player player) {
-        this.a = player;
+    public KittenCrateSearchTask(GertrudesCatQuest gertrudesCatQuest, int n, Player player) {
         super(3);
+        this.player = player;
     }
 
     @Override
     public final void execute() {
         if (GameUtil.randomInt(5) == 0) {
-            this.a.getDialogueManager().showOneLineStatement("You find a kitten! You carefully place it in your backpack.");
-            this.a.getInventoryManager().addOrDropItem(new ItemStack(1554, 1));
+            this.player.getDialogueManager().showOneLineStatement("You find a kitten! You carefully place it in your backpack.");
+            this.player.getInventoryManager().addOrDropItem(new ItemStack(1554, 1));
         } else {
-            Player player = this.a;
+            Player player = this.player;
             player.packetSender.sendGameMessage("You find nothing.");
         }
-        this.a.setActionLocked(false);
+        this.player.setActionLocked(false);
         this.stop();
     }
 }

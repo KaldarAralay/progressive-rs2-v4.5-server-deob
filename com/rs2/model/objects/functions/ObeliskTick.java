@@ -8,7 +8,6 @@ import com.rs2.model.Position;
 import com.rs2.model.World;
 import com.rs2.model.animation.GraphicEffect;
 import com.rs2.model.objects.DynamicObject;
-import com.rs2.model.objects.functions.WildernessObelisk;
 import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
@@ -26,83 +25,74 @@ extends TickTask {
 
     @Override
     public final void execute() {
-        Position[] positionArray;
-        Object object;
-        int n;
         if (!this.obelisk.active) {
             this.obelisk.active = true;
-            WildernessObelisk wildernessObelisk = this.obelisk;
-            Position[] positionArray2 = wildernessObelisk.cornerPositions;
-            int n2 = wildernessObelisk.cornerPositions.length;
-            int n3 = 0;
-            while (n3 < n2) {
-                Position position = positionArray2[n3];
-                new DynamicObject(14825, position.getX(), position.getY(), position.getPlane(), 0, 10, wildernessObelisk.objectId, activationDelayTicks + 3);
-                ++n3;
+            Position[] cornerPositions = this.obelisk.cornerPositions;
+            int length = cornerPositions.length;
+            int index = 0;
+            while (index < length) {
+                Position position = cornerPositions[index];
+                new DynamicObject(14825, position.getX(), position.getY(), position.getPlane(), 0, 10, this.obelisk.objectId, activationDelayTicks + 3);
+                ++index;
             }
             return;
         }
         this.stop();
         this.obelisk.active = false;
+        int randomIndex;
         do {
-            n = GameUtil.getRandom().nextInt(WildernessObelisk.values().length);
-        } while (WildernessObelisk.values()[n] == this.obelisk);
-        Position[] positionArray3 = WildernessObelisk.values()[n];
-        Player[] playerArray = World.getPlayers();
-        int n4 = playerArray.length;
-        int n5 = 0;
-        while (n5 < n4) {
-            Player player = playerArray[n5];
-            if (player != null) {
-                object = this.obelisk;
-                if (object.teleportBounds.contains(new Point(player.getPosition().getX(), player.getPosition().getY()))) {
-                    Position[] positionArray4 = positionArray3;
-                    object = this;
-                    int n6 = player.getPosition().getX() - ((ObeliskTick)object).obelisk.basePosition.getX();
-                    int n7 = player.getPosition().getY() - ((ObeliskTick)object).obelisk.basePosition.getY();
-                    player.getTeleportManager().startDelayedTeleport(positionArray4.basePosition.getX() + n6, positionArray4.basePosition.getY() + n7, positionArray4.basePosition.getPlane(), false, "Ancient magic teleports you somewhere in the wilderness");
-                }
+            randomIndex = GameUtil.getRandom().nextInt(WildernessObelisk.values().length);
+        } while (WildernessObelisk.values()[randomIndex] == this.obelisk);
+        WildernessObelisk destinationObelisk = WildernessObelisk.values()[randomIndex];
+        Player[] players = World.getPlayers();
+        int playerCount = players.length;
+        int playerIndex = 0;
+        while (playerIndex < playerCount) {
+            Player player = players[playerIndex];
+            if (player != null && this.obelisk.teleportBounds.contains(new Point(player.getPosition().getX(), player.getPosition().getY()))) {
+                int offsetX = player.getPosition().getX() - this.obelisk.basePosition.getX();
+                int offsetY = player.getPosition().getY() - this.obelisk.basePosition.getY();
+                player.getTeleportManager().startDelayedTeleport(destinationObelisk.basePosition.getX() + offsetX, destinationObelisk.basePosition.getY() + offsetY, destinationObelisk.basePosition.getPlane(), false, "Ancient magic teleports you somewhere in the wilderness");
             }
-            ++n5;
+            ++playerIndex;
         }
-        object = this.obelisk;
-        positionArray3 = positionArray = object.effectArea.getPositions();
-        int n8 = positionArray.length;
-        n4 = 0;
-        while (n4 < n8) {
-            Position position = positionArray3[n4];
+        Position[] effectPositions = this.obelisk.effectArea.getPositions();
+        int effectCount = effectPositions.length;
+        int effectIndex = 0;
+        while (effectIndex < effectCount) {
+            Position position = effectPositions[effectIndex];
             World.sendStillGraphicToNearbyPlayers(GraphicEffect.createHeight0(342), position);
-            ++n4;
+            ++effectIndex;
         }
     }
 
-    private static Position[] buildCornerPositions(WildernessObelisk object) {
-        object = ((WildernessObelisk)((Object)object)).basePosition;
-        int n = 0;
-        Position[] positionArray = new Position[4];
-        int n2 = 0;
-        while (n2 <= 4) {
-            int n3 = 0;
-            while (n3 <= 4) {
-                positionArray[n++] = new Position(((Position)object).getX() + n2, ((Position)object).getY() + n3, ((Position)object).getPlane());
-                n3 += 4;
+    private static Position[] buildCornerPositions(WildernessObelisk wildernessObelisk) {
+        Position basePosition = wildernessObelisk.basePosition;
+        int index = 0;
+        Position[] positions = new Position[4];
+        int offsetX = 0;
+        while (offsetX <= 4) {
+            int offsetY = 0;
+            while (offsetY <= 4) {
+                positions[index++] = new Position(basePosition.getX() + offsetX, basePosition.getY() + offsetY, basePosition.getPlane());
+                offsetY += 4;
             }
-            n2 += 4;
+            offsetX += 4;
         }
-        return positionArray;
+        return positions;
     }
 
     public static void main(String[] stringArray) {
         ObeliskTick.buildCornerPositions(WildernessObelisk.LEVEL_13);
     }
 
-    public static boolean activateForPlayer(Player player, int n) {
-        WildernessObelisk[] wildernessObeliskArray = WildernessObelisk.values();
-        int n2 = wildernessObeliskArray.length;
-        int n3 = 0;
-        while (n3 < n2) {
-            WildernessObelisk wildernessObelisk = wildernessObeliskArray[n3];
-            if (wildernessObelisk.objectId == n) {
+    public static boolean activateForPlayer(Player player, int objectId) {
+        WildernessObelisk[] obelisks = WildernessObelisk.values();
+        int length = obelisks.length;
+        int index = 0;
+        while (index < length) {
+            WildernessObelisk wildernessObelisk = obelisks[index];
+            if (wildernessObelisk.objectId == objectId) {
                 if (player.isMember()) {
                     if (ServerSettings.freeToPlayWorld) {
                         player.packetSender.sendGameMessage("You need to be in members world to access members content.");
@@ -117,7 +107,7 @@ extends TickTask {
                 }
                 return true;
             }
-            ++n3;
+            ++index;
         }
         return false;
     }
@@ -126,4 +116,3 @@ extends TickTask {
         return ObeliskTick.buildCornerPositions(wildernessObelisk);
     }
 }
-

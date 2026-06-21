@@ -114,12 +114,12 @@ public class FoodHandler {
                 }
                 n4 = PotionDefinition.getMutableDoseItemIds(potionDefinition)[0];
                 ItemStack itemStack = new ItemStack(n4);
-                Object object = itemStack.getDefinition();
-                if ((object = object.getName()).contains("(")) {
-                    object = object.split("\\(");
-                    object = object[0];
+                String potionName = itemStack.getDefinition().getName();
+                if (potionName.contains("(")) {
+                    String[] potionNameParts = potionName.split("\\(");
+                    potionName = potionNameParts[0];
                 }
-                PotionDefinition.setName(potionDefinition, (String)object);
+                PotionDefinition.setName(potionDefinition, potionName);
                 n3 = byteArrayReader.readUnsignedByte();
                 PotionDefinition.setSkillIds(potionDefinition, new int[n3]);
                 PotionDefinition.setFlatBoosts(potionDefinition, new int[n3]);

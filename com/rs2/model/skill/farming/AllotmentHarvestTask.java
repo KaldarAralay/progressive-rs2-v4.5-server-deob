@@ -13,14 +13,14 @@ import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.util.GameUtil;
 
-final class AllotmentHarvestTask
+public final class AllotmentHarvestTask
 extends CycleEvent {
     private /* synthetic */ AllotmentPatchManager manager;
     private final /* synthetic */ int actionSequence;
     private final /* synthetic */ AllotmentCropDefinition definition;
     private final /* synthetic */ AllotmentPatch patch;
 
-    AllotmentHarvestTask(AllotmentPatchManager allotmentPatchManager, int n, AllotmentCropDefinition allotmentCropDefinition, AllotmentPatch allotmentPatch) {
+    public AllotmentHarvestTask(AllotmentPatchManager allotmentPatchManager, int n, AllotmentCropDefinition allotmentCropDefinition, AllotmentPatch allotmentPatch) {
         this.manager = allotmentPatchManager;
         this.actionSequence = n;
         this.definition = allotmentCropDefinition;
@@ -43,7 +43,7 @@ extends CycleEvent {
             this.manager.harvestAmounts[n] = this.manager.harvestAmounts[n] - 1;
         }
         if (this.manager.harvestAmounts[this.patch.getIndex()] <= 0) {
-            AllotmentPatchManager.a(this.manager, this.patch.getIndex());
+            AllotmentPatchManager.resetPatch(this.manager, this.patch.getIndex());
             this.manager.growthStages[this.patch.getIndex()] = 3;
             this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.getElapsedMinutes();
             cycleEventContainer.stop();

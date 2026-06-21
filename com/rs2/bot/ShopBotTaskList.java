@@ -37,9 +37,9 @@ import com.rs2.bot.shop.VarrockStaffShopFireStaffBotTask;
 import com.rs2.bot.shop.VarrockSwordShopMithrilLongswordBotTask;
 import java.util.ArrayList;
 
-final class ShopBotTaskList
+public final class ShopBotTaskList
 extends ArrayList {
-    ShopBotTaskList() {
+    public ShopBotTaskList() {
         this.add(new AlKharidGeneralStoreBotTask(1));
         this.add(new AlKharidLegsShopBotTask(1));
         this.add(new AlKharidScimitarShopBotTask(1));

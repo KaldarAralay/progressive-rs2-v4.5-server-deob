@@ -11,43 +11,43 @@ import com.rs2.net.packet.PacketHandler;
 public final class SocialPacketHandler
 implements PacketHandler {
     @Override
-    public final void handle(Player player, IncomingPacket object) {
-        switch (((IncomingPacket)object).getOpcode()) {
+    public final void handle(Player player, IncomingPacket packet) {
+        switch (packet.getOpcode()) {
             case 188: {
-                long l = ((IncomingPacket)object).getReader().readLong();
+                long l = packet.getReader().readLong();
                 player.getSocialManager().addFriend(l);
                 return;
             }
             case 215: {
-                long l = ((IncomingPacket)object).getReader().readLong();
+                long l = packet.getReader().readLong();
                 player.getSocialManager().removeFromList(player.getFriendsList(), l);
                 return;
             }
             case 133: {
-                long l = ((IncomingPacket)object).getReader().readLong();
+                long l = packet.getReader().readLong();
                 player.getSocialManager().addIgnore(l);
                 return;
             }
             case 74: {
-                long l = ((IncomingPacket)object).getReader().readLong();
+                long l = packet.getReader().readLong();
                 player.getSocialManager().removeFromList(player.getIgnoreList(), l);
                 return;
             }
             case 126: {
-                long l = ((IncomingPacket)object).getReader().readLong();
-                int n = ((IncomingPacket)object).getLength() - 8;
+                long l = packet.getReader().readLong();
+                int n = packet.getLength() - 8;
                 if (n < 0) {
                     return;
                 }
-                object = ((IncomingPacket)object).getReader().readBytes(n);
+                byte[] messageBytes = packet.getReader().readBytes(n);
                 if (player.isMuted()) {
-                    object = player;
-                    ((Player)object).packetSender.sendGameMessage("You are muted and cannot talk. Mute expires in: " + (GameplayHelper.getHoursBetween(System.currentTimeMillis(), player.getMuteExpires()) + 1) + " hours.");
+                    player.packetSender.sendGameMessage("You are muted and cannot talk. Mute expires in: " + (GameplayHelper.getHoursBetween(System.currentTimeMillis(), player.getMuteExpires()) + 1) + " hours.");
                     return;
                 }
-                player.getSocialManager().sendPrivateMessage(player, l, (byte[])object, n);
+                player.getSocialManager().sendPrivateMessage(player, l, messageBytes, n);
             }
         }
     }
+
 }
 

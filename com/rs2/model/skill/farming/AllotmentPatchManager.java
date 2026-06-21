@@ -129,7 +129,7 @@ public class AllotmentPatchManager {
                     }
                 }
                 if ((object = AllotmentCropDefinition.forSeedId(this.cropIds[n])) == null || this.shouldStopGrowthCycle(n)) break block23;
-                n2 = (int)(l / (long)object.getGrowthCycleTicks());
+                n2 = (int)(l / (long)((AllotmentCropDefinition)object).getGrowthCycleTicks());
                 int n5 = this.growthStages[n] - 4;
                 if ((n5 = n2 - n5) <= 0) break block23;
                 int n6 = 0;
@@ -263,7 +263,7 @@ public class AllotmentPatchManager {
             this.player.getDialogueManager().showTwoLineStatement("This plant is dead. You did not cure it while it was diseased.", "Clear the patch with a spade.");
             return true;
         }
-        if (this.patchStates[allotmentPatch.getIndex()] == 1 || this.growthStages[allotmentPatch.getIndex()] <= 1 || this.growthStages[allotmentPatch.getIndex()] == object.getGrowthStageCount() + 4) {
+        if (this.patchStates[allotmentPatch.getIndex()] == 1 || this.growthStages[allotmentPatch.getIndex()] <= 1 || this.growthStages[allotmentPatch.getIndex()] == ((AllotmentCropDefinition)object).getGrowthStageCount() + 4) {
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("This patch doesn't need watering.");
             return true;
@@ -368,7 +368,7 @@ public class AllotmentPatchManager {
         if (object == null) {
             return false;
         }
-        AllotmentCropDefinition allotmentCropDefinition = AllotmentCropDefinition.forSeedId(this.cropIds[object.getIndex()]);
+        AllotmentCropDefinition allotmentCropDefinition = AllotmentCropDefinition.forSeedId(this.cropIds[((AllotmentPatch)object).getIndex()]);
         if (allotmentCropDefinition == null) {
             return false;
         }
@@ -479,7 +479,7 @@ public class AllotmentPatchManager {
         if (object == null) {
             return false;
         }
-        AllotmentCropDefinition allotmentCropDefinition = AllotmentCropDefinition.forSeedId(this.cropIds[object.getIndex()]);
+        AllotmentCropDefinition allotmentCropDefinition = AllotmentCropDefinition.forSeedId(this.cropIds[((AllotmentPatch)object).getIndex()]);
         if (allotmentCropDefinition == null) {
             return false;
         }
@@ -488,12 +488,12 @@ public class AllotmentPatchManager {
             ((Player)object).packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
-        if (this.patchStates[object.getIndex()] != 3) {
+        if (this.patchStates[((AllotmentPatch)object).getIndex()] != 3) {
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("This plant doesn't need to be resurrected.");
             return true;
         }
-        this.player.setPendingCropResurrectionTarget("allotment", object.getIndex());
+        this.player.setPendingCropResurrectionTarget("allotment", ((AllotmentPatch)object).getIndex());
         return true;
     }
 
@@ -502,7 +502,7 @@ public class AllotmentPatchManager {
             Object object = AllotmentCropDefinition.forSeedId(this.cropIds[this.player.pendingCropResurrectionPatchIndex]);
             this.patchStates[this.player.pendingCropResurrectionPatchIndex] = 0;
             int n = this.growthStages[this.player.pendingCropResurrectionPatchIndex] - 4;
-            this.lastUpdateTicks[this.player.pendingCropResurrectionPatchIndex] = Server.getElapsedMinutes() - (long)(object.getGrowthCycleTicks() * n);
+            this.lastUpdateTicks[this.player.pendingCropResurrectionPatchIndex] = Server.getElapsedMinutes() - (long)(((AllotmentCropDefinition)object).getGrowthCycleTicks() * n);
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("You succesfully resurrected the crop.");
         } else {
@@ -521,7 +521,7 @@ public class AllotmentPatchManager {
         if (object == null || n3 != 6036) {
             return false;
         }
-        AllotmentCropDefinition allotmentCropDefinition = AllotmentCropDefinition.forSeedId(this.cropIds[object.getIndex()]);
+        AllotmentCropDefinition allotmentCropDefinition = AllotmentCropDefinition.forSeedId(this.cropIds[((AllotmentPatch)object).getIndex()]);
         if (allotmentCropDefinition == null) {
             return false;
         }
@@ -530,7 +530,7 @@ public class AllotmentPatchManager {
             ((Player)object).packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
-        if (this.patchStates[object.getIndex()] != 2) {
+        if (this.patchStates[((AllotmentPatch)object).getIndex()] != 2) {
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("This plant doesn't need to be cured.");
             return true;
@@ -539,7 +539,7 @@ public class AllotmentPatchManager {
         this.player.getInventoryManager().addItem(new ItemStack(229));
         this.player.getUpdateState().setAnimation(2288);
         this.player.setActionLocked(true);
-        this.patchStates[object.getIndex()] = 0;
+        this.patchStates[((AllotmentPatch)object).getIndex()] = 0;
         CycleEventHandler.getInstance().schedule(this.player, new AllotmentCureTask(this), 7);
         return true;
     }
@@ -558,11 +558,11 @@ public class AllotmentPatchManager {
         return allotmentPatchManager.player;
     }
 
-    static /* synthetic */ void a(AllotmentPatchManager allotmentPatchManager, int n) {
+    static /* synthetic */ void resetPatch(AllotmentPatchManager allotmentPatchManager, int n) {
         allotmentPatchManager.resetPatch(n);
     }
 
-    public static boolean a(Player player, int n) {
+    public static boolean emptyCropStorageContainer(Player player, int n) {
         CropStorageDefinition cropStorageDefinition;
         CropStorageDefinition cropStorageDefinition2;
         Object object;
@@ -577,10 +577,10 @@ public class AllotmentPatchManager {
             n2 = 0;
             while (n2 < n4) {
                 object = cropStorageDefinitionArray[n2];
-                int n5 = object.getBaseContainerItemId();
-                int n6 = object.getBaseContainerItemId() + (CropStorageDefinition.isSack(object) ? 18 : 8);
+                int n5 = ((CropStorageDefinition)object).getBaseContainerItemId();
+                int n6 = ((CropStorageDefinition)object).getBaseContainerItemId() + (CropStorageDefinition.isSack((CropStorageDefinition)object) ? 18 : 8);
                 if (n3 >= n5 && n3 <= n6) {
-                    cropStorageDefinition2 = object;
+                    cropStorageDefinition2 = (CropStorageDefinition)object;
                     break block8;
                 }
                 ++n2;
@@ -588,16 +588,16 @@ public class AllotmentPatchManager {
             cropStorageDefinition2 = cropStorageDefinition = null;
         }
         if (cropStorageDefinition2 != null) {
-            object = new ItemStack(cropStorageDefinition.getProduceItemId(), 1);
+            object = new ItemStack(cropStorageDefinition2.getProduceItemId(), 1);
             n2 = 0;
-            if (n == cropStorageDefinition.getBaseContainerItemId()) {
+            if (n == cropStorageDefinition2.getBaseContainerItemId()) {
                 n2 = 1;
             }
             if (player.getInventoryManager().canAddItem((ItemStack)object)) {
                 player.getInventoryManager().addItem((ItemStack)object);
                 player.getInventoryManager().removeItem(new ItemStack(n, 1));
                 if (n2 != 0) {
-                    player.getInventoryManager().addItem(new ItemStack(cropStorageDefinition.isSack() ? 5418 : 5376, 1));
+                    player.getInventoryManager().addItem(new ItemStack(cropStorageDefinition2.isSack() ? 5418 : 5376, 1));
                 } else {
                     player.getInventoryManager().addItem(new ItemStack(n - 2, 1));
                 }

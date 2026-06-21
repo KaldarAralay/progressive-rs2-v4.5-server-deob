@@ -54,26 +54,18 @@ public final class RandomEventManager {
         return false;
     }
 
-    public static void spawnRandomEventNpc(Player player, RandomEventNpcDefinition stringArray) {
-        Object object = player;
-        if (object.H != null) {
+    public static void spawnRandomEventNpc(Player player, RandomEventNpcDefinition randomEventNpcDefinition) {
+        if (player.H != null) {
             return;
         }
-        Object object2 = stringArray;
-        object2 = new Npc(stringArray.npcId);
-        player.setActiveRandomEventNpc((Npc)object2);
-        GameplayHelper.a(player, (Npc)object2, false, false);
-        object = player;
-        object.packetSender.sendStillGraphic(86, object2.getPosition(), 0x640000);
-        object = player;
-        object.packetSender.sendSoundEffect(300, 1, 0);
-        String[] stringArray2 = object2;
-        object2 = stringArray;
-        object = stringArray;
-        int n = stringArray.ignorePenaltyNpcId;
-        stringArray = stringArray.reminderLines;
-        object2 = stringArray2;
-        CycleEventHandler.getInstance().schedule((Entity)object2, new RandomEventNpcReminderEvent(player, (Npc)object2, stringArray, n), 1);
+        Npc npc = new Npc(randomEventNpcDefinition.npcId);
+        player.setActiveRandomEventNpc(npc);
+        GameplayHelper.spawnOwnedNpcAdjacentToPlayer(player, npc, false, false);
+        player.packetSender.sendStillGraphic(86, npc.getPosition(), 0x640000);
+        player.packetSender.sendSoundEffect(300, 1, 0);
+        int ignorePenaltyNpcId = randomEventNpcDefinition.ignorePenaltyNpcId;
+        String[] reminderLines = randomEventNpcDefinition.reminderLines;
+        CycleEventHandler.getInstance().schedule(npc, new RandomEventNpcReminderEvent(player, npc, reminderLines, ignorePenaltyNpcId), 1);
     }
 
     public static boolean handleLampButtonClick(Player player, int n) {

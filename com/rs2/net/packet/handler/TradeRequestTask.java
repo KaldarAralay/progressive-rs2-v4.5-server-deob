@@ -9,17 +9,17 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 import com.rs2.net.packet.handler.PlayerInteractionPacketHandler;
 
-final class TradeRequestTask
+public final class TradeRequestTask
 extends TickTask {
     private final /* synthetic */ Player targetPlayer;
     private final /* synthetic */ Player requestingPlayer;
     private final /* synthetic */ int actionSequence;
 
-    TradeRequestTask(PlayerInteractionPacketHandler playerInteractionPacketHandler, int n, Player player, Player player2, int n2) {
+    public TradeRequestTask(PlayerInteractionPacketHandler playerInteractionPacketHandler, int n, Player player, Player player2, int n2) {
+        super(1);
         this.targetPlayer = player;
         this.requestingPlayer = player2;
         this.actionSequence = n2;
-        super(1);
     }
 
     @Override

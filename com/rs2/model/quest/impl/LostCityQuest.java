@@ -78,7 +78,7 @@ extends QuestScript {
     public final boolean handleFirstObjectAction(Player object, int n, int n2, int n3, int n4) {
         if (n == 2409 && n2 == 3138 && n3 == 3212 && n4 == 2) {
             if (Npc.findByDefinitionId(654) == null) {
-                GameplayHelper.a((Player)object, new Npc(654), 3138, 3211, 0, -1, false, false);
+                GameplayHelper.spawnRoamingNpcFacingPlayer((Player)object, new Npc(654), 3138, 3211, 0, -1, false, false);
             }
             return true;
         }
@@ -95,9 +95,9 @@ extends QuestScript {
                 return true;
             }
             object2 = "You must defeat me before touching the tree!";
-            if (!GameplayHelper.i((Player)object, 655)) {
+            if (!GameplayHelper.hasActiveTemporaryNpc((Player)object, 655)) {
                 Npc npc = new Npc(655);
-                GameplayHelper.c((Player)object, npc, 2860, 9737, 0, -1, true, false);
+                GameplayHelper.spawnOwnedGroundPlaneNpcAtPosition((Player)object, npc, 2860, 9737, 0, -1, true, false);
                 npc.getUpdateState().setForcedText((String)object2);
             }
             return true;
@@ -108,8 +108,7 @@ extends QuestScript {
                 if (((Player)object).getTeleportManager().castItemTeleport((Position)object3) && n4 == 4) {
                     object3 = object;
                     ((Player)object3).packetSender.sendGameMessage("The world starts to shimmer...");
-                    object = new LostCityZanarisEntryCompletionTask(this, 4, (Player)object);
-                    World.getTaskScheduler().schedule((TickTask)object);
+                    World.getTaskScheduler().schedule(new LostCityZanarisEntryCompletionTask(this, 4, (Player)object));
                 }
             } else {
                 Player player = object;
@@ -223,7 +222,7 @@ extends QuestScript {
             }
             if (n2 == 18) {
                 ((Player)entity).getDialogueManager().showNpcTwoLineDialogue("Help? What help? I didn't help! Please don't say I did,", "I'll get in trouble!", 591);
-                this.d((Player)entity);
+                this.startQuest((Player)entity);
                 ((Player)entity).getDialogueManager().finishDialogue();
                 return true;
             }
@@ -293,9 +292,9 @@ extends QuestScript {
             if (n2 == 15) {
                 ((Player)entity).getDialogueManager().showOneLineStatement("The leprechaun magically disappears.");
                 ((Player)entity).setQuestState(this.getQuestId(), 3);
-                entity = Npc.findByDefinitionId(654);
-                ((Npc)entity).setActive(false);
-                World.unregisterNpc((Npc)entity);
+                Npc npc = Npc.findByDefinitionId(654);
+                npc.setActive(false);
+                World.unregisterNpc(npc);
                 return true;
             }
         }

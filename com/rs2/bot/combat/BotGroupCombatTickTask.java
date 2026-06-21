@@ -11,13 +11,13 @@ import com.rs2.model.player.Player;
 import com.rs2.model.skill.SkillManager;
 import com.rs2.model.task.TickTask;
 
-final class BotGroupCombatTickTask
+public final class BotGroupCombatTickTask
 extends TickTask {
     private final /* synthetic */ Player bot;
 
-    BotGroupCombatTickTask(int n, Player player) {
-        this.bot = player;
+    public BotGroupCombatTickTask(int n, Player player) {
         super(1);
+        this.bot = player;
     }
 
     @Override

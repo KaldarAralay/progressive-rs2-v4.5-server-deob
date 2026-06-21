@@ -19,12 +19,10 @@ public enum SpecialCropPatch {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private SpecialCropPatch(int n3) {
-        void var5_3;
-        void var4_2;
-        this.index = n3;
-        this.bounds = var4_2;
-        this.objectId = var5_3;
+    private SpecialCropPatch(int n2, Position[] positionArray, int n3) {
+        this.index = n2;
+        this.bounds = positionArray;
+        this.objectId = n3;
     }
 
     public static SpecialCropPatch forPosition(Position position) {

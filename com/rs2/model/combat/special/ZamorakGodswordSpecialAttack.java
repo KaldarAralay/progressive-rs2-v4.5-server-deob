@@ -13,9 +13,9 @@ import com.rs2.model.combat.hit.HitType;
 import com.rs2.model.combat.special.ZamorakGodswordSpecialDefinition;
 import com.rs2.model.player.Player;
 
-final class ZamorakGodswordSpecialAttack
+public final class ZamorakGodswordSpecialAttack
 extends WeaponCombatAttack {
-    ZamorakGodswordSpecialAttack(ZamorakGodswordSpecialDefinition zamorakGodswordSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile) {
+    public ZamorakGodswordSpecialAttack(ZamorakGodswordSpecialDefinition zamorakGodswordSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile) {
         super(player, entity, weaponProfile);
     }
 

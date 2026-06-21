@@ -65,18 +65,15 @@ public enum FoodPreparationRecipe {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private FoodPreparationRecipe(int n3, int n4, int n5, double d, boolean bl, int n6) {
-        void var11_8;
-        void cfr_renamed_4;
-        void var7_5;
-        this.ingredientItemId = n3;
-        this.ingredientAmount = n4;
-        this.baseItemId = n5;
-        this.productItemId = (int)d;
-        this.requiredLevel = var7_5;
-        this.experience = (double)bl;
-        this.putIntoMessage = cfr_renamed_4;
-        this.returnedItemId = var11_8;
+    private FoodPreparationRecipe(int n2, int n3, int n4, int n5, int n6, double d, boolean bl, int n7) {
+        this.ingredientItemId = n2;
+        this.ingredientAmount = n3;
+        this.baseItemId = n4;
+        this.productItemId = n5;
+        this.requiredLevel = n6;
+        this.experience = d;
+        this.putIntoMessage = bl;
+        this.returnedItemId = n7;
     }
 
     public final int getIngredientItemId() {

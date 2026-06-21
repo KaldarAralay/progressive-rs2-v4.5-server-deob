@@ -168,7 +168,7 @@ extends CycleEvent {
         this.execute(null);
     }
 
-    final boolean tryStartCast() {
+    public final boolean tryStartCast() {
         if (!(this.player.isCurrentActionSequence(this.d) && this.validateRequirements() && this.prepareCast())) {
             return false;
         }
@@ -178,25 +178,17 @@ extends CycleEvent {
     }
 
     @Override
-    public final void execute(CycleEventContainer object) {
-        boolean bl;
-        boolean bl2;
-        Object[] objectArray;
+    public final void execute(CycleEventContainer container) {
         if (!(this.player.isCurrentActionSequence(this.d) && this.validateRequirements() && this.prepareCast())) {
             this.player.clearPendingCropResurrectionTarget();
             this.onStop();
             return;
         }
         if (this.requirements != null) {
-            objectArray = this.requirements;
-            bl2 = this.requirements.length;
-            bl = false;
-            while (bl < bl2) {
-                object = objectArray[bl];
-                if (object instanceof CombatCostRequirement) {
-                    ((CombatCostRequirement)object).consume(this.player);
+            for (CombatRequirement requirement : this.requirements) {
+                if (requirement instanceof CombatCostRequirement) {
+                    ((CombatCostRequirement)requirement).consume(this.player);
                 }
-                bl += 1;
             }
         }
         if (this.spell.getAnimationId() != -1) {
@@ -206,60 +198,51 @@ extends CycleEvent {
             this.player.getUpdateState().setGraphic(this.spell.getCastGraphic());
         }
         if (this.spell.getCastSoundId() != -1) {
-            object = this.player;
-            ((Player)object).packetSender.sendSoundEffect(this.spell.getCastSoundId(), 1, 0);
+            this.player.packetSender.sendSoundEffect(this.spell.getCastSoundId(), 1, 0);
         }
         this.player.getSkillManager().addExperience(6, this.spell.getExperience());
         if (this.spell.getProducedItems() != null) {
-            objectArray = this.spell.getProducedItems();
-            bl2 = objectArray.length;
-            bl = false;
-            while (bl < bl2) {
-                object = objectArray[bl];
-                this.player.getInventoryManager().addOrDropItem((ItemStack)object);
-                bl += 1;
+            for (ItemStack producedItem : this.spell.getProducedItems()) {
+                this.player.getInventoryManager().addOrDropItem(producedItem);
             }
         }
         if (this.spell == SpellDefinition.RESURRECT_CROPS) {
-            object = this;
-            double d = ((MagicSpellAction)object).player.getSkillManager().getCurrentLevels()[6];
+            double d = this.player.getSkillManager().getCurrentLevels()[6];
             double d2 = d - 78.0;
             double d3 = 50.0 + 25.0 * (d2 / 21.0);
-            boolean bl3 = bl = (double)GameUtil.randomInt(100) <= d3;
-            if (((MagicSpellAction)object).player.pendingCropResurrectionPatchType.equals("allotment")) {
-                ((MagicSpellAction)object).player.getAllotmentPatchManager().finishResurrection(bl);
-            } else if (((MagicSpellAction)object).player.pendingCropResurrectionPatchType.equals("herb")) {
-                ((MagicSpellAction)object).player.getHerbPatchManager().finishResurrection(bl);
-            } else if (((MagicSpellAction)object).player.pendingCropResurrectionPatchType.equals("flower")) {
-                ((MagicSpellAction)object).player.getFlowerPatchManager().finishResurrection(bl);
-            } else if (((MagicSpellAction)object).player.pendingCropResurrectionPatchType.equals("bush")) {
-                ((MagicSpellAction)object).player.getBushPatchManager().finishResurrection(bl);
-            } else if (((MagicSpellAction)object).player.pendingCropResurrectionPatchType.equals("fruittree")) {
-                ((MagicSpellAction)object).player.getFruitTreePatchManager().finishResurrection(bl);
-            } else if (((MagicSpellAction)object).player.pendingCropResurrectionPatchType.equals("hops")) {
-                ((MagicSpellAction)object).player.getHopsPatchManager().finishResurrection(bl);
-            } else if (((MagicSpellAction)object).player.pendingCropResurrectionPatchType.equals("special1")) {
-                ((MagicSpellAction)object).player.getSpecialTreePatchManager().finishResurrection(bl);
-            } else if (((MagicSpellAction)object).player.pendingCropResurrectionPatchType.equals("special2")) {
-                ((MagicSpellAction)object).player.getSpecialCropPatchManager().finishResurrection(bl);
-            } else if (((MagicSpellAction)object).player.pendingCropResurrectionPatchType.equals("tree")) {
-                ((MagicSpellAction)object).player.getTreePatchManager().finishResurrection(bl);
+            boolean success = (double)GameUtil.randomInt(100) <= d3;
+            if (this.player.pendingCropResurrectionPatchType.equals("allotment")) {
+                this.player.getAllotmentPatchManager().finishResurrection(success);
+            } else if (this.player.pendingCropResurrectionPatchType.equals("herb")) {
+                this.player.getHerbPatchManager().finishResurrection(success);
+            } else if (this.player.pendingCropResurrectionPatchType.equals("flower")) {
+                this.player.getFlowerPatchManager().finishResurrection(success);
+            } else if (this.player.pendingCropResurrectionPatchType.equals("bush")) {
+                this.player.getBushPatchManager().finishResurrection(success);
+            } else if (this.player.pendingCropResurrectionPatchType.equals("fruittree")) {
+                this.player.getFruitTreePatchManager().finishResurrection(success);
+            } else if (this.player.pendingCropResurrectionPatchType.equals("hops")) {
+                this.player.getHopsPatchManager().finishResurrection(success);
+            } else if (this.player.pendingCropResurrectionPatchType.equals("special1")) {
+                this.player.getSpecialTreePatchManager().finishResurrection(success);
+            } else if (this.player.pendingCropResurrectionPatchType.equals("special2")) {
+                this.player.getSpecialCropPatchManager().finishResurrection(success);
+            } else if (this.player.pendingCropResurrectionPatchType.equals("tree")) {
+                this.player.getTreePatchManager().finishResurrection(success);
             }
-            ((MagicSpellAction)object).player.clearPendingCropResurrectionTarget();
+            this.player.clearPendingCropResurrectionTarget();
         }
     }
 
-    public final void scheduleDelayedImpact(Entity object, Position position) {
-        Object object2;
-        object = this.spell.getHitDefinition();
-        if (position != null && object != null && ((object2 = ((HitDefinition)object).getProjectile()) != null || ((HitDefinition)object).getGraphic() != null)) {
-            int n = ((HitDefinition)object).calculateDelay(this.player.getPosition(), position);
-            if (object2 != null) {
-                object2 = new WoodcuttingHandler(this.player.getPosition(), this.player.getSize(), position, 0, (ProjectileDefinition)object2);
-                ((WoodcuttingHandler)object2).a();
+    public final void scheduleDelayedImpact(Entity target, Position position) {
+        HitDefinition hitDefinition = this.spell.getHitDefinition();
+        if (position != null && hitDefinition != null && (hitDefinition.getProjectile() != null || hitDefinition.getGraphic() != null)) {
+            int delayTicks = hitDefinition.calculateDelay(this.player.getPosition(), position);
+            ProjectileDefinition projectile = hitDefinition.getProjectile();
+            if (projectile != null) {
+                new WoodcuttingHandler(this.player.getPosition(), this.player.getSize(), position, 0, projectile).sendProjectileToNearbyPlayers();
             }
-            object2 = new DelayedSpellImpactTask(this, n, (HitDefinition)object, null, position);
-            World.getTaskScheduler().schedule((TickTask)object2);
+            World.getTaskScheduler().schedule(new DelayedSpellImpactTask(this, delayTicks, hitDefinition, null, position));
         }
     }
 
@@ -267,113 +250,110 @@ extends CycleEvent {
 
     public abstract void applyImpact(HitDefinition var1);
 
-    public static void castItemSpell(Player object, SpellDefinition spellDefinition, int n, int n2) {
-        object = new ItemSpellAction((Player)object, spellDefinition, spellDefinition, n, (Player)object, n2);
-        super.executeImmediateCast();
+    public static void castItemSpell(Player player, SpellDefinition spellDefinition, int itemId, int inventorySlot) {
+        MagicSpellAction action = new ItemSpellAction(player, spellDefinition, spellDefinition, itemId, player, inventorySlot);
+        action.executeImmediateCast();
     }
 
-    public static boolean castObjectSpell(Player player, SpellDefinition object, int n, int n2, int n3, int n4) {
+    public static boolean castObjectSpell(Player player, SpellDefinition spellDefinition, int objectId, int objectX, int objectY, int objectPlane) {
         player.ai = false;
-        LoadedWorldObject loadedWorldObject = WorldObjectLookup.findObjectByIdAt(n, n2, n3, n4);
-        if (loadedWorldObject == null || loadedWorldObject.getWorldObject().getObjectId() != n) {
+        LoadedWorldObject loadedWorldObject = WorldObjectLookup.findObjectByIdAt(objectId, objectX, objectY, objectPlane);
+        if (loadedWorldObject == null || loadedWorldObject.getWorldObject().getObjectId() != objectId) {
             return false;
         }
-        ObjectSpellAction objectSpellAction = new ObjectSpellAction(player, (SpellDefinition)((Object)object), n, n2, n3, n4, (SpellDefinition)((Object)object));
+        MagicSpellAction objectSpellAction = new ObjectSpellAction(player, spellDefinition, objectId, objectX, objectY, objectPlane, spellDefinition);
         player.B = objectSpellAction;
-        switch (MagicSpellAction.g()[((Enum)object).ordinal()]) {
+        switch (MagicSpellAction.g()[spellDefinition.ordinal()]) {
             case 105: {
-                int n5 = n2;
-                n2 = n3;
-                n = n5;
-                object = player;
-                if ((((Player)object).getAllotmentPatchManager().startResurrection(n, n2) ? true : (((Player)object).getFlowerPatchManager().startResurrection(n, n2) ? true : (((Player)object).getHerbPatchManager().startResurrection(n, n2) ? true : (((Player)object).getHopsPatchManager().startResurrection(n, n2) ? true : (((Player)object).getBushPatchManager().startResurrection(n, n2) ? true : (((Player)object).getTreePatchManager().startResurrection(n, n2) ? true : (((Player)object).getFruitTreePatchManager().startResurrection(n, n2) ? true : (((Player)object).getSpecialTreePatchManager().startResurrection(n, n2) ? true : ((Player)object).getSpecialCropPatchManager().startResurrection(n, n2))))))))) && player.pendingCropResurrectionPatchIndex != -1) {
-                    super.executeImmediateCast();
+                boolean started = player.getAllotmentPatchManager().startResurrection(objectX, objectY)
+                    || player.getFlowerPatchManager().startResurrection(objectX, objectY)
+                    || player.getHerbPatchManager().startResurrection(objectX, objectY)
+                    || player.getHopsPatchManager().startResurrection(objectX, objectY)
+                    || player.getBushPatchManager().startResurrection(objectX, objectY)
+                    || player.getTreePatchManager().startResurrection(objectX, objectY)
+                    || player.getFruitTreePatchManager().startResurrection(objectX, objectY)
+                    || player.getSpecialTreePatchManager().startResurrection(objectX, objectY)
+                    || player.getSpecialCropPatchManager().startResurrection(objectX, objectY);
+                if (started && player.pendingCropResurrectionPatchIndex != -1) {
+                    objectSpellAction.executeImmediateCast();
                     return true;
                 }
                 return false;
             }
             case 61: {
-                if (n == i) {
+                if (objectId == i) {
                     String string = "orb charge";
-                    object = player;
                     player.interfaceAction = string;
                     if (ServerSettings.cacheVersion < 334) {
-                        EntityUpdateState.a(player, 2799, 0);
+                        EntityUpdateState.handleOrbChargeButton(player, 2799, 0);
                     } else {
-                        GameplayHelper.a(player, 571, "Water orb");
+                        GameplayHelper.showOneOptionProductionInterface(player, 571, "Water orb");
                     }
                     return true;
                 }
-                object = player;
-                ((Player)object).packetSender.sendGameMessage("Use this spell on Obelisk of Water!");
+                player.packetSender.sendGameMessage("Use this spell on Obelisk of Water!");
                 return false;
             }
             case 62: {
-                if (n == h) {
+                if (objectId == h) {
                     String string = "orb charge";
-                    object = player;
                     player.interfaceAction = string;
                     if (ServerSettings.cacheVersion < 334) {
-                        EntityUpdateState.a(player, 2799, 0);
+                        EntityUpdateState.handleOrbChargeButton(player, 2799, 0);
                     } else {
-                        GameplayHelper.a(player, 575, "Earth orb");
+                        GameplayHelper.showOneOptionProductionInterface(player, 575, "Earth orb");
                     }
                     return true;
                 }
-                object = player;
-                ((Player)object).packetSender.sendGameMessage("Use this spell on Obelisk of Earth!");
+                player.packetSender.sendGameMessage("Use this spell on Obelisk of Earth!");
                 return false;
             }
             case 63: {
-                if (n == k) {
+                if (objectId == k) {
                     String string = "orb charge";
-                    object = player;
                     player.interfaceAction = string;
                     if (ServerSettings.cacheVersion < 334) {
-                        EntityUpdateState.a(player, 2799, 0);
+                        EntityUpdateState.handleOrbChargeButton(player, 2799, 0);
                     } else {
-                        GameplayHelper.a(player, 569, "Fire orb");
+                        GameplayHelper.showOneOptionProductionInterface(player, 569, "Fire orb");
                     }
                     return true;
                 }
-                object = player;
-                ((Player)object).packetSender.sendGameMessage("Use this spell on Obelisk of Fire!");
+                player.packetSender.sendGameMessage("Use this spell on Obelisk of Fire!");
                 return false;
             }
             case 64: {
-                if (n == j) {
+                if (objectId == j) {
                     String string = "orb charge";
-                    object = player;
                     player.interfaceAction = string;
                     if (ServerSettings.cacheVersion < 334) {
-                        EntityUpdateState.a(player, 2799, 0);
+                        EntityUpdateState.handleOrbChargeButton(player, 2799, 0);
                     } else {
-                        GameplayHelper.a(player, 573, "Air orb");
+                        GameplayHelper.showOneOptionProductionInterface(player, 573, "Air orb");
                     }
                     return true;
                 }
-                object = player;
-                ((Player)object).packetSender.sendGameMessage("Use this spell on Obelisk of Air!");
+                player.packetSender.sendGameMessage("Use this spell on Obelisk of Air!");
                 return false;
             }
         }
-        super.executeImmediateCast();
+        objectSpellAction.executeImmediateCast();
         return player.ai;
     }
 
-    public static void castTeleotherSpell(Player object, Player player, SpellDefinition spellDefinition) {
-        if (player == null) {
+    public static void castTeleotherSpell(Player player, Player target, SpellDefinition spellDefinition) {
+        if (target == null) {
             return;
         }
-        ((Entity)object).getUpdateState().setFacePosition(player.getPosition());
-        ((Entity)object).getMovementQueue().clear();
-        object = new TeleotherSpellAction((Player)object, spellDefinition, spellDefinition, player, (Player)object);
-        super.executeImmediateCast();
+        player.getUpdateState().setFacePosition(target.getPosition());
+        player.getMovementQueue().clear();
+        MagicSpellAction action = new TeleotherSpellAction(player, spellDefinition, spellDefinition, target, player);
+        action.executeImmediateCast();
     }
 
-    public static void castSelfSpell(Player object, SpellDefinition spellDefinition) {
-        object = new SelfCastSpellAction((Player)object, spellDefinition, spellDefinition, (Player)object);
-        super.executeImmediateCast();
+    public static void castSelfSpell(Player player, SpellDefinition spellDefinition) {
+        MagicSpellAction action = new SelfCastSpellAction(player, spellDefinition, spellDefinition, player);
+        action.executeImmediateCast();
     }
 
     public static void scheduleTelekineticGrab(Player player, SpellDefinition spellDefinition, int n, Position position) {
@@ -409,11 +389,11 @@ extends CycleEvent {
         }
     }
 
-    public static void castTelekineticGrab(Player object, SpellDefinition spellDefinition, int n, Position position) {
+    public static void castTelekineticGrab(Player player, SpellDefinition spellDefinition, int n, Position position) {
         GroundItemManager.getInstance();
-        GroundItem groundItem = GroundItemManager.findVisibleItem((Player)object, n, position);
-        object = new TelekineticGrabSpellAction((Player)object, spellDefinition, groundItem, spellDefinition, (Player)object, position, n);
-        super.executeImmediateCast();
+        GroundItem groundItem = GroundItemManager.findVisibleItem(player, n, position);
+        MagicSpellAction action = new TelekineticGrabSpellAction(player, spellDefinition, groundItem, spellDefinition, player, position, n);
+        action.executeImmediateCast();
     }
 
     public static boolean handleAutocastButton(Player player, int n) {
@@ -461,65 +441,43 @@ extends CycleEvent {
         return false;
     }
 
-    /*
-     * Unable to fully structure code
-     */
-    public final boolean castSuperheatItem(int var1_1) {
+    public final boolean castSuperheatItem(int itemId) {
         if (!this.player.getSkillManager().tryStartActionDelay(1200)) {
             return false;
         }
-        var4_6 = MagicSpellAction.superheatItemTable;
-        var3_7 = 0;
-        while (var3_7 < 9) {
-            var2_8 = var4_6[var3_7];
-            if (var1_1 == var2_8[0]) {
-                if (!this.player.getInventoryManager().containsItemAmount(var2_8[2], var2_8[3])) {
-                    if (var1_1 != 440 || var2_8[2] != 453) {
-                        if (var2_8[2] > 0) {
-                            var1_2 = this.player;
-                            v0 = var1_2.packetSender;
-                            v1 = new StringBuilder("You haven't got enough ");
-                            ItemService.getInstance();
-                            v0.sendGameMessage(v1.append(ItemService.getItemName(var2_8[2]).toLowerCase()).append(" to cast this spell!").toString());
-                            var1_2 = this.player;
-                            var1_2.packetSender.sendSoundEffect(218, 1, 0);
-                            return false;
-                        } else {
-                            ** GOTO lbl-1000
-                        }
-                    }
-                } else lbl-1000:
-                // 3 sources
-
-                {
-                    if (this.player.getSkillManager().getBaseLevel(13) < var2_8[6]) {
-                        var1_3 = this.player;
-                        var1_3.packetSender.sendGameMessage("You need a smithing level of " + var2_8[6] + " to superheat this ore.");
-                        var1_3 = this.player;
-                        var1_3.packetSender.sendSoundEffect(218, 1, 0);
-                        return false;
-                    }
-                    this.player.getInventoryManager().removeItem(new ItemStack(var1_1, 1));
-                    if (var2_8[2] > 0) {
-                        this.player.getInventoryManager().removeItem(new ItemStack(var2_8[2], var2_8[3]));
-                    }
-                    this.player.getInventoryManager().addItem(new ItemStack(var2_8[4], 1));
-                    if (var2_8[4] == 2357 && this.player.getEquipmentManager().getItemIdAtSlot(9) == 776) {
-                        this.player.getSkillManager().addExperience(13, 56.2);
-                    } else {
-                        this.player.getSkillManager().addExperience(13, var2_8[5]);
-                    }
-                    var1_4 = this.player;
-                    var1_4.packetSender.selectMagicSidebarTab(6);
-                    return true;
-                }
+        for (int[] superheatItem : MagicSpellAction.superheatItemTable) {
+            if (itemId != superheatItem[0]) {
+                continue;
             }
-            ++var3_7;
+            int requiredItemId = superheatItem[2];
+            int requiredAmount = superheatItem[3];
+            boolean missingRequiredItem = !this.player.getInventoryManager().containsItemAmount(requiredItemId, requiredAmount);
+            if (missingRequiredItem && (itemId != 440 || requiredItemId != 453) && requiredItemId > 0) {
+                ItemService.getInstance();
+                this.player.packetSender.sendGameMessage("You haven't got enough " + ItemService.getItemName(requiredItemId).toLowerCase() + " to cast this spell!");
+                this.player.packetSender.sendSoundEffect(218, 1, 0);
+                return false;
+            }
+            if (this.player.getSkillManager().getBaseLevel(13) < superheatItem[6]) {
+                this.player.packetSender.sendGameMessage("You need a smithing level of " + superheatItem[6] + " to superheat this ore.");
+                this.player.packetSender.sendSoundEffect(218, 1, 0);
+                return false;
+            }
+            this.player.getInventoryManager().removeItem(new ItemStack(itemId, 1));
+            if (requiredItemId > 0) {
+                this.player.getInventoryManager().removeItem(new ItemStack(requiredItemId, requiredAmount));
+            }
+            this.player.getInventoryManager().addItem(new ItemStack(superheatItem[4], 1));
+            if (superheatItem[4] == 2357 && this.player.getEquipmentManager().getItemIdAtSlot(9) == 776) {
+                this.player.getSkillManager().addExperience(13, 56.2);
+            } else {
+                this.player.getSkillManager().addExperience(13, superheatItem[5]);
+            }
+            this.player.packetSender.selectMagicSidebarTab(6);
+            return true;
         }
-        var1_5 = this.player;
-        var1_5.packetSender.sendGameMessage("You can only cast superheat item on ores!");
-        var1_5 = this.player;
-        var1_5.packetSender.sendSoundEffect(218, 1, 0);
+        this.player.packetSender.sendGameMessage("You can only cast superheat item on ores!");
+        this.player.packetSender.sendSoundEffect(218, 1, 0);
         return false;
     }
 
@@ -542,8 +500,7 @@ extends CycleEvent {
             }
         }
         this.player.setActionLocked(true);
-        object = new NecromancyReanimateTask(this, 2, n2);
-        World.getTaskScheduler().schedule((TickTask)object);
+        World.getTaskScheduler().schedule(new NecromancyReanimateTask(this, 2, n2));
         return true;
     }
 
@@ -670,16 +627,10 @@ extends CycleEvent {
             player8.packetSender.sendGameMessage("You cannot use this spell here.");
             return false;
         }
-        Object object = teleotherDestination;
-        player2.setTeleotherDestination(object.position);
-        object = player2;
-        ((Player)object).packetSender.sendInterfaceText(player.getUsername(), 12558);
-        Player player9 = player2;
-        object = player9;
-        object = teleotherDestination;
-        player9.packetSender.sendInterfaceText(object.displayName, 12560);
-        object = player2;
-        ((Player)object).packetSender.showInterface(12468);
+        player2.setTeleotherDestination(teleotherDestination.position);
+        player2.packetSender.sendInterfaceText(player.getUsername(), 12558);
+        player2.packetSender.sendInterfaceText(teleotherDestination.displayName, 12560);
+        player2.packetSender.showInterface(12468);
         return true;
     }
 
@@ -1323,4 +1274,3 @@ extends CycleEvent {
         return necromancyReanimationTable;
     }
 }
-

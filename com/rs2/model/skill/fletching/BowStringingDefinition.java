@@ -42,14 +42,12 @@ public enum BowStringingDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private BowStringingDefinition(int n3, int n4, double d) {
-        void var7_5;
-        void var6_4;
-        this.unstrungBowItemId = n3;
+    private BowStringingDefinition(int n2, int n3, int n4, int n5, double d) {
+        this.unstrungBowItemId = n2;
         this.bowStringItemId = 1777;
-        this.strungBowItemId = (int)d;
-        this.requiredLevel = var6_4;
-        this.experience = var7_5;
+        this.strungBowItemId = n4;
+        this.requiredLevel = n5;
+        this.experience = d;
     }
 
     public final int getUnstrungBowItemId() {

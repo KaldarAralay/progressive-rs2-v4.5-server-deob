@@ -11,13 +11,13 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class PostTeleportBotContinuationTask
+public final class PostTeleportBotContinuationTask
 extends CycleEvent {
     private /* synthetic */ Player player;
     private final /* synthetic */ boolean wasActionLocked;
     private final /* synthetic */ Player continuationPlayer;
 
-    PostTeleportBotContinuationTask(Player player, boolean bl, Player player2) {
+    public PostTeleportBotContinuationTask(Player player, boolean bl, Player player2) {
         this.player = player;
         this.wasActionLocked = bl;
         this.continuationPlayer = player2;

@@ -12,35 +12,35 @@ import com.rs2.model.task.CycleEventHandler;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 
-final class WitchsHouseGardenTrespassTask
+public final class WitchsHouseGardenTrespassTask
 extends TickTask {
     private /* synthetic */ WitchsHouseQuest a;
-    private final /* synthetic */ Player b;
+    private final /* synthetic */ Player player;
 
-    WitchsHouseGardenTrespassTask(WitchsHouseQuest witchsHouseQuest, int n, Player player) {
-        this.a = witchsHouseQuest;
-        this.b = player;
+    public WitchsHouseGardenTrespassTask(WitchsHouseQuest witchsHouseQuest, int n, Player player) {
         super(1);
+        this.a = witchsHouseQuest;
+        this.player = player;
     }
 
     @Override
     public final void execute() {
-        if (!this.b.isRegistered()) {
+        if (!this.player.isRegistered()) {
             this.stop();
             return;
         }
-        if (this.a.gardenTrespassArea.contains(this.b.getPosition())) {
+        if (this.a.gardenTrespassArea.contains(this.player.getPosition())) {
             Object object = Npc.findByDefinitionId(896);
-            if (GameUtil.isNpcWaypointFacingPlayer(this.b, (Npc)object)) {
+            if (GameUtil.isNpcWaypointFacingPlayer(this.player, (Npc)object)) {
                 ((Entity)object).getUpdateState().setForcedText("Get out of my property!");
-                Player player = this.b;
+                Player player = this.player;
                 object = this.a;
                 player.getUpdateState().setGraphicHeight100(110);
                 CycleEventHandler.getInstance().schedule(player, new WitchsHouseGardenEjectEvent((WitchsHouseQuest)object, player), 1);
                 return;
             }
         } else {
-            this.b.eq = -1;
+            this.player.eq = -1;
             this.stop();
         }
     }

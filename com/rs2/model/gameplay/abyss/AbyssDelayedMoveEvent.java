@@ -8,13 +8,13 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class AbyssDelayedMoveEvent
+public final class AbyssDelayedMoveEvent
 extends CycleEvent {
     private final /* synthetic */ Player player;
     private final /* synthetic */ int destinationX;
     private final /* synthetic */ int destinationY;
 
-    AbyssDelayedMoveEvent(Player player, int n, int n2) {
+    public AbyssDelayedMoveEvent(Player player, int n, int n2) {
         this.player = player;
         this.destinationX = n;
         this.destinationY = n2;

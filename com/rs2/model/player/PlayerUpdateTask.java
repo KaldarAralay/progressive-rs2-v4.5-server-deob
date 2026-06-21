@@ -45,6 +45,10 @@ public class PlayerUpdateTask {
         this(n, 19509, 19508);
     }
 
+    PlayerUpdateTask(int n, int n2, int n3, int n4) {
+        this(n, 19509, 19508);
+    }
+
     public static void a(Player player) {
         Object object;
         int n;
@@ -66,37 +70,34 @@ public class PlayerUpdateTask {
         packetWriter.setAccessMode(AccessMode.BIT_ACCESS);
         PacketWriter packetWriter3 = packetWriter;
         Object object2 = player;
-        int n4 = ((Entity)object2).getUpdateState().isUpdateRequired();
+        int n4 = 0;
+        boolean updateRequired = ((Entity)object2).getUpdateState().isUpdateRequired();
         if (((Player)object2).isTeleporting()) {
-            int n5;
             packetWriter3.writeBoolean(true);
             ((Entity)object2).getPosition();
             n = Position.updateLocalX((Player)object2);
             ((Entity)object2).getPosition();
-            int n6 = n5 = Position.updateLocalY((Player)object2);
-            n5 = n4;
-            boolean bl = ((Player)object2).isTeleportPlacementUpdateRequired();
-            int n7 = ((Entity)object2).getPosition().getPlane();
-            int n8 = n6;
-            int n9 = n;
-            object = packetWriter3;
-            ((PacketWriter)object).writeBits(2, 3);
-            ((PacketWriter)object).writeBits(2, n7);
-            ((PacketWriter)object).writeBoolean(bl);
-            ((PacketWriter)object).writeBoolean(n5 != 0);
-            ((PacketWriter)object).writeBits(7, n8);
-            ((PacketWriter)object).writeBits(7, n9);
+            int localY = Position.updateLocalY((Player)object2);
+            boolean teleportPlacementUpdateRequired = ((Player)object2).isTeleportPlacementUpdateRequired();
+            int plane = ((Entity)object2).getPosition().getPlane();
+            PacketWriter movementWriter = packetWriter3;
+            movementWriter.writeBits(2, 3);
+            movementWriter.writeBits(2, plane);
+            movementWriter.writeBoolean(teleportPlacementUpdateRequired);
+            movementWriter.writeBoolean(updateRequired);
+            movementWriter.writeBits(7, localY);
+            movementWriter.writeBits(7, n);
         } else {
             n = ((Entity)object2).getWalkDirection();
             int n10 = ((Entity)object2).getRunDirection();
             if (n != -1) {
                 packetWriter3.writeBoolean(true);
                 if (n10 != -1) {
-                    PlayerUpdateTask.a(packetWriter3, n, n10, n4 != 0);
+                    PlayerUpdateTask.a(packetWriter3, n, n10, updateRequired);
                 } else {
-                    PlayerUpdateTask.a(packetWriter3, n, n4 != 0);
+                    PlayerUpdateTask.a(packetWriter3, n, updateRequired);
                 }
-            } else if (n4 != 0) {
+            } else if (updateRequired) {
                 packetWriter3.writeBoolean(true);
                 PacketWriter packetWriter4 = packetWriter3;
                 packetWriter4.writeBits(2, 0);
@@ -121,19 +122,19 @@ public class PlayerUpdateTask {
                         if (!player3.getPosition().isWithinViewport(player.getPosition()) || !player3.eu() || player3.getConnectionState() == PlayerConnectionState.DISCONNECTED || player3.isTeleporting()) break block53;
                         Object object5 = packetWriter;
                         object2 = player3;
-                        n4 = ((Entity)object2).getUpdateState().isUpdateRequired();
+                        boolean localUpdateRequired = ((Entity)object2).getUpdateState().isUpdateRequired();
                         int n11 = ((Entity)object2).getWalkDirection();
                         int n12 = ((Entity)object2).getRunDirection();
                         if (n11 != -1) {
                             ((PacketWriter)object5).writeBoolean(true);
                             if (n12 != -1) {
-                                PlayerUpdateTask.a((PacketWriter)object5, n11, n12, n4 != 0);
+                                PlayerUpdateTask.a((PacketWriter)object5, n11, n12, localUpdateRequired);
                             } else {
-                                PlayerUpdateTask.a((PacketWriter)object5, n11, n4 != 0);
+                                PlayerUpdateTask.a((PacketWriter)object5, n11, localUpdateRequired);
                             }
-                        } else if (n4 != 0) {
+                        } else if (localUpdateRequired) {
                             ((PacketWriter)object5).writeBoolean(true);
-                            PacketWriter packetWriter5 = object5;
+                            PacketWriter packetWriter5 = (PacketWriter)object5;
                             packetWriter5.writeBits(2, 0);
                         } else {
                             ((PacketWriter)object5).writeBoolean(false);
@@ -156,8 +157,7 @@ public class PlayerUpdateTask {
                         string2 = string2 != null ? string2.toLowerCase() : string;
                         if (!((String)object3).contains(string) && !((String)object3).contains(string2)) break block54;
                         if (GameUtil.randomInt(3) == 0) {
-                            object5 = new DelayedBotTradeRequestTask((Player)object2, n4, (Player)object4, (String)object3, (Player)object5);
-                            World.getTaskScheduler().schedule((TickTask)object5);
+                            World.getTaskScheduler().schedule(new DelayedBotTradeRequestTask((Player)object2, n4, (Player)object4, (String)object3, (Player)object5));
                         }
                     }
                     if ((((Player)object2).botMode == 0 || ((Player)object2).botMode == 4) && ((Player)object2).botTaskState.equals("do task") && (((String)object3).toLowerCase().equals("lvls?") || ((String)object3).toLowerCase().equals("lvls") || ((String)object3).toLowerCase().equals("lvl?") || ((String)object3).toLowerCase().equals("lvl") || ((String)object3).toLowerCase().equals("levels?") || ((String)object3).toLowerCase().equals("levels") || ((String)object3).toLowerCase().equals("level?") || ((String)object3).toLowerCase().equals("level"))) {
@@ -332,16 +332,15 @@ public class PlayerUpdateTask {
             packetWriter.writeString(player.getUpdateState().getForcedText());
         }
         if (player.getUpdateState().isAppearanceUpdateRequired() && !bl2) {
-            object = packetWriter;
+            PacketWriter chatWriter = packetWriter;
             Player player2 = player;
-            ((PacketWriter)object).writeShort(((player2.getPublicChatColor() & 0xFF) << 8) + (player2.getPublicChatEffects() & 0xFF), ByteOrder.LITTLE);
-            ((PacketWriter)object).writeByte(player2.getPlayerRights());
-            ((PacketWriter)object).writeByte(player2.getPublicChatPayload().length, ByteTransform.NEGATE);
+            chatWriter.writeShort(((player2.getPublicChatColor() & 0xFF) << 8) + (player2.getPublicChatEffects() & 0xFF), ByteOrder.LITTLE);
+            chatWriter.writeByte(player2.getPlayerRights());
+            chatWriter.writeByte(player2.getPublicChatPayload().length, ByteTransform.NEGATE);
             byte[] byArray = player2.getPublicChatPayload();
-            Object object2 = object;
             int n3 = byArray.length - 1;
             while (n3 >= 0) {
-                ((PacketWriter)object2).writeByte(byArray[n3]);
+                chatWriter.writeByte(byArray[n3]);
                 --n3;
             }
         }
@@ -349,7 +348,7 @@ public class PlayerUpdateTask {
             packetWriter.writeShort(player.getUpdateState().getFaceEntityId(), ByteOrder.LITTLE);
         }
         if (player.isAppearanceUpdateRequired() || bl) {
-            object = packetWriter;
+            PacketWriter appearanceWriter = packetWriter;
             Player player3 = player;
             PacketWriter packetWriter2 = PacketBuffer.allocateWriter(128);
             packetWriter2.writeByte(player3.getGender());
@@ -453,8 +452,8 @@ public class PlayerUpdateTask {
             packetWriter2.writeLong(player3.getNameHash());
             packetWriter2.writeByte(player3.getCombatLevel());
             packetWriter2.writeShort(0);
-            ((PacketWriter)object).writeByte(packetWriter2.getBuffer().position(), ByteTransform.NEGATE);
-            ((PacketWriter)object).writeBuffer(packetWriter2.getBuffer());
+            appearanceWriter.writeByte(packetWriter2.getBuffer().position(), ByteTransform.NEGATE);
+            appearanceWriter.writeBuffer(packetWriter2.getBuffer());
         }
         if (player.getUpdateState().isFacePositionUpdateRequired()) {
             packetWriter.writeShort((player.getUpdateState().getFacePosition().getX() << 1) + 1, ByteTransform.ADD, ByteOrder.LITTLE);

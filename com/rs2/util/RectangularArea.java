@@ -20,6 +20,10 @@ public final class RectangularArea {
         this.plane = by;
     }
 
+    public RectangularArea(int n, int n2, int n3, int n4, int plane) {
+        this(n, n2, n3, n4, (byte)plane);
+    }
+
     public RectangularArea(int n, int n2, int n3, int n4) {
         this.minX = n <= n3 ? n : n3;
         this.minY = n2 <= n4 ? n2 : n4;

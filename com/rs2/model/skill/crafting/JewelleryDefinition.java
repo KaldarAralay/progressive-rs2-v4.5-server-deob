@@ -18,27 +18,20 @@ public enum JewelleryDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private JewelleryDefinition(double d, int n3, double d2, int n4, int n5, double n2222, int n6, int n2222, double d3, int n7, int n2222) {
-        void var19_14;
-        void var18_13;
-        void var15_11;
-        void var11_8;
-        void cfr_renamed_4;
-        void var7_5;
-        void var4_2;
-        this.recipeData[0] = (int)d;
-        this.recipeData[1] = var4_2;
-        this.recipeData[2] = n3;
-        this.recipeData[3] = var7_5;
-        this.recipeData[4] = n4;
-        this.recipeData[5] = cfr_renamed_4;
-        this.recipeData[6] = var11_8;
-        this.recipeData[7] = n6;
-        this.recipeData[8] = (int)d3;
-        this.recipeData[9] = var15_11;
-        this.recipeData[10] = n7;
-        this.recipeData[11] = var18_13;
-        this.recipeData[12] = var19_14;
+    private JewelleryDefinition(int n2, int n3, double d, int n4, double d2, int n5, int n6, double d3, int n7, int n8, double d4, int n9, int n10) {
+        this.recipeData[0] = n2;
+        this.recipeData[1] = n3;
+        this.recipeData[2] = (int)d;
+        this.recipeData[3] = n4;
+        this.recipeData[4] = (int)d2;
+        this.recipeData[5] = n5;
+        this.recipeData[6] = n6;
+        this.recipeData[7] = (int)d3;
+        this.recipeData[8] = n7;
+        this.recipeData[9] = n8;
+        this.recipeData[10] = (int)d4;
+        this.recipeData[11] = n9;
+        this.recipeData[12] = n10;
     }
 
     static /* synthetic */ int[] getRecipeData(JewelleryDefinition jewelleryDefinition) {

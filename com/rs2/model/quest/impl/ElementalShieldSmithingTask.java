@@ -8,17 +8,17 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.ElementalWorkshopQuest;
 import com.rs2.model.task.TickTask;
 
-final class ElementalShieldSmithingTask
+public final class ElementalShieldSmithingTask
 extends TickTask {
     private /* synthetic */ ElementalWorkshopQuest quest;
     private final /* synthetic */ Player player;
     private final /* synthetic */ int questStateAtStart;
 
-    ElementalShieldSmithingTask(ElementalWorkshopQuest elementalWorkshopQuest, int n, Player player, int n2) {
+    public ElementalShieldSmithingTask(ElementalWorkshopQuest elementalWorkshopQuest, int n, Player player, int n2) {
+        super(3);
         this.quest = elementalWorkshopQuest;
         this.player = player;
         this.questStateAtStart = n2;
-        super(3);
     }
 
     @Override

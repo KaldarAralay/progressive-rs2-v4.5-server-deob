@@ -9,13 +9,13 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.FremennikTrialsQuest;
 import com.rs2.model.task.TickTask;
 
-final class PeerTheSeerHouseGuardianTask
+public final class PeerTheSeerHouseGuardianTask
 extends TickTask {
     private final /* synthetic */ Player player;
 
-    PeerTheSeerHouseGuardianTask(FremennikTrialsQuest fremennikTrialsQuest, int n, Player player) {
-        this.player = player;
+    public PeerTheSeerHouseGuardianTask(FremennikTrialsQuest fremennikTrialsQuest, int n, Player player) {
         super(10);
+        this.player = player;
     }
 
     @Override
@@ -29,9 +29,9 @@ extends TickTask {
         while (n < FremennikTrialsQuest.peerHouseGuardianAreas.length) {
             if (FremennikTrialsQuest.peerHouseGuardianAreas[n].containsExclusive(this.player.getPosition())) {
                 bl = true;
-                if (!GameplayHelper.i(this.player, 1290)) {
+                if (!GameplayHelper.hasActiveTemporaryNpc(this.player, 1290)) {
                     Npc npc = new Npc(1290);
-                    GameplayHelper.a(this.player, npc, true, true);
+                    GameplayHelper.spawnOwnedNpcAdjacentToPlayer(this.player, npc, true, true);
                     npc.getUpdateState().setForcedText("Prepare to die, " + this.player.getUsername() + "!");
                 }
                 this.stop();

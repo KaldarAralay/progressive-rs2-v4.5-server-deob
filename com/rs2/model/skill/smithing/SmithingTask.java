@@ -10,7 +10,7 @@ import com.rs2.model.skill.smithing.SmithingBarDefinition;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class SmithingTask
+public final class SmithingTask
 extends CycleEvent {
     private int remainingActions;
     private final /* synthetic */ Player player;
@@ -21,7 +21,7 @@ extends CycleEvent {
     private final /* synthetic */ SmithingBarDefinition barDefinition;
     private final /* synthetic */ ItemStack productItem;
 
-    SmithingTask(int n, Player player, int n2, ItemStack itemStack, int n3, SmithableItemDefinition smithableItemDefinition, SmithingBarDefinition smithingBarDefinition, ItemStack itemStack2) {
+    public SmithingTask(int n, Player player, int n2, ItemStack itemStack, int n3, SmithableItemDefinition smithableItemDefinition, SmithingBarDefinition smithingBarDefinition, ItemStack itemStack2) {
         this.player = player;
         this.actionSequence = n2;
         this.requiredBars = itemStack;

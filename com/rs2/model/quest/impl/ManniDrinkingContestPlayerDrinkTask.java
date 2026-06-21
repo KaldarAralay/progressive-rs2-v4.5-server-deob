@@ -10,29 +10,29 @@ import com.rs2.model.quest.impl.FremennikTrialsQuest;
 import com.rs2.model.quest.impl.ManniDrinkingContestResultTask;
 import com.rs2.model.task.TickTask;
 
-final class ManniDrinkingContestPlayerDrinkTask
+public final class ManniDrinkingContestPlayerDrinkTask
 extends TickTask {
     private TickTask a;
-    private final /* synthetic */ Player b;
+    private final /* synthetic */ Player player;
 
-    ManniDrinkingContestPlayerDrinkTask(FremennikTrialsQuest fremennikTrialsQuest, int n, Player player, int n2) {
-        this.b = player;
+    public ManniDrinkingContestPlayerDrinkTask(FremennikTrialsQuest fremennikTrialsQuest, int n, Player player, int n2) {
         super(6);
+        this.player = player;
         this.a = new ManniDrinkingContestResultTask(this, 7, player, n2);
     }
 
     @Override
     public final void execute() {
-        if (this.b.pendingGameMode == 3711) {
-            this.b.getInventoryManager().removeItem(new ItemStack(3711, 1));
-            Player player = this.b;
+        if (this.player.pendingGameMode == 3711) {
+            this.player.getInventoryManager().removeItem(new ItemStack(3711, 1));
+            Player player = this.player;
             player.packetSender.sendGameMessage("You drink from your keg. You don't feel at all drunk.");
         } else {
-            this.b.getInventoryManager().removeItem(new ItemStack(3801, 1));
-            Player player = this.b;
+            this.player.getInventoryManager().removeItem(new ItemStack(3801, 1));
+            Player player = this.player;
             player.packetSender.sendGameMessage("You drink from your keg. You feel extremely drunk...");
         }
-        this.b.getUpdateState().setAnimation(1330);
+        this.player.getUpdateState().setAnimation(1330);
         World.getTaskScheduler().schedule(this.a);
         this.stop();
     }

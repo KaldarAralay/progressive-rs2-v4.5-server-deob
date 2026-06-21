@@ -47,7 +47,7 @@ public class EntityUpdateState {
     private int forcedMovementEndXOffset;
     private int forcedMovementEndYOffset;
 
-    public static boolean a(Player player, int n, int n2) {
+    public static boolean handleOrbChargeButton(Player player, int n, int n2) {
         if (n == 2799) {
             n2 = 1;
         }

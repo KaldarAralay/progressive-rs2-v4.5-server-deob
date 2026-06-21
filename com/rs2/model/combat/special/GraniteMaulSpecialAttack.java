@@ -12,9 +12,9 @@ import com.rs2.model.combat.hit.HitType;
 import com.rs2.model.combat.special.GraniteMaulSpecialDefinition;
 import com.rs2.model.player.Player;
 
-final class GraniteMaulSpecialAttack
+public final class GraniteMaulSpecialAttack
 extends WeaponCombatAttack {
-    GraniteMaulSpecialAttack(GraniteMaulSpecialDefinition graniteMaulSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile) {
+    public GraniteMaulSpecialAttack(GraniteMaulSpecialDefinition graniteMaulSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile) {
         super(player, entity, weaponProfile);
     }
 

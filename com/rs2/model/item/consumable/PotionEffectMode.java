@@ -3,7 +3,7 @@
  */
 package com.rs2.model.item.consumable;
 
-enum PotionEffectMode {
+public enum PotionEffectMode {
     BOOST,
     RESTORE;
 

@@ -8,7 +8,7 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class FinishedPotionTask
+public final class FinishedPotionTask
 extends CycleEvent {
     private final /* synthetic */ Player player;
     private final /* synthetic */ int actionSequence;
@@ -17,7 +17,7 @@ extends CycleEvent {
     private final /* synthetic */ double finishedPotionItemId;
     private final /* synthetic */ double experience;
 
-    FinishedPotionTask(Player player, int n, ItemStack itemStack, double d, double d2, double d3) {
+    public FinishedPotionTask(Player player, int n, ItemStack itemStack, double d, double d2, double d3) {
         this.player = player;
         this.actionSequence = n;
         this.secondaryIngredient = itemStack;

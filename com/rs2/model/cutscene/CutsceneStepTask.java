@@ -7,13 +7,13 @@ import com.rs2.model.cutscene.Cutscene;
 import com.rs2.model.cutscene.CutsceneStep;
 import com.rs2.model.task.TickTask;
 
-final class CutsceneStepTask
+public final class CutsceneStepTask
 extends TickTask {
     private final /* synthetic */ CutsceneStep step;
 
-    CutsceneStepTask(Cutscene cutscene, int n, CutsceneStep cutsceneStep) {
-        this.step = cutsceneStep;
+    public CutsceneStepTask(Cutscene cutscene, int n, CutsceneStep cutsceneStep) {
         super(n);
+        this.step = cutsceneStep;
     }
 
     @Override

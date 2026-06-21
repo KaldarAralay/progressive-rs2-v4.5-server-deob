@@ -57,13 +57,12 @@ public enum SplitbarkRecipe {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private SplitbarkRecipe(int n3, int n4, int n5, int n6) {
-        void cfr_renamed_2;
-        this.buttonId = n3;
-        this.productItemId = n4;
-        this.quantity = n5;
-        this.materialAmount = n6;
-        this.coinAmount = cfr_renamed_2;
+    private SplitbarkRecipe(int n2, int n3, int n4, int n5, int n6, int n7) {
+        this.buttonId = n2;
+        this.productItemId = n3;
+        this.quantity = n4;
+        this.materialAmount = n5;
+        this.coinAmount = n7;
     }
 
     public final int getProductItemId() {

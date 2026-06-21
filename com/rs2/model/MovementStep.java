@@ -13,7 +13,6 @@ extends Position {
     public MovementStep(MovementQueue object, int n, int n2, int n3) {
         super(n, n2);
         n = n3;
-        object = this;
         this.direction = n;
     }
 

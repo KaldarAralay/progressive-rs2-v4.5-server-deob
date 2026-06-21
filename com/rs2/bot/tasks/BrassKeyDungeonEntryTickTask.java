@@ -8,13 +8,13 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 import java.util.ArrayList;
 
-final class BrassKeyDungeonEntryTickTask
+public final class BrassKeyDungeonEntryTickTask
 extends TickTask {
     private final /* synthetic */ Player player;
 
-    BrassKeyDungeonEntryTickTask(EdgevilleDungeonBrassKeyBotTask edgevilleDungeonBrassKeyBotTask, int n, Player player) {
-        this.player = player;
+    public BrassKeyDungeonEntryTickTask(EdgevilleDungeonBrassKeyBotTask edgevilleDungeonBrassKeyBotTask, int n, Player player) {
         super(3);
+        this.player = player;
     }
 
     @Override

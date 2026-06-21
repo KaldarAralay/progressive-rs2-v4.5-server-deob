@@ -11,11 +11,11 @@ import com.rs2.model.combat.attack.CombatAttack;
 import com.rs2.model.npc.NpcDefinition;
 import com.rs2.model.npc.combat.NpcCombatDefinition;
 
-final class NpcDefinitionAttackStyleCombatDefinition
+public final class NpcDefinitionAttackStyleCombatDefinition
 extends NpcCombatDefinition {
     private final /* synthetic */ NpcDefinition npcDefinition;
 
-    NpcDefinitionAttackStyleCombatDefinition(NpcDefinition npcDefinition) {
+    public NpcDefinitionAttackStyleCombatDefinition(NpcDefinition npcDefinition) {
         this.npcDefinition = npcDefinition;
     }
 

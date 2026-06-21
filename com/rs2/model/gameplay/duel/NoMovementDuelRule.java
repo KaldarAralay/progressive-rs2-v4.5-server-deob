@@ -6,9 +6,10 @@ package com.rs2.model.gameplay.duel;
 import com.rs2.model.gameplay.duel.DuelRule;
 import com.rs2.model.player.Player;
 
-final class NoMovementDuelRule
+public final class NoMovementDuelRule
 extends DuelRule {
-    NoMovementDuelRule(int n2, int n3, int n4) {
+    public NoMovementDuelRule(int n2, int n3, int n4) {
+        super(n2, n3, n4);
     }
 
     @Override

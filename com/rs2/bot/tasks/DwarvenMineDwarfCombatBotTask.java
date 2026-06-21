@@ -79,8 +79,8 @@ extends BotTaskDefinition {
         player.botFoodItemId = 315;
         player.getBankContainer().addToTab(new ItemStack(player.botFoodItemId, 1000), 0);
         Object object = new ItemStack[]{new ItemStack(player.botFoodItemId, 20)};
-        player.botTaskRequiredItems = object;
-        player.getInventoryManager().addItem(object[0]);
+        player.botTaskRequiredItems = (ItemStack[])object;
+        player.getInventoryManager().addItem(((ItemStack[])object)[0]);
         object = player;
         GameplayHelper.prepareBotCombatStyle((Player)object, -1);
         player.getInventoryManager().refresh();
@@ -165,13 +165,13 @@ extends BotTaskDefinition {
     }
 
     @Override
-    public final void advanceTaskRouteSegment(Player player, boolean n) {
-        if (player.botTaskState.equals("walk towards task") || player.botTaskState.equals("walk to task") && n != 0) {
-            if (n == 0) {
+    public final void advanceTaskRouteSegment(Player player, boolean continuing) {
+        if (player.botTaskState.equals("walk towards task") || player.botTaskState.equals("walk to task") && continuing) {
+            if (!continuing) {
                 ++player.botPathSegmentIndex;
             }
             player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex];
-            if (n == 0) {
+            if (!continuing) {
                 player.botPathWaypointIndex = 0;
             }
             if (player.botPathSegmentIndex == taskRouteSegments.length - 1) {
@@ -184,16 +184,16 @@ extends BotTaskDefinition {
                 player.botTaskState = "walk to task";
                 return;
             }
-        } else if (player.botTaskState.equals("walk towards bank") || player.botTaskState.equals("walk to bank") && n != 0) {
-            if (n == 0) {
+        } else if (player.botTaskState.equals("walk towards bank") || player.botTaskState.equals("walk to bank") && continuing) {
+            if (!continuing) {
                 --player.botPathSegmentIndex;
             }
             player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex].reversed();
-            if (n == 0) {
+            if (!continuing) {
                 player.botPathWaypointIndex = 0;
             }
-            n = GameUtil.getRegionId(player.getPosition().getX(), player.getPosition().getY());
-            if (player.botPathSegmentIndex == 0 && n == 12185) {
+            int regionId = GameUtil.getRegionId(player.getPosition().getX(), player.getPosition().getY());
+            if (player.botPathSegmentIndex == 0 && regionId == 12185) {
                 ArrayList<Integer> arrayList = new ArrayList<Integer>();
                 arrayList.add(1755);
                 player.botInteractionOption = 1;

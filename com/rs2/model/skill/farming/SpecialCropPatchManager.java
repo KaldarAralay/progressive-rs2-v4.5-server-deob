@@ -61,7 +61,7 @@ public final class SpecialCropPatchManager {
                     break;
                 }
                 default: {
-                    n2 = object == null ? -1 : (SpecialCropPatchManager.a(n3, (SpecialCropDefinition)((Object)object), n5) == 3 ? ((SpecialCropDefinition)((Object)object)).getHealthCheckConfigStage() : SpecialCropPatchManager.a(n3, (SpecialCropDefinition)((Object)object), n5));
+                    n2 = object == null ? -1 : (SpecialCropPatchManager.getConfigStageForPatchState(n3, (SpecialCropDefinition)((Object)object), n5) == 3 ? ((SpecialCropDefinition)((Object)object)).getHealthCheckConfigStage() : SpecialCropPatchManager.getConfigStageForPatchState(n3, (SpecialCropDefinition)((Object)object), n5));
                 }
             }
             nArray[n] = n2;
@@ -72,7 +72,7 @@ public final class SpecialCropPatchManager {
         player.packetSender.sendConfig(512, n6);
     }
 
-    private static int a(int n, SpecialCropDefinition specialCropDefinition, int n2) {
+    private static int getConfigStageForPatchState(int n, SpecialCropDefinition specialCropDefinition, int n2) {
         n2 -= 4;
         n2 = specialCropDefinition.getConfigStartStage() + n2;
         switch (n) {
@@ -269,7 +269,7 @@ public final class SpecialCropPatchManager {
         if (object == null) {
             return false;
         }
-        SpecialCropDefinition specialCropDefinition = SpecialCropDefinition.forSeedId(this.cropIds[object.getIndex()]);
+        SpecialCropDefinition specialCropDefinition = SpecialCropDefinition.forSeedId(this.cropIds[((SpecialCropPatch)object).getIndex()]);
         if (specialCropDefinition == null) {
             return false;
         }
@@ -386,7 +386,7 @@ public final class SpecialCropPatchManager {
         if (object == null) {
             return false;
         }
-        SpecialCropDefinition specialCropDefinition = SpecialCropDefinition.forSeedId(this.cropIds[object.getIndex()]);
+        SpecialCropDefinition specialCropDefinition = SpecialCropDefinition.forSeedId(this.cropIds[((SpecialCropPatch)object).getIndex()]);
         if (specialCropDefinition == null) {
             return false;
         }
@@ -395,12 +395,12 @@ public final class SpecialCropPatchManager {
             ((Player)object).packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
-        if (this.patchStates[object.getIndex()] != 2) {
+        if (this.patchStates[((SpecialCropPatch)object).getIndex()] != 2) {
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("This plant doesn't need to be resurrected.");
             return true;
         }
-        this.player.setPendingCropResurrectionTarget("special2", object.getIndex());
+        this.player.setPendingCropResurrectionTarget("special2", ((SpecialCropPatch)object).getIndex());
         return true;
     }
 
@@ -409,7 +409,7 @@ public final class SpecialCropPatchManager {
             Object object = SpecialCropDefinition.forSeedId(this.cropIds[this.player.pendingCropResurrectionPatchIndex]);
             this.patchStates[this.player.pendingCropResurrectionPatchIndex] = 0;
             int n = this.growthStages[this.player.pendingCropResurrectionPatchIndex] - 4;
-            this.lastUpdateTicks[this.player.pendingCropResurrectionPatchIndex] = Server.getElapsedMinutes() - (long)(object.getGrowthCycleTicks() * n);
+            this.lastUpdateTicks[this.player.pendingCropResurrectionPatchIndex] = Server.getElapsedMinutes() - (long)(((SpecialCropDefinition)object).getGrowthCycleTicks() * n);
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("You succesfully resurrected the crop.");
         } else {
@@ -428,7 +428,7 @@ public final class SpecialCropPatchManager {
         if (object == null || n3 != 6036) {
             return false;
         }
-        SpecialCropDefinition specialCropDefinition = SpecialCropDefinition.forSeedId(this.cropIds[object.getIndex()]);
+        SpecialCropDefinition specialCropDefinition = SpecialCropDefinition.forSeedId(this.cropIds[((SpecialCropPatch)object).getIndex()]);
         if (specialCropDefinition == null) {
             return false;
         }
@@ -437,7 +437,7 @@ public final class SpecialCropPatchManager {
             ((Player)object).packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
-        if (this.patchStates[object.getIndex()] != 1) {
+        if (this.patchStates[((SpecialCropPatch)object).getIndex()] != 1) {
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("This plant doesn't need to be cured.");
             return true;
@@ -446,7 +446,7 @@ public final class SpecialCropPatchManager {
         this.player.getInventoryManager().addItem(new ItemStack(229));
         this.player.getUpdateState().setAnimation(2288);
         this.player.setActionLocked(true);
-        this.patchStates[object.getIndex()] = 0;
+        this.patchStates[((SpecialCropPatch)object).getIndex()] = 0;
         CycleEventHandler.getInstance().schedule(this.player, new SpecialCropCureTask(this), 7);
         return true;
     }
@@ -462,7 +462,7 @@ public final class SpecialCropPatchManager {
         return specialCropPatchManager.player;
     }
 
-    static /* synthetic */ void a(SpecialCropPatchManager specialCropPatchManager, int n) {
+    static /* synthetic */ void resetPatch(SpecialCropPatchManager specialCropPatchManager, int n) {
         specialCropPatchManager.resetPatch(n);
     }
 }

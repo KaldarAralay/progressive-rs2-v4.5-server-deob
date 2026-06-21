@@ -39,7 +39,8 @@ extends JewelleryCraftingData {
             player3.packetSender.sendGameMessage("This skill is currently disabled.");
             return;
         }
-        if ((n == 1592 ? 0 : (n == 1597 ? 1 : (n2 = n == 1595 ? 2 : -1))) < 0) {
+        n2 = n == 1592 ? 0 : (n == 1597 ? 1 : (n == 1595 ? 2 : -1));
+        if (n2 < 0) {
             return;
         }
         if (player.getInventoryManager().getContainer().containsItem(n)) {

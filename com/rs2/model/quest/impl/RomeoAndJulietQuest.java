@@ -19,42 +19,33 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
-            stringArray = new String[]{"I can start this quest by speaking to Romeo in Varrock", "central square by the fountain."};
-            return stringArray;
+            return new String[]{"I can start this quest by speaking to Romeo in Varrock", "central square by the fountain."};
         }
         if (n == 2) {
-            stringArray = new String[]{"Romeo told me to find Juliet."};
-            return stringArray;
+            return new String[]{"Romeo told me to find Juliet."};
         }
         if (n == 3) {
-            stringArray = new String[]{"I should bring the message from Juliet to Romeo."};
-            return stringArray;
+            return new String[]{"I should bring the message from Juliet to Romeo."};
         }
         if (n == 4) {
-            stringArray = new String[]{"I should speak to Father Lawrence in the church", "located North East of Varrock."};
-            return stringArray;
+            return new String[]{"I should speak to Father Lawrence in the church", "located North East of Varrock."};
         }
         if (n == 5) {
-            stringArray = new String[]{"Father Lawrence told me to go to the Apothecary", "and ask for Cadava potion."};
-            return stringArray;
+            return new String[]{"Father Lawrence told me to go to the Apothecary", "and ask for Cadava potion."};
         }
         if (n == 6) {
-            stringArray = new String[]{"I should find and bring Cadava berries to Apothecary."};
-            return stringArray;
+            return new String[]{"I should find and bring Cadava berries to Apothecary."};
         }
         if (n == 7) {
-            stringArray = new String[]{"I should bring the Cadava potion to Juliet."};
-            return stringArray;
+            return new String[]{"I should bring the Cadava potion to Juliet."};
         }
         if (n == 8) {
-            stringArray = new String[]{"I should go tell Romeo that he can find Juliet from", "the crypt."};
-            return stringArray;
+            return new String[]{"I should go tell Romeo that he can find Juliet from", "the crypt."};
         }
         if (n == 1) {
-            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "5 Quest Points"};
-            return stringArray;
+            return new String[]{"Quest Completed!", "", "You were awarded:", "5 Quest Points"};
         }
         return null;
     }
@@ -152,7 +143,7 @@ extends QuestScript {
                 if (n2 == 14) {
                     if (n3 == 1) {
                         ((Player)object).getDialogueManager().showPlayerOneLineDialogue("Yes, ok, I'll let her know.", 591);
-                        this.d((Player)object);
+                        this.startQuest((Player)object);
                         ((Player)object).getDialogueManager().setNextDialogueStep(15);
                         return true;
                     }
@@ -615,8 +606,7 @@ extends QuestScript {
                     if (n2 == 3) {
                         Player player = object;
                         player.packetSender.closeInterfaces();
-                        object = new ApothecaryCadavaPotionMixTask(this, 2, (Player)object);
-                        World.getTaskScheduler().schedule((TickTask)object);
+                        World.getTaskScheduler().schedule(new ApothecaryCadavaPotionMixTask(this, 2, (Player)object));
                         return true;
                     }
                     if (n2 == 4) {

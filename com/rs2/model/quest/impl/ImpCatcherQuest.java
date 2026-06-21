@@ -16,18 +16,15 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
-            stringArray = new String[]{"I can start this quest by speaking to Wizard Mizgog who is", "in the Wizards' Tower.", "", "There aren't any requirements for this quest."};
-            return stringArray;
+            return new String[]{"I can start this quest by speaking to Wizard Mizgog who is", "in the Wizards' Tower.", "", "There aren't any requirements for this quest."};
         }
         if (n == 2) {
-            stringArray = new String[]{"I should bring these items to Wizard Mizgog who is", "in the Wizards' Tower:", "White bead", "Red bead", "Black bead", "Yellow bead"};
-            return stringArray;
+            return new String[]{"I should bring these items to Wizard Mizgog who is", "in the Wizards' Tower:", "White bead", "Red bead", "Black bead", "Yellow bead"};
         }
         if (n == 1) {
-            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "1 Quest Point", "875 Magic XP", "Amulet of Accuracy"};
-            return stringArray;
+            return new String[]{"Quest Completed!", "", "You were awarded:", "1 Quest Point", "875 Magic XP", "Amulet of Accuracy"};
         }
         return null;
     }
@@ -119,7 +116,7 @@ extends QuestScript {
                 if (n2 == 11) {
                     if (n3 == 1) {
                         player.getDialogueManager().showPlayerOneLineDialogue("I'll try.", 591);
-                        this.d(player);
+                        this.startQuest(player);
                         player.getDialogueManager().setNextDialogueStep(12);
                         return true;
                     }

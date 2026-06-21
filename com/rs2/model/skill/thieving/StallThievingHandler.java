@@ -42,14 +42,14 @@ public final class StallThievingHandler {
             n4 = stallDefinitionArray.length;
             int n6 = 0;
             while (n6 < n4) {
-                object = stallDefinitionArray[n6];
-                int[] nArray = object.getObjectIds();
+                stallDefinition = stallDefinitionArray[n6];
+                int[] nArray = stallDefinition.getObjectIds();
                 int n7 = nArray.length;
                 int n8 = 0;
                 while (n8 < n7) {
                     int n9 = nArray[n8];
                     if (n5 == n9) {
-                        stallDefinition2 = object;
+                        stallDefinition2 = stallDefinition;
                         break block13;
                     }
                     ++n8;

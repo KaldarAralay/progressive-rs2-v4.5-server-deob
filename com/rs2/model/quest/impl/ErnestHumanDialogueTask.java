@@ -9,20 +9,20 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.ErnestTheChickenQuest;
 import com.rs2.model.task.TickTask;
 
-final class ErnestHumanDialogueTask
+public final class ErnestHumanDialogueTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
-    ErnestHumanDialogueTask(ErnestTheChickenQuest ernestTheChickenQuest, int n, Player player) {
-        this.a = player;
+    public ErnestHumanDialogueTask(ErnestTheChickenQuest ernestTheChickenQuest, int n, Player player) {
         super(n);
+        this.player = player;
     }
 
     @Override
     public final void execute() {
         Npc npc = Npc.findByDefinitionId(288);
         npc.transformToNpcId(287, 100);
-        DialogueManager.continueDialogue(this.a, 287, 100, 0);
+        DialogueManager.continueDialogue(this.player, 287, 100, 0);
         this.stop();
     }
 }

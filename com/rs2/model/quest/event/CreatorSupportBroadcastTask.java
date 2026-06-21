@@ -8,13 +8,13 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.event.ServerMaintenanceEventHook;
 import com.rs2.model.task.TickTask;
 
-final class CreatorSupportBroadcastTask
+public final class CreatorSupportBroadcastTask
 extends TickTask {
     private /* synthetic */ ServerMaintenanceEventHook a;
 
-    CreatorSupportBroadcastTask(ServerMaintenanceEventHook serverMaintenanceEventHook, int n) {
-        this.a = serverMaintenanceEventHook;
+    public CreatorSupportBroadcastTask(ServerMaintenanceEventHook serverMaintenanceEventHook, int n) {
         super(3000);
+        this.a = serverMaintenanceEventHook;
     }
 
     @Override

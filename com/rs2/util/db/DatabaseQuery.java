@@ -23,7 +23,7 @@ implements Runnable {
         this.sql = string;
     }
 
-    public abstract ResultSet executeStatement(PreparedStatement var1);
+    public abstract ResultSet executeStatement(PreparedStatement var1) throws SQLException;
 
     @Override
     public void run() {
@@ -53,7 +53,7 @@ implements Runnable {
                     this.callback.onResult((ResultSet)object);
                 }
                 if (object != null) {
-                    object.close();
+                    ((ResultSet)object).close();
                     return;
                 }
             }

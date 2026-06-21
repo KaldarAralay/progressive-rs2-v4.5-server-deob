@@ -23,62 +23,48 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
-            stringArray = new String[]{"I can start this quest by speaking to Reldo in Varrock's", "Palace library, or by speaking to Charlie the Tramp near", "the Blue Moon Inn in Varrock.", "I will need a friend to help me and some combat experience", "may be an advantage."};
-            return stringArray;
+            return new String[]{"I can start this quest by speaking to Reldo in Varrock's", "Palace library, or by speaking to Charlie the Tramp near", "the Blue Moon Inn in Varrock.", "I will need a friend to help me and some combat experience", "may be an advantage."};
         }
         if (n == 2) {
-            stringArray = new String[]{"Reldo says there is a quest hidden in one of the books in", "his library somewhere. I should look for it and see."};
-            return stringArray;
+            return new String[]{"Reldo says there is a quest hidden in one of the books in", "his library somewhere. I should look for it and see."};
         }
         if (n == 3) {
-            stringArray = new String[]{"I should show the book to Reldo now."};
-            return stringArray;
+            return new String[]{"I should show the book to Reldo now."};
         }
         if (n == 4) {
-            stringArray = new String[]{"Reldo told me to talk to baraek about Phoenix Gang."};
-            return stringArray;
+            return new String[]{"Reldo told me to talk to baraek about Phoenix Gang."};
         }
         if (n == 5) {
-            stringArray = new String[]{"Baraek gave me the location of the Phoenix Gang HQ, and", "revealed they are operating under the name of", "VTAM corporation."};
-            return stringArray;
+            return new String[]{"Baraek gave me the location of the Phoenix Gang HQ, and", "revealed they are operating under the name of", "VTAM corporation."};
         }
         if (n == 99) {
-            stringArray = new String[]{"I spoke to Charlie the tramp, who gave me the location", "of the Black Arm gang HQ."};
-            return stringArray;
+            return new String[]{"I spoke to Charlie the tramp, who gave me the location", "of the Black Arm gang HQ."};
         }
-        if (n == 6 && stringArray.dv == 1) {
-            stringArray = new String[]{"Katrine said if I wanted to join the Black Arm Gang, I'd", "have to steal two Phoenix crossbows from the rival gang.", "Maybe Charlie the tramp can give me some ideas about", "how to do this."};
-            return stringArray;
+        if (n == 6 && player.dv == 1) {
+            return new String[]{"Katrine said if I wanted to join the Black Arm Gang, I'd", "have to steal two Phoenix crossbows from the rival gang.", "Maybe Charlie the tramp can give me some ideas about", "how to do this."};
         }
-        if (n == 7 && stringArray.dv == 1) {
-            stringArray = new String[]{"I should now enter the Black Arm Gang HQ and search", "for the shield."};
-            return stringArray;
+        if (n == 7 && player.dv == 1) {
+            return new String[]{"I should now enter the Black Arm Gang HQ and search", "for the shield."};
         }
-        if (n == 6 && stringArray.dv == 2) {
-            if (!stringArray.ownsItem(761)) {
-                stringArray = new String[]{"I was told to kill Jonny the Beard in Blue Moon Inn", "and bring back intelligence report to Phoenix Gang HQ", "from him."};
-                return stringArray;
+        if (n == 6 && player.dv == 2) {
+            if (!player.ownsItem(761)) {
+                return new String[]{"I was told to kill Jonny the Beard in Blue Moon Inn", "and bring back intelligence report to Phoenix Gang HQ", "from him."};
             }
-            stringArray = new String[]{"I should bring the intelligence report back to", "Phoenix Gang HQ."};
-            return stringArray;
+            return new String[]{"I should bring the intelligence report back to", "Phoenix Gang HQ."};
         }
-        if (n == 7 && stringArray.dv == 2) {
-            stringArray = new String[]{"I should now enter the Phoenix Gang HQ and search", "for the shield."};
-            return stringArray;
+        if (n == 7 && player.dv == 2) {
+            return new String[]{"I should now enter the Phoenix Gang HQ and search", "for the shield."};
         }
         if (n == 8) {
-            if (!stringArray.ownsItem(769)) {
-                stringArray = new String[]{"Either you or your friend should now go talk to", "curator of Varrock museum with both of the shield", "halves with him."};
-                return stringArray;
+            if (!player.ownsItem(769)) {
+                return new String[]{"Either you or your friend should now go talk to", "curator of Varrock museum with both of the shield", "halves with him."};
             }
-            stringArray = new String[]{"I should now go show the certificate to King roald", "to claim my reward."};
-            return stringArray;
+            return new String[]{"I should now go show the certificate to King roald", "to claim my reward."};
         }
         if (n == 1) {
-            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "1 Quest Point", "600 Coins"};
-            return stringArray;
+            return new String[]{"Quest Completed!", "", "You were awarded:", "1 Quest Point", "600 Coins"};
         }
         return null;
     }
@@ -364,7 +350,7 @@ extends QuestScript {
                 }
                 if (n2 == 7) {
                     player.getDialogueManager().showNpcTwoLineDialogue("I'm not sure where the book is mind you... but I'm", "sure it's around here somewhere.", 591);
-                    this.d(player);
+                    this.startQuest(player);
                     return true;
                 }
             }
@@ -516,7 +502,7 @@ extends QuestScript {
                 player.getDialogueManager().showNpcOneLineDialogue("But don't upset her, she's pretty dangerous.", 591);
                 player.getDialogueManager().finishDialogue();
                 if (player.getQuestState(this.getQuestId()) == 0) {
-                    this.d(player);
+                    this.startQuest(player);
                     player.setQuestState(this.getQuestId(), 99);
                 }
                 return true;

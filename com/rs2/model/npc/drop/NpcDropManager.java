@@ -10,8 +10,6 @@ import com.rs2.model.clue.TreasureTrailManager;
 import com.rs2.model.item.ItemDefinition;
 import com.rs2.model.item.ItemStack;
 import com.rs2.model.npc.NpcDefinition;
-import com.rs2.model.npc.drop.NpcDropEntry;
-import com.rs2.model.npc.drop.NpcDropTable;
 import com.rs2.model.player.Player;
 import com.rs2.util.GameUtil;
 import java.util.ArrayList;
@@ -25,7 +23,7 @@ public final class NpcDropManager {
     private static int[] HERB_DROP_WEIGHTS = new int[]{4, 4, 4, 4, 4, 3, 3, 3, 2, 2, 2, 1, 1, 1};
     private static int[] SEED_DROP_WEIGHTS = new int[]{4, 4, 4, 4, 4, 3, 3, 3, 2, 2, 2, 1, 1, 1};
     private static int[] GEM_DROP_WEIGHTS = new int[]{4, 3, 2, 1};
-    private static ArrayList weightedVirtualDropChoices = new ArrayList();
+    private static ArrayList<Integer> weightedVirtualDropChoices = new ArrayList<Integer>();
 
     private static int resolveVirtualDropItemId(Entity entity, int n) {
         Player player = null;
@@ -78,7 +76,7 @@ public final class NpcDropManager {
                     }
                     ++n3;
                 }
-                return (Integer)weightedVirtualDropChoices.get(random.nextInt(weightedVirtualDropChoices.size()));
+                return weightedVirtualDropChoices.get(random.nextInt(weightedVirtualDropChoices.size()));
             }
             case 6: {
                 n3 = 0;
@@ -93,7 +91,7 @@ public final class NpcDropManager {
                     }
                     ++n3;
                 }
-                return (Integer)weightedVirtualDropChoices.get(random.nextInt(weightedVirtualDropChoices.size()));
+                return weightedVirtualDropChoices.get(random.nextInt(weightedVirtualDropChoices.size()));
             }
             case 7: {
                 n3 = 0;
@@ -106,7 +104,7 @@ public final class NpcDropManager {
                     }
                     ++n3;
                 }
-                return (Integer)weightedVirtualDropChoices.get(random.nextInt(weightedVirtualDropChoices.size()));
+                return weightedVirtualDropChoices.get(random.nextInt(weightedVirtualDropChoices.size()));
             }
         }
         return -1;
@@ -128,95 +126,83 @@ public final class NpcDropManager {
         return NpcDropTable.forNpcId(n);
     }
 
-    public static ItemStack[] rollDrops(Entity itemStackArray, int n, boolean bl) {
-        int n2;
-        int n3;
-        int n4;
+    public static ItemStack[] rollDrops(Entity entity, int n, boolean bl) {
         NpcDefinition npcDefinition = NpcDefinition.forId(n);
-        ItemStack[] itemStackArray2 = null;
-        Object[] objectArray = null;
-        ItemStack[] itemStackArray3 = null;
-        objectArray = NpcDropManager.getDropTableForNpcId(n);
-        if ((objectArray = objectArray.getGuaranteedDrops((Entity)itemStackArray)) != null && objectArray.length > 0) {
+        ItemStack[] guaranteedDrops = null;
+        NpcDropEntry[] guaranteedEntries = NpcDropManager.getDropTableForNpcId(n).getGuaranteedDrops(entity);
+        if (guaranteedEntries != null && guaranteedEntries.length > 0) {
             ArrayList<ItemStack> arrayList = new ArrayList<ItemStack>();
-            n4 = 0;
-            while (n4 < objectArray.length) {
-                n3 = ((NpcDropEntry)objectArray[n4]).getItemId();
-                n2 = 1;
-                if (((NpcDropEntry)objectArray[n4]).getFixedAmount() > 0) {
-                    n2 = ((NpcDropEntry)objectArray[n4]).getFixedAmount();
+            int n4 = 0;
+            while (n4 < guaranteedEntries.length) {
+                NpcDropEntry npcDropEntry = guaranteedEntries[n4];
+                int n3 = npcDropEntry.getItemId();
+                int n2 = 1;
+                if (npcDropEntry.getFixedAmount() > 0) {
+                    n2 = npcDropEntry.getFixedAmount();
                 }
-                if (((NpcDropEntry)objectArray[n4]).getMinAmount() > 0) {
-                    n2 = NpcDropManager.randomInclusive(((NpcDropEntry)objectArray[n4]).getMinAmount(), ((NpcDropEntry)objectArray[n4]).getMaxAmount());
+                if (npcDropEntry.getMinAmount() > 0) {
+                    n2 = NpcDropManager.randomInclusive(npcDropEntry.getMinAmount(), npcDropEntry.getMaxAmount());
                 }
-                if (((NpcDropEntry)objectArray[n4]).getAmountOptions().length > 0 && ((NpcDropEntry)objectArray[n4]).getItemId() > 0) {
-                    int n5 = random.nextInt(((NpcDropEntry)objectArray[n4]).getAmountOptions().length);
-                    n2 = ((NpcDropEntry)objectArray[n4]).getAmountOptions()[n5];
+                if (npcDropEntry.getAmountOptions().length > 0 && npcDropEntry.getItemId() > 0) {
+                    int n5 = random.nextInt(npcDropEntry.getAmountOptions().length);
+                    n2 = npcDropEntry.getAmountOptions()[n5];
                 }
-                if (((NpcDropEntry)objectArray[n4]).getMinAmounts().length > 0 && ((NpcDropEntry)objectArray[n4]).getItemId() > 0) {
-                    int n6 = random.nextInt(((NpcDropEntry)objectArray[n4]).getAmountOptions().length);
-                    n2 = NpcDropManager.randomInclusive(((NpcDropEntry)objectArray[n4]).getMinAmounts()[n6], ((NpcDropEntry)objectArray[n4]).getMaxAmounts()[n6]);
+                if (npcDropEntry.getMinAmounts().length > 0 && npcDropEntry.getItemId() > 0) {
+                    int n6 = random.nextInt(npcDropEntry.getAmountOptions().length);
+                    n2 = NpcDropManager.randomInclusive(npcDropEntry.getMinAmounts()[n6], npcDropEntry.getMaxAmounts()[n6]);
                 }
                 if (NpcDropManager.isVirtualDropId(n3)) {
                     if (NpcDropManager.isVirtualDropTableId(n3)) {
-                        ItemStack[] itemStackArray4 = NpcDropManager.resolveVirtualDropTable((Entity)itemStackArray, n3, n2, npcDefinition.getCombatLevel());
-                        int n7 = 0;
-                        while (n7 < itemStackArray4.length) {
-                            arrayList.add(NpcDropManager.createItemStack(itemStackArray4[n7].getId(), itemStackArray4[n7].getAmount()));
-                            ++n7;
+                        ItemStack[] itemStackArray4 = NpcDropManager.resolveVirtualDropTable(entity, n3, n2, npcDefinition.getCombatLevel());
+                        if (itemStackArray4 != null) {
+                            int n7 = 0;
+                            while (n7 < itemStackArray4.length) {
+                                arrayList.add(NpcDropManager.createItemStack(itemStackArray4[n7].getId(), itemStackArray4[n7].getAmount()));
+                                ++n7;
+                            }
                         }
                     } else {
-                        n3 = NpcDropManager.resolveVirtualDropItemId((Entity)itemStackArray, n3);
+                        n3 = NpcDropManager.resolveVirtualDropItemId(entity, n3);
                     }
                 }
                 if (n3 == 5509) {
-                    n3 = GameplayHelper.selectNextAvailableEssencePouch((Entity)itemStackArray, n3);
+                    n3 = GameplayHelper.selectNextAvailableEssencePouch(entity, n3);
                 }
                 if (ItemDefinition.isDefined(n3)) {
                     arrayList.add(NpcDropManager.createItemStack(n3, n2));
                 }
                 ++n4;
             }
-            itemStackArray2 = new ItemStack[arrayList.size()];
-            n4 = 0;
-            while (n4 < arrayList.size()) {
-                itemStackArray2[n4] = (ItemStack)arrayList.get(n4);
-                ++n4;
-            }
+            guaranteedDrops = arrayList.toArray(new ItemStack[arrayList.size()]);
         }
-        objectArray = NpcDropManager.rollWeightedDrops((Entity)itemStackArray, n, true, 1, npcDefinition.getCombatLevel());
-        itemStackArray3 = NpcDropManager.rollIndependentDrops((Entity)itemStackArray, n, true, 1, npcDefinition.getCombatLevel());
-        int n8 = itemStackArray2 == null ? 0 : itemStackArray2.length;
-        n4 = objectArray == null ? 0 : objectArray.length;
-        n3 = itemStackArray3 == null ? 0 : itemStackArray3.length;
-        itemStackArray = new ItemStack[n8 + n4 + n3];
-        if (itemStackArray2 != null) {
-            n2 = 0;
-            while (n2 < n8) {
-                itemStackArray[n2] = itemStackArray2[n2];
-                ++n2;
-            }
-        }
-        if (objectArray != null) {
-            n2 = 0;
-            while (n2 < n4) {
-                itemStackArray[n2 + n8] = objectArray[n2];
-                ++n2;
-            }
-        }
-        if (itemStackArray3 != null) {
-            n2 = 0;
-            while (n2 < n3) {
-                itemStackArray[n2 + n8 + n4] = itemStackArray3[n2];
-                ++n2;
-            }
-        }
+        ItemStack[] weightedDrops = NpcDropManager.rollWeightedDrops(entity, n, true, 1, npcDefinition.getCombatLevel());
+        ItemStack[] independentDrops = NpcDropManager.rollIndependentDrops(entity, n, true, 1, npcDefinition.getCombatLevel());
+        int guaranteedCount = guaranteedDrops == null ? 0 : guaranteedDrops.length;
+        int weightedCount = weightedDrops == null ? 0 : weightedDrops.length;
+        int independentCount = independentDrops == null ? 0 : independentDrops.length;
+        ItemStack[] itemStackArray = new ItemStack[guaranteedCount + weightedCount + independentCount];
+        int index = 0;
+        index = NpcDropManager.copyDrops(guaranteedDrops, itemStackArray, index);
+        index = NpcDropManager.copyDrops(weightedDrops, itemStackArray, index);
+        NpcDropManager.copyDrops(independentDrops, itemStackArray, index);
         return itemStackArray;
     }
 
+    private static int copyDrops(ItemStack[] source, ItemStack[] destination, int offset) {
+        if (source == null) {
+            return offset;
+        }
+        int n = 0;
+        while (n < source.length) {
+            destination[offset++] = source[n];
+            ++n;
+        }
+        return offset;
+    }
+
     private static ItemStack[] rollIndependentDrops(Entity entity, int n, boolean bl, int n2, int n3) {
-        NpcDropEntry[] npcDropEntryArray = NpcDropManager.getDropTableForNpcId(n);
-        if ((npcDropEntryArray = npcDropEntryArray.getIndependentDrops(entity)) == null) {
+        NpcDropEntry[] npcDropEntryArray = NpcDropManager.getDropTableForNpcId(n).getIndependentDrops(entity);
+        if (npcDropEntryArray == null) {
             return null;
         }
         if (npcDropEntryArray.length == 0) {
@@ -234,198 +220,180 @@ public final class NpcDropManager {
             if (GameUtil.rollChance(d3)) {
                 ItemStack[] itemStackArray = NpcDropManager.rollDropEntrySelection(entity, n, true, 1, n3, true, n4);
                 int n5 = 0;
-                while (n5 < itemStackArray.length) {
+                while (itemStackArray != null && n5 < itemStackArray.length) {
                     arrayList.add(itemStackArray[n5]);
                     ++n5;
                 }
             }
             ++n4;
         }
-        ItemStack[] itemStackArray = new ItemStack[arrayList.size()];
-        int n6 = 0;
-        while (n6 < arrayList.size()) {
-            itemStackArray[n6] = (ItemStack)arrayList.get(n6);
-            ++n6;
-        }
-        return itemStackArray;
+        return arrayList.toArray(new ItemStack[arrayList.size()]);
     }
 
     private static ItemStack[] rollWeightedDrops(Entity entity, int n, boolean bl, int n2, int n3) {
         return NpcDropManager.rollDropEntrySelection(entity, n, true, n2, n3, false, -1);
     }
 
-    private static ItemStack[] rollDropEntrySelection(Entity entity, int n, boolean n2, int n3, int n4, boolean n5, int n6) {
-        Object object = NpcDropManager.getDropTableForNpcId(n);
-        Object[] objectArray = ((NpcDropTable)object).getWeightedDrops(entity);
-        if (n5 != 0) {
-            objectArray = ((NpcDropTable)object).getIndependentDrops(entity);
-        }
-        if (objectArray == null) {
+    private static ItemStack[] rollDropEntrySelection(Entity entity, int n, boolean bl, int n3, int n4, boolean bl2, int n6) {
+        NpcDropTable npcDropTable = NpcDropManager.getDropTableForNpcId(n);
+        NpcDropEntry[] npcDropEntryArray = bl2 ? npcDropTable.getIndependentDrops(entity) : npcDropTable.getWeightedDrops(entity);
+        if (npcDropEntryArray == null) {
             return null;
         }
-        if (objectArray.length == 0) {
+        if (npcDropEntryArray.length == 0) {
             return null;
         }
-        object = objectArray;
-        int n7 = 0;
-        if (n5 == 0) {
-            Object object2;
+        NpcDropEntry[] npcDropEntryArray2 = npcDropEntryArray;
+        boolean bl3 = false;
+        if (!bl2) {
             if (ServerSettings.rareDropChanceDivisor > 0 || ServerSettings.customDropRatesEnabled) {
-                n7 = 1;
+                bl3 = true;
             }
-            if (n7 != 0 && ServerSettings.rareDropChanceDivisor > 0) {
-                if (n2 != 0) {
-                    NpcDropManager.assignMissingWeightedChances((NpcDropEntry[])object);
+            if (bl3 && ServerSettings.rareDropChanceDivisor > 0) {
+                if (bl) {
+                    NpcDropManager.assignMissingWeightedChances(npcDropEntryArray2);
                 }
-                object2 = objectArray;
-                object = new ArrayList();
-                ArrayList<Object> arrayList = new ArrayList<Object>();
+                ArrayList<NpcDropEntry> commonDrops = new ArrayList<NpcDropEntry>();
+                ArrayList<NpcDropEntry> rareDrops = new ArrayList<NpcDropEntry>();
                 int n8 = 0;
-                while (n8 < ((Object[])object2).length) {
-                    ((NpcDropEntry)object2[n8]).getItemId();
-                    double d = ((NpcDropEntry)object2[n8]).getChanceNumerator();
-                    double d2 = ((NpcDropEntry)object2[n8]).getChanceDenominator();
+                while (n8 < npcDropEntryArray.length) {
+                    NpcDropEntry npcDropEntry = npcDropEntryArray[n8];
+                    npcDropEntry.getItemId();
+                    double d = npcDropEntry.getChanceNumerator();
+                    double d2 = npcDropEntry.getChanceDenominator();
                     double d3 = d / d2;
                     double d4 = 1.0 / (double)ServerSettings.rareDropChanceDivisor;
                     if (d3 <= d4) {
-                        arrayList.add(object2[n8]);
+                        rareDrops.add(npcDropEntry);
                     } else {
-                        ((ArrayList)object).add(object2[n8]);
+                        commonDrops.add(npcDropEntry);
                     }
                     ++n8;
                 }
-                new ArrayList();
-                Object object3 = arrayList.size() == 0 ? object : arrayList;
-                object = new NpcDropEntry[((ArrayList)object3).size()];
-                int n9 = 0;
-                while (n9 < ((ArrayList)object3).size()) {
-                    ((NpcDropEntry)((ArrayList)object3).get(n9)).getItemId();
-                    object[n9] = (NpcDropEntry)((ArrayList)object3).get(n9);
-                    ++n9;
-                }
+                ArrayList<NpcDropEntry> selectedDrops = rareDrops.size() == 0 ? commonDrops : rareDrops;
+                npcDropEntryArray2 = selectedDrops.toArray(new NpcDropEntry[selectedDrops.size()]);
             }
             if ((n == 6391 || n == 6392 || n == 6393) && entity.isPlayer()) {
-                boolean bl;
-                object2 = (Player)entity;
-                if (object2.getEquipmentManager().getItemIdAtSlot(12) == 2572) {
-                    object2.cd = true;
-                    bl = true;
+                Player player = (Player)entity;
+                boolean bl4;
+                if (player.getEquipmentManager().getItemIdAtSlot(12) == 2572) {
+                    player.cd = true;
+                    bl4 = true;
                 } else {
-                    bl = false;
+                    bl4 = false;
                 }
-                if (bl) {
-                    object = NpcDropManager.removeNoDropEntries((NpcDropEntry[])objectArray);
-                    n7 = 1;
+                if (bl4) {
+                    npcDropEntryArray2 = NpcDropManager.removeNoDropEntries(npcDropEntryArray);
+                    bl3 = true;
                 }
             }
         }
-        n = 0;
-        objectArray = new ItemStack[1];
-        if (n2 != 0) {
-            if (n5 != 0) {
-                n2 = n6;
+        int noDrop = 0;
+        ItemStack[] itemStackArray = new ItemStack[1];
+        int selectedIndex;
+        if (bl) {
+            if (bl2) {
+                selectedIndex = n6;
             } else {
-                NpcDropManager.assignMissingWeightedChances((NpcDropEntry[])object);
-                n2 = NpcDropManager.selectDropIndex((NpcDropEntry[])object, n7 != 0);
+                NpcDropManager.assignMissingWeightedChances(npcDropEntryArray2);
+                selectedIndex = NpcDropManager.selectDropIndex(npcDropEntryArray2, bl3);
             }
-            if (n2 == -1) {
-                n = 1;
-                n2 = 0;
+            if (selectedIndex == -1) {
+                noDrop = 1;
+                selectedIndex = 0;
             }
         } else {
-            n2 = random.nextInt(((NpcDropEntry[])object).length);
+            selectedIndex = random.nextInt(npcDropEntryArray2.length);
         }
-        n6 = 0;
-        if (object[n2].getItemIds().length > 0) {
-            n7 = random.nextInt(object[n2].getItemIds().length);
-            n5 = object[n2].getItemIds()[n7];
+        NpcDropEntry selectedEntry = npcDropEntryArray2[selectedIndex];
+        int itemId;
+        int n7 = 0;
+        if (selectedEntry.getItemIds().length > 0) {
+            n7 = random.nextInt(selectedEntry.getItemIds().length);
+            itemId = selectedEntry.getItemIds()[n7];
         } else {
-            n5 = object[n2].getItemId();
+            itemId = selectedEntry.getItemId();
         }
-        n7 = 0;
-        if (object[n2].getFixedAmount() > 0) {
-            n7 = object[n2].getFixedAmount();
+        n7 = NpcDropManager.rollEntryAmountForInitialVirtualCheck(selectedEntry);
+        if (noDrop != 0) {
+            itemId = 65000;
         }
-        if (object[n2].getMinAmount() > 0) {
-            n7 = NpcDropManager.randomInclusive(object[n2].getMinAmount(), object[n2].getMaxAmount());
-        }
-        if (object[n2].getAmountOptions().length > 0 && object[n2].getItemId() > 0) {
-            n7 = random.nextInt(object[n2].getAmountOptions().length);
-            n7 = object[n2].getAmountOptions()[n7];
-        }
-        if (object[n2].getItemIds().length > 1 && object[n2].getMinAmounts().length <= 1) {
-            n7 = object[n2].getAmountOptions()[0];
-        }
-        if (object[n2].getMinAmounts().length > 1) {
-            n7 = NpcDropManager.randomInclusive(object[n2].getMinAmounts()[0], ((NpcDropEntry)object[n2]).getMaxAmounts()[0]);
-        }
-        if (n != 0) {
-            n5 = 65000;
-        }
-        if (NpcDropManager.isVirtualDropId(n5)) {
-            if (NpcDropManager.isVirtualDropTableId(n5)) {
-                ItemStack[] itemStackArray = NpcDropManager.resolveVirtualDropTable(entity, n5, n7 * n3, n4);
-                if (itemStackArray != null) {
-                    objectArray = new ItemStack[itemStackArray.length];
-                    n = 0;
-                    while (n < itemStackArray.length) {
-                        objectArray[n] = NpcDropManager.createItemStack(itemStackArray[n].getId(), itemStackArray[n].getAmount());
-                        ++n;
+        if (NpcDropManager.isVirtualDropId(itemId)) {
+            if (NpcDropManager.isVirtualDropTableId(itemId)) {
+                ItemStack[] nestedDrops = NpcDropManager.resolveVirtualDropTable(entity, itemId, n7 * n3, n4);
+                if (nestedDrops != null) {
+                    itemStackArray = new ItemStack[nestedDrops.length];
+                    int n10 = 0;
+                    while (n10 < nestedDrops.length) {
+                        itemStackArray[n10] = NpcDropManager.createItemStack(nestedDrops[n10].getId(), nestedDrops[n10].getAmount());
+                        ++n10;
                     }
                 }
             } else {
-                n5 = NpcDropManager.resolveVirtualDropItemId(entity, n5);
+                itemId = NpcDropManager.resolveVirtualDropItemId(entity, itemId);
             }
         }
-        if (n5 == 5509) {
-            n5 = GameplayHelper.selectNextAvailableEssencePouch(entity, n5);
+        if (itemId == 5509) {
+            itemId = GameplayHelper.selectNextAvailableEssencePouch(entity, itemId);
         }
-        if (((NpcDropEntry)object[n2]).getFixedAmount() > 0) {
-            n6 = ((NpcDropEntry)object[n2]).getFixedAmount();
-        }
-        if (((NpcDropEntry)object[n2]).getMinAmount() > 0) {
-            n6 = NpcDropManager.randomInclusive(((NpcDropEntry)object[n2]).getMinAmount(), ((NpcDropEntry)object[n2]).getMaxAmount());
-        }
-        if (((NpcDropEntry)object[n2]).getAmountOptions().length > 0 && ((NpcDropEntry)object[n2]).getItemId() > 0) {
-            int n10 = random.nextInt(((NpcDropEntry)object[n2]).getAmountOptions().length);
-            n6 = ((NpcDropEntry)object[n2]).getAmountOptions()[n10];
-        }
-        if (((NpcDropEntry)object[n2]).getItemIds().length > 1) {
-            ArrayList<Object> arrayList = new ArrayList<Object>();
-            n = 0;
-            while (n < ((NpcDropEntry)object[n2]).getItemIds().length) {
-                n5 = ((NpcDropEntry)object[n2]).getItemIds()[n];
-                n6 = ((NpcDropEntry)object[n2]).getMinAmounts().length > 1 ? NpcDropManager.randomInclusive(((NpcDropEntry)object[n2]).getMinAmounts()[n], ((NpcDropEntry)object[n2]).getMaxAmounts()[n]) : ((NpcDropEntry)object[n2]).getAmountOptions()[n];
-                if (NpcDropManager.isVirtualDropId(n5)) {
-                    if (NpcDropManager.isVirtualDropTableId(n5)) {
-                        objectArray = NpcDropManager.resolveVirtualDropTable(entity, n5, n6 * n3, n4);
-                        int n11 = 0;
-                        while (n11 < objectArray.length) {
-                            arrayList.add(objectArray[n11]);
-                            ++n11;
+        int amount = NpcDropManager.rollEntryAmount(selectedEntry);
+        if (selectedEntry.getItemIds().length > 1) {
+            ArrayList<ItemStack> arrayList = new ArrayList<ItemStack>();
+            int n11 = 0;
+            while (n11 < selectedEntry.getItemIds().length) {
+                itemId = selectedEntry.getItemIds()[n11];
+                amount = selectedEntry.getMinAmounts().length > 1 ? NpcDropManager.randomInclusive(selectedEntry.getMinAmounts()[n11], selectedEntry.getMaxAmounts()[n11]) : selectedEntry.getAmountOptions()[n11];
+                if (NpcDropManager.isVirtualDropId(itemId)) {
+                    if (NpcDropManager.isVirtualDropTableId(itemId)) {
+                        ItemStack[] nestedDrops = NpcDropManager.resolveVirtualDropTable(entity, itemId, amount * n3, n4);
+                        int n12 = 0;
+                        while (nestedDrops != null && n12 < nestedDrops.length) {
+                            arrayList.add(nestedDrops[n12]);
+                            ++n12;
                         }
                     } else {
-                        n5 = NpcDropManager.resolveVirtualDropItemId(entity, n5);
+                        itemId = NpcDropManager.resolveVirtualDropItemId(entity, itemId);
                     }
                 }
-                if (n5 == 5509) {
-                    n5 = GameplayHelper.selectNextAvailableEssencePouch(entity, n5);
+                if (itemId == 5509) {
+                    itemId = GameplayHelper.selectNextAvailableEssencePouch(entity, itemId);
                 }
-                if (ItemDefinition.isDefined(n5)) {
-                    arrayList.add(NpcDropManager.createItemStack(n5, n6 * n3));
+                if (ItemDefinition.isDefined(itemId)) {
+                    arrayList.add(NpcDropManager.createItemStack(itemId, amount * n3));
                 }
-                ++n;
+                ++n11;
             }
-            objectArray = new ItemStack[arrayList.size()];
-            n = 0;
-            while (n < arrayList.size()) {
-                objectArray[n] = (ItemStack)arrayList.get(n);
-                ++n;
-            }
-        } else if (ItemDefinition.isDefined(n5)) {
-            objectArray[0] = NpcDropManager.createItemStack(n5, n6 * n3);
+            itemStackArray = arrayList.toArray(new ItemStack[arrayList.size()]);
+        } else if (ItemDefinition.isDefined(itemId)) {
+            itemStackArray[0] = NpcDropManager.createItemStack(itemId, amount * n3);
         }
-        return objectArray;
+        return itemStackArray;
+    }
+
+    private static int rollEntryAmountForInitialVirtualCheck(NpcDropEntry npcDropEntry) {
+        int n = NpcDropManager.rollEntryAmount(npcDropEntry);
+        if (npcDropEntry.getItemIds().length > 1 && npcDropEntry.getMinAmounts().length <= 1) {
+            n = npcDropEntry.getAmountOptions()[0];
+        }
+        if (npcDropEntry.getMinAmounts().length > 1) {
+            n = NpcDropManager.randomInclusive(npcDropEntry.getMinAmounts()[0], npcDropEntry.getMaxAmounts()[0]);
+        }
+        return n;
+    }
+
+    private static int rollEntryAmount(NpcDropEntry npcDropEntry) {
+        int n = 0;
+        if (npcDropEntry.getFixedAmount() > 0) {
+            n = npcDropEntry.getFixedAmount();
+        }
+        if (npcDropEntry.getMinAmount() > 0) {
+            n = NpcDropManager.randomInclusive(npcDropEntry.getMinAmount(), npcDropEntry.getMaxAmount());
+        }
+        if (npcDropEntry.getAmountOptions().length > 0 && npcDropEntry.getItemId() > 0) {
+            int n2 = random.nextInt(npcDropEntry.getAmountOptions().length);
+            n = npcDropEntry.getAmountOptions()[n2];
+        }
+        return n;
     }
 
     private static NpcDropEntry[] removeNoDropEntries(NpcDropEntry[] npcDropEntryArray) {
@@ -442,8 +410,8 @@ public final class NpcDropManager {
         NpcDropEntry[] npcDropEntryArray2 = new NpcDropEntry[arrayList.size()];
         n = 0;
         while (n < arrayList.size()) {
-            ((NpcDropEntry)arrayList.get(n)).getItemId();
-            npcDropEntryArray2[n] = (NpcDropEntry)arrayList.get(n);
+            arrayList.get(n).getItemId();
+            npcDropEntryArray2[n] = arrayList.get(n);
             ++n;
         }
         return npcDropEntryArray2;
@@ -543,7 +511,6 @@ public final class NpcDropManager {
             ++n2;
         }
         if (arrayList.size() > 0) {
-            String string;
             double d5;
             double d6 = d5 = (1.0 - d) / (double)arrayList.size();
             double d7 = Math.floor(d5);
@@ -551,11 +518,11 @@ public final class NpcDropManager {
             long l = NpcDropManager.greatestCommonDivisor(Math.round(d8 * 1.0E9), 1000000000L);
             long l2 = Math.round(d8 * 1.0E9) / l;
             long l3 = 1000000000L / l;
-            String string2 = string = String.valueOf((long)(d7 * (double)l3) + l2) + "/" + l3;
+            String string = String.valueOf((long)(d7 * (double)l3) + l2) + "/" + l3;
             String[] stringArray = string.split("/");
             int n3 = 0;
             while (n3 < arrayList.size()) {
-                int n4 = (Integer)arrayList.get(n3);
+                int n4 = arrayList.get(n3);
                 npcDropEntryArray[n4].setChanceNumerator(Integer.parseInt(stringArray[0]));
                 npcDropEntryArray[n4].setChanceDenominator(Integer.parseInt(stringArray[1]));
                 ++n3;
@@ -580,14 +547,15 @@ public final class NpcDropManager {
     }
 
     private static double applyCustomDropRate(double d, double d2) {
-        double d3;
-        double d4;
-        double d5;
         double d6 = d / d2;
-        double d7 = d5 >= 0.043478260869565216 ? d * ServerSettings.commonDropRateMultiplier : (d6 >= 0.011111111111111112 ? d * ServerSettings.uncommonDropRateMultiplier : (d6 >= 0.0012300123001230013 ? d * ServerSettings.rareDropRateMultiplier : d * ServerSettings.veryRareDropRateMultiplier));
+        double d7 = d6 >= 0.043478260869565216 ? d * ServerSettings.commonDropRateMultiplier : (d6 >= 0.011111111111111112 ? d * ServerSettings.uncommonDropRateMultiplier : (d6 >= 0.0012300123001230013 ? d * ServerSettings.rareDropRateMultiplier : d * ServerSettings.veryRareDropRateMultiplier));
         double d8 = d7 / d2;
-        if (ServerSettings.dropRateCap > 0 && d8 < (d4 = 1.0 / (d3 = (double)ServerSettings.dropRateCap))) {
-            d8 = d4;
+        if (ServerSettings.dropRateCap > 0) {
+            double d3 = (double)ServerSettings.dropRateCap;
+            double d4 = 1.0 / d3;
+            if (d8 < d4) {
+                d8 = d4;
+            }
         }
         return d8;
     }
@@ -616,7 +584,6 @@ public final class NpcDropManager {
         double d7 = 0.0;
         int n3 = 0;
         while (n3 < n) {
-            double d8;
             double d9 = npcDropEntryArray[n3].getChanceNumerator();
             double d10 = npcDropEntryArray[n3].getChanceDenominator();
             double d11 = d9 / d10;
@@ -624,7 +591,7 @@ public final class NpcDropManager {
                 d11 = NpcDropManager.applyCustomDropRate(d9, d10);
             }
             d7 += d11;
-            if (d8 >= d6) {
+            if (d7 >= d6) {
                 return n3;
             }
             ++n3;
@@ -636,4 +603,3 @@ public final class NpcDropManager {
         return new ItemStack(n, n2);
     }
 }
-

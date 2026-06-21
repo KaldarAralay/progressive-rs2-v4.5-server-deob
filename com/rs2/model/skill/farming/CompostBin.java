@@ -32,11 +32,9 @@ public enum CompostBin {
     /*
      * WARNING - void declaration
      */
-    private CompostBin() {
-        void var4_1;
-        void var3_2;
-        this.index = var3_2;
-        this.position = var4_1;
+    private CompostBin(int n2, Position position) {
+        this.index = n2;
+        this.position = position;
     }
 
     public static CompostBin forPosition(Position position) {

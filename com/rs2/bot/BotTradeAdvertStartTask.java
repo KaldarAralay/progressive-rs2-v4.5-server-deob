@@ -8,13 +8,13 @@ import com.rs2.cache.CacheArchiveEntry;
 import com.rs2.model.GameplayHelper;
 import com.rs2.model.task.TickTask;
 
-final class BotTradeAdvertStartTask
+public final class BotTradeAdvertStartTask
 extends TickTask {
     private final /* synthetic */ BotPlayer bot;
 
-    BotTradeAdvertStartTask(BotPlayer botPlayer, int n, BotPlayer botPlayer2) {
-        this.bot = botPlayer2;
+    public BotTradeAdvertStartTask(BotPlayer botPlayer, int n, BotPlayer botPlayer2) {
         super(2);
+        this.bot = botPlayer2;
     }
 
     @Override

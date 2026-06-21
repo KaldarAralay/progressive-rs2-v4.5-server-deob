@@ -83,10 +83,10 @@ public final class MovementQueue {
                             }
                             movementStep = null;
                             if (this.stepHistory.size() >= 25) {
-                                object2 = this.stepHistory.iterator();
-                                while (object2.hasNext() && this.stepHistory.size() >= 10) {
-                                    object2.next();
-                                    object2.remove();
+                                java.util.Iterator stepIterator = this.stepHistory.iterator();
+                                while (stepIterator.hasNext() && this.stepHistory.size() >= 10) {
+                                    stepIterator.next();
+                                    stepIterator.remove();
                                 }
                             }
                             if ((object2 = (MovementStep)this.steps.poll()) == null || ((MovementStep)object2).getDirection() == -1) {
@@ -289,8 +289,8 @@ public final class MovementQueue {
         int[][] nArray = collisionBypassTiles;
         int n5 = 0;
         while (n5 < 14) {
-            object = nArray[n5];
-            if (this.entity.getPosition().getX() + n == object[0] && this.entity.getPosition().getY() + n2 == object[1]) {
+            int[] bypassTile = nArray[n5];
+            if (this.entity.getPosition().getX() + n == bypassTile[0] && this.entity.getPosition().getY() + n2 == bypassTile[1]) {
                 bl = true;
                 break;
             }

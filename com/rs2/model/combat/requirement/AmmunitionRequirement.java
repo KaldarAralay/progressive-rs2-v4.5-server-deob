@@ -6,9 +6,9 @@ package com.rs2.model.combat.requirement;
 import com.rs2.model.combat.attack.WeaponCombatAttack;
 import com.rs2.model.combat.requirement.EquipmentItemRequirement;
 
-final class AmmunitionRequirement
+public final class AmmunitionRequirement
 extends EquipmentItemRequirement {
-    AmmunitionRequirement(WeaponCombatAttack weaponCombatAttack, int n, int n2, int n3, boolean bl) {
+    public AmmunitionRequirement(WeaponCombatAttack weaponCombatAttack, int n, int n2, int n3, boolean bl) {
         super(n, n2, n3, true);
     }
 

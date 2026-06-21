@@ -21,9 +21,9 @@ public final class PickableObjectHandler {
         int[][] nArray = pickableObjects;
         int n5 = 0;
         while (n5 < 8) {
-            object = nArray[n5];
-            if (object[0] == n) {
-                n4 = object[1];
+            int[] pickableObject = nArray[n5];
+            if (pickableObject[0] == n) {
+                n4 = pickableObject[1];
                 break;
             }
             ++n5;

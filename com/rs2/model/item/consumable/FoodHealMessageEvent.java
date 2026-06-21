@@ -8,11 +8,11 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class FoodHealMessageEvent
+public final class FoodHealMessageEvent
 extends CycleEvent {
     private /* synthetic */ FoodHandler foodHandler;
 
-    FoodHealMessageEvent(FoodHandler foodHandler) {
+    public FoodHealMessageEvent(FoodHandler foodHandler) {
         this.foodHandler = foodHandler;
     }
 

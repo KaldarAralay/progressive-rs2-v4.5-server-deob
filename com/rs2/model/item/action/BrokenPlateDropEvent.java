@@ -12,11 +12,11 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class BrokenPlateDropEvent
+public final class BrokenPlateDropEvent
 extends CycleEvent {
     private final /* synthetic */ Player player;
 
-    BrokenPlateDropEvent(SpinningPlateResultEvent spinningPlateResultEvent, Player player) {
+    public BrokenPlateDropEvent(SpinningPlateResultEvent spinningPlateResultEvent, Player player) {
         this.player = player;
     }
 

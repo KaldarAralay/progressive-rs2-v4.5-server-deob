@@ -29,8 +29,8 @@ public final class GrandExchangeManager {
     }
 
     public static void refreshSelectedOfferDetails(Player player) {
-        ItemStack itemStack;
-        ItemStack[] itemStackArray;
+        ItemStack secondaryCollectItem;
+        ItemStack primaryCollectItem;
         String string;
         double d = player.grandExchangeCompletedQuantities[player.selectedGrandExchangeSlot];
         double d2 = player.grandExchangeQuantities[player.selectedGrandExchangeSlot];
@@ -62,21 +62,21 @@ public final class GrandExchangeManager {
         player2 = player;
         player2.packetSender.sendInterfaceProgress(19011, n);
         if (player.grandExchangeSellOfferFlags[player.selectedGrandExchangeSlot]) {
-            itemStackArray = new ItemStack(995, player.grandExchangePrimaryCollectAmounts[player.selectedGrandExchangeSlot]);
-            itemStack = new ItemStack(player.grandExchangeItemIds[player.selectedGrandExchangeSlot], player.grandExchangeSecondaryCollectAmounts[player.selectedGrandExchangeSlot]);
+            primaryCollectItem = new ItemStack(995, player.grandExchangePrimaryCollectAmounts[player.selectedGrandExchangeSlot]);
+            secondaryCollectItem = new ItemStack(player.grandExchangeItemIds[player.selectedGrandExchangeSlot], player.grandExchangeSecondaryCollectAmounts[player.selectedGrandExchangeSlot]);
         } else {
-            itemStackArray = new ItemStack(player.grandExchangeItemIds[player.selectedGrandExchangeSlot], player.grandExchangePrimaryCollectAmounts[player.selectedGrandExchangeSlot]);
-            itemStack = new ItemStack(995, player.grandExchangeSecondaryCollectAmounts[player.selectedGrandExchangeSlot]);
+            primaryCollectItem = new ItemStack(player.grandExchangeItemIds[player.selectedGrandExchangeSlot], player.grandExchangePrimaryCollectAmounts[player.selectedGrandExchangeSlot]);
+            secondaryCollectItem = new ItemStack(995, player.grandExchangeSecondaryCollectAmounts[player.selectedGrandExchangeSlot]);
         }
-        if (itemStackArray.getAmount() <= 0) {
-            itemStackArray = null;
+        if (primaryCollectItem.getAmount() <= 0) {
+            primaryCollectItem = null;
         }
-        if (itemStack.getAmount() <= 0) {
-            itemStack = null;
+        if (secondaryCollectItem.getAmount() <= 0) {
+            secondaryCollectItem = null;
         }
-        itemStackArray = new ItemStack[]{itemStackArray, itemStack};
+        ItemStack[] collectItems = new ItemStack[]{primaryCollectItem, secondaryCollectItem};
         player2 = player;
-        player2.packetSender.sendItemContainer(19006, itemStackArray);
+        player2.packetSender.sendItemContainer(19006, collectItems);
     }
 
     public static void collectOfferItem(Player player, int n, int n2, int n3) {
@@ -275,7 +275,7 @@ public final class GrandExchangeManager {
                 if (((ItemStack)object).getAmount() <= 0) {
                     object = null;
                 }
-                ItemStack[] itemStackArray = new ItemStack[]{object2, object};
+                ItemStack[] itemStackArray = new ItemStack[]{(ItemStack)object2, (ItemStack)object};
                 player4 = player;
                 player4.packetSender.sendItemContainer(19006, itemStackArray);
                 player4 = player;
@@ -400,7 +400,7 @@ public final class GrandExchangeManager {
                         player.getInventoryManager().removeItem(new ItemStack(player.selectedGrandExchangeItemId, n5 - n6));
                     }
                 }
-                player.grandExchangeSellOfferFlags[player.selectedGrandExchangeSlot] = n3;
+                player.grandExchangeSellOfferFlags[player.selectedGrandExchangeSlot] = n3 != 0;
                 player.grandExchangeItemIds[player.selectedGrandExchangeSlot] = player.selectedGrandExchangeItemId;
                 player.grandExchangeQuantities[player.selectedGrandExchangeSlot] = player.selectedGrandExchangeQuantity;
                 player.grandExchangeUnitPrices[player.selectedGrandExchangeSlot] = player.selectedGrandExchangeUnitPrice;
@@ -525,8 +525,7 @@ public final class GrandExchangeManager {
             return 1;
         }
         ItemDefinition itemDefinition = ItemDefinition.forId(n);
-        int n2 = itemDefinition.isNote();
-        n2 = n2 != 0 ? itemDefinition.getUnnotedId() : itemDefinition.getId();
+        int n2 = itemDefinition.isNote() ? itemDefinition.getUnnotedId() : itemDefinition.getId();
         if ((n2 = GrandExchangePriceSample.getAveragePrice(n2)) == -1) {
             n2 = itemDefinition.getValue();
         }

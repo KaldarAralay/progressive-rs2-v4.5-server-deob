@@ -10,15 +10,15 @@ import com.rs2.model.combat.special.SaradominGodswordSpecialAttack;
 import com.rs2.model.combat.special.SpecialAttackDefinition;
 import com.rs2.model.player.Player;
 
-final class SaradominGodswordSpecialDefinition
+public final class SaradominGodswordSpecialDefinition
 extends SpecialAttackDefinition {
-    SaradominGodswordSpecialDefinition(int n2, String ... stringArray) {
+    public SaradominGodswordSpecialDefinition(int n2, String ... stringArray) {
+        super(n2, stringArray);
     }
 
     @Override
-    public final WeaponCombatAttack createAttack(Player object, Entity entity, WeaponProfile weaponProfile) {
-        object = new SaradominGodswordSpecialAttack(this, (Player)object, entity, weaponProfile);
-        return object;
+    public final WeaponCombatAttack createAttack(Player player, Entity entity, WeaponProfile weaponProfile) {
+        return new SaradominGodswordSpecialAttack(this, player, entity, weaponProfile);
     }
 }
 

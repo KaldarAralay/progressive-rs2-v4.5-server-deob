@@ -8,11 +8,11 @@ import com.rs2.model.combat.attack.BaseCombatAttack;
 import com.rs2.util.GameUtil;
 import java.util.Comparator;
 
-final class AreaAttackTargetDistanceComparator
+public final class AreaAttackTargetDistanceComparator
 implements Comparator {
     private /* synthetic */ BaseCombatAttack attack;
 
-    AreaAttackTargetDistanceComparator(BaseCombatAttack baseCombatAttack) {
+    public AreaAttackTargetDistanceComparator(BaseCombatAttack baseCombatAttack) {
         this.attack = baseCombatAttack;
     }
 

@@ -41,11 +41,11 @@ public final class TextUtil {
             char c = string.charAt(n);
             l *= 37L;
             if (c >= 'A' && c <= 'Z') {
-                l += (long)(c + '\u0001' - 65);
+                l += c + '\u0001' - 65;
             } else if (c >= 'a' && c <= 'z') {
-                l += (long)(c + '\u0001' - 97);
+                l += c + '\u0001' - 97;
             } else if (c >= '0' && c <= '9') {
-                l += (long)(c + 27 - 48);
+                l += c + 27 - 48;
             }
             ++n;
         }
@@ -63,25 +63,26 @@ public final class TextUtil {
         return string;
     }
 
-    public static String formatDisplayName(String object) {
-        if (((String)(object = ((String)object).replace(" ", "_"))).length() > 0) {
-            object = ((String)object).toCharArray();
+    public static String formatDisplayName(String string) {
+        string = string.replace(" ", "_");
+        if (string.length() > 0) {
+            char[] chars = string.toCharArray();
             int n = 0;
-            while (n < ((Object)object).length) {
-                if (object[n] == 95) {
-                    object[n] = 32;
-                    if (n + 1 < ((Object)object).length && object[n + 1] >= 97 && object[n + 1] <= 122) {
-                        object[n + 1] = (char)(object[n + 1] + 65 - 97);
+            while (n < chars.length) {
+                if (chars[n] == '_') {
+                    chars[n] = ' ';
+                    if (n + 1 < chars.length && chars[n + 1] >= 'a' && chars[n + 1] <= 'z') {
+                        chars[n + 1] = (char)(chars[n + 1] + 'A' - 'a');
                     }
                 }
                 ++n;
             }
-            if (object[0] >= 97 && object[0] <= 122) {
-                object[0] = (char)(object[0] + 65 - 97);
+            if (chars[0] >= 'a' && chars[0] <= 'z') {
+                chars[0] = (char)(chars[0] + 'A' - 'a');
             }
-            return new String((char[])object);
+            return new String(chars);
         }
-        return object;
+        return string;
     }
 
     public static String prependIndefiniteArticle(String string) {
@@ -104,4 +105,3 @@ public final class TextUtil {
         return stringBuilder.toString();
     }
 }
-

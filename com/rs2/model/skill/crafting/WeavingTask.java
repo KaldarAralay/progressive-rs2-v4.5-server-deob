@@ -9,14 +9,14 @@ import com.rs2.model.skill.crafting.WeavingRecipe;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class WeavingTask
+public final class WeavingTask
 extends CycleEvent {
     private int remainingActions;
     private final /* synthetic */ Player player;
     private final /* synthetic */ int actionSequence;
     private final /* synthetic */ WeavingRecipe recipe;
 
-    WeavingTask(WeavingRecipe weavingRecipe, int n, Player player, int n2) {
+    public WeavingTask(WeavingRecipe weavingRecipe, int n, Player player, int n2) {
         this.recipe = weavingRecipe;
         this.player = player;
         this.actionSequence = n2;
@@ -30,8 +30,7 @@ extends CycleEvent {
             return;
         }
         this.player.getUpdateState().setAnimation(895);
-        object = this.player;
-        ((Player)object).packetSender.sendGameMessage("You weave your materials into " + new ItemStack(this.recipe.getProductItemId()).getDefinition().getName().toLowerCase() + "s.");
+        this.player.packetSender.sendGameMessage("You weave your materials into " + new ItemStack(this.recipe.getProductItemId()).getDefinition().getName().toLowerCase() + "s.");
         this.player.getInventoryManager().removeItem(new ItemStack(this.recipe.getIngredientItemId(), this.recipe.getIngredientAmount()));
         this.player.getInventoryManager().addItem(new ItemStack(this.recipe.getProductItemId()));
         this.player.getSkillManager().addExperience(12, this.recipe.getExperience());

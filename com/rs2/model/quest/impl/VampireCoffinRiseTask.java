@@ -13,28 +13,28 @@ import com.rs2.model.quest.impl.VampireAttackStartTask;
 import com.rs2.model.quest.impl.VampireSlayerQuest;
 import com.rs2.model.task.TickTask;
 
-final class VampireCoffinRiseTask
+public final class VampireCoffinRiseTask
 extends TickTask {
     private TickTask a;
-    private final /* synthetic */ Npc b;
-    private final /* synthetic */ Player c;
+    private final /* synthetic */ Npc vampireNpc;
+    private final /* synthetic */ Player player;
 
-    VampireCoffinRiseTask(VampireSlayerQuest vampireSlayerQuest, int n, Npc npc, Player player) {
-        this.b = npc;
-        this.c = player;
+    public VampireCoffinRiseTask(VampireSlayerQuest vampireSlayerQuest, int n, Npc npc, Player player) {
         super(3);
+        this.vampireNpc = npc;
+        this.player = player;
         this.a = new VampireAttackStartTask(this, 5, npc, player);
     }
 
     @Override
     public final void execute() {
         if (NpcDefinition.isDefined(3154)) {
-            this.b.transformToNpcId(3154, 5);
+            this.vampireNpc.transformToNpcId(3154, 5);
         }
-        GameplayHelper.c(this.c, this.b, 3077, 9775, 0, -1, false, false);
-        this.c.setActionLocked(false);
-        this.b.getUpdateState().setFacePositionValue(new Position(3077, 9770));
-        this.b.getUpdateState().setAnimation(3114);
+        GameplayHelper.spawnOwnedGroundPlaneNpcAtPosition(this.player, this.vampireNpc, 3077, 9775, 0, -1, false, false);
+        this.player.setActionLocked(false);
+        this.vampireNpc.getUpdateState().setFacePositionValue(new Position(3077, 9770));
+        this.vampireNpc.getUpdateState().setAnimation(3114);
         World.getTaskScheduler().schedule(this.a);
         this.stop();
     }

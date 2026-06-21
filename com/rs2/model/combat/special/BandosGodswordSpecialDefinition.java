@@ -10,15 +10,15 @@ import com.rs2.model.combat.special.BandosGodswordSpecialAttack;
 import com.rs2.model.combat.special.SpecialAttackDefinition;
 import com.rs2.model.player.Player;
 
-final class BandosGodswordSpecialDefinition
+public final class BandosGodswordSpecialDefinition
 extends SpecialAttackDefinition {
-    BandosGodswordSpecialDefinition(int n2, String ... stringArray) {
+    public BandosGodswordSpecialDefinition(int n2, String ... stringArray) {
+        super(n2, stringArray);
     }
 
     @Override
-    public final WeaponCombatAttack createAttack(Player object, Entity entity, WeaponProfile weaponProfile) {
-        object = new BandosGodswordSpecialAttack(this, (Player)object, entity, weaponProfile);
-        return object;
+    public final WeaponCombatAttack createAttack(Player player, Entity entity, WeaponProfile weaponProfile) {
+        return new BandosGodswordSpecialAttack(this, player, entity, weaponProfile);
     }
 }
 

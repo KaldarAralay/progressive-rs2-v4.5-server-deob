@@ -7,11 +7,11 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class ToyHorseyUnlockEvent
+public final class ToyHorseyUnlockEvent
 extends CycleEvent {
     private final /* synthetic */ Player player;
 
-    ToyHorseyUnlockEvent(Player player) {
+    public ToyHorseyUnlockEvent(Player player) {
         this.player = player;
     }
 

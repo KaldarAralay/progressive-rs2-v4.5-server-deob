@@ -57,14 +57,12 @@ public enum AmmunitionFletchingDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private AmmunitionFletchingDefinition(int n3, int n4, double d) {
-        void var7_5;
-        void var6_4;
-        this.componentItemId = n3;
-        this.baseItemId = n4;
-        this.productItemId = (int)d;
-        this.requiredLevel = var6_4;
-        this.experience = var7_5;
+    private AmmunitionFletchingDefinition(int n2, int n3, int n4, int n5, double d) {
+        this.componentItemId = n2;
+        this.baseItemId = n3;
+        this.productItemId = n4;
+        this.requiredLevel = n5;
+        this.experience = d;
     }
 
     public final int getComponentItemId() {

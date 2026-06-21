@@ -8,11 +8,11 @@ import com.rs2.model.skill.farming.SpecialCropPatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class SpecialCropCureTask
+public final class SpecialCropCureTask
 extends CycleEvent {
     private /* synthetic */ SpecialCropPatchManager manager;
 
-    SpecialCropCureTask(SpecialCropPatchManager specialCropPatchManager) {
+    public SpecialCropCureTask(SpecialCropPatchManager specialCropPatchManager) {
         this.manager = specialCropPatchManager;
     }
 

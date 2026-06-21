@@ -38,23 +38,23 @@ extends Player {
         super(null);
         this.isBot = true;
         this.botEnabled = true;
-        this.az = n;
-        this.d(TextUtil.capitalizeFirst((String)object));
-        this.b(TextUtil.encodeNameHash(this.di().toLowerCase()));
-        this.e(string);
-        this.f(string);
+        this.botMode = n;
+        this.setUsername(TextUtil.capitalizeFirst((String)object));
+        this.setNameHash(TextUtil.encodeNameHash(this.getUsername().toLowerCase()));
+        this.setPassword(string);
+        this.setSubmittedPassword(string);
         this.c("127.0.0.1");
-        this.co = this.ei = System.currentTimeMillis();
+        this.co = System.currentTimeMillis();
+        this.sessionStartMillis = this.co;
         this.setLoginMagicByte(-1);
         this.setClientBuild(ServerSettings.clientBuild);
-        this.a(PlayerConnectionState.LOGIN_QUEUED);
+        this.setConnectionState(PlayerConnectionState.LOGIN_QUEUED);
         try {
             if (this.loadAndValidateLogin()) {
-                this.a("sbot", null, false);
+                this.executeCheatCommand("sbot", null, false);
             }
         }
         catch (Exception exception) {
-            object = exception;
             exception.printStackTrace();
         }
         ++createdBotCount;
@@ -62,33 +62,28 @@ extends Player {
 
     public final void startTradeAdvertBot() {
         Object object = this;
-        object = new BotTradeAdvertStartTask(this, 2, (BotPlayer)object);
-        World.getTaskScheduler().schedule((TickTask)object);
+        World.getTaskScheduler().schedule(new BotTradeAdvertStartTask(this, 2, (BotPlayer)object));
     }
 
     public final void startSkillingBot() {
         Object object = this;
-        object = new BotTaskSelectionTask(this, 2, (BotPlayer)object);
-        World.getTaskScheduler().schedule((TickTask)object);
+        World.getTaskScheduler().schedule(new BotTaskSelectionTask(this, 2, (BotPlayer)object));
     }
 
     public final void startProgressiveBot() {
         Object object = this;
-        object = new BotTaskPlanningTask(this, 2, (BotPlayer)object);
-        World.getTaskScheduler().schedule((TickTask)object);
+        World.getTaskScheduler().schedule(new BotTaskPlanningTask(this, 2, (BotPlayer)object));
     }
 
     public final void startCombatLoadoutBot() {
         Object object = this;
-        object = new BotCombatLoadoutTask(this, 2, (BotPlayer)object);
-        World.getTaskScheduler().schedule((TickTask)object);
+        World.getTaskScheduler().schedule(new BotCombatLoadoutTask(this, 2, (BotPlayer)object));
     }
 
     public final void startDropPartyBot() {
         Object object = this;
         dropPartyBots.add(this);
-        object = new DropPartyBotHideTask(this, 2, (BotPlayer)object);
-        World.getTaskScheduler().schedule((TickTask)object);
+        World.getTaskScheduler().schedule(new DropPartyBotHideTask(this, 2, (BotPlayer)object));
     }
 
     public final void startClanWarsBot(int n) {
@@ -123,7 +118,7 @@ extends Player {
 
     @Override
     public final void f() {
-        this.a(new Position(ServerSettings.respawnX, ServerSettings.respawnY, ServerSettings.respawnPlane));
+        this.moveTo(new Position(ServerSettings.respawnX, ServerSettings.respawnY, ServerSettings.respawnPlane));
         this.randomizeAppearance();
         this.eb();
         this.completeAllQuestStates();
@@ -138,7 +133,8 @@ extends Player {
     }
 
     public static void removeConfiguredBotNames() {
-        for (String string : removedBotNames) {
+        for (Object removedBotNameObject : removedBotNames) {
+            String string = (String)removedBotNameObject;
             if (botNamePool.contains(string)) {
                 botNamePool.remove(string);
             }
@@ -151,9 +147,11 @@ extends Player {
         shuffledBotNamePool.addAll(botNamePool);
         Collections.shuffle(shuffledBotNamePool);
         Object object = new File("./data/characters/");
-        object = ((File)object).listFiles();
-        File[] fileArray = object;
-        int n = ((File[])object).length;
+        File[] fileArray = ((File)object).listFiles();
+        if (fileArray == null) {
+            return;
+        }
+        int n = fileArray.length;
         int n2 = 0;
         while (n2 < n) {
             object = fileArray[n2];

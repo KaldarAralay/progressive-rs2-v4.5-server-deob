@@ -8,26 +8,26 @@ import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.net.packet.handler.ItemActionPacketHandler;
 
-final class DigSearchTask
+public final class DigSearchTask
 extends CycleEvent {
-    private final /* synthetic */ Player a;
-    private final /* synthetic */ int b;
-    private final /* synthetic */ boolean c;
+    private final /* synthetic */ Player player;
+    private final /* synthetic */ int actionSequence;
+    private final /* synthetic */ boolean sendNothingFoundMessage;
 
-    DigSearchTask(ItemActionPacketHandler itemActionPacketHandler, Player player, int n, boolean bl) {
-        this.a = player;
-        this.b = n;
-        this.c = bl;
+    public DigSearchTask(ItemActionPacketHandler itemActionPacketHandler, Player player, int n, boolean bl) {
+        this.player = player;
+        this.actionSequence = n;
+        this.sendNothingFoundMessage = bl;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        if (!this.a.isCurrentActionSequence(this.b)) {
+        if (!this.player.isCurrentActionSequence(this.actionSequence)) {
             cycleEventContainer.stop();
             return;
         }
-        if (this.c) {
-            Player player = this.a;
+        if (this.sendNothingFoundMessage) {
+            Player player = this.player;
             player.packetSender.sendGameMessage("but do not find anything.");
             cycleEventContainer.stop();
         }
@@ -35,7 +35,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        this.a.resetAnimation();
+        this.player.resetAnimation();
     }
 }
 

@@ -129,7 +129,7 @@ public final class HopsPatchManager {
                 }
                 Object object = HopsDefinition.forSeedId(this.cropIds[n]);
                 if (object == null || this.shouldStopGrowthCycle(n)) break block15;
-                int n5 = (int)(l / (long)object.getGrowthCycleTicks());
+                int n5 = (int)(l / (long)((HopsDefinition)object).getGrowthCycleTicks());
                 int n6 = this.growthStages[n] - 4;
                 if ((n5 -= n6) <= 0) break block15;
                 n6 = 0;
@@ -234,7 +234,7 @@ public final class HopsPatchManager {
             this.player.getDialogueManager().showTwoLineStatement("This plant is dead. You did not cure it while it was diseased.", "Clear the patch with a spade.");
             return true;
         }
-        if (this.patchStates[hopsPatch.getIndex()] == 1 || this.growthStages[hopsPatch.getIndex()] <= 1 || this.growthStages[hopsPatch.getIndex()] == object.getGrowthStageCount() + 4) {
+        if (this.patchStates[hopsPatch.getIndex()] == 1 || this.growthStages[hopsPatch.getIndex()] <= 1 || this.growthStages[hopsPatch.getIndex()] == ((HopsDefinition)object).getGrowthStageCount() + 4) {
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("This patch doesn't need watering.");
             return true;
@@ -339,7 +339,7 @@ public final class HopsPatchManager {
         if (object == null) {
             return false;
         }
-        HopsDefinition hopsDefinition = HopsDefinition.forSeedId(this.cropIds[object.getIndex()]);
+        HopsDefinition hopsDefinition = HopsDefinition.forSeedId(this.cropIds[((HopsPatch)object).getIndex()]);
         if (hopsDefinition == null) {
             return false;
         }
@@ -450,7 +450,7 @@ public final class HopsPatchManager {
         if (object == null) {
             return false;
         }
-        HopsDefinition hopsDefinition = HopsDefinition.forSeedId(this.cropIds[object.getIndex()]);
+        HopsDefinition hopsDefinition = HopsDefinition.forSeedId(this.cropIds[((HopsPatch)object).getIndex()]);
         if (hopsDefinition == null) {
             return false;
         }
@@ -459,12 +459,12 @@ public final class HopsPatchManager {
             ((Player)object).packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
-        if (this.patchStates[object.getIndex()] != 3) {
+        if (this.patchStates[((HopsPatch)object).getIndex()] != 3) {
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("This plant doesn't need to be resurrected.");
             return true;
         }
-        this.player.setPendingCropResurrectionTarget("hops", object.getIndex());
+        this.player.setPendingCropResurrectionTarget("hops", ((HopsPatch)object).getIndex());
         return true;
     }
 
@@ -473,7 +473,7 @@ public final class HopsPatchManager {
             Object object = HopsDefinition.forSeedId(this.cropIds[this.player.pendingCropResurrectionPatchIndex]);
             this.patchStates[this.player.pendingCropResurrectionPatchIndex] = 0;
             int n = this.growthStages[this.player.pendingCropResurrectionPatchIndex] - 4;
-            this.lastUpdateTicks[this.player.pendingCropResurrectionPatchIndex] = Server.getElapsedMinutes() - (long)(object.getGrowthCycleTicks() * n);
+            this.lastUpdateTicks[this.player.pendingCropResurrectionPatchIndex] = Server.getElapsedMinutes() - (long)(((HopsDefinition)object).getGrowthCycleTicks() * n);
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("You succesfully resurrected the crop.");
         } else {
@@ -492,7 +492,7 @@ public final class HopsPatchManager {
         if (object == null || n3 != 6036) {
             return false;
         }
-        HopsDefinition hopsDefinition = HopsDefinition.forSeedId(this.cropIds[object.getIndex()]);
+        HopsDefinition hopsDefinition = HopsDefinition.forSeedId(this.cropIds[((HopsPatch)object).getIndex()]);
         if (hopsDefinition == null) {
             return false;
         }
@@ -501,7 +501,7 @@ public final class HopsPatchManager {
             ((Player)object).packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
-        if (this.patchStates[object.getIndex()] != 2) {
+        if (this.patchStates[((HopsPatch)object).getIndex()] != 2) {
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("This plant doesn't need to be cured.");
             return true;
@@ -510,7 +510,7 @@ public final class HopsPatchManager {
         this.player.getInventoryManager().addItem(new ItemStack(229));
         this.player.getUpdateState().setAnimation(2288);
         this.player.setActionLocked(true);
-        this.patchStates[object.getIndex()] = 0;
+        this.patchStates[((HopsPatch)object).getIndex()] = 0;
         CycleEventHandler.getInstance().schedule(this.player, new HopsCureTask(this), 7);
         return true;
     }
@@ -529,7 +529,7 @@ public final class HopsPatchManager {
         return hopsPatchManager.player;
     }
 
-    static /* synthetic */ void a(HopsPatchManager hopsPatchManager, int n) {
+    static /* synthetic */ void resetPatch(HopsPatchManager hopsPatchManager, int n) {
         hopsPatchManager.resetPatch(n);
     }
 }

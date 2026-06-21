@@ -10,12 +10,12 @@ import com.rs2.model.randomevent.sandwichlady.SandwichLadyManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class SandwichLadyCleanupEvent
+public final class SandwichLadyCleanupEvent
 extends CycleEvent {
     private /* synthetic */ SandwichLadyManager manager;
     private final /* synthetic */ Npc npc;
 
-    SandwichLadyCleanupEvent(SandwichLadyManager sandwichLadyManager, Npc npc) {
+    public SandwichLadyCleanupEvent(SandwichLadyManager sandwichLadyManager, Npc npc) {
         this.manager = sandwichLadyManager;
         this.npc = npc;
     }

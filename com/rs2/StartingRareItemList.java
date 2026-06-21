@@ -6,9 +6,9 @@ package com.rs2;
 import com.rs2.model.item.ItemStack;
 import java.util.ArrayList;
 
-final class StartingRareItemList
+public final class StartingRareItemList
 extends ArrayList {
-    StartingRareItemList() {
+    public StartingRareItemList() {
         this.add(new ItemStack(962, 0));
         this.add(new ItemStack(1037, 0));
         this.add(new ItemStack(1038, 0));

@@ -47,22 +47,20 @@ public enum AllotmentCropDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private AllotmentCropDefinition(int n3, int n4, int n5, int[] nArray, int n6, double d, double d2, double d3, int n7, int n22, int n8, int n9) {
-        void var18_13;
-        void var9_7;
-        this.seedId = n3;
-        this.produceItemId = n4;
-        this.protectionCropId = n5;
+    private AllotmentCropDefinition(int n2, int n3, int n4, int n5, int n6, int[] nArray, int n7, double d, double d2, double d3, int n8, int n9, int n10, int n11) {
+        this.seedId = n2;
+        this.produceItemId = n3;
+        this.protectionCropId = n4;
         this.seedAmount = 3;
         this.requiredLevel = n6;
-        this.protectionPayment = (int[])d;
-        this.totalGrowthTicks = var9_7;
-        this.diseaseChance = d2;
-        this.plantingExperience = d3;
-        this.harvestExperience = n7;
+        this.protectionPayment = nArray;
+        this.totalGrowthTicks = n7;
+        this.diseaseChance = d;
+        this.plantingExperience = d2;
+        this.harvestExperience = d3;
         this.configStartStage = n8;
         this.configEndStage = n9;
-        this.harvestChanceLow = var18_13;
+        this.harvestChanceLow = n10;
         this.harvestChanceHigh = 180;
     }
 

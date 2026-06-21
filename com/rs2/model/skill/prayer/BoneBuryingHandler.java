@@ -60,7 +60,7 @@ public final class BoneBuryingHandler {
         }
         if (this.player.getInventoryManager().removeItemFromSlot(new ItemStack(n), n2)) {
             this.player.nextActionSequence();
-            this.player.getSkillManager().addExperience(5, boneDefinition.experience);
+            this.player.getSkillManager().addExperience(5, boneDefinition2.experience);
             this.player.getUpdateState().setAnimation(827);
             Player player = this.player;
             player.packetSender.sendSoundEffect(380, 1, 0);

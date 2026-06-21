@@ -14,13 +14,13 @@ import com.rs2.model.World;
 import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 
-final class BotCombatEscapeLogoutTask
+public final class BotCombatEscapeLogoutTask
 extends TickTask {
     private final /* synthetic */ Player player;
 
-    BotCombatEscapeLogoutTask(int n, Player player) {
-        this.player = player;
+    public BotCombatEscapeLogoutTask(int n, Player player) {
         super(2);
+        this.player = player;
     }
 
     @Override
@@ -46,12 +46,8 @@ extends TickTask {
                     return;
                 }
                 System.out.println("Bot needs to escape combat: " + this.player.getUsername() + ", trying to fix by reseting and relogging.");
-                Object var2_1 = null;
-                Player player = this.player;
-                this.player.currentBotTask = var2_1;
-                var2_1 = null;
-                player = this.player;
-                this.player.deferredBotTask = var2_1;
+                this.player.currentBotTask = null;
+                this.player.deferredBotTask = null;
                 this.player.applyTeleportPosition(new Position(ServerSettings.respawnX, ServerSettings.respawnY, ServerSettings.respawnPlane));
                 World.logoutBotAndScheduleRelogin(this.player);
                 return;

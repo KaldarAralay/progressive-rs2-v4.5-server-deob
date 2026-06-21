@@ -12,14 +12,14 @@ import com.rs2.model.skill.farming.FlowerPatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class FlowerHarvestTask
+public final class FlowerHarvestTask
 extends CycleEvent {
     private /* synthetic */ FlowerPatchManager manager;
     private final /* synthetic */ int actionSequence;
     private final /* synthetic */ FlowerPatch patch;
     private final /* synthetic */ FlowerDefinition definition;
 
-    FlowerHarvestTask(FlowerPatchManager flowerPatchManager, int n, FlowerPatch flowerPatch, FlowerDefinition flowerDefinition) {
+    public FlowerHarvestTask(FlowerPatchManager flowerPatchManager, int n, FlowerPatch flowerPatch, FlowerDefinition flowerDefinition) {
         this.manager = flowerPatchManager;
         this.actionSequence = n;
         this.patch = flowerPatch;
@@ -32,7 +32,7 @@ extends CycleEvent {
             cycleEventContainer.stop();
             return;
         }
-        FlowerPatchManager.a(this.manager, this.patch.getIndex());
+        FlowerPatchManager.resetPatch(this.manager, this.patch.getIndex());
         this.manager.growthStages[this.patch.getIndex()] = 3;
         this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.getElapsedMinutes();
         FlowerPatchManager.getPlayer(this.manager).getUpdateState().setAnimation(830);

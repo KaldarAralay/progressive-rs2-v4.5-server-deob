@@ -12,7 +12,7 @@ import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.util.GameUtil;
 
-final class AbyssObstacleEvent
+public final class AbyssObstacleEvent
 extends CycleEvent {
     private int remainingObstaclePhase;
     private final /* synthetic */ Player player;
@@ -25,7 +25,7 @@ extends CycleEvent {
     private final /* synthetic */ int destinationX;
     private final /* synthetic */ int destinationY;
 
-    AbyssObstacleEvent(int n, Player player, String string, int n2, int n3, int n4, LoadedWorldObject loadedWorldObject, int n5, int n6, int n7) {
+    public AbyssObstacleEvent(int n, Player player, String string, int n2, int n3, int n4, LoadedWorldObject loadedWorldObject, int n5, int n6, int n7) {
         this.player = player;
         this.obstacleAction = string;
         this.temporaryObjectId = n2;

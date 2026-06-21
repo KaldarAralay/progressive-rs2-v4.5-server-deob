@@ -36,18 +36,15 @@ public enum MineableRockDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private MineableRockDefinition(int n, int n2, int n3, double d, int n4, int n5) {
-        void var11_8;
-        void cfr_renamed_4;
-        void var7_5;
-        this.objectIds = (int[])n;
+    private MineableRockDefinition(int[] nArray, int n2, int n3, int n4, int n5, double d, int n6, int n7) {
+        this.objectIds = nArray;
         this.oreItemId = n2;
         this.requiredLevel = n3;
-        this.baseExperience = (int)d;
-        this.respawnTicks = var7_5;
-        this.depletionChance = n4;
-        this.mineChanceLow = cfr_renamed_4;
-        this.mineChanceHigh = var11_8;
+        this.baseExperience = n4;
+        this.respawnTicks = n5;
+        this.depletionChance = d;
+        this.mineChanceLow = n6;
+        this.mineChanceHigh = n7;
     }
 
     public static MineableRockDefinition forObjectId(int n) {
@@ -71,30 +68,25 @@ public enum MineableRockDefinition {
         return null;
     }
 
-    public static int[] collectObjectIds(MineableRockDefinition[] object) {
+    public static int[] collectObjectIds(MineableRockDefinition[] rockDefinitions) {
         ArrayList<Integer> arrayList = new ArrayList<Integer>();
-        MineableRockDefinition[] mineableRockDefinitionArray = object;
-        int n = ((MineableRockDefinition[])object).length;
-        int n2 = 0;
-        while (n2 < n) {
-            object = mineableRockDefinitionArray[n2];
-            int[] nArray = object.objectIds;
-            int n3 = object.objectIds.length;
-            int n4 = 0;
-            while (n4 < n3) {
-                int n5 = nArray[n4];
-                arrayList.add(n5);
-                ++n4;
+        for (MineableRockDefinition rockDefinition : rockDefinitions) {
+            int[] nArray = rockDefinition.objectIds;
+            int n = nArray.length;
+            int n2 = 0;
+            while (n2 < n) {
+                int n3 = nArray[n2];
+                arrayList.add(n3);
+                ++n2;
             }
-            ++n2;
         }
-        object = new int[arrayList.size()];
-        n2 = 0;
-        while (n2 < ((MineableRockDefinition[])object).length) {
-            object[n2] = (MineableRockDefinition)((Object)((Integer)arrayList.get(n2)));
-            ++n2;
+        int[] objectIds = new int[arrayList.size()];
+        int n = 0;
+        while (n < objectIds.length) {
+            objectIds[n] = arrayList.get(n);
+            ++n;
         }
-        return object;
+        return objectIds;
     }
 
     static /* synthetic */ int getOreItemId(MineableRockDefinition mineableRockDefinition) {

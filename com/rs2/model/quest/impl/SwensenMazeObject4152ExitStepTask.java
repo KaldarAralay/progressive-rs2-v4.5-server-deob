@@ -7,18 +7,18 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.FremennikTrialsQuest;
 import com.rs2.model.task.TickTask;
 
-final class SwensenMazeObject4152ExitStepTask
+public final class SwensenMazeObject4152ExitStepTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
-    SwensenMazeObject4152ExitStepTask(FremennikTrialsQuest fremennikTrialsQuest, int n, Player player) {
-        this.a = player;
+    public SwensenMazeObject4152ExitStepTask(FremennikTrialsQuest fremennikTrialsQuest, int n, Player player) {
         super(1);
+        this.player = player;
     }
 
     @Override
     public final void execute() {
-        Player player = this.a;
+        Player player = this.player;
         player.packetSender.queueRelativeMovementStep(-1, 0, true);
         this.stop();
     }

@@ -11,13 +11,13 @@ import com.rs2.model.skill.farming.FlowerPatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class FlowerClearingTask
+public final class FlowerClearingTask
 extends CycleEvent {
     private /* synthetic */ FlowerPatchManager manager;
     private final /* synthetic */ int animationId;
     private final /* synthetic */ FlowerPatch patch;
 
-    FlowerClearingTask(FlowerPatchManager flowerPatchManager, int n, FlowerPatch flowerPatch) {
+    public FlowerClearingTask(FlowerPatchManager flowerPatchManager, int n, FlowerPatch flowerPatch) {
         this.manager = flowerPatchManager;
         this.animationId = n;
         this.patch = flowerPatch;
@@ -47,7 +47,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        FlowerPatchManager.a(this.manager, this.patch.getIndex());
+        FlowerPatchManager.resetPatch(this.manager, this.patch.getIndex());
         Player player = FlowerPatchManager.getPlayer(this.manager);
         player.packetSender.sendGameMessage("You clear the patch.");
         FlowerPatchManager.getPlayer(this.manager).setActionLocked(false);

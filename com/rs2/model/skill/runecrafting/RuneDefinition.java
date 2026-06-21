@@ -27,13 +27,11 @@ public enum RuneDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private RuneDefinition(double d, int n3, int n22) {
-        void var8_1;
-        void var4_3;
-        this.runeItemId = (int)d;
-        this.requiredLevel = var4_3;
-        this.experience = n3;
-        this.multipleRunesLevelInterval = var8_1;
+    private RuneDefinition(int n2, int n3, double d, int n4, int n5) {
+        this.runeItemId = n2;
+        this.requiredLevel = n3;
+        this.experience = d;
+        this.multipleRunesLevelInterval = n5;
     }
 
     public final int getRuneItemId() {

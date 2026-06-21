@@ -18,11 +18,9 @@ public enum HerbPatch {
     /*
      * WARNING - void declaration
      */
-    private HerbPatch() {
-        void var4_1;
-        void var3_2;
-        this.index = var3_2;
-        this.bounds = var4_1;
+    private HerbPatch(int n2, Position[] positionArray) {
+        this.index = n2;
+        this.bounds = positionArray;
     }
 
     public static HerbPatch forPosition(Position position) {

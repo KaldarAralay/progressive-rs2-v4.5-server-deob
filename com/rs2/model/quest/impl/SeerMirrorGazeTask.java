@@ -10,22 +10,22 @@ import com.rs2.model.quest.impl.SeerMirrorHairSmoothTask;
 import com.rs2.model.quest.impl.SeerMirrorResultDialogueTask;
 import com.rs2.model.task.TickTask;
 
-final class SeerMirrorGazeTask
+public final class SeerMirrorGazeTask
 extends TickTask {
     private TickTask b;
     final TickTask a;
-    private final /* synthetic */ Player c;
+    private final /* synthetic */ Player player;
 
-    SeerMirrorGazeTask(ScorpionCatcherQuest scorpionCatcherQuest, int n, Player player) {
-        this.c = player;
+    public SeerMirrorGazeTask(ScorpionCatcherQuest scorpionCatcherQuest, int n, Player player) {
         super(4);
+        this.player = player;
         this.b = new SeerMirrorHairSmoothTask(this, 4, player);
         this.a = new SeerMirrorResultDialogueTask(this, 4, player);
     }
 
     @Override
     public final void execute() {
-        Player player = this.c;
+        Player player = this.player;
         player.packetSender.sendGameMessage("The seer gazes into the mirror");
         World.getTaskScheduler().schedule(this.b);
         this.stop();

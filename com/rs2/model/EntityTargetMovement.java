@@ -145,7 +145,7 @@ public class EntityTargetMovement {
             return;
         }
         if (this.entity.isNpc()) {
-            Entity entity2 = (Npc)this.entity;
+            Npc npc = (Npc)this.entity;
             if (this.entity.isOverlapping(entity)) {
                 this.moveAwayFromOverlap();
                 return;
@@ -153,8 +153,7 @@ public class EntityTargetMovement {
             if (EntityTargetMovement.canReachTarget(this.entity, entity)) {
                 return;
             }
-            Npc npc = entity2;
-            entity2 = entity;
+            Entity entity2 = entity;
             entity = npc;
             int n = entity2.getPosition().getX();
             int n3 = entity2.getPosition().getY();

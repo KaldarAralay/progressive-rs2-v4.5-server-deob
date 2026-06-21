@@ -58,18 +58,15 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
-            stringArray = new String[]{"I can start this quest by speaking to Chieftain Brundt in", "the Fremennik Longhall, which is in the town of Rellekka to", "the north of Sinclair Mansion.", "To complete this quest I need:", "Level 40 Woodcutting", "Level 40 Crafting", "Level 25 Fletching", "I must also be able to defeat a level 69 enemy and must", "not be afraid of combat without any weapons or armour"};
-            return stringArray;
+            return new String[]{"I can start this quest by speaking to Chieftain Brundt in", "the Fremennik Longhall, which is in the town of Rellekka to", "the north of Sinclair Mansion.", "To complete this quest I need:", "Level 40 Woodcutting", "Level 40 Crafting", "Level 25 Fletching", "I must also be able to defeat a level 69 enemy and must", "not be afraid of combat without any weapons or armour"};
         }
         if (n >= 2) {
-            stringArray = new String[]{"I need the votes from following persons before I", "should go talk to Brundt the Chieftain again:", String.valueOf((n & GameUtil.bitFlag(3)) != 0 ? "@str@" : "") + "Manni the Reveller", String.valueOf((n & GameUtil.bitFlag(5)) != 0 ? "@str@" : "") + "Olaf the Bard", String.valueOf((n & GameUtil.bitFlag(7)) != 0 ? "@str@" : "") + "Sigmund the Merchant", String.valueOf((n & GameUtil.bitFlag(9)) != 0 ? "@str@" : "") + "Sigli the Huntsman", String.valueOf((n & GameUtil.bitFlag(11)) != 0 ? "@str@" : "") + "Swensen the Navigator", String.valueOf((n & GameUtil.bitFlag(13)) != 0 ? "@str@" : "") + "Peer the Seer", String.valueOf((n & GameUtil.bitFlag(15)) != 0 ? "@str@" : "") + "Thorvald the Warrior"};
-            return stringArray;
+            return new String[]{"I need the votes from following persons before I", "should go talk to Brundt the Chieftain again:", String.valueOf((n & GameUtil.bitFlag(3)) != 0 ? "@str@" : "") + "Manni the Reveller", String.valueOf((n & GameUtil.bitFlag(5)) != 0 ? "@str@" : "") + "Olaf the Bard", String.valueOf((n & GameUtil.bitFlag(7)) != 0 ? "@str@" : "") + "Sigmund the Merchant", String.valueOf((n & GameUtil.bitFlag(9)) != 0 ? "@str@" : "") + "Sigli the Huntsman", String.valueOf((n & GameUtil.bitFlag(11)) != 0 ? "@str@" : "") + "Swensen the Navigator", String.valueOf((n & GameUtil.bitFlag(13)) != 0 ? "@str@" : "") + "Peer the Seer", String.valueOf((n & GameUtil.bitFlag(15)) != 0 ? "@str@" : "") + "Thorvald the Warrior"};
         }
         if (n == 1) {
-            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "3 Quest Points", "2.8k XP in:", "Strength, Defence, Attack,", "Hitpoints, Fishing, Thieving,", "Agility, Crafting, Fletching,", "Woodcutting"};
-            return stringArray;
+            return new String[]{"Quest Completed!", "", "You were awarded:", "3 Quest Points", "2.8k XP in:", "Strength, Defence, Attack,", "Hitpoints, Fishing, Thieving,", "Agility, Crafting, Fletching,", "Woodcutting"};
         }
         return null;
     }
@@ -245,7 +242,7 @@ extends QuestScript {
             player.getInventoryManager().removeItem(new ItemStack(3689, 1));
             player.getInventoryManager().replaceItem(new ItemStack(n, 1), new ItemStack(3690, 1));
             Npc npc = new Npc(1273);
-            GameplayHelper.a(player, new Position(2626, 3596, 0), npc, false, false);
+            GameplayHelper.spawnOwnedNpcAtPosition(player, new Position(2626, 3596, 0), npc, false, false);
             DialogueManager.continueDialogue(player, 1273, 100, 0);
             Player player16 = player;
             player16.packetSender.sendGameMessage("Fossegrimen has enchanted your lyre so that you may play it.");
@@ -621,8 +618,7 @@ extends QuestScript {
             ((Player)object).moveTo(new Position(questArea.getTargetPosition().getX() + n4, questArea.getTargetPosition().getY() + n9, 0));
             n = n9;
             n2 = n4;
-            object = new SwensenMazeRandomObjectExitStepTask(this, 1, n, (Player)object, n2);
-            World.getTaskScheduler().schedule((TickTask)object);
+            World.getTaskScheduler().schedule(new SwensenMazeRandomObjectExitStepTask(this, 1, n, (Player)object, n2));
             return true;
         }
         return false;
@@ -799,22 +795,22 @@ extends QuestScript {
             return true;
         }
         if (n == 13898) {
-            Object object = new ArrayList(this.doorRiddleAnswers);
+            ArrayList object = new ArrayList(this.doorRiddleAnswers);
             Collections.shuffle(object, new Random(player.bK));
-            Object object2 = (String)object.get(0);
-            object = String.valueOf(this.doorRiddleLetters[player.fremennikDoorRiddleFirstLetterIndex]) + this.doorRiddleLetters[player.fremennikDoorRiddleSecondLetterIndex] + this.doorRiddleLetters[player.fremennikDoorRiddleThirdLetterIndex] + this.doorRiddleLetters[player.fremennikDoorRiddleFourthLetterIndex];
-            if (((String)object2).equals(object)) {
-                object2 = player;
-                ((Player)object2).packetSender.closeInterfaces();
-                object2 = player;
-                ((Player)object2).packetSender.sendGameMessage("You have solved the riddle!");
+            String object2 = (String)object.get(0);
+            String string = String.valueOf(this.doorRiddleLetters[player.fremennikDoorRiddleFirstLetterIndex]) + this.doorRiddleLetters[player.fremennikDoorRiddleSecondLetterIndex] + this.doorRiddleLetters[player.fremennikDoorRiddleThirdLetterIndex] + this.doorRiddleLetters[player.fremennikDoorRiddleFourthLetterIndex];
+            if (object2.equals(string)) {
+                Player player6 = player;
+                player6.packetSender.closeInterfaces();
+                player6 = player;
+                player6.packetSender.sendGameMessage("You have solved the riddle!");
                 if ((player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(21)) == 0 && n2 >= 2) {
                     int n7 = this.getQuestId();
                     player.questProgressFlags[n7] = player.questProgressFlags[n7] + GameUtil.bitFlag(21);
                 }
             } else {
-                object2 = player;
-                ((Player)object2).packetSender.sendGameMessage("Your answer is not correct!");
+                Player player7 = player;
+                player7.packetSender.sendGameMessage("Your answer is not correct!");
             }
             return true;
         }
@@ -837,7 +833,7 @@ extends QuestScript {
                 return true;
             }
             if (n2 == 3696) {
-                if (GameplayHelper.i(player, 1279)) {
+                if (GameplayHelper.hasActiveTemporaryNpc(player, 1279)) {
                     return false;
                 }
                 if (player.temporaryActionValue != 1279) {
@@ -847,9 +843,9 @@ extends QuestScript {
                     if (GameUtil.isWithinDistance(player.getPosition(), draugenTalismanTargetPositions[player.O], 1)) {
                         Player player3 = player;
                         player3.packetSender.sendGameMessage("The Draugen is here! Beware!");
-                        if (!GameplayHelper.i(player, 1279)) {
+                        if (!GameplayHelper.hasActiveTemporaryNpc(player, 1279)) {
                             Npc npc = new Npc(1279);
-                            GameplayHelper.a(player, npc, true, false);
+                            GameplayHelper.spawnOwnedNpcAdjacentToPlayer(player, npc, true, false);
                         }
                         return true;
                     }
@@ -887,93 +883,83 @@ extends QuestScript {
     }
 
     @Override
-    public final boolean handleItemOnItem(Player object, int n, int n2, int n3) {
+    public final boolean handleItemOnItem(Player player, int n, int n2, int n3) {
         if (n3 < 2) {
             return false;
         }
         if (n == 3735 && n2 == 3737 || n2 == 3735 && n == 3737) {
-            Npc[] npcArray = object;
-            object.packetSender.sendGameMessage("You screw the lid on tightly.");
-            object.getInventoryManager().replaceItem(new ItemStack(3735, 1), new ItemStack(3740, 1));
-            object.getInventoryManager().removeItem(new ItemStack(3737, 1));
+            player.packetSender.sendGameMessage("You screw the lid on tightly.");
+            player.getInventoryManager().replaceItem(new ItemStack(3735, 1), new ItemStack(3740, 1));
+            player.getInventoryManager().removeItem(new ItemStack(3737, 1));
             return true;
         }
         if (n == 3744 && n2 == 3746 || n2 == 3744 && n == 3746) {
-            Npc[] npcArray = object;
-            object.packetSender.sendGameMessage("You coat the wooden coin with the sticky red goop.");
-            object.getInventoryManager().replaceItem(new ItemStack(3744, 1), new ItemStack(3743, 1));
-            object.getInventoryManager().removeItem(new ItemStack(3746, 1));
-            if ((object.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(22)) == 0) {
+            player.packetSender.sendGameMessage("You coat the wooden coin with the sticky red goop.");
+            player.getInventoryManager().replaceItem(new ItemStack(3744, 1), new ItemStack(3743, 1));
+            player.getInventoryManager().removeItem(new ItemStack(3746, 1));
+            if ((player.questProgressFlags[this.getQuestId()] & GameUtil.bitFlag(22)) == 0) {
                 int n4 = this.getQuestId();
-                object.questProgressFlags[n4] = object.questProgressFlags[n4] + GameUtil.bitFlag(22);
+                player.questProgressFlags[n4] = player.questProgressFlags[n4] + GameUtil.bitFlag(22);
             }
             return true;
         }
         if (n == 3729 && n2 == 3727 || n2 == 3729 && n == 3727) {
-            Npc[] npcArray = object;
-            object.packetSender.sendGameMessage("You empty the jug into the bucket.");
-            object.getInventoryManager().replaceItem(new ItemStack(3729, 1), new ItemStack(3732, 1));
-            object.getInventoryManager().replaceItem(new ItemStack(3727, 1), new ItemStack(3724, 1));
+            player.packetSender.sendGameMessage("You empty the jug into the bucket.");
+            player.getInventoryManager().replaceItem(new ItemStack(3729, 1), new ItemStack(3732, 1));
+            player.getInventoryManager().replaceItem(new ItemStack(3727, 1), new ItemStack(3724, 1));
             return true;
         }
         if (n == 3729 && n2 == 3724 || n2 == 3729 && n == 3724) {
-            Npc[] npcArray = object;
-            object.packetSender.sendGameMessage("You fill the bucket to the brim.");
-            object.getInventoryManager().replaceItem(new ItemStack(3729, 1), new ItemStack(3731, 1));
-            object.getInventoryManager().replaceItem(new ItemStack(3724, 1), new ItemStack(3722, 1));
+            player.packetSender.sendGameMessage("You fill the bucket to the brim.");
+            player.getInventoryManager().replaceItem(new ItemStack(3729, 1), new ItemStack(3731, 1));
+            player.getInventoryManager().replaceItem(new ItemStack(3724, 1), new ItemStack(3722, 1));
             return true;
         }
         if (n == 3731 && n2 == 3727 || n2 == 3731 && n == 3727) {
-            Npc[] npcArray = object;
-            object.packetSender.sendGameMessage("You empty the jug into the bucket.");
-            object.getInventoryManager().replaceItem(new ItemStack(3731, 1), new ItemStack(3732, 1));
-            object.getInventoryManager().replaceItem(new ItemStack(3727, 1), new ItemStack(3726, 1));
+            player.packetSender.sendGameMessage("You empty the jug into the bucket.");
+            player.getInventoryManager().replaceItem(new ItemStack(3731, 1), new ItemStack(3732, 1));
+            player.getInventoryManager().replaceItem(new ItemStack(3727, 1), new ItemStack(3726, 1));
             return true;
         }
         if (n == 3729 && n2 == 3726 || n2 == 3729 && n == 3726) {
-            Npc[] npcArray = object;
-            object.packetSender.sendGameMessage("You empty the jug into the bucket.");
-            object.getInventoryManager().replaceItem(new ItemStack(3729, 1), new ItemStack(3732, 1));
-            object.getInventoryManager().replaceItem(new ItemStack(3726, 1), new ItemStack(3723, 1));
+            player.packetSender.sendGameMessage("You empty the jug into the bucket.");
+            player.getInventoryManager().replaceItem(new ItemStack(3729, 1), new ItemStack(3732, 1));
+            player.getInventoryManager().replaceItem(new ItemStack(3726, 1), new ItemStack(3723, 1));
             return true;
         }
         if (n == 590 && n2 == 3713 || n2 == 590 && n == 3713) {
-            Npc[] npcArray = object;
-            object.packetSender.sendGameMessage("You light the string of the strange object. It starts to hiss slightly.");
-            object.getInventoryManager().replaceItem(new ItemStack(3713, 1), new ItemStack(3714, 1));
+            player.packetSender.sendGameMessage("You light the string of the strange object. It starts to hiss slightly.");
+            player.getInventoryManager().replaceItem(new ItemStack(3713, 1), new ItemStack(3714, 1));
             return true;
         }
         if (n == 946 && n2 == 3692 || n2 == 946 && n == 3692) {
-            Npc[] npcArray = object;
-            object.packetSender.sendGameMessage("You craft an unstrung lyre out of the branch.");
-            object.getUpdateState().setAnimation(1248);
-            object.getInventoryManager().replaceItem(new ItemStack(3692, 1), new ItemStack(3688, 1));
+            player.packetSender.sendGameMessage("You craft an unstrung lyre out of the branch.");
+            player.getUpdateState().setAnimation(1248);
+            player.getInventoryManager().replaceItem(new ItemStack(3692, 1), new ItemStack(3688, 1));
             return true;
         }
         if (n == 3801 && n2 == 3712 || n2 == 3801 && n == 3712) {
-            Npc[] npcArray = object;
-            object.packetSender.sendGameMessage("You empty the keg and refill it with low alcohol beer.");
-            object.getInventoryManager().removeItem(new ItemStack(3801, 1));
-            object.getInventoryManager().removeItem(new ItemStack(3712, 1));
-            object.getInventoryManager().addOrDropItem(new ItemStack(3711, 1));
-            if (this.longhallDistractionArea.contains(object.getPosition())) {
-                Npc[] npcArray2 = object = Npc.findActiveInArea(this.longhallDistractionArea);
-                n2 = ((Npc[])object).length;
+            player.packetSender.sendGameMessage("You empty the keg and refill it with low alcohol beer.");
+            player.getInventoryManager().removeItem(new ItemStack(3801, 1));
+            player.getInventoryManager().removeItem(new ItemStack(3712, 1));
+            player.getInventoryManager().addOrDropItem(new ItemStack(3711, 1));
+            if (this.longhallDistractionArea.contains(player.getPosition())) {
+                Npc[] npcArray = Npc.findActiveInArea(this.longhallDistractionArea);
+                n2 = npcArray.length;
                 int n5 = 0;
                 while (n5 < n2) {
-                    object = npcArray2[n5];
-                    object.getUpdateState().setForcedText("What was THAT?");
+                    Npc npc = npcArray[n5];
+                    npc.getUpdateState().setForcedText("What was THAT?");
                     ++n5;
                 }
             }
             return true;
         }
         if (n == 3694 && n2 == 3688 || n2 == 3694 && n == 3688) {
-            Npc[] npcArray = object;
-            object.packetSender.sendGameMessage("You attach the golden strings to the lyre.");
-            object.getInventoryManager().removeItem(new ItemStack(3688, 1));
-            object.getInventoryManager().removeItem(new ItemStack(3694, 1));
-            object.getInventoryManager().addOrDropItem(new ItemStack(3689, 1));
+            player.packetSender.sendGameMessage("You attach the golden strings to the lyre.");
+            player.getInventoryManager().removeItem(new ItemStack(3688, 1));
+            player.getInventoryManager().removeItem(new ItemStack(3694, 1));
+            player.getInventoryManager().addOrDropItem(new ItemStack(3689, 1));
             return true;
         }
         return false;
@@ -1124,7 +1110,7 @@ extends QuestScript {
                 if (n2 == 20) {
                     if (n3 == 1) {
                         ((Player)object).getDialogueManager().showPlayerTwoLineDialogue("I think I would enjoy the challenge of becoming an", "honorary Fremennik. Where and how do I start?", 591);
-                        this.d((Player)object);
+                        this.startQuest((Player)object);
                         ((Player)object).getDialogueManager().setNextDialogueStep(21);
                         return true;
                     }
@@ -1224,10 +1210,10 @@ extends QuestScript {
                     return true;
                 }
                 if (n2 == 5) {
-                    Object object2 = new ArrayList(((Player)object).getGender() == 0 ? this.maleFremennikNamePool : this.femaleFremennikNamePool);
+                    ArrayList object2 = new ArrayList(((Player)object).getGender() == 0 ? this.maleFremennikNamePool : this.femaleFremennikNamePool);
                     Collections.shuffle(object2, new Random(((Player)object).bK));
-                    object2 = (String)object2.get(0);
-                    ((Player)object).getDialogueManager().showNpcFourLineDialogue("From this day onward, you are outerlander no more!", "In honour of your acceptance into the Fremennik You", "gain a new name to be known as; You will now be", "called " + (String)object2, 591);
+                    String fremennikName = (String)object2.get(0);
+                    ((Player)object).getDialogueManager().showNpcFourLineDialogue("From this day onward, you are outerlander no more!", "In honour of your acceptance into the Fremennik You", "gain a new name to be known as; You will now be", "called " + fremennikName, 591);
                     return true;
                 }
                 if (n2 == 6) {
@@ -1422,8 +1408,7 @@ extends QuestScript {
                     }
                     ((Player)object).getPacketSender().sendGameMessage("The Fremennik drinks his tankard first. He staggers a little bit.");
                     int n7 = this.getQuestId();
-                    object = new ManniDrinkingContestPlayerDrinkTask(this, 6, (Player)object, n7);
-                    World.getTaskScheduler().schedule((TickTask)object);
+                    World.getTaskScheduler().schedule(new ManniDrinkingContestPlayerDrinkTask(this, 6, (Player)object, n7));
                     return true;
                 }
                 if (n2 == 6) {

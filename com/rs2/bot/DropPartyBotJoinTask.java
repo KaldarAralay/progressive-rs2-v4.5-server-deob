@@ -9,13 +9,13 @@ import com.rs2.bot.DropPartyBotManager;
 import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 
-final class DropPartyBotJoinTask
+public final class DropPartyBotJoinTask
 extends TickTask {
     private final /* synthetic */ BotTaskDefinition dropPartyTask;
 
-    DropPartyBotJoinTask(int n, BotTaskDefinition botTaskDefinition) {
-        this.dropPartyTask = botTaskDefinition;
+    public DropPartyBotJoinTask(int n, BotTaskDefinition botTaskDefinition) {
         super(1);
+        this.dropPartyTask = botTaskDefinition;
     }
 
     @Override

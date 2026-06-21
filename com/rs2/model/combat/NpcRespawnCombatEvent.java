@@ -9,12 +9,12 @@ import com.rs2.model.npc.Npc;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class NpcRespawnCombatEvent
+public final class NpcRespawnCombatEvent
 extends CycleEvent {
     private final /* synthetic */ Npc respawningNpc;
     private final /* synthetic */ Entity killer;
 
-    NpcRespawnCombatEvent(Npc npc, Entity entity) {
+    public NpcRespawnCombatEvent(Npc npc, Entity entity) {
         this.respawningNpc = npc;
         this.killer = entity;
     }

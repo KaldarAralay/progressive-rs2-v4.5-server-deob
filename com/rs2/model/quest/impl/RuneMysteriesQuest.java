@@ -17,34 +17,27 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
-            stringArray = new String[]{"I can start this quest by speaking to Duke Horacio of ", "Lumbridge, upstairs in Lumbridge Castle."};
-            return stringArray;
+            return new String[]{"I can start this quest by speaking to Duke Horacio of ", "Lumbridge, upstairs in Lumbridge Castle."};
         }
         if (n == 2) {
-            stringArray = new String[]{"I should bring the air talisman to head wizard at the", "Wizards' Tower, south-west of Lumbridge."};
-            return stringArray;
+            return new String[]{"I should bring the air talisman to head wizard at the", "Wizards' Tower, south-west of Lumbridge."};
         }
         if (n == 3) {
-            stringArray = new String[]{"I should talk to head wizard at the Wizards' Tower", "to continue this quest."};
-            return stringArray;
+            return new String[]{"I should talk to head wizard at the Wizards' Tower", "to continue this quest."};
         }
         if (n == 4) {
-            stringArray = new String[]{"I should deliver the package to Aubury, owner of the", "rune shop in Varrock."};
-            return stringArray;
+            return new String[]{"I should deliver the package to Aubury, owner of the", "rune shop in Varrock."};
         }
         if (n == 5) {
-            stringArray = new String[]{"I should talk to Aubury at Varrock rune shop", "to continue this quest."};
-            return stringArray;
+            return new String[]{"I should talk to Aubury at Varrock rune shop", "to continue this quest."};
         }
         if (n == 6) {
-            stringArray = new String[]{"I should bring the research notes to head wizard at the", "Wizards' Tower, south-west of Lumbridge."};
-            return stringArray;
+            return new String[]{"I should bring the research notes to head wizard at the", "Wizards' Tower, south-west of Lumbridge."};
         }
         if (n == 1) {
-            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "1 Quest Point", "Runecrafting skill", "Air talisman"};
-            return stringArray;
+            return new String[]{"Quest Completed!", "", "You were awarded:", "1 Quest Point", "Runecrafting skill", "Air talisman"};
         }
         return null;
     }
@@ -129,7 +122,7 @@ extends QuestScript {
             }
             if (n2 == 11) {
                 player.getInventoryManager().addOrDropItem(new ItemStack(1438, 1));
-                this.d(player);
+                this.startQuest(player);
                 player.getDialogueManager().finishDialogue();
                 return false;
             }

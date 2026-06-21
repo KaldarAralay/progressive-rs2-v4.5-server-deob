@@ -8,14 +8,14 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class RuneEssenceMiningTask
+public final class RuneEssenceMiningTask
 extends CycleEvent {
     private final /* synthetic */ Player player;
     private final /* synthetic */ int actionSequence;
     private final /* synthetic */ int animationId;
     private final /* synthetic */ int essenceItemId;
 
-    RuneEssenceMiningTask(Player player, int n, int n2, int n3) {
+    public RuneEssenceMiningTask(Player player, int n, int n2, int n3) {
         this.player = player;
         this.actionSequence = n;
         this.animationId = n2;

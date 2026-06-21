@@ -11,13 +11,13 @@ import com.rs2.model.skill.farming.AllotmentPatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class AllotmentClearingTask
+public final class AllotmentClearingTask
 extends CycleEvent {
     private /* synthetic */ AllotmentPatchManager manager;
     private final /* synthetic */ int animationId;
     private final /* synthetic */ AllotmentPatch patch;
 
-    AllotmentClearingTask(AllotmentPatchManager allotmentPatchManager, int n, AllotmentPatch allotmentPatch) {
+    public AllotmentClearingTask(AllotmentPatchManager allotmentPatchManager, int n, AllotmentPatch allotmentPatch) {
         this.manager = allotmentPatchManager;
         this.animationId = n;
         this.patch = allotmentPatch;
@@ -47,7 +47,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        AllotmentPatchManager.a(this.manager, this.patch.getIndex());
+        AllotmentPatchManager.resetPatch(this.manager, this.patch.getIndex());
         Player player = AllotmentPatchManager.getPlayer(this.manager);
         player.packetSender.sendGameMessage("You clear the patch.");
         AllotmentPatchManager.getPlayer(this.manager).setActionLocked(false);

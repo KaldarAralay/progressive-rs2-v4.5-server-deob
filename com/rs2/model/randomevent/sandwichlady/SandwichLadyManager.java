@@ -49,31 +49,30 @@ public final class SandwichLadyManager {
         }
         this.player.getSandwichLadyManager();
         player = this.player;
-        Object object = SandwichLadyManager.getRewardSetForNpcId(player.H.getNpcId());
-        if (object == null) {
+        SandwichLadyRewardSet rewardSet = SandwichLadyManager.getRewardSetForNpcId(player.H.getNpcId());
+        if (rewardSet == null) {
             return false;
         }
-        if (object.getButtonIds().contains(n)) {
-            if (n == (Integer)object.getButtonIds().get(this.player.getSandwichLadyManager().selectedOfferIndex)) {
+        if (rewardSet.getButtonIds().contains(n)) {
+            if (n == (Integer)rewardSet.getButtonIds().get(this.player.getSandwichLadyManager().selectedOfferIndex)) {
                 ++this.player.getSandwichLadyManager().correctSelectionCount;
             } else {
-                object.punishWrongChoice(this.player);
+                rewardSet.punishWrongChoice(this.player);
             }
             if (this.player.getSandwichLadyManager().correctSelectionCount == 1) {
                 player = this.player;
-                n = 0;
-                object = player.H;
+                Npc npc = player.H;
                 SandwichLadyManager sandwichLadyManager = this.player.getSandwichLadyManager();
-                SandwichLadyRewardSet sandwichLadyRewardSet = SandwichLadyManager.getRewardSetForNpcId(((Npc)object).getNpcId());
+                SandwichLadyRewardSet sandwichLadyRewardSet = SandwichLadyManager.getRewardSetForNpcId(npc.getNpcId());
                 GameUtil.randomInclusive(6);
                 player = sandwichLadyManager.player;
                 player.packetSender.closeInterfaces();
                 Player cfr_ignored_0 = sandwichLadyManager.player;
-                ((Entity)object).getUpdateState().setForcedTextAndMarkUpdated(sandwichLadyRewardSet.getMessages()[0]);
-                ((Entity)object).getUpdateState().setAnimation(863);
+                npc.getUpdateState().setForcedTextAndMarkUpdated(sandwichLadyRewardSet.getMessages()[0]);
+                npc.getUpdateState().setAnimation(863);
                 sandwichLadyManager.player.getSandwichLadyManager();
                 sandwichLadyManager.player.getInventoryManager().addItem(sandwichLadyRewardSet.getRewards()[sandwichLadyManager.selectedOfferIndex]);
-                CycleEventHandler.getInstance().schedule(sandwichLadyManager.player, new SandwichLadyCleanupEvent(sandwichLadyManager, (Npc)object), 5);
+                CycleEventHandler.getInstance().schedule(sandwichLadyManager.player, new SandwichLadyCleanupEvent(sandwichLadyManager, npc), 5);
             }
         }
         return true;

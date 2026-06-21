@@ -54,91 +54,71 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
-            int n2 = stringArray.getSkillManager().getBaseLevel(16);
+            int n2 = player.getSkillManager().getBaseLevel(16);
             String[] stringArray2 = new String[]{"I can start the quest at the Grand Tree in the Gnome", "Stronghold by speaking to King Narnode Shareen.", "", "I must have:", String.valueOf(n2 >= 25 ? "@str@" : "") + "Level 25 Agility.", "High enough combat to defeat a level 172 demon."};
             return stringArray2;
         }
         if (n == 2) {
-            stringArray = new String[]{"I should follow King Narnode Shareen below the", "Grand Tree."};
-            return stringArray;
+            return new String[]{"I should follow King Narnode Shareen below the", "Grand Tree."};
         }
         if (n == 3) {
-            stringArray = new String[]{"I should go show the bark sample to Hazelmere who", "lives on an island east of Yanille."};
-            return stringArray;
+            return new String[]{"I should go show the bark sample to Hazelmere who", "lives on an island east of Yanille."};
         }
         if (n == 4) {
-            stringArray = new String[]{"I should go tell King Narnode Shareen what Hazelmere", "told me."};
-            return stringArray;
+            return new String[]{"I should go tell King Narnode Shareen what Hazelmere", "told me."};
         }
         if (n == 5) {
-            stringArray = new String[]{"I should go tell Glough what is happening. He lives", "in a tree house just in front of the Grand Tree."};
-            return stringArray;
+            return new String[]{"I should go tell Glough what is happening. He lives", "in a tree house just in front of the Grand Tree."};
         }
         if (n == 6) {
-            stringArray = new String[]{"I should now go back to King Narnode Shareen."};
-            return stringArray;
+            return new String[]{"I should now go back to King Narnode Shareen."};
         }
         if (n == 7) {
-            stringArray = new String[]{"I should now go talk to the prisoner in the top", "level of the Grand Tree."};
-            return stringArray;
+            return new String[]{"I should now go talk to the prisoner in the top", "level of the Grand Tree."};
         }
         if (n == 8) {
-            if (!stringArray.ownsItem(785)) {
-                stringArray = new String[]{"I should search Glough's home to find out what he's", "up to."};
-                return stringArray;
+            if (!player.ownsItem(785)) {
+                return new String[]{"I should search Glough's home to find out what he's", "up to."};
             }
-            stringArray = new String[]{"I should speak with Glough."};
-            return stringArray;
+            return new String[]{"I should speak with Glough."};
         }
         if (n == 9) {
-            stringArray = new String[]{"I should talk with Charlie."};
-            return stringArray;
+            return new String[]{"I should talk with Charlie."};
         }
         if (n == 10 || n == 11) {
-            if (!stringArray.ownsItem(787)) {
-                stringArray = new String[]{"I should go check the Karamja Shipyard east of Shilo", "Village. I might need a password: Ka-Lu-Min"};
-                return stringArray;
+            if (!player.ownsItem(787)) {
+                return new String[]{"I should go check the Karamja Shipyard east of Shilo", "Village. I might need a password: Ka-Lu-Min"};
             }
-            stringArray = new String[]{"I should go show King what I found from the Shipyard", "and possibly ask Charlie for more information."};
-            return stringArray;
+            return new String[]{"I should go show King what I found from the Shipyard", "and possibly ask Charlie for more information."};
         }
         if (n == 12) {
-            if (stringArray.ownsItem(794)) {
-                stringArray = new String[]{"I should go show the invasion plans to King."};
-                return stringArray;
+            if (player.ownsItem(794)) {
+                return new String[]{"I should go show the invasion plans to King."};
             }
-            if (!stringArray.ownsItem(788)) {
-                stringArray = new String[]{"I should go look for a key for Glough's chest.", "Charlie told me Anita should have the key.", "Anita lives west of the toad swamp."};
-                return stringArray;
+            if (!player.ownsItem(788)) {
+                return new String[]{"I should go look for a key for Glough's chest.", "Charlie told me Anita should have the key.", "Anita lives west of the toad swamp."};
             }
-            stringArray = new String[]{"I should go search the chest in Glough's house."};
-            return stringArray;
+            return new String[]{"I should go search the chest in Glough's house."};
         }
         if (n == 13) {
-            stringArray = new String[]{"The King gave me some weird twigs found from", "Glough's house."};
-            return stringArray;
+            return new String[]{"The King gave me some weird twigs found from", "Glough's house."};
         }
         if (n == 14) {
-            stringArray = new String[]{"I should go down the secret trap door in Glough's house."};
-            return stringArray;
+            return new String[]{"I should go down the secret trap door in Glough's house."};
         }
         if (n == 15) {
-            stringArray = new String[]{"I should go tell the King what has happened."};
-            return stringArray;
+            return new String[]{"I should go tell the King what has happened."};
         }
         if (n == 16) {
-            if (!stringArray.ownsItem(793)) {
-                stringArray = new String[]{"I should search for Daconia rock from the roots of", "the Grand Tree."};
-                return stringArray;
+            if (!player.ownsItem(793)) {
+                return new String[]{"I should search for Daconia rock from the roots of", "the Grand Tree."};
             }
-            stringArray = new String[]{"I should go give the Daconia rock to King Narnode Shareen."};
-            return stringArray;
+            return new String[]{"I should go give the Daconia rock to King Narnode Shareen."};
         }
         if (n == 1) {
-            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "5 Quest Points", "7900 Agility XP", "18,400 Attack XP", "2150 Magic XP"};
-            return stringArray;
+            return new String[]{"Quest Completed!", "", "You were awarded:", "5 Quest Points", "7900 Agility XP", "18,400 Attack XP", "2150 Magic XP"};
         }
         return null;
     }
@@ -203,14 +183,15 @@ extends QuestScript {
             return true;
         }
         if (n == 1986 && n4 == 16) {
-            Object object = new ArrayList(this.daconiaRootSearchPositions);
+            ArrayList object = new ArrayList(this.daconiaRootSearchPositions);
             Collections.shuffle(object, new Random(player.bK));
-            if (n2 == ((Position)object.get(0)).getX() && n3 == ((Position)object.get(0)).getY() && !player.ownsItem(793)) {
+            Position position = (Position)object.get(0);
+            if (n2 == position.getX() && n3 == position.getY() && !player.ownsItem(793)) {
                 player.getDialogueManager().showItemMessage("You've found a Daconia rock!", new ItemStack(793, 1));
                 player.getInventoryManager().addOrDropItem(new ItemStack(793, 1));
             } else {
-                object = player;
-                ((Player)object).packetSender.sendGameMessage("You search the root but don't find anything.");
+                Player player4 = player;
+                player4.packetSender.sendGameMessage("You search the root but don't find anything.");
             }
             player.getUpdateState().setAnimation(827);
             return true;
@@ -640,7 +621,7 @@ extends QuestScript {
                         npc.getMovementQueue().addStep(new Position(2464, 3498, 0));
                         npc.getUpdateState().setForcedText("Down here.");
                     }
-                    this.d((Player)object);
+                    this.startQuest((Player)object);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return false;
                 }
@@ -1359,10 +1340,9 @@ extends QuestScript {
                     ((Player)object).getDialogueManager().showNpcOneLineDialogue("Guards! Guards!", 591);
                     ((Player)object).setActionLocked(true);
                     Npc npc = new Npc(2781);
-                    GameplayHelper.b((Player)object, npc, 2477, 3463, 1, -1, false, false);
+                    GameplayHelper.replaceOwnedRoamingNpcAtPosition((Player)object, npc, 2477, 3463, 1, -1, false, false);
                     npc.setMovementTarget((Entity)object);
-                    object = new GloughGuardArrestStartTask(this, 3, (Player)object, npc);
-                    World.getTaskScheduler().schedule((TickTask)object);
+                    World.getTaskScheduler().schedule(new GloughGuardArrestStartTask(this, 3, (Player)object, npc));
                     return true;
                 }
             }
@@ -1393,8 +1373,7 @@ extends QuestScript {
                     if (((Entity)object).getInteractionTarget() != null && ((Entity)object).getInteractionTarget().isNpc() && ((Npc)(object2 = (Npc)((Entity)object).getInteractionTarget())).getNpcId() == 671) {
                         ((Npc)object2).queueScriptedPath(new Position[]{new Position(2484, 9864, 0)});
                     }
-                    object2 = new GloughDemonSpawnTask(this, 3, (Player)object);
-                    World.getTaskScheduler().schedule((TickTask)object2);
+                    World.getTaskScheduler().schedule(new GloughDemonSpawnTask(this, 3, (Player)object));
                     ((Player)object).getDialogueManager().finishDialogue();
                     return false;
                 }
@@ -1403,8 +1382,7 @@ extends QuestScript {
         if (n == 2781 && n4 == 8 && n2 == 100) {
             ((Player)object).getDialogueManager().showNpcOneLineDialogue("Come with me!", 591);
             int n5 = this.getQuestId();
-            object = new GrandTreeGuardPrisonEscortTask(this, 3, (Player)object, n5);
-            World.getTaskScheduler().schedule((TickTask)object);
+            World.getTaskScheduler().schedule(new GrandTreeGuardPrisonEscortTask(this, 3, (Player)object, n5));
             return true;
         }
         if (n == 673) {
@@ -1445,10 +1423,9 @@ extends QuestScript {
                     ((Player)object).getDialogueManager().finishDialogue();
                     ((Player)object).setActionLocked(true);
                     Npc npc = new Npc(670);
-                    GameplayHelper.b((Player)object, npc, 2467, 3496, 3, -1, false, false);
+                    GameplayHelper.replaceOwnedRoamingNpcAtPosition((Player)object, npc, 2467, 3496, 3, -1, false, false);
                     npc.queueScriptedPath(new Position[]{new Position(2465, 3496, 3)});
-                    object = new KingNarnodePrisonReleaseTask(this, 3, (Player)object, npc);
-                    World.getTaskScheduler().schedule((TickTask)object);
+                    World.getTaskScheduler().schedule(new KingNarnodePrisonReleaseTask(this, 3, (Player)object, npc));
                     return false;
                 }
             }

@@ -6,9 +6,9 @@ package com.rs2.model.skill.magic;
 import com.rs2.model.combat.requirement.SkillLevelRequirement;
 import com.rs2.model.skill.magic.MagicSpellAction;
 
-final class MagicLevelRequirement
+public final class MagicLevelRequirement
 extends SkillLevelRequirement {
-    MagicLevelRequirement(MagicSpellAction magicSpellAction, int n, int n2) {
+    public MagicLevelRequirement(MagicSpellAction magicSpellAction, int n, int n2) {
         super(6, n2);
     }
 

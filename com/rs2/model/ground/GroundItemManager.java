@@ -18,7 +18,7 @@ import java.util.LinkedList;
 
 public final class GroundItemManager
 implements Runnable {
-    private LinkedList groundItems = new LinkedList();
+    private LinkedList<GroundItem> groundItems = new LinkedList<GroundItem>();
     private static int hiddenItemRevealDelayTicks;
     private static int privateItemRevealDelayTicks;
     private static int publicItemLifetimeTicks;
@@ -146,91 +146,65 @@ implements Runnable {
         }
     }
 
-    private static void mergeStackedItems(GroundItem groundItem, GroundItem groundItem2, Player[] object) {
-        Object object2;
-        int n;
-        int n2;
-        Object object3;
-        LinkedList<Object> linkedList = new LinkedList<Object>();
+    private static void mergeStackedItems(GroundItem groundItem, GroundItem groundItem2, Player[] players) {
+        LinkedList<Player> affectedPlayers = new LinkedList<Player>();
         if (groundItem == null || groundItem2 == null) {
             return;
         }
-        if (object != null) {
-            object3 = object;
-            n2 = ((Player[])object).length;
-            n = 0;
-            while (n < n2) {
-                object = object3[n];
-                if (object != null && groundItem2.isVisibleTo((Player)object)) {
-                    if (((Player)object).getVisibleGroundItems().contains(groundItem2)) {
-                        object2 = object;
-                        ((Player)object2).packetSender.sendGroundItemRemove(groundItem2);
-                        ((Player)object).getVisibleGroundItems().remove(groundItem2);
-                    }
-                    if (((Player)object).getVisibleGroundItems().contains(groundItem)) {
-                        object2 = object;
-                        ((Player)object2).packetSender.sendGroundItemRemove(groundItem);
-                        ((Player)object).getVisibleGroundItems().remove(groundItem);
-                    }
-                    linkedList.add(object);
+        if (players != null) {
+            for (Player player : players) {
+                if (player == null || !groundItem2.isVisibleTo(player)) {
+                    continue;
                 }
-                ++n;
+                if (player.getVisibleGroundItems().contains(groundItem2)) {
+                    player.packetSender.sendGroundItemRemove(groundItem2);
+                    player.getVisibleGroundItems().remove(groundItem2);
+                }
+                if (player.getVisibleGroundItems().contains(groundItem)) {
+                    player.packetSender.sendGroundItemRemove(groundItem);
+                    player.getVisibleGroundItems().remove(groundItem);
+                }
+                affectedPlayers.add(player);
             }
         }
-        object = linkedList.toArray(new Player[linkedList.size()]);
         groundItem2.getItem().setAmount(groundItem2.getItem().getAmount() + groundItem.getItem().getAmount());
         groundItem2.getTimer().reset();
-        if (object != null) {
-            object3 = object;
-            n2 = ((Object)object3).length;
-            n = 0;
-            while (n < n2) {
-                object = object3[n];
-                if (groundItem.isVisibleTo((Player)object)) {
-                    object2 = object;
-                    ((Player)object2).packetSender.sendGroundItemCreate(groundItem2);
-                    ((Player)object).getVisibleGroundItems().add(groundItem2);
-                }
-                ++n;
+        for (Player player : affectedPlayers) {
+            if (player == null || !groundItem.isVisibleTo(player)) {
+                continue;
             }
+            player.packetSender.sendGroundItemCreate(groundItem2);
+            player.getVisibleGroundItems().add(groundItem2);
         }
     }
 
-    private void removeForPlayers(GroundItem groundItem, Player[] object) {
+    private void removeForPlayers(GroundItem groundItem, Player[] players) {
         if (groundItem == null) {
             return;
         }
         if (DropPartyBotManager.pendingDropPartyGroundItems.contains(groundItem)) {
             DropPartyBotManager.pendingDropPartyGroundItems.remove(groundItem);
         }
-        Player[] playerArray = object;
-        int n = ((Player[])object).length;
-        int n2 = 0;
-        while (n2 < n) {
-            object = playerArray[n2];
-            if (object != null && groundItem.isVisibleTo((Player)object)) {
-                ((Player)object).getVisibleGroundItems().remove(groundItem);
-                ((Player)object).packetSender.sendGroundItemRemove(groundItem);
+        for (Player player : players) {
+            if (player == null || !groundItem.isVisibleTo(player)) {
+                continue;
             }
-            ++n2;
+            player.getVisibleGroundItems().remove(groundItem);
+            player.packetSender.sendGroundItemRemove(groundItem);
         }
         this.groundItems.remove(groundItem);
     }
 
-    private static void showToPlayers(GroundItem groundItem, Player[] object) {
+    private static void showToPlayers(GroundItem groundItem, Player[] players) {
         if (groundItem == null) {
             return;
         }
-        Player[] playerArray = object;
-        int n = ((Player[])object).length;
-        int n2 = 0;
-        while (n2 < n) {
-            object = playerArray[n2];
-            if (object != null && groundItem.isVisibleTo((Player)object)) {
-                ((Player)object).getVisibleGroundItems().add(groundItem);
-                ((Player)object).packetSender.sendGroundItemCreate(groundItem);
+        for (Player player : players) {
+            if (player == null || !groundItem.isVisibleTo(player)) {
+                continue;
             }
-            ++n2;
+            player.getVisibleGroundItems().add(groundItem);
+            player.packetSender.sendGroundItemCreate(groundItem);
         }
     }
 
@@ -332,35 +306,43 @@ implements Runnable {
         return instance;
     }
 
-    public static boolean isVisible(Player object2, GroundItem groundItem) {
-        if (object2 == null || groundItem == null) {
+    public static boolean isVisible(Player player, GroundItem groundItem) {
+        if (player == null || groundItem == null) {
             return false;
         }
-        for (Object object2 : ((Player)object2).getVisibleGroundItems()) {
-            if (!object2.equals(groundItem)) continue;
+        for (Object visibleObject : player.getVisibleGroundItems()) {
+            if (!visibleObject.equals(groundItem)) {
+                continue;
+            }
             return true;
         }
         return false;
     }
 
-    public static GroundItem findVisibleItem(Player object2, int n, Position position) {
-        if (object2 == null) {
+    public static GroundItem findVisibleItem(Player player, int n, Position position) {
+        if (player == null) {
             return null;
         }
-        for (Object object2 : ((Player)object2).getVisibleGroundItems()) {
-            if (((GroundItem)object2).getItem().getId() != n || !((GroundItem)object2).getPosition().equals(position)) continue;
-            return object2;
+        for (Object visibleObject : player.getVisibleGroundItems()) {
+            GroundItem visibleItem = (GroundItem)visibleObject;
+            if (visibleItem.getItem().getId() != n || !visibleItem.getPosition().equals(position)) {
+                continue;
+            }
+            return visibleItem;
         }
         return null;
     }
 
-    public static GroundItem findVisibleItemAt(Player object2, Position position) {
-        if (object2 == null) {
+    public static GroundItem findVisibleItemAt(Player player, Position position) {
+        if (player == null) {
             return null;
         }
-        for (Object object2 : ((Player)object2).getVisibleGroundItems()) {
-            if (!((GroundItem)object2).getPosition().equals(position)) continue;
-            return object2;
+        for (Object visibleObject : player.getVisibleGroundItems()) {
+            GroundItem visibleItem = (GroundItem)visibleObject;
+            if (!visibleItem.getPosition().equals(position)) {
+                continue;
+            }
+            return visibleItem;
         }
         return null;
     }
@@ -369,9 +351,9 @@ implements Runnable {
         if (player == null) {
             return;
         }
-        for (GroundItem groundItem : player.getVisibleGroundItems()) {
-            Player player2 = player;
-            player2.packetSender.sendGroundItemRemove(groundItem);
+        for (Object groundItemObject : player.getVisibleGroundItems()) {
+            GroundItem groundItem = (GroundItem)groundItemObject;
+            player.packetSender.sendGroundItemRemove(groundItem);
         }
         player.getVisibleGroundItems().clear();
     }

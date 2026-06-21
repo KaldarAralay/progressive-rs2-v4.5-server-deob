@@ -10,7 +10,7 @@ import com.rs2.model.skill.crafting.JewelleryDefinition;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class JewelleryCraftingTask
+public final class JewelleryCraftingTask
 extends CycleEvent {
     private int materialItemId;
     private int remainingActions;
@@ -18,7 +18,7 @@ extends CycleEvent {
     private final /* synthetic */ Player player;
     private final /* synthetic */ int actionSequence;
 
-    JewelleryCraftingTask(int n, int n2, int n3, Player player, int n4) {
+    public JewelleryCraftingTask(int n, int n2, int n3, Player player, int n4) {
         this.player = player;
         this.actionSequence = n4;
         this.materialItemId = n;

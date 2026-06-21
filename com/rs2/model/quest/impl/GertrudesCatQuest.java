@@ -27,34 +27,27 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
-            stringArray = new String[]{"I can start this quest by speaking to Gertrude.", "She can be found to the west of Varrock."};
-            return stringArray;
+            return new String[]{"I can start this quest by speaking to Gertrude.", "She can be found to the west of Varrock."};
         }
         if (n == 2) {
-            stringArray = new String[]{"I should go talk to the boys who can be found", "in the Varrock marketplace."};
-            return stringArray;
+            return new String[]{"I should go talk to the boys who can be found", "in the Varrock marketplace."};
         }
         if (n == 3) {
-            stringArray = new String[]{"The boys told me to go to the abandoned lumber", "mill just beyond Jolly Boar Inn."};
-            return stringArray;
+            return new String[]{"The boys told me to go to the abandoned lumber", "mill just beyond Jolly Boar Inn."};
         }
         if (n == 4) {
-            stringArray = new String[]{"Maybe I should bring Fluffs something to eat."};
-            return stringArray;
+            return new String[]{"Maybe I should bring Fluffs something to eat."};
         }
         if (n == 5) {
-            stringArray = new String[]{"I should go look for a kitten."};
-            return stringArray;
+            return new String[]{"I should go look for a kitten."};
         }
         if (n == 6) {
-            stringArray = new String[]{"I should now go talk to Gertrude."};
-            return stringArray;
+            return new String[]{"I should now go talk to Gertrude."};
         }
         if (n == 1) {
-            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "1 Quest Point", "A kitten!", "1525 Cooking XP", "A chocolate cake", "A bowl of stew.", "Raise cats."};
-            return stringArray;
+            return new String[]{"Quest Completed!", "", "You were awarded:", "1 Quest Point", "A kitten!", "1525 Cooking XP", "A chocolate cake", "A bowl of stew.", "Raise cats."};
         }
         return null;
     }
@@ -113,8 +106,7 @@ extends QuestScript {
                 ((Entity)object2).getUpdateState().setForcedText("Hisss!");
                 ((Entity)object).getUpdateState().setForcedText("Ouch!");
                 ((Player)object).setActionLocked(true);
-                object = new FluffsInteractionHintTask(this, 2, n2, (Player)object);
-                World.getTaskScheduler().schedule((TickTask)object);
+                World.getTaskScheduler().schedule(new FluffsInteractionHintTask(this, 2, n2, (Player)object));
                 return true;
             }
         }
@@ -122,8 +114,7 @@ extends QuestScript {
             Player player = object;
             player.packetSender.sendGameMessage("You search the crate.");
             ((Player)object).setActionLocked(true);
-            object2 = new KittenCrateSearchTask(this, 3, (Player)object);
-            World.getTaskScheduler().schedule((TickTask)object2);
+            World.getTaskScheduler().schedule(new KittenCrateSearchTask(this, 3, (Player)object));
         }
         return false;
     }
@@ -155,13 +146,12 @@ extends QuestScript {
                 ((Player)object).getInventoryManager().removeItem(new ItemStack(1554, 1));
                 ((Entity)object).getUpdateState().setAnimation(827);
                 Npc npc2 = new Npc(760);
-                GameplayHelper.a((Player)object, ((Entity)object).getPosition(), npc2, false, false);
+                GameplayHelper.spawnOwnedNpcAtPosition((Player)object, ((Entity)object).getPosition(), npc2, false, false);
                 npc.getUpdateState().setForcedText("Purr...");
                 npc2.getUpdateState().setForcedText("Purr...");
                 ((Player)object).setQuestState(this.getQuestId(), 6);
                 ((Player)object).setActionLocked(true);
-                object = new FluffsKittenReunionStartTask(this, 2, npc2, npc, (Player)object);
-                World.getTaskScheduler().schedule((TickTask)object);
+                World.getTaskScheduler().schedule(new FluffsKittenReunionStartTask(this, 2, npc2, npc, (Player)object));
                 return true;
             }
         }
@@ -235,7 +225,7 @@ extends QuestScript {
                 }
                 if (n2 == 12) {
                     ((Player)object).getDialogueManager().showPlayerOneLineDialogue("Alright then, I'll see what I can do.", 591);
-                    this.d((Player)object);
+                    this.startQuest((Player)object);
                     ((Player)object).getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -289,8 +279,7 @@ extends QuestScript {
                     ((Player)object).getDialogueManager().finishDialogue();
                     ((Player)object).getPetManager().spawnQuestCatFollower(1561, 768);
                     ((Player)object).setActionLocked(true);
-                    object = new GertrudeRewardFoodTask(this, 5, (Player)object);
-                    World.getTaskScheduler().schedule((TickTask)object);
+                    World.getTaskScheduler().schedule(new GertrudeRewardFoodTask(this, 5, (Player)object));
                     return false;
                 }
             }

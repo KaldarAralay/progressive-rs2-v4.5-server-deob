@@ -11,37 +11,37 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.MonkeyMadnessQuest;
 import com.rs2.model.task.TickTask;
 
-final class CaranockWaydarCutsceneStartTask
+public final class CaranockWaydarCutsceneStartTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
-    CaranockWaydarCutsceneStartTask(MonkeyMadnessQuest monkeyMadnessQuest, int n, Player player) {
-        this.a = player;
+    public CaranockWaydarCutsceneStartTask(MonkeyMadnessQuest monkeyMadnessQuest, int n, Player player) {
         super(5);
+        this.player = player;
     }
 
     @Override
     public final void execute() {
         Position position = new Position(2980, 3045, 0);
         position.getPlane();
-        int n = position.getPlane() + 4 + (this.a.getIndex() << 2);
-        this.a.cutsceneReturnPosition = new Position(2805, 9143, 0);
+        int n = position.getPlane() + 4 + (this.player.getIndex() << 2);
+        this.player.cutsceneReturnPosition = new Position(2805, 9143, 0);
         Npc npc = new Npc(1427);
         Npc npc2 = new Npc(1409);
-        GameplayHelper.a(npc, 2672, 4559, n, 5);
-        GameplayHelper.a(npc2, 2670, 4559, n, 4);
-        this.a.temporaryCutsceneNpcs.add(npc);
-        this.a.temporaryCutsceneNpcs.add(npc2);
-        this.a.moveTo(new Position(2670, 4573, n));
-        Player player = this.a;
+        GameplayHelper.spawnNonRespawningNpc(npc, 2672, 4559, n, 5);
+        GameplayHelper.spawnNonRespawningNpc(npc2, 2670, 4559, n, 4);
+        this.player.temporaryCutsceneNpcs.add(npc);
+        this.player.temporaryCutsceneNpcs.add(npc2);
+        this.player.moveTo(new Position(2670, 4573, n));
+        Player player = this.player;
         player.packetSender.sendMapRegion();
-        player = this.a;
+        player = this.player;
         player.packetSender.sendCameraLookAt(3600, 2900, 400, 0, 100);
-        player = this.a;
+        player = this.player;
         player.packetSender.sendCameraPosition(3500, 1000, 0, 0, 100);
-        player = this.a;
+        player = this.player;
         player.packetSender.showWalkableInterface(-1);
-        DialogueManager.continueDialogue(this.a, 1427, 100, 0);
+        DialogueManager.continueDialogue(this.player, 1427, 100, 0);
         this.stop();
     }
 }

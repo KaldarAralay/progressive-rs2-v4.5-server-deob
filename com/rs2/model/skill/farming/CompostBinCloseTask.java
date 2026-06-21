@@ -8,11 +8,11 @@ import com.rs2.model.skill.farming.CompostBinManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class CompostBinCloseTask
+public final class CompostBinCloseTask
 extends CycleEvent {
     private /* synthetic */ CompostBinManager manager;
 
-    CompostBinCloseTask(CompostBinManager compostBinManager) {
+    public CompostBinCloseTask(CompostBinManager compostBinManager) {
         this.manager = compostBinManager;
     }
 

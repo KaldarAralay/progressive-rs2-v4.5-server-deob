@@ -8,29 +8,29 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class NpcDialogueTeleportEvent
+public final class NpcDialogueTeleportEvent
 extends CycleEvent {
-    private final /* synthetic */ Player a;
-    private final /* synthetic */ int b;
-    private final /* synthetic */ int c;
-    private final /* synthetic */ int d;
+    private final /* synthetic */ Player player;
+    private final /* synthetic */ int destinationX;
+    private final /* synthetic */ int destinationY;
+    private final /* synthetic */ int destinationPlane;
 
-    NpcDialogueTeleportEvent(Npc npc, Player player, int n, int n2, int n3) {
-        this.a = player;
-        this.b = n;
-        this.c = n2;
-        this.d = n3;
+    public NpcDialogueTeleportEvent(Npc npc, Player player, int n, int n2, int n3) {
+        this.player = player;
+        this.destinationX = n;
+        this.destinationY = n2;
+        this.destinationPlane = n3;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        this.a.getTeleportManager().startDelayedTeleport(this.b, this.c, this.d);
+        this.player.getTeleportManager().startDelayedTeleport(this.destinationX, this.destinationY, this.destinationPlane);
         cycleEventContainer.stop();
     }
 
     @Override
     public final void onStop() {
-        this.a.setActionLocked(false);
+        this.player.setActionLocked(false);
     }
 }
 

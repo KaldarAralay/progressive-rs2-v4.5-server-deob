@@ -7,12 +7,12 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class GodBookRecitationEvent
+public final class GodBookRecitationEvent
 extends CycleEvent {
     private final /* synthetic */ Player player;
     private final /* synthetic */ String[] recitationLines;
 
-    GodBookRecitationEvent(Player player, String[] stringArray) {
+    public GodBookRecitationEvent(Player player, String[] stringArray) {
         this.player = player;
         this.recitationLines = stringArray;
     }

@@ -7,13 +7,13 @@ import com.rs2.model.GameplayHelper;
 import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 
-final class BotBankContinuationTask
+public final class BotBankContinuationTask
 extends TickTask {
     private final /* synthetic */ Player bot;
 
-    BotBankContinuationTask(int n, Player player) {
-        this.bot = player;
+    public BotBankContinuationTask(int n, Player player) {
         super(n);
+        this.bot = player;
     }
 
     @Override

@@ -108,7 +108,8 @@ public final class CharacterFileManager {
      * Enabled unnecessary exception pruning
      * Enabled aggressive exception aggregation
      */
-    private static void writePlayerFile(Player object) {
+    private static void writePlayerFile(Player player) {
+        Object object = player;
         if (((Player)object).isBot && ((Player)object).botMode != 4) {
             return;
         }
@@ -1302,7 +1303,7 @@ public final class CharacterFileManager {
                 n7 = 0;
                 n3 = -1;
                 if (((Player)object).currentWorldRouteChoice != null) {
-                    n7 = ((Player)object).currentWorldRouteChoice.isReversed();
+                    n7 = ((Player)object).currentWorldRouteChoice.isReversed() ? 1 : 0;
                     n3 = BotWorldRouteWalker.getRouteIndex(((Player)object).currentWorldRouteChoice);
                 }
                 ((DataOutputStream)object3).writeBoolean(n7 != 0);
@@ -1383,7 +1384,8 @@ public final class CharacterFileManager {
      * Enabled unnecessary exception pruning
      * Enabled aggressive exception aggregation
      */
-    public static void saveCharacterFileRecord(CharacterFileRecord object) {
+    public static void saveCharacterFileRecord(CharacterFileRecord record) {
+        Object object = record;
         try {
             int n;
             Object object2;
@@ -2176,18 +2178,16 @@ public final class CharacterFileManager {
     public static void saveAllPlayers() {
         Player[] playerArray = World.getPlayers();
         synchronized (playerArray) {
-            Object object = World.getPlayers();
-            Player[] playerArray2 = object;
-            int n = ((Player[])object).length;
+            Player[] players = World.getPlayers();
+            int n = players.length;
             int n2 = 0;
             while (n2 < n) {
-                object = playerArray2[n2];
-                if (object != null && ((Entity)object).getIndex() != -1) {
+                Player player = players[n2];
+                if (player != null && player.getIndex() != -1) {
                     try {
-                        CharacterFileManager.savePlayer((Player)object);
+                        CharacterFileManager.savePlayer(player);
                     }
                     catch (Exception exception) {
-                        object = exception;
                         exception.printStackTrace();
                     }
                 }
@@ -2198,23 +2198,23 @@ public final class CharacterFileManager {
     }
 
     private static void restorePlayerFromBackup(Player player) {
-        Object object = new File("./data/backups/");
-        object = ((File)object).listFiles();
-        Arrays.sort(object, new BackupRestoreTimestampComparator());
-        File[] fileArray = object;
-        int n = ((File[])object).length;
+        File[] fileArray = new File("./data/backups/").listFiles();
+        if (fileArray == null) {
+            return;
+        }
+        Arrays.sort(fileArray, new BackupRestoreTimestampComparator());
+        int n = fileArray.length;
         int n2 = 0;
         while (n2 < n) {
-            object = fileArray[n2];
-            File file = new File(String.valueOf(((File)object).getPath()) + "/characters/" + player.getUsername() + ".dat");
-            if (file.exists() && CharacterFileManager.validateCharacterFile(String.valueOf(((File)object).getPath()) + "/characters/", player.getUsername())) {
+            File backupDirectory = fileArray[n2];
+            File file = new File(String.valueOf(backupDirectory.getPath()) + "/characters/" + player.getUsername() + ".dat");
+            if (file.exists() && CharacterFileManager.validateCharacterFile(String.valueOf(backupDirectory.getPath()) + "/characters/", player.getUsername())) {
                 try {
-                    CharacterFileManager.loadPlayerFromFile(String.valueOf(((File)object).getPath()) + "/characters/", player);
+                    CharacterFileManager.loadPlayerFromFile(String.valueOf(backupDirectory.getPath()) + "/characters/", player);
                     System.out.println("Restoring from backup: " + player);
                     return;
                 }
                 catch (Exception exception) {
-                    object = exception;
                     exception.printStackTrace();
                 }
             }
@@ -2231,39 +2231,41 @@ public final class CharacterFileManager {
     }
 
     private static void repairBackupCharacterFiles() {
-        Object object = new File("./data/backups/");
-        object = ((File)object).listFiles();
-        ArrayList<Object> arrayList = new ArrayList<Object>();
-        Arrays.sort(object, new BackupRepairTimestampComparator());
-        File[] fileArray = object;
-        int n = ((File[])object).length;
+        File[] fileArray = new File("./data/backups/").listFiles();
+        ArrayList<File> arrayList = new ArrayList<File>();
+        if (fileArray == null) {
+            return;
+        }
+        Arrays.sort(fileArray, new BackupRepairTimestampComparator());
+        int n = fileArray.length;
         int n2 = 0;
         while (n2 < n) {
-            object = fileArray[n2];
-            object = new File(String.valueOf(((File)object).getPath()) + "/characters");
-            Object object2 = ((File)object).listFiles();
-            File[] fileArray2 = object2;
-            int n3 = ((File[])object2).length;
+            File characterDirectory = new File(String.valueOf(fileArray[n2].getPath()) + "/characters");
+            File[] fileArray2 = characterDirectory.listFiles();
+            if (fileArray2 == null) {
+                ++n2;
+                continue;
+            }
+            int n3 = fileArray2.length;
             int n4 = 0;
             while (n4 < n3) {
-                object2 = fileArray2[n4];
-                String string = CharacterFileManager.stripFileExtension(((File)object2).getName());
-                if (!CharacterFileManager.validateCharacterFile(String.valueOf(((File)object).getPath()) + "/", string)) {
-                    System.out.println("corrupted file found: " + ((File)object2).getPath());
-                    arrayList.add(object2);
+                File backupFile = fileArray2[n4];
+                String string = CharacterFileManager.stripFileExtension(backupFile.getName());
+                if (!CharacterFileManager.validateCharacterFile(String.valueOf(characterDirectory.getPath()) + "/", string)) {
+                    System.out.println("corrupted file found: " + backupFile.getPath());
+                    arrayList.add(backupFile);
                 } else if (!arrayList.isEmpty()) {
                     File file = null;
                     for (File file2 : arrayList) {
                         String string2 = CharacterFileManager.stripFileExtension(file2.getName());
                         if (!string2.equals(string)) continue;
-                        System.out.println("valid file found: " + ((File)object2).getPath());
+                        System.out.println("valid file found: " + backupFile.getPath());
                         file = file2;
                         try {
                             file2.delete();
-                            CharacterFileManager.copyFile((File)object2, file2);
+                            CharacterFileManager.copyFile(backupFile, file2);
                         }
                         catch (IOException iOException) {
-                            IOException iOException2 = iOException;
                             iOException.printStackTrace();
                         }
                     }
@@ -2288,45 +2290,39 @@ public final class CharacterFileManager {
         Object object = new DateTime(l2);
         object = String.valueOf(((AbstractDateTime)object).getHourOfDay()) + "-" + ((AbstractDateTime)object).getMinuteOfHour();
         object = String.valueOf(GameplayHelper.formatDateDayMonthYear(l)) + "-" + (String)object;
-        Object object2 = new File("./data/characters/");
-        object2 = ((File)object2).listFiles();
-        File[] fileArray = object2;
-        int n = ((File[])object2).length;
+        File[] fileArray = new File("./data/characters/").listFiles();
+        int n = fileArray == null ? 0 : fileArray.length;
         int n2 = 0;
         while (n2 < n) {
-            object2 = fileArray[n2];
-            if (((File)object2).isFile()) {
+            File sourceFile = fileArray[n2];
+            if (sourceFile.isFile()) {
                 file2 = new File("./data/backups/" + (String)object + "/characters");
-                file = new File("./data/backups/" + (String)object + "/characters/" + ((File)object2).getName());
+                file = new File("./data/backups/" + (String)object + "/characters/" + sourceFile.getName());
                 try {
                     file2.mkdirs();
-                    CharacterFileManager.copyFile((File)object2, file);
+                    CharacterFileManager.copyFile(sourceFile, file);
                 }
                 catch (IOException iOException) {
-                    object2 = iOException;
                     iOException.printStackTrace();
                 }
             }
             ++n2;
         }
         CharacterFileManager.repairBackupCharacterFiles();
-        object2 = new File("./data/logs/");
-        object2 = ((File)object2).listFiles();
-        fileArray = object2;
-        n = ((File[])object2).length;
+        fileArray = new File("./data/logs/").listFiles();
+        n = fileArray == null ? 0 : fileArray.length;
         n2 = 0;
         while (n2 < n) {
-            object2 = fileArray[n2];
-            if (((File)object2).isFile()) {
+            File sourceFile = fileArray[n2];
+            if (sourceFile.isFile()) {
                 file2 = new File("./data/backups/" + (String)object + "/logs");
-                file = new File("./data/backups/" + (String)object + "/logs/" + ((File)object2).getName());
+                file = new File("./data/backups/" + (String)object + "/logs/" + sourceFile.getName());
                 try {
                     file2.mkdirs();
-                    CharacterFileManager.copyFile((File)object2, file);
-                    ((File)object2).delete();
+                    CharacterFileManager.copyFile(sourceFile, file);
+                    sourceFile.delete();
                 }
                 catch (IOException iOException) {
-                    object2 = iOException;
                     iOException.printStackTrace();
                 }
             }
@@ -2334,14 +2330,16 @@ public final class CharacterFileManager {
         }
     }
 
-    private static void copyFile(File file, File file2) {
+    private static void copyFile(File file, File file2) throws IOException {
         Files.copy(file.toPath(), file2.toPath(), new CopyOption[0]);
     }
 
     /*
      * Enabled aggressive exception aggregation
      */
-    private static boolean validateCharacterFile(String object, String object2) {
+    private static boolean validateCharacterFile(String path, String username) {
+        Object object = path;
+        Object object2 = username;
         if (!((File)(object = new File(String.valueOf(object) + (String)object2 + ".dat"))).exists()) {
             return false;
         }
@@ -3147,45 +3145,43 @@ public final class CharacterFileManager {
     }
 
     public static void archiveDeadHardcoreIronman(Player player) {
-        Object object2;
         int n = 0;
-        for (Object object2 : liveHiscoreRecords) {
-            CharacterFileRecord characterFileRecord;
-            object2 = object2;
+        while (n < liveHiscoreRecords.size()) {
+            CharacterFileRecord characterFileRecord = (CharacterFileRecord)liveHiscoreRecords.get(n);
             if (characterFileRecord.username.toLowerCase().equals(player.getUsername().toLowerCase())) {
-                object2 = CharacterFileManager.readCharacterFileRecord("./data/characters/", player.getUsername(), true);
-                if (object2 == null) continue;
-                liveHiscoreRecords.set(n, object2);
-                continue;
+                CharacterFileRecord updatedRecord = CharacterFileManager.readCharacterFileRecord("./data/characters/", player.getUsername(), true);
+                if (updatedRecord != null) {
+                    liveHiscoreRecords.set(n, updatedRecord);
+                }
+                break;
             }
             ++n;
         }
-        object2 = FileUtil.readBytes("./data/characters/" + player.getUsername() + ".dat");
-        FileUtil.writeBytes("./data/dead hcim characters/" + player.getUsername() + ".dat", (byte[])object2);
+        byte[] bytes = FileUtil.readBytes("./data/characters/" + player.getUsername() + ".dat");
+        FileUtil.writeBytes("./data/dead hcim characters/" + player.getUsername() + ".dat", bytes);
         CharacterFileRecord characterFileRecord = CharacterFileManager.readCharacterFileRecord("./data/dead hcim characters/", player.getUsername(), true);
         if (characterFileRecord != null) {
             deadHardcoreIronmanRecords.add(characterFileRecord);
         }
     }
 
-    public static void refreshLiveHiscoreRecord(Player object) {
-        CharacterFileRecord characterFileRecord2;
-        if (((Player)object).isBot && ((Player)object).botMode != 4) {
+    public static void refreshLiveHiscoreRecord(Player player) {
+        if (player.isBot && player.botMode != 4) {
             return;
         }
         int n = 0;
-        for (CharacterFileRecord characterFileRecord2 : liveHiscoreRecords) {
-            CharacterFileRecord characterFileRecord3;
-            characterFileRecord2 = characterFileRecord2;
-            if (characterFileRecord3.username.toLowerCase().equals(((Player)object).getUsername().toLowerCase())) {
-                if ((object = CharacterFileManager.readCharacterFileRecord("./data/characters/", ((Player)object).getUsername(), true)) != null) {
-                    liveHiscoreRecords.set(n, object);
+        while (n < liveHiscoreRecords.size()) {
+            CharacterFileRecord characterFileRecord = (CharacterFileRecord)liveHiscoreRecords.get(n);
+            if (characterFileRecord.username.toLowerCase().equals(player.getUsername().toLowerCase())) {
+                CharacterFileRecord updatedRecord = CharacterFileManager.readCharacterFileRecord("./data/characters/", player.getUsername(), true);
+                if (updatedRecord != null) {
+                    liveHiscoreRecords.set(n, updatedRecord);
                 }
                 return;
             }
             ++n;
         }
-        characterFileRecord2 = CharacterFileManager.readCharacterFileRecord("./data/characters/", ((Player)object).getUsername(), true);
+        CharacterFileRecord characterFileRecord2 = CharacterFileManager.readCharacterFileRecord("./data/characters/", player.getUsername(), true);
         if (characterFileRecord2 != null) {
             liveHiscoreRecords.add(characterFileRecord2);
             Server.d();
@@ -3195,7 +3191,9 @@ public final class CharacterFileManager {
     /*
      * Enabled aggressive exception aggregation
      */
-    private static CharacterFileRecord readCharacterFileRecord(String object, String object2, boolean bl) {
+    private static CharacterFileRecord readCharacterFileRecord(String path, String username, boolean bl) {
+        Object object = path;
+        Object object2 = username;
         if (!((File)(object = new File(String.valueOf(object) + (String)object2 + ".dat"))).exists()) {
             return null;
         }
@@ -3245,13 +3243,11 @@ public final class CharacterFileManager {
                     l = dataInputStream.readLong();
                     object3 = object2;
                     ((CharacterFileRecord)object2).createdAtMillis = l;
-                    int n4 = dataInputStream.readBoolean();
                     object3 = object2;
-                    ((CharacterFileRecord)object2).loginRestrictionExempt = n4;
-                    n4 = dataInputStream.readBoolean();
+                    ((CharacterFileRecord)object2).loginRestrictionExempt = dataInputStream.readBoolean();
                     object3 = object2;
-                    ((CharacterFileRecord)object2).memberFlag = n4;
-                    n4 = dataInputStream.readInt();
+                    ((CharacterFileRecord)object2).memberFlag = dataInputStream.readBoolean();
+                    int n4 = dataInputStream.readInt();
                     object3 = object2;
                     ((CharacterFileRecord)object2).donatorPoints = n4;
                     n4 = dataInputStream.readInt();
@@ -3299,9 +3295,8 @@ public final class CharacterFileManager {
                     n4 = dataInputStream.readInt();
                     object3 = object2;
                     ((CharacterFileRecord)object2).legacyQuestPoints = n4;
-                    n4 = dataInputStream.readBoolean() ? 1 : 0;
                     object3 = object2;
-                    ((CharacterFileRecord)object2).autoRetaliate = n4;
+                    ((CharacterFileRecord)object2).autoRetaliate = dataInputStream.readBoolean();
                     n4 = dataInputStream.readInt();
                     object3 = object2;
                     ((CharacterFileRecord)object2).fightMode = n4;
@@ -3329,12 +3324,10 @@ public final class CharacterFileManager {
                     n4 = (int)dataInputStream.readDouble();
                     object3 = object2;
                     ((CharacterFileRecord)object2).specialEnergy = n4;
-                    n4 = dataInputStream.readBoolean() ? 1 : 0;
                     object3 = object2;
-                    ((CharacterFileRecord)object2).changingBankPin = n4;
-                    n4 = dataInputStream.readBoolean() ? 1 : 0;
+                    ((CharacterFileRecord)object2).changingBankPin = dataInputStream.readBoolean();
                     object3 = object2;
-                    ((CharacterFileRecord)object2).deletingBankPin = n4;
+                    ((CharacterFileRecord)object2).deletingBankPin = dataInputStream.readBoolean();
                     n4 = dataInputStream.readInt();
                     object3 = object2;
                     ((CharacterFileRecord)object2).pinAppendYear = n4;
@@ -3359,15 +3352,14 @@ public final class CharacterFileManager {
                         object3 = object2;
                         double d2 = n4;
                         double d3 = (d2 /= 100.0) * 10000.0;
-                        ((CharacterFileRecord)v0).runEnergyRaw = n3 = (int)d3;
+                        ((CharacterFileRecord)object2).runEnergyRaw = n3 = (int)d3;
                     } else {
                         n3 = dataInputStream.readUnsignedShort();
                         object3 = object2;
                         ((CharacterFileRecord)object2).runEnergyRaw = n3;
                     }
-                    n4 = dataInputStream.readBoolean() ? 1 : 0;
                     object3 = object2;
-                    ((CharacterFileRecord)object2).running = n4;
+                    ((CharacterFileRecord)object2).running = dataInputStream.readBoolean();
                     int n5 = 0;
                     while (n5 < 4) {
                         ((CharacterFileRecord)object2).currentPin[n5] = dataInputStream.readInt();
@@ -3869,18 +3861,16 @@ public final class CharacterFileManager {
                     by = dataInputStream.readByte();
                     object9 = object2;
                     ((CharacterFileRecord)object2).piratesTreasureBananaCrateCount = by;
-                    by = (byte)(dataInputStream.readBoolean() ? 1 : 0);
                     object9 = object2;
-                    ((CharacterFileRecord)object2).treasureTrailNavigationTaught = by;
+                    ((CharacterFileRecord)object2).treasureTrailNavigationTaught = dataInputStream.readBoolean();
                     by = dataInputStream.readByte();
                     object9 = object2;
                     ((CharacterFileRecord)object2).coalTruckAmount = by;
                     by = dataInputStream.readByte();
                     object9 = object2;
                     ((CharacterFileRecord)object2).treasureTrailStepCount = by;
-                    by = (byte)(dataInputStream.readBoolean() ? 1 : 0);
                     object9 = object2;
-                    ((CharacterFileRecord)object2).cluePuzzleSolved = by;
+                    ((CharacterFileRecord)object2).cluePuzzleSolved = dataInputStream.readBoolean();
                     if (s < 2) break block157;
                     ((CharacterFileRecord)object2).skeletonSkinUnlocked = dataInputStream.readByte();
                     if (s >= 3) {
@@ -4047,9 +4037,9 @@ public final class CharacterFileManager {
                         ((CharacterFileRecord)object2).enterTheAbyssMiniquestState = dataInputStream.readInt();
                     }
                     if (s >= 20) {
-                        n5 = dataInputStream.readBoolean() ? 1 : 0;
-                        ((CharacterFileRecord)object2).botEnabled = n5;
-                        if (n5 != 0) {
+                        boolean botEnabled = dataInputStream.readBoolean();
+                        ((CharacterFileRecord)object2).botEnabled = botEnabled;
+                        if (botEnabled) {
                             ((CharacterFileRecord)object2).botMode = dataInputStream.readByte();
                             ((CharacterFileRecord)object2).currentBotTaskTypeId = dataInputStream.readByte();
                             ((CharacterFileRecord)object2).currentBotTaskIndex = dataInputStream.readInt();
@@ -4145,1318 +4135,427 @@ public final class CharacterFileManager {
             dataInputStream.close();
             ((FileInputStream)object).close();
             ((CharacterFileRecord)object2).getStoredItemValue();
-            return object2;
+            return (CharacterFileRecord)object2;
         }
         catch (IOException iOException) {
             return null;
         }
     }
 
-    /*
-     * Unable to fully structure code
-     */
-    public static void loadPlayerFromFile(String var0, Player var1_1) {
-        var2_2 = new File(String.valueOf(var0) + var1_1.getUsername() + ".dat");
-        if (!var2_2.exists()) {
+    public static void loadPlayerFromFile(String path, Player player) {
+        File file = new File(String.valueOf(path) + player.getUsername() + ".dat");
+        if (!file.exists()) {
             if (Server.getInstance() != null) {
-                Server.getInstance().queueLogin(var1_1);
+                Server.getInstance().queueLogin(player);
             }
             return;
         }
-        if (!CharacterFileManager.validateCharacterFile(var0, var1_1.getUsername()) && var0.equals("./data/characters/")) {
-            CharacterFileManager.restorePlayerFromBackup(var1_1);
+        if (!CharacterFileManager.validateCharacterFile(path, player.getUsername()) && path.equals("./data/characters/")) {
+            CharacterFileManager.restorePlayerFromBackup(player);
             return;
         }
-        try {
-            var2_2 = new FileInputStream((File)var2_2);
-            var2_2 = new DataInputStream((InputStream)var2_2);
-            var3_3 = var2_2.readShort();
-            if (var3_3 < 24) {
-                var2_2.close();
-                return;
-            }
-            var1_1.setUsername(var2_2.readUTF());
-            var4_4 = var2_2.readUTF();
-            var1_1.setPassword(var4_4);
-            var1_1.lastLoginHostAddress = var2_2.readUTF();
-            var2_2.readInt();
-            var1_1.setPlayerRights(0);
-            var2_2.readUTF();
-            var1_1.setProfileString1(var2_2.readUTF());
-            var1_1.setProfileString2(var2_2.readUTF());
-            var1_1.lastSavedMillis = var2_2.readLong();
-            var1_1.totalPlaytimeMillis = var2_2.readLong();
-            var1_1.createdAtMillis = var2_2.readLong();
-            var1_1.loginRestrictionExempt = var2_2.readBoolean();
-            var1_1.setMemberFlag(var2_2.readBoolean());
-            var1_1.setDonatorPoints(var2_2.readInt());
-            var1_1.getPosition().setX(var2_2.readInt());
-            var1_1.getPosition().setPreviousX(var1_1.getPosition().getX());
-            var1_1.getPosition().setY(var2_2.readInt());
-            var1_1.getPosition().setPreviousY(var1_1.getPosition().getY() + 1);
-            var1_1.getPosition().setPlane(var2_2.readInt());
-            var1_1.setGender(var2_2.readInt());
-            var1_1.npcKillCount = var2_2.readInt();
-            var1_1.playerKillCount = var2_2.readInt();
-            var1_1.deathCount = var2_2.readInt();
-            var1_1.easyCluesCompleted = var2_2.readInt();
-            var1_1.mediumCluesCompleted = var2_2.readInt();
-            var1_1.hardCluesCompleted = var2_2.readInt();
-            var1_1.soldItemsValue = var2_2.readInt();
-            var1_1.boughtItemsValue = var2_2.readInt();
-            var1_1.duelWins = var2_2.readInt();
-            var1_1.duelLosses = var2_2.readInt();
-            var1_1.legacyQuestPoints = var2_2.readInt();
-            var1_1.setAutoRetaliate(var2_2.readBoolean());
-            var1_1.setFightMode(var2_2.readInt());
-            var1_1.setBrightness(var2_2.readInt());
-            var1_1.setMouseButtons(var2_2.readInt());
-            var1_1.setPublicChatEffects(var2_2.readInt());
-            var1_1.setSplitPrivateChat(var2_2.readInt());
-            var1_1.setAcceptAid(var2_2.readInt());
-            var1_1.setMusicVolume(var2_2.readInt());
-            var1_1.setEffectVolume(var2_2.readInt());
-            var1_1.setSpecialEnergy((int)var2_2.readDouble());
-            var1_1.getBankPinManager().setChangingPin(var2_2.readBoolean());
-            var1_1.getBankPinManager().setDeletingPin(var2_2.readBoolean());
-            var1_1.getBankPinManager().setPinAppendYear(var2_2.readInt());
-            var1_1.getBankPinManager().setPinAppendDate(var2_2.readInt());
-            var1_1.setBindingNecklaceCharge(var2_2.readInt());
-            var1_1.setRingOfForgingLife(var2_2.readInt());
-            var1_1.setRingOfRecoilLife(var2_2.readInt());
-            var4_5 = var2_2.readInt();
-            if (var4_5 > 0) {
-                var1_1.addPvpCombatReference(var1_1, var4_5);
-            }
-            if (var3_3 <= 26) {
-                var8_6 = var2_2.readDouble();
-                var1_1.setRunEnergyPercent((int)var8_6);
-            } else {
-                var1_1.setRunEnergyRaw(var2_2.readUnsignedShort());
-            }
-            var1_1.getMovementQueue().setRunning(var2_2.readBoolean());
-            var8_7 = 0;
-            while (var8_7 < var1_1.getBankPinManager().getCurrentPin().length) {
-                var1_1.getBankPinManager().getCurrentPin()[var8_7] = var2_2.readInt();
-                ++var8_7;
-            }
-            var8_7 = 0;
-            while (var8_7 < var1_1.getBankPinManager().getPendingPin().length) {
-                var1_1.getBankPinManager().getPendingPin()[var8_7] = var2_2.readInt();
-                ++var8_7;
-            }
-            var8_7 = 0;
-            while (var8_7 < 4) {
-                var1_1.setEssencePouchAmount(var8_7, var2_2.readInt());
-                ++var8_7;
-            }
-            var8_7 = 0;
-            while (var8_7 < var1_1.getAppearanceParts().length) {
-                var1_1.getAppearanceParts()[var8_7] = var2_2.readInt();
-                ++var8_7;
-            }
-            var8_7 = 0;
-            while (var8_7 < var1_1.getAppearanceColors().length) {
-                var1_1.getAppearanceColors()[var8_7] = var2_2.readInt();
-                ++var8_7;
-            }
-            var8_7 = 0;
-            while (var8_7 < var1_1.getSkillManager().getCurrentLevels().length) {
-                var1_1.getSkillManager().getCurrentLevels()[var8_7] = var2_2.readInt();
-                ++var8_7;
-            }
-            var8_7 = 0;
-            while (var8_7 < var1_1.getSkillManager().getExperience().length) {
-                var1_1.getSkillManager().getExperience()[var8_7] = var2_2.readInt();
-                ++var8_7;
-            }
-            var8_7 = 0;
-            while (var8_7 < 28) {
-                var9_8 = var2_2.readInt();
-                if (var9_8 != 65535) {
-                    var10_9 = var2_2.readInt();
-                    var11_13 = var2_2.readInt();
-                    if (var9_8 < 11883 && var10_9 > 0) {
-                        var12_14 = new ItemStack(var9_8, var10_9, var11_13);
-                        if (var12_14.getId() == 2696 || var12_14.getId() == 2699 || var12_14.getId() == 3510) {
-                            var12_14 = new ItemStack(var9_8 - 1, var10_9, var11_13);
-                        }
-                        var1_1.getInventoryManager().getContainer().setItem(var8_7, var12_14);
-                    }
-                }
-                ++var8_7;
-            }
-            var8_7 = 0;
-            while (var8_7 < 14) {
-                var9_8 = var2_2.readInt();
-                if (var9_8 != 65535) {
-                    var10_9 = var2_2.readInt();
-                    var11_13 = -1;
-                    if (var3_3 >= 23) {
-                        var11_13 = var2_2.readInt();
-                    }
-                    if (var9_8 < 11883 && var10_9 > 0) {
-                        var12_14 = new ItemStack(var9_8, var10_9, var11_13);
-                        var1_1.getEquipmentManager().getContainer().setItem(var8_7, var12_14);
-                    }
-                }
-                ++var8_7;
-            }
-            try {
-                block170: {
-                    block169: {
-                        block168: {
-                            block167: {
-                                block166: {
-                                    block165: {
-                                        if (var3_3 < 17) {
-                                            var8_7 = 0;
-                                            while (var8_7 < 352) {
-                                                var9_8 = var2_2.readInt();
-                                                if (var9_8 != 65535) {
-                                                    var10_9 = var2_2.readInt();
-                                                    var11_13 = var2_2.readInt();
-                                                    if (var9_8 < 11883 && var10_9 > 0) {
-                                                        var12_14 = new ItemStack(var9_8, var10_9, var11_13);
-                                                        if (var12_14.getId() == 2696 || var12_14.getId() == 2699 || var12_14.getId() == 3510) {
-                                                            var12_14 = new ItemStack(var9_8 - 1, var10_9, var11_13);
-                                                        }
-                                                        var1_1.getBankContainer().setTabItem(var8_7, var12_14, 0);
-                                                    }
-                                                }
-                                                ++var8_7;
-                                            }
-                                        } else {
-                                            var8_7 = var2_2.readByte();
-                                            var9_8 = 0;
-                                            while (var9_8 < var8_7) {
-                                                var10_9 = var2_2.readUnsignedShort();
-                                                var11_13 = 0;
-                                                while (var11_13 < var10_9) {
-                                                    var12_16 = var2_2.readInt();
-                                                    if (var12_16 != 65535) {
-                                                        var13_22 = var2_2.readInt();
-                                                        var4_5 = var2_2.readInt();
-                                                        if (var12_16 < 11883 && var13_22 > 0) {
-                                                            var5_21 = new ItemStack(var12_16, var13_22, var4_5);
-                                                            if (var5_21.getId() == 2696 || var5_21.getId() == 2699 || var5_21.getId() == 3510) {
-                                                                var5_21 = new ItemStack(var12_16 - 1, var13_22, var4_5);
-                                                            }
-                                                            var1_1.getBankContainer().setTabItem(var11_13, (ItemStack)var5_21, var9_8);
-                                                        }
-                                                    }
-                                                    ++var11_13;
-                                                }
-                                                ++var9_8;
-                                            }
-                                        }
-                                        var8_7 = 0;
-                                        while (var8_7 < var1_1.getFriendsList().length) {
-                                            var1_1.getFriendsList()[var8_7] = var2_2.readLong();
-                                            ++var8_7;
-                                        }
-                                        var8_7 = 0;
-                                        while (var8_7 < var1_1.getIgnoreList().length) {
-                                            var1_1.getIgnoreList()[var8_7] = var2_2.readLong();
-                                            ++var8_7;
-                                        }
-                                        var8_7 = 0;
-                                        while (var8_7 < var1_1.getQueuedLoginItemIds().length) {
-                                            var1_1.getQueuedLoginItemIds()[var8_7] = var2_2.readInt();
-                                            var1_1.getQueuedLoginItemAmounts()[var8_7] = var2_2.readInt();
-                                            ++var8_7;
-                                        }
-                                        var1_1.setAbyssMageNpcId(var2_2.readInt());
-                                        var1_1.setMuteExpires(var2_2.readLong());
-                                        var1_1.setBanExpires(var2_2.readLong());
-                                        var8_7 = 0;
-                                        while (var8_7 < 6) {
-                                            var1_1.setBarrowsBrotherKilled(var8_7, var2_2.readBoolean());
-                                            ++var8_7;
-                                        }
-                                        var1_1.setBarrowsKillCount(var2_2.readInt());
-                                        var1_1.setBarrowsTargetBrotherIndex(var2_2.readInt());
-                                        var8_7 = var2_2.readInt();
-                                        var1_1.getPoisonImmunityTimer().setDelayTicks(var8_7);
-                                        var1_1.getPoisonImmunityTimer().reset();
-                                        var9_8 = var2_2.readInt();
-                                        var1_1.getAntifireTimer().setDelayTicks(var9_8);
-                                        var1_1.getAntifireTimer().reset();
-                                        var1_1.getTeleblockTimer().setDelayTicks(var2_2.readInt());
-                                        var1_1.getTeleblockTimer().reset();
-                                        var12_17 = var10_10 = var2_2.readDouble();
-                                        var1_1.setPoisonDamage(var12_17);
-                                        var4_5 = 0;
-                                        if (true) ** GOTO lbl215
-                                        do {
-                                            var18_24 = var2_2.readInt();
-                                            var6_23 = var4_5++;
-                                            var5_21 = var1_1.getAllotmentPatchManager();
-                                            var5_21.growthStages[var6_23] = var18_24;
-lbl215:
-                                            // 2 sources
-
-                                            var5_21 = var1_1.getAllotmentPatchManager();
-                                        } while (var4_5 < var5_21.growthStages.length);
-                                        var4_5 = 0;
-                                        if (true) ** GOTO lbl224
-                                        do {
-                                            var18_24 = var2_2.readInt();
-                                            var6_23 = var4_5++;
-                                            var5_21 = var1_1.getAllotmentPatchManager();
-                                            var5_21.cropIds[var6_23] = var18_24;
-lbl224:
-                                            // 2 sources
-
-                                            var5_21 = var1_1.getAllotmentPatchManager();
-                                        } while (var4_5 < var5_21.cropIds.length);
-                                        if (var3_3 > 27) break block165;
-                                        var4_5 = 0;
-                                        if (true) ** GOTO lbl236
-                                        do {
-                                            var2_2.readInt();
-                                            var18_24 = 4;
-                                            var6_23 = var4_5++;
-                                            var5_21 = var1_1.getAllotmentPatchManager();
-                                            var5_21.harvestAmounts[var6_23] = var18_24;
-lbl236:
-                                            // 2 sources
-
-                                            var5_21 = var1_1.getAllotmentPatchManager();
-                                        } while (var4_5 < var5_21.d.length);
-                                        break block166;
-                                    }
-                                    var4_5 = 0;
-                                    if (true) ** GOTO lbl247
-                                    do {
-                                        var18_24 = var2_2.readInt();
-                                        var6_23 = var4_5++;
-                                        var5_21 = var1_1.getAllotmentPatchManager();
-                                        var5_21.harvestAmounts[var6_23] = var18_24;
-lbl247:
-                                        // 2 sources
-
-                                        var5_21 = var1_1.getAllotmentPatchManager();
-                                    } while (var4_5 < var5_21.harvestAmounts.length);
-                                }
-                                var4_5 = 0;
-                                if (true) ** GOTO lbl257
-                                do {
-                                    var18_24 = var2_2.readInt();
-                                    var6_23 = var4_5++;
-                                    var5_21 = var1_1.getAllotmentPatchManager();
-                                    var5_21.patchStates[var6_23] = var18_24;
-lbl257:
-                                    // 2 sources
-
-                                    var5_21 = var1_1.getAllotmentPatchManager();
-                                } while (var4_5 < var5_21.patchStates.length);
-                                var4_5 = 0;
-                                if (true) ** GOTO lbl266
-                                do {
-                                    var18_25 = var2_2.readLong();
-                                    var6_23 = var4_5++;
-                                    var5_21 = var1_1.getAllotmentPatchManager();
-                                    var5_21.lastUpdateTicks[var6_23] = var18_25;
-lbl266:
-                                    // 2 sources
-
-                                    var5_21 = var1_1.getAllotmentPatchManager();
-                                } while (var4_5 < var5_21.lastUpdateTicks.length);
-                                var4_5 = 0;
-                                if (true) ** GOTO lbl275
-                                do {
-                                    var18_26 = var2_2.readDouble();
-                                    var6_23 = var4_5++;
-                                    var5_21 = var1_1.getAllotmentPatchManager();
-                                    var5_21.diseaseChanceMultipliers[var6_23] = var18_26;
-lbl275:
-                                    // 2 sources
-
-                                    var5_21 = var1_1.getAllotmentPatchManager();
-                                } while (var4_5 < var5_21.diseaseChanceMultipliers.length);
-                                var4_5 = 0;
-                                if (true) ** GOTO lbl284
-                                do {
-                                    var18_27 = var2_2.readBoolean();
-                                    var6_23 = var4_5++;
-                                    var5_21 = var1_1.getAllotmentPatchManager();
-                                    var5_21.protectionFlags[var6_23] = var18_27;
-lbl284:
-                                    // 2 sources
-
-                                    var5_21 = var1_1.getAllotmentPatchManager();
-                                } while (var4_5 < var5_21.protectionFlags.length);
-                                var4_5 = 0;
-                                if (true) ** GOTO lbl293
-                                do {
-                                    var18_28 = var2_2.readInt();
-                                    var6_23 = var4_5++;
-                                    var5_21 = var1_1.getBushPatchManager();
-                                    var5_21.growthStages[var6_23] = var18_28;
-lbl293:
-                                    // 2 sources
-
-                                    var5_21 = var1_1.getBushPatchManager();
-                                } while (var4_5 < var5_21.growthStages.length);
-                                var4_5 = 0;
-                                if (true) ** GOTO lbl302
-                                do {
-                                    var18_29 = var2_2.readInt();
-                                    var6_23 = var4_5++;
-                                    var5_21 = var1_1.getBushPatchManager();
-                                    var5_21.cropIds[var6_23] = var18_29;
-lbl302:
-                                    // 2 sources
-
-                                    var5_21 = var1_1.getBushPatchManager();
-                                } while (var4_5 < var5_21.cropIds.length);
-                                var4_5 = 0;
-                                if (true) ** GOTO lbl311
-                                do {
-                                    var18_30 = var2_2.readInt();
-                                    var6_23 = var4_5++;
-                                    var5_21 = var1_1.getBushPatchManager();
-                                    var5_21.patchStates[var6_23] = var18_30;
-lbl311:
-                                    // 2 sources
-
-                                    var5_21 = var1_1.getBushPatchManager();
-                                } while (var4_5 < var5_21.patchStates.length);
-                                var4_5 = 0;
-                                if (true) ** GOTO lbl320
-                                do {
-                                    var18_31 = var2_2.readLong();
-                                    var6_23 = var4_5++;
-                                    var5_21 = var1_1.getBushPatchManager();
-                                    var5_21.lastUpdateTicks[var6_23] = var18_31;
-lbl320:
-                                    // 2 sources
-
-                                    var5_21 = var1_1.getBushPatchManager();
-                                } while (var4_5 < var5_21.lastUpdateTicks.length);
-                                var4_5 = 0;
-                                if (true) ** GOTO lbl329
-                                do {
-                                    var18_32 = var2_2.readDouble();
-                                    var6_23 = var4_5++;
-                                    var5_21 = var1_1.getBushPatchManager();
-                                    var5_21.diseaseChanceMultipliers[var6_23] = var18_32;
-lbl329:
-                                    // 2 sources
-
-                                    var5_21 = var1_1.getBushPatchManager();
-                                } while (var4_5 < var5_21.diseaseChanceMultipliers.length);
-                                var4_5 = 0;
-                                if (true) ** GOTO lbl338
-                                do {
-                                    var18_33 = var2_2.readBoolean();
-                                    var6_23 = var4_5++;
-                                    var5_21 = var1_1.getBushPatchManager();
-                                    var5_21.protectionFlags[var6_23] = var18_33;
-lbl338:
-                                    // 2 sources
-
-                                    var5_21 = var1_1.getBushPatchManager();
-                                } while (var4_5 < var5_21.protectionFlags.length);
-                                var4_5 = 0;
-                                if (true) ** GOTO lbl347
-                                do {
-                                    var18_34 = var2_2.readInt();
-                                    var6_23 = var4_5++;
-                                    var5_21 = var1_1.getFlowerPatchManager();
-                                    var5_21.growthStages[var6_23] = var18_34;
-lbl347:
-                                    // 2 sources
-
-                                    var5_21 = var1_1.getFlowerPatchManager();
-                                } while (var4_5 < var5_21.growthStages.length);
-                                var4_5 = 0;
-                                if (true) ** GOTO lbl356
-                                do {
-                                    var18_35 = var2_2.readInt();
-                                    var6_23 = var4_5++;
-                                    var5_21 = var1_1.getFlowerPatchManager();
-                                    var5_21.cropIds[var6_23] = var18_35;
-lbl356:
-                                    // 2 sources
-
-                                    var5_21 = var1_1.getFlowerPatchManager();
-                                } while (var4_5 < var5_21.cropIds.length);
-                                var4_5 = 0;
-                                if (true) ** GOTO lbl365
-                                do {
-                                    var18_36 = var2_2.readInt();
-                                    var6_23 = var4_5++;
-                                    var5_21 = var1_1.getFlowerPatchManager();
-                                    var5_21.patchStates[var6_23] = var18_36;
-lbl365:
-                                    // 2 sources
-
-                                    var5_21 = var1_1.getFlowerPatchManager();
-                                } while (var4_5 < var5_21.patchStates.length);
-                                var4_5 = 0;
-                                if (true) ** GOTO lbl374
-                                do {
-                                    var18_37 = var2_2.readLong();
-                                    var6_23 = var4_5++;
-                                    var5_21 = var1_1.getFlowerPatchManager();
-                                    var5_21.lastUpdateTicks[var6_23] = var18_37;
-lbl374:
-                                    // 2 sources
-
-                                    var5_21 = var1_1.getFlowerPatchManager();
-                                } while (var4_5 < var5_21.lastUpdateTicks.length);
-                                var4_5 = 0;
-                                if (true) ** GOTO lbl383
-                                do {
-                                    var18_38 = var2_2.readDouble();
-                                    var6_23 = var4_5++;
-                                    var5_21 = var1_1.getFlowerPatchManager();
-                                    var5_21.diseaseChanceMultipliers[var6_23] = var18_38;
-lbl383:
-                                    // 2 sources
-
-                                    var5_21 = var1_1.getFlowerPatchManager();
-                                } while (var4_5 < var5_21.diseaseChanceMultipliers.length);
-                                var4_5 = 0;
-                                if (true) ** GOTO lbl392
-                                do {
-                                    var18_39 = var2_2.readInt();
-                                    var6_23 = var4_5++;
-                                    var5_21 = var1_1.getFruitTreePatchManager();
-                                    var5_21.growthStages[var6_23] = var18_39;
-lbl392:
-                                    // 2 sources
-
-                                    var5_21 = var1_1.getFruitTreePatchManager();
-                                } while (var4_5 < var5_21.growthStages.length);
-                                var4_5 = 0;
-                                if (true) ** GOTO lbl401
-                                do {
-                                    var18_40 = var2_2.readInt();
-                                    var6_23 = var4_5++;
-                                    var5_21 = var1_1.getFruitTreePatchManager();
-                                    var5_21.treeIds[var6_23] = var18_40;
-lbl401:
-                                    // 2 sources
-
-                                    var5_21 = var1_1.getFruitTreePatchManager();
-                                } while (var4_5 < var5_21.treeIds.length);
-                                var4_5 = 0;
-                                if (true) ** GOTO lbl410
-                                do {
-                                    var18_41 = var2_2.readInt();
-                                    var6_23 = var4_5++;
-                                    var5_21 = var1_1.getFruitTreePatchManager();
-                                    var5_21.patchStates[var6_23] = var18_41;
-lbl410:
-                                    // 2 sources
-
-                                    var5_21 = var1_1.getFruitTreePatchManager();
-                                } while (var4_5 < var5_21.patchStates.length);
-                                var4_5 = 0;
-                                if (true) ** GOTO lbl419
-                                do {
-                                    var18_42 = var2_2.readLong();
-                                    var6_23 = var4_5++;
-                                    var5_21 = var1_1.getFruitTreePatchManager();
-                                    var5_21.lastUpdateTicks[var6_23] = var18_42;
-lbl419:
-                                    // 2 sources
-
-                                    var5_21 = var1_1.getFruitTreePatchManager();
-                                } while (var4_5 < var5_21.lastUpdateTicks.length);
-                                var4_5 = 0;
-                                if (true) ** GOTO lbl428
-                                do {
-                                    var18_43 = var2_2.readDouble();
-                                    var6_23 = var4_5++;
-                                    var5_21 = var1_1.getFruitTreePatchManager();
-                                    var5_21.diseaseChanceMultipliers[var6_23] = var18_43;
-lbl428:
-                                    // 2 sources
-
-                                    var5_21 = var1_1.getFruitTreePatchManager();
-                                } while (var4_5 < var5_21.diseaseChanceMultipliers.length);
-                                var4_5 = 0;
-                                if (true) ** GOTO lbl437
-                                do {
-                                    var18_44 = var2_2.readBoolean();
-                                    var6_23 = var4_5++;
-                                    var5_21 = var1_1.getFruitTreePatchManager();
-                                    var5_21.protectionFlags[var6_23] = var18_44;
-lbl437:
-                                    // 2 sources
-
-                                    var5_21 = var1_1.getFruitTreePatchManager();
-                                } while (var4_5 < var5_21.protectionFlags.length);
-                                var4_5 = 0;
-                                if (true) ** GOTO lbl446
-                                do {
-                                    var18_45 = var2_2.readInt();
-                                    var6_23 = var4_5++;
-                                    var5_21 = var1_1.getHerbPatchManager();
-                                    var5_21.growthStages[var6_23] = var18_45;
-lbl446:
-                                    // 2 sources
-
-                                    var5_21 = var1_1.getHerbPatchManager();
-                                } while (var4_5 < var5_21.growthStages.length);
-                                var4_5 = 0;
-                                if (true) ** GOTO lbl455
-                                do {
-                                    var18_46 = var2_2.readInt();
-                                    var6_23 = var4_5++;
-                                    var5_21 = var1_1.getHerbPatchManager();
-                                    var5_21.cropIds[var6_23] = var18_46;
-lbl455:
-                                    // 2 sources
-
-                                    var5_21 = var1_1.getHerbPatchManager();
-                                } while (var4_5 < var5_21.cropIds.length);
-                                if (var3_3 > 27) break block167;
-                                var4_5 = 0;
-                                if (true) ** GOTO lbl467
-                                do {
-                                    var2_2.readInt();
-                                    var18_47 = 4;
-                                    var6_23 = var4_5++;
-                                    var5_21 = var1_1.getHerbPatchManager();
-                                    var5_21.harvestAmounts[var6_23] = var18_47;
-lbl467:
-                                    // 2 sources
-
-                                    var5_21 = var1_1.getHerbPatchManager();
-                                } while (var4_5 < var5_21.d.length);
-                                break block168;
-                            }
-                            var4_5 = 0;
-                            if (true) ** GOTO lbl478
-                            do {
-                                var18_48 = var2_2.readInt();
-                                var6_23 = var4_5++;
-                                var5_21 = var1_1.getHerbPatchManager();
-                                var5_21.harvestAmounts[var6_23] = var18_48;
-lbl478:
-                                // 2 sources
-
-                                var5_21 = var1_1.getHerbPatchManager();
-                            } while (var4_5 < var5_21.harvestAmounts.length);
-                        }
-                        var4_5 = 0;
-                        if (true) ** GOTO lbl488
-                        do {
-                            var18_49 = var2_2.readInt();
-                            var6_23 = var4_5++;
-                            var5_21 = var1_1.getHerbPatchManager();
-                            var5_21.patchStates[var6_23] = var18_49;
-lbl488:
-                            // 2 sources
-
-                            var5_21 = var1_1.getHerbPatchManager();
-                        } while (var4_5 < var5_21.patchStates.length);
-                        var4_5 = 0;
-                        if (true) ** GOTO lbl497
-                        do {
-                            var18_50 = var2_2.readLong();
-                            var6_23 = var4_5++;
-                            var5_21 = var1_1.getHerbPatchManager();
-                            var5_21.lastUpdateTicks[var6_23] = var18_50;
-lbl497:
-                            // 2 sources
-
-                            var5_21 = var1_1.getHerbPatchManager();
-                        } while (var4_5 < var5_21.lastUpdateTicks.length);
-                        var4_5 = 0;
-                        if (true) ** GOTO lbl506
-                        do {
-                            var18_51 = var2_2.readDouble();
-                            var6_23 = var4_5++;
-                            var5_21 = var1_1.getHerbPatchManager();
-                            var5_21.diseaseChanceMultipliers[var6_23] = var18_51;
-lbl506:
-                            // 2 sources
-
-                            var5_21 = var1_1.getHerbPatchManager();
-                        } while (var4_5 < var5_21.diseaseChanceMultipliers.length);
-                        var4_5 = 0;
-                        if (true) ** GOTO lbl515
-                        do {
-                            var18_52 = var2_2.readInt();
-                            var6_23 = var4_5++;
-                            var5_21 = var1_1.getHopsPatchManager();
-                            var5_21.growthStages[var6_23] = var18_52;
-lbl515:
-                            // 2 sources
-
-                            var5_21 = var1_1.getHopsPatchManager();
-                        } while (var4_5 < var5_21.growthStages.length);
-                        var4_5 = 0;
-                        if (true) ** GOTO lbl524
-                        do {
-                            var18_53 = var2_2.readInt();
-                            var6_23 = var4_5++;
-                            var5_21 = var1_1.getHopsPatchManager();
-                            var5_21.cropIds[var6_23] = var18_53;
-lbl524:
-                            // 2 sources
-
-                            var5_21 = var1_1.getHopsPatchManager();
-                        } while (var4_5 < var5_21.cropIds.length);
-                        if (var3_3 > 27) break block169;
-                        var4_5 = 0;
-                        if (true) ** GOTO lbl536
-                        do {
-                            var2_2.readInt();
-                            var18_54 = 4;
-                            var6_23 = var4_5++;
-                            var5_21 = var1_1.getHopsPatchManager();
-                            var5_21.harvestAmounts[var6_23] = var18_54;
-lbl536:
-                            // 2 sources
-
-                            var5_21 = var1_1.getHopsPatchManager();
-                        } while (var4_5 < var5_21.d.length);
-                        break block170;
-                    }
-                    var4_5 = 0;
-                    if (true) ** GOTO lbl547
-                    do {
-                        var18_55 = var2_2.readInt();
-                        var6_23 = var4_5++;
-                        var5_21 = var1_1.getHopsPatchManager();
-                        var5_21.harvestAmounts[var6_23] = var18_55;
-lbl547:
-                        // 2 sources
-
-                        var5_21 = var1_1.getHopsPatchManager();
-                    } while (var4_5 < var5_21.harvestAmounts.length);
-                }
-                var4_5 = 0;
-                if (true) ** GOTO lbl557
-                do {
-                    var18_56 = var2_2.readInt();
-                    var6_23 = var4_5++;
-                    var5_21 = var1_1.getHopsPatchManager();
-                    var5_21.patchStates[var6_23] = var18_56;
-lbl557:
-                    // 2 sources
-
-                    var5_21 = var1_1.getHopsPatchManager();
-                } while (var4_5 < var5_21.patchStates.length);
-                var4_5 = 0;
-                if (true) ** GOTO lbl566
-                do {
-                    var18_57 = var2_2.readLong();
-                    var6_23 = var4_5++;
-                    var5_21 = var1_1.getHopsPatchManager();
-                    var5_21.lastUpdateTicks[var6_23] = var18_57;
-lbl566:
-                    // 2 sources
-
-                    var5_21 = var1_1.getHopsPatchManager();
-                } while (var4_5 < var5_21.lastUpdateTicks.length);
-                var4_5 = 0;
-                if (true) ** GOTO lbl575
-                do {
-                    var18_58 = var2_2.readDouble();
-                    var6_23 = var4_5++;
-                    var5_21 = var1_1.getHopsPatchManager();
-                    var5_21.diseaseChanceMultipliers[var6_23] = var18_58;
-lbl575:
-                    // 2 sources
-
-                    var5_21 = var1_1.getHopsPatchManager();
-                } while (var4_5 < var5_21.diseaseChanceMultipliers.length);
-                var4_5 = 0;
-                if (true) ** GOTO lbl584
-                do {
-                    var18_59 = var2_2.readBoolean();
-                    var6_23 = var4_5++;
-                    var5_21 = var1_1.getHopsPatchManager();
-                    var5_21.protectionFlags[var6_23] = var18_59;
-lbl584:
-                    // 2 sources
-
-                    var5_21 = var1_1.getHopsPatchManager();
-                } while (var4_5 < var5_21.protectionFlags.length);
-                var4_5 = 0;
-                if (true) ** GOTO lbl593
-                do {
-                    var18_60 = var2_2.readInt();
-                    var6_23 = var4_5++;
-                    var5_21 = var1_1.getSpecialTreePatchManager();
-                    var5_21.growthStages[var6_23] = var18_60;
-lbl593:
-                    // 2 sources
-
-                    var5_21 = var1_1.getSpecialTreePatchManager();
-                } while (var4_5 < var5_21.growthStages.length);
-                var4_5 = 0;
-                if (true) ** GOTO lbl602
-                do {
-                    var18_61 = var2_2.readInt();
-                    var6_23 = var4_5++;
-                    var5_21 = var1_1.getSpecialTreePatchManager();
-                    var5_21.treeIds[var6_23] = var18_61;
-lbl602:
-                    // 2 sources
-
-                    var5_21 = var1_1.getSpecialTreePatchManager();
-                } while (var4_5 < var5_21.treeIds.length);
-                var4_5 = 0;
-                if (true) ** GOTO lbl611
-                do {
-                    var18_62 = var2_2.readInt();
-                    var6_23 = var4_5++;
-                    var5_21 = var1_1.getSpecialTreePatchManager();
-                    var5_21.patchStates[var6_23] = var18_62;
-lbl611:
-                    // 2 sources
-
-                    var5_21 = var1_1.getSpecialTreePatchManager();
-                } while (var4_5 < var5_21.patchStates.length);
-                var4_5 = 0;
-                if (true) ** GOTO lbl620
-                do {
-                    var18_63 = var2_2.readLong();
-                    var6_23 = var4_5++;
-                    var5_21 = var1_1.getSpecialTreePatchManager();
-                    var5_21.lastUpdateTicks[var6_23] = var18_63;
-lbl620:
-                    // 2 sources
-
-                    var5_21 = var1_1.getSpecialTreePatchManager();
-                } while (var4_5 < var5_21.lastUpdateTicks.length);
-                var4_5 = 0;
-                if (true) ** GOTO lbl629
-                do {
-                    var18_64 = var2_2.readDouble();
-                    var6_23 = var4_5++;
-                    var5_21 = var1_1.getSpecialTreePatchManager();
-                    var5_21.diseaseChanceMultipliers[var6_23] = var18_64;
-lbl629:
-                    // 2 sources
-
-                    var5_21 = var1_1.getSpecialTreePatchManager();
-                } while (var4_5 < var5_21.diseaseChanceMultipliers.length);
-                var4_5 = 0;
-                if (true) ** GOTO lbl638
-                do {
-                    var18_65 = var2_2.readInt();
-                    var6_23 = var4_5++;
-                    var5_21 = var1_1.getSpecialCropPatchManager();
-                    var5_21.growthStages[var6_23] = var18_65;
-lbl638:
-                    // 2 sources
-
-                    var5_21 = var1_1.getSpecialCropPatchManager();
-                } while (var4_5 < var5_21.growthStages.length);
-                var4_5 = 0;
-                if (true) ** GOTO lbl647
-                do {
-                    var18_66 = var2_2.readInt();
-                    var6_23 = var4_5++;
-                    var5_21 = var1_1.getSpecialCropPatchManager();
-                    var5_21.cropIds[var6_23] = var18_66;
-lbl647:
-                    // 2 sources
-
-                    var5_21 = var1_1.getSpecialCropPatchManager();
-                } while (var4_5 < var5_21.cropIds.length);
-                var4_5 = 0;
-                if (true) ** GOTO lbl656
-                do {
-                    var18_67 = var2_2.readInt();
-                    var6_23 = var4_5++;
-                    var5_21 = var1_1.getSpecialCropPatchManager();
-                    var5_21.patchStates[var6_23] = var18_67;
-lbl656:
-                    // 2 sources
-
-                    var5_21 = var1_1.getSpecialCropPatchManager();
-                } while (var4_5 < var5_21.patchStates.length);
-                var4_5 = 0;
-                if (true) ** GOTO lbl665
-                do {
-                    var18_68 = var2_2.readLong();
-                    var6_23 = var4_5++;
-                    var5_21 = var1_1.getSpecialCropPatchManager();
-                    var5_21.lastUpdateTicks[var6_23] = var18_68;
-lbl665:
-                    // 2 sources
-
-                    var5_21 = var1_1.getSpecialCropPatchManager();
-                } while (var4_5 < var5_21.lastUpdateTicks.length);
-                var4_5 = 0;
-                if (true) ** GOTO lbl674
-                do {
-                    var18_69 = var2_2.readDouble();
-                    var6_23 = var4_5++;
-                    var5_21 = var1_1.getSpecialCropPatchManager();
-                    var5_21.diseaseChanceMultipliers[var6_23] = var18_69;
-lbl674:
-                    // 2 sources
-
-                    var5_21 = var1_1.getSpecialCropPatchManager();
-                } while (var4_5 < var5_21.diseaseChanceMultipliers.length);
-                var4_5 = 0;
-                if (true) ** GOTO lbl683
-                do {
-                    var18_70 = var2_2.readInt();
-                    var6_23 = var4_5++;
-                    var5_21 = var1_1.getTreePatchManager();
-                    var5_21.growthStages[var6_23] = var18_70;
-lbl683:
-                    // 2 sources
-
-                    var5_21 = var1_1.getTreePatchManager();
-                } while (var4_5 < var5_21.growthStages.length);
-                var4_5 = 0;
-                if (true) ** GOTO lbl692
-                do {
-                    var18_71 = var2_2.readInt();
-                    var6_23 = var4_5++;
-                    var5_21 = var1_1.getTreePatchManager();
-                    var5_21.treeIds[var6_23] = var18_71;
-lbl692:
-                    // 2 sources
-
-                    var5_21 = var1_1.getTreePatchManager();
-                } while (var4_5 < var5_21.treeIds.length);
-                var4_5 = 0;
-                if (true) ** GOTO lbl701
-                do {
-                    var18_72 = var2_2.readInt();
-                    var6_23 = var4_5++;
-                    var5_21 = var1_1.getTreePatchManager();
-                    var5_21.patchData[var6_23] = var18_72;
-lbl701:
-                    // 2 sources
-
-                    var5_21 = var1_1.getTreePatchManager();
-                } while (var4_5 < var5_21.patchData.length);
-                var4_5 = 0;
-                if (true) ** GOTO lbl710
-                do {
-                    var18_73 = var2_2.readInt();
-                    var6_23 = var4_5++;
-                    var5_21 = var1_1.getTreePatchManager();
-                    var5_21.patchStates[var6_23] = var18_73;
-lbl710:
-                    // 2 sources
-
-                    var5_21 = var1_1.getTreePatchManager();
-                } while (var4_5 < var5_21.patchStates.length);
-                var4_5 = 0;
-                if (true) ** GOTO lbl719
-                do {
-                    var18_74 = var2_2.readLong();
-                    var6_23 = var4_5++;
-                    var5_21 = var1_1.getTreePatchManager();
-                    var5_21.lastUpdateTicks[var6_23] = var18_74;
-lbl719:
-                    // 2 sources
-
-                    var5_21 = var1_1.getTreePatchManager();
-                } while (var4_5 < var5_21.lastUpdateTicks.length);
-                var4_5 = 0;
-                if (true) ** GOTO lbl728
-                do {
-                    var18_75 = var2_2.readDouble();
-                    var6_23 = var4_5++;
-                    var5_21 = var1_1.getTreePatchManager();
-                    var5_21.diseaseChanceMultipliers[var6_23] = var18_75;
-lbl728:
-                    // 2 sources
-
-                    var5_21 = var1_1.getTreePatchManager();
-                } while (var4_5 < var5_21.diseaseChanceMultipliers.length);
-                var4_5 = 0;
-                if (true) ** GOTO lbl737
-                do {
-                    var18_76 = var2_2.readBoolean();
-                    var6_23 = var4_5++;
-                    var5_21 = var1_1.getTreePatchManager();
-                    var5_21.protectionFlags[var6_23] = var18_76;
-lbl737:
-                    // 2 sources
-
-                    var5_21 = var1_1.getTreePatchManager();
-                } while (var4_5 < var5_21.protectionFlags.length);
-                var4_5 = 0;
-                if (true) ** GOTO lbl746
-                do {
-                    var18_77 = var2_2.readInt();
-                    var6_23 = var4_5++;
-                    var5_21 = var1_1.getCompostBinManager();
-                    var5_21.states[var6_23] = var18_77;
-lbl746:
-                    // 2 sources
-
-                    var5_21 = var1_1.getCompostBinManager();
-                } while (var4_5 < var5_21.states.length);
-                var4_5 = 0;
-                if (true) ** GOTO lbl755
-                do {
-                    var18_78 = var2_2.readLong();
-                    var6_23 = var4_5++;
-                    var5_21 = var1_1.getCompostBinManager();
-                    var5_21.lastUpdateTicks[var6_23] = var18_78;
-lbl755:
-                    // 2 sources
-
-                    var5_21 = var1_1.getCompostBinManager();
-                } while (var4_5 < var5_21.lastUpdateTicks.length);
-                var4_5 = 0;
-                if (true) ** GOTO lbl764
-                do {
-                    var18_79 = var2_2.readInt();
-                    var6_23 = var4_5++;
-                    var5_21 = var1_1.getCompostBinManager();
-                    var5_21.itemIds[var6_23] = var18_79;
-lbl764:
-                    // 2 sources
-
-                    var5_21 = var1_1.getCompostBinManager();
-                } while (var4_5 < var5_21.itemIds.length);
-                var4_5 = 0;
-                if (true) ** GOTO lbl773
-                do {
-                    var18_80 = var2_2.readInt();
-                    var6_23 = var4_5++;
-                    var5_21 = var1_1.getFarmingToolStore();
-                    var5_21.storedAmounts[var6_23] = var18_80;
-lbl773:
-                    // 2 sources
-
-                    var5_21 = var1_1.getFarmingToolStore();
-                } while (var4_5 < var5_21.storedAmounts.length);
-            }
-            catch (IOException v0) {}
-            try {
-                var1_1.getSlayerManager().slayerMasterId = var2_2.readInt();
-                var1_1.getSlayerManager().slayerTaskName = var2_2.readUTF();
-                var1_1.getSlayerManager().taskAmount = var2_2.readInt();
-            }
-            catch (IOException v1) {}
-            try {
-                var8_7 = (int)var2_2.readBoolean();
-                var1_1.setSpellbook(var8_7 != 0 ? Spellbook.ANCIENT : Spellbook.MODERN);
-            }
-            catch (IOException v2) {}
-            try {
-                var1_1.setBrimhavenOpen(var2_2.readBoolean());
-            }
-            catch (IOException v3) {}
-            try {
-                var6_23 = var2_2.readBoolean();
-                var5_21 = var1_1;
-                var1_1.killedClueAttacker = var6_23;
-            }
-            catch (IOException v4) {}
-            var8_7 = 0;
-            while (var8_7 < CharacterFileManager.musicUnlockConfigIds.length) {
-                try {
-                    var1_1.ep[CharacterFileManager.musicUnlockConfigIds[var8_7]] = var2_2.readInt();
-                }
-                catch (IOException v5) {
-                    var1_1.ep[CharacterFileManager.musicUnlockConfigIds[var8_7]] = 0;
-                }
-                ++var8_7;
-            }
-            var8_7 = 0;
-            while (var8_7 < QuestDefinition.questStateCapacity) {
-                try {
-                    var1_1.setQuestState(var8_7, var2_2.readInt());
-                }
-                catch (IOException v6) {
-                    var1_1.setQuestState(var8_7, 0);
-                }
-                ++var8_7;
-            }
-            var1_1.dv = var2_2.readByte();
-            var1_1.bO = var2_2.readByte();
-            var1_1.D = var2_2.readBoolean();
-            var1_1.setCoalTruckCoalCount(var2_2.readByte());
-            var1_1.treasureTrailStepCount = var2_2.readByte();
-            var1_1.en = var2_2.readBoolean();
-            if (var3_3 >= 2) {
-                var1_1.ee = var2_2.readByte();
-                if (var3_3 >= 3) {
-                    var1_1.setBossPetUnlockFlags(var2_2.readInt());
-                }
-                if (var3_3 >= 4) {
-                    var1_1.barrowsDoorPuzzleSolved = var2_2.readBoolean();
-                    var1_1.barrowsChestOpened = var2_2.readBoolean();
-                    var1_1.ep[452] = var2_2.readInt();
-                }
-                if (var3_3 >= 5) {
-                    var6_23 = var2_2.readByte();
-                    var5_21 = var1_1;
-                    var1_1.flourMillHopperGrainCount = var6_23;
-                    var1_1.ep[FlourMillHandler.flourBinConfigId] = var2_2.readInt();
-                }
-                if (var3_3 >= 6) {
-                    var1_1.bK = var2_2.readInt();
-                }
-                if (var3_3 >= 7) {
-                    var8_7 = 0;
-                    while (var8_7 < QuestDefinition.questStateCapacity) {
-                        try {
-                            var1_1.questProgressFlags[var8_7] = var2_2.readInt();
-                        }
-                        catch (IOException v7) {
-                            var1_1.questProgressFlags[var8_7] = 0;
-                        }
-                        ++var8_7;
-                    }
-                    var8_7 = 0;
-                    while (var8_7 < 100) {
-                        try {
-                            var1_1.questHookStates[var8_7] = var2_2.readInt();
-                        }
-                        catch (IOException v8) {
-                            var1_1.questHookStates[var8_7] = 0;
-                        }
-                        ++var8_7;
-                    }
-                }
-                if (var3_3 >= 8) {
-                    var1_1.setPublicChatMode(var2_2.readByte());
-                    var1_1.setPrivateChatMode(var2_2.readByte());
-                    var1_1.setTradeMode(var2_2.readByte());
-                }
-                if (var3_3 >= 9) {
-                    var1_1.em = var2_2.readInt();
-                }
-                if (var3_3 >= 10) {
-                    var1_1.bY = var2_2.readLong();
-                    var1_1.ca = var2_2.readInt();
-                    var1_1.bZ = var2_2.readInt();
-                }
-                if (var3_3 >= 11) {
-                    var1_1.reservedVersion11String = var2_2.readUTF();
-                }
-                if (var3_3 >= 12) {
-                    var1_1.familyCrestGauntletItemId = var2_2.readInt();
-                }
-                if (var3_3 >= 13) {
-                    var1_1.mageArenaFlamesOfZamorakCastsRemaining = var2_2.readInt();
-                    var1_1.mageArenaSaradominStrikeCastsRemaining = var2_2.readInt();
-                    var1_1.mageArenaClawsOfGuthixCastsRemaining = var2_2.readInt();
-                    var1_1.mageArenaProgressStage = var2_2.readByte();
-                }
-                if (var3_3 >= 14) {
-                    var8_7 = 0;
-                    while (var8_7 < 6) {
-                        var1_1.grandExchangeSellOfferFlags[var8_7] = var2_2.readBoolean();
-                        ++var8_7;
-                    }
-                    var8_7 = 0;
-                    while (var8_7 < 6) {
-                        var1_1.grandExchangeItemIds[var8_7] = var2_2.readInt();
-                        ++var8_7;
-                    }
-                    var8_7 = 0;
-                    while (var8_7 < 6) {
-                        var1_1.grandExchangeQuantities[var8_7] = var2_2.readInt();
-                        ++var8_7;
-                    }
-                    var8_7 = 0;
-                    while (var8_7 < 6) {
-                        var1_1.grandExchangeUnitPrices[var8_7] = var2_2.readInt();
-                        ++var8_7;
-                    }
-                    var8_7 = 0;
-                    while (var8_7 < 6) {
-                        var1_1.grandExchangeCancelledFlags[var8_7] = var2_2.readBoolean();
-                        ++var8_7;
-                    }
-                    var8_7 = 0;
-                    while (var8_7 < 6) {
-                        var1_1.grandExchangeCompletedQuantities[var8_7] = var2_2.readInt();
-                        ++var8_7;
-                    }
-                    var8_7 = 0;
-                    while (var8_7 < 6) {
-                        var1_1.grandExchangeTotalPrices[var8_7] = var2_2.readInt();
-                        ++var8_7;
-                    }
-                    var8_7 = 0;
-                    while (var8_7 < 6) {
-                        var1_1.grandExchangePrimaryCollectAmounts[var8_7] = var2_2.readInt();
-                        ++var8_7;
-                    }
-                    var8_7 = 0;
-                    while (var8_7 < 6) {
-                        var1_1.grandExchangeSecondaryCollectAmounts[var8_7] = var2_2.readInt();
-                        ++var8_7;
-                    }
-                    var8_7 = 0;
-                    while (var8_7 < 6) {
-                        var1_1.grandExchangeFinishMessagePending[var8_7] = var2_2.readBoolean();
-                        ++var8_7;
-                    }
-                }
-                if (var3_3 >= 15) {
-                    var1_1.getTelekineticTheatreController().pizazzPoints = var2_2.readInt();
-                    var1_1.getEnchantmentChamberController().pizazzPoints = var2_2.readInt();
-                    var1_1.getAlchemistPlaygroundController().pizazzPoints = var2_2.readInt();
-                    var1_1.getCreatureGraveyardController().pizazzPoints = var2_2.readInt();
-                    var1_1.bonesToPeachesUnlocked = var2_2.readBoolean();
-                    var1_1.getTelekineticTheatreController().mazeIndex = var2_2.readByte();
-                    var1_1.getTelekineticTheatreController().mazeSolved = var2_2.readBoolean();
-                    var1_1.getTelekineticTheatreController().consecutiveMazesSolved = var2_2.readByte();
-                }
-                if (var3_3 >= 16) {
-                    var1_1.barrowsRewardPotential = var2_2.readInt();
-                }
-                if (var3_3 >= 18) {
-                    var1_1.gameMode = var2_2.readByte();
-                }
-                if (var3_3 >= 19) {
-                    var1_1.barrowsRunsCompleted = var2_2.readInt();
-                }
-                if (var3_3 >= 21) {
-                    var1_1.godWarsLastAltarBlessingMillis = var2_2.readLong();
-                    var1_1.ep[GodWarsDungeonManager.ropeShortcutConfigId] = var2_2.readInt();
-                    var8_7 = 0;
-                    while (var8_7 < var1_1.godWarsKillCounts.length) {
-                        var1_1.godWarsKillCounts[var8_7] = var2_2.readInt();
-                        ++var8_7;
-                    }
-                }
-                if (var3_3 >= 22) {
-                    var1_1.craftingThreadUseCount = var2_2.readByte();
-                }
-                if (var3_3 >= 24) {
-                    var1_1.membershipExpiresMillis = var2_2.readLong();
-                    var1_1.l = var2_2.readByte();
-                }
-                if (var3_3 >= 25) {
-                    var1_1.ep[33] = var2_2.readInt();
-                }
-                if (var3_3 >= 26) {
-                    var1_1.savedCacheVersion = var2_2.readUnsignedShort();
-                    CacheCoordinateTranslator.translateSavedDungeonPosition(var1_1);
-                }
-                if (var3_3 >= 29) {
-                    var1_1.godBookPageFlags = var2_2.readInt();
-                }
-                if (var3_3 >= 30) {
-                    var1_1.swampCaveRopeAttached = var2_2.readBoolean();
-                    var1_1.lampOilStillFilled = var2_2.readBoolean();
-                    var1_1.enterTheAbyssMiniquestState = var2_2.readInt();
-                }
-                if (var3_3 >= 20) {
-                    v9 = var2_2.readBoolean();
-                    var8_7 = (int)v9;
-                    if (v9) {
-                        var2_2.readByte();
-                        var1_1.currentBotTaskTypeId = var2_2.readByte();
-                        var1_1.currentBotTaskIndex = var2_2.readInt();
-                        var1_1.deferredBotTaskTypeId = var2_2.readByte();
-                        var1_1.deferredBotTaskIndex = var2_2.readInt();
-                        var1_1.botTaskState = var2_2.readUTF();
-                        v10 = var2_2.readByte();
-                        var9_8 = v10;
-                        if (v10 > 0) {
-                            var1_1.botTaskRequiredItems = new ItemStack[var9_8];
-                            var10_11 = 0;
-                            while (var10_11 < var9_8) {
-                                var11_13 = var2_2.readInt();
-                                var12_18 = var2_2.readInt();
-                                var1_1.botTaskRequiredItems[var10_11] = new ItemStack(var11_13, var12_18);
-                                ++var10_11;
-                            }
-                        }
-                        var1_1.botFoodItemId = var2_2.readInt();
-                        var1_1.botPathSegmentIndex = var2_2.readByte();
-                        var1_1.botPathWaypointIndex = var2_2.readByte();
-                        var1_1.savedWorldRouteReversed = var2_2.readBoolean();
-                        var1_1.botTaskSavedElapsedMillis = var2_2.readLong();
-                        var1_1.botTaskDurationMinutes = var2_2.readByte();
-                        var1_1.savedWorldRouteIndex = var2_2.readByte();
-                        var1_1.tradeAdvertMode = var2_2.readByte();
-                        var1_1.botAdvertItemId = var2_2.readInt();
-                        var1_1.tradeAdvertQuantityRemaining = var2_2.readInt();
-                        var1_1.tradeAdvertUnitPrice = var2_2.readInt();
-                        var1_1.tradeAdvertScam = var2_2.readBoolean();
-                        var1_1.tradeAdvertVariableQuantity = var2_2.readBoolean();
-                        var1_1.tradeAdvertLastOfferAmount = var2_2.readInt();
-                        var1_1.botShopBuyMode = var2_2.readByte();
-                        var1_1.botTaskItemId = var2_2.readInt();
-                        var1_1.botShopItemAmount = var2_2.readInt();
-                        var10_12 = var2_2.readByte();
-                        var11_13 = 0;
-                        while (var11_13 < var10_12) {
-                            var12_19 = var2_2.readInt();
-                            var1_1.botShopSellItemIds.add(var12_19);
-                            ++var11_13;
-                        }
-                        var11_13 = var2_2.readByte();
-                        var12_20 = 0;
-                        while (var12_20 < var11_13) {
-                            var13_22 = var2_2.readInt();
-                            var1_1.botCombatLoadoutItemIds.add(var13_22);
-                            ++var12_20;
-                        }
-                        var1_1.botCombatStyle = var2_2.readByte();
-                        var1_1.botSkillTargetSkillId = var2_2.readByte();
-                        var1_1.botSkillTargetLevel = var2_2.readByte();
-                        var1_1.be = var2_2.readByte();
-                        var1_1.bf = var2_2.readByte();
-                        var1_1.bg = var2_2.readByte();
-                        var1_1.bh = var2_2.readByte();
-                        var1_1.botCompletionItemId = var2_2.readInt();
-                        var1_1.botCompletionItemAmount = var2_2.readInt();
-                        var1_1.bk = var2_2.readInt();
-                        var1_1.bl = var2_2.readInt();
-                        var1_1.bm = var2_2.readInt();
-                        var1_1.bn = var2_2.readInt();
-                        var1_1.botTaskReturnToBankRequested = var2_2.readBoolean();
-                        var2_2.readBoolean();
-                        var2_2.readBoolean();
-                        var2_2.readBoolean();
-                        var2_2.readBoolean();
-                        var2_2.readBoolean();
-                        var1_1.botElementalSpellIndex = var2_2.readByte();
-                        var2_2.readByte();
-                        var2_2.readByte();
-                        var2_2.readByte();
-                        var2_2.readByte();
-                        var2_2.readInt();
-                        var2_2.readInt();
-                        var2_2.readInt();
-                        var2_2.readInt();
-                        var2_2.readInt();
-                        var2_2.readUTF();
-                        var2_2.readUTF();
-                        var2_2.readUTF();
-                        var2_2.readUTF();
-                        var2_2.readUTF();
-                    }
-                }
-            }
-            AppearancePacketHandler.validateAppearance(var1_1);
-            if (!var0.equals("./data/characters/")) {
-                var1_1.dQ = true;
-                GameplayHelper.appendLogLine(String.valueOf(System.currentTimeMillis()) + "\u00a7" + var1_1.getUsername() + "\u00a7" + var1_1.lastSavedMillis, "restored");
-            }
-            var2_2.close();
-            if (Server.getInstance() != null) {
-                Server.getInstance().queueLogin(var1_1);
-            }
+        CharacterFileRecord record = CharacterFileManager.readCharacterFileRecord(path, player.getUsername(), true);
+        if (record == null) {
+            System.out.println("Account not loading: " + player);
             return;
         }
-        catch (IOException v11) {
-            var2_2 = v11;
-            v11.printStackTrace();
-            System.out.println("Account not loading: " + var1_1);
-            return;
+        CharacterFileManager.applyCharacterFileRecordToPlayer(record, player);
+        AppearancePacketHandler.validateAppearance(player);
+        if (!path.equals("./data/characters/")) {
+            player.dQ = true;
+            GameplayHelper.appendLogLine(String.valueOf(System.currentTimeMillis()) + "\u00a7" + player.getUsername() + "\u00a7" + player.lastSavedMillis, "restored");
+        }
+        if (Server.getInstance() != null) {
+            Server.getInstance().queueLogin(player);
         }
     }
-}
 
+    private static void applyCharacterFileRecordToPlayer(CharacterFileRecord record, Player player) {
+        player.setUsername(record.username);
+        player.setPassword(record.password);
+        player.lastLoginHostAddress = record.hostAddress;
+        player.setPlayerRights(record.playerRights);
+        player.setProfileString1(record.profileString1);
+        player.setProfileString2(record.profileString2);
+        player.lastSavedMillis = record.lastSavedMillis;
+        player.totalPlaytimeMillis = record.totalPlayTimeMillis;
+        player.createdAtMillis = record.createdAtMillis;
+        player.loginRestrictionExempt = record.loginRestrictionExempt;
+        player.setMemberFlag(record.memberFlag);
+        player.setDonatorPoints(record.donatorPoints);
+        player.getPosition().setX(record.x);
+        player.getPosition().setPreviousX(record.x);
+        player.getPosition().setY(record.y);
+        player.getPosition().setPreviousY(record.y + 1);
+        player.getPosition().setPlane(record.plane);
+        player.setGender(record.gender);
+        player.npcKillCount = record.npcKillCount;
+        player.playerKillCount = record.playerKillCount;
+        player.deathCount = record.deathCount;
+        player.easyCluesCompleted = record.easyCluesCompleted;
+        player.mediumCluesCompleted = record.mediumCluesCompleted;
+        player.hardCluesCompleted = record.hardCluesCompleted;
+        player.soldItemsValue = record.soldItemsValue;
+        player.boughtItemsValue = record.boughtItemsValue;
+        player.duelWins = record.duelWins;
+        player.duelLosses = record.duelLosses;
+        player.legacyQuestPoints = record.legacyQuestPoints;
+        player.setAutoRetaliate(record.autoRetaliate);
+        player.setFightMode(record.fightMode);
+        player.setBrightness(record.brightness);
+        player.setMouseButtons(record.mouseButtons);
+        player.setPublicChatEffects(record.publicChatEffects);
+        player.setSplitPrivateChat(record.splitPrivateChat);
+        player.setAcceptAid(record.acceptAid);
+        player.setMusicVolume(record.musicVolume);
+        player.setEffectVolume(record.effectVolume);
+        player.setSpecialEnergy(record.specialEnergy);
+        player.getBankPinManager().setChangingPin(record.changingBankPin);
+        player.getBankPinManager().setDeletingPin(record.deletingBankPin);
+        player.getBankPinManager().setPinAppendYear(record.pinAppendYear);
+        player.getBankPinManager().setPinAppendDate(record.pinAppendDate);
+        player.setBindingNecklaceCharge(record.bindingNecklaceCharge);
+        player.setRingOfForgingLife(record.ringOfForgingLife);
+        player.setRingOfRecoilLife(record.ringOfRecoilLife);
+        if (record.skullTimer > 0) {
+            player.addPvpCombatReference(player, record.skullTimer);
+        }
+        player.setRunEnergyRaw(record.runEnergyRaw);
+        player.getMovementQueue().setRunning(record.running);
+        CharacterFileManager.copy(record.currentPin, player.getBankPinManager().getCurrentPin());
+        CharacterFileManager.copy(record.pendingPin, player.getBankPinManager().getPendingPin());
+        int index = 0;
+        while (index < record.essencePouchAmounts.length) {
+            player.setEssencePouchAmount(index, record.essencePouchAmounts[index]);
+            ++index;
+        }
+        CharacterFileManager.copy(record.appearanceParts, player.getAppearanceParts());
+        CharacterFileManager.copy(record.appearanceColors, player.getAppearanceColors());
+        CharacterFileManager.copy(record.currentLevels, player.getSkillManager().getCurrentLevels());
+        CharacterFileManager.copyLongToDouble(record.skillExperience, player.getSkillManager().getExperience());
+        index = 0;
+        while (index < record.inventoryItems.length) {
+            ItemStack itemStack = CharacterFileManager.normalizeLoadedItem(record.inventoryItems[index], true);
+            if (itemStack != null) {
+                player.getInventoryManager().getContainer().setItem(index, itemStack);
+            }
+            ++index;
+        }
+        index = 0;
+        while (index < record.equipmentItems.length) {
+            ItemStack itemStack = CharacterFileManager.normalizeLoadedItem(record.equipmentItems[index], false);
+            if (itemStack != null) {
+                player.getEquipmentManager().getContainer().setItem(index, itemStack);
+            }
+            ++index;
+        }
+        CharacterFileManager.applyBankTabs(record, player);
+        CharacterFileManager.copy(record.friendsList, player.getFriendsList());
+        CharacterFileManager.copy(record.ignoreList, player.getIgnoreList());
+        CharacterFileManager.copy(record.queuedLoginItemIds, player.getQueuedLoginItemIds());
+        CharacterFileManager.copy(record.queuedLoginItemAmounts, player.getQueuedLoginItemAmounts());
+        player.setAbyssMageNpcId(record.abyssMageNpcId);
+        player.setMuteExpires(record.muteExpires);
+        player.setBanExpires(record.banExpires);
+        index = 0;
+        while (index < record.barrowsKilledBrothers.length) {
+            player.setBarrowsBrotherKilled(index, record.barrowsKilledBrothers[index]);
+            ++index;
+        }
+        player.setBarrowsKillCount(record.barrowsKillCount);
+        player.setBarrowsTargetBrotherIndex(record.barrowsTargetBrotherIndex);
+        player.getPoisonImmunityTimer().setDelayTicks(record.poisonImmunityTicks);
+        player.getPoisonImmunityTimer().reset();
+        player.getAntifireTimer().setDelayTicks(record.antifireTicks);
+        player.getAntifireTimer().reset();
+        player.getTeleblockTimer().setDelayTicks(record.teleblockTicks);
+        player.getTeleblockTimer().reset();
+        player.setPoisonDamage(record.poisonDamage);
+        CharacterFileManager.applyFarmingRecord(record, player);
+        player.getSlayerManager().slayerMasterId = record.slayerMasterId;
+        player.getSlayerManager().slayerTaskName = record.slayerTaskName;
+        player.getSlayerManager().taskAmount = record.slayerTaskAmount;
+        player.setSpellbook(record.usingAncients ? Spellbook.ANCIENT : Spellbook.MODERN);
+        player.setBrimhavenOpen(record.brimhavenOpen);
+        player.killedClueAttacker = record.killedClueAttacker;
+        index = 0;
+        while (index < CharacterFileManager.musicUnlockConfigIds.length) {
+            player.ep[CharacterFileManager.musicUnlockConfigIds[index]] = record.configStates[CharacterFileManager.musicUnlockConfigIds[index]];
+            ++index;
+        }
+        index = 0;
+        while (index < QuestDefinition.questStateCapacity) {
+            player.setQuestState(index, record.questProgress[index]);
+            ++index;
+        }
+        player.dv = (byte)record.gangAffiliation;
+        player.bO = (byte)record.piratesTreasureBananaCrateCount;
+        player.D = record.treasureTrailNavigationTaught;
+        player.setCoalTruckCoalCount(record.coalTruckAmount);
+        player.treasureTrailStepCount = (byte)record.treasureTrailStepCount;
+        player.en = record.cluePuzzleSolved;
+        player.ee = (byte)record.skeletonSkinUnlocked;
+        player.setBossPetUnlockFlags(record.petUnlockFlags);
+        player.barrowsDoorPuzzleSolved = record.barrowsDoorPuzzleSolved;
+        player.barrowsChestOpened = record.barrowsChestOpened;
+        player.ep[452] = record.configStates[452];
+        player.flourMillHopperGrainCount = (byte)record.flourMillHopperGrainCount;
+        player.ep[FlourMillHandler.flourBinConfigId] = record.configStates[FlourMillHandler.flourBinConfigId];
+        player.bK = record.questRandomSeed;
+        CharacterFileManager.copy(record.questBitFlags, player.questProgressFlags);
+        CharacterFileManager.copy(record.questHookStates, player.questHookStates);
+        player.setPublicChatMode(record.publicChatMode);
+        player.setPrivateChatMode(record.privateChatMode);
+        player.setTradeMode(record.tradeMode);
+        player.em = record.ck;
+        player.bY = record.cl;
+        player.ca = record.cm;
+        player.bZ = record.cn;
+        player.familyCrestGauntletItemId = record.familyCrestGauntletItemId;
+        player.mageArenaFlamesOfZamorakCastsRemaining = record.mageArenaFlamesOfZamorakCastsRemaining;
+        player.mageArenaSaradominStrikeCastsRemaining = record.mageArenaSaradominStrikeCastsRemaining;
+        player.mageArenaClawsOfGuthixCastsRemaining = record.mageArenaClawsOfGuthixCastsRemaining;
+        player.mageArenaProgressStage = (byte)record.mageArenaProgressStage;
+        CharacterFileManager.copy(record.grandExchangeSellOfferFlags, player.grandExchangeSellOfferFlags);
+        CharacterFileManager.copy(record.grandExchangeItemIds, player.grandExchangeItemIds);
+        CharacterFileManager.copy(record.grandExchangeQuantities, player.grandExchangeQuantities);
+        CharacterFileManager.copy(record.grandExchangeUnitPrices, player.grandExchangeUnitPrices);
+        CharacterFileManager.copy(record.grandExchangeCancelledFlags, player.grandExchangeCancelledFlags);
+        CharacterFileManager.copy(record.grandExchangeCompletedQuantities, player.grandExchangeCompletedQuantities);
+        CharacterFileManager.copy(record.grandExchangeTotalPrices, player.grandExchangeTotalPrices);
+        CharacterFileManager.copy(record.grandExchangePrimaryCollectAmounts, player.grandExchangePrimaryCollectAmounts);
+        CharacterFileManager.copy(record.grandExchangeSecondaryCollectAmounts, player.grandExchangeSecondaryCollectAmounts);
+        CharacterFileManager.copy(record.grandExchangeFinishMessagePending, player.grandExchangeFinishMessagePending);
+        player.getTelekineticTheatreController().pizazzPoints = record.telekineticPizazzPoints;
+        player.getEnchantmentChamberController().pizazzPoints = record.enchantmentPizazzPoints;
+        player.getAlchemistPlaygroundController().pizazzPoints = record.alchemistPizazzPoints;
+        player.getCreatureGraveyardController().pizazzPoints = record.graveyardPizazzPoints;
+        player.bonesToPeachesUnlocked = record.bonesToPeachesUnlocked;
+        player.getTelekineticTheatreController().mazeIndex = (byte)record.telekineticMazeIndex;
+        player.getTelekineticTheatreController().mazeSolved = record.telekineticMazeSolved;
+        player.getTelekineticTheatreController().consecutiveMazesSolved = (byte)record.telekineticConsecutiveMazesSolved;
+        player.barrowsRewardPotential = record.barrowsRewardPotential;
+        player.gameMode = (byte)record.gameMode;
+        player.barrowsRunsCompleted = record.barrowsRunsCompleted;
+        player.godWarsLastAltarBlessingMillis = record.godWarsLastAltarBlessingMillis;
+        player.ep[GodWarsDungeonManager.ropeShortcutConfigId] = record.configStates[GodWarsDungeonManager.ropeShortcutConfigId];
+        CharacterFileManager.copy(record.godWarsKillCounts, player.godWarsKillCounts);
+        player.craftingThreadUseCount = record.craftingThreadUseCount;
+        player.membershipExpiresMillis = record.membershipExpiresMillis;
+        player.l = (byte)record.dx;
+        player.ep[33] = record.configStates[33];
+        player.savedCacheVersion = record.savedCacheVersion;
+        if (record.savedCacheVersion > 0) {
+            CacheCoordinateTranslator.translateSavedDungeonPosition(player);
+        }
+        player.godBookPageFlags = record.godBookPageFlags;
+        player.swampCaveRopeAttached = record.swampCaveRopeAttached;
+        player.lampOilStillFilled = record.lampOilStillFilled;
+        player.enterTheAbyssMiniquestState = record.enterTheAbyssMiniquestState;
+        CharacterFileManager.applyBotRecord(record, player);
+    }
+
+    private static ItemStack normalizeLoadedItem(ItemStack itemStack, boolean translateOldTreasureTrailIds) {
+        if (itemStack == null || itemStack.getId() >= 11883 || itemStack.getAmount() <= 0) {
+            return null;
+        }
+        if (translateOldTreasureTrailIds && (itemStack.getId() == 2696 || itemStack.getId() == 2699 || itemStack.getId() == 3510)) {
+            return new ItemStack(itemStack.getId() - 1, itemStack.getAmount(), itemStack.getMetadata());
+        }
+        return itemStack;
+    }
+
+    private static void applyBankTabs(CharacterFileRecord record, Player player) {
+        int tabIndex = 0;
+        while (tabIndex < record.bankTabs.size()) {
+            CharacterFileBankTab bankTab = (CharacterFileBankTab)record.bankTabs.get(tabIndex);
+            ArrayList items = bankTab.getItems();
+            int slot = 0;
+            while (slot < items.size()) {
+                ItemStack itemStack = CharacterFileManager.normalizeLoadedItem((ItemStack)items.get(slot), true);
+                if (itemStack != null) {
+                    player.getBankContainer().setTabItem(slot, itemStack, tabIndex);
+                }
+                ++slot;
+            }
+            ++tabIndex;
+        }
+    }
+
+    private static void applyFarmingRecord(CharacterFileRecord record, Player player) {
+        AllotmentPatchManager allotment = player.getAllotmentPatchManager();
+        CharacterFileManager.copy(record.allotmentGrowthStages, allotment.growthStages);
+        CharacterFileManager.copy(record.allotmentCropIds, allotment.cropIds);
+        CharacterFileManager.copy(record.allotmentHarvestAmounts, allotment.harvestAmounts);
+        CharacterFileManager.copy(record.allotmentPatchStates, allotment.patchStates);
+        CharacterFileManager.copy(record.allotmentLastUpdateTicks, allotment.lastUpdateTicks);
+        CharacterFileManager.copy(record.allotmentDiseaseChanceMultipliers, allotment.diseaseChanceMultipliers);
+        CharacterFileManager.copy(record.allotmentProtectionFlags, allotment.protectionFlags);
+        BushPatchManager bush = player.getBushPatchManager();
+        CharacterFileManager.copy(record.bushGrowthStages, bush.growthStages);
+        CharacterFileManager.copy(record.bushCropIds, bush.cropIds);
+        CharacterFileManager.copy(record.bushPatchStates, bush.patchStates);
+        CharacterFileManager.copy(record.bushLastUpdateTicks, bush.lastUpdateTicks);
+        CharacterFileManager.copy(record.bushDiseaseChanceMultipliers, bush.diseaseChanceMultipliers);
+        CharacterFileManager.copy(record.bushSavedFlags, bush.protectionFlags);
+        FlowerPatchManager flower = player.getFlowerPatchManager();
+        CharacterFileManager.copy(record.flowerGrowthStages, flower.growthStages);
+        CharacterFileManager.copy(record.flowerCropIds, flower.cropIds);
+        CharacterFileManager.copy(record.flowerPatchStates, flower.patchStates);
+        CharacterFileManager.copy(record.flowerLastUpdateTicks, flower.lastUpdateTicks);
+        CharacterFileManager.copy(record.flowerDiseaseChanceMultipliers, flower.diseaseChanceMultipliers);
+        FruitTreePatchManager fruitTree = player.getFruitTreePatchManager();
+        CharacterFileManager.copy(record.fruitTreeGrowthStages, fruitTree.growthStages);
+        CharacterFileManager.copy(record.fruitTreeIds, fruitTree.treeIds);
+        CharacterFileManager.copy(record.fruitTreePatchStates, fruitTree.patchStates);
+        CharacterFileManager.copy(record.fruitTreeLastUpdateTicks, fruitTree.lastUpdateTicks);
+        CharacterFileManager.copy(record.fruitTreeDiseaseChanceMultipliers, fruitTree.diseaseChanceMultipliers);
+        CharacterFileManager.copy(record.fruitTreeSavedFlags, fruitTree.protectionFlags);
+        HerbPatchManager herb = player.getHerbPatchManager();
+        CharacterFileManager.copy(record.herbGrowthStages, herb.growthStages);
+        CharacterFileManager.copy(record.herbCropIds, herb.cropIds);
+        CharacterFileManager.copy(record.herbHarvestAmounts, herb.harvestAmounts);
+        CharacterFileManager.copy(record.herbPatchStates, herb.patchStates);
+        CharacterFileManager.copy(record.herbLastUpdateTicks, herb.lastUpdateTicks);
+        CharacterFileManager.copy(record.herbDiseaseChanceMultipliers, herb.diseaseChanceMultipliers);
+        HopsPatchManager hops = player.getHopsPatchManager();
+        CharacterFileManager.copy(record.hopsGrowthStages, hops.growthStages);
+        CharacterFileManager.copy(record.hopsCropIds, hops.cropIds);
+        CharacterFileManager.copy(record.hopsHarvestAmounts, hops.harvestAmounts);
+        CharacterFileManager.copy(record.hopsPatchStates, hops.patchStates);
+        CharacterFileManager.copy(record.hopsLastUpdateTicks, hops.lastUpdateTicks);
+        CharacterFileManager.copy(record.hopsDiseaseChanceMultipliers, hops.diseaseChanceMultipliers);
+        CharacterFileManager.copy(record.hopsProtectionFlags, hops.protectionFlags);
+        SpecialTreePatchManager specialTree = player.getSpecialTreePatchManager();
+        CharacterFileManager.copy(record.specialTreeGrowthStages, specialTree.growthStages);
+        CharacterFileManager.copy(record.specialTreeIds, specialTree.treeIds);
+        CharacterFileManager.copy(record.specialTreePatchStates, specialTree.patchStates);
+        CharacterFileManager.copy(record.specialTreeLastUpdateTicks, specialTree.lastUpdateTicks);
+        CharacterFileManager.copy(record.specialTreeDiseaseChanceMultipliers, specialTree.diseaseChanceMultipliers);
+        SpecialCropPatchManager specialCrop = player.getSpecialCropPatchManager();
+        CharacterFileManager.copy(record.specialCropGrowthStages, specialCrop.growthStages);
+        CharacterFileManager.copy(record.specialCropIds, specialCrop.cropIds);
+        CharacterFileManager.copy(record.specialCropPatchStates, specialCrop.patchStates);
+        CharacterFileManager.copy(record.specialCropLastUpdateTicks, specialCrop.lastUpdateTicks);
+        CharacterFileManager.copy(record.specialCropDiseaseChanceMultipliers, specialCrop.diseaseChanceMultipliers);
+        TreePatchManager tree = player.getTreePatchManager();
+        CharacterFileManager.copy(record.treeGrowthStages, tree.growthStages);
+        CharacterFileManager.copy(record.treeIds, tree.treeIds);
+        CharacterFileManager.copy(record.treePatchData, tree.patchData);
+        CharacterFileManager.copy(record.treePatchStates, tree.patchStates);
+        CharacterFileManager.copy(record.treeLastUpdateTicks, tree.lastUpdateTicks);
+        CharacterFileManager.copy(record.treeDiseaseChanceMultipliers, tree.diseaseChanceMultipliers);
+        CharacterFileManager.copy(record.treeSavedFlags, tree.protectionFlags);
+        CompostBinManager compost = player.getCompostBinManager();
+        CharacterFileManager.copy(record.compostBinStates, compost.states);
+        CharacterFileManager.copy(record.compostBinLastUpdateTicks, compost.lastUpdateTicks);
+        CharacterFileManager.copy(record.compostBinItemIds, compost.itemIds);
+        FarmingToolStore toolStore = player.getFarmingToolStore();
+        CharacterFileManager.copy(record.farmingToolStoreAmounts, toolStore.storedAmounts);
+    }
+
+    private static void applyBotRecord(CharacterFileRecord record, Player player) {
+        player.botEnabled = record.botEnabled;
+        if (!record.botEnabled) {
+            return;
+        }
+        player.botMode = record.botMode;
+        player.currentBotTaskTypeId = record.currentBotTaskTypeId;
+        player.currentBotTaskIndex = record.currentBotTaskIndex;
+        player.deferredBotTaskTypeId = record.deferredBotTaskTypeId;
+        player.deferredBotTaskIndex = record.deferredBotTaskIndex;
+        player.botTaskState = record.botTaskState;
+        player.botTaskRequiredItems = record.botTaskRequiredItems;
+        player.botFoodItemId = record.botFoodItemId;
+        player.botPathSegmentIndex = record.botPathSegmentIndex;
+        player.botPathWaypointIndex = record.botPathWaypointIndex;
+        player.savedWorldRouteReversed = record.savedWorldRouteReversed;
+        player.botTaskSavedElapsedMillis = record.botTaskSavedElapsedMillis;
+        player.botTaskDurationMinutes = record.botTaskDurationMinutes;
+        player.savedWorldRouteIndex = record.savedWorldRouteIndex;
+        player.tradeAdvertMode = record.tradeAdvertMode;
+        player.botAdvertItemId = record.botAdvertItemId;
+        player.tradeAdvertQuantityRemaining = record.tradeAdvertQuantityRemaining;
+        player.tradeAdvertUnitPrice = record.tradeAdvertUnitPrice;
+        player.tradeAdvertScam = record.tradeAdvertScam;
+        player.tradeAdvertVariableQuantity = record.tradeAdvertVariableQuantity;
+        player.tradeAdvertLastOfferAmount = record.tradeAdvertLastOfferAmount;
+        player.botShopBuyMode = record.botShopBuyMode;
+        player.botTaskItemId = record.botTaskItemId;
+        player.botShopItemAmount = record.botShopItemAmount;
+        CharacterFileManager.copyList(record.botShopSellItemIds, player.botShopSellItemIds);
+        CharacterFileManager.copyList(record.botCombatLoadoutItemIds, player.botCombatLoadoutItemIds);
+        player.botCombatStyle = record.botCombatStyle;
+        player.botSkillTargetSkillId = record.botSkillTargetSkillId;
+        player.botSkillTargetLevel = record.botSkillTargetLevel;
+        player.be = record.cN;
+        player.bf = record.cM;
+        player.bg = record.cL;
+        player.bh = record.cK;
+        player.botCompletionItemId = record.botCompletionItemId;
+        player.botCompletionItemAmount = record.botCompletionItemAmount;
+        player.bk = record.cH;
+        player.bl = record.cG;
+        player.bm = record.cF;
+        player.bn = record.cE;
+        player.botTaskReturnToBankRequested = record.botTaskReturnToBankRequested;
+        player.botElementalSpellIndex = (byte)record.botElementalSpellIndex;
+    }
+
+    private static void copy(int[] source, int[] target) {
+        int index = 0;
+        while (index < source.length && index < target.length) {
+            target[index] = source[index];
+            ++index;
+        }
+    }
+
+    private static void copy(long[] source, long[] target) {
+        int index = 0;
+        while (index < source.length && index < target.length) {
+            target[index] = source[index];
+            ++index;
+        }
+    }
+
+    private static void copy(double[] source, double[] target) {
+        int index = 0;
+        while (index < source.length && index < target.length) {
+            target[index] = source[index];
+            ++index;
+        }
+    }
+
+    private static void copy(boolean[] source, boolean[] target) {
+        int index = 0;
+        while (index < source.length && index < target.length) {
+            target[index] = source[index];
+            ++index;
+        }
+    }
+
+    private static void copyLongToInt(long[] source, int[] target) {
+        int index = 0;
+        while (index < source.length && index < target.length) {
+            target[index] = (int)source[index];
+            ++index;
+        }
+    }
+
+    private static void copyLongToDouble(long[] source, double[] target) {
+        int index = 0;
+        while (index < source.length && index < target.length) {
+            target[index] = source[index];
+            ++index;
+        }
+    }
+
+    private static void copyList(ArrayList source, ArrayList target) {
+        target.clear();
+        if (source != null) {
+            target.addAll(source);
+        }
+    }
+
+
+}

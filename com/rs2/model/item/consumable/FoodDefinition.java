@@ -101,23 +101,20 @@ public enum FoodDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private FoodDefinition(int[] nArray, boolean bl) {
-        void var5_4;
-        this.healAmount = (int)nArray;
-        this.replacementItemId = bl ? 1 : 0;
-        this.itemIds = var5_4;
+    private FoodDefinition(int n2, int n3, int[] nArray, boolean bl) {
+        this.healAmount = n2;
+        this.replacementItemId = n3;
+        this.itemIds = nArray;
     }
 
     /*
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private FoodDefinition(int[] nArray) {
-        void var5_3;
-        void var4_2;
-        this.healAmount = (int)nArray;
-        this.replacementItemId = var4_2;
-        this.itemIds = var5_3;
+    private FoodDefinition(int n2, int n3, int[] nArray) {
+        this.healAmount = n2;
+        this.replacementItemId = n3;
+        this.itemIds = nArray;
     }
 
     public final int getHealAmount() {

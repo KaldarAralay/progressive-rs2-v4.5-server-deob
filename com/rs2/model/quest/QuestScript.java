@@ -18,9 +18,8 @@ extends QuestHook {
         super(n);
     }
 
-    public String[] buildQuestJournal(Player stringArray, int n) {
-        stringArray = new String[]{"Quest not added yet!"};
-        return stringArray;
+    public String[] buildQuestJournal(Player player, int n) {
+        return new String[]{"Quest not added yet!"};
     }
 
     public final int getQuestPointReward() {

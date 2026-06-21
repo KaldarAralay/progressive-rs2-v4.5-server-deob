@@ -13,7 +13,7 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 
-final class ItemOnNpcTask
+public final class ItemOnNpcTask
 extends TickTask {
     private final /* synthetic */ Player player;
     private final /* synthetic */ int actionSequence;
@@ -21,13 +21,13 @@ extends TickTask {
     private final /* synthetic */ int itemId;
     private final /* synthetic */ int itemSlot;
 
-    ItemOnNpcTask(int n, boolean bl, Player player, int n2, Npc npc, int n3, int n4) {
+    public ItemOnNpcTask(int n, boolean bl, Player player, int n2, Npc npc, int n3, int n4) {
+        super(1, true);
         this.player = player;
         this.actionSequence = n2;
         this.npc = npc;
         this.itemId = n3;
         this.itemSlot = n4;
-        super(1, true);
     }
 
     @Override

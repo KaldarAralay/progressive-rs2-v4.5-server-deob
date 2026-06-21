@@ -20,7 +20,7 @@ import java.util.List;
 public class AgilityObstacleHandler {
     private List loadedObjects = new LinkedList();
 
-    public static void a(Player player, int n, int n2, int n3, int n4, int n5, int n6) {
+    public static void startDelayedShortcutMovement(Player player, int n, int n2, int n3, int n4, int n5, int n6) {
         if (!ServerSettings.agilityEnabled) {
             player.packetSender.sendGameMessage("This skill is currently disabled.");
             return;
@@ -33,8 +33,7 @@ public class AgilityObstacleHandler {
      * WARNING - void declaration
      */
     public static void startForcedMovement(Player player, int n, int n2, int n3, int n4, int n5, boolean bl, int n6, int n7) {
-        void var7_8;
-        int n8;
+        int n8 = n7;
         player.setActionLocked(true);
         player.getMovementQueue().clear();
         if (n8 > 0) {
@@ -55,10 +54,10 @@ public class AgilityObstacleHandler {
         int n10 = player.getPosition().getPlane();
         player.forcedMovementActive = true;
         CycleEventHandler.getInstance().schedule(player, new AgilityMovementStepTask(player, n, n2, 1, n4, n3), 1);
-        CycleEventHandler.getInstance().schedule(player, new AgilityMovementFinishTask(player, (int)var7_8, true, n9, n8, n10), n5 + 1);
+        CycleEventHandler.getInstance().schedule(player, new AgilityMovementFinishTask(player, n6, true, n9, n8, n10), n5 + 1);
     }
 
-    public static void a(Player player, int n, int n2, int n3, int n4, int n5, int n6, int n7) {
+    public static void startQueuedObstacleMovement(Player player, int n, int n2, int n3, int n4, int n5, int n6, int n7) {
         if (!ServerSettings.agilityEnabled) {
             player.packetSender.sendGameMessage("This skill is currently disabled.");
             return;

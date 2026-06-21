@@ -49,12 +49,10 @@ public enum FarmingFarmerDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private FarmingFarmerDefinition(String string, String[] stringArray) {
-        void var6_4;
-        void var5_3;
-        this.npcId = (int)string;
-        this.patchType = var5_3;
-        this.patchLabels = var6_4;
+    private FarmingFarmerDefinition(int n2, int n3, String string2, String[] stringArray) {
+        this.npcId = n2;
+        this.patchType = string2;
+        this.patchLabels = stringArray;
     }
 
     public static FarmingFarmerDefinition forNpcId(int n) {

@@ -9,13 +9,13 @@ import com.rs2.model.skill.crafting.armor.CraftedArmorAction;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class CraftedArmorTask
+public final class CraftedArmorTask
 extends CycleEvent {
     private int remainingActions;
     private /* synthetic */ CraftedArmorAction action;
     private final /* synthetic */ int actionSequence;
 
-    CraftedArmorTask(CraftedArmorAction craftedArmorAction, int n) {
+    public CraftedArmorTask(CraftedArmorAction craftedArmorAction, int n) {
         this.action = craftedArmorAction;
         this.actionSequence = n;
         this.remainingActions = craftedArmorAction.recipeQuantity != 0 && !craftedArmorAction.player.botEnabled ? craftedArmorAction.recipeQuantity : craftedArmorAction.requestedQuantity;

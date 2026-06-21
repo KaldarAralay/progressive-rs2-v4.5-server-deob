@@ -7,13 +7,13 @@ import com.rs2.bot.BotPlayer;
 import com.rs2.model.Position;
 import com.rs2.model.task.TickTask;
 
-final class ClanWarsBotHideTask
+public final class ClanWarsBotHideTask
 extends TickTask {
     private final /* synthetic */ BotPlayer botToHide;
 
-    ClanWarsBotHideTask(BotPlayer botPlayer, int n, BotPlayer botPlayer2) {
-        this.botToHide = botPlayer2;
+    public ClanWarsBotHideTask(BotPlayer botPlayer, int n, BotPlayer botPlayer2) {
         super(2);
+        this.botToHide = botPlayer2;
     }
 
     @Override

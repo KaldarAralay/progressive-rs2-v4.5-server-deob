@@ -8,13 +8,13 @@ import com.rs2.model.cutscene.CutsceneStep;
 import com.rs2.model.cutscene.restlessghost.RestlessGhostCutscene;
 import com.rs2.model.item.ItemStack;
 
-final class RestlessGhostCompletionStep
+public final class RestlessGhostCompletionStep
 extends CutsceneStep {
     private /* synthetic */ RestlessGhostCutscene cutscene;
 
-    RestlessGhostCompletionStep(RestlessGhostCutscene restlessGhostCutscene, Cutscene cutscene, int n) {
-        this.cutscene = restlessGhostCutscene;
+    public RestlessGhostCompletionStep(RestlessGhostCutscene restlessGhostCutscene, Cutscene cutscene, int n) {
         super(cutscene, 5);
+        this.cutscene = restlessGhostCutscene;
     }
 
     @Override

@@ -13,7 +13,7 @@ import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.util.GameUtil;
 
-final class TrapDisarmTask
+public final class TrapDisarmTask
 extends CycleEvent {
     private final /* synthetic */ Player player;
     private final /* synthetic */ double experience;
@@ -22,7 +22,7 @@ extends CycleEvent {
     private final /* synthetic */ int objectY;
     private final /* synthetic */ int objectId;
 
-    TrapDisarmTask(Player player, double d, ItemStack[] itemStackArray, int n, int n2, int n3) {
+    public TrapDisarmTask(Player player, double d, ItemStack[] itemStackArray, int n, int n2, int n3) {
         this.player = player;
         this.experience = d;
         this.rewards = itemStackArray;

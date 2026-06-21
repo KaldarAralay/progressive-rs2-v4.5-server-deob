@@ -8,15 +8,15 @@ import com.rs2.model.ground.GroundItem;
 import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 
-final class DropPartyGroundItemPickupTask
+public final class DropPartyGroundItemPickupTask
 extends TickTask {
     private final /* synthetic */ Player participant;
     private final /* synthetic */ GroundItem groundItem;
 
-    DropPartyGroundItemPickupTask(int n, Player player, GroundItem groundItem) {
+    public DropPartyGroundItemPickupTask(int n, Player player, GroundItem groundItem) {
+        super(n);
         this.participant = player;
         this.groundItem = groundItem;
-        super(n);
     }
 
     @Override

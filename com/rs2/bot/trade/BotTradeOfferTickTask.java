@@ -13,13 +13,13 @@ import com.rs2.model.task.TickTask;
 import com.rs2.net.packet.handler.PlayerInteractionPacketHandler;
 import com.rs2.util.GameUtil;
 
-final class BotTradeOfferTickTask
+public final class BotTradeOfferTickTask
 extends TickTask {
     private final /* synthetic */ Player player;
 
-    BotTradeOfferTickTask(int n, Player player) {
-        this.player = player;
+    public BotTradeOfferTickTask(int n, Player player) {
         super(3);
+        this.player = player;
     }
 
     @Override

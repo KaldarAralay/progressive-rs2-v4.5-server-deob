@@ -8,13 +8,13 @@ import com.rs2.model.skill.farming.HerbPatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class HerbCompostTask
+public final class HerbCompostTask
 extends CycleEvent {
     private /* synthetic */ HerbPatchManager manager;
     private final /* synthetic */ HerbPatch patch;
     private final /* synthetic */ int compostItemId;
 
-    HerbCompostTask(HerbPatchManager herbPatchManager, HerbPatch herbPatch, int n) {
+    public HerbCompostTask(HerbPatchManager herbPatchManager, HerbPatch herbPatch, int n) {
         this.manager = herbPatchManager;
         this.patch = herbPatch;
         this.compostItemId = n;

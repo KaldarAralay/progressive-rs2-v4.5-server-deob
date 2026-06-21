@@ -11,12 +11,12 @@ import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.util.GameUtil;
 
-final class SheepShearingTask
+public final class SheepShearingTask
 extends CycleEvent {
     private final /* synthetic */ Player player;
     private final /* synthetic */ Npc sheep;
 
-    SheepShearingTask(Player player, Npc npc) {
+    public SheepShearingTask(Player player, Npc npc) {
         this.player = player;
         this.sheep = npc;
     }

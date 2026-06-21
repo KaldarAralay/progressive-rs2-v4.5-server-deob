@@ -9,9 +9,9 @@ import com.rs2.model.combat.attack.CombatAttack;
 import com.rs2.model.npc.combat.NpcCombatDefinition;
 import com.rs2.model.skill.magic.SpellDefinition;
 
-final class WaterWizardCombatDefinition
+public final class WaterWizardCombatDefinition
 extends NpcCombatDefinition {
-    WaterWizardCombatDefinition() {
+    public WaterWizardCombatDefinition() {
     }
 
     @Override

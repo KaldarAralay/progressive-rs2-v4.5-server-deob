@@ -196,12 +196,12 @@ public final class ProjectileCollisionMap {
         }
     }
 
-    private static void removeAreaCollision(int n, int n2, int n3, int n4, int n5, boolean n6) {
+    private static void removeAreaCollision(int n, int n2, int n3, int n4, int n5, boolean bl) {
         int n7 = 256;
-        if (n6 != 0) {
+        if (bl) {
             n7 = 131328;
         }
-        n6 = n;
+        int n6 = n;
         while (n6 < n + n4) {
             int n8 = n2;
             while (n8 < n2 + n5) {
@@ -262,7 +262,7 @@ public final class ProjectileCollisionMap {
                 n3 = n12;
                 n2 = n11;
                 int n122 = n10;
-                int n13 = 256;
+                n9 = 256;
                 if (n6 != 0) {
                     n9 = 131328;
                 }

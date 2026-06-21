@@ -10,31 +10,31 @@ import com.rs2.model.player.Player;
 import com.rs2.model.skill.magic.MagicSpellAction;
 import com.rs2.model.task.TickTask;
 
-final class DelayedSpellImpactTask
+public final class DelayedSpellImpactTask
 extends TickTask {
-    private /* synthetic */ MagicSpellAction a;
-    private final /* synthetic */ HitDefinition b;
-    private final /* synthetic */ Entity c;
-    private final /* synthetic */ Position d;
+    private /* synthetic */ MagicSpellAction spellAction;
+    private final /* synthetic */ HitDefinition hit;
+    private final /* synthetic */ Entity target;
+    private final /* synthetic */ Position targetPosition;
 
-    DelayedSpellImpactTask(MagicSpellAction magicSpellAction, int n, HitDefinition hitDefinition, Entity entity, Position position) {
-        this.a = magicSpellAction;
-        this.b = hitDefinition;
-        this.c = entity;
-        this.d = position;
+    public DelayedSpellImpactTask(MagicSpellAction magicSpellAction, int n, HitDefinition hitDefinition, Entity entity, Position position) {
         super(n);
+        this.spellAction = magicSpellAction;
+        this.hit = hitDefinition;
+        this.target = entity;
+        this.targetPosition = position;
     }
 
     @Override
     public final void execute() {
-        MagicSpellAction.finishDelayedImpact(this.a, this, this.b);
-        if (this.b.getGraphic() != null) {
-            if (this.c != null) {
-                this.c.getUpdateState().setGraphic(this.b.getGraphic());
+        MagicSpellAction.finishDelayedImpact(this.spellAction, this, this.hit);
+        if (this.hit.getGraphic() != null) {
+            if (this.target != null) {
+                this.target.getUpdateState().setGraphic(this.hit.getGraphic());
                 return;
             }
-            Player player = MagicSpellAction.getPlayer(this.a);
-            player.packetSender.sendStillGraphic(this.b.getGraphic().getId(), this.d, this.b.getGraphic().getPackedDelay());
+            Player player = MagicSpellAction.getPlayer(this.spellAction);
+            player.packetSender.sendStillGraphic(this.hit.getGraphic().getId(), this.targetPosition, this.hit.getGraphic().getPackedDelay());
         }
     }
 }

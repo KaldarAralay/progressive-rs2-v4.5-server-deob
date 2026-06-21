@@ -63,7 +63,7 @@ extends Cutscene {
     }
 
     public static void sendReleaseProjectile(Position position, Position position2, int n) {
-        new WoodcuttingHandler(position, 0, position2, 0, new ProjectileDefinition(605, ProjectileTiming.d)).a();
+        new WoodcuttingHandler(position, 0, position2, 0, new ProjectileDefinition(605, ProjectileTiming.d)).sendProjectileToNearbyPlayers();
     }
 }
 

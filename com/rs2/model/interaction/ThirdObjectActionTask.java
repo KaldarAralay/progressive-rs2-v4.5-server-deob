@@ -14,7 +14,7 @@ import com.rs2.model.skill.SkillActionHelper;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 
-final class ThirdObjectActionTask
+public final class ThirdObjectActionTask
 extends TickTask {
     private final /* synthetic */ Player player;
     private final /* synthetic */ int actionSequence;
@@ -23,14 +23,14 @@ extends TickTask {
     private final /* synthetic */ int objectY;
     private final /* synthetic */ int objectPlane;
 
-    ThirdObjectActionTask(int n, boolean bl, Player player, int n2, int n3, int n4, int n5, int n6) {
+    public ThirdObjectActionTask(int n, boolean bl, Player player, int n2, int n3, int n4, int n5, int n6) {
+        super(1, true);
         this.player = player;
         this.actionSequence = n2;
         this.objectId = n3;
         this.objectX = n4;
         this.objectY = n5;
         this.objectPlane = n6;
-        super(1, true);
     }
 
     @Override

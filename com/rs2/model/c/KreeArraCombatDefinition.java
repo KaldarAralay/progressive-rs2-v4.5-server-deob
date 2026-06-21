@@ -14,9 +14,9 @@ import com.rs2.model.combat.attack.CombatAttack;
 import com.rs2.model.npc.combat.NpcCombatDefinition;
 import com.rs2.model.skill.magic.SpellDefinition;
 
-final class KreeArraCombatDefinition
+public final class KreeArraCombatDefinition
 extends NpcCombatDefinition {
-    KreeArraCombatDefinition() {
+    public KreeArraCombatDefinition() {
     }
 
     @Override

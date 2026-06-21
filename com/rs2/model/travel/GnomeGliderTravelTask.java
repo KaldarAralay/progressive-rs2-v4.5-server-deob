@@ -8,12 +8,12 @@ import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.model.travel.GnomeGliderDestination;
 
-final class GnomeGliderTravelTask
+public final class GnomeGliderTravelTask
 extends CycleEvent {
     private final /* synthetic */ Player player;
     private final /* synthetic */ GnomeGliderDestination destination;
 
-    GnomeGliderTravelTask(Player player, GnomeGliderDestination gnomeGliderDestination) {
+    public GnomeGliderTravelTask(Player player, GnomeGliderDestination gnomeGliderDestination) {
         this.player = player;
         this.destination = gnomeGliderDestination;
     }

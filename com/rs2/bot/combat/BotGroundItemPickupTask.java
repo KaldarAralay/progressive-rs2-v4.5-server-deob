@@ -11,19 +11,19 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.path.PathFinder;
 
-final class BotGroundItemPickupTask
+public final class BotGroundItemPickupTask
 extends TickTask {
     private final /* synthetic */ Player player;
     private final /* synthetic */ Position itemPosition;
     private final /* synthetic */ int itemId;
     private final /* synthetic */ GroundItem groundItem;
 
-    BotGroundItemPickupTask(int n, Player player, Position position, int n2, GroundItem groundItem) {
+    public BotGroundItemPickupTask(int n, Player player, Position position, int n2, GroundItem groundItem) {
+        super(2);
         this.player = player;
         this.itemPosition = position;
         this.itemId = n2;
         this.groundItem = groundItem;
-        super(2);
     }
 
     @Override

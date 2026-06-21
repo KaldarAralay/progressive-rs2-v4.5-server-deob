@@ -17,26 +17,21 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
-            stringArray = new String[]{"I can start this quest by speaking to Sir Amik Varze at the", "White Knights' Castle in Falador.", String.valueOf(stringArray.getQuestPoints() >= 12 ? "@str@" : "") + "I have a total of at least 12 Quest Points", "I would have an advantage if I could fight Level 33 Knights", "and if I had a smithing level of 26."};
-            return stringArray;
+            return new String[]{"I can start this quest by speaking to Sir Amik Varze at the", "White Knights' Castle in Falador.", String.valueOf(player.getQuestPoints() >= 12 ? "@str@" : "") + "I have a total of at least 12 Quest Points", "I would have an advantage if I could fight Level 33 Knights", "and if I had a smithing level of 26."};
         }
         if (n == 2) {
-            stringArray = new String[]{"I should find and sabotage Black Knights' secret weapon,", "which can be found somewhere in the Black Knights'", "fortress. I will need bronze med helm and iron chainbody to", "disguise myself."};
-            return stringArray;
+            return new String[]{"I should find and sabotage Black Knights' secret weapon,", "which can be found somewhere in the Black Knights'", "fortress. I will need bronze med helm and iron chainbody to", "disguise myself."};
         }
         if (n == 3) {
-            stringArray = new String[]{"It seems that I could sabotage the potion by putting", "ordinary cabbage in there. Just need to find a way", "to do that."};
-            return stringArray;
+            return new String[]{"It seems that I could sabotage the potion by putting", "ordinary cabbage in there. Just need to find a way", "to do that."};
         }
         if (n == 4) {
-            stringArray = new String[]{"I should now return to Sir Amik Varze to finish", "this quest."};
-            return stringArray;
+            return new String[]{"I should now return to Sir Amik Varze to finish", "this quest."};
         }
         if (n == 1) {
-            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "3 Quest Points", "2500 Coins"};
-            return stringArray;
+            return new String[]{"Quest Completed!", "", "You were awarded:", "3 Quest Points", "2500 Coins"};
         }
         return null;
     }
@@ -257,7 +252,7 @@ extends QuestScript {
                 if (n2 == 21) {
                     if (n3 == 1) {
                         player.getDialogueManager().showPlayerOneLineDialogue("Ok, I'll do my best.", 591);
-                        this.d(player);
+                        this.startQuest(player);
                         player.getDialogueManager().finishDialogue();
                         return true;
                     }

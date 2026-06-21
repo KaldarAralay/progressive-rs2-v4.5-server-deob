@@ -96,18 +96,15 @@ public enum CookableFoodDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private CookableFoodDefinition(int n3, int n4, double d, int n5, int n6, boolean n22, int n7, int n8) {
-        void var13_10;
-        void var12_9;
-        void var6_4;
-        this.rawItemId = n3;
-        this.cookedItemId = n4;
-        this.burntItemId = (int)d;
-        this.requiredLevel = var6_4;
-        this.experience = n5;
-        this.cookableOnFire = n8;
-        this.successChanceLow = var12_9;
-        this.successChanceHigh = var13_10;
+    private CookableFoodDefinition(int n2, int n3, int n4, int n5, double d, int n6, int n7, boolean bl, int n8, int n9) {
+        this.rawItemId = n2;
+        this.cookedItemId = n3;
+        this.burntItemId = n4;
+        this.requiredLevel = n5;
+        this.experience = d;
+        this.cookableOnFire = bl;
+        this.successChanceLow = n8;
+        this.successChanceHigh = n9;
     }
 
     public final int getCookedItemId() {

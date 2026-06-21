@@ -12,11 +12,11 @@ import com.rs2.model.task.CycleEventContainer;
 import com.rs2.model.task.CycleEventHandler;
 import com.rs2.util.GameUtil;
 
-final class SpinningPlateResultEvent
+public final class SpinningPlateResultEvent
 extends CycleEvent {
     private final /* synthetic */ Player player;
 
-    SpinningPlateResultEvent(Player player) {
+    public SpinningPlateResultEvent(Player player) {
         this.player = player;
     }
 

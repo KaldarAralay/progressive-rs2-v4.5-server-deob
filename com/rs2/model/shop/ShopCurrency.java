@@ -3,7 +3,7 @@
  */
 package com.rs2.model.shop;
 
-enum ShopCurrency {
+public enum ShopCurrency {
     ITEM_CURRENCY,
     DONATOR_POINTS;
 

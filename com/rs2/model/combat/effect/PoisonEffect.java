@@ -1,28 +1,25 @@
-/*
- * Decompiled with CFR 0.152.
- */
 package com.rs2.model.combat.effect;
 
 import com.rs2.model.Entity;
 import com.rs2.model.combat.CombatAction;
-import com.rs2.model.combat.effect.CombatEffect;
-import com.rs2.model.combat.effect.CombatEffectTask;
-import com.rs2.model.combat.effect.PoisonDamageTask;
 import com.rs2.model.player.Player;
 
-public class PoisonEffect
-extends CombatEffect {
+public class PoisonEffect extends CombatEffect {
     private double initialDamage;
     private boolean notifyTarget;
 
-    public PoisonEffect(double d) {
-        this.initialDamage = d;
+    public PoisonEffect(double initialDamage) {
+        this.initialDamage = initialDamage;
         this.notifyTarget = true;
     }
 
-    public PoisonEffect(double d, boolean bl) {
-        this.initialDamage = d;
+    public PoisonEffect(double initialDamage, boolean notifyTarget) {
+        this.initialDamage = initialDamage;
         this.notifyTarget = false;
+    }
+
+    @Override
+    public final void onAfterApply(CombatAction combatAction, CombatEffectTask combatEffectTask) {
     }
 
     @Override
@@ -36,28 +33,22 @@ extends CombatEffect {
     }
 
     @Override
-    public final /* synthetic */ void onApply(CombatAction object, CombatEffectTask object2) {
-        PoisonDamageTask poisonDamageTask = (PoisonDamageTask)object2;
-        object2 = object;
-        object = this;
-        if (((Entity)(object2 = ((CombatAction)object2).getTarget())).isPlayer() && ((PoisonEffect)object).notifyTarget) {
-            Player player = (Player)object2;
-            player.packetSender.sendGameMessage("You've been poisoned.");
+    public final void onApply(CombatAction combatAction, CombatEffectTask combatEffectTask) {
+        PoisonDamageTask poisonDamageTask = (PoisonDamageTask)combatEffectTask;
+        Entity target = combatAction.getTarget();
+        if (target.isPlayer() && this.notifyTarget) {
+            ((Player)target).packetSender.sendGameMessage("You've been poisoned.");
         }
-        ((Entity)object2).setPoisonDamage(((PoisonEffect)object).initialDamage);
+        target.setPoisonDamage(this.initialDamage);
         poisonDamageTask.execute();
     }
 
     @Override
-    public final /* synthetic */ CombatEffectTask createTask(Entity object, Entity entity) {
-        Entity entity2 = entity;
-        entity = object;
-        object = this;
-        return new PoisonDamageTask((PoisonEffect)object, (PoisonEffect)object, entity, entity2);
+    public final CombatEffectTask createTask(Entity source, Entity target) {
+        return new PoisonDamageTask(this, this, source, target);
     }
 
-    static /* synthetic */ double getInitialDamage(PoisonEffect poisonEffect) {
+    static double getInitialDamage(PoisonEffect poisonEffect) {
         return poisonEffect.initialDamage;
     }
 }
-

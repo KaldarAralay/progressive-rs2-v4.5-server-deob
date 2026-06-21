@@ -8,24 +8,24 @@ import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.net.packet.handler.ItemActionPacketHandler;
 
-final class GroundItemFiremakingTask
+public final class GroundItemFiremakingTask
 extends CycleEvent {
-    private final /* synthetic */ Player a;
-    private final /* synthetic */ int b;
+    private final /* synthetic */ Player player;
+    private final /* synthetic */ int actionSequence;
 
-    GroundItemFiremakingTask(ItemActionPacketHandler itemActionPacketHandler, Player player, int n) {
-        this.a = player;
-        this.b = n;
+    public GroundItemFiremakingTask(ItemActionPacketHandler itemActionPacketHandler, Player player, int n) {
+        this.player = player;
+        this.actionSequence = n;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        if (!this.a.isCurrentActionSequence(this.b)) {
+        if (!this.player.isCurrentActionSequence(this.actionSequence)) {
             cycleEventContainer.stop();
             return;
         }
-        if (this.a.getPosition().getX() == this.a.getInteractionTargetX() && this.a.getPosition().getY() == this.a.getInteractionTargetY()) {
-            this.a.getFiremakingHandler().startFiremaking(this.a.getInteractionTargetId(), 0, true, this.a.getInteractionTargetX(), this.a.getInteractionTargetY(), this.a.getPosition().getPlane());
+        if (this.player.getPosition().getX() == this.player.getInteractionTargetX() && this.player.getPosition().getY() == this.player.getInteractionTargetY()) {
+            this.player.getFiremakingHandler().startFiremaking(this.player.getInteractionTargetId(), 0, true, this.player.getInteractionTargetX(), this.player.getInteractionTargetY(), this.player.getPosition().getPlane());
             cycleEventContainer.stop();
         }
     }

@@ -21,27 +21,27 @@ import com.rs2.net.packet.PacketReader;
 public final class ObjectInteractionPacketHandler
 implements PacketHandler {
     @Override
-    public final void handle(Player player, IncomingPacket object) {
+    public final void handle(Player player, IncomingPacket incomingPacket) {
         if (player.isActionLocked()) {
             return;
         }
-        Object object2 = player;
-        ((Player)object2).packetSender.closeInterfaces();
+        Player player2 = player;
+        player2.packetSender.closeInterfaces();
         player.resetInteractionState();
-        switch (((IncomingPacket)object).getOpcode()) {
+        switch (incomingPacket.getOpcode()) {
             case 192: {
-                player.setSelectedItemInterfaceId(((IncomingPacket)object).getReader().readSignedShort());
-                player.setInteractionTargetId(((IncomingPacket)object).getReader().readSignedShort(true, ByteOrder.LITTLE));
-                player.setInteractionTargetY(((IncomingPacket)object).getReader().readShort(true, ByteTransform.ADD, ByteOrder.LITTLE));
-                player.setSelectedItemSlot(((IncomingPacket)object).getReader().readSignedShort(ByteOrder.LITTLE));
-                player.setInteractionTargetX(((IncomingPacket)object).getReader().readShort(true, ByteTransform.ADD, ByteOrder.LITTLE));
+                player.setSelectedItemInterfaceId(incomingPacket.getReader().readSignedShort());
+                player.setInteractionTargetId(incomingPacket.getReader().readSignedShort(true, ByteOrder.LITTLE));
+                player.setInteractionTargetY(incomingPacket.getReader().readShort(true, ByteTransform.ADD, ByteOrder.LITTLE));
+                player.setSelectedItemSlot(incomingPacket.getReader().readSignedShort(ByteOrder.LITTLE));
+                player.setInteractionTargetX(incomingPacket.getReader().readShort(true, ByteTransform.ADD, ByteOrder.LITTLE));
                 player.setInteractionTargetPlane(player.getPosition().getPlane());
-                player.setSelectedItemId(((IncomingPacket)object).getReader().readSignedShort());
+                player.setSelectedItemId(incomingPacket.getReader().readSignedShort());
                 if (player.getSelectedItemSlot() <= 28) {
-                    object = player.getInventoryManager().getContainer().getItemAt(player.getSelectedItemSlot());
-                    if (object == null || ((ItemStack)object).getId() != player.getSelectedItemId()) break;
-                    object2 = InterfaceDefinition.forId(player.getSelectedItemInterfaceId());
-                    if (player.isInterfaceOpen((InterfaceDefinition)object2)) {
+                    ItemStack itemStack = player.getInventoryManager().getContainer().getItemAt(player.getSelectedItemSlot());
+                    if (itemStack == null || itemStack.getId() != player.getSelectedItemId()) break;
+                    InterfaceDefinition interfaceDefinition = InterfaceDefinition.forId(player.getSelectedItemInterfaceId());
+                    if (player.isInterfaceOpen(interfaceDefinition)) {
                         if (player.getPlayerRights() > 1 && ServerSettings.debugModeEnabled) {
                             System.out.println("item: " + player.getSelectedItemId() + " object: " + player.getInteractionTargetId());
                         }
@@ -53,9 +53,9 @@ implements PacketHandler {
                 return;
             }
             case 132: {
-                player.setInteractionTargetX(((IncomingPacket)object).getReader().readShort(true, ByteTransform.ADD, ByteOrder.LITTLE));
-                player.setInteractionTargetId(((IncomingPacket)object).getReader().readSignedShort());
-                player.setInteractionTargetY(((IncomingPacket)object).getReader().readSignedShort(ByteTransform.ADD));
+                player.setInteractionTargetX(incomingPacket.getReader().readShort(true, ByteTransform.ADD, ByteOrder.LITTLE));
+                player.setInteractionTargetId(incomingPacket.getReader().readSignedShort());
+                player.setInteractionTargetY(incomingPacket.getReader().readSignedShort(ByteTransform.ADD));
                 player.setInteractionTargetPlane(player.getPosition().getPlane());
                 if (player.getPlayerRights() > 1 && ServerSettings.debugModeEnabled) {
                     System.out.println("first click id = " + player.getInteractionTargetId() + " x = " + player.getInteractionTargetX() + " y = " + player.getInteractionTargetY() + " type " + SkillActionHelper.getObjectType(player.getInteractionTargetId(), player.getInteractionTargetX(), player.getInteractionTargetY(), player.getPosition().getPlane()));
@@ -66,9 +66,9 @@ implements PacketHandler {
                 return;
             }
             case 252: {
-                player.setInteractionTargetId(((IncomingPacket)object).getReader().readSignedShort(ByteTransform.ADD, ByteOrder.LITTLE));
-                player.setInteractionTargetY(((IncomingPacket)object).getReader().readSignedShort(true, ByteOrder.LITTLE));
-                player.setInteractionTargetX(((IncomingPacket)object).getReader().readSignedShort(ByteTransform.ADD));
+                player.setInteractionTargetId(incomingPacket.getReader().readSignedShort(ByteTransform.ADD, ByteOrder.LITTLE));
+                player.setInteractionTargetY(incomingPacket.getReader().readSignedShort(true, ByteOrder.LITTLE));
+                player.setInteractionTargetX(incomingPacket.getReader().readSignedShort(ByteTransform.ADD));
                 player.setInteractionTargetPlane(player.getPosition().getPlane());
                 if (player.getPlayerRights() > 1 && ServerSettings.debugModeEnabled) {
                     System.out.println("second click id = " + player.getInteractionTargetId() + " x = " + player.getInteractionTargetX() + " y = " + player.getInteractionTargetY());
@@ -80,9 +80,9 @@ implements PacketHandler {
                 return;
             }
             case 70: {
-                player.setInteractionTargetX(((IncomingPacket)object).getReader().readSignedShort(true, ByteOrder.LITTLE));
-                player.setInteractionTargetY(((IncomingPacket)object).getReader().readSignedShort());
-                player.setInteractionTargetId(((IncomingPacket)object).getReader().readSignedShort(ByteTransform.ADD, ByteOrder.LITTLE));
+                player.setInteractionTargetX(incomingPacket.getReader().readSignedShort(true, ByteOrder.LITTLE));
+                player.setInteractionTargetY(incomingPacket.getReader().readSignedShort());
+                player.setInteractionTargetId(incomingPacket.getReader().readSignedShort(ByteTransform.ADD, ByteOrder.LITTLE));
                 player.setInteractionTargetPlane(player.getPosition().getPlane());
                 if (player.getPlayerRights() > 1 && ServerSettings.debugModeEnabled) {
                     System.out.println("third click id = " + player.getInteractionTargetId() + " x = " + player.getInteractionTargetX() + " y = " + player.getInteractionTargetY());
@@ -94,9 +94,9 @@ implements PacketHandler {
                 return;
             }
             case 234: {
-                player.setInteractionTargetX(((IncomingPacket)object).getReader().readSignedShort(ByteTransform.ADD, ByteOrder.LITTLE));
-                player.setInteractionTargetId(((IncomingPacket)object).getReader().readSignedShort(ByteTransform.ADD));
-                player.setInteractionTargetY(((IncomingPacket)object).getReader().readSignedShort(ByteTransform.ADD, ByteOrder.LITTLE));
+                player.setInteractionTargetX(incomingPacket.getReader().readSignedShort(ByteTransform.ADD, ByteOrder.LITTLE));
+                player.setInteractionTargetId(incomingPacket.getReader().readSignedShort(ByteTransform.ADD));
+                player.setInteractionTargetY(incomingPacket.getReader().readSignedShort(ByteTransform.ADD, ByteOrder.LITTLE));
                 player.setInteractionTargetPlane(player.getPosition().getPlane());
                 if (player.getPlayerRights() > 1 && ServerSettings.debugModeEnabled) {
                     System.out.println("fourth click id = " + player.getInteractionTargetId() + " x = " + player.getInteractionTargetX() + " y = " + player.getInteractionTargetY());
@@ -108,11 +108,11 @@ implements PacketHandler {
                 return;
             }
             case 35: {
-                object = ((IncomingPacket)object).getReader();
-                int n = ((PacketReader)object).readSignedShort(ByteOrder.LITTLE);
-                int n2 = ((PacketReader)object).readSignedShort(ByteTransform.ADD, ByteOrder.BIG);
-                int n3 = ((PacketReader)object).readSignedShort(ByteTransform.ADD, ByteOrder.BIG);
-                int n4 = ((PacketReader)object).readSignedShort(ByteOrder.LITTLE);
+                PacketReader packetReader = incomingPacket.getReader();
+                int n = packetReader.readSignedShort(ByteOrder.LITTLE);
+                int n2 = packetReader.readSignedShort(ByteTransform.ADD, ByteOrder.BIG);
+                int n3 = packetReader.readSignedShort(ByteTransform.ADD, ByteOrder.BIG);
+                int n4 = packetReader.readSignedShort(ByteOrder.LITTLE);
                 player.setInteractionTargetX(n);
                 player.setInteractionTargetId(n4);
                 player.setInteractionTargetY(n3);
@@ -126,5 +126,6 @@ implements PacketHandler {
             }
         }
     }
+
 }
 

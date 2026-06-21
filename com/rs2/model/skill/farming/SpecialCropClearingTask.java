@@ -11,13 +11,13 @@ import com.rs2.model.skill.farming.SpecialCropPatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class SpecialCropClearingTask
+public final class SpecialCropClearingTask
 extends CycleEvent {
     private /* synthetic */ SpecialCropPatchManager manager;
     private final /* synthetic */ int animationId;
     private final /* synthetic */ SpecialCropPatch patch;
 
-    SpecialCropClearingTask(SpecialCropPatchManager specialCropPatchManager, int n, SpecialCropPatch specialCropPatch) {
+    public SpecialCropClearingTask(SpecialCropPatchManager specialCropPatchManager, int n, SpecialCropPatch specialCropPatch) {
         this.manager = specialCropPatchManager;
         this.animationId = n;
         this.patch = specialCropPatch;
@@ -47,7 +47,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        SpecialCropPatchManager.a(this.manager, this.patch.getIndex());
+        SpecialCropPatchManager.resetPatch(this.manager, this.patch.getIndex());
         Player player = SpecialCropPatchManager.getPlayer(this.manager);
         player.packetSender.sendGameMessage("You clear the patch.");
         SpecialCropPatchManager.getPlayer(this.manager).setActionLocked(false);

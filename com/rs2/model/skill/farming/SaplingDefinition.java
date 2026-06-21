@@ -50,13 +50,11 @@ public enum SaplingDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private SaplingDefinition(int n3, int n4) {
-        void var6_4;
-        void var5_3;
-        this.seedId = n3;
-        this.seedlingId = n4;
-        this.wateredSeedlingId = var5_3;
-        this.saplingId = var6_4;
+    private SaplingDefinition(int n2, int n3, int n4, int n5) {
+        this.seedId = n2;
+        this.seedlingId = n3;
+        this.wateredSeedlingId = n4;
+        this.saplingId = n5;
     }
 
     public static SaplingDefinition forSeedId(int n) {

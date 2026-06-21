@@ -17,8 +17,7 @@ implements PacketHandler {
             return;
         }
         if (player.getIdlePacketCount() > 20 && (player.getPlayerRights() < 2 && player.getSingleCombatTimer().hasElapsed() || player.cn)) {
-            object = player;
-            ((Player)object).packetSender.sendLogout();
+            player.packetSender.sendLogout();
             player.disconnect();
         }
     }

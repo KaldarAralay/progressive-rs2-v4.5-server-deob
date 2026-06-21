@@ -261,5 +261,9 @@ extends PacketBuffer {
     /* synthetic */ PacketWriter(int n, byte by) {
         this(n);
     }
+
+    PacketWriter(int n, int n2) {
+        this(n);
+    }
 }
 

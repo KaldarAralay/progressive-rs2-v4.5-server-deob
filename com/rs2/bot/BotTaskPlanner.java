@@ -72,7 +72,7 @@ public final class BotTaskPlanner {
             ((ArrayList)object).addAll(BotTaskDefinition.fishingTasks);
             ((ArrayList)object).addAll(BotTaskDefinition.woodcuttingTasks);
             ((ArrayList)object).add((BotTaskDefinition)BotTaskDefinition.runecraftingTasks.get(0));
-            BotTaskDefinition botTaskDefinition = GameplayHelper.selectAvailableBotTask(player, object, false);
+            BotTaskDefinition botTaskDefinition = GameplayHelper.selectAvailableBotTask(player, (ArrayList)object, false);
             object = player;
             player.currentBotTask = botTaskDefinition;
             BotTaskPlanner.configureCurrentBotTaskGoals(player);
@@ -93,7 +93,8 @@ public final class BotTaskPlanner {
         BotTaskDefinition botTaskDefinition = null;
         int n3 = 3000;
         int n4 = -1;
-        for (BotTaskDefinition botTaskDefinition2 : BotTaskDefinition.shopTasks) {
+        for (Object botTaskDefinitionObject : BotTaskDefinition.shopTasks) {
+            BotTaskDefinition botTaskDefinition2 = (BotTaskDefinition)botTaskDefinitionObject;
             double d;
             double d2;
             int n5;
@@ -259,147 +260,147 @@ public final class BotTaskPlanner {
         Object object = BotCombatLoadoutTables.post306BowIds;
         int n2 = 0;
         while (n2 < 4) {
-            n = object[n2];
+            n = ((int[])object)[n2];
             arrayList.add(new Integer(n));
             ++n2;
         }
         object = BotCombatLoadoutTables.swordIds;
         n2 = 0;
         while (n2 < 7) {
-            n = object[n2];
+            n = ((int[])object)[n2];
             arrayList.add(new Integer(n));
             ++n2;
         }
         object = BotCombatLoadoutTables.longswordIds;
         n2 = 0;
         while (n2 < 7) {
-            n = object[n2];
+            n = ((int[])object)[n2];
             arrayList.add(new Integer(n));
             ++n2;
         }
         object = BotCombatLoadoutTables.scimitarIds;
         n2 = 0;
         while (n2 < 7) {
-            n = object[n2];
+            n = ((int[])object)[n2];
             arrayList.add(new Integer(n));
             ++n2;
         }
         object = BotCombatLoadoutTables.battleaxeIds;
         n2 = 0;
         while (n2 < 7) {
-            n = object[n2];
+            n = ((int[])object)[n2];
             arrayList.add(new Integer(n));
             ++n2;
         }
         object = BotCombatLoadoutTables.warhammerIds;
         n2 = 0;
         while (n2 < 7) {
-            n = object[n2];
+            n = ((int[])object)[n2];
             arrayList.add(new Integer(n));
             ++n2;
         }
         object = BotCombatLoadoutTables.maceIds;
         n2 = 0;
         while (n2 < 7) {
-            n = object[n2];
+            n = ((int[])object)[n2];
             arrayList.add(new Integer(n));
             ++n2;
         }
         object = BotCombatLoadoutTables.daggerIds;
         n2 = 0;
         while (n2 < 7) {
-            n = object[n2];
+            n = ((int[])object)[n2];
             arrayList.add(new Integer(n));
             ++n2;
         }
         object = BotCombatLoadoutTables.twoHandedSwordIds;
         n2 = 0;
         while (n2 < 7) {
-            n = object[n2];
+            n = ((int[])object)[n2];
             arrayList.add(new Integer(n));
             ++n2;
         }
         object = BotCombatLoadoutTables.basicRangedHeadIds;
         n2 = 0;
         while (n2 < 2) {
-            n = object[n2];
+            n = ((int[])object)[n2];
             arrayList.add(new Integer(n));
             ++n2;
         }
         object = BotCombatLoadoutTables.basicRangedBodyIds;
         n2 = 0;
         while (n2 < 4) {
-            n = object[n2];
+            n = ((int[])object)[n2];
             arrayList.add(new Integer(n));
             ++n2;
         }
         object = BotCombatLoadoutTables.basicRangedLegIds;
         n2 = 0;
         while (n2 < 3) {
-            n = object[n2];
+            n = ((int[])object)[n2];
             arrayList.add(new Integer(n));
             ++n2;
         }
         object = BotCombatLoadoutTables.basicRangedVambraceIds;
         n2 = 0;
         while (n2 < 2) {
-            n = object[n2];
+            n = ((int[])object)[n2];
             arrayList.add(new Integer(n));
             ++n2;
         }
         object = BotCombatLoadoutTables.mediumHelmetIds;
         n2 = 0;
         while (n2 < 7) {
-            n = object[n2];
+            n = ((int[])object)[n2];
             arrayList.add(new Integer(n));
             ++n2;
         }
         object = BotCombatLoadoutTables.fullHelmetIds;
         n2 = 0;
         while (n2 < 7) {
-            n = object[n2];
+            n = ((int[])object)[n2];
             arrayList.add(new Integer(n));
             ++n2;
         }
         object = BotCombatLoadoutTables.chainbodyIds;
         n2 = 0;
         while (n2 < 7) {
-            n = object[n2];
+            n = ((int[])object)[n2];
             arrayList.add(new Integer(n));
             ++n2;
         }
         object = BotCombatLoadoutTables.platebodyIds;
         n2 = 0;
         while (n2 < 7) {
-            n = object[n2];
+            n = ((int[])object)[n2];
             arrayList.add(new Integer(n));
             ++n2;
         }
         object = BotCombatLoadoutTables.platelegIds;
         n2 = 0;
         while (n2 < 7) {
-            n = object[n2];
+            n = ((int[])object)[n2];
             arrayList.add(new Integer(n));
             ++n2;
         }
         object = BotCombatLoadoutTables.plateskirtIds;
         n2 = 0;
         while (n2 < 7) {
-            n = object[n2];
+            n = ((int[])object)[n2];
             arrayList.add(new Integer(n));
             ++n2;
         }
         object = BotCombatLoadoutTables.squareShieldIds;
         n2 = 0;
         while (n2 < 7) {
-            n = object[n2];
+            n = ((int[])object)[n2];
             arrayList.add(new Integer(n));
             ++n2;
         }
         object = BotCombatLoadoutTables.kiteshieldIds;
         n2 = 0;
         while (n2 < 7) {
-            n = object[n2];
+            n = ((int[])object)[n2];
             arrayList.add(new Integer(n));
             ++n2;
         }
@@ -445,49 +446,44 @@ public final class BotTaskPlanner {
         return BotTaskPlanner.tryDeferForUpgradePurchase(player, n, nArray, n2, bl, false);
     }
 
-    private static boolean tryDeferForUpgradePurchase(Player player, int n, int[] object, int n2, boolean bl, boolean n3) {
-        if (n3 != 0) {
-            ArrayList<Integer> arrayList = new ArrayList<Integer>();
-            int n4 = ((int[])object).length - 1;
-            while (n4 >= 0) {
-                arrayList.add(object[n4]);
-                --n4;
+    private static boolean tryDeferForUpgradePurchase(Player player, int currentLevel, int[] itemIds, int skillId, boolean requireUpgrade, boolean shuffle) {
+        if (shuffle) {
+            ArrayList<Integer> shuffledIds = new ArrayList<Integer>();
+            int index = itemIds.length - 1;
+            while (index >= 0) {
+                shuffledIds.add(itemIds[index]);
+                --index;
             }
-            Collections.shuffle(arrayList);
-            object = new int[arrayList.size()];
-            n4 = 0;
-            while (n4 < arrayList.size()) {
-                object[n4] = (Integer)arrayList.get(n4);
-                ++n4;
+            Collections.shuffle(shuffledIds);
+            itemIds = new int[shuffledIds.size()];
+            index = 0;
+            while (index < shuffledIds.size()) {
+                itemIds[index] = (Integer)shuffledIds.get(index);
+                ++index;
             }
         }
-        n3 = ((int[])object).length - 1;
-        while (n3 >= 0) {
-            int n5 = object[n3];
-            if (player.getEquipmentManager().canEquipItem(n5)) {
-                Object object2 = new ItemStack(n5, 1);
-                object2 = ((ItemStack)object2).getDefinition();
-                boolean bl2 = false;
-                if (!bl || n < ((ItemDefinition)object2).getRequiredLevel(n2)) {
-                    bl2 = true;
+        int index = itemIds.length - 1;
+        while (index >= 0) {
+            int itemId = itemIds[index];
+            if (player.getEquipmentManager().canEquipItem(itemId)) {
+                ItemDefinition itemDefinition = new ItemStack(itemId, 1).getDefinition();
+                boolean shouldDefer = false;
+                if (!requireUpgrade || currentLevel < itemDefinition.getRequiredLevel(skillId)) {
+                    shouldDefer = true;
                 }
-                if (bl2) {
-                    BotTaskDefinition botTaskDefinition = BotTaskPlanner.selectShopPurchaseTask(player, n5, 1);
+                if (shouldDefer) {
+                    BotTaskDefinition botTaskDefinition = BotTaskPlanner.selectShopPurchaseTask(player, itemId, 1);
                     if (botTaskDefinition != null) {
                         BotTaskPlanner.resetBotTaskGoals(player);
-                        object = player.currentBotTask;
-                        Player player2 = player;
-                        player.deferredBotTask = object;
-                        object = botTaskDefinition;
-                        player2 = player;
-                        player.currentBotTask = object;
+                        player.deferredBotTask = player.currentBotTask;
+                        player.currentBotTask = botTaskDefinition;
                         return true;
                     }
-                } else if (n >= ((ItemDefinition)object2).getRequiredLevel(n2) && bl) {
+                } else if (currentLevel >= itemDefinition.getRequiredLevel(skillId) && requireUpgrade) {
                     return false;
                 }
             }
-            --n3;
+            --index;
         }
         return false;
     }
@@ -498,37 +494,35 @@ public final class BotTaskPlanner {
                 player.botCombatLoadoutSlotCursor = -1;
             }
             if (BotTaskDefinition.miningTasks.contains(player.currentBotTask) || BotTaskDefinition.woodcuttingTasks.contains(player.currentBotTask) || BotTaskDefinition.runecraftingTasks.get(0) == player.currentBotTask) {
-                int n = 14;
+                int skillId = 14;
                 if (BotTaskDefinition.woodcuttingTasks.contains(player.currentBotTask)) {
-                    n = 8;
+                    skillId = 8;
                 }
-                Object object = ItemCombinationHandler.findOwnedGatheringTool(player, n);
-                int n2 = n;
-                ArrayList arrayList = ItemCombinationHandler.getGatheringToolsForSkill(n2);
-                int n3 = arrayList.size() - 1;
-                while (n3 >= 0) {
-                    Object object2 = (GatheringToolDefinition)((Object)arrayList.get(n3));
-                    boolean bl = false;
-                    if (object == null) {
-                        bl = true;
-                    } else if (n == 14) {
-                        if (object2.getToolSpeed() < object.getToolSpeed()) {
-                            bl = true;
+                GatheringToolDefinition ownedTool = ItemCombinationHandler.findOwnedGatheringTool(player, skillId);
+                ArrayList arrayList = ItemCombinationHandler.getGatheringToolsForSkill(skillId);
+                int index = arrayList.size() - 1;
+                while (index >= 0) {
+                    GatheringToolDefinition toolDefinition = (GatheringToolDefinition)arrayList.get(index);
+                    boolean shouldBuy = false;
+                    if (ownedTool == null) {
+                        shouldBuy = true;
+                    } else if (skillId == 14) {
+                        if (toolDefinition.getToolSpeed() < ownedTool.getToolSpeed()) {
+                            shouldBuy = true;
                         }
-                    } else if (object2.getToolSpeed() > object.getToolSpeed()) {
-                        bl = true;
+                    } else if (toolDefinition.getToolSpeed() > ownedTool.getToolSpeed()) {
+                        shouldBuy = true;
                     }
-                    if (bl && (object2 = BotTaskPlanner.selectShopPurchaseTask(player, object2.getToolItemId(), 1)) != null) {
-                        BotTaskPlanner.resetBotTaskGoals(player);
-                        object = player.currentBotTask;
-                        Player player2 = player;
-                        player.deferredBotTask = object;
-                        object = object2;
-                        player2 = player;
-                        player.currentBotTask = object;
-                        return;
+                    if (shouldBuy) {
+                        BotTaskDefinition purchaseTask = BotTaskPlanner.selectShopPurchaseTask(player, toolDefinition.getToolItemId(), 1);
+                        if (purchaseTask != null) {
+                            BotTaskPlanner.resetBotTaskGoals(player);
+                            player.deferredBotTask = player.currentBotTask;
+                            player.currentBotTask = purchaseTask;
+                            return;
+                        }
                     }
-                    --n3;
+                    --index;
                 }
                 return;
             }
@@ -679,7 +673,7 @@ public final class BotTaskPlanner {
                             if (itemDefinition != null) {
                                 n20 = itemDefinition.getRequiredLevel(4);
                             }
-                            if (BotTaskPlanner.tryDeferForUpgradePurchase(player, n20, object = BotCombatLoadoutTables.post306BowIds, 4, itemDefinition != null)) {
+                            if (BotTaskPlanner.tryDeferForUpgradePurchase(player, n20, BotCombatLoadoutTables.post306BowIds, 4, itemDefinition != null)) {
                                 return;
                             }
                         } else if (n18 == 9) {
@@ -687,7 +681,7 @@ public final class BotTaskPlanner {
                             if (itemDefinition != null) {
                                 n21 = itemDefinition.getRequiredLevel(4);
                             }
-                            if (BotTaskPlanner.tryDeferForUpgradePurchase(player, n21, object = BotCombatLoadoutTables.basicRangedVambraceIds, 4, itemDefinition != null)) {
+                            if (BotTaskPlanner.tryDeferForUpgradePurchase(player, n21, BotCombatLoadoutTables.basicRangedVambraceIds, 4, itemDefinition != null)) {
                                 return;
                             }
                         } else if (n18 == 0) {
@@ -695,7 +689,7 @@ public final class BotTaskPlanner {
                             if (itemDefinition != null) {
                                 n22 = itemDefinition.getRequiredLevel(4);
                             }
-                            if (BotTaskPlanner.tryDeferForUpgradePurchase(player, n22, object = BotCombatLoadoutTables.basicRangedHeadIds, 4, itemDefinition != null)) {
+                            if (BotTaskPlanner.tryDeferForUpgradePurchase(player, n22, BotCombatLoadoutTables.basicRangedHeadIds, 4, itemDefinition != null)) {
                                 return;
                             }
                         } else if (n18 == 7) {
@@ -703,7 +697,7 @@ public final class BotTaskPlanner {
                             if (itemDefinition != null) {
                                 n23 = itemDefinition.getRequiredLevel(4);
                             }
-                            if (BotTaskPlanner.tryDeferForUpgradePurchase(player, n23, object = BotCombatLoadoutTables.basicRangedLegIds, 4, itemDefinition != null)) {
+                            if (BotTaskPlanner.tryDeferForUpgradePurchase(player, n23, BotCombatLoadoutTables.basicRangedLegIds, 4, itemDefinition != null)) {
                                 return;
                             }
                         } else if (n18 == 4) {
@@ -711,7 +705,7 @@ public final class BotTaskPlanner {
                             if (itemDefinition != null) {
                                 n24 = itemDefinition.getRequiredLevel(4);
                             }
-                            if (BotTaskPlanner.tryDeferForUpgradePurchase(player, n24, object = BotCombatLoadoutTables.basicRangedBodyIds, 4, itemDefinition != null)) {
+                            if (BotTaskPlanner.tryDeferForUpgradePurchase(player, n24, BotCombatLoadoutTables.basicRangedBodyIds, 4, itemDefinition != null)) {
                                 return;
                             }
                         } else if (n18 == 1) {
@@ -719,7 +713,7 @@ public final class BotTaskPlanner {
                             if (itemDefinition != null) {
                                 n25 = itemDefinition.getRequiredLevel(1);
                             }
-                            if (BotTaskPlanner.tryDeferForUpgradePurchase(player, n25, object = BotCombatLoadoutTables.capeIds, 1, itemDefinition != null, true)) break block95;
+                            if (BotTaskPlanner.tryDeferForUpgradePurchase(player, n25, BotCombatLoadoutTables.capeIds, 1, itemDefinition != null, true)) break block95;
                         }
                         ++n;
                     }
@@ -756,16 +750,18 @@ public final class BotTaskPlanner {
     }
 
     public static boolean prepareCookingTaskRequirements(Player player) {
-        Object object;
-        Object object2;
-        ArrayList<ItemStack[]> arrayList = new ArrayList<ItemStack[]>();
+        ArrayList<ItemStack> availableFood = new ArrayList<ItemStack>();
         ItemStack[] itemStackArray = player.getInventoryManager().getContainer().getItems();
         int n = itemStackArray.length;
         int n2 = 0;
         while (n2 < n) {
-            object2 = itemStackArray[n2];
-            if (object2 != null && ((ItemDefinition)(object = object2.getDefinition())).getName().toLowerCase().startsWith("raw ") && (object = CookableFoodDefinition.forRawItemId(object2.getId())) != null && player.getSkillManager().getCurrentLevels()[7] >= ((CookableFoodDefinition)((Object)object)).getRequiredLevel()) {
-                arrayList.add((ItemStack[])object2);
+            ItemStack itemStack = itemStackArray[n2];
+            if (itemStack != null) {
+                ItemDefinition itemDefinition = itemStack.getDefinition();
+                CookableFoodDefinition foodDefinition = CookableFoodDefinition.forRawItemId(itemStack.getId());
+                if (itemDefinition.getName().toLowerCase().startsWith("raw ") && foodDefinition != null && player.getSkillManager().getCurrentLevels()[7] >= foodDefinition.getRequiredLevel()) {
+                    availableFood.add(itemStack);
+                }
             }
             ++n2;
         }
@@ -773,38 +769,40 @@ public final class BotTaskPlanner {
         n = itemStackArray.length;
         n2 = 0;
         while (n2 < n) {
-            object2 = itemStackArray[n2];
-            if (object2 != null && ((ItemDefinition)(object = object2.getDefinition())).getName().toLowerCase().startsWith("raw ") && (object = CookableFoodDefinition.forRawItemId(object2.getId())) != null && player.getSkillManager().getCurrentLevels()[7] >= ((CookableFoodDefinition)((Object)object)).getRequiredLevel()) {
-                arrayList.add((ItemStack[])object2);
+            ItemStack itemStack = itemStackArray[n2];
+            if (itemStack != null) {
+                ItemDefinition itemDefinition = itemStack.getDefinition();
+                CookableFoodDefinition foodDefinition = CookableFoodDefinition.forRawItemId(itemStack.getId());
+                if (itemDefinition.getName().toLowerCase().startsWith("raw ") && foodDefinition != null && player.getSkillManager().getCurrentLevels()[7] >= foodDefinition.getRequiredLevel()) {
+                    availableFood.add(itemStack);
+                }
             }
             ++n2;
         }
-        if (arrayList.size() == 0) {
+        if (availableFood.size() == 0) {
             return false;
         }
-        player.botTaskItemId = ((ItemStack)arrayList.get(0)).getId();
-        object2 = new ItemStack[]{new ItemStack(player.botTaskItemId, 28)};
-        player.botTaskRequiredItems = object2;
+        player.botTaskItemId = ((ItemStack)availableFood.get(0)).getId();
+        player.botTaskRequiredItems = new ItemStack[]{new ItemStack(player.botTaskItemId, 28)};
         return true;
     }
 
     public static boolean prepareSpinningTaskRequirements(Player player) {
-        ItemStack[] itemStackArray = new ArrayList();
+        ArrayList<ItemStack> availableItems = new ArrayList<ItemStack>();
         if (player.ownsItemAmount(1737, 28)) {
-            itemStackArray.add(new ItemStack(1737, 28));
+            availableItems.add(new ItemStack(1737, 28));
         }
         if (player.getSkillManager().getCurrentLevels()[12] >= 10 && player.ownsItemAmount(1779, 28)) {
-            itemStackArray.add(new ItemStack(1779, 28));
+            availableItems.add(new ItemStack(1779, 28));
         }
         if (player.getSkillManager().getCurrentLevels()[12] >= 19 && player.ownsItemAmount(6051, 28)) {
-            itemStackArray.add(new ItemStack(6051, 28));
+            availableItems.add(new ItemStack(6051, 28));
         }
-        if (itemStackArray.size() == 0) {
+        if (availableItems.size() == 0) {
             return false;
         }
-        player.botTaskItemId = ((ItemStack)itemStackArray.get(0)).getId();
-        itemStackArray = new ItemStack[]{new ItemStack(player.botTaskItemId, 28)};
-        player.botTaskRequiredItems = itemStackArray;
+        player.botTaskItemId = ((ItemStack)availableItems.get(0)).getId();
+        player.botTaskRequiredItems = new ItemStack[]{new ItemStack(player.botTaskItemId, 28)};
         return true;
     }
 
@@ -831,9 +829,8 @@ public final class BotTaskPlanner {
             return false;
         }
         if (!bl) {
-            int n;
+            int n = 550;
             player.botTaskItemId = ((ItemStack)arrayList.get(0)).getId();
-            int itemStackArray = 550;
             if (player.botTaskItemId == 1739) {
                 n = 100;
             }
@@ -844,33 +841,32 @@ public final class BotTaskPlanner {
     }
 
     public static boolean prepareLeatherCraftingTaskRequirements(Player player) {
-        ItemStack[] itemStackArray = new ArrayList();
+        ArrayList<ItemStack> availableItems = new ArrayList<ItemStack>();
         if (player.ownsItemAmount(1741, 100)) {
-            itemStackArray.add(new ItemStack(1741, 100));
+            availableItems.add(new ItemStack(1741, 100));
         }
         if (player.getSkillManager().getCurrentLevels()[12] >= 28 && player.ownsItemAmount(1743, 100)) {
-            itemStackArray.add(new ItemStack(1743, 100));
+            availableItems.add(new ItemStack(1743, 100));
         }
         if (!ServerSettings.freeToPlayWorld && player.isMember()) {
             if (player.getSkillManager().getCurrentLevels()[12] >= 57 && player.ownsItemAmount(1745, 100)) {
-                itemStackArray.add(new ItemStack(1745, 100));
+                availableItems.add(new ItemStack(1745, 100));
             }
             if (player.getSkillManager().getCurrentLevels()[12] >= 66 && player.ownsItemAmount(2505, 100)) {
-                itemStackArray.add(new ItemStack(2505, 100));
+                availableItems.add(new ItemStack(2505, 100));
             }
             if (player.getSkillManager().getCurrentLevels()[12] >= 73 && player.ownsItemAmount(2507, 100)) {
-                itemStackArray.add(new ItemStack(2507, 100));
+                availableItems.add(new ItemStack(2507, 100));
             }
             if (player.getSkillManager().getCurrentLevels()[12] >= 79 && player.ownsItemAmount(2509, 100)) {
-                itemStackArray.add(new ItemStack(2509, 100));
+                availableItems.add(new ItemStack(2509, 100));
             }
         }
-        if (itemStackArray.size() == 0) {
+        if (availableItems.size() == 0) {
             return false;
         }
-        player.botTaskItemId = ((ItemStack)itemStackArray.get(0)).getId();
-        itemStackArray = new ItemStack[]{new ItemStack(1733, 1), new ItemStack(1734, 26), new ItemStack(player.botTaskItemId, 26)};
-        player.botTaskRequiredItems = itemStackArray;
+        player.botTaskItemId = ((ItemStack)availableItems.get(0)).getId();
+        player.botTaskRequiredItems = new ItemStack[]{new ItemStack(1733, 1), new ItemStack(1734, 26), new ItemStack(player.botTaskItemId, 26)};
         return true;
     }
 
@@ -901,8 +897,8 @@ public final class BotTaskPlanner {
         }
         Player player2 = player;
         int n = player2.getSkillManager().getCurrentLevels()[0] <= player2.getSkillManager().getCurrentLevels()[1] && player2.getSkillManager().getCurrentLevels()[0] <= player2.getSkillManager().getCurrentLevels()[2] ? 0 : (player2.getSkillManager().getCurrentLevels()[2] < player2.getSkillManager().getCurrentLevels()[0] && player2.getSkillManager().getCurrentLevels()[2] <= player2.getSkillManager().getCurrentLevels()[1] ? 2 : 1);
-        AttackStyleDefinition[] attackStyleDefinitionArray = WeaponProfile.forItem(player.getEquipmentManager().getContainer().getItemAt(3));
-        attackStyleDefinitionArray = attackStyleDefinitionArray.getInterfaceDefinition().getAttackStyles();
+        WeaponProfile weaponProfile = WeaponProfile.forItem(player.getEquipmentManager().getContainer().getItemAt(3));
+        AttackStyleDefinition[] attackStyleDefinitionArray = weaponProfile.getInterfaceDefinition().getAttackStyles();
         int n2 = -1;
         int n3 = 10;
         boolean bl = false;
@@ -936,7 +932,7 @@ public final class BotTaskPlanner {
      * Enabled aggressive block sorting
      */
     private static void prepareBotCombatLoadoutLists(Player player, boolean bl) {
-        void var4_22;
+        int var4_22 = 0;
         int n;
         int n2;
         Object object;
@@ -1016,7 +1012,7 @@ public final class BotTaskPlanner {
         nArray2[3] = 1387;
         object = new ArrayList();
         if (!bl) {
-            int n5;
+            int n5 = 0;
             BotTaskDefinition botTaskDefinition;
             BotTaskDefinition botTaskDefinition2;
             if (arrayList2.size() > 0 && arrayList.size() > 0) {
@@ -1040,10 +1036,10 @@ public final class BotTaskPlanner {
                     BotTaskPlanner.resetBotTaskGoals(player);
                     object2 = player.currentBotTask;
                     Player player2 = player;
-                    player.deferredBotTask = object2;
+                    player.deferredBotTask = (BotTaskDefinition)object2;
                     object2 = botTaskDefinition3;
                     player2 = player;
-                    player.currentBotTask = object2;
+                    player.currentBotTask = (BotTaskDefinition)object2;
                     return;
                 }
             }
@@ -1051,20 +1047,20 @@ public final class BotTaskPlanner {
                 BotTaskPlanner.resetBotTaskGoals(player);
                 object2 = player.currentBotTask;
                 Player player3 = player;
-                player.deferredBotTask = object2;
+                player.deferredBotTask = (BotTaskDefinition)object2;
                 object2 = botTaskDefinition2;
                 player3 = player;
-                player.currentBotTask = object2;
+                player.currentBotTask = (BotTaskDefinition)object2;
                 return;
             }
             if (!player.ownsItemAmount(558, 250) && player.ownsItemAmount(995, 375) && (botTaskDefinition = BotTaskPlanner.selectShopPurchaseTask(player, 558, 250)) != null) {
                 BotTaskPlanner.resetBotTaskGoals(player);
                 object2 = player.currentBotTask;
                 Player player4 = player;
-                player.deferredBotTask = object2;
+                player.deferredBotTask = (BotTaskDefinition)object2;
                 object2 = botTaskDefinition;
                 player4 = player;
-                player.currentBotTask = object2;
+                player.currentBotTask = (BotTaskDefinition)object2;
                 return;
             }
             int[][] nArray3 = new int[4][2];
@@ -1072,7 +1068,7 @@ public final class BotTaskPlanner {
             Object object4 = BotCombatLoadoutTables.elementalStrikeSpells;
             int n7 = 0;
             while (n7 < 4) {
-                SpellDefinition spellDefinition = object4[n7];
+                SpellDefinition spellDefinition = ((SpellDefinition[])object4)[n7];
                 ((ArrayList)object).add(spellDefinition);
                 ++n7;
             }
@@ -1126,10 +1122,10 @@ public final class BotTaskPlanner {
                     BotTaskPlanner.resetBotTaskGoals(player);
                     object2 = player.currentBotTask;
                     Player player5 = player;
-                    player.deferredBotTask = object2;
+                    player.deferredBotTask = (BotTaskDefinition)object2;
                     object2 = botTaskDefinition4;
                     player5 = player;
-                    player.currentBotTask = object2;
+                    player.currentBotTask = (BotTaskDefinition)object2;
                     return;
                 }
                 if (n6 < 250) {
@@ -1145,10 +1141,10 @@ public final class BotTaskPlanner {
                             BotTaskPlanner.resetBotTaskGoals(player);
                             object2 = player.currentBotTask;
                             Player player6 = player;
-                            player.deferredBotTask = object2;
+                            player.deferredBotTask = (BotTaskDefinition)object2;
                             object2 = botTaskDefinition5;
                             player6 = player;
-                            player.currentBotTask = object2;
+                            player.currentBotTask = (BotTaskDefinition)object2;
                             return;
                         }
                         ++n9;
@@ -1162,8 +1158,8 @@ public final class BotTaskPlanner {
         int[][] nArray4 = new int[3][14];
         int[][] nArray5 = new int[3][14];
         Object object5 = ((ArrayList)object2).iterator();
-        while (object5.hasNext()) {
-            ItemStack itemStack5 = (ItemStack)object5.next();
+        while (((Iterator)object5).hasNext()) {
+            ItemStack itemStack5 = (ItemStack)((Iterator)object5).next();
             ItemDefinition itemDefinition = itemStack5.getDefinition();
             int n11 = itemDefinition.getEquipmentSlot();
             n = 0;
@@ -1264,9 +1260,8 @@ public final class BotTaskPlanner {
             n = nArray4[2][3];
             ItemStack itemStack6 = new ItemStack(n);
             for (ItemStack itemStack7 : arrayList) {
-                int n14;
-                if (!AmmunitionDefinition.isCompatible(player, itemStack6, itemStack7) || itemStack7.getDefinition().getValue() >= n14) continue;
-                n14 = itemStack7.getDefinition().getValue();
+                if (!AmmunitionDefinition.isCompatible(player, itemStack6, itemStack7) || itemStack7.getDefinition().getValue() >= n12) continue;
+                n12 = itemStack7.getDefinition().getValue();
                 n13 = itemStack7.getId();
             }
             player.d(n13, 200);
@@ -1288,34 +1283,30 @@ public final class BotTaskPlanner {
         if (player.botCombatStyle == 2 && n3 == -1) {
             player.botCombatStyle = 0;
         }
-        if (player.botCombatStyle == 0) {
-            boolean bl5 = false;
-        } else if (player.botCombatStyle == 2) {
-            boolean bl6 = true;
+        int selectedLoadoutIndex = 0;
+        if (player.botCombatStyle == 2) {
+            selectedLoadoutIndex = 1;
         } else if (player.botCombatStyle == 1) {
-            int n16 = 2;
+            selectedLoadoutIndex = 2;
         }
         if (!bl) {
-            void var12_54;
-            void var4_20;
-            boolean bl7 = false;
-            while (var4_20 < nArray4[var12_54].length) {
-                int n17 = nArray4[var12_54][var4_20];
+            int selectedSlot = 0;
+            while (selectedSlot < nArray4[selectedLoadoutIndex].length) {
+                int n17 = nArray4[selectedLoadoutIndex][selectedSlot];
                 if (n17 > 0) {
                     player.botCombatLoadoutItemIds.add(n17);
                 }
-                ++var4_20;
+                ++selectedSlot;
             }
         }
-        boolean bl8 = false;
         while (var4_22 < 3) {
             int n18 = 0;
             while (n18 < nArray4[var4_22].length) {
                 n = nArray4[var4_22][n18];
                 if (n > 0) {
-                    if (var4_22 == false) {
+                    if (var4_22 == 0) {
                         player.botMeleeLoadoutItemIds.add(n);
-                    } else if (var4_22 == true) {
+                    } else if (var4_22 == 1) {
                         player.botMagicLoadoutItemIds.add(n);
                     } else if (var4_22 == 2) {
                         player.botRangedLoadoutItemIds.add(n);

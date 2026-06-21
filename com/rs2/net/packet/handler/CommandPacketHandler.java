@@ -11,14 +11,14 @@ import java.util.Arrays;
 public final class CommandPacketHandler
 implements PacketHandler {
     @Override
-    public final void handle(Player player, IncomingPacket object) {
-        switch (((IncomingPacket)object).getOpcode()) {
+    public final void handle(Player player, IncomingPacket incomingPacket) {
+        switch (incomingPacket.getOpcode()) {
             case 103: {
                 try {
-                    object = ((IncomingPacket)object).getReader().readString();
-                    String[] stringArray = ((String)object).split(" ");
-                    String string = stringArray[0].toLowerCase();
-                    player.handleCommand(string, Arrays.copyOfRange(stringArray, 1, stringArray.length), ((String)object).substring(((String)object).indexOf(" ") + 1));
+                    String rawCommand = incomingPacket.getReader().readString();
+                    String[] stringArray = rawCommand.split(" ");
+                    String command = stringArray[0].toLowerCase();
+                    player.handleCommand(command, Arrays.copyOfRange(stringArray, 1, stringArray.length), rawCommand.substring(rawCommand.indexOf(" ") + 1));
                     return;
                 }
                 catch (Exception exception) {}

@@ -19,15 +19,15 @@ import com.rs2.model.combat.special.DarkBowSpecialDefinition;
 import com.rs2.model.item.ItemStack;
 import com.rs2.model.player.Player;
 
-final class DarkBowSpecialAttack
+public final class DarkBowSpecialAttack
 extends WeaponCombatAttack {
     private final /* synthetic */ WeaponProfile sourceWeaponProfile;
     private final /* synthetic */ Player player;
 
-    DarkBowSpecialAttack(DarkBowSpecialDefinition darkBowSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile, WeaponProfile weaponProfile2, Player player2) {
+    public DarkBowSpecialAttack(DarkBowSpecialDefinition darkBowSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile, WeaponProfile weaponProfile2, Player player2) {
+        super(player, entity, weaponProfile);
         this.sourceWeaponProfile = weaponProfile2;
         this.player = player2;
-        super(player, entity, weaponProfile);
     }
 
     @Override
@@ -50,13 +50,12 @@ extends WeaponCombatAttack {
         object2 = ((AmmunitionProfile)((Object)object2)).getProjectileTiming();
         double d = this.calculateMaxHit();
         if (object == AmmunitionDefinition.DRAGON_ARROW) {
-            double d2;
             n2 = 1100;
             n = 8;
             object = new ProjectileDefinition(1099, ((ProjectileTiming)object2).copy().setStartDelay(40).setSpeed(3));
             object2 = new ProjectileDefinition(1099, ((ProjectileTiming)object2).copy().setStartDelay(41).setSpeed(2));
             d *= 1.5;
-            if (d2 >= 48.0) {
+            if (d >= 48.0) {
                 d = 48.0;
             }
         } else {

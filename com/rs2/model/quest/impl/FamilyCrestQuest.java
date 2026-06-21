@@ -289,8 +289,8 @@ extends QuestScript {
     @Override
     public final boolean handleNpcDeathDrop(Player object, int n, Position position, int n2) {
         if (n == 667 && n2 == 13 && !((Player)object).ownsItem(781) && !((Player)object).ownsItem(782)) {
-            object = new GroundItem(new ItemStack(781, 1), (Entity)object, position);
-            GroundItemManager.getInstance().spawn((GroundItem)object);
+            GroundItem groundItem = new GroundItem(new ItemStack(781, 1), (Entity)object, position);
+            GroundItemManager.getInstance().spawn(groundItem);
             return true;
         }
         return false;
@@ -446,7 +446,7 @@ extends QuestScript {
                 if (n2 == 17) {
                     if (n3 == 1) {
                         player.getDialogueManager().showPlayerOneLineDialogue("Ok, I will help you.", 591);
-                        this.d(player);
+                        this.startQuest(player);
                         player.getDialogueManager().setNextDialogueStep(18);
                         return true;
                     }

@@ -12,9 +12,9 @@ import com.rs2.model.combat.attack.BaseCombatAttack;
 import com.rs2.model.combat.attack.CombatAttack;
 import com.rs2.model.npc.combat.NpcCombatDefinition;
 
-final class MonkeyArcherCombatDefinition
+public final class MonkeyArcherCombatDefinition
 extends NpcCombatDefinition {
-    MonkeyArcherCombatDefinition() {
+    public MonkeyArcherCombatDefinition() {
     }
 
     @Override

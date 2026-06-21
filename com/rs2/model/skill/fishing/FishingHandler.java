@@ -31,7 +31,7 @@ public final class FishingHandler {
         Object object = FishingWhirlpool.forWhirlpoolNpcId(npc.getDefinition().getId());
         int n2 = npc.getNpcId();
         if (object != null) {
-            n2 = object.getSourceNpcIds()[0];
+            n2 = ((FishingWhirlpool)object).getSourceNpcIds()[0];
         }
         FishingSpotDefinition fishingSpotDefinition = FishingSpotDefinition.forNpcIdAndOption(n2, n);
         Object object2 = npc.getPosition();
@@ -83,7 +83,7 @@ public final class FishingHandler {
             return true;
         }
         if (this.player.getQuestState(0) != 1) {
-            this.player.getDialogueManager().a("Please wait.", "This should only take a few seconds.", "As you gain Fishing experience you'll find that there are many", "types of fish and many ways to catch them.", "", true);
+            this.player.getDialogueManager().showTutorialInstructionOverlay("Please wait.", "This should only take a few seconds.", "As you gain Fishing experience you'll find that there are many", "types of fish and many ways to catch them.", "", true);
         } else {
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("You attempt to catch a fish...");

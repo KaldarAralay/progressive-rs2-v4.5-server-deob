@@ -8,9 +8,9 @@ import com.rs2.model.gameplay.magetrainingarena.EnchantmentChamberController;
 import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 
-final class EnchantmentChamberColorTask
+public final class EnchantmentChamberColorTask
 extends TickTask {
-    EnchantmentChamberColorTask(int n) {
+    public EnchantmentChamberColorTask(int n) {
         super(40);
     }
 

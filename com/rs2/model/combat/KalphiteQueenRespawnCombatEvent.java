@@ -8,11 +8,11 @@ import com.rs2.model.combat.CombatManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class KalphiteQueenRespawnCombatEvent
+public final class KalphiteQueenRespawnCombatEvent
 extends CycleEvent {
     private final /* synthetic */ Entity killer;
 
-    KalphiteQueenRespawnCombatEvent(Entity entity) {
+    public KalphiteQueenRespawnCombatEvent(Entity entity) {
         this.killer = entity;
     }
 

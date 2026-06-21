@@ -16,17 +16,17 @@ import com.rs2.model.player.Player;
 import com.rs2.model.skill.SkillManager;
 import com.rs2.model.task.TickTask;
 
-final class BotCombatTickTask
+public final class BotCombatTickTask
 extends TickTask {
     private /* synthetic */ BotTaskDefinition taskDefinition;
     private final /* synthetic */ Npc targetNpc;
     private final /* synthetic */ Player bot;
 
-    BotCombatTickTask(BotTaskDefinition botTaskDefinition, int n, Npc npc, Player player) {
+    public BotCombatTickTask(BotTaskDefinition botTaskDefinition, int n, Npc npc, Player player) {
+        super(1);
         this.taskDefinition = botTaskDefinition;
         this.targetNpc = npc;
         this.bot = player;
-        super(1);
     }
 
     /*

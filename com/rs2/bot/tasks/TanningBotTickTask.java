@@ -8,28 +8,28 @@ import com.rs2.model.GameplayHelper;
 import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 
-final class TanningBotTickTask
+public final class TanningBotTickTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
-    TanningBotTickTask(AlKharidCowhideTanningBotTask alKharidCowhideTanningBotTask, int n, Player player) {
-        this.a = player;
+    public TanningBotTickTask(AlKharidCowhideTanningBotTask alKharidCowhideTanningBotTask, int n, Player player) {
         super(2);
+        this.player = player;
     }
 
     @Override
     public final void execute() {
-        if (this.a.isDead() || !this.a.isRegistered() || !this.a.currentBotTask.usesCustomTaskAction || !this.a.botTaskState.equals("do task")) {
+        if (this.player.isDead() || !this.player.isRegistered() || !this.player.currentBotTask.usesCustomTaskAction || !this.player.botTaskState.equals("do task")) {
             this.stop();
             return;
         }
-        if (!this.a.getInventoryManager().containsItem(this.a.botTaskItemId)) {
-            this.a.currentBotTask.startWalkToBank(this.a);
+        if (!this.player.getInventoryManager().containsItem(this.player.botTaskItemId)) {
+            this.player.currentBotTask.startWalkToBank(this.player);
             this.stop();
             return;
         }
-        if (this.a.getOpenInterfaceId() == 14670 || this.a.getOpenInterfaceId() == 679) {
-            Player player = this.a;
+        if (this.player.getOpenInterfaceId() == 14670 || this.player.getOpenInterfaceId() == 679) {
+            Player player = this.player;
             int n = player.botTaskItemId;
             int n2 = 1;
             int n3 = 1;
@@ -54,11 +54,11 @@ extends TickTask {
                 n2 = 20;
                 n3 = 2509;
             }
-            GameplayHelper.b(player, 27, n2, n, n3);
+            GameplayHelper.tanHide(player, 27, n2, n, n3);
             return;
         }
-        this.a.botInteractionOption = 2;
-        this.a.interactWithBotNpcTargets(this.a.botInteractionTargetIds);
+        this.player.botInteractionOption = 2;
+        this.player.interactWithBotNpcTargets(this.player.botInteractionTargetIds);
     }
 }
 

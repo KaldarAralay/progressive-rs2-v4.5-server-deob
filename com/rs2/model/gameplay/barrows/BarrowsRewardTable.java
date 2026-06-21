@@ -6,9 +6,9 @@ package com.rs2.model.gameplay.barrows;
 import com.rs2.model.gameplay.barrows.BarrowsRewardEntry;
 import java.util.ArrayList;
 
-final class BarrowsRewardTable
+public final class BarrowsRewardTable
 extends ArrayList {
-    BarrowsRewardTable() {
+    public BarrowsRewardTable() {
         this.add(new BarrowsRewardEntry(995, 2, 774, 1));
         this.add(new BarrowsRewardEntry(558, 253, 336, 381));
         this.add(new BarrowsRewardEntry(562, 112, 139, 506));

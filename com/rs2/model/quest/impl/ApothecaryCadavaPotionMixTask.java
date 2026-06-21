@@ -10,11 +10,11 @@ import com.rs2.model.quest.impl.ApothecaryCadavaPotionReadyTask;
 import com.rs2.model.quest.impl.RomeoAndJulietQuest;
 import com.rs2.model.task.TickTask;
 
-final class ApothecaryCadavaPotionMixTask
+public final class ApothecaryCadavaPotionMixTask
 extends TickTask {
     private TickTask a;
 
-    ApothecaryCadavaPotionMixTask(RomeoAndJulietQuest romeoAndJulietQuest, int n, Player player) {
+    public ApothecaryCadavaPotionMixTask(RomeoAndJulietQuest romeoAndJulietQuest, int n, Player player) {
         super(2);
         this.a = new ApothecaryCadavaPotionReadyTask(this, 2, player);
     }

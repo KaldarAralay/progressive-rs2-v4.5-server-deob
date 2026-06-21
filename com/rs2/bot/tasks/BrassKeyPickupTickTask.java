@@ -10,15 +10,15 @@ import com.rs2.model.ground.GroundItemManager;
 import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 
-final class BrassKeyPickupTickTask
+public final class BrassKeyPickupTickTask
 extends TickTask {
     private /* synthetic */ EdgevilleDungeonBrassKeyBotTask task;
     private final /* synthetic */ Player player;
 
-    BrassKeyPickupTickTask(EdgevilleDungeonBrassKeyBotTask edgevilleDungeonBrassKeyBotTask, int n, Player player) {
+    public BrassKeyPickupTickTask(EdgevilleDungeonBrassKeyBotTask edgevilleDungeonBrassKeyBotTask, int n, Player player) {
+        super(2);
         this.task = edgevilleDungeonBrassKeyBotTask;
         this.player = player;
-        super(2);
     }
 
     @Override

@@ -22,7 +22,7 @@ public final class DegradableEquipmentHandler {
             Player player2 = player;
             if (object != null) {
                 Object object2;
-                ItemStack itemStack = object;
+                ItemStack itemStack = (ItemStack)object;
                 int n3 = n2;
                 object = player2;
                 String[] stringArray = barrowsSetNameTokens;

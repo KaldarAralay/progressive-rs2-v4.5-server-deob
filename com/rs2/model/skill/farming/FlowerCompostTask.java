@@ -8,13 +8,13 @@ import com.rs2.model.skill.farming.FlowerPatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class FlowerCompostTask
+public final class FlowerCompostTask
 extends CycleEvent {
     private /* synthetic */ FlowerPatchManager manager;
     private final /* synthetic */ FlowerPatch patch;
     private final /* synthetic */ int compostItemId;
 
-    FlowerCompostTask(FlowerPatchManager flowerPatchManager, FlowerPatch flowerPatch, int n) {
+    public FlowerCompostTask(FlowerPatchManager flowerPatchManager, FlowerPatch flowerPatch, int n) {
         this.manager = flowerPatchManager;
         this.patch = flowerPatch;
         this.compostItemId = n;

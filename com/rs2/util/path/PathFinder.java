@@ -181,12 +181,12 @@ public final class PathFinder {
         return true;
     }
 
-    public static boolean findPath(Player player, int n, int n2, boolean n3, int n4, int n5) {
+    public static boolean findPath(Player player, int n, int n2, boolean bl, int n4, int n5) {
         int n6;
         int n7;
         int n8;
         int n9;
-        if (n == player.getPosition().getLocalX() && n2 == player.getPosition().getLocalY() && n3 == 0) {
+        if (n == player.getPosition().getLocalX() && n2 == player.getPosition().getLocalY() && !bl) {
             player.packetSender.sendGameMessage("ERROR!");
             return false;
         }
@@ -273,19 +273,19 @@ public final class PathFinder {
             nArray2[n10 + 1][n9 + 1] = n6;
         }
         if (n12 == 0) {
-            if (n3 != 0) {
+            if (bl) {
                 n8 = 1000;
                 n7 = 100;
-                n3 = n - 10;
-                while (n3 <= n + 10) {
+                int n13 = n - 10;
+                while (n13 <= n + 10) {
                     n12 = n2 - 10;
                     while (n12 <= n2 + 10) {
-                        if (n3 >= 0 && n12 >= 0 && n3 < 104 && n12 < 104 && nArray2[n3][n12] < 100) {
+                        if (n13 >= 0 && n12 >= 0 && n13 < 104 && n12 < 104 && nArray2[n13][n12] < 100) {
                             n11 = 0;
-                            if (n3 < n) {
-                                n11 = n - n3;
-                            } else if (n3 > n + n4 - 1) {
-                                n11 = n3 - (n + n4 - 1);
+                            if (n13 < n) {
+                                n11 = n - n13;
+                            } else if (n13 > n + n4 - 1) {
+                                n11 = n13 - (n + n4 - 1);
                             }
                             n6 = 0;
                             if (n12 < n2) {
@@ -294,16 +294,16 @@ public final class PathFinder {
                                 n6 = n12 - (n2 + n5 - 1);
                             }
                             n11 = n11 * n11 + n6 * n6;
-                            if (n11 < n8 || n11 == n8 && nArray2[n3][n12] < n7) {
+                            if (n11 < n8 || n11 == n8 && nArray2[n13][n12] < n7) {
                                 n8 = n11;
-                                n7 = nArray2[n3][n12];
-                                n10 = n3;
+                                n7 = nArray2[n13][n12];
+                                n10 = n13;
                                 n9 = n12;
                             }
                         }
                         ++n12;
                     }
-                    ++n3;
+                    ++n13;
                 }
                 if (n8 == 1000) {
                     return false;
@@ -338,13 +338,13 @@ public final class PathFinder {
         player.getMovementQueue().clear();
         n7 = n11--;
         n6 = (player.getPosition().getRegionX() << 3) + (Integer)linkedList.get(n11);
-        n3 = (player.getPosition().getRegionY() << 3) + (Integer)linkedList2.get(n11);
-        player.getMovementQueue().addStep(new Position(n6, n3));
+        int n13 = (player.getPosition().getRegionY() << 3) + (Integer)linkedList2.get(n11);
+        player.getMovementQueue().addStep(new Position(n6, n13));
         n12 = 1;
         while (n12 < n7) {
             n6 = (player.getPosition().getRegionX() << 3) + (Integer)linkedList.get(--n11);
-            n3 = (player.getPosition().getRegionY() << 3) + (Integer)linkedList2.get(n11);
-            player.getMovementQueue().addStep(new Position(n6, n3));
+            n13 = (player.getPosition().getRegionY() << 3) + (Integer)linkedList2.get(n11);
+            player.getMovementQueue().addStep(new Position(n6, n13));
             ++n12;
         }
         player.getMovementQueue().removeFirstStep();

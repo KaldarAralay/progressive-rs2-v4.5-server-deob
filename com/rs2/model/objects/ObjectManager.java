@@ -101,7 +101,8 @@ public final class ObjectManager {
         ArrayList<DynamicObject> arrayList = new ArrayList<DynamicObject>();
         ProfilerTimer profilerTimer = ProfilerRegistry.getTimer("tickObjects");
         profilerTimer.start();
-        for (DynamicObject dynamicObject : activeDynamicObjects) {
+        for (Object dynamicObjectObject : activeDynamicObjects) {
+            DynamicObject dynamicObject = (DynamicObject)dynamicObjectObject;
             if (dynamicObject.remainingTicks > 0 && dynamicObject.remainingTicks < 99999) {
                 --dynamicObject.remainingTicks;
                 continue;
@@ -112,7 +113,8 @@ public final class ObjectManager {
             if (!(dynamicObject.getWorldObject().getObjectId() <= 2078 && dynamicObject.getWorldObject().getObjectId() > 2073 || dynamicObject.getWorldObject().getObjectId() <= 1413 && dynamicObject.getWorldObject().getObjectId() > 1408) && (dynamicObject.getWorldObject().getObjectId() < 10725 || dynamicObject.getWorldObject().getObjectId() > 10727)) continue;
             arrayList.add(dynamicObject);
         }
-        for (DynamicObject dynamicObject : pendingRemovalObjects) {
+        for (Object dynamicObjectObject : pendingRemovalObjects) {
+            DynamicObject dynamicObject = (DynamicObject)dynamicObjectObject;
             activeDynamicObjects.remove(dynamicObject);
             if (dynamicObject.getWorldObject().getObjectId() < 115 || dynamicObject.getWorldObject().getObjectId() > 122) continue;
             PartyRoomManager.activeBalloonObjects.remove(dynamicObject);
@@ -155,7 +157,8 @@ public final class ObjectManager {
     }
 
     public static DynamicObject findDynamicObjectAt(int n, int n2, int n3) {
-        for (DynamicObject dynamicObject : activeDynamicObjects) {
+        for (Object dynamicObjectObject : activeDynamicObjects) {
+            DynamicObject dynamicObject = (DynamicObject)dynamicObjectObject;
             if (dynamicObject.getWorldObject().getPosition().getX() != n || dynamicObject.getWorldObject().getPosition().getY() != n2 || dynamicObject.getWorldObject().getPosition().getPlane() != n3) continue;
             return dynamicObject;
         }
@@ -163,7 +166,8 @@ public final class ObjectManager {
     }
 
     public static DynamicObject findDynamicObjectByIdAt(int n, int n2, int n3, int n4) {
-        for (DynamicObject dynamicObject : activeDynamicObjects) {
+        for (Object dynamicObjectObject : activeDynamicObjects) {
+            DynamicObject dynamicObject = (DynamicObject)dynamicObjectObject;
             if (dynamicObject.getWorldObject().getObjectId() != n || dynamicObject.getWorldObject().getPosition().getX() != n2 || dynamicObject.getWorldObject().getPosition().getY() != n3 || dynamicObject.getWorldObject().getPosition().getPlane() != n4) continue;
             return dynamicObject;
         }
@@ -186,7 +190,8 @@ public final class ObjectManager {
         if (player == null) {
             return;
         }
-        for (DynamicObject dynamicObject : player.visibleDynamicObjects) {
+        for (Object visibleDynamicObjectObject : player.visibleDynamicObjects) {
+            DynamicObject dynamicObject = (DynamicObject)visibleDynamicObjectObject;
             if (activeDynamicObjects.size() == 0) {
                 if (!ObjectManager.isVisibleToPlayer(dynamicObject, player)) continue;
                 player.pendingDynamicObjectRemovals.add(dynamicObject);
@@ -195,7 +200,8 @@ public final class ObjectManager {
                 continue;
             }
             boolean bl = false;
-            for (DynamicObject dynamicObject2 : activeDynamicObjects) {
+            for (Object dynamicObject2Object : activeDynamicObjects) {
+                DynamicObject dynamicObject2 = (DynamicObject)dynamicObject2Object;
                 if (dynamicObject != dynamicObject2) continue;
                 bl = true;
                 break;
@@ -205,14 +211,17 @@ public final class ObjectManager {
             Player player3 = player;
             player3.packetSender.sendObjectCreate(dynamicObject.restoreObjectId, dynamicObject.getWorldObject().getPosition().getX(), dynamicObject.getWorldObject().getPosition().getY(), dynamicObject.getWorldObject().getPosition().getPlane(), dynamicObject.orientation, dynamicObject.getWorldObject().getType());
         }
-        for (DynamicObject dynamicObject : player.pendingDynamicObjectRemovals) {
+        for (Object pendingDynamicObjectObject : player.pendingDynamicObjectRemovals) {
+            DynamicObject dynamicObject = (DynamicObject)pendingDynamicObjectObject;
             player.visibleDynamicObjects.remove(dynamicObject);
         }
         player.pendingDynamicObjectRemovals.clear();
-        for (DynamicObject dynamicObject : activeDynamicObjects) {
+        for (Object dynamicObjectObject : activeDynamicObjects) {
+            DynamicObject dynamicObject = (DynamicObject)dynamicObjectObject;
             if (!ObjectManager.isVisibleToPlayer(dynamicObject, player)) continue;
             boolean bl = false;
-            for (DynamicObject dynamicObject2 : player.visibleDynamicObjects) {
+            for (Object dynamicObject2Object : player.visibleDynamicObjects) {
+                DynamicObject dynamicObject2 = (DynamicObject)dynamicObject2Object;
                 if (dynamicObject2 != dynamicObject) continue;
                 bl = true;
                 break;
@@ -252,13 +261,10 @@ public final class ObjectManager {
         return player.getPosition().getPlane() == dynamicObject.getWorldObject().getPosition().getPlane() && GameUtil.isWithinDistance(dynamicObject.getWorldObject().getPosition().getX(), dynamicObject.getWorldObject().getPosition().getY(), player.getPosition().getX(), player.getPosition().getY(), 60);
     }
 
-    public final void addDynamicObject(DynamicObject object, boolean n) {
-        if (ObjectManager.findDynamicObjectAt(((DynamicObject)object).getWorldObject().getPosition().getX(), ((DynamicObject)object).getWorldObject().getPosition().getY(), ((DynamicObject)object).getWorldObject().getPosition().getPlane()) == null) {
-            activeDynamicObjects.add(object);
-            int n2 = n;
-            DynamicObject dynamicObject = object;
-            object = this;
-            if (n2 != 0) {
+    public final void addDynamicObject(DynamicObject dynamicObject, boolean updateCollision) {
+        if (ObjectManager.findDynamicObjectAt(dynamicObject.getWorldObject().getPosition().getX(), dynamicObject.getWorldObject().getPosition().getY(), dynamicObject.getWorldObject().getPosition().getPlane()) == null) {
+            activeDynamicObjects.add(dynamicObject);
+            if (updateCollision) {
                 if (dynamicObject.getWorldObject().getObjectId() > 0 && dynamicObject.getWorldObject().getObjectId() != ServerSettings.placeholderObjectId && !FiremakingHandler.isFireObjectId(dynamicObject.getWorldObject().getObjectId()) && !MithrilSeedFlowerHandler.isMithrilSeedFlowerObjectId(dynamicObject.getWorldObject().getObjectId())) {
                     ObjectManager.restoreObjectCollision(dynamicObject.restoreObjectId, dynamicObject.getWorldObject().getPosition().getX(), dynamicObject.getWorldObject().getPosition().getY(), dynamicObject.getWorldObject().getPosition().getPlane(), dynamicObject.getWorldObject().getOrientation(), dynamicObject.getWorldObject().getType());
                 } else {
@@ -267,13 +273,12 @@ public final class ObjectManager {
             }
             Player[] playerArray = World.getPlayers();
             int n3 = playerArray.length;
-            n2 = 0;
+            int n2 = 0;
             while (n2 < n3) {
-                object = playerArray[n2];
-                if (object != null && ((Entity)object).getPosition().getPlane() == dynamicObject.getWorldObject().getPosition().getPlane() && GameUtil.isWithinDistance(dynamicObject.getWorldObject().getPosition().getX(), dynamicObject.getWorldObject().getPosition().getY(), ((Entity)object).getPosition().getX(), ((Entity)object).getPosition().getY(), 60)) {
-                    Object object2 = object;
-                    ((Player)object2).packetSender.sendObjectCreate(dynamicObject.getWorldObject().getObjectId(), dynamicObject.getWorldObject().getPosition().getX(), dynamicObject.getWorldObject().getPosition().getY(), dynamicObject.getWorldObject().getPosition().getPlane(), dynamicObject.getWorldObject().getOrientation(), dynamicObject.getWorldObject().getType());
-                    ((Player)object).visibleDynamicObjects.add(dynamicObject);
+                Player player = playerArray[n2];
+                if (player != null && player.getPosition().getPlane() == dynamicObject.getWorldObject().getPosition().getPlane() && GameUtil.isWithinDistance(dynamicObject.getWorldObject().getPosition().getX(), dynamicObject.getWorldObject().getPosition().getY(), player.getPosition().getX(), player.getPosition().getY(), 60)) {
+                    player.packetSender.sendObjectCreate(dynamicObject.getWorldObject().getObjectId(), dynamicObject.getWorldObject().getPosition().getX(), dynamicObject.getWorldObject().getPosition().getY(), dynamicObject.getWorldObject().getPosition().getPlane(), dynamicObject.getWorldObject().getOrientation(), dynamicObject.getWorldObject().getType());
+                    player.visibleDynamicObjects.add(dynamicObject);
                 }
                 ++n2;
             }

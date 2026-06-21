@@ -7,11 +7,11 @@ import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.net.packet.PacketSender;
 
-final class DelayedUnlockEvent
+public final class DelayedUnlockEvent
 extends CycleEvent {
     private /* synthetic */ PacketSender packetSender;
 
-    DelayedUnlockEvent(PacketSender packetSender) {
+    public DelayedUnlockEvent(PacketSender packetSender) {
         this.packetSender = packetSender;
     }
 

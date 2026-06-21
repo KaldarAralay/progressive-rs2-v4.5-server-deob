@@ -24,7 +24,7 @@ import com.rs2.net.packet.PacketSender;
 import com.rs2.util.GameUtil;
 import com.rs2.util.TextUtil;
 
-final class MiningTask
+public final class MiningTask
 extends CycleEvent {
     private /* synthetic */ MiningManager manager;
     private final /* synthetic */ int actionSequence;
@@ -39,7 +39,7 @@ extends CycleEvent {
     private final /* synthetic */ double depletionChance;
     private final /* synthetic */ int respawnTicks;
 
-    MiningTask(MiningManager miningManager, int n, int n2, int n3, int n4, GatheringToolDefinition gatheringToolDefinition, int n5, int n6, int n7, int n8, double d, int n9) {
+    public MiningTask(MiningManager miningManager, int n, int n2, int n3, int n4, GatheringToolDefinition gatheringToolDefinition, int n5, int n6, int n7, int n8, double d, int n9) {
         this.manager = miningManager;
         this.actionSequence = n;
         this.rockObjectId = n2;
@@ -99,16 +99,16 @@ extends CycleEvent {
             return;
         }
         ObjectManager.getInstance();
-        String[] stringArray = ObjectManager.findDynamicObjectAt(this.x, this.y, MiningManager.getPlayer(this.manager).getPosition().getPlane());
-        if (stringArray != null && stringArray.getWorldObject().getObjectId() != this.rockObjectId) {
+        DynamicObject dynamicObject2 = ObjectManager.findDynamicObjectAt(this.x, this.y, MiningManager.getPlayer(this.manager).getPosition().getPlane());
+        if (dynamicObject2 != null && dynamicObject2.getWorldObject().getObjectId() != this.rockObjectId) {
             if (MiningManager.getPlayer(this.manager).getQuestState(0) != 1) {
                 MiningManager.getPlayer(this.manager).getDialogueManager().showOneLineStatement("There is no more ore in this rock.");
                 MiningManager.getPlayer(this.manager).setInteractionTargetId(0);
             }
-            stringArray = MiningManager.getPlayer(this.manager);
-            stringArray.packetSender.sendGameMessage("There is no more ore in this rock.");
-            stringArray = MiningManager.getPlayer(this.manager);
-            stringArray.packetSender.sendSoundEffect(429, 1, 0);
+            Player player2 = MiningManager.getPlayer(this.manager);
+            player2.packetSender.sendGameMessage("There is no more ore in this rock.");
+            player2 = MiningManager.getPlayer(this.manager);
+            player2.packetSender.sendSoundEffect(429, 1, 0);
             if (MiningManager.getPlayer((MiningManager)this.manager).botEnabled) {
                 MiningManager.getPlayer(this.manager).interactWithBotObjectTargets(MiningManager.getPlayer((MiningManager)this.manager).botInteractionTargetIds);
             }
@@ -125,7 +125,7 @@ extends CycleEvent {
         }
         if (this.rockObjectId != 2111 && GameUtil.randomInt(n3) == 0 && MiningManager.getPlayer(this.manager).getQuestState(0) == 1) {
             String[] stringArray2 = new String[]{"10/4681", "1/1024", "1/2048", "1/4096", "1/16384"};
-            stringArray = new String[]{"1/157", "1/344", "1/688", "1/1376", "1/5504"};
+            String[] stringArray = new String[]{"1/157", "1/344", "1/688", "1/1376", "1/5504"};
             int[] nArray = new int[]{65000, 1623, 1621, 1619, 1617};
             int n4 = GameUtil.rollFractionWeightIndex(MiningManager.getPlayer(this.manager).hasChargedAmuletOfGloryEquipped() ? stringArray : stringArray2);
             int n5 = nArray[n4];

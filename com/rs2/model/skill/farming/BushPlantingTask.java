@@ -10,14 +10,14 @@ import com.rs2.model.skill.farming.BushPatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class BushPlantingTask
+public final class BushPlantingTask
 extends CycleEvent {
     private /* synthetic */ BushPatchManager manager;
     private final /* synthetic */ BushPatch patch;
     private final /* synthetic */ int seedId;
     private final /* synthetic */ BushDefinition definition;
 
-    BushPlantingTask(BushPatchManager bushPatchManager, BushPatch bushPatch, int n, BushDefinition bushDefinition) {
+    public BushPlantingTask(BushPatchManager bushPatchManager, BushPatch bushPatch, int n, BushDefinition bushDefinition) {
         this.manager = bushPatchManager;
         this.patch = bushPatch;
         this.seedId = n;

@@ -51,16 +51,14 @@ public enum SnakeskinArmorRecipe {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private SnakeskinArmorRecipe(int n3, int n4, int n5, int n6, int n7, double d) {
-        void var10_8;
-        void var9_7;
-        this.buttonId = n3;
+    private SnakeskinArmorRecipe(int n2, int n3, int n4, int n5, int n6, int n7, int n8, double d) {
+        this.buttonId = n2;
         this.materialItemId = 6289;
-        this.materialAmount = n5;
-        this.productItemId = n6;
-        this.quantity = n7;
-        this.requiredLevel = var9_7;
-        this.experience = var10_8;
+        this.materialAmount = n4;
+        this.productItemId = n5;
+        this.quantity = n6;
+        this.requiredLevel = n8;
+        this.experience = d;
     }
 
     public final int getMaterialItemId() {

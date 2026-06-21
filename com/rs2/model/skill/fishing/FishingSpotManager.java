@@ -25,7 +25,7 @@ public final class FishingSpotManager {
             int n2 = 0;
             while (n2 < spotNpcIdsByLocation[n].length) {
                 Npc npc = new Npc(spotNpcIdsByLocation[n][n2]);
-                npc.a(spotPositions[n][n2]);
+                npc.moveTo(spotPositions[n][n2]);
                 npc.setMovementMode(NpcMovementMode.STATIONARY);
                 npc.setSpawnPosition(spotPositions[n][n2]);
                 npc.setRespawnEnabled(true);
@@ -37,14 +37,15 @@ public final class FishingSpotManager {
         }
     }
 
-    static boolean isSpotAtPosition(Position object, FishingSpotDefinition fishingSpotDefinition) {
-        if ((object = (Npc)activeSpotsByPosition.get(object)) != null) {
+    static boolean isSpotAtPosition(Position position, FishingSpotDefinition fishingSpotDefinition) {
+        Npc npc = (Npc)activeSpotsByPosition.get(position);
+        if (npc != null) {
             int[] nArray = fishingSpotDefinition.getSpotNpcIds();
             int n = nArray.length;
             int n2 = 0;
             while (n2 < n) {
                 int n3 = nArray[n2];
-                if (((Npc)object).getDefinition().getId() == n3) {
+                if (npc.getDefinition().getId() == n3) {
                     return true;
                 }
                 ++n2;

@@ -12,35 +12,35 @@ import com.rs2.model.skill.magic.MagicSpellAction;
 import com.rs2.model.skill.magic.Spellbook;
 import com.rs2.model.task.TickTask;
 
-final class NecromancyReanimateTask
+public final class NecromancyReanimateTask
 extends TickTask {
-    private /* synthetic */ MagicSpellAction a;
-    private final /* synthetic */ int b;
+    private /* synthetic */ MagicSpellAction spellAction;
+    private final /* synthetic */ int reanimationIndex;
 
-    NecromancyReanimateTask(MagicSpellAction magicSpellAction, int n, int n2) {
-        this.a = magicSpellAction;
-        this.b = n2;
+    public NecromancyReanimateTask(MagicSpellAction magicSpellAction, int n, int n2) {
         super(2);
+        this.spellAction = magicSpellAction;
+        this.reanimationIndex = n2;
     }
 
     @Override
     public final void execute() {
-        MagicSpellAction.getPlayer(this.a).getInventoryManager().removeItem(new ItemStack(MagicSpellAction.getNecromancyReanimationTable()[this.b][0], 1));
-        Entity entity = new Npc(MagicSpellAction.getNecromancyReanimationTable()[this.b][1]);
-        GameplayHelper.a(MagicSpellAction.getPlayer(this.a), entity, true, false);
+        MagicSpellAction.getPlayer(this.spellAction).getInventoryManager().removeItem(new ItemStack(MagicSpellAction.getNecromancyReanimationTable()[this.reanimationIndex][0], 1));
+        Entity entity = new Npc(MagicSpellAction.getNecromancyReanimationTable()[this.reanimationIndex][1]);
+        GameplayHelper.spawnOwnedNpcAdjacentToPlayer(MagicSpellAction.getPlayer(this.spellAction), (Npc)entity, true, false);
         entity.getUpdateState().setGraphicHeight100(110);
-        if (MagicSpellAction.getPlayer(this.a).getEquipmentManager().getItemIdAtSlot(5) != 8118) {
-            MagicSpellAction.getPlayer(this.a).setSpellbook(MagicSpellAction.getPlayer((MagicSpellAction)this.a).E);
-            if (MagicSpellAction.getPlayer(this.a).getSpellbook() == Spellbook.MODERN) {
-                entity = MagicSpellAction.getPlayer(this.a);
+        if (MagicSpellAction.getPlayer(this.spellAction).getEquipmentManager().getItemIdAtSlot(5) != 8118) {
+            MagicSpellAction.getPlayer(this.spellAction).setSpellbook(MagicSpellAction.getPlayer((MagicSpellAction)this.spellAction).E);
+            if (MagicSpellAction.getPlayer(this.spellAction).getSpellbook() == Spellbook.MODERN) {
+                entity = MagicSpellAction.getPlayer(this.spellAction);
                 ((Player)entity).packetSender.setSidebarInterface(6, 1151);
             }
-            if (MagicSpellAction.getPlayer(this.a).getSpellbook() == Spellbook.ANCIENT) {
-                entity = MagicSpellAction.getPlayer(this.a);
+            if (MagicSpellAction.getPlayer(this.spellAction).getSpellbook() == Spellbook.ANCIENT) {
+                entity = MagicSpellAction.getPlayer(this.spellAction);
                 ((Player)entity).packetSender.setSidebarInterface(6, 12855);
             }
         }
-        MagicSpellAction.getPlayer(this.a).setActionLocked(false);
+        MagicSpellAction.getPlayer(this.spellAction).setActionLocked(false);
         this.stop();
     }
 }

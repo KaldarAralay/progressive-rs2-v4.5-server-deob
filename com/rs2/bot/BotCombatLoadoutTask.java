@@ -7,13 +7,13 @@ import com.rs2.bot.BotPlayer;
 import com.rs2.bot.combat.BotCombatLoadoutManager;
 import com.rs2.model.task.TickTask;
 
-final class BotCombatLoadoutTask
+public final class BotCombatLoadoutTask
 extends TickTask {
     private final /* synthetic */ BotPlayer bot;
 
-    BotCombatLoadoutTask(BotPlayer botPlayer, int n, BotPlayer botPlayer2) {
-        this.bot = botPlayer2;
+    public BotCombatLoadoutTask(BotPlayer botPlayer, int n, BotPlayer botPlayer2) {
         super(2);
+        this.bot = botPlayer2;
     }
 
     @Override

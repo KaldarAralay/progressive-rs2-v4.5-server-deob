@@ -6,13 +6,13 @@ package com.rs2.model.npc;
 import com.rs2.model.npc.Npc;
 import com.rs2.model.task.TickTask;
 
-final class NpcSequenceAdvanceTask
+public final class NpcSequenceAdvanceTask
 extends TickTask {
     private /* synthetic */ Npc npc;
 
-    NpcSequenceAdvanceTask(Npc npc, int n) {
-        this.npc = npc;
+    public NpcSequenceAdvanceTask(Npc npc, int n) {
         super(10);
+        this.npc = npc;
     }
 
     @Override

@@ -10,43 +10,43 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class NpcRelocationEvent
+public final class NpcRelocationEvent
 extends CycleEvent {
-    private final /* synthetic */ Player a;
-    private final /* synthetic */ int b;
-    private final /* synthetic */ int c;
-    private final /* synthetic */ int d;
-    private final /* synthetic */ boolean e;
-    private final /* synthetic */ Npc f;
+    private final /* synthetic */ Player player;
+    private final /* synthetic */ int destinationX;
+    private final /* synthetic */ int destinationY;
+    private final /* synthetic */ int destinationPlane;
+    private final /* synthetic */ boolean unregisterSourceNpc;
+    private final /* synthetic */ Npc sourceNpc;
 
-    NpcRelocationEvent(Npc npc, Player player, int n, int n2, int n3, boolean bl, Npc npc2) {
-        this.a = player;
-        this.b = n;
-        this.c = n2;
-        this.d = n3;
-        this.e = bl;
-        this.f = npc2;
+    public NpcRelocationEvent(Npc npc, Player player, int n, int n2, int n3, boolean bl, Npc npc2) {
+        this.player = player;
+        this.destinationX = n;
+        this.destinationY = n2;
+        this.destinationPlane = n3;
+        this.unregisterSourceNpc = bl;
+        this.sourceNpc = npc2;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        this.a.moveTo(new Position(this.b, this.c, this.d));
-        Player player = this.a;
+        this.player.moveTo(new Position(this.destinationX, this.destinationY, this.destinationPlane));
+        Player player = this.player;
         player.packetSender.closeInterfaces();
-        this.a.getUpdateState().setAnimation(65535, 0);
-        if (this.e) {
-            Player player2 = this.a;
+        this.player.getUpdateState().setAnimation(65535, 0);
+        if (this.unregisterSourceNpc) {
+            Player player2 = this.player;
             player = player2;
-            player = this.a;
+            player = this.player;
             player2.packetSender.sendStillGraphic(86, player.H.getPosition(), 0x640000);
-            GameplayHelper.unregisterTemporaryNpc(this.f);
+            GameplayHelper.unregisterTemporaryNpc(this.sourceNpc);
         }
         cycleEventContainer.stop();
     }
 
     @Override
     public final void onStop() {
-        this.a.setActionLocked(false);
+        this.player.setActionLocked(false);
     }
 }
 

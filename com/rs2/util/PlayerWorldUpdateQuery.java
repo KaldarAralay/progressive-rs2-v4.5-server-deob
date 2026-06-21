@@ -9,17 +9,17 @@ import com.rs2.util.db.DatabaseQuery;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-final class PlayerWorldUpdateQuery
+public final class PlayerWorldUpdateQuery
 extends DatabaseQuery {
     private final /* synthetic */ Player player;
 
-    PlayerWorldUpdateQuery(PlayerLoginLoadCallback playerLoginLoadCallback, String string, Player player) {
-        this.player = player;
+    public PlayerWorldUpdateQuery(PlayerLoginLoadCallback playerLoginLoadCallback, String string, Player player) {
         super(string);
+        this.player = player;
     }
 
     @Override
-    public final ResultSet executeStatement(PreparedStatement preparedStatement) {
+    public final ResultSet executeStatement(PreparedStatement preparedStatement) throws java.sql.SQLException {
         preparedStatement.setInt(1, 1);
         preparedStatement.setInt(2, this.player.getReferenceId());
         preparedStatement.executeUpdate();

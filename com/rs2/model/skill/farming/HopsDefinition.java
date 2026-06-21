@@ -46,21 +46,19 @@ public enum HopsDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private HopsDefinition(int n3, int n4, int[] nArray, int n5, double d, double d2, double d3, int n6, int n22, int n7, int n8) {
-        void var17_12;
-        void var8_6;
-        this.seedId = n3;
-        this.produceItemId = n4;
-        this.seedAmount = (int)nArray;
+    private HopsDefinition(int n2, int n3, int n4, int n5, int[] nArray, int n6, double d, double d2, double d3, int n7, int n8, int n9, int n10) {
+        this.seedId = n2;
+        this.produceItemId = n3;
+        this.seedAmount = n4;
         this.requiredLevel = n5;
-        this.protectionPayment = (int[])d;
-        this.totalGrowthTicks = var8_6;
-        this.diseaseChance = d2;
-        this.plantingExperience = d3;
-        this.harvestExperience = n6;
+        this.protectionPayment = nArray;
+        this.totalGrowthTicks = n6;
+        this.diseaseChance = d;
+        this.plantingExperience = d2;
+        this.harvestExperience = d3;
         this.configStartStage = n7;
         this.configEndStage = n8;
-        this.harvestChanceLow = var17_12;
+        this.harvestChanceLow = n9;
         this.harvestChanceHigh = 180;
     }
 

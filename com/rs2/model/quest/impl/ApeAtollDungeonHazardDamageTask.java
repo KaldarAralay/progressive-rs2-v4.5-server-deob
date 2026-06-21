@@ -9,29 +9,29 @@ import com.rs2.model.quest.impl.MonkeyMadnessQuest;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 
-final class ApeAtollDungeonHazardDamageTask
+public final class ApeAtollDungeonHazardDamageTask
 extends TickTask {
     private /* synthetic */ MonkeyMadnessQuest a;
-    private final /* synthetic */ Player b;
+    private final /* synthetic */ Player player;
 
-    ApeAtollDungeonHazardDamageTask(MonkeyMadnessQuest monkeyMadnessQuest, int n, Player player) {
-        this.a = monkeyMadnessQuest;
-        this.b = player;
+    public ApeAtollDungeonHazardDamageTask(MonkeyMadnessQuest monkeyMadnessQuest, int n, Player player) {
         super(25);
+        this.a = monkeyMadnessQuest;
+        this.player = player;
     }
 
     @Override
     public final void execute() {
-        if (!this.b.isRegistered()) {
+        if (!this.player.isRegistered()) {
             this.stop();
             return;
         }
-        if (this.a.a.containsExclusive(this.b.getPosition()) && !this.a.b.containsExclusive(this.b.getPosition())) {
-            this.b.getUpdateState().setGraphic(60, 0);
-            this.b.applyDirectHit(GameUtil.randomInclusive(2), HitType.NORMAL);
+        if (this.a.a.containsExclusive(this.player.getPosition()) && !this.a.b.containsExclusive(this.player.getPosition())) {
+            this.player.getUpdateState().setGraphic(60, 0);
+            this.player.applyDirectHit(GameUtil.randomInclusive(2), HitType.NORMAL);
             return;
         }
-        this.b.activeEnvironmentalHazardId = -1;
+        this.player.activeEnvironmentalHazardId = -1;
         this.stop();
     }
 }

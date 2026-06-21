@@ -6,9 +6,9 @@ package com.rs2.bot;
 import com.rs2.bot.BotTaskDefinition;
 import java.util.ArrayList;
 
-final class RunecraftingBotTaskList
+public final class RunecraftingBotTaskList
 extends ArrayList {
-    RunecraftingBotTaskList() {
+    public RunecraftingBotTaskList() {
         this.add(BotTaskDefinition.getVarrockRuneEssenceMiningTask());
         this.add(BotTaskDefinition.getAirRuneRunecraftingTask());
         this.add(BotTaskDefinition.getMindRuneRunecraftingTask());

@@ -13,11 +13,11 @@ import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.util.GameUtil;
 
-final class RandomEventRollEvent
+public final class RandomEventRollEvent
 extends CycleEvent {
     private final /* synthetic */ Player player;
 
-    RandomEventRollEvent(Player player) {
+    public RandomEventRollEvent(Player player) {
         this.player = player;
     }
 
@@ -41,7 +41,7 @@ extends CycleEvent {
             case 0: {
                 this.player.getSingleCombatTimer().setDelayTicks(0);
                 this.player.getSingleCombatTimer().reset();
-                GameplayHelper.a(this.player, new Npc(411), true, false);
+                GameplayHelper.spawnOwnedNpcAdjacentToPlayer(this.player, new Npc(411), true, false);
                 return;
             }
             case 1: {

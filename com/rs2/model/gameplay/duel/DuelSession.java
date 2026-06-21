@@ -90,8 +90,7 @@ public final class DuelSession {
         DuelHistory.recordDuelResult(player, player2);
         String string = player2.getUsername();
         String string2 = "" + player2.getCombatLevel();
-        ItemStack[] itemStackArray = player2.getDuelSession();
-        itemStackArray = DuelSession.toItemArray(itemStackArray.stakedItems);
+        ItemStack[] itemStackArray = DuelSession.toItemArray(player2.getDuelSession().stakedItems);
         player.getDuelController().resetDuel(true);
         player.getDuelSession().clearDuelState();
         player2.getDuelSession().clearDuelState();

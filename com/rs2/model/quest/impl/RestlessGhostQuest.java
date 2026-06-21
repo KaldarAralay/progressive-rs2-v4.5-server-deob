@@ -20,6 +20,7 @@ import com.rs2.model.quest.QuestScript;
 import com.rs2.model.quest.impl.RestlessGhostCoffinGhostSpawnTask;
 import com.rs2.model.skill.woodcutting.WoodcuttingHandler;
 import com.rs2.model.task.TickTask;
+import com.rs2.util.GameUtil;
 import java.util.ArrayList;
 
 public final class RestlessGhostQuest
@@ -36,7 +37,7 @@ extends QuestScript {
                 return true;
             }
             if (player.getQuestState(this.getQuestId()) == 4) {
-                GameplayHelper.a(player, new Npc(459), true, false);
+                GameplayHelper.spawnOwnedNpcAdjacentToPlayer(player, new Npc(459), true, false);
                 player.setQuestState(this.getQuestId(), 5);
             }
             return false;
@@ -47,44 +48,38 @@ extends QuestScript {
     @Override
     public final boolean handleItemOnObject(Player object, int n, int n2, int n3) {
         if (((Player)object).getQuestState(this.getQuestId()) >= 5 && n == 553 && n2 == 2146 && Npc.findByDefinitionId(457) != null) {
-            Object object2 = object;
-            ((Player)object2).packetSender.sendGameMessage("You put the skull in the coffin.");
+            Player player = (Player)object;
+            player.packetSender.sendGameMessage("You put the skull in the coffin.");
             ObjectManager.getInstance().removeDynamicObjectAt(3249, 3192, 0, 0);
             ObjectManager.getInstance().addDynamicObject(new DynamicObject(2145, 3249, 3192, 0, 0, 10, 2145, 999999999), true);
-            object2 = new ArrayList<Npc>();
-            ((ArrayList)object2).add(Npc.findByDefinitionId(457));
-            object = new RestlessGhostCutscene((Player)object, (ArrayList)object2);
-            ((Cutscene)object).startCutscene();
+            ArrayList<Npc> object2 = new ArrayList<Npc>();
+            object2.add(Npc.findByDefinitionId(457));
+            Cutscene cutscene = new RestlessGhostCutscene(player, object2);
+            cutscene.startCutscene();
             return true;
         }
         return false;
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
-            stringArray = new String[]{"I can start this quest by speaking to Father Aereck in the", "church next to Lumbridge Castle", "I must be unafraid of a Level 13 Skeleton"};
-            return stringArray;
+            return new String[]{"I can start this quest by speaking to Father Aereck in the", "church next to Lumbridge Castle", "I must be unafraid of a Level 13 Skeleton"};
         }
         if (n == 2) {
-            stringArray = new String[]{"I should find Father Urhney for help to get rid", "of the ghost."};
-            return stringArray;
+            return new String[]{"I should find Father Urhney for help to get rid", "of the ghost."};
         }
         if (n == 3) {
-            stringArray = new String[]{"I should talk to the Ghost to find out why it is hunting the", "graveyard crypt."};
-            return stringArray;
+            return new String[]{"I should talk to the Ghost to find out why it is hunting the", "graveyard crypt."};
         }
         if (n == 4) {
-            stringArray = new String[]{"I should go and search the Wizard's Tower South West of", "Lumbridge for the Ghost's Skull."};
-            return stringArray;
+            return new String[]{"I should go and search the Wizard's Tower South West of", "Lumbridge for the Ghost's Skull."};
         }
         if (n >= 5) {
-            stringArray = new String[]{"I should bring the skull back to the graveyard crypt."};
-            return stringArray;
+            return new String[]{"I should bring the skull back to the graveyard crypt."};
         }
         if (n == 1) {
-            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "1 Quest Point", "1125 Prayer XP"};
-            return stringArray;
+            return new String[]{"Quest Completed!", "", "You were awarded:", "1 Quest Point", "1125 Prayer XP"};
         }
         return null;
     }
@@ -128,10 +123,9 @@ extends QuestScript {
                     Position position2 = new Position(3250, 3192, 0);
                     player2 = player;
                     Object object = this;
-                    n4 = RestlessGhostQuest.a((Position)position2, (Position)position);
-                    new WoodcuttingHandler(position2, 0, position, 0, new ProjectileDefinition(605, ProjectileTiming.d)).a();
-                    object = new RestlessGhostCoffinGhostSpawnTask((RestlessGhostQuest)object, n4, player2);
-                    World.getTaskScheduler().schedule((TickTask)object);
+                    n4 = GameUtil.getDistance(position2, position);
+                    new WoodcuttingHandler(position2, 0, position, 0, new ProjectileDefinition(605, ProjectileTiming.d)).sendProjectileToNearbyPlayers();
+                    World.getTaskScheduler().schedule(new RestlessGhostCoffinGhostSpawnTask((RestlessGhostQuest)object, n4, player2));
                 }
                 return true;
             }
@@ -183,7 +177,7 @@ extends QuestScript {
                 if (n2 == 6) {
                     if (n3 == 1) {
                         player.getDialogueManager().showPlayerOneLineDialogue("Ok, let me help then.", 591);
-                        this.d(player);
+                        this.startQuest(player);
                         player.getDialogueManager().setNextDialogueStep(7);
                         return true;
                     }

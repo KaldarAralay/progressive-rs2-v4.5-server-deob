@@ -8,34 +8,34 @@ import com.rs2.model.quest.impl.ManniDrinkingContestPlayerDrinkTask;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 
-final class ManniDrinkingContestResultTask
+public final class ManniDrinkingContestResultTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
     private final /* synthetic */ int b;
 
-    ManniDrinkingContestResultTask(ManniDrinkingContestPlayerDrinkTask manniDrinkingContestPlayerDrinkTask, int n, Player player, int n2) {
-        this.a = player;
-        this.b = n2;
+    public ManniDrinkingContestResultTask(ManniDrinkingContestPlayerDrinkTask manniDrinkingContestPlayerDrinkTask, int n, Player player, int n2) {
         super(7);
+        this.player = player;
+        this.b = n2;
     }
 
     @Override
     public final void execute() {
-        this.a.setActionLocked(false);
-        if ((this.a.questProgressFlags[this.b] & GameUtil.bitFlag(1)) == 0) {
+        this.player.setActionLocked(false);
+        if ((this.player.questProgressFlags[this.b] & GameUtil.bitFlag(1)) == 0) {
             int n = this.b;
-            this.a.questProgressFlags[n] = this.a.questProgressFlags[n] + GameUtil.bitFlag(1);
+            this.player.questProgressFlags[n] = this.player.questProgressFlags[n] + GameUtil.bitFlag(1);
         }
-        if (this.a.pendingGameMode == 3711) {
-            if ((this.a.getQuestState(this.b) & GameUtil.bitFlag(3)) == 0) {
-                this.a.addQuestState(this.b, GameUtil.bitFlag(3));
+        if (this.player.pendingGameMode == 3711) {
+            if ((this.player.getQuestState(this.b) & GameUtil.bitFlag(3)) == 0) {
+                this.player.addQuestState(this.b, GameUtil.bitFlag(3));
             }
-            this.a.getDialogueManager().showPlayerTwoLineDialogue("Aaaah, lovely stuff. So you want to get the next round", "in, or shall I? You don't look so good there!", 591);
-            Player player = this.a;
+            this.player.getDialogueManager().showPlayerTwoLineDialogue("Aaaah, lovely stuff. So you want to get the next round", "in, or shall I? You don't look so good there!", 591);
+            Player player = this.player;
             player.packetSender.sendGameMessage("Congratulations! You have completed the Revellers' trial.");
-            this.a.getDialogueManager().setNextDialogueStep(8);
+            this.player.getDialogueManager().setNextDialogueStep(8);
         } else {
-            this.a.getDialogueManager().showPlayerTwoLineDialogue("Ish no' fair! (hic) I canna drink another drop! I alsho", "feel veddy, veddy ill...", 591);
+            this.player.getDialogueManager().showPlayerTwoLineDialogue("Ish no' fair! (hic) I canna drink another drop! I alsho", "feel veddy, veddy ill...", 591);
         }
         this.stop();
     }

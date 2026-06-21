@@ -26,19 +26,18 @@ public class EntityReference {
     public final Entity resolve() {
         if (this.cachedEntity == null || this.cachedEntity.getIndex() == -1) {
             this.cachedEntity = null;
-            Object object = this.playerReference ? World.getPlayers() : World.getNpcs();
-            Entity[] entityArray = object;
-            int n = ((Entity[])object).length;
+            Entity[] entities = this.playerReference ? World.getPlayers() : World.getNpcs();
+            int n = entities.length;
             int n2 = 0;
             while (n2 < n) {
-                object = entityArray[n2];
-                if (object != null) {
+                Entity entity = entities[n2];
+                if (entity != null) {
                     Player player;
-                    if (((Entity)object).isPlayer() && this.playerReference && (player = (Player)object).getUsername().equals(this.playerUsername)) {
-                        return object;
+                    if (entity.isPlayer() && this.playerReference && (player = (Player)entity).getUsername().equals(this.playerUsername)) {
+                        return entity;
                     }
-                    if (!this.playerReference && ((Entity)object).getReferenceId() == this.referenceId) {
-                        this.cachedEntity = object;
+                    if (!this.playerReference && entity.getReferenceId() == this.referenceId) {
+                        this.cachedEntity = entity;
                         break;
                     }
                 }
@@ -60,7 +59,7 @@ public class EntityReference {
                 return true;
             }
             if (((Entity)object).isPlayer() == this.playerReference && ((Entity)object).getReferenceId() == this.referenceId) {
-                this.cachedEntity = object;
+                this.cachedEntity = (Entity)object;
                 return true;
             }
             return false;

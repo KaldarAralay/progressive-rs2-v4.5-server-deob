@@ -42,8 +42,8 @@ implements PacketHandler {
     public final void handle(Player player, IncomingPacket object) {
         int n = ((IncomingPacket)object).getReader().readSignedShort();
         ((IncomingPacket)object).getReader().readSignedByte();
-        object = InterfaceDefinition.forId(n);
-        int n2 = ((InterfaceDefinition)object).getParentInterfaceId();
+        InterfaceDefinition interfaceDefinition = InterfaceDefinition.forId(n);
+        int n2 = interfaceDefinition.getParentInterfaceId();
         if (n2 == 3917) {
             player.packetSender.sendEnterInputPrompt(n);
         }

@@ -44,26 +44,20 @@ public enum FarmedTreeDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private FarmedTreeDefinition(int n3, int[] nArray, int n4, double d, double d2, double n2222, int n2222, int n5, int n2222, int n6, int n7) {
-        void var18_13;
-        void var17_12;
-        void cfr_renamed_10;
-        void cfr_renamed_11;
-        void cfr_renamed_4;
-        void var7_5;
-        this.saplingId = n3;
-        this.rootItemId = (int)nArray;
+    private FarmedTreeDefinition(int n2, int n3, int n4, int[] nArray, int n5, double d, double d2, double d3, int n6, int n7, int n8, int n9, int n10) {
+        this.saplingId = n2;
+        this.rootItemId = n3;
         this.requiredLevel = n4;
-        this.protectionPayment = (int[])d;
-        this.totalGrowthTicks = var7_5;
-        this.diseaseChance = d2;
-        this.plantingExperience = cfr_renamed_4;
-        this.healthCheckExperience = cfr_renamed_11;
-        this.configStartStage = cfr_renamed_10;
-        this.configEndStage = n6;
-        this.checkedTreeConfigStage = n7;
-        this.stumpConfigStage = var17_12;
-        this.treeObjectId = var18_13;
+        this.protectionPayment = nArray;
+        this.totalGrowthTicks = n5;
+        this.diseaseChance = d;
+        this.plantingExperience = d2;
+        this.healthCheckExperience = d3;
+        this.configStartStage = n6;
+        this.configEndStage = n7;
+        this.checkedTreeConfigStage = n8;
+        this.stumpConfigStage = n9;
+        this.treeObjectId = n10;
     }
 
     public static FarmedTreeDefinition forSaplingId(int n) {

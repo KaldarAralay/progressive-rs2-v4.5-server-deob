@@ -34,11 +34,9 @@ public enum AllotmentGrowthDefinition {
     /*
      * WARNING - void declaration
      */
-    private AllotmentGrowthDefinition() {
-        void var4_1;
-        void var3_2;
-        this.cropId = var3_2;
-        this.growthMessages = var4_1;
+    private AllotmentGrowthDefinition(int n2, String[][] stringArray) {
+        this.cropId = n2;
+        this.growthMessages = stringArray;
     }
 
     public static AllotmentGrowthDefinition forCropId(int n) {

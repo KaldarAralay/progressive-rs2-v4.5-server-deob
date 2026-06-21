@@ -29,50 +29,39 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
-            stringArray = new String[]{"I can start this quest by speaking to King Roald in Varrock", "Palace", "", "I must be able to defeat a level 30 enemy"};
-            return stringArray;
+            return new String[]{"I can start this quest by speaking to King Roald in Varrock", "Palace", "", "I must be able to defeat a level 30 enemy"};
         }
         if (n == 2) {
-            stringArray = new String[]{"I should investigate what happened to Drezel, who lives", "in a temple east of Varrock."};
-            return stringArray;
+            return new String[]{"I should investigate what happened to Drezel, who lives", "in a temple east of Varrock."};
         }
         if (n == 3) {
-            stringArray = new String[]{"Drezel told me there is an annoying dog below the temple", "and asked me to kill it."};
-            return stringArray;
+            return new String[]{"Drezel told me there is an annoying dog below the temple", "and asked me to kill it."};
         }
         if (n == 4) {
-            stringArray = new String[]{"I should go tell Drezel now that I have taken", "care of the dog."};
-            return stringArray;
+            return new String[]{"I should go tell Drezel now that I have taken", "care of the dog."};
         }
         if (n == 5) {
-            stringArray = new String[]{"I should go tell King Roald that everything is fine now", "and claim my reward."};
-            return stringArray;
+            return new String[]{"I should go tell King Roald that everything is fine now", "and claim my reward."};
         }
         if (n == 6) {
-            stringArray = new String[]{"I must return to the temple and find out what happened", "to the real Drezel, or the King will have me executed!"};
-            return stringArray;
+            return new String[]{"I must return to the temple and find out what happened", "to the real Drezel, or the King will have me executed!"};
         }
         if (n == 7) {
-            stringArray = new String[]{"I found the real Drezel locked in a makeshift cell", "upstairs, guarded by a vampyre.", "", "I need to find the key to his cell and free him!"};
-            return stringArray;
+            return new String[]{"I found the real Drezel locked in a makeshift cell", "upstairs, guarded by a vampyre.", "", "I need to find the key to his cell and free him!"};
         }
         if (n == 8) {
-            stringArray = new String[]{"I unlocked the door to Drezel's cell, I should go", "and ask him what to do about the vampyre."};
-            return stringArray;
+            return new String[]{"I unlocked the door to Drezel's cell, I should go", "and ask him what to do about the vampyre."};
         }
         if (n == 10) {
-            stringArray = new String[]{"Drezel told me that I should try to get hold of", "some water of the Salve."};
-            return stringArray;
+            return new String[]{"Drezel told me that I should try to get hold of", "some water of the Salve."};
         }
         if (n == 11) {
-            stringArray = new String[]{"I should tell Drezel that the vampire is trapped", "now."};
-            return stringArray;
+            return new String[]{"I should tell Drezel that the vampire is trapped", "now."};
         }
         if (n == 12) {
-            stringArray = new String[]{"Drezel told me to meet him down by the monument", "below the temple."};
-            return stringArray;
+            return new String[]{"Drezel told me to meet him down by the monument", "below the temple."};
         }
         if (n >= 13 && n < 63) {
             int n2 = 63 - n;
@@ -80,12 +69,10 @@ extends QuestScript {
             return stringArray2;
         }
         if (n == 63) {
-            stringArray = new String[]{"I should speak with Drezel to finish this quest."};
-            return stringArray;
+            return new String[]{"I should speak with Drezel to finish this quest."};
         }
         if (n == 1) {
-            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "1 Quest Point", "1406 Prayer XP", "Wolfbane dagger", "Route to Canifis"};
-            return stringArray;
+            return new String[]{"Quest Completed!", "", "You were awarded:", "1 Quest Point", "1406 Prayer XP", "Wolfbane dagger", "Route to Canifis"};
         }
         return null;
     }
@@ -671,8 +658,8 @@ extends QuestScript {
     @Override
     public final boolean handleNpcDeathDrop(Player object, int n, Position position, int n2) {
         if (n == 1046 && n2 != 1 && !((Player)object).ownsItem(2944) && !((Player)object).ownsItem(2945) && n2 < 8) {
-            object = new GroundItem(new ItemStack(2944, 1), (Entity)object, position);
-            GroundItemManager.getInstance().spawn((GroundItem)object);
+            GroundItem groundItem = new GroundItem(new ItemStack(2944, 1), (Entity)object, position);
+            GroundItemManager.getInstance().spawn(groundItem);
             return true;
         }
         return false;
@@ -724,7 +711,7 @@ extends QuestScript {
                     if (n3 == 1) {
                         player.getDialogueManager().showPlayerOneLineDialogue("Sure. I don't have anything better to do right now.", 591);
                         player.getDialogueManager().setNextDialogueStep(11);
-                        this.d(player);
+                        this.startQuest(player);
                         return true;
                     }
                     player.getDialogueManager().finishDialogue();

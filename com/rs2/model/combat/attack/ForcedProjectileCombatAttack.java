@@ -16,7 +16,7 @@ import com.rs2.model.combat.effect.CombatEffect;
 import com.rs2.model.combat.hit.HitDefinition;
 import com.rs2.model.combat.hit.HitType;
 
-final class ForcedProjectileCombatAttack
+public final class ForcedProjectileCombatAttack
 extends BaseCombatAttack {
     private final /* synthetic */ AttackXpMode xpMode;
     private final /* synthetic */ CombatType combatType;
@@ -31,7 +31,8 @@ extends BaseCombatAttack {
     private final /* synthetic */ int attackDelay;
     private final /* synthetic */ GraphicEffect attackerGraphic;
 
-    ForcedProjectileCombatAttack(Entity entity, Entity entity2, AttackXpMode attackXpMode, CombatType combatType, ProjectileTiming projectileTiming, int n, boolean bl, int n2, int n3, GraphicEffect graphicEffect, CombatEffect combatEffect, int n4, int n5, GraphicEffect graphicEffect2) {
+    public ForcedProjectileCombatAttack(Entity entity, Entity entity2, AttackXpMode attackXpMode, CombatType combatType, ProjectileTiming projectileTiming, int n, boolean bl, int n2, int n3, GraphicEffect graphicEffect, CombatEffect combatEffect, int n4, int n5, GraphicEffect graphicEffect2) {
+        super(entity, entity2);
         this.xpMode = attackXpMode;
         this.combatType = combatType;
         this.projectileTiming = projectileTiming;
@@ -44,7 +45,6 @@ extends BaseCombatAttack {
         this.animationId = n4;
         this.attackDelay = n5;
         this.attackerGraphic = graphicEffect2;
-        super(entity, entity2);
     }
 
     @Override

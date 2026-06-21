@@ -8,11 +8,11 @@ import com.rs2.model.skill.farming.AllotmentPatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class AllotmentCureTask
+public final class AllotmentCureTask
 extends CycleEvent {
     private /* synthetic */ AllotmentPatchManager manager;
 
-    AllotmentCureTask(AllotmentPatchManager allotmentPatchManager) {
+    public AllotmentCureTask(AllotmentPatchManager allotmentPatchManager) {
         this.manager = allotmentPatchManager;
     }
 

@@ -12,9 +12,9 @@ import com.rs2.model.combat.hit.HitType;
 import com.rs2.model.combat.special.DragonAxeSpecialDefinition;
 import com.rs2.model.player.Player;
 
-final class DragonAxeSpecialAttack
+public final class DragonAxeSpecialAttack
 extends WeaponCombatAttack {
-    DragonAxeSpecialAttack(DragonAxeSpecialDefinition dragonAxeSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile) {
+    public DragonAxeSpecialAttack(DragonAxeSpecialDefinition dragonAxeSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile) {
         super(player, entity, weaponProfile);
     }
 

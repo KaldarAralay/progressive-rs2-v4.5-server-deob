@@ -189,8 +189,7 @@ extends BotTaskDefinition {
                 arrayList.add(881);
                 ((Player)object).botRouteActionPending = true;
                 if (((Player)object).interactWithBotObjectTargetsNoRetry(arrayList, false)) {
-                    object = new SouthMossGiantDungeonEntryTickTask(this, 3, (Player)object);
-                    World.getTaskScheduler().schedule((TickTask)object);
+                    World.getTaskScheduler().schedule(new SouthMossGiantDungeonEntryTickTask(this, 3, (Player)object));
                     return;
                 }
                 arrayList.clear();

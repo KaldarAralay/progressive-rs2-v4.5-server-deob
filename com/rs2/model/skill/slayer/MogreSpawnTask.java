@@ -3,24 +3,23 @@
  */
 package com.rs2.model.skill.slayer;
 
-import com.rs2.model.Entity;
 import com.rs2.model.GameplayHelper;
 import com.rs2.model.Position;
 import com.rs2.model.skill.slayer.SlayerManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class MogreSpawnTask
+public final class MogreSpawnTask
 extends CycleEvent {
     private /* synthetic */ SlayerManager slayerManager;
 
-    MogreSpawnTask(SlayerManager slayerManager) {
+    public MogreSpawnTask(SlayerManager slayerManager) {
         this.slayerManager = slayerManager;
     }
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
-        GameplayHelper.a((Entity)SlayerManager.getPlayer(this.slayerManager), SlayerManager.MOGRE_SPAWN, new Position(SlayerManager.getPlayer(this.slayerManager).getPosition().getX(), SlayerManager.getPlayer(this.slayerManager).getPosition().getY()), false, null);
+        GameplayHelper.spawnNpcTargetingEntityAtPosition(SlayerManager.getPlayer(this.slayerManager), SlayerManager.MOGRE_SPAWN, new Position(SlayerManager.getPlayer(this.slayerManager).getPosition().getX(), SlayerManager.getPlayer(this.slayerManager).getPosition().getY()), false, null);
         cycleEventContainer.stop();
     }
 

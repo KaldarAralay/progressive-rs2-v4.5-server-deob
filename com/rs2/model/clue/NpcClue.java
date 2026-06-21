@@ -73,14 +73,12 @@ public enum NpcClue {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private NpcClue(int n, String string, int n2) {
-        void var7_5;
-        void var6_4;
-        this.clueTextLines = (String[])n;
-        this.clueItemId = (int)string;
-        this.npcId = n2;
-        this.followupType = var6_4;
-        this.level = var7_5;
+    private NpcClue(String[] stringArray, int n2, int n3, String string2, int n4) {
+        this.clueTextLines = stringArray;
+        this.clueItemId = n2;
+        this.npcId = n3;
+        this.followupType = string2;
+        this.level = n4;
     }
 
     public final String[] getClueTextLines() {

@@ -6,35 +6,35 @@ package com.rs2.model.task;
 import com.rs2.model.World;
 
 public class DelayTimer {
-    private int a;
-    private int b;
+    private int startTick;
+    private int delayTicks;
 
     public DelayTimer(int n) {
         int n2 = n;
         DelayTimer delayTimer = this;
-        this.b = n2;
+        this.delayTicks = n2;
         delayTimer = this;
-        this.a = World.tickCount;
+        this.startTick = World.tickCount;
     }
 
     public final int getDelayTicks() {
-        return this.b;
+        return this.delayTicks;
     }
 
     public final void setDelayTicks(int n) {
-        this.b = n;
+        this.delayTicks = n;
     }
 
     public final void reset() {
-        this.a = World.tickCount;
+        this.startTick = World.tickCount;
     }
 
     public final boolean hasElapsed() {
-        return World.tickCount - this.a >= this.b;
+        return World.tickCount - this.startTick >= this.delayTicks;
     }
 
     public final int getRemainingTicks() {
-        return this.b - (World.tickCount - this.a);
+        return this.delayTicks - (World.tickCount - this.startTick);
     }
 }
 

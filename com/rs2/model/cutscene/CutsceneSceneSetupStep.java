@@ -7,15 +7,15 @@ import com.rs2.model.cutscene.Cutscene;
 import com.rs2.model.cutscene.CutsceneStep;
 import com.rs2.model.player.Player;
 
-final class CutsceneSceneSetupStep
+public final class CutsceneSceneSetupStep
 extends CutsceneStep {
     private /* synthetic */ Cutscene cutscene;
     private final /* synthetic */ Player player;
 
-    CutsceneSceneSetupStep(Cutscene cutscene, Cutscene cutscene2, int n, Player player) {
+    public CutsceneSceneSetupStep(Cutscene cutscene, Cutscene cutscene2, int n, Player player) {
+        super(cutscene, 4);
         this.cutscene = cutscene2;
         this.player = player;
-        super(cutscene, 4);
     }
 
     @Override

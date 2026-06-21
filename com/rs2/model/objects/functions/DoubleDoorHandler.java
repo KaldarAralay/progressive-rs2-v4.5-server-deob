@@ -30,9 +30,10 @@ public final class DoubleDoorHandler {
 
     private static DoubleDoorHandler getOrCreateDoubleDoorState(int n, int n2, int n3) {
         Object object2;
-        for (Object object2 : doorStates) {
-            if (((DoubleDoorHandler)object2).currentX != n || ((DoubleDoorHandler)object2).currentY != n2 || ((DoubleDoorHandler)object2).plane != n3) continue;
-            return object2;
+        for (Object doorStateObject : doorStates) {
+            DoubleDoorHandler doubleDoorHandler = (DoubleDoorHandler)doorStateObject;
+            if (doubleDoorHandler.currentX != n || doubleDoorHandler.currentY != n2 || doubleDoorHandler.plane != n3) continue;
+            return doubleDoorHandler;
         }
         object2 = WorldObjectLookup.findObjectByNameAt("door", n, n2, n3);
         if (object2 == null && (object2 = WorldObjectLookup.findObjectByNameAt("gate", n, n2, n3)) == null && (object2 = WorldObjectLookup.findObjectByNameAt("fence", n, n2, n3)) == null) {
@@ -244,9 +245,8 @@ public final class DoubleDoorHandler {
      * WARNING - void declaration
      */
     private static void a(DoubleDoorHandler doubleDoorHandler, boolean bl) {
-        void var1_20;
-        void var1_8;
-        boolean bl2 = false;
+        int var1_20 = doubleDoorHandler.currentOrientation;
+        int var1_8 = 0;
         int n = 0;
         ObjectManager.getInstance();
         Object object = ObjectManager.findDynamicObjectByIdAt(doubleDoorHandler.currentObjectId, doubleDoorHandler.currentX, doubleDoorHandler.currentY, doubleDoorHandler.plane);
@@ -260,11 +260,11 @@ public final class DoubleDoorHandler {
         }
         if (!doubleDoorHandler.initiallyOpen) {
             if (doubleDoorHandler.originalOrientation == 0 && doubleDoorHandler.currentOrientation == 0) {
-                int n2 = -1;
+                var1_8 = -1;
             } else if (doubleDoorHandler.originalOrientation == 1 && doubleDoorHandler.currentOrientation == 1) {
                 n = 1;
             } else if (doubleDoorHandler.originalOrientation == 2 && doubleDoorHandler.currentOrientation == 2) {
-                boolean bl3 = true;
+                var1_8 = 1;
             } else if (doubleDoorHandler.originalOrientation == 3 && doubleDoorHandler.currentOrientation == 3) {
                 n = -1;
             }
@@ -272,14 +272,14 @@ public final class DoubleDoorHandler {
             if (doubleDoorHandler.originalOrientation == 0 && doubleDoorHandler.currentOrientation == 0) {
                 n = -1;
             } else if (doubleDoorHandler.originalOrientation == 1 && doubleDoorHandler.currentOrientation == 1) {
-                int n3 = -1;
+                var1_8 = -1;
             } else if (doubleDoorHandler.originalOrientation == 2 && doubleDoorHandler.currentOrientation == 2) {
-                int n4 = -1;
+                var1_8 = -1;
             } else if (doubleDoorHandler.originalOrientation == 3 && doubleDoorHandler.currentOrientation == 3) {
-                int n5 = -1;
+                n = -1;
             }
         }
-        if (var1_8 != false || n != 0) {
+        if (var1_8 != 0 || n != 0) {
             ObjectManager.getInstance().removeDynamicObjectAt(doubleDoorHandler.currentX, doubleDoorHandler.currentY, doubleDoorHandler.plane, 0);
             new DynamicObject(ServerSettings.placeholderObjectId, doubleDoorHandler.currentX, doubleDoorHandler.currentY, doubleDoorHandler.plane, 0, 0, ServerSettings.placeholderObjectId, 999999999);
         }
@@ -307,35 +307,35 @@ public final class DoubleDoorHandler {
         int n10 = doubleDoorHandler.originalOrientation;
         if (!doubleDoorHandler.initiallyOpen) {
             if (doubleDoorHandler.originalOrientation == 0 && doubleDoorHandler.currentOrientation == 0) {
-                int n11 = 3;
+                var1_20 = 3;
             } else if (doubleDoorHandler.originalOrientation == 1 && doubleDoorHandler.currentOrientation == 1) {
-                boolean bl4 = false;
+                var1_20 = 0;
             } else if (doubleDoorHandler.originalOrientation == 2 && doubleDoorHandler.currentOrientation == 2) {
-                boolean bl5 = true;
+                var1_20 = 1;
             } else if (doubleDoorHandler.originalOrientation == 3 && doubleDoorHandler.currentOrientation == 3) {
-                boolean bl6 = false;
+                var1_20 = 0;
             } else if (doubleDoorHandler.originalOrientation != doubleDoorHandler.currentOrientation) {
-                int n12 = doubleDoorHandler.originalOrientation;
+                var1_20 = doubleDoorHandler.originalOrientation;
             }
         } else if (doubleDoorHandler.initiallyOpen) {
             if (doubleDoorHandler.originalOrientation == 0 && doubleDoorHandler.currentOrientation == 0) {
-                boolean bl7 = true;
+                var1_20 = 1;
             } else if (doubleDoorHandler.originalOrientation == 1 && doubleDoorHandler.currentOrientation == 1) {
-                int n13 = 2;
+                var1_20 = 2;
             } else if (doubleDoorHandler.originalOrientation == 2 && doubleDoorHandler.currentOrientation == 2) {
-                boolean bl8 = true;
+                var1_20 = 1;
             } else if (doubleDoorHandler.originalOrientation == 3 && doubleDoorHandler.currentOrientation == 3) {
-                int n14 = 2;
+                var1_20 = 2;
             } else if (doubleDoorHandler.originalOrientation != doubleDoorHandler.currentOrientation) {
-                int n15 = doubleDoorHandler.originalOrientation;
+                var1_20 = doubleDoorHandler.originalOrientation;
             }
         }
         doubleDoorHandler.currentOrientation = var1_20;
         new DynamicObject(n6, n7, n8, n9, (int)var1_20, 0, ServerSettings.placeholderObjectId, 999999999);
     }
 
-    private static void b(DoubleDoorHandler doubleDoorHandler, boolean n) {
-        n = 0;
+    private static void b(DoubleDoorHandler doubleDoorHandler, boolean bl) {
+        int n = 0;
         int n2 = 0;
         ObjectManager.getInstance();
         Object object = ObjectManager.findDynamicObjectByIdAt(doubleDoorHandler.currentObjectId, doubleDoorHandler.currentX, doubleDoorHandler.currentY, doubleDoorHandler.plane);
@@ -388,7 +388,7 @@ public final class DoubleDoorHandler {
                 n = -1;
             }
         }
-        if (n || n2 != 0) {
+        if (n != 0 || n2 != 0) {
             ObjectManager.getInstance().removeDynamicObjectAt(doubleDoorHandler.currentX, doubleDoorHandler.currentY, doubleDoorHandler.plane, 0);
             new DynamicObject(ServerSettings.placeholderObjectId, doubleDoorHandler.currentX, doubleDoorHandler.currentY, doubleDoorHandler.plane, 0, 0, ServerSettings.placeholderObjectId, 999999999);
         }

@@ -13,14 +13,14 @@ import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.util.GameUtil;
 
-final class HopsHarvestTask
+public final class HopsHarvestTask
 extends CycleEvent {
     private /* synthetic */ HopsPatchManager manager;
     private final /* synthetic */ int actionSequence;
     private final /* synthetic */ HopsDefinition definition;
     private final /* synthetic */ HopsPatch patch;
 
-    HopsHarvestTask(HopsPatchManager hopsPatchManager, int n, HopsDefinition hopsDefinition, HopsPatch hopsPatch) {
+    public HopsHarvestTask(HopsPatchManager hopsPatchManager, int n, HopsDefinition hopsDefinition, HopsPatch hopsPatch) {
         this.manager = hopsPatchManager;
         this.actionSequence = n;
         this.definition = hopsDefinition;
@@ -43,7 +43,7 @@ extends CycleEvent {
             this.manager.harvestAmounts[n] = this.manager.harvestAmounts[n] - 1;
         }
         if (this.manager.harvestAmounts[this.patch.getIndex()] <= 0) {
-            HopsPatchManager.a(this.manager, this.patch.getIndex());
+            HopsPatchManager.resetPatch(this.manager, this.patch.getIndex());
             this.manager.growthStages[this.patch.getIndex()] = 3;
             this.manager.lastUpdateTicks[this.patch.getIndex()] = Server.getElapsedMinutes();
             cycleEventContainer.stop();

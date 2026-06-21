@@ -24,11 +24,9 @@ public enum BoneDefinition {
     /*
      * WARNING - void declaration
      */
-    private BoneDefinition() {
-        void var4_2;
-        void var3_1;
-        this.itemIds = var3_1;
-        this.experience = var4_2;
+    private BoneDefinition(int[] nArray, double d) {
+        this.itemIds = nArray;
+        this.experience = d;
     }
 }
 

@@ -97,25 +97,21 @@ public enum AmmunitionDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private AmmunitionDefinition(int n3) {
-        void var5_3;
-        void var4_2;
-        this.graphicId = var4_2;
-        this.projectileId = n3;
-        this.rangedStrength = var5_3;
+    private AmmunitionDefinition(int n2, int n3, int n4) {
+        this.graphicId = n3;
+        this.projectileId = n2;
+        this.rangedStrength = n4;
     }
 
     /*
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private AmmunitionDefinition(int n3, int n4) {
-        void var6_4;
-        void var5_3;
-        this.graphicId = n4;
-        this.alternateGraphicId = var5_3;
-        this.projectileId = n3;
-        this.rangedStrength = var6_4;
+    private AmmunitionDefinition(int n2, int n3, int n4, int n5) {
+        this.graphicId = n3;
+        this.alternateGraphicId = n4;
+        this.projectileId = n2;
+        this.rangedStrength = n5;
     }
 
     public final int getRangedStrength() {
@@ -134,10 +130,10 @@ public enum AmmunitionDefinition {
         return this.alternateGraphicId;
     }
 
-    public static boolean isCompatible(Player object, ItemStack itemStack, ItemStack itemStack2) {
+    public static boolean isCompatible(Player player, ItemStack itemStack, ItemStack itemStack2) {
         WeaponProfile weaponProfile = WeaponProfile.forItem(itemStack);
-        Object object2 = weaponProfile.getAmmunitionProfile();
-        if (object2 == null) {
+        AmmunitionProfile ammunitionProfile = weaponProfile.getAmmunitionProfile();
+        if (ammunitionProfile == null) {
             return false;
         }
         if (itemStack2 == null) {
@@ -146,27 +142,27 @@ public enum AmmunitionDefinition {
         if (itemStack == null) {
             return false;
         }
-        int n = ((AmmunitionProfile)((Object)object2)).getEquipmentSlot();
+        int n = ammunitionProfile.getEquipmentSlot();
         String string = ItemDefinition.forId(itemStack2.getId()).getName().toLowerCase().replaceAll(" ", "_").replaceAll("\\(", "").replaceAll("\\)", "");
-        object2 = ((AmmunitionProfile)((Object)object2)).getAllowedAmmunition();
-        AmmunitionDefinition[] ammunitionDefinitionArray = object2;
-        int n2 = ((AmmunitionDefinition[])object2).length;
+        AmmunitionDefinition[] ammunitionDefinitionArray = ammunitionProfile.getAllowedAmmunition();
+        int n2 = ammunitionDefinitionArray.length;
         int n3 = 0;
         while (n3 < n2) {
-            object2 = ammunitionDefinitionArray[n3];
+            AmmunitionDefinition ammunitionDefinition = ammunitionDefinitionArray[n3];
             boolean bl = false;
             if (weaponProfile == WeaponProfile.METAL_CROSSBOW) {
                 bl = true;
             }
-            if (string.contains(((Enum)object2).name().toLowerCase()) && !bl || bl && string.startsWith(((Enum)object2).name().toLowerCase())) {
+            if (string.contains(ammunitionDefinition.name().toLowerCase()) && !bl || bl && string.startsWith(ammunitionDefinition.name().toLowerCase())) {
                 if (n != 3) {
                     int n4;
                     if (string.contains("ogre")) {
-                        n4 = ((String)(object = ((Player)object).getWeaponProfile().name().toLowerCase())).contains("ogre") ? 0 : 1;
+                        String weaponProfileName = player.getWeaponProfile().name().toLowerCase();
+                        n4 = weaponProfileName.contains("ogre") ? 0 : 1;
                     } else {
                         n4 = new ItemStack(itemStack.getId()).getDefinition().getRequiredLevel(4);
                         int n5 = new ItemStack(itemStack2.getId()).getDefinition().getRequiredLevel(4);
-                        int n6 = n4 = n5 > n4 ? 1 : 0;
+                        n4 = n5 > n4 ? 1 : 0;
                     }
                     if (n4 != 0) {
                         return false;
@@ -179,26 +175,23 @@ public enum AmmunitionDefinition {
         return false;
     }
 
-    public static AmmunitionDefinition findEquippedAmmunition(Player player, WeaponProfile object, boolean bl) {
-        Object object2 = ((WeaponProfile)((Object)object)).getAmmunitionProfile();
-        if (object2 == null) {
-            object = player;
-            ((Player)object).packetSender.sendGameMessage("That weapon is not configured properly, please report to staff!");
+    public static AmmunitionDefinition findEquippedAmmunition(Player player, WeaponProfile weaponProfile, boolean bl) {
+        AmmunitionProfile ammunitionProfile = weaponProfile.getAmmunitionProfile();
+        if (ammunitionProfile == null) {
+            player.packetSender.sendGameMessage("That weapon is not configured properly, please report to staff!");
             return null;
         }
-        int n = ((AmmunitionProfile)((Object)object2)).getEquipmentSlot();
+        int n = ammunitionProfile.getEquipmentSlot();
         ItemStack itemStack = player.getEquipmentManager().getContainer().getItemAt(n);
         int n2 = 0;
         if (itemStack != null) {
             n2 = itemStack.getAmount();
         }
-        if (itemStack == null || object == WeaponProfile.DARK_BOW && n2 < 2) {
-            if (object == WeaponProfile.DARK_BOW && n2 < 2) {
-                object = player;
-                ((Player)object).packetSender.sendGameMessage("You don't have enough ammo left.");
+        if (itemStack == null || weaponProfile == WeaponProfile.DARK_BOW && n2 < 2) {
+            if (weaponProfile == WeaponProfile.DARK_BOW && n2 < 2) {
+                player.packetSender.sendGameMessage("You don't have enough ammo left.");
             } else {
-                object = player;
-                ((Player)object).packetSender.sendGameMessage("You have no ammo left!");
+                player.packetSender.sendGameMessage("You have no ammo left!");
             }
             if (player.botEnabled) {
                 if (player.isInWilderness()) {
@@ -210,30 +203,29 @@ public enum AmmunitionDefinition {
             return null;
         }
         String string = ItemDefinition.forId(itemStack.getId()).getName().toLowerCase().replaceAll(" ", "_").replaceAll("\\(", "").replaceAll("\\)", "");
-        object2 = ((AmmunitionProfile)((Object)object2)).getAllowedAmmunition();
-        AmmunitionDefinition[] ammunitionDefinitionArray = object2;
-        int n3 = ((AmmunitionDefinition[])object2).length;
+        AmmunitionDefinition[] ammunitionDefinitionArray = ammunitionProfile.getAllowedAmmunition();
+        int n3 = ammunitionDefinitionArray.length;
         int n4 = 0;
         while (n4 < n3) {
-            object2 = ammunitionDefinitionArray[n4];
+            AmmunitionDefinition ammunitionDefinition = ammunitionDefinitionArray[n4];
             boolean bl2 = false;
-            if (object == WeaponProfile.METAL_CROSSBOW) {
+            if (weaponProfile == WeaponProfile.METAL_CROSSBOW) {
                 bl2 = true;
             }
-            if (string.contains(((Enum)object2).name().toLowerCase()) && !bl2 || bl2 && string.startsWith(((Enum)object2).name().toLowerCase())) {
+            if (string.contains(ammunitionDefinition.name().toLowerCase()) && !bl2 || bl2 && string.startsWith(ammunitionDefinition.name().toLowerCase())) {
                 if (n != 3) {
                     int n5;
-                    object = player.getEquipmentManager().getContainer().getItemAt(3);
-                    if (object == null) {
+                    ItemStack weaponItemStack = player.getEquipmentManager().getContainer().getItemAt(3);
+                    if (weaponItemStack == null) {
                         return null;
                     }
                     if (string.contains("ogre")) {
-                        object = player.getWeaponProfile().name().toLowerCase();
-                        n5 = ((String)object).contains("ogre") ? 0 : 1;
+                        String weaponProfileName = player.getWeaponProfile().name().toLowerCase();
+                        n5 = weaponProfileName.contains("ogre") ? 0 : 1;
                     } else {
-                        n5 = new ItemStack(((ItemStack)object).getId()).getDefinition().getRequiredLevel(4);
+                        n5 = new ItemStack(weaponItemStack.getId()).getDefinition().getRequiredLevel(4);
                         n = new ItemStack(itemStack.getId()).getDefinition().getRequiredLevel(4);
-                        int n6 = n5 = n > n5 ? 1 : 0;
+                        n5 = n > n5 ? 1 : 0;
                     }
                     if (n5 != 0) {
                         Player player2 = player;
@@ -241,13 +233,13 @@ public enum AmmunitionDefinition {
                         return null;
                     }
                 }
-                return object2;
+                return ammunitionDefinition;
             }
             ++n4;
         }
-        object = player;
-        ((Player)object).packetSender.sendGameMessage("You can not use that kind of ammo!");
+        player.packetSender.sendGameMessage("You can not use that kind of ammo!");
         return null;
     }
+
 }
 

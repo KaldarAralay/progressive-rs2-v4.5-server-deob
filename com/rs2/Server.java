@@ -62,6 +62,7 @@ import com.rs2.util.CharacterFileManager;
 import com.rs2.util.DelayedShutdownTask;
 import com.rs2.util.ElapsedTimer;
 import com.rs2.util.ProfilerRegistry;
+import com.rs2.util.ProfilerTimer;
 import com.rs2.util.SaveAllPlayersShutdownHook;
 import com.rs2.util.TimestampedPrintStream;
 import com.rs2.util.path.ProjectileCollisionMap;
@@ -85,6 +86,7 @@ import java.nio.channels.spi.AbstractInterruptibleChannel;
 import java.nio.channels.spi.AbstractSelectableChannel;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -163,51 +165,55 @@ implements Runnable {
     }
 
     public static void loadConfig() {
-        String[] stringArray = "./Config.cfg";
-        Object object = new File((String)stringArray);
-        if (!((File)object).exists()) {
+        String configPath = "./Config.cfg";
+        File configFile = new File(configPath);
+        if (!configFile.exists()) {
             ConfigFile.writeDefaultConfig();
         }
-        object = "";
         BufferedReader bufferedReader = null;
         try {
-            bufferedReader = new BufferedReader(new FileReader("./" + (String)stringArray));
-        }
-        catch (FileNotFoundException fileNotFoundException) {
-            System.out.println(String.valueOf(stringArray) + ": file not found.");
-        }
-        try {
-            object = bufferedReader.readLine();
-        }
-        catch (IOException iOException) {
-            System.out.println(String.valueOf(stringArray) + ": error loading file.");
-        }
-        while (object != null) {
-            if (((String)object).startsWith("[")) {
-                stringArray = ((String)object).split(";");
-                object = stringArray[0].replace("[", "").replace("]", "");
-                String[] stringArray2 = new String[stringArray.length - 1];
+            bufferedReader = new BufferedReader(new FileReader(configPath));
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                if (!line.startsWith("[")) continue;
+                String[] parts = line.split(";");
+                String key = parts[0].replace("[", "").replace("]", "");
+                String[] values = new String[parts.length - 1];
                 int n = 0;
-                while (n < stringArray.length - 1) {
-                    stringArray2[n] = stringArray[n + 1];
+                while (n < parts.length - 1) {
+                    values[n] = parts[n + 1];
                     ++n;
                 }
-                ConfigFile.applyConfigEntry((String)object, stringArray2);
+                ConfigFile.applyConfigEntry(key, values);
             }
-            object = bufferedReader.readLine();
         }
-        bufferedReader.close();
+        catch (FileNotFoundException fileNotFoundException) {
+            System.out.println(String.valueOf(configPath) + ": file not found.");
+        }
+        catch (IOException iOException) {
+            System.out.println(String.valueOf(configPath) + ": error loading file.");
+        }
+        finally {
+            if (bufferedReader != null) {
+                try {
+                    bufferedReader.close();
+                }
+                catch (IOException iOException) {
+                    iOException.printStackTrace();
+                }
+            }
+        }
     }
 
-    public static void main(String[] object) {
-        object = "0.0.0.0";
+    public static void main(String[] args) {
+        String bindHost = "0.0.0.0";
         runtimeMinutes = 0;
         int n = ServerSettings.serverPort;
-        object = new Server((String)object, n, 600);
+        Server server = new Server(bindHost, n, 600);
         if (instance != null) {
             throw new IllegalStateException("Singleton already set!");
         }
-        instance = object;
+        instance = server;
         serverThread = new Thread(instance);
         serverThread.start();
     }
@@ -321,7 +327,7 @@ implements Runnable {
             MultiwayAreaDefinition.loadDefinitions();
             PartyRoomManager.loadPartyChest();
             NpcDropTable.loadDropTables();
-            GameplayHelper.f();
+            GameplayHelper.loadNpcSpawns();
             TreasureTrailManager.filterRewardItemPools();
             BotCombatLoadoutManager.initializeCombatLoadoutTypes();
             SkillGuideManager.initialize();
@@ -348,7 +354,8 @@ implements Runnable {
             serverStatus = 2;
             long l7 = System.currentTimeMillis();
             shutdownRequested = false;
-            for (ItemStack itemStack : startingRareItems) {
+            for (Object itemStackObject : startingRareItems) {
+                ItemStack itemStack = (ItemStack)itemStackObject;
                 trackedRareItems.add(itemStack);
             }
             if (ServerSettings.content2007Enabled) {
@@ -404,8 +411,7 @@ implements Runnable {
             if (n5 == 0) {
                 Server.loginAllConfiguredBots();
             } else {
-                object = new BotLoginBatchTask(botLoginBatchIntervalTicks, n5);
-                World.getTaskScheduler().schedule((TickTask)object);
+                World.getTaskScheduler().schedule(new BotLoginBatchTask(botLoginBatchIntervalTicks, n5));
             }
             if (ServerSettings.lanConnectionsEnabled) {
                 LanDiscoveryService.startListener();
@@ -536,226 +542,160 @@ implements Runnable {
     }
 
     public static void acceptConnection(SelectionKey selectionKey) {
-        Object object = (ServerSocketChannel)selectionKey.channel();
-        if ((object = ((ServerSocketChannel)object).accept()) == null) {
-            return;
+        try {
+            Object object = (ServerSocketChannel)selectionKey.channel();
+            if ((object = ((ServerSocketChannel)object).accept()) == null) {
+                return;
+            }
+            if (!ConnectionThrottle.tryAcquireConnectionSlot(((SocketChannel)object).socket().getInetAddress().getHostAddress())) {
+                ((AbstractInterruptibleChannel)object).close();
+                return;
+            }
+            ((AbstractSelectableChannel)object).configureBlocking(false);
+            selectionKey = ((SelectableChannel)object).register(selectionKey.selector(), 1);
+            object = new Player(selectionKey);
+            selectionKey.attach(object);
         }
-        if (!ConnectionThrottle.tryAcquireConnectionSlot(((SocketChannel)object).socket().getInetAddress().getHostAddress())) {
-            ((AbstractInterruptibleChannel)object).close();
-            return;
+        catch (IOException iOException) {
+            throw new RuntimeException(iOException);
         }
-        ((AbstractSelectableChannel)object).configureBlocking(false);
-        selectionKey = ((SelectableChannel)object).register(selectionKey.selector(), 1);
-        object = new Player(selectionKey);
-        selectionKey.attach(object);
     }
 
-    /*
-     * WARNING - Removed try catching itself - possible behaviour change.
-     * Could not resolve type clashes
-     * Unable to fully structure code
-     */
     private void processGameCycle() {
-        var1_1 = ProfilerRegistry.getTimer("loginQueue");
-        var1_1.start();
-        while ((var2_3 = (Player)this.loginQueue.poll()) != null) {
+        ProfilerTimer elapsedTimer = ProfilerRegistry.getTimer("loginQueue");
+        elapsedTimer.start();
+        Player player;
+        while ((player = (Player)this.loginQueue.poll()) != null) {
             try {
-                var2_3.processPostLogin();
-                var2_3.setConnectionState(PlayerConnectionState.IN_GAME);
+                player.processPostLogin();
+                player.setConnectionState(PlayerConnectionState.IN_GAME);
             }
-            catch (Exception v0) {
-                var3_4 = v0;
-                v0.printStackTrace();
-                var2_3.disconnect();
+            catch (Exception exception) {
+                exception.printStackTrace();
+                player.disconnect();
             }
         }
-        var1_1.stop();
-        var3_4 = ProfilerRegistry.getTimer("handleNetworkPackets");
-        var3_4.start();
-        this.selector.selectNow();
-        for (Object var1_1 : this.selector.selectedKeys()) {
-            if (!var1_1.isValid() || !var1_1.isReadable()) continue;
-            PacketDispatcher.processIncoming((Player)var1_1.attachment());
+        elapsedTimer.stop();
+        elapsedTimer = ProfilerRegistry.getTimer("handleNetworkPackets");
+        elapsedTimer.start();
+        try {
+            this.selector.selectNow();
         }
-        var3_4.stop();
+        catch (IOException iOException) {
+            throw new RuntimeException(iOException);
+        }
+        for (Object selectedKeyObject : this.selector.selectedKeys()) {
+            SelectionKey selectionKey = (SelectionKey)selectedKeyObject;
+            if (!selectionKey.isValid() || !selectionKey.isReadable()) continue;
+            PacketDispatcher.processIncoming((Player)selectionKey.attachment());
+        }
+        elapsedTimer.stop();
         PluginManager.tickGlobalPlugins();
         World.processTick();
-        var1_1 = ProfilerRegistry.getTimer("disconnectingPlayers");
-        var1_1.start();
-        var4_5 = Server.disconnectQueue;
-        synchronized (var4_5) {
-            var3_4 = Server.disconnectQueue.iterator();
-            while (var3_4.hasNext()) {
-                block27: {
-                    var2_3 = (Player)var3_4.next();
-                    var5_6 = var2_3;
-                    if (var2_3.grandExchangeSettlementInProgress) ** GOTO lbl-1000
-                    if (var5_6.cn) {
-                        v1 = false;
-                    } else if (var5_6.getConnectionState() == PlayerConnectionState.DISCONNECTING && var5_6.getDisconnectGraceExpiresAtMillis() < System.currentTimeMillis()) {
-                        v1 = false;
-                    } else if (var5_6.getRecentCombatTimer().hasElapsed()) {
-                        v1 = false;
-                    } else lbl-1000:
-                    // 2 sources
-
-                    {
-                        v1 = true;
-                    }
-                    if (v1) continue;
-                    var5_6 = var2_3;
+        elapsedTimer = ProfilerRegistry.getTimer("disconnectingPlayers");
+        elapsedTimer.start();
+        synchronized (Server.disconnectQueue) {
+            Iterator iterator = Server.disconnectQueue.iterator();
+            while (iterator.hasNext()) {
+                Player disconnectingPlayer = (Player)iterator.next();
+                boolean keepQueued = disconnectingPlayer.grandExchangeSettlementInProgress || !disconnectingPlayer.cn && (disconnectingPlayer.getConnectionState() != PlayerConnectionState.DISCONNECTING || disconnectingPlayer.getDisconnectGraceExpiresAtMillis() >= System.currentTimeMillis()) && !disconnectingPlayer.getRecentCombatTimer().hasElapsed();
+                if (keepQueued) continue;
+                try {
                     try {
-                        try {
-                            var2_3 = ProfilerRegistry.getTimer("tradeDecline");
-                            var2_3.start();
-                            if (var5_6.getTradePartner() != null) {
-                                GameplayHelper.declineTrade(var5_6);
-                            }
-                            PartyRoomManager.returnStagedChestItems(var5_6);
-                            var2_3.stop();
-                            var2_3 = ProfilerRegistry.getTimer("duelDecline");
-                            var2_3.start();
-                            if (var5_6.getDuelSession().getOpponent() != null) {
-                                if (var5_6.getDuelSession().isStarted()) {
-                                    DuelSession.finishDuelVictory(var5_6.getDuelSession().getOpponent(), var5_6);
-                                } else {
-                                    var5_6.getDuelSession().getOpponent().getDuelController().resetDuel(true);
-                                    var5_6.getDuelController().resetDuel(true);
-                                }
-                            }
-                            var5_6.clearTemporaryCutsceneNpcs();
-                            var2_3.stop();
-                            var2_3 = ProfilerRegistry.getTimer("petUnregister");
-                            var2_3.start();
-                            if (var5_6.getPetManager().getActivePetNpc() != null) {
-                                var5_6.getPetManager().pickupPet();
-                            }
-                            var2_3.stop();
-                            var2_3 = ProfilerRegistry.getTimer("endFightCave");
-                            var2_3.start();
-                            var5_6.getFightCaveController().cleanupIfInFightCave();
-                            var2_3.stop();
-                            var2_3 = ProfilerRegistry.getTimer("unlockMovement");
-                            var2_3.start();
-                            var6_7 = var5_6.getMovementQueue();
-                            var2_3.stop();
-                            var2_3 = ProfilerRegistry.getTimer("resetFollowing");
-                            var2_3.start();
-                            if (var5_6.getMovementTarget() != null) {
-                                EntityTargetMovement.clearMovementTarget(var5_6);
-                            }
-                            var2_3.stop();
-                            var2_3 = ProfilerRegistry.getTimer("logoutPrivatemessage");
-                            var2_3.start();
-                            var5_6.getSocialManager().refreshFriendStatuses(true);
-                            var2_3.stop();
-                            var2_3 = var5_6;
-                            if (var2_3.isInArea(1790, 2045, 4800, 4915)) {
-                                var5_6.moveTo(new Position(3053, 3246, 0));
-                            }
-                            CharacterFileManager.savePlayer(var5_6);
-                            CharacterFileManager.refreshLiveHiscoreRecord(var5_6);
-                            if (ServerSettings.mysqlHiscoresEnabled) {
-                                HiscoresDatabase.savePlayer(var5_6);
+                        ProfilerTimer cleanupTimer = ProfilerRegistry.getTimer("tradeDecline");
+                        cleanupTimer.start();
+                        if (disconnectingPlayer.getTradePartner() != null) {
+                            GameplayHelper.declineTrade(disconnectingPlayer);
+                        }
+                        PartyRoomManager.returnStagedChestItems(disconnectingPlayer);
+                        cleanupTimer.stop();
+                        cleanupTimer = ProfilerRegistry.getTimer("duelDecline");
+                        cleanupTimer.start();
+                        if (disconnectingPlayer.getDuelSession().getOpponent() != null) {
+                            if (disconnectingPlayer.getDuelSession().isStarted()) {
+                                DuelSession.finishDuelVictory(disconnectingPlayer.getDuelSession().getOpponent(), disconnectingPlayer);
+                            } else {
+                                disconnectingPlayer.getDuelSession().getOpponent().getDuelController().resetDuel(true);
+                                disconnectingPlayer.getDuelController().resetDuel(true);
                             }
                         }
-                        catch (Exception v2) {
-                            var2_3 = v2;
-                            v2.printStackTrace();
-                            var2_3 = ProfilerRegistry.getTimer("unregisterPlayer");
-                            var2_3.start();
-                            World.unregisterPlayer(var5_6);
-                            var2_3.stop();
-                            break block27;
+                        disconnectingPlayer.clearTemporaryCutsceneNpcs();
+                        cleanupTimer.stop();
+                        cleanupTimer = ProfilerRegistry.getTimer("petUnregister");
+                        cleanupTimer.start();
+                        if (disconnectingPlayer.getPetManager().getActivePetNpc() != null) {
+                            disconnectingPlayer.getPetManager().pickupPet();
+                        }
+                        cleanupTimer.stop();
+                        cleanupTimer = ProfilerRegistry.getTimer("endFightCave");
+                        cleanupTimer.start();
+                        disconnectingPlayer.getFightCaveController().cleanupIfInFightCave();
+                        cleanupTimer.stop();
+                        cleanupTimer = ProfilerRegistry.getTimer("unlockMovement");
+                        cleanupTimer.start();
+                        disconnectingPlayer.getMovementQueue();
+                        cleanupTimer.stop();
+                        cleanupTimer = ProfilerRegistry.getTimer("resetFollowing");
+                        cleanupTimer.start();
+                        if (disconnectingPlayer.getMovementTarget() != null) {
+                            EntityTargetMovement.clearMovementTarget(disconnectingPlayer);
+                        }
+                        cleanupTimer.stop();
+                        cleanupTimer = ProfilerRegistry.getTimer("logoutPrivatemessage");
+                        cleanupTimer.start();
+                        disconnectingPlayer.getSocialManager().refreshFriendStatuses(true);
+                        cleanupTimer.stop();
+                        if (disconnectingPlayer.isInArea(1790, 2045, 4800, 4915)) {
+                            disconnectingPlayer.moveTo(new Position(3053, 3246, 0));
+                        }
+                        CharacterFileManager.savePlayer(disconnectingPlayer);
+                        CharacterFileManager.refreshLiveHiscoreRecord(disconnectingPlayer);
+                        if (ServerSettings.mysqlHiscoresEnabled) {
+                            HiscoresDatabase.savePlayer(disconnectingPlayer);
                         }
                     }
-                    catch (Throwable var1_2) {
-                        var2_3 = ProfilerRegistry.getTimer("unregisterPlayer");
-                        var2_3.start();
-                        World.unregisterPlayer(var5_6);
-                        var2_3.stop();
-                        throw var1_2;
+                    catch (Exception exception) {
+                        exception.printStackTrace();
                     }
-                    var2_3 = ProfilerRegistry.getTimer("unregisterPlayer");
-                    var2_3.start();
-                    World.unregisterPlayer(var5_6);
-                    var2_3.stop();
                 }
-                var3_4.remove();
+                finally {
+                    ProfilerTimer unregisterTimer = ProfilerRegistry.getTimer("unregisterPlayer");
+                    unregisterTimer.start();
+                    World.unregisterPlayer(disconnectingPlayer);
+                    unregisterTimer.stop();
+                }
+                iterator.remove();
             }
         }
-        var1_1.stop();
+        elapsedTimer.stop();
     }
 
-    /*
-     * Unable to fully structure code
-     */
     private void sleepUntilNextCycle() {
-        block9: {
-            try {
-                try {
-                    var1_1 = this.cycleTimer.elapsedMillis();
-                    var3_4 = (long)this.cycleMillis - var1_1;
-                    if (var3_4 > 0L && var3_4 <= 600L) {
-                        Thread.sleep(var3_4);
-                    } else {
-                        var5_8 = 100L + (Math.abs(var3_4) - (long)this.cycleMillis) / 6L;
-                        System.out.println("[WARNING] Server Load is at " + var5_8 + "%");
-                        ProfilerRegistry.b();
-                        ProfilerRegistry.resetAll();
-                        System.out.println();
-                    }
-                    break block9;
-                }
-                catch (Exception v0) {
-                    var1_2 = v0;
-                    v0.printStackTrace();
-                    this.cycleTimer.reset();
-                    var2_9 = 0;
-                    ** while (var2_9 < 256)
-                }
+        try {
+            long elapsedMillis = this.cycleTimer.elapsedMillis();
+            long remainingMillis = (long)this.cycleMillis - elapsedMillis;
+            if (remainingMillis > 0L && remainingMillis <= 600L) {
+                Thread.sleep(remainingMillis);
+            } else {
+                long loadPercent = 100L + (Math.abs(remainingMillis) - (long)this.cycleMillis) / 6L;
+                System.out.println("[WARNING] Server Load is at " + loadPercent + "%");
+                ProfilerRegistry.b();
+                ProfilerRegistry.resetAll();
+                System.out.println();
             }
-            catch (Throwable var1_3) {
-                this.cycleTimer.reset();
-                var2_10 = 0;
-                ** while (var2_10 < 256)
-            }
-lbl-1000:
-            // 1 sources
-
-            {
-                var3_5 = PacketDispatcher.packetTimers[var2_9];
-                var3_5.getAccumulatedMillis();
-                var3_5.reset();
-                ++var2_9;
-                continue;
-            }
-lbl26:
-            // 1 sources
-
-            return;
-lbl-1000:
-            // 1 sources
-
-            {
-                var3_6 = PacketDispatcher.packetTimers[var2_10];
-                var3_6.getAccumulatedMillis();
-                var3_6.reset();
-                ++var2_10;
-                continue;
-            }
-lbl37:
-            // 1 sources
-
-            throw var1_3;
         }
-        this.cycleTimer.reset();
-        var2_11 = 0;
-        while (var2_11 < 256) {
-            var3_7 = PacketDispatcher.packetTimers[var2_11];
-            var3_7.getAccumulatedMillis();
-            var3_7.reset();
-            ++var2_11;
+        catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        finally {
+            this.cycleTimer.reset();
+            int packetId = 0;
+            while (packetId < 256) {
+                ProfilerTimer packetTimer = PacketDispatcher.packetTimers[packetId];
+                packetTimer.getAccumulatedMillis();
+                packetTimer.reset();
+                ++packetId;
+            }
         }
     }
 
@@ -819,4 +759,3 @@ lbl37:
         botLoginBatchIndex = n;
     }
 }
-

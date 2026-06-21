@@ -1,6 +1,3 @@
-/*
- * Decompiled with CFR 0.152.
- */
 package com.rs2.net.packet.handler;
 
 import com.rs2.ServerSettings;
@@ -19,184 +16,182 @@ import com.rs2.net.packet.ByteTransform;
 import com.rs2.net.packet.IncomingPacket;
 import com.rs2.net.packet.PacketHandler;
 
-public final class NpcInteractionPacketHandler
-implements PacketHandler {
+public final class NpcInteractionPacketHandler implements PacketHandler {
     @Override
-    public final void handle(Player object, IncomingPacket object2) {
-        if (((Player)object).isActionLocked()) {
+    public final void handle(Player player, IncomingPacket packet) {
+        if (player.isActionLocked()) {
             return;
         }
-        Object object3 = object;
-        ((Player)object3).packetSender.closeInterfaces();
-        ((Player)object).resetInteractionState();
-        switch (((IncomingPacket)object2).getOpcode()) {
+        player.packetSender.closeInterfaces();
+        player.resetInteractionState();
+        switch (packet.getOpcode()) {
             case 155: {
-                Npc npc;
-                int n = ((IncomingPacket)object2).getReader().readSignedShort(true, ByteOrder.LITTLE);
-                if (n < 0 || n > World.getNpcs().length || (npc = World.getNpcs()[n]) == null || !npc.isInteractable()) break;
-                ((Player)object).setInteractionTargetId(npc.getNpcId());
-                ((Player)object).setInteractionTargetX(npc.getPosition().getX());
-                ((Player)object).setInteractionTargetY(npc.getPosition().getY());
-                ((Player)object).setInteractionTargetPlane(((Entity)object).getPosition().getPlane());
-                ((Player)object).setInteractionTargetIndex(n);
-                ((Entity)object).getUpdateState().setFaceEntity(n);
-                ((Entity)object).setAttackRange(1);
-                ((Entity)object).setMovementTarget(npc);
+                int index = packet.getReader().readSignedShort(true, ByteOrder.LITTLE);
+                Npc npc = getInteractableNpc(index);
+                if (npc == null) {
+                    break;
+                }
+                setNpcInteractionTarget(player, npc, index);
                 if (ServerSettings.debugModeEnabled) {
-                    Object object4 = object;
-                    ((Player)object4).packetSender.sendGameMessage("First click npc: " + ((Player)object).getInteractionTargetId());
+                    player.packetSender.sendGameMessage("First click npc: " + player.getInteractionTargetId());
                 }
                 InteractionDispatcher.setCurrentInteractionType(InteractionType.FIRST_NPC);
-                InteractionDispatcher.dispatchCurrentInteraction((Player)object);
+                InteractionDispatcher.dispatchCurrentInteraction(player);
                 return;
             }
             case 17: {
-                Npc npc;
-                int n = ((IncomingPacket)object2).getReader().readSignedShort(ByteTransform.ADD, ByteOrder.LITTLE) & 0xFFFF;
-                if (n < 0 || n > World.getNpcs().length || (npc = World.getNpcs()[n]) == null || !npc.isInteractable()) break;
-                ((Player)object).setInteractionTargetId(npc.getNpcId());
-                ((Player)object).setInteractionTargetX(npc.getPosition().getX());
-                ((Player)object).setInteractionTargetY(npc.getPosition().getY());
-                ((Player)object).setInteractionTargetPlane(((Entity)object).getPosition().getPlane());
-                ((Player)object).setInteractionTargetIndex(n);
-                ((Entity)object).getUpdateState().setFaceEntity(n);
-                ((Entity)object).setAttackRange(1);
-                ((Entity)object).setMovementTarget(npc);
+                int index = packet.getReader().readSignedShort(ByteTransform.ADD, ByteOrder.LITTLE) & 0xFFFF;
+                Npc npc = getInteractableNpc(index);
+                if (npc == null) {
+                    break;
+                }
+                setNpcInteractionTarget(player, npc, index);
                 if (ServerSettings.debugModeEnabled) {
-                    Object object5 = object;
-                    ((Player)object5).packetSender.sendGameMessage("Second click npc: " + ((Player)object).getInteractionTargetId());
+                    player.packetSender.sendGameMessage("Second click npc: " + player.getInteractionTargetId());
                 }
                 InteractionDispatcher.setCurrentInteractionType(InteractionType.SECOND_NPC);
-                InteractionDispatcher.dispatchCurrentInteraction((Player)object);
+                InteractionDispatcher.dispatchCurrentInteraction(player);
                 return;
             }
             case 21: {
-                Npc npc;
-                int n = ((IncomingPacket)object2).getReader().readSignedShort(true);
-                if (n < 0 || n > World.getNpcs().length || (npc = World.getNpcs()[n]) == null || !npc.isInteractable()) break;
-                ((Player)object).setInteractionTargetId(npc.getNpcId());
-                ((Player)object).setInteractionTargetX(npc.getPosition().getX());
-                ((Player)object).setInteractionTargetY(npc.getPosition().getY());
-                ((Player)object).setInteractionTargetPlane(((Entity)object).getPosition().getPlane());
-                ((Player)object).setInteractionTargetIndex(n);
-                ((Entity)object).getUpdateState().setFaceEntity(n);
-                ((Entity)object).setAttackRange(1);
-                ((Entity)object).setMovementTarget(npc);
+                int index = packet.getReader().readSignedShort(true);
+                Npc npc = getInteractableNpc(index);
+                if (npc == null) {
+                    break;
+                }
+                setNpcInteractionTarget(player, npc, index);
                 if (ServerSettings.debugModeEnabled) {
-                    Object object6 = object;
-                    ((Player)object6).packetSender.sendGameMessage("Third click npc: " + ((Player)object).getInteractionTargetId());
+                    player.packetSender.sendGameMessage("Third click npc: " + player.getInteractionTargetId());
                 }
                 InteractionDispatcher.setCurrentInteractionType(InteractionType.THIRD_NPC);
-                InteractionDispatcher.dispatchCurrentInteraction((Player)object);
+                InteractionDispatcher.dispatchCurrentInteraction(player);
                 return;
             }
             case 230: {
                 return;
             }
             case 72: {
-                Npc npc;
-                object3 = object2;
-                object2 = object;
-                object = this;
-                int n = ((IncomingPacket)object3).getReader().readSignedShort(ByteTransform.ADD);
-                if (n < 0 || n > World.getNpcs().length || (npc = World.getNpcs()[n]) == null || !npc.isInteractable()) break;
-                ((Player)object2).setQueuedCombatSpell(null);
-                if (npc.getOwnerPlayer() != null && npc.getOwnerPlayer() != object2) {
-                    Object object7 = object2;
-                    ((Player)object7).packetSender.sendGameMessage(String.valueOf(npc.getDefinition().getName()) + " is not interested in interacting with you right now.");
+                int index = packet.getReader().readSignedShort(ByteTransform.ADD);
+                Npc npc = getInteractableNpc(index);
+                if (npc == null) {
+                    break;
+                }
+                player.setQueuedCombatSpell(null);
+                if (npc.getOwnerPlayer() != null && npc.getOwnerPlayer() != player) {
+                    player.packetSender.sendGameMessage(String.valueOf(npc.getDefinition().getName()) + " is not interested in interacting with you right now.");
                     break;
                 }
                 if (npc.getDefinition().isAttackable() || npc.isDoorSupportNpc()) {
-                    int n2 = npc.getDefinition().getId();
-                    Object object8 = object2;
-                    if (((Player)object8).dv != 2 || n2 != 643) {
-                        CombatManager.startCombat((Entity)object2, npc);
+                    int npcId = npc.getDefinition().getId();
+                    if (player.dv != 2 || npcId != 643) {
+                        CombatManager.startCombat(player, npc);
                         break;
                     }
                 }
-                Object object9 = object2;
-                ((Player)object9).packetSender.sendGameMessage("You cannot attack that npc!");
+                player.packetSender.sendGameMessage("You cannot attack that npc!");
                 return;
             }
             case 131: {
-                ((Entity)object).getMovementQueue().clear();
-                int n = ((IncomingPacket)object2).getReader().readSignedShort(ByteTransform.ADD, ByteOrder.LITTLE);
-                if (n < 0 || n > World.getNpcs().length) break;
-                int n3 = ((IncomingPacket)object2).getReader().readSignedShort(ByteTransform.ADD);
-                Npc npc = World.getNpcs()[n];
-                if (npc == null || !npc.isInteractable()) break;
-                if (npc.getOwnerPlayer() != null && npc.getOwnerPlayer() != object) {
-                    Object object10 = object;
-                    ((Player)object10).packetSender.sendGameMessage(String.valueOf(npc.getDefinition().getName()) + " is not interested in interacting with you right now.");
+                player.getMovementQueue().clear();
+                int index = packet.getReader().readSignedShort(ByteTransform.ADD, ByteOrder.LITTLE);
+                if (index < 0 || index >= World.getNpcs().length) {
                     break;
                 }
-                SpellDefinition spellDefinition = Spellbook.getSpellForButtonId((Player)object, n3);
+                int buttonId = packet.getReader().readSignedShort(ByteTransform.ADD);
+                Npc npc = World.getNpcs()[index];
+                if (npc == null || !npc.isInteractable()) {
+                    break;
+                }
+                if (npc.getOwnerPlayer() != null && npc.getOwnerPlayer() != player) {
+                    player.packetSender.sendGameMessage(String.valueOf(npc.getDefinition().getName()) + " is not interested in interacting with you right now.");
+                    break;
+                }
+                SpellDefinition spellDefinition = Spellbook.getSpellForButtonId(player, buttonId);
                 if (spellDefinition != null) {
-                    if (!((Entity)object).isInMageArena()) {
-                        if (spellDefinition == SpellDefinition.SARADOMIN_STRIKE && ((Player)object).mageArenaSaradominStrikeCastsRemaining > 0) {
-                            Object object11 = object;
-                            ((Player)object11).packetSender.sendGameMessage("You need to cast this spell " + ((Player)object).mageArenaSaradominStrikeCastsRemaining + " times at Mage arena first.");
+                    if (!player.isInMageArena()) {
+                        if (spellDefinition == SpellDefinition.SARADOMIN_STRIKE && player.mageArenaSaradominStrikeCastsRemaining > 0) {
+                            player.packetSender.sendGameMessage("You need to cast this spell " + player.mageArenaSaradominStrikeCastsRemaining + " times at Mage arena first.");
                             break;
                         }
-                        if (spellDefinition == SpellDefinition.FLAMES_OF_ZAMORAK && ((Player)object).mageArenaFlamesOfZamorakCastsRemaining > 0) {
-                            Object object12 = object;
-                            ((Player)object12).packetSender.sendGameMessage("You need to cast this spell " + ((Player)object).mageArenaFlamesOfZamorakCastsRemaining + " times at Mage arena first.");
+                        if (spellDefinition == SpellDefinition.FLAMES_OF_ZAMORAK && player.mageArenaFlamesOfZamorakCastsRemaining > 0) {
+                            player.packetSender.sendGameMessage("You need to cast this spell " + player.mageArenaFlamesOfZamorakCastsRemaining + " times at Mage arena first.");
                             break;
                         }
-                        if (spellDefinition == SpellDefinition.CLAWS_OF_GUTHIX && ((Player)object).mageArenaClawsOfGuthixCastsRemaining > 0) {
-                            Object object13 = object;
-                            ((Player)object13).packetSender.sendGameMessage("You need to cast this spell " + ((Player)object).mageArenaClawsOfGuthixCastsRemaining + " times at Mage arena first.");
+                        if (spellDefinition == SpellDefinition.CLAWS_OF_GUTHIX && player.mageArenaClawsOfGuthixCastsRemaining > 0) {
+                            player.packetSender.sendGameMessage("You need to cast this spell " + player.mageArenaClawsOfGuthixCastsRemaining + " times at Mage arena first.");
                             break;
                         }
                     }
-                    ((Player)object).setQueuedCombatSpell(spellDefinition);
+                    player.setQueuedCombatSpell(spellDefinition);
                     if (spellDefinition == SpellDefinition.TELEOTHER_CAMELOT || spellDefinition == SpellDefinition.TELEOTHER_FALADOR || spellDefinition == SpellDefinition.TELEOTHER_LUMBRIDGE || spellDefinition == SpellDefinition.TELE_BLOCK) {
-                        Object object14 = object;
-                        ((Player)object14).packetSender.sendGameMessage("Nothing interesting happens.");
+                        player.packetSender.sendGameMessage("Nothing interesting happens.");
                         break;
                     }
-                    CombatManager.startCombat((Entity)object, npc);
+                    CombatManager.startCombat(player, npc);
                     break;
                 }
-                if (((Player)object).getPlayerRights() > 1 && ServerSettings.debugModeEnabled) {
-                    System.out.println("Magic id: " + n3);
+                if (player.getPlayerRights() > 1 && ServerSettings.debugModeEnabled) {
+                    System.out.println("Magic id: " + buttonId);
                 }
                 return;
             }
             case 57: {
-                int n = ((IncomingPacket)object2).getReader().readSignedShort(ByteTransform.ADD);
-                int n4 = ((IncomingPacket)object2).getReader().readSignedShort(ByteTransform.ADD);
-                int n5 = ((IncomingPacket)object2).getReader().readSignedShort(ByteOrder.LITTLE);
-                if (n5 > 28 && n5 < 0) break;
-                ItemStack itemStack = ((Player)object).getInventoryManager().getContainer().getItemAt(n5);
-                if (itemStack == null || itemStack.getId() != n) {
+                int itemId = packet.getReader().readSignedShort(ByteTransform.ADD);
+                int npcIndex = packet.getReader().readSignedShort(ByteTransform.ADD);
+                int itemSlot = packet.getReader().readSignedShort(ByteOrder.LITTLE);
+                if (itemSlot < 0 || itemSlot > 28) {
+                    break;
+                }
+                ItemStack itemStack = player.getInventoryManager().getContainer().getItemAt(itemSlot);
+                if (itemStack == null || itemStack.getId() != itemId) {
                     return;
                 }
-                if (((Player)object).getPlayerRights() > 1 && ServerSettings.debugModeEnabled) {
-                    System.out.println(String.valueOf(n) + " " + n4 + " " + n5);
+                if (player.getPlayerRights() > 1 && ServerSettings.debugModeEnabled) {
+                    System.out.println(String.valueOf(itemId) + " " + npcIndex + " " + itemSlot);
                 }
-                if (n4 < 0 || n4 > World.getNpcs().length) {
+                if (npcIndex < 0 || npcIndex >= World.getNpcs().length) {
                     return;
                 }
-                object2 = World.getNpcs()[n4];
-                if (object2 == null || !((Npc)object2).isInteractable()) {
+                Npc npc = World.getNpcs()[npcIndex];
+                if (npc == null || !npc.isInteractable()) {
                     return;
                 }
-                ((Player)object).setSelectedItemSlot(n5);
-                ((Player)object).setInteractionTargetIndex(n4);
-                ((Entity)object).setInteractionTarget((Entity)object2);
-                ((Player)object).setSelectedItemId(n);
-                ((Player)object).setInteractionTargetId(((Npc)object2).getNpcId());
-                ((Player)object).setInteractionTargetX(((Entity)object2).getPosition().getX());
-                ((Player)object).setInteractionTargetY(((Entity)object2).getPosition().getY());
-                ((Player)object).setInteractionTargetPlane(((Entity)object).getPosition().getPlane());
-                ((Entity)object).getUpdateState().setFaceEntity(n4);
-                ((Entity)object).setAttackRange(1);
-                ((Entity)object).setMovementTarget((Entity)object2);
+                player.setSelectedItemSlot(itemSlot);
+                player.setInteractionTargetIndex(npcIndex);
+                player.setInteractionTarget(npc);
+                player.setSelectedItemId(itemId);
+                player.setInteractionTargetId(npc.getNpcId());
+                player.setInteractionTargetX(npc.getPosition().getX());
+                player.setInteractionTargetY(npc.getPosition().getY());
+                player.setInteractionTargetPlane(player.getPosition().getPlane());
+                player.getUpdateState().setFaceEntity(npcIndex);
+                player.setAttackRange(1);
+                player.setMovementTarget(npc);
                 InteractionDispatcher.setCurrentInteractionType(InteractionType.ITEM_ON_NPC);
-                InteractionDispatcher.dispatchCurrentInteraction((Player)object);
+                InteractionDispatcher.dispatchCurrentInteraction(player);
             }
         }
     }
-}
 
+    private static Npc getInteractableNpc(int index) {
+        if (index < 0 || index >= World.getNpcs().length) {
+            return null;
+        }
+        Npc npc = World.getNpcs()[index];
+        if (npc == null || !npc.isInteractable()) {
+            return null;
+        }
+        return npc;
+    }
+
+    private static void setNpcInteractionTarget(Player player, Npc npc, int index) {
+        player.setInteractionTargetId(npc.getNpcId());
+        player.setInteractionTargetX(npc.getPosition().getX());
+        player.setInteractionTargetY(npc.getPosition().getY());
+        player.setInteractionTargetPlane(player.getPosition().getPlane());
+        player.setInteractionTargetIndex(index);
+        player.getUpdateState().setFaceEntity(index);
+        player.setAttackRange(1);
+        player.setMovementTarget(npc);
+    }
+}

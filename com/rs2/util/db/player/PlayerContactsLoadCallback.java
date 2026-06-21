@@ -7,7 +7,7 @@ import com.rs2.util.db.DatabaseCallback;
 import com.rs2.util.db.player.PlayerLoadQueryFactory;
 import java.sql.ResultSet;
 
-final class PlayerContactsLoadCallback
+public final class PlayerContactsLoadCallback
 implements DatabaseCallback {
     private /* synthetic */ PlayerLoadQueryFactory factory;
 
@@ -16,7 +16,7 @@ implements DatabaseCallback {
     }
 
     @Override
-    public final void onResult(ResultSet resultSet) {
+    public final void onResult(ResultSet resultSet) throws java.sql.SQLException {
         while (resultSet.next()) {
             long l = resultSet.getLong("contact");
             int n = resultSet.getInt("slot");

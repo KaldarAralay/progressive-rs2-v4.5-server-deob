@@ -157,22 +157,20 @@ public final class SmeltingHandler {
     }
 
     public static boolean handleSmeltingButton(Player player, int n, int n2) {
-        Object object = player;
-        if (((Player)object).interfaceAction != "smelt") {
+        if (player.interfaceAction != "smelt") {
             return false;
         }
         int[][] nArray = SMELTING_BUTTONS;
         int n3 = 0;
         while (n3 < 32) {
-            object = nArray[n3];
-            if (n == object[0]) {
-                player.setSelectedSmithingBarItemId((int)object[1]);
-                if (object[2] == 28 && n2 <= 0) {
-                    object = player;
-                    ((Player)object).packetSender.sendEnterInputPrompt(n);
+            int[] buttonDefinition = nArray[n3];
+            if (n == buttonDefinition[0]) {
+                player.setSelectedSmithingBarItemId(buttonDefinition[1]);
+                if (buttonDefinition[2] == 28 && n2 <= 0) {
+                    player.packetSender.sendEnterInputPrompt(n);
                     return true;
                 }
-                SmeltingHandler.startSmeltingTask(player, n2 <= 0 ? (int)object[2] : n2);
+                SmeltingHandler.startSmeltingTask(player, n2 <= 0 ? buttonDefinition[2] : n2);
                 return true;
             }
             ++n3;
@@ -202,11 +200,11 @@ public final class SmeltingHandler {
                 int n5 = SMELTING_DEFINITIONS[n3][0][2];
                 int n6 = SMELTING_DEFINITIONS[n3][1][0];
                 int n7 = SMELTING_DEFINITIONS[n3][1][1];
-                boolean bl = false;
-                int n8 = 0;
+                int secondaryOreId = 0;
+                int secondaryOreAmount = 0;
                 if (SMELTING_DEFINITIONS[n3].length > 2) {
-                    bl = SMELTING_DEFINITIONS[n3][2][0];
-                    n8 = SMELTING_DEFINITIONS[n3][2][1];
+                    secondaryOreId = SMELTING_DEFINITIONS[n3][2][0];
+                    secondaryOreAmount = SMELTING_DEFINITIONS[n3][2][1];
                 }
                 if (!SkillActionHelper.checkSkillRequirement(player, 13, n4, "smelt this bar")) {
                     if (player.botEnabled) {
@@ -216,9 +214,9 @@ public final class SmeltingHandler {
                 }
                 n3 = player.nextActionSequence();
                 ItemStack itemStack = new ItemStack(n6, n7);
-                ItemStack itemStack2 = new ItemStack(bl ? 1 : 0, n8);
+                ItemStack itemStack2 = new ItemStack(secondaryOreId, secondaryOreAmount);
                 ItemStack itemStack3 = new ItemStack(n2);
-                boolean bl2 = bl = bl > false;
+                boolean bl = secondaryOreId > 0;
                 if (!player.getInventoryManager().containsItemStack(itemStack) || bl && !player.getInventoryManager().containsItemStack(itemStack2)) {
                     Player player3 = player;
                     player3.packetSender.sendGameMessage("You have run out of ore to smith!");

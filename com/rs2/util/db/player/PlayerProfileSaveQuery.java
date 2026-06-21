@@ -11,17 +11,17 @@ import com.rs2.util.db.player.PlayerSaveQueryFactory;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-final class PlayerProfileSaveQuery
+public final class PlayerProfileSaveQuery
 extends DatabaseQuery {
     private /* synthetic */ PlayerSaveQueryFactory factory;
 
     public PlayerProfileSaveQuery(PlayerSaveQueryFactory playerSaveQueryFactory) {
-        this.factory = playerSaveQueryFactory;
         super("INSERT INTO prs06_players (id, username, x, y, z, appearance_0, appearance_1, appearance_2, appearance_3, appearance_4, appearance_5, appearance_6, color_0, color_1, color_2, color_3, color_4, pin, tutorial_stage, tutorial_progress, is_male, ban_expires, mute_expires, changing_bankpin, deleting_bankpin, pin_append_year, pin_append_date, binding_neck_charge, ring_of_forging_life, ring_of_recoil_life, slayer_master, slayer_task, task_amount, using_ancients, brimhaven_open, killed_clue_attacker) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE x = VALUES(x), y = VALUES(y), z = VALUES(z), appearance_0 = VALUES(appearance_0), appearance_1 = VALUES(appearance_1), appearance_2 = VALUES(appearance_2), appearance_3 = VALUES(appearance_3), appearance_4 = VALUES(appearance_4), appearance_5 = VALUES(appearance_5), appearance_6 = VALUES(appearance_6), color_0 = VALUES(color_0), color_1 = VALUES(color_1), color_2 = VALUES(color_2), color_3 = VALUES(color_3), color_4 = VALUES(color_4), pin = VALUES(pin), tutorial_stage = VALUES(tutorial_stage), tutorial_progress = VALUES(tutorial_progress), is_male = VALUES(is_male), ban_expires = VALUES(ban_expires), mute_expires = VALUES(mute_expires), changing_bankpin = VALUES(changing_bankpin), deleting_bankpin = VALUES(deleting_bankpin),pin_append_year = VALUES(pin_append_year), pin_append_date = VALUES(pin_append_date), binding_neck_charge = VALUES(binding_neck_charge), ring_of_forging_life = VALUES(ring_of_forging_life), ring_of_recoil_life = VALUES(ring_of_recoil_life), slayer_master = VALUES(slayer_master), slayer_task = VALUES(slayer_task), task_amount = VALUES(task_amount), using_ancients = VALUES(using_ancients), brimhaven_open = VALUES(brimhaven_open), killed_clue_attacker = VALUES(killed_clue_attacker)");
+        this.factory = playerSaveQueryFactory;
     }
 
     @Override
-    public final ResultSet executeStatement(PreparedStatement preparedStatement) {
+    public final ResultSet executeStatement(PreparedStatement preparedStatement) throws java.sql.SQLException {
         preparedStatement.setInt(1, PlayerSaveQueryFactory.getPlayer(this.factory).getReferenceId());
         preparedStatement.setString(2, PlayerSaveQueryFactory.getPlayer(this.factory).getUsername());
         Position position = PlayerSaveQueryFactory.getPlayer(this.factory).getPosition();

@@ -7,9 +7,9 @@ import com.rs2.model.Entity;
 import com.rs2.model.combat.hit.DamageContribution;
 import java.util.Comparator;
 
-final class DamageContributionComparator
+public final class DamageContributionComparator
 implements Comparator {
-    DamageContributionComparator(Entity entity) {
+    public DamageContributionComparator(Entity entity) {
     }
 
     public final /* synthetic */ int compare(Object object, Object object2) {

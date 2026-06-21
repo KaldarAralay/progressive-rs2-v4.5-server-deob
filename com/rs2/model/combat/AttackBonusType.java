@@ -16,9 +16,8 @@ public enum AttackBonusType {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private AttackBonusType() {
-        void var3_2;
-        this.f = var3_2;
+    private AttackBonusType(int n2) {
+        this.f = n2;
     }
 
     public final int getIndex() {

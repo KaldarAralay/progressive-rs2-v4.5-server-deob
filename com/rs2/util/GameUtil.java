@@ -61,25 +61,24 @@ public final class GameUtil {
     }
 
     public static int rollLevelScaledChanceIndex(int[] nArray, int[] nArray2, int[] nArray3, int n) {
-        Object object;
-        ArrayList<double[]> arrayList = new ArrayList<double[]>();
-        ArrayList<double[]> arrayList2 = new ArrayList<double[]>();
+        ArrayList entries = new ArrayList();
+        ArrayList sortedEntries = new ArrayList();
         int n2 = 0;
         while (n2 < nArray.length) {
-            object = new WeightedChanceEntry(nArray[n2], nArray2[n2], nArray3[n2]);
-            arrayList2.add((double[])object);
-            arrayList.add((double[])object);
+            WeightedChanceEntry entry = new WeightedChanceEntry(nArray[n2], nArray2[n2], nArray3[n2]);
+            sortedEntries.add(entry);
+            entries.add(entry);
             ++n2;
         }
-        Collections.sort(arrayList2, new WeightedChanceEntryThresholdComparator());
-        double[] dArray = GameUtil.calculateLevelScaledProbabilities(arrayList2, n);
-        object = new double[dArray.length];
+        Collections.sort(sortedEntries, new WeightedChanceEntryThresholdComparator());
+        double[] sortedProbabilities = GameUtil.calculateLevelScaledProbabilities(sortedEntries, n);
+        double[] probabilities = new double[sortedProbabilities.length];
         int n3 = 0;
-        while (n3 < dArray.length) {
-            object[arrayList.indexOf(arrayList2.get((int)n3))] = dArray[n3];
+        while (n3 < sortedProbabilities.length) {
+            probabilities[entries.indexOf(sortedEntries.get(n3))] = sortedProbabilities[n3];
             ++n3;
         }
-        n3 = GameUtil.rollProbabilityIndex(object);
+        n3 = GameUtil.rollProbabilityIndex(probabilities);
         return n3;
     }
 
@@ -108,44 +107,34 @@ public final class GameUtil {
     }
 
     private static double[] calculateLevelScaledProbabilities(ArrayList arrayList, int n) {
-        double[] dArray = new double[arrayList.size()];
+        double[] probabilities = new double[arrayList.size()];
         int n2 = 0;
         while (n2 < arrayList.size()) {
-            double d;
-            block6: {
-                int n3;
-                double[] dArray2;
-                Object object = (WeightedChanceEntry)arrayList.get(n2);
-                if (n < ((WeightedChanceEntry)object).requiredLevel) {
-                    dArray2 = dArray;
-                    n3 = n2;
-                    d = 0.0;
-                } else {
-                    int n4;
-                    dArray2 = dArray;
-                    n3 = n4 = n2;
-                    int n5 = n;
-                    object = arrayList;
-                    double d2 = 1.0;
-                    int n6 = 0;
-                    while (n6 < ((ArrayList)object).size()) {
-                        WeightedChanceEntry weightedChanceEntry = (WeightedChanceEntry)((ArrayList)object).get(n6);
-                        if (n6 == n4) {
-                            d = d2 = d2 * GameUtil.calculateLevelScaledChance(weightedChanceEntry.lowChance, weightedChanceEntry.highChance, n5);
-                            break block6;
-                        }
-                        if (n5 >= weightedChanceEntry.requiredLevel) {
-                            d2 *= 1.0 - GameUtil.calculateLevelScaledChance(weightedChanceEntry.lowChance, weightedChanceEntry.highChance, n5);
-                        }
-                        ++n6;
+            WeightedChanceEntry entry = (WeightedChanceEntry)arrayList.get(n2);
+            if (n < entry.requiredLevel) {
+                probabilities[n2] = 0.0;
+            } else {
+                double probability = 1.0;
+                int n3 = 0;
+                while (n3 < arrayList.size()) {
+                    WeightedChanceEntry weightedChanceEntry = (WeightedChanceEntry)arrayList.get(n3);
+                    if (n3 == n2) {
+                        probability *= GameUtil.calculateLevelScaledChance(weightedChanceEntry.lowChance, weightedChanceEntry.highChance, n);
+                        probabilities[n2] = probability;
+                        break;
                     }
+                    if (n >= weightedChanceEntry.requiredLevel) {
+                        probability *= 1.0 - GameUtil.calculateLevelScaledChance(weightedChanceEntry.lowChance, weightedChanceEntry.highChance, n);
+                    }
+                    ++n3;
+                }
+                if (n3 >= arrayList.size()) {
                     throw new IllegalStateException("Index out of bounds");
                 }
             }
-            dArray2[n3] = d;
             ++n2;
         }
-        return dArray;
+        return probabilities;
     }
 
     public static int rollProbabilityIndex(double[] dArray) {
@@ -156,7 +145,7 @@ public final class GameUtil {
         while (n < dArray.length) {
             double d4;
             d3 += dArray[n];
-            if (d4 >= d2) {
+            if (d3 >= d2) {
                 return n;
             }
             ++n;
@@ -193,7 +182,7 @@ public final class GameUtil {
             double d10 = nArray2[n3];
             double d11 = d9 / d10;
             d7 += d11;
-            if (d8 >= d6) {
+            if (d7 >= d6) {
                 return n3;
             }
             ++n3;
@@ -203,7 +192,8 @@ public final class GameUtil {
 
     public static void addTrackedRareItemAmount(ItemStack itemStack) {
         int n = 0;
-        for (ItemStack itemStack2 : Server.trackedRareItems) {
+        for (Object trackedRareItemObject : Server.trackedRareItems) {
+            ItemStack itemStack2 = (ItemStack)trackedRareItemObject;
             if (itemStack.getId() == itemStack2.getId()) {
                 int n2 = itemStack2.getAmount() + itemStack.getAmount();
                 itemStack.setAmount(n2);
@@ -386,17 +376,14 @@ public final class GameUtil {
         return false;
     }
 
-    private static boolean hasClearPath(int n, int n2, int n3, int n4, int n5, boolean n6) {
-        if (n6) {
+    private static boolean hasClearPath(int n, int n2, int n3, int n4, int n5, boolean bl) {
+        if (bl) {
             return WalkingCollisionMap.canTravelBetween(n, n2, n3, n4, n5, 1, 1);
         }
         int n7 = n;
-        n = 1;
-        n = 1;
-        n = n7;
-        n = n3 - n;
+        n = n3 - n7;
         n2 = n4 - n2;
-        n6 = Math.max(Math.abs(n), Math.abs(n2));
+        int n6 = Math.max(Math.abs(n), Math.abs(n2));
         int n8 = 0;
         while (n8 < n6) {
             int n9 = n3 - n;

@@ -11,15 +11,15 @@ import com.rs2.model.skill.magic.MagicSpellAction;
 import com.rs2.model.skill.magic.SpellDefinition;
 import com.rs2.model.task.TickTask;
 
-final class WineOfZamorakTelegrabTickTask
+public final class WineOfZamorakTelegrabTickTask
 extends TickTask {
     private /* synthetic */ FaladorWineOfZamorakTelegrabBotTask task;
     private final /* synthetic */ Player player;
 
-    WineOfZamorakTelegrabTickTask(FaladorWineOfZamorakTelegrabBotTask faladorWineOfZamorakTelegrabBotTask, int n, Player player) {
+    public WineOfZamorakTelegrabTickTask(FaladorWineOfZamorakTelegrabBotTask faladorWineOfZamorakTelegrabBotTask, int n, Player player) {
+        super(2);
         this.task = faladorWineOfZamorakTelegrabBotTask;
         this.player = player;
-        super(2);
     }
 
     @Override

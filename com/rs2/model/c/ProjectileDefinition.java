@@ -107,7 +107,7 @@ public class ProjectileDefinition {
         Entity entity = (Npc)player.getInteractionTarget();
         entity.getPosition().getX();
         entity.getPosition().getY();
-        if (entity.getTransformTicksRemaining() > 0) {
+        if (((Npc)entity).getTransformTicksRemaining() > 0) {
             entity = player;
             ((Player)entity).packetSender.sendGameMessage("This sheep has already been sheared.");
             if (player.botEnabled) {

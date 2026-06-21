@@ -6,13 +6,13 @@ package com.rs2.model.skill.prayer;
 import com.rs2.model.skill.prayer.PrayerManager;
 import com.rs2.model.task.TickTask;
 
-final class RapidRestoreTask
+public final class RapidRestoreTask
 extends TickTask {
     private /* synthetic */ PrayerManager prayerManager;
 
-    RapidRestoreTask(PrayerManager prayerManager, int n) {
-        this.prayerManager = prayerManager;
+    public RapidRestoreTask(PrayerManager prayerManager, int n) {
         super(100);
+        this.prayerManager = prayerManager;
     }
 
     @Override

@@ -10,15 +10,15 @@ import com.rs2.model.combat.special.DarkBowSpecialAttack;
 import com.rs2.model.combat.special.SpecialAttackDefinition;
 import com.rs2.model.player.Player;
 
-final class DarkBowSpecialDefinition
+public final class DarkBowSpecialDefinition
 extends SpecialAttackDefinition {
-    DarkBowSpecialDefinition(int n2, String ... stringArray) {
+    public DarkBowSpecialDefinition(int n2, String ... stringArray) {
+        super(n2, stringArray);
     }
 
     @Override
-    public final WeaponCombatAttack createAttack(Player object, Entity entity, WeaponProfile weaponProfile) {
-        object = new DarkBowSpecialAttack(this, (Player)object, entity, weaponProfile, weaponProfile, (Player)object);
-        return object;
+    public final WeaponCombatAttack createAttack(Player player, Entity entity, WeaponProfile weaponProfile) {
+        return new DarkBowSpecialAttack(this, player, entity, weaponProfile, weaponProfile, player);
     }
 }
 

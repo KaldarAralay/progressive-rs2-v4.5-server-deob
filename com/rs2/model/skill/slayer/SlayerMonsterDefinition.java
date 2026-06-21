@@ -62,13 +62,11 @@ public enum SlayerMonsterDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private SlayerMonsterDefinition(int[] nArray, String string3) {
-        void var6_4;
-        void var5_3;
-        this.monsterName = nArray;
-        this.requiredSlayerLevel = (int)string3;
-        this.requiredItemIds = var5_3;
-        this.requirementMode = var6_4;
+    private SlayerMonsterDefinition(String string2, int n2, int[] nArray, String string3) {
+        this.monsterName = string2;
+        this.requiredSlayerLevel = n2;
+        this.requiredItemIds = nArray;
+        this.requirementMode = string3;
     }
 
     public static SlayerMonsterDefinition forName(String string) {

@@ -6,9 +6,9 @@ package com.rs2.bot;
 import com.rs2.bot.BotTaskDefinition;
 import java.util.ArrayList;
 
-final class CombatBotTaskList
+public final class CombatBotTaskList
 extends ArrayList {
-    CombatBotTaskList() {
+    public CombatBotTaskList() {
         this.add(BotTaskDefinition.getDraynorChickenCombatTask());
         this.add(BotTaskDefinition.getFaladorCowCombatTask());
         this.add(BotTaskDefinition.getKaramjaVolcanoNorthLesserDemonCombatTask());

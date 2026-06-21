@@ -8,17 +8,17 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 import com.rs2.net.packet.handler.PlayerInteractionPacketHandler;
 
-final class FollowPlayerTask
+public final class FollowPlayerTask
 extends TickTask {
     private final /* synthetic */ Player targetPlayer;
     private final /* synthetic */ Player requestingPlayer;
     private final /* synthetic */ int actionSequence;
 
-    FollowPlayerTask(PlayerInteractionPacketHandler playerInteractionPacketHandler, int n, Player player, Player player2, int n2) {
+    public FollowPlayerTask(PlayerInteractionPacketHandler playerInteractionPacketHandler, int n, Player player, Player player2, int n2) {
+        super(1);
         this.targetPlayer = player;
         this.requestingPlayer = player2;
         this.actionSequence = n2;
-        super(1);
     }
 
     @Override

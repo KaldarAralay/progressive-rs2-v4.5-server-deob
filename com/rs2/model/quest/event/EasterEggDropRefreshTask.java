@@ -6,13 +6,13 @@ package com.rs2.model.quest.event;
 import com.rs2.model.quest.event.EasterEggDropEventHook;
 import com.rs2.model.task.TickTask;
 
-final class EasterEggDropRefreshTask
+public final class EasterEggDropRefreshTask
 extends TickTask {
     private /* synthetic */ EasterEggDropEventHook a;
 
-    EasterEggDropRefreshTask(EasterEggDropEventHook easterEggDropEventHook, int n) {
-        this.a = easterEggDropEventHook;
+    public EasterEggDropRefreshTask(EasterEggDropEventHook easterEggDropEventHook, int n) {
         super(n);
+        this.a = easterEggDropEventHook;
     }
 
     @Override

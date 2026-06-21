@@ -10,15 +10,15 @@ import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 import com.rs2.util.path.PathFinder;
 
-final class DropPartyFollowerTickTask
+public final class DropPartyFollowerTickTask
 extends TickTask {
     private final /* synthetic */ Player follower;
     private final /* synthetic */ Player leader;
 
-    DropPartyFollowerTickTask(int n, Player player, Player player2) {
+    public DropPartyFollowerTickTask(int n, Player player, Player player2) {
+        super(3);
         this.follower = player;
         this.leader = player2;
-        super(3);
     }
 
     @Override

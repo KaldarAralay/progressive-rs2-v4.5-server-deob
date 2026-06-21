@@ -10,22 +10,22 @@ import com.rs2.model.quest.impl.MonkeyMadnessQuest;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 
-final class ShipyardCrateTunnelDescentTask
+public final class ShipyardCrateTunnelDescentTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
-    ShipyardCrateTunnelDescentTask(MonkeyMadnessQuest monkeyMadnessQuest, int n, Player player) {
-        this.a = player;
+    public ShipyardCrateTunnelDescentTask(MonkeyMadnessQuest monkeyMadnessQuest, int n, Player player) {
         super(5);
+        this.player = player;
     }
 
     @Override
     public final void execute() {
-        this.a.moveTo(new Position(2802, 9169, 0));
-        Player player = this.a;
+        this.player.moveTo(new Position(2802, 9169, 0));
+        Player player = this.player;
         player.packetSender.closeInterfaces();
-        this.a.applyDirectHit(1 + GameUtil.randomInclusive(9), HitType.NORMAL);
-        this.a.setActionLocked(false);
+        this.player.applyDirectHit(1 + GameUtil.randomInclusive(9), HitType.NORMAL);
+        this.player.setActionLocked(false);
         this.stop();
     }
 }

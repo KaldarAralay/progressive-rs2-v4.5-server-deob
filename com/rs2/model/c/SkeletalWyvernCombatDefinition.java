@@ -14,9 +14,9 @@ import com.rs2.model.combat.attack.CombatAttack;
 import com.rs2.model.combat.effect.MovementLockEffect;
 import com.rs2.model.npc.combat.NpcCombatDefinition;
 
-final class SkeletalWyvernCombatDefinition
+public final class SkeletalWyvernCombatDefinition
 extends NpcCombatDefinition {
-    SkeletalWyvernCombatDefinition() {
+    public SkeletalWyvernCombatDefinition() {
     }
 
     @Override

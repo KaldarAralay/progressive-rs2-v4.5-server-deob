@@ -179,214 +179,160 @@ public enum SpellDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private SpellDefinition(boolean bl, int n2) {
-        this((String)cfr_renamed_0, (int)hitDefinition, 0, (int)cfr_renamed_13, bl ? 1 : 0, null, 0.0, null, (HitDefinition)n2, true, null, null);
-        void cfr_renamed_13;
-        void cfr_renamed_0;
+    private SpellDefinition(int n2, HitDefinition hitDefinition, boolean bl, int n3) {
+        this(0, n3, n2, null, 0.0, null, hitDefinition, true, null, null);
     }
 
     /*
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private SpellDefinition(boolean bl) {
-        this((String)cfr_renamed_0, (int)hitDefinition, 0, -1, bl ? 1 : 0, null, 0.0, null, (HitDefinition)var4_3, true, null, null);
-        void var4_3;
-        void cfr_renamed_0;
+    private SpellDefinition(int n2, HitDefinition hitDefinition, boolean bl) {
+        this(0, -1, n2, null, 0.0, null, hitDefinition, true, null, null);
     }
 
     /*
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private SpellDefinition(HitDefinition hitDefinition, boolean bl) {
-        this((String)cfr_renamed_0, (int)graphicEffect, 0, -1, (int)hitDefinition, (GraphicEffect)bl, 0.0, null, (HitDefinition)var5_4, true, null, null);
-        void var5_4;
-        void cfr_renamed_0;
+    private SpellDefinition(int n2, GraphicEffect graphicEffect, HitDefinition hitDefinition, boolean bl) {
+        this(0, -1, n2, graphicEffect, 0.0, null, hitDefinition, true, null, null);
     }
 
     /*
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private SpellDefinition(boolean bl, CombatEffect combatEffect) {
-        this((String)cfr_renamed_0, (int)hitDefinition, 0, -1, bl ? 1 : 0, null, 0.0, null, (HitDefinition)((Object)combatEffect), true, null, (CombatEffect)cfr_renamed_13);
-        void cfr_renamed_13;
-        void cfr_renamed_0;
+    private SpellDefinition(int n2, HitDefinition hitDefinition, boolean bl, CombatEffect combatEffect) {
+        this(0, -1, n2, null, 0.0, null, hitDefinition, true, null, combatEffect);
     }
 
     /*
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private SpellDefinition(boolean bl, CombatEffect combatEffect, CombatEffect combatEffect2) {
-        this((String)cfr_renamed_0, (int)hitDefinition, 0, -1, 3146, null, 0.0, null, (HitDefinition)((Object)combatEffect), true, null, null, (CombatEffect)cfr_renamed_3);
-        void cfr_renamed_3;
-        void cfr_renamed_0;
+    private SpellDefinition(int n2, HitDefinition hitDefinition, boolean bl, CombatEffect combatEffect, CombatEffect combatEffect2) {
+        this(0, -1, 3146, null, 0.0, null, hitDefinition, true, null, null, combatEffect2);
     }
 
     /*
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private SpellDefinition(int n3, GraphicEffect graphicEffect, double d, ItemStack[] itemStackArray) {
-        this((String)cfr_renamed_0, (int)cfr_renamed_1, n3, (int)graphicEffect, (int)d, (GraphicEffect)var6_4, (double)itemStackArray, (ItemStack[])var9_6, null, false, null, null);
-        void var9_6;
-        void var6_4;
-        void cfr_renamed_1;
-        void cfr_renamed_0;
+    private SpellDefinition(int n2, int n3, int n4, GraphicEffect graphicEffect, double d, ItemStack[] itemStackArray) {
+        this(n2, n3, n4, graphicEffect, d, itemStackArray, null, false, null, null);
     }
 
     /*
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private SpellDefinition(int n3, GraphicEffect graphicEffect, double d, ItemStack[] itemStackArray, boolean n22) {
-        this((String)cfr_renamed_0, (int)cfr_renamed_1, n3, (int)graphicEffect, (int)d, (GraphicEffect)var6_4, (double)itemStackArray, (ItemStack[])var9_6, null, false, true);
-        void var9_6;
-        void var6_4;
-        void cfr_renamed_1;
-        void cfr_renamed_0;
+    private SpellDefinition(int n2, int n3, int n4, GraphicEffect graphicEffect, double d, ItemStack[] itemStackArray, boolean bl) {
+        this(n2, n3, n4, graphicEffect, d, itemStackArray, null, false, true);
     }
 
     /*
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private SpellDefinition(int n3, GraphicEffect graphicEffect, double d, ItemStack[] itemStackArray, ItemStack[] n22, boolean bl) {
-        this((String)cfr_renamed_0, (int)cfr_renamed_1, n3, (int)graphicEffect, 726, (GraphicEffect)var6_4, (double)itemStackArray, (ItemStack[])bl, null, false, (ItemStack[])var10_7, true);
-        void var10_7;
-        void var6_4;
-        void cfr_renamed_1;
-        void cfr_renamed_0;
+    private SpellDefinition(int n2, int n3, int n4, GraphicEffect graphicEffect, double d, ItemStack[] itemStackArray, ItemStack[] itemStackArray2, boolean bl) {
+        this(n2, n3, 726, graphicEffect, d, itemStackArray, null, false, itemStackArray2, true);
     }
 
     /*
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private SpellDefinition(int n3, GraphicEffect graphicEffect, double d, ItemStack[] itemStackArray, HitDefinition hitDefinition, boolean n22) {
-        this((String)cfr_renamed_0, (int)cfr_renamed_1, n3, (int)graphicEffect, (int)d, (GraphicEffect)var6_4, (double)itemStackArray, (ItemStack[])cfr_renamed_5, (HitDefinition)var10_7, (boolean)var11_8, null, null);
-        void var11_8;
-        void var10_7;
-        void cfr_renamed_5;
-        void var6_4;
-        void cfr_renamed_1;
-        void cfr_renamed_0;
+    private SpellDefinition(int n2, int n3, int n4, GraphicEffect graphicEffect, double d, ItemStack[] itemStackArray, HitDefinition hitDefinition, boolean bl) {
+        this(n2, n3, n4, graphicEffect, d, itemStackArray, hitDefinition, bl, null, null);
     }
 
     /*
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private SpellDefinition(int n3, GraphicEffect graphicEffect, double d, ItemStack[] itemStackArray, HitDefinition hitDefinition, boolean n22, boolean bl) {
-        this((String)cfr_renamed_0, (int)cfr_renamed_1, n3, (int)graphicEffect, (int)d, (GraphicEffect)var6_4, (double)itemStackArray, (ItemStack[])cfr_renamed_5, (HitDefinition)bl, (boolean)var11_8, null, null, (boolean)var12_9);
-        void var12_9;
-        void var11_8;
-        void cfr_renamed_5;
-        void var6_4;
-        void cfr_renamed_1;
-        void cfr_renamed_0;
+    private SpellDefinition(int n2, int n3, int n4, GraphicEffect graphicEffect, double d, ItemStack[] itemStackArray, HitDefinition hitDefinition, boolean bl, boolean bl2) {
+        this(n2, n3, n4, graphicEffect, d, itemStackArray, hitDefinition, bl, null, null, bl2);
     }
 
     /*
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private SpellDefinition(int n3, GraphicEffect graphicEffect, double d, ItemStack[] itemStackArray, HitDefinition hitDefinition, boolean n22, ItemStack[] itemStackArray2, boolean bl) {
-        this((String)cfr_renamed_0, (int)cfr_renamed_1, n3, (int)graphicEffect, (int)d, (GraphicEffect)var6_4, (double)itemStackArray, (ItemStack[])cfr_renamed_5, null, false, null, null, (ItemStack[])var12_9, (boolean)var13_10);
-        void var13_10;
-        void var12_9;
-        void cfr_renamed_5;
-        void var6_4;
-        void cfr_renamed_1;
-        void cfr_renamed_0;
+    private SpellDefinition(int n2, int n3, int n4, GraphicEffect graphicEffect, double d, ItemStack[] itemStackArray, HitDefinition hitDefinition, boolean bl, ItemStack[] itemStackArray2, boolean bl2) {
+        this(n2, n3, n4, graphicEffect, d, itemStackArray, null, false, null, null, itemStackArray2, bl2);
     }
 
     /*
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private SpellDefinition(int n3, GraphicEffect graphicEffect, double d, ItemStack[] itemStackArray, HitDefinition n22, boolean bl, CombatEffect combatEffect, CombatEffect combatEffect2, CombatEffect combatEffect3) {
-        void var14_11;
-        void var13_10;
+    private SpellDefinition(int n2, int n3, int n4, GraphicEffect graphicEffect, double d, ItemStack[] itemStackArray, HitDefinition hitDefinition, boolean bl, CombatEffect combatEffect, CombatEffect combatEffect2, CombatEffect combatEffect3) {
         this.requiredLevel = 0;
         this.castSoundId = -1;
-        this.animationId = (int)d;
+        this.animationId = n4;
         this.castGraphic = null;
         this.experience = 0.0;
         this.runeCosts = null;
-        this.hitDefinition = combatEffect;
-        this.combatSpell = combatEffect2;
+        this.hitDefinition = hitDefinition;
+        this.combatSpell = bl;
         this.primaryEffect = null;
-        this.secondaryEffect = var13_10;
-        this.postHitEffect = var14_11;
+        this.secondaryEffect = combatEffect2;
+        this.postHitEffect = combatEffect3;
     }
 
     /*
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private SpellDefinition(int n3, GraphicEffect graphicEffect, double d, ItemStack[] itemStackArray, HitDefinition hitDefinition, boolean n22, CombatEffect combatEffect, CombatEffect combatEffect2) {
-        void var13_10;
-        void var12_9;
-        void cfr_renamed_5;
-        void var6_4;
-        this.requiredLevel = n3;
-        this.castSoundId = (int)graphicEffect;
-        this.animationId = (int)d;
-        this.castGraphic = var6_4;
-        this.experience = (double)itemStackArray;
-        this.runeCosts = cfr_renamed_5;
-        this.hitDefinition = combatEffect;
-        this.combatSpell = combatEffect2;
-        this.primaryEffect = var12_9;
-        this.secondaryEffect = var13_10;
+    private SpellDefinition(int n2, int n3, int n4, GraphicEffect graphicEffect, double d, ItemStack[] itemStackArray, HitDefinition hitDefinition, boolean bl, CombatEffect combatEffect, CombatEffect combatEffect2) {
+        this.requiredLevel = n2;
+        this.castSoundId = n3;
+        this.animationId = n4;
+        this.castGraphic = graphicEffect;
+        this.experience = d;
+        this.runeCosts = itemStackArray;
+        this.hitDefinition = hitDefinition;
+        this.combatSpell = bl;
+        this.primaryEffect = combatEffect;
+        this.secondaryEffect = combatEffect2;
     }
 
     /*
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private SpellDefinition(int n3, GraphicEffect graphicEffect, double d, ItemStack[] itemStackArray, HitDefinition hitDefinition, boolean n22, CombatEffect combatEffect, CombatEffect combatEffect2, boolean bl) {
-        void var14_11;
-        void var13_10;
-        void cfr_renamed_5;
-        void var6_4;
-        this.requiredLevel = n3;
-        this.castSoundId = (int)graphicEffect;
-        this.animationId = (int)d;
-        this.castGraphic = var6_4;
-        this.experience = (double)itemStackArray;
-        this.runeCosts = cfr_renamed_5;
-        this.hitDefinition = combatEffect;
-        this.combatSpell = combatEffect2;
-        this.primaryEffect = (CombatEffect)bl;
-        this.secondaryEffect = var13_10;
-        this.membersOnly = var14_11;
+    private SpellDefinition(int n2, int n3, int n4, GraphicEffect graphicEffect, double d, ItemStack[] itemStackArray, HitDefinition hitDefinition, boolean bl, CombatEffect combatEffect, CombatEffect combatEffect2, boolean bl2) {
+        this.requiredLevel = n2;
+        this.castSoundId = n3;
+        this.animationId = n4;
+        this.castGraphic = graphicEffect;
+        this.experience = d;
+        this.runeCosts = itemStackArray;
+        this.hitDefinition = hitDefinition;
+        this.combatSpell = bl;
+        this.primaryEffect = combatEffect;
+        this.secondaryEffect = combatEffect2;
+        this.membersOnly = bl2;
     }
 
     /*
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private SpellDefinition(int n3, GraphicEffect graphicEffect, double d, ItemStack[] itemStackArray, HitDefinition hitDefinition, boolean n22, CombatEffect combatEffect, CombatEffect combatEffect2, ItemStack[] itemStackArray2, boolean bl) {
-        void var15_12;
-        void var14_11;
-        void cfr_renamed_5;
-        void var6_4;
-        this.requiredLevel = n3;
-        this.castSoundId = (int)graphicEffect;
-        this.animationId = (int)d;
-        this.castGraphic = var6_4;
-        this.experience = (double)itemStackArray;
-        this.runeCosts = cfr_renamed_5;
-        this.hitDefinition = combatEffect;
-        this.combatSpell = combatEffect2;
+    private SpellDefinition(int n2, int n3, int n4, GraphicEffect graphicEffect, double d, ItemStack[] itemStackArray, HitDefinition hitDefinition, boolean bl, CombatEffect combatEffect, CombatEffect combatEffect2, ItemStack[] itemStackArray2, boolean bl2) {
+        this.requiredLevel = n2;
+        this.castSoundId = n3;
+        this.animationId = n4;
+        this.castGraphic = graphicEffect;
+        this.experience = d;
+        this.runeCosts = itemStackArray;
+        this.hitDefinition = hitDefinition;
+        this.combatSpell = bl;
         this.primaryEffect = null;
         this.secondaryEffect = null;
-        this.producedItems = var14_11;
-        this.membersOnly = var15_12;
+        this.producedItems = itemStackArray2;
+        this.membersOnly = bl2;
     }
 
     public final boolean isCombatSpell() {

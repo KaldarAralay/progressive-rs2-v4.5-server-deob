@@ -39,18 +39,17 @@ extends BotTaskDefinition {
     }
 
     @Override
-    public final ArrayList getRequiredItems(Player object) {
-        object = new ArrayList<ItemStack>();
-        ((ArrayList)object).add(new ItemStack(1381, 1));
-        ((ArrayList)object).add(new ItemStack(563, 500));
-        return object;
+    public final ArrayList getRequiredItems(Player player) {
+        ArrayList<ItemStack> requiredItems = new ArrayList<ItemStack>();
+        requiredItems.add(new ItemStack(1381, 1));
+        requiredItems.add(new ItemStack(563, 500));
+        return requiredItems;
     }
 
     @Override
     public final void startCustomTaskAction(Player object) {
         ((Player)object).refreshRegionState();
-        object = new WineOfZamorakTelegrabTickTask(this, 2, (Player)object);
-        World.getTaskScheduler().schedule((TickTask)object);
+        World.getTaskScheduler().schedule(new WineOfZamorakTelegrabTickTask(this, 2, (Player)object));
     }
 
     @Override

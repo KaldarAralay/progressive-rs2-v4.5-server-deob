@@ -39,11 +39,10 @@ public enum CanoeTreeDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private CanoeTreeDefinition(int n2) {
-        void cfr_renamed_14;
-        this.objectIds = (int[])n2;
+    private CanoeTreeDefinition(int[] nArray, int n2, int n3) {
+        this.objectIds = nArray;
         this.requiredLevel = 12;
-        this.configShift = cfr_renamed_14;
+        this.configShift = n3;
     }
 
     public final int getRequiredLevel() {

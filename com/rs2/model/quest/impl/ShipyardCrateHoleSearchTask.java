@@ -7,19 +7,19 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.MonkeyMadnessQuest;
 import com.rs2.model.task.TickTask;
 
-final class ShipyardCrateHoleSearchTask
+public final class ShipyardCrateHoleSearchTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
-    ShipyardCrateHoleSearchTask(MonkeyMadnessQuest monkeyMadnessQuest, int n, Player player) {
-        this.a = player;
+    public ShipyardCrateHoleSearchTask(MonkeyMadnessQuest monkeyMadnessQuest, int n, Player player) {
         super(2);
+        this.player = player;
     }
 
     @Override
     public final void execute() {
-        this.a.setActionLocked(false);
-        this.a.getDialogueManager().showTwoLineStatement("You find a hole in the floor under the crate! All you can see is the", "faint glimmer of light from extremely far below.");
+        this.player.setActionLocked(false);
+        this.player.getDialogueManager().showTwoLineStatement("You find a hole in the floor under the crate! All you can see is the", "faint glimmer of light from extremely far below.");
         this.stop();
     }
 }

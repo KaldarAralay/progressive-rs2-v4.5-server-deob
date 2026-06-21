@@ -18,14 +18,14 @@ import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.util.GameUtil;
 
-final class FishingTask
+public final class FishingTask
 extends CycleEvent {
     private /* synthetic */ FishingHandler handler;
     private final /* synthetic */ int actionSequence;
     private final /* synthetic */ Npc spotNpc;
     private final /* synthetic */ FishingSpotDefinition spotDefinition;
 
-    FishingTask(FishingHandler fishingHandler, int n, Npc npc, FishingSpotDefinition fishingSpotDefinition) {
+    public FishingTask(FishingHandler fishingHandler, int n, Npc npc, FishingSpotDefinition fishingSpotDefinition) {
         this.handler = fishingHandler;
         this.actionSequence = n;
         this.spotNpc = npc;

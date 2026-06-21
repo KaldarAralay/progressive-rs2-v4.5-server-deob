@@ -57,10 +57,10 @@ extends BotTaskDefinition {
         player.getBankContainer().addToTab(new ItemStack(995, 100000), 0);
         player.getBankContainer().addToTab(new ItemStack(player.botFoodItemId, 1000), 0);
         Object object = new ItemStack[]{new ItemStack(995, 875), new ItemStack(1359), new ItemStack(player.botFoodItemId, 20)};
-        player.botTaskRequiredItems = object;
-        player.getInventoryManager().addItem(object[0]);
-        player.getInventoryManager().addItem(object[1]);
-        player.getInventoryManager().addItem(object[2]);
+        player.botTaskRequiredItems = (ItemStack[])object;
+        player.getInventoryManager().addItem(((ItemStack[])object)[0]);
+        player.getInventoryManager().addItem(((ItemStack[])object)[1]);
+        player.getInventoryManager().addItem(((ItemStack[])object)[2]);
         object = player;
         GameplayHelper.prepareBotCombatStyle((Player)object, -1);
         player.getInventoryManager().refresh();

@@ -241,5 +241,9 @@ extends PacketBuffer {
     /* synthetic */ PacketReader(ByteBuffer byteBuffer, byte by) {
         this(byteBuffer);
     }
+
+    PacketReader(ByteBuffer byteBuffer, int n) {
+        this(byteBuffer);
+    }
 }
 

@@ -8,11 +8,11 @@ import com.rs2.model.combat.special.RuneThrownaxeSpecialAttack;
 import com.rs2.util.GameUtil;
 import java.util.Comparator;
 
-final class RuneThrownaxeTargetDistanceComparator
+public final class RuneThrownaxeTargetDistanceComparator
 implements Comparator {
     private /* synthetic */ RuneThrownaxeSpecialAttack attack;
 
-    RuneThrownaxeTargetDistanceComparator(RuneThrownaxeSpecialAttack runeThrownaxeSpecialAttack) {
+    public RuneThrownaxeTargetDistanceComparator(RuneThrownaxeSpecialAttack runeThrownaxeSpecialAttack) {
         this.attack = runeThrownaxeSpecialAttack;
     }
 

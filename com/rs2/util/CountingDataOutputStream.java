@@ -5,6 +5,7 @@ package com.rs2.util;
 
 import java.io.DataOutput;
 import java.io.FilterOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 
 public final class CountingDataOutputStream
@@ -18,41 +19,41 @@ implements DataOutput {
     }
 
     @Override
-    public final void flush() {
+    public final void flush() throws IOException {
         super.flush();
     }
 
     @Override
-    public final void write(byte[] byArray, int n, int n2) {
+    public final void write(byte[] byArray, int n, int n2) throws IOException {
         this.out.write(byArray, n, n2);
         this.bytesWritten += n2;
     }
 
     @Override
-    public final void write(int n) {
+    public final void write(int n) throws IOException {
         this.out.write(n);
         ++this.bytesWritten;
     }
 
     @Override
-    public final void writeBoolean(boolean bl) {
+    public final void writeBoolean(boolean bl) throws IOException {
         this.out.write(bl ? 1 : 0);
         ++this.bytesWritten;
     }
 
-    public final void writeUnsignedByte(int n) {
+    public final void writeUnsignedByte(int n) throws IOException {
         this.out.write(n & 0xFF);
         ++this.bytesWritten;
     }
 
     @Override
-    public final void writeByte(int n) {
+    public final void writeByte(int n) throws IOException {
         this.out.write(n);
         ++this.bytesWritten;
     }
 
     @Override
-    public final void writeBytes(String string) {
+    public final void writeBytes(String string) throws IOException {
         if (string.length() == 0) {
             return;
         }
@@ -67,7 +68,7 @@ implements DataOutput {
     }
 
     @Override
-    public final void writeChar(int n) {
+    public final void writeChar(int n) throws IOException {
         this.scratch[0] = (byte)(n >> 8);
         this.scratch[1] = (byte)n;
         this.out.write(this.scratch, 0, 2);
@@ -75,7 +76,7 @@ implements DataOutput {
     }
 
     @Override
-    public final void writeChars(String string) {
+    public final void writeChars(String string) throws IOException {
         byte[] byArray = new byte[string.length() << 1];
         int n = 0;
         while (n < string.length()) {
@@ -89,18 +90,18 @@ implements DataOutput {
     }
 
     @Override
-    public final void writeDouble(double d) {
+    public final void writeDouble(double d) throws IOException {
         this.writeLong(Double.doubleToLongBits(d));
     }
 
     @Override
-    public final void writeFloat(float f) {
+    public final void writeFloat(float f) throws IOException {
         this.writeInt(Float.floatToIntBits(f));
     }
 
     @Override
-    public final void writeInt(int n) {
-        this.scratch[0] = n >> 24;
+    public final void writeInt(int n) throws IOException {
+        this.scratch[0] = (byte)(n >> 24);
         this.scratch[1] = (byte)(n >> 16);
         this.scratch[2] = (byte)(n >> 8);
         this.scratch[3] = (byte)n;
@@ -109,7 +110,7 @@ implements DataOutput {
     }
 
     @Override
-    public final void writeLong(long l) {
+    public final void writeLong(long l) throws IOException {
         this.scratch[0] = (byte)(l >> 56);
         this.scratch[1] = (byte)(l >> 48);
         this.scratch[2] = (byte)(l >> 40);
@@ -123,7 +124,7 @@ implements DataOutput {
     }
 
     @Override
-    public final void writeShort(int n) {
+    public final void writeShort(int n) throws IOException {
         this.scratch[0] = (byte)(n >> 8);
         this.scratch[1] = (byte)n;
         this.out.write(this.scratch, 0, 2);
@@ -131,7 +132,7 @@ implements DataOutput {
     }
 
     @Override
-    public final void writeUTF(String string) {
+    public final void writeUTF(String string) throws IOException {
         int n;
         String string2 = string;
         int n2 = 0;

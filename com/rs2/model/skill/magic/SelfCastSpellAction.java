@@ -12,15 +12,15 @@ import com.rs2.model.skill.magic.MagicSpellAction;
 import com.rs2.model.skill.magic.SpellDefinition;
 import com.rs2.util.GameUtil;
 
-final class SelfCastSpellAction
+public final class SelfCastSpellAction
 extends MagicSpellAction {
     private final /* synthetic */ SpellDefinition selfSpell;
     private final /* synthetic */ Player caster;
 
-    SelfCastSpellAction(Player player, SpellDefinition spellDefinition, SpellDefinition spellDefinition2, Player player2) {
+    public SelfCastSpellAction(Player player, SpellDefinition spellDefinition, SpellDefinition spellDefinition2, Player player2) {
+        super(player, spellDefinition, (byte)0);
         this.selfSpell = spellDefinition2;
         this.caster = player2;
-        super(player, spellDefinition, (byte)0);
     }
 
     @Override

@@ -31,7 +31,7 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
             String[] stringArray2 = new String[]{"I can start this quest by speaking to the Gypsy in the tent", "in Varrock's main square.", "", "", "I must be able to defeat a level 27 apocalyptic demon!"};
             return stringArray2;
@@ -41,16 +41,15 @@ extends QuestScript {
             return stringArray3;
         }
         if (n == 3) {
-            String[] stringArray4 = new String[]{"I need 3 keys to get the Silverlight from Sir Prysin:", String.valueOf(stringArray.ownsItem(2400) ? "@str@" : "") + "Key from Captain Rovin", String.valueOf(stringArray.ownsItem(2401) ? "@str@" : "") + "Key from the drain", String.valueOf(stringArray.ownsItem(2399) ? "@str@" : "") + "Key from Wizard Traiborn"};
+            String[] stringArray4 = new String[]{"I need 3 keys to get the Silverlight from Sir Prysin:", String.valueOf(player.ownsItem(2400) ? "@str@" : "") + "Key from Captain Rovin", String.valueOf(player.ownsItem(2401) ? "@str@" : "") + "Key from the drain", String.valueOf(player.ownsItem(2399) ? "@str@" : "") + "Key from Wizard Traiborn"};
             return stringArray4;
         }
         if (n >= 4 && n < 29) {
             n = 29 - n;
-            stringArray = new String[]{"I need 3 keys to get the Silverlight from Sir Prysin:", String.valueOf(stringArray.ownsItem(2400) ? "@str@" : "") + "Key from Captain Rovin", String.valueOf(stringArray.ownsItem(2401) ? "@str@" : "") + "Key from the drain", String.valueOf(stringArray.ownsItem(2399) ? "@str@" : "") + "Key from Wizard Traiborn", "I need to bring " + n + " bones to Wizard Traiborn."};
-            return stringArray;
+            return new String[]{"I need 3 keys to get the Silverlight from Sir Prysin:", String.valueOf(player.ownsItem(2400) ? "@str@" : "") + "Key from Captain Rovin", String.valueOf(player.ownsItem(2401) ? "@str@" : "") + "Key from the drain", String.valueOf(player.ownsItem(2399) ? "@str@" : "") + "Key from Wizard Traiborn", "I need to bring " + n + " bones to Wizard Traiborn."};
         }
         if (n == 29) {
-            String[] stringArray5 = new String[]{"I need 3 keys to get the Silverlight from Sir Prysin:", String.valueOf(stringArray.ownsItem(2400) ? "@str@" : "") + "Key from Captain Rovin", String.valueOf(stringArray.ownsItem(2401) ? "@str@" : "") + "Key from the drain", String.valueOf(stringArray.ownsItem(2399) ? "@str@" : "") + "Key from Wizard Traiborn", String.valueOf(stringArray.ownsItem(2399) ? "" : "I should talk to Wizard Traiborn to get the key.")};
+            String[] stringArray5 = new String[]{"I need 3 keys to get the Silverlight from Sir Prysin:", String.valueOf(player.ownsItem(2400) ? "@str@" : "") + "Key from Captain Rovin", String.valueOf(player.ownsItem(2401) ? "@str@" : "") + "Key from the drain", String.valueOf(player.ownsItem(2399) ? "@str@" : "") + "Key from Wizard Traiborn", String.valueOf(player.ownsItem(2399) ? "" : "I should talk to Wizard Traiborn to get the key.")};
             return stringArray5;
         }
         if (n == 30) {
@@ -415,7 +414,7 @@ extends QuestScript {
                 }
                 if (n2 == 37) {
                     player.getDialogueManager().showNpcOneLineDialogue("Good luck, and may Guthix be with you!", 591);
-                    this.d(player);
+                    this.startQuest(player);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }

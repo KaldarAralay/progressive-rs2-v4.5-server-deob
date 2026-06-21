@@ -74,7 +74,7 @@ public final class CompostBinManager {
             n3 = n;
             Object object = position;
             Object object2 = this;
-            object = CompostBin.forPosition(object);
+            object = CompostBin.forPosition((Position)object);
             n4 = ((CompostBin)((Object)object)).getIndex();
             if (object != null) {
                 if (!ServerSettings.farmingEnabled) {

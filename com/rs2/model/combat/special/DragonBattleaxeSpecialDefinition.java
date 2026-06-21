@@ -9,9 +9,10 @@ import com.rs2.model.combat.attack.WeaponCombatAttack;
 import com.rs2.model.combat.special.SpecialAttackDefinition;
 import com.rs2.model.player.Player;
 
-final class DragonBattleaxeSpecialDefinition
+public final class DragonBattleaxeSpecialDefinition
 extends SpecialAttackDefinition {
-    DragonBattleaxeSpecialDefinition(int n2, String ... stringArray) {
+    public DragonBattleaxeSpecialDefinition(int n2, String ... stringArray) {
+        super(n2, stringArray);
     }
 
     @Override

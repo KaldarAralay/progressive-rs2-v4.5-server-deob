@@ -1,5 +1,5 @@
 /*
- * Decompiled with CFR 0.152.
+ * Source recovered from CFR output plus javap bytecode for refreshFriendStatuses.
  */
 package com.rs2.model.player;
 
@@ -22,91 +22,54 @@ public final class SocialManager {
         this.refreshFriendStatuses(false);
     }
 
-    /*
-     * Unable to fully structure code
-     */
-    public final void refreshFriendStatuses(boolean var1_1) {
-        var2_2 = 0;
-        while (var2_2 < this.player.getFriendsList().length) {
-            block10: {
-                block9: {
-                    if (this.player.getFriendsList()[var2_2] == 0L) break block10;
-                    var5_8 = this.player;
-                    v0 = var5_8.packetSender;
-                    v1 = var10_13 = this.player.getFriendsList()[var2_2];
-                    var3_4 = this;
-                    var7_11 = World.getPlayers();
-                    var6_10 = var7_11.length;
-                    var5_7 = 0;
-                    while (var5_7 < var6_10) {
-                        block11: {
-                            var4_5 = var7_11[var5_7];
-                            if (var4_5 == null || var4_5.getNameHash() == var3_4.player.getNameHash() || var4_5.getNameHash() != var10_13) break block11;
-                            if (var4_5.getPrivateChatMode() == 0) ** GOTO lbl-1000
-                            if (var4_5.getPrivateChatMode() == 1) {
-                                var4_5.getSocialManager();
-                                ** if (!SocialManager.containsNameHash((long[])var4_5.getFriendsList(), (long)var3_4.player.getNameHash())) goto lbl-1000
-                            }
-                            ** GOTO lbl-1000
-lbl-1000:
-                            // 2 sources
-
-                            {
-                                v2 = 1;
-                                ** GOTO lbl28
-                            }
-lbl-1000:
-                            // 2 sources
-
-                            {
-                                v2 = 0;
-                            }
-                            break block9;
-                        }
-                        ++var5_7;
-                    }
-                    v2 = 0;
-                }
-                v0.sendFriendStatus(v1, v2);
+    public final void refreshFriendStatuses(boolean forceOffline) {
+        for (long friendHash : this.player.getFriendsList()) {
+            if (friendHash == 0L) {
+                continue;
             }
-            ++var2_2;
+            this.player.packetSender.sendFriendStatus(friendHash, this.getFriendOnlineStatus(friendHash));
         }
-        var2_3 = this.player.getNameHash();
-        var8_14 = World.getPlayers();
-        var7_12 = var8_14.length;
-        var6_10 = 0;
-        while (var6_10 < var7_12) {
-            block12: {
-                var5_9 = var8_14[var6_10];
-                if (var5_9 == null) break block12;
-                var5_9.getSocialManager();
-                if (!SocialManager.containsNameHash(var5_9.getFriendsList(), var2_3)) break block12;
-                if (var1_1 || this.player.getPrivateChatMode() == 2) ** GOTO lbl-1000
-                if (this.player.getPrivateChatMode() == 1) {
-                    this.player.getSocialManager();
-                    ** if (SocialManager.containsNameHash((long[])this.player.getFriendsList(), (long)var5_9.getNameHash())) goto lbl-1000
-                }
-                ** GOTO lbl-1000
-lbl-1000:
-                // 2 sources
 
-                {
-                    var4_6 = 0;
-                    ** GOTO lbl53
-                }
-lbl-1000:
-                // 2 sources
-
-                {
-                    var4_6 = 1;
-                }
-lbl53:
-                // 2 sources
-
-                var5_9.packetSender.sendFriendStatus(var2_3, var4_6);
+        long playerNameHash = this.player.getNameHash();
+        for (Player otherPlayer : World.getPlayers()) {
+            if (otherPlayer == null || !containsNameHash(otherPlayer.getFriendsList(), playerNameHash)) {
+                continue;
             }
-            ++var6_10;
+            int status = this.isVisibleTo(otherPlayer, forceOffline) ? 1 : 0;
+            otherPlayer.packetSender.sendFriendStatus(playerNameHash, status);
         }
+    }
+
+    private int getFriendOnlineStatus(long friendHash) {
+        long playerNameHash = this.player.getNameHash();
+        for (Player friend : World.getPlayers()) {
+            if (friend == null || friend.getNameHash() == playerNameHash || friend.getNameHash() != friendHash) {
+                continue;
+            }
+            return isVisibleToPlayer(friend, playerNameHash) ? 1 : 0;
+        }
+        return 0;
+    }
+
+    private boolean isVisibleTo(Player viewer, boolean forceOffline) {
+        if (forceOffline || this.player.getPrivateChatMode() == 2) {
+            return false;
+        }
+        if (this.player.getPrivateChatMode() == 1) {
+            return containsNameHash(this.player.getFriendsList(), viewer.getNameHash());
+        }
+        return true;
+    }
+
+    private static boolean isVisibleToPlayer(Player subject, long viewerNameHash) {
+        if (subject.getPrivateChatMode() == 0) {
+            return true;
+        }
+        if (subject.getPrivateChatMode() == 1) {
+            subject.getSocialManager();
+            return containsNameHash(subject.getFriendsList(), viewerNameHash);
+        }
+        return false;
     }
 
     public final void addFriend(long l) {
@@ -229,4 +192,3 @@ lbl53:
         return this.privateMessageCounter++;
     }
 }
-

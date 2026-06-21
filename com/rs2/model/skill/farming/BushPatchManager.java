@@ -1,5 +1,5 @@
 /*
- * Decompiled with CFR 0.152.
+ * Source recovery overlay for CFR control-flow damage.
  */
 package com.rs2.model.skill.farming;
 
@@ -8,15 +8,6 @@ import com.rs2.ServerSettings;
 import com.rs2.model.Position;
 import com.rs2.model.item.ItemStack;
 import com.rs2.model.player.Player;
-import com.rs2.model.skill.farming.BushClearingTask;
-import com.rs2.model.skill.farming.BushCompostTask;
-import com.rs2.model.skill.farming.BushCureTask;
-import com.rs2.model.skill.farming.BushDefinition;
-import com.rs2.model.skill.farming.BushGrowthDefinition;
-import com.rs2.model.skill.farming.BushHarvestTask;
-import com.rs2.model.skill.farming.BushInspectTask;
-import com.rs2.model.skill.farming.BushPatch;
-import com.rs2.model.skill.farming.BushPlantingTask;
 import com.rs2.model.task.CycleEventHandler;
 import com.rs2.util.GameUtil;
 
@@ -34,76 +25,57 @@ public final class BushPatchManager {
         this.player = player;
     }
 
-    /*
-     * Unable to fully structure code
-     */
     public final void refreshConfig() {
-        var1_1 = new int[this.growthStages.length];
-        var2_3 = 0;
-        while (var2_3 < this.growthStages.length) {
-            var6_8 = this.patchStates[var2_3];
-            var5_7 = this.cropIds[var2_3];
-            var4_6 = this.growthStages[var2_3];
-            var3_5 = this;
-            var3_5 = BushDefinition.forSeedId(var5_7);
-            switch (var4_6) {
+        int[] configStages = new int[this.growthStages.length];
+        int index = 0;
+        while (index < this.growthStages.length) {
+            int patchState = this.patchStates[index];
+            int cropId = this.cropIds[index];
+            int growthStage = this.growthStages[index];
+            BushDefinition bushDefinition = BushDefinition.forSeedId(cropId);
+            int configStage;
+            switch (growthStage) {
                 case 0: {
-                    v0 = 0;
+                    configStage = 0;
                     break;
                 }
                 case 1: {
-                    v0 = 1;
+                    configStage = 1;
                     break;
                 }
                 case 2: {
-                    v0 = 2;
+                    configStage = 2;
                     break;
                 }
                 case 3: {
-                    v0 = 3;
+                    configStage = 3;
                     break;
                 }
                 default: {
-                    if (var3_5 == null) {
-                        v0 = -1;
+                    if (bushDefinition == null) {
+                        configStage = -1;
                         break;
                     }
-                    if (BushPatchManager.b(var6_8) != 3) ** GOTO lbl30
-                    v1 = BushPatchManager.b(var6_8) << 6;
-                    v2 = var3_5.getHealthCheckConfigStage();
-                    ** GOTO lbl41
-lbl30:
-                    // 1 sources
-
-                    if (var5_7 != 5106) ** GOTO lbl-1000
-                    if (BushPatchManager.b(var6_8) == 1) {
-                        v1 = var3_5.getConfigStartStage() + var4_6 - 4;
-                        v2 = 12;
-                    } else if (BushPatchManager.b(var6_8) == 2) {
-                        v1 = var3_5.getConfigStartStage() + var4_6 - 4;
-                        v2 = 20;
-                    } else lbl-1000:
-                    // 2 sources
-
-                    {
-                        v1 = (BushPatchManager.b(var6_8) << 6) + var3_5.getConfigStartStage() + (var4_6 -= 4);
-                        v2 = BushPatchManager.b(var6_8) == 2 ? -1 : 0;
+                    int stateConfig = BushPatchManager.getPatchStateConfigValue(patchState);
+                    if (stateConfig == 3) {
+                        configStage = (stateConfig << 6) + bushDefinition.getHealthCheckConfigStage();
+                    } else if (cropId == 5106 && stateConfig == 1) {
+                        configStage = bushDefinition.getConfigStartStage() + growthStage - 4 + 12;
+                    } else if (cropId == 5106 && stateConfig == 2) {
+                        configStage = bushDefinition.getConfigStartStage() + growthStage - 4 + 20;
+                    } else {
+                        configStage = (stateConfig << 6) + bushDefinition.getConfigStartStage() + (growthStage - 4) + (stateConfig == 2 ? -1 : 0);
                     }
-lbl41:
-                    // 4 sources
-
-                    v0 = v1 + v2;
                 }
             }
-            var1_1[var2_3] = v0;
-            ++var2_3;
+            configStages[index] = configStage;
+            ++index;
         }
-        var1_2 = (var1_1[0] << 16) + (var1_1[1] << 8 << 16) + var1_1[2] + (var1_1[3] << 8);
-        var2_4 = this.player;
-        var2_4.packetSender.sendConfig(509, var1_2);
+        int packedConfig = (configStages[0] << 16) + (configStages[1] << 8 << 16) + configStages[2] + (configStages[3] << 8);
+        this.player.packetSender.sendConfig(509, packedConfig);
     }
 
-    private static int b(int n) {
+    private static int getPatchStateConfigValue(int n) {
         switch (n) {
             case 0: {
                 return 0;
@@ -122,95 +94,91 @@ lbl41:
     }
 
     public final void processGrowth() {
-        int n = 0;
-        while (n < this.cropIds.length) {
-            block11: {
-                long l;
-                block12: {
-                    l = Server.getElapsedMinutes() - this.lastUpdateTicks[n];
-                    if (l < 5L) break block11;
-                    if (this.growthStages[n] <= 0 || this.growthStages[n] > 3) break block12;
-                    int n2 = (int)(l / 5L);
-                    int n3 = 0;
-                    while (n3 < n2) {
-                        if (this.growthStages[n] != 0) {
-                            int n4 = n;
-                            this.growthStages[n4] = this.growthStages[n4] - 1;
-                            this.lastUpdateTicks[n] = Server.getElapsedMinutes();
-                            ++n3;
-                            continue;
-                        }
-                        break block11;
-                    }
-                    break block11;
-                }
-                BushDefinition bushDefinition = BushDefinition.forSeedId(this.cropIds[n]);
-                if (bushDefinition == null || this.shouldStopGrowthCycle(n)) break block11;
-                int n5 = (int)(l / (long)bushDefinition.getGrowthCycleTicks());
-                int n6 = this.growthStages[n] - 4;
-                if ((n5 -= n6) <= 0) break block11;
-                n6 = 0;
-                while (n6 < n5) {
-                    block14: {
-                        block17: {
-                            BushDefinition bushDefinition2;
-                            BushPatchManager bushPatchManager;
-                            int n7;
-                            block15: {
-                                block16: {
-                                    block13: {
-                                        if (this.growthStages[n] != 4) break block13;
-                                        int n8 = n;
-                                        this.growthStages[n8] = this.growthStages[n8] + 1;
-                                        break block14;
-                                    }
-                                    n7 = n;
-                                    bushPatchManager = this;
-                                    if (bushPatchManager.patchStates[n7] != 1) break block15;
-                                    if (!bushPatchManager.protectionFlags[n7]) break block16;
-                                    bushPatchManager.patchStates[n7] = 0;
-                                    bushDefinition2 = BushDefinition.forSeedId(bushPatchManager.cropIds[n7]);
-                                    if (bushDefinition2 == null) break block17;
-                                    int n9 = n7;
-                                    bushPatchManager.lastUpdateTicks[n9] = bushPatchManager.lastUpdateTicks[n9] + (long)bushDefinition2.getGrowthCycleTicks();
-                                    break block15;
-                                }
-                                if (GameUtil.randomInt(2) == 0) {
-                                    bushPatchManager.patchStates[n7] = 2;
-                                }
-                            }
-                            if (bushPatchManager.patchStates[n7] != 1 && bushPatchManager.patchStates[n7] != 2) {
-                                if (bushPatchManager.patchStates[n7] == 5 && bushPatchManager.growthStages[n7] != 2) {
-                                    bushPatchManager.patchStates[n7] = 0;
-                                }
-                                if (bushPatchManager.patchStates[n7] == 0 && bushPatchManager.growthStages[n7] >= 4 && !bushPatchManager.f[n7] && (bushDefinition2 = BushDefinition.forSeedId(bushPatchManager.cropIds[n7])) != null) {
-                                    double d = bushPatchManager.diseaseChanceMultipliers[n7] * bushDefinition2.getDiseaseChance();
-                                    double d2 = d * 100.0;
-                                    int n10 = (int)d2;
-                                    if (GameUtil.randomInclusive(100) <= n10 && ServerSettings.diseasingEnabled) {
-                                        bushPatchManager.patchStates[n7] = 1;
-                                    }
-                                }
-                            }
-                        }
-                        if (this.patchStates[n] == 2) break block11;
-                        if (this.patchStates[n] != 1) {
-                            int n11 = n;
-                            this.growthStages[n11] = this.growthStages[n11] + 1;
-                        }
-                        if (this.shouldStopGrowthCycle(n)) break block11;
-                        if (this.growthStages[n] == bushDefinition.getGrowthStageCount() - 1) {
-                            this.growthStages[n] = bushDefinition.getGrowthStageCount() + 4;
-                            this.patchStates[n] = 3;
+        int index = 0;
+        while (index < this.cropIds.length) {
+            long elapsedMinutes = Server.getElapsedMinutes() - this.lastUpdateTicks[index];
+            if (elapsedMinutes >= 5L) {
+                if (this.growthStages[index] > 0 && this.growthStages[index] <= 3) {
+                    int cycles = (int)(elapsedMinutes / 5L);
+                    int cycle = 0;
+                    while (cycle < cycles) {
+                        if (this.growthStages[index] == 0) {
                             break;
                         }
+                        int n = index;
+                        this.growthStages[n] = this.growthStages[n] - 1;
+                        this.lastUpdateTicks[index] = Server.getElapsedMinutes();
+                        ++cycle;
                     }
-                    ++n6;
+                } else {
+                    BushDefinition bushDefinition = BushDefinition.forSeedId(this.cropIds[index]);
+                    if (bushDefinition != null && !this.shouldStopGrowthCycle(index)) {
+                        int cycles = (int)(elapsedMinutes / (long)bushDefinition.getGrowthCycleTicks());
+                        int existingGrowthCycles = this.growthStages[index] - 4;
+                        if ((cycles -= existingGrowthCycles) > 0) {
+                            int cycle = 0;
+                            while (cycle < cycles) {
+                                if (this.growthStages[index] == 4) {
+                                    int n = index;
+                                    this.growthStages[n] = this.growthStages[n] + 1;
+                                } else {
+                                    this.processGrowthState(index);
+                                    if (this.patchStates[index] == 2) {
+                                        break;
+                                    }
+                                    if (this.patchStates[index] != 1) {
+                                        int n = index;
+                                        this.growthStages[n] = this.growthStages[n] + 1;
+                                    }
+                                    if (this.shouldStopGrowthCycle(index)) {
+                                        break;
+                                    }
+                                    if (this.growthStages[index] == bushDefinition.getGrowthStageCount() - 1) {
+                                        this.growthStages[index] = bushDefinition.getGrowthStageCount() + 4;
+                                        this.patchStates[index] = 3;
+                                        break;
+                                    }
+                                }
+                                ++cycle;
+                            }
+                        }
+                    }
                 }
             }
-            ++n;
+            ++index;
         }
         this.refreshConfig();
+    }
+
+    private void processGrowthState(int index) {
+        if (this.patchStates[index] == 1) {
+            if (this.protectionFlags[index]) {
+                this.patchStates[index] = 0;
+                BushDefinition bushDefinition = BushDefinition.forSeedId(this.cropIds[index]);
+                if (bushDefinition != null) {
+                    int n = index;
+                    this.lastUpdateTicks[n] = this.lastUpdateTicks[n] + (long)bushDefinition.getGrowthCycleTicks();
+                }
+            } else if (GameUtil.randomInt(2) == 0) {
+                this.patchStates[index] = 2;
+            }
+        }
+        if (this.patchStates[index] == 1 || this.patchStates[index] == 2) {
+            return;
+        }
+        if (this.patchStates[index] == 5 && this.growthStages[index] != 2) {
+            this.patchStates[index] = 0;
+        }
+        if (this.patchStates[index] == 0 && this.growthStages[index] >= 4 && !this.f[index]) {
+            BushDefinition bushDefinition = BushDefinition.forSeedId(this.cropIds[index]);
+            if (bushDefinition != null) {
+                double diseaseChance = this.diseaseChanceMultipliers[index] * bushDefinition.getDiseaseChance();
+                int percentChance = (int)(diseaseChance * 100.0);
+                if (GameUtil.randomInclusive(100) <= percentChance && ServerSettings.diseasingEnabled) {
+                    this.patchStates[index] = 1;
+                }
+            }
+        }
     }
 
     private boolean shouldStopGrowthCycle(int n) {
@@ -222,14 +190,16 @@ lbl41:
         if (bushDefinition == null) {
             return;
         }
-        long l = Server.getElapsedMinutes() - this.lastUpdateTicks[n];
-        int n2 = (int)(l / (long)bushDefinition.getGrowthCycleTicks());
-        this.growthStages[n] = n2 + 4;
+        long elapsedMinutes = Server.getElapsedMinutes() - this.lastUpdateTicks[n];
+        int cycles = (int)(elapsedMinutes / (long)bushDefinition.getGrowthCycleTicks());
+        this.growthStages[n] = cycles + 4;
         this.refreshConfig();
     }
 
     public final boolean clearPatch(int n, int n2, int n3) {
-        int n4;
+        int animationId;
+        int soundId;
+        int delayTicks;
         BushPatch bushPatch = BushPatch.forPosition(new Position(n, n2));
         if (bushPatch == null || n3 != 5341 && n3 != 952) {
             return false;
@@ -238,8 +208,7 @@ lbl41:
             return true;
         }
         if (!ServerSettings.farmingEnabled) {
-            Player player = this.player;
-            player.packetSender.sendGameMessage("This skill is currently disabled.");
+            this.player.packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
         if (!this.player.isMember()) {
@@ -255,23 +224,22 @@ lbl41:
                 this.player.getDialogueManager().showOneLineStatement("You need a rake to clear this path.");
                 return true;
             }
-            n2 = 2273;
-            n3 = 1323;
-            n4 = 5;
+            animationId = 2273;
+            soundId = 1323;
+            delayTicks = 5;
         } else {
             if (!this.player.getInventoryManager().getContainer().containsItem(952)) {
                 this.player.getDialogueManager().showOneLineStatement("You need a spade to clear this path.");
                 return true;
             }
-            n2 = 830;
-            n3 = 232;
-            n4 = 3;
+            animationId = 830;
+            soundId = 232;
+            delayTicks = 3;
         }
         this.player.setActionLocked(true);
-        Player player = this.player;
-        player.packetSender.sendSoundEffect(n3, 1, 0);
-        this.player.getUpdateState().setAnimation(n2);
-        CycleEventHandler.getInstance().schedule(this.player, new BushClearingTask(this, n2, bushPatch), n4);
+        this.player.packetSender.sendSoundEffect(soundId, 1, 0);
+        this.player.getUpdateState().setAnimation(animationId);
+        CycleEventHandler.getInstance().schedule(this.player, new BushClearingTask(this, animationId, bushPatch), delayTicks);
         return true;
     }
 
@@ -282,13 +250,11 @@ lbl41:
             return false;
         }
         if (!ServerSettings.farmingEnabled) {
-            Player player = this.player;
-            player.packetSender.sendGameMessage("This skill is currently disabled.");
+            this.player.packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
         if (this.growthStages[bushPatch.getIndex()] != 3) {
-            Player player = this.player;
-            player.packetSender.sendGameMessage("You can't plant a seed here.");
+            this.player.packetSender.sendGameMessage("You can't plant a seed here.");
             return false;
         }
         if (bushDefinition.getRequiredLevel() > this.player.getSkillManager().getCurrentLevels()[19]) {
@@ -304,8 +270,7 @@ lbl41:
             return true;
         }
         this.player.getUpdateState().setAnimation(2291);
-        Player player = this.player;
-        player.packetSender.sendSoundEffect(1321, 1, 0);
+        this.player.packetSender.sendSoundEffect(1321, 1, 0);
         this.growthStages[bushPatch.getIndex()] = 4;
         this.player.getInventoryManager().removeItem(new ItemStack(n3, bushDefinition.getSeedAmount()));
         this.player.setActionLocked(true);
@@ -314,27 +279,25 @@ lbl41:
     }
 
     public final boolean harvestPatch(int n, int n2) {
-        Object object = BushPatch.forPosition(new Position(n, n2));
-        if (object == null) {
+        BushPatch bushPatch = BushPatch.forPosition(new Position(n, n2));
+        if (bushPatch == null) {
             return false;
         }
-        BushDefinition bushDefinition = BushDefinition.forSeedId(this.cropIds[object.getIndex()]);
+        BushDefinition bushDefinition = BushDefinition.forSeedId(this.cropIds[bushPatch.getIndex()]);
         if (bushDefinition == null) {
             return false;
         }
         if (!ServerSettings.farmingEnabled) {
-            object = this.player;
-            ((Player)object).packetSender.sendGameMessage("This skill is currently disabled.");
+            this.player.packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
         if (this.player.getInventoryManager().getContainer().getFreeSlots() <= 0) {
-            object = this.player;
-            ((Player)object).packetSender.sendGameMessage("Not enough space in your inventory.");
+            this.player.packetSender.sendGameMessage("Not enough space in your inventory.");
             return true;
         }
         this.player.getUpdateState().setAnimation(832);
-        int n3 = this.player.nextActionSequence();
-        this.player.setActiveCycleEvent(new BushHarvestTask(this, n3, (BushPatch)((Object)object), bushDefinition));
+        int actionSequence = this.player.nextActionSequence();
+        this.player.setActiveCycleEvent(new BushHarvestTask(this, actionSequence, bushPatch, bushDefinition));
         CycleEventHandler.getInstance().schedule(this.player, this.player.getActiveCycleEvent(), 2);
         return true;
     }
@@ -348,14 +311,12 @@ lbl41:
             return false;
         }
         if (this.growthStages[bushPatch.getIndex()] != 3 || this.patchStates[bushPatch.getIndex()] == 5) {
-            Player player = this.player;
-            player.packetSender.sendGameMessage("This patch doesn't need compost.");
+            this.player.packetSender.sendGameMessage("This patch doesn't need compost.");
             return true;
         }
         this.player.getInventoryManager().removeItem(new ItemStack(n3));
         this.player.getInventoryManager().addItem(new ItemStack(1925));
-        Player player = this.player;
-        player.packetSender.sendGameMessage("You pour some " + (n3 == 6034 ? "super" : "") + "compost on the patch.");
+        this.player.packetSender.sendGameMessage("You pour some " + (n3 == 6034 ? "super" : "") + "compost on the patch.");
         this.player.getUpdateState().setAnimation(2283);
         this.player.getSkillManager().addExperience(19, n3 == 6034 ? 26.0 : 18.0);
         this.player.setActionLocked(true);
@@ -369,12 +330,11 @@ lbl41:
             return false;
         }
         if (!ServerSettings.farmingEnabled) {
-            Player player = this.player;
-            player.packetSender.sendGameMessage("This skill is currently disabled.");
+            this.player.packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
         BushGrowthDefinition bushGrowthDefinition = BushGrowthDefinition.forCropId(this.cropIds[bushPatch.getIndex()]);
-        Object object = BushDefinition.forSeedId(this.cropIds[bushPatch.getIndex()]);
+        BushDefinition bushDefinition = BushDefinition.forSeedId(this.cropIds[bushPatch.getIndex()]);
         if (this.patchStates[bushPatch.getIndex()] == 1) {
             this.player.getDialogueManager().showTwoLineStatement("This plant is diseased. Use a plant cure on it to cure it, ", "or clear the patch with a spade.");
             return true;
@@ -399,9 +359,8 @@ lbl41:
                 return true;
             }
             this.player.getDialogueManager().showTwoLineStatement("This is a bush patch. The soil has not been treated.", "The patch is empty and weeded.");
-        } else if (bushGrowthDefinition != null && object != null) {
-            object = this.player;
-            ((Player)object).packetSender.sendGameMessage("You bend down and start to inspect the patch...");
+        } else if (bushGrowthDefinition != null && bushDefinition != null) {
+            this.player.packetSender.sendGameMessage("You bend down and start to inspect the patch...");
             this.player.getUpdateState().setAnimation(1331);
             this.player.setActionLocked(true);
             CycleEventHandler.getInstance().schedule(this.player, new BushInspectTask(this, bushPatch, bushGrowthDefinition), 5);
@@ -410,13 +369,12 @@ lbl41:
     }
 
     public final boolean openSkillGuide(int n, int n2) {
-        Object object = BushPatch.forPosition(new Position(n, n2));
-        if (object == null) {
+        BushPatch bushPatch = BushPatch.forPosition(new Position(n, n2));
+        if (bushPatch == null) {
             return false;
         }
         if (!ServerSettings.farmingEnabled) {
-            object = this.player;
-            ((Player)object).packetSender.sendGameMessage("This skill is currently disabled.");
+            this.player.packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
         this.player.getSkillGuideManager().showFarmingGuide(5);
@@ -425,71 +383,65 @@ lbl41:
     }
 
     public final boolean startResurrection(int n, int n2) {
-        Object object = BushPatch.forPosition(new Position(n, n2));
-        if (object == null) {
+        BushPatch bushPatch = BushPatch.forPosition(new Position(n, n2));
+        if (bushPatch == null) {
             return false;
         }
-        BushDefinition bushDefinition = BushDefinition.forSeedId(this.cropIds[object.getIndex()]);
+        BushDefinition bushDefinition = BushDefinition.forSeedId(this.cropIds[bushPatch.getIndex()]);
         if (bushDefinition == null) {
             return false;
         }
         if (!ServerSettings.farmingEnabled) {
-            object = this.player;
-            ((Player)object).packetSender.sendGameMessage("This skill is currently disabled.");
+            this.player.packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
-        if (this.patchStates[object.getIndex()] != 2) {
-            object = this.player;
-            ((Player)object).packetSender.sendGameMessage("This plant doesn't need to be resurrected.");
+        if (this.patchStates[bushPatch.getIndex()] != 2) {
+            this.player.packetSender.sendGameMessage("This plant doesn't need to be resurrected.");
             return true;
         }
-        this.player.setPendingCropResurrectionTarget("bush", object.getIndex());
+        this.player.setPendingCropResurrectionTarget("bush", bushPatch.getIndex());
         return true;
     }
 
-    public final boolean finishResurrection(boolean bl) {
-        if (bl) {
-            Object object = BushDefinition.forSeedId(this.cropIds[this.player.pendingCropResurrectionPatchIndex]);
+    public final boolean finishResurrection(boolean success) {
+        if (success) {
+            BushDefinition bushDefinition = BushDefinition.forSeedId(this.cropIds[this.player.pendingCropResurrectionPatchIndex]);
             this.patchStates[this.player.pendingCropResurrectionPatchIndex] = 0;
-            int n = this.growthStages[this.player.pendingCropResurrectionPatchIndex] - 4;
-            this.lastUpdateTicks[this.player.pendingCropResurrectionPatchIndex] = Server.getElapsedMinutes() - (long)(object.getGrowthCycleTicks() * n);
-            object = this.player;
-            ((Player)object).packetSender.sendGameMessage("You succesfully resurrected the crop.");
+            int completedCycles = this.growthStages[this.player.pendingCropResurrectionPatchIndex] - 4;
+            this.lastUpdateTicks[this.player.pendingCropResurrectionPatchIndex] = Server.getElapsedMinutes() - (long)(bushDefinition.getGrowthCycleTicks() * completedCycles);
+            this.player.packetSender.sendGameMessage("You succesfully resurrected the crop.");
         } else {
             this.resetPatch(this.player.pendingCropResurrectionPatchIndex);
             this.growthStages[this.player.pendingCropResurrectionPatchIndex] = 3;
             this.lastUpdateTicks[this.player.pendingCropResurrectionPatchIndex] = Server.getElapsedMinutes();
-            Player player = this.player;
-            player.packetSender.sendGameMessage("You failed to resurrect the crop.");
+            this.player.packetSender.sendGameMessage("You failed to resurrect the crop.");
         }
         this.refreshConfig();
         return true;
     }
 
     public final boolean curePatch(int n, int n2, int n3) {
-        Object object = BushPatch.forPosition(new Position(n, n2));
-        if (object == null || n3 != 6036) {
+        BushPatch bushPatch = BushPatch.forPosition(new Position(n, n2));
+        if (bushPatch == null || n3 != 6036) {
             return false;
         }
-        BushDefinition bushDefinition = BushDefinition.forSeedId(this.cropIds[object.getIndex()]);
+        BushDefinition bushDefinition = BushDefinition.forSeedId(this.cropIds[bushPatch.getIndex()]);
         if (bushDefinition == null) {
             return false;
         }
         if (!ServerSettings.farmingEnabled) {
-            object = this.player;
-            ((Player)object).packetSender.sendGameMessage("This skill is currently disabled.");
+            this.player.packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
-        if (this.patchStates[object.getIndex()] != 1) {
-            object = this.player;
-            ((Player)object).packetSender.sendGameMessage("This plant doesn't need to be cured.");
+        if (this.patchStates[bushPatch.getIndex()] != 1) {
+            this.player.packetSender.sendGameMessage("This plant doesn't need to be cured.");
             return true;
         }
         this.player.getInventoryManager().removeItem(new ItemStack(n3));
         this.player.getInventoryManager().addItem(new ItemStack(229));
         this.player.getUpdateState().setAnimation(2288);
         this.player.setActionLocked(true);
-        this.patchStates[object.getIndex()] = 0;
+        this.patchStates[bushPatch.getIndex()] = 0;
         CycleEventHandler.getInstance().schedule(this.player, new BushCureTask(this), 7);
         return true;
     }
@@ -506,8 +458,7 @@ lbl41:
         return bushPatchManager.player;
     }
 
-    static /* synthetic */ void a(BushPatchManager bushPatchManager, int n) {
+    static /* synthetic */ void resetPatch(BushPatchManager bushPatchManager, int n) {
         bushPatchManager.resetPatch(n);
     }
 }
-

@@ -32,11 +32,9 @@ public enum FarmedTreeGrowthDefinition {
     /*
      * WARNING - void declaration
      */
-    private FarmedTreeGrowthDefinition() {
-        void var4_1;
-        void var3_2;
-        this.treeId = var3_2;
-        this.growthMessages = var4_1;
+    private FarmedTreeGrowthDefinition(int n2, String[][] stringArray) {
+        this.treeId = n2;
+        this.growthMessages = stringArray;
     }
 
     public static FarmedTreeGrowthDefinition forTreeId(int n) {

@@ -81,7 +81,7 @@ public final class IsaacCipher {
         }
     }
 
-    private void initialize(boolean n) {
+    private void initialize(boolean seeded) {
         int n2 = -1640531527;
         int n3 = -1640531527;
         int n4 = -1640531527;
@@ -90,7 +90,7 @@ public final class IsaacCipher {
         int n7 = -1640531527;
         int n8 = -1640531527;
         int n9 = -1640531527;
-        n = 0;
+        int n = 0;
         while (n < 4) {
             n6 += (n9 ^= n8 << 11);
             n8 += n7;

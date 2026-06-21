@@ -9,25 +9,25 @@ import com.rs2.model.npc.Npc;
 import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 
-final class MageArenaChallengeStartTask
+public final class MageArenaChallengeStartTask
 extends TickTask {
-    private final /* synthetic */ Player a;
-    private final /* synthetic */ Npc b;
+    private final /* synthetic */ Player player;
+    private final /* synthetic */ Npc challengeNpc;
 
-    MageArenaChallengeStartTask(Npc npc, int n, Player player, Npc npc2) {
-        this.a = player;
-        this.b = npc2;
+    public MageArenaChallengeStartTask(Npc npc, int n, Player player, Npc npc2) {
         super(12);
+        this.player = player;
+        this.challengeNpc = npc2;
     }
 
     @Override
     public final void execute() {
-        GameplayHelper.a(this.a, new Position(3106, 3934, 0), this.b, true, false);
-        this.b.getUpdateState().setGraphic(86, 0);
-        if (this.a.mageArenaProgressStage == 0) {
-            this.b.getUpdateState().setForcedText("You must prove yourself... now!");
+        GameplayHelper.spawnOwnedNpcAtPosition(this.player, new Position(3106, 3934, 0), this.challengeNpc, true, false);
+        this.challengeNpc.getUpdateState().setGraphic(86, 0);
+        if (this.player.mageArenaProgressStage == 0) {
+            this.challengeNpc.getUpdateState().setForcedText("You must prove yourself... now!");
         } else {
-            this.b.getUpdateState().setForcedText("Let us continue with our battle.");
+            this.challengeNpc.getUpdateState().setForcedText("Let us continue with our battle.");
         }
         this.stop();
     }

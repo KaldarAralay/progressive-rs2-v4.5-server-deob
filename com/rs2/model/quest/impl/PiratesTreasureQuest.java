@@ -31,46 +31,36 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
-            stringArray = new String[]{"I can start this quest by speaking to Redbeard Frank who", "is at Port Sarim.", "", "There aren't any requirements for this quest."};
-            return stringArray;
+            return new String[]{"I can start this quest by speaking to Redbeard Frank who", "is at Port Sarim.", "", "There aren't any requirements for this quest."};
         }
         if (n == 2) {
-            stringArray = new String[]{"I should bring a bottle of karamjan rum to Redbeard Frank."};
-            return stringArray;
+            return new String[]{"I should bring a bottle of karamjan rum to Redbeard Frank."};
         }
         if (n == 3) {
-            stringArray = new String[]{"I have stashed a bottle of karamjan rum in the crate.", "I should fill the crate with bananas and talk to Luthas", "when done."};
-            return stringArray;
+            return new String[]{"I have stashed a bottle of karamjan rum in the crate.", "I should fill the crate with bananas and talk to Luthas", "when done."};
         }
         if (n == 4) {
-            stringArray = new String[]{"I should go find the crate of bananas in Port Sarim and", "retrieve the karamjan rum."};
-            return stringArray;
+            return new String[]{"I should go find the crate of bananas in Port Sarim and", "retrieve the karamjan rum."};
         }
         if (n == 5) {
-            stringArray = new String[]{"I should go get white apron to get a job at the store."};
-            return stringArray;
+            return new String[]{"I should go get white apron to get a job at the store."};
         }
         if (n == 6) {
-            stringArray = new String[]{"I should now search for the crate."};
-            return stringArray;
+            return new String[]{"I should now search for the crate."};
         }
         if (n == 7) {
-            stringArray = new String[]{"I should bring a bottle of karamjan rum to Redbeard Frank."};
-            return stringArray;
+            return new String[]{"I should bring a bottle of karamjan rum to Redbeard Frank."};
         }
         if (n == 8) {
-            stringArray = new String[]{"I should go to Blue Moon Inn in Varrock and try the key", "to a chest in Hector's old room."};
-            return stringArray;
+            return new String[]{"I should go to Blue Moon Inn in Varrock and try the key", "to a chest in Hector's old room."};
         }
         if (n == 9 || n == 10) {
-            stringArray = new String[]{"I should solve Hector's clue in the message", "to find the treasure."};
-            return stringArray;
+            return new String[]{"I should solve Hector's clue in the message", "to find the treasure."};
         }
         if (n == 1) {
-            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "2 Quest Points", "450 Coins", "Gold ring", "Emerald"};
-            return stringArray;
+            return new String[]{"Quest Completed!", "", "You were awarded:", "2 Quest Points", "450 Coins", "Gold ring", "Emerald"};
         }
         return null;
     }
@@ -133,7 +123,7 @@ extends QuestScript {
                     n = 0;
                     if (NpcDefinition.isDefined(1217)) {
                         Npc npc = new Npc(1217);
-                        GameplayHelper.a(player, npc, true, true);
+                        GameplayHelper.spawnOwnedNpcAdjacentToPlayer(player, npc, true, true);
                         npc.getUpdateState().setForcedText("First moles, now this! Take this, vandal!");
                         return true;
                     }
@@ -353,7 +343,7 @@ extends QuestScript {
                 if (n2 == 9) {
                     if (n3 == 1) {
                         player.getDialogueManager().showPlayerOneLineDialogue("Ok, I will bring you some rum.", 591);
-                        this.d(player);
+                        this.startQuest(player);
                         player.getDialogueManager().setNextDialogueStep(10);
                         return true;
                     }

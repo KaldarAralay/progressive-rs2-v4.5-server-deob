@@ -21,78 +21,72 @@ import com.rs2.util.GameUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 
-final class RuneThrownaxeSpecialAttack
+public final class RuneThrownaxeSpecialAttack
 extends WeaponCombatAttack {
     private final /* synthetic */ Player player;
     private final /* synthetic */ Entity primaryTarget;
     private final /* synthetic */ WeaponProfile sourceWeaponProfile;
 
-    RuneThrownaxeSpecialAttack(RuneThrownaxeSpecialDefinition runeThrownaxeSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile, Player player2, Entity entity2, WeaponProfile weaponProfile2) {
+    public RuneThrownaxeSpecialAttack(RuneThrownaxeSpecialDefinition runeThrownaxeSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile, Player player2, Entity entity2, WeaponProfile weaponProfile2) {
+        super(player, entity, weaponProfile);
         this.player = player2;
         this.primaryTarget = entity2;
         this.sourceWeaponProfile = weaponProfile2;
-        super(player, entity, weaponProfile);
     }
 
     @Override
     public final boolean prepareSpecialAttack() {
-        Object object;
-        int n;
-        Object object2;
         if (!super.prepareSpecialAttack()) {
             return false;
         }
-        ArrayList<Object> arrayList = new ArrayList<Object>();
+        ArrayList chainedTargets = new ArrayList();
         if (this.player.isInMultiCombatArea() && this.primaryTarget.isInMultiCombatArea()) {
-            object2 = World.getPlayers();
-            int n2 = ((Player[])object2).length;
-            n = 0;
-            while (n < n2) {
-                object = object2[n];
-                if (object != null && object != this.getAttacker() && object != this.getTarget() && ((Entity)object).isInMultiCombatArea() && GameUtil.isWithinDistance(this.getTarget().getPosition(), ((Entity)object).getPosition(), 3)) {
-                    arrayList.add(object);
+            Player[] players = World.getPlayers();
+            int n = 0;
+            while (n < players.length) {
+                Player nearbyPlayer = players[n];
+                if (nearbyPlayer != null && nearbyPlayer != this.getAttacker() && nearbyPlayer != this.getTarget() && nearbyPlayer.isInMultiCombatArea() && GameUtil.isWithinDistance(this.getTarget().getPosition(), nearbyPlayer.getPosition(), 3)) {
+                    chainedTargets.add(nearbyPlayer);
                 }
                 ++n;
             }
-            object2 = World.getNpcs();
-            n2 = ((Npc[])object2).length;
+            Npc[] npcs = World.getNpcs();
             n = 0;
-            while (n < n2) {
-                object = object2[n];
-                if (object != null && object != this.getTarget() && ((Entity)object).isInMultiCombatArea() && GameUtil.isWithinDistance(this.getTarget().getPosition(), ((Entity)object).getPosition(), 3)) {
-                    arrayList.add(object);
+            while (n < npcs.length) {
+                Npc nearbyNpc = npcs[n];
+                if (nearbyNpc != null && nearbyNpc != this.getTarget() && nearbyNpc.isInMultiCombatArea() && GameUtil.isWithinDistance(this.getTarget().getPosition(), nearbyNpc.getPosition(), 3)) {
+                    chainedTargets.add(nearbyNpc);
                 }
                 ++n;
             }
-            Collections.sort(arrayList, new RuneThrownaxeTargetDistanceComparator(this));
+            Collections.sort(chainedTargets, new RuneThrownaxeTargetDistanceComparator(this));
         }
-        object = new ArrayList();
-        if (arrayList.size() > 5) {
-            n = 0;
-            while (n < arrayList.size()) {
-                Entity entity = (Entity)arrayList.get(n);
-                object2 = CombatCycleEvent.validateAttack(this.player, entity);
-                boolean bl = false;
+        ArrayList validTargets = new ArrayList();
+        if (chainedTargets.size() > 5) {
+            int n = 0;
+            while (n < chainedTargets.size()) {
+                Entity entity = (Entity)chainedTargets.get(n);
+                AttackValidationResult attackValidationResult = CombatCycleEvent.validateAttack(this.player, entity);
+                boolean doorSupportNpc = false;
                 if (entity.isNpc()) {
                     Npc npc = (Npc)entity;
-                    bl = npc.isDoorSupportNpc();
+                    doorSupportNpc = npc.isDoorSupportNpc();
                 }
-                if ((object2 == AttackValidationResult.VALID || bl) && ((ArrayList)object).size() < 5) {
-                    ((ArrayList)object).add(entity);
-                    if (((ArrayList)object).size() == 5) break;
+                if ((attackValidationResult == AttackValidationResult.VALID || doorSupportNpc) && validTargets.size() < 5) {
+                    validTargets.add(entity);
+                    if (validTargets.size() == 5) break;
                 }
                 ++n;
             }
         } else {
-            object = arrayList;
+            validTargets = chainedTargets;
         }
-        arrayList = object;
         double d = this.calculateMaxHit();
-        object2 = this.sourceWeaponProfile.getAmmunitionProfile();
-        Object object3 = object2.getProjectileTiming();
-        object3 = new ProjectileDefinition(258, ((ProjectileTiming)object3).copy());
-        this.setHitDefinitions(new HitDefinition[]{new HitDefinition(this.getAttackStyle(), HitType.NORMAL, d).enableRandomDamage().setProjectile((ProjectileDefinition)object3).setAccuracyMultiplier(1.0).enableAccuracyCheck(true).setChainedTargets(arrayList).setChainedSource(this.player)});
+        ProjectileTiming projectileTiming = this.sourceWeaponProfile.getAmmunitionProfile().getProjectileTiming();
+        ProjectileDefinition projectileDefinition = new ProjectileDefinition(258, projectileTiming.copy());
+        this.setHitDefinitions(new HitDefinition[]{new HitDefinition(this.getAttackStyle(), HitType.NORMAL, d).enableRandomDamage().setProjectile(projectileDefinition).setAccuracyMultiplier(1.0).enableAccuracyCheck(true).setChainedTargets(validTargets).setChainedSource(this.player)});
         return true;
     }
+
 }
 

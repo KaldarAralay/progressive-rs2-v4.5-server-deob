@@ -17,7 +17,7 @@ import com.rs2.model.task.CycleEventContainer;
 import com.rs2.net.packet.PacketSender;
 import com.rs2.util.GameUtil;
 
-final class FarmedTreeCuttingTask
+public final class FarmedTreeCuttingTask
 extends CycleEvent {
     private /* synthetic */ TreePatchManager manager;
     private final /* synthetic */ int actionSequence;
@@ -29,7 +29,7 @@ extends CycleEvent {
     private final /* synthetic */ int x;
     private final /* synthetic */ int y;
 
-    FarmedTreeCuttingTask(TreePatchManager treePatchManager, int n, int n2, TreeDefinition treeDefinition, GatheringToolDefinition gatheringToolDefinition, int n3, TreePatch treePatch, int n4, int n5) {
+    public FarmedTreeCuttingTask(TreePatchManager treePatchManager, int n, int n2, TreeDefinition treeDefinition, GatheringToolDefinition gatheringToolDefinition, int n3, TreePatch treePatch, int n4, int n5) {
         this.manager = treePatchManager;
         this.actionSequence = n;
         this.animationId = n2;

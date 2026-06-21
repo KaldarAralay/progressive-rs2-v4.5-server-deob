@@ -18,11 +18,9 @@ public enum FlowerPatch {
     /*
      * WARNING - void declaration
      */
-    private FlowerPatch() {
-        void var4_1;
-        void var3_2;
-        this.index = var3_2;
-        this.bounds = var4_1;
+    private FlowerPatch(int n2, Position[] positionArray) {
+        this.index = n2;
+        this.bounds = positionArray;
     }
 
     public static FlowerPatch forPosition(Position position) {

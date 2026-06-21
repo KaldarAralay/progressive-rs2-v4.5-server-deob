@@ -38,7 +38,7 @@ public final class FightCaveWaveSpawner {
             player.addFightCaveNpc((Npc)object);
             ++n4;
         }
-        Collections.sort(object2, new FightCaveNpcLevelComparator());
+        Collections.sort((ArrayList)object2, new FightCaveNpcLevelComparator());
         n = 0;
         Iterator iterator = ((ArrayList)object2).iterator();
         while (iterator.hasNext()) {
@@ -52,7 +52,7 @@ public final class FightCaveWaveSpawner {
             Position position = GameplayHelper.randomUnblockedPositionInRange((PositionRange)object);
             object2 = player;
             npc.setForcedCombatTarget((Entity)object2);
-            npc.a(position);
+            npc.moveTo(position);
             npc.setMovementMode(NpcMovementMode.STATIONARY);
             npc.setSpawnX(position.getX());
             npc.setSpawnY(position.getY());

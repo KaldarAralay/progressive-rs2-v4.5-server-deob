@@ -4,11 +4,11 @@
 package com.rs2.model.skill.guide;
 
 public final class SkillGuideEntry {
-    String label;
-    int itemId;
+    public String label;
+    public int itemId;
     private int requiredLevel;
     private boolean membersOnly;
-    boolean suppressCategoryPrefix;
+    public boolean suppressCategoryPrefix;
 
     public SkillGuideEntry(String string) {
         this.label = string;
@@ -61,4 +61,3 @@ public final class SkillGuideEntry {
         return "" + this.requiredLevel;
     }
 }
-

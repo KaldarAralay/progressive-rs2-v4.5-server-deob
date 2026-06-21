@@ -33,12 +33,11 @@ public enum FiremakingLog {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private FiremakingLog(int n3, int n4, int n5) {
-        void var6_5;
-        this.logItemId = n3;
-        this.requiredLevel = n4;
-        this.experience = n5;
-        this.fireObjectId = var6_5;
+    private FiremakingLog(int n2, int n3, int n4, int n5, int n6) {
+        this.logItemId = n2;
+        this.requiredLevel = n3;
+        this.experience = n4;
+        this.fireObjectId = n5;
     }
 
     public final int getLogItemId() {

@@ -103,7 +103,7 @@ extends QuestScript {
             }
             new DynamicObject(ServerSettings.placeholderObjectId, n2, n3, player.getPosition().getPlane(), 0, 10, n, 100);
             Npc npc = new Npc(1023);
-            GameplayHelper.a(player, npc, true, false);
+            GameplayHelper.spawnOwnedNpcAdjacentToPlayer(player, npc, true, false);
             npc.getUpdateState().setAnimation(1038);
             npc.getUpdateState().setForcedText("Grr... Ge'roff us!");
             return true;
@@ -316,8 +316,7 @@ extends QuestScript {
             Player player = object;
             player.packetSender.sendSoundEffect(468, 1, 0);
             ((Entity)object).getUpdateState().setAnimation(898);
-            object = new ElementalShieldSmithingTask(this, 3, (Player)object, n3);
-            World.getTaskScheduler().schedule((TickTask)object);
+            World.getTaskScheduler().schedule(new ElementalShieldSmithingTask(this, 3, (Player)object, n3));
             return true;
         }
         return false;
@@ -395,7 +394,7 @@ extends QuestScript {
                 player2.packetSender.sendGameMessage("The book has two parts: an introduction and an instruction section.");
                 player2 = player;
                 player2.packetSender.sendGameMessage("You flip the book open to the introduction and start reading.");
-                this.d(player);
+                this.startQuest(player);
             }
             return true;
         }

@@ -16,11 +16,9 @@ public enum FishingWhirlpool {
     /*
      * WARNING - void declaration
      */
-    private FishingWhirlpool() {
-        void var4_1;
-        void var3_2;
-        this.whirlpoolNpcId = var3_2;
-        this.sourceNpcIds = var4_1;
+    private FishingWhirlpool(int n2, int[] nArray) {
+        this.whirlpoolNpcId = n2;
+        this.sourceNpcIds = nArray;
     }
 
     public final int[] getSourceNpcIds() {

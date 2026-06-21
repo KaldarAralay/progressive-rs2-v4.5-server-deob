@@ -9,7 +9,7 @@ import com.rs2.model.skill.runecrafting.RunecraftingHandler;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class AbyssTeleportTask
+public final class AbyssTeleportTask
 extends CycleEvent {
     private int ticksRemaining = 3;
     private /* synthetic */ TeleportManager teleportManager;
@@ -17,7 +17,7 @@ extends CycleEvent {
     private final /* synthetic */ int destinationY;
     private final /* synthetic */ int destinationPlane;
 
-    AbyssTeleportTask(TeleportManager teleportManager, int n, int n2, int n3) {
+    public AbyssTeleportTask(TeleportManager teleportManager, int n, int n2, int n3) {
         this.teleportManager = teleportManager;
         this.destinationX = n;
         this.destinationY = n2;

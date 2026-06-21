@@ -10,13 +10,13 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 
-final class DesertThirstTask
+public final class DesertThirstTask
 extends TickTask {
     private final /* synthetic */ Player player;
 
-    DesertThirstTask(int n, Player player) {
-        this.player = player;
+    public DesertThirstTask(int n, Player player) {
         super(150);
+        this.player = player;
     }
 
     @Override

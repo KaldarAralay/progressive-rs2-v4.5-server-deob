@@ -22,15 +22,15 @@ import com.rs2.util.path.PathFinder;
 import java.util.ArrayList;
 import java.util.Collections;
 
-final class BotPvpTargetSearchTickTask
+public final class BotPvpTargetSearchTickTask
 extends TickTask {
     private final /* synthetic */ Player bot;
     private final /* synthetic */ boolean ignoreLootRiskCheck;
 
-    BotPvpTargetSearchTickTask(int n, Player player, boolean bl) {
+    public BotPvpTargetSearchTickTask(int n, Player player, boolean bl) {
+        super(10);
         this.bot = player;
         this.ignoreLootRiskCheck = bl;
-        super(10);
     }
 
     /*
@@ -39,7 +39,7 @@ extends TickTask {
     @Override
     public final void execute() {
         block74: {
-            void var3_12;
+            int var3_12 = 0;
             int n;
             int n2;
             Object object;
@@ -103,8 +103,8 @@ extends TickTask {
                 }
                 if (((Player)object2).botPvpChatMessage.toLowerCase().equals("team") || ((Player)object2).botPvpChatMessage.toLowerCase().equals("team?")) {
                     if (((Player)object2).currentGroup == null && BotCombatHelper.canTeamWithBotPvpPlayer((Player)object2, ((Player)object2).botPvpChatSource, false)) {
-                        object = new String[]{"sure", "okay", "ok", "k"};
-                        ((Player)object2).queuePublicChatMessage(object[GameUtil.randomInt(4)]);
+                        String[] responses = new String[]{"sure", "okay", "ok", "k"};
+                        ((Player)object2).queuePublicChatMessage(responses[GameUtil.randomInt(4)]);
                         ((Player)object2).botPvpChatSource.botPvpTeamRequesters.add(object2);
                         if (((Player)object2).botPvpChatSource.currentGroup == null) {
                             PlayerGroup playerGroup = new PlayerGroup(((Player)object2).botPvpChatSource, (Player)object2);
@@ -118,14 +118,14 @@ extends TickTask {
                     }
                 } else if (((Player)object2).currentGroup != null && ((Player)object2).botPvpChatSource.currentGroup != null && ((Player)object2).currentGroup == ((Player)object2).botPvpChatSource.currentGroup) {
                     if (((Player)object2).botPvpChatMessage.toLowerCase().equals("food") || ((Player)object2).botPvpChatMessage.toLowerCase().equals("food?") || ((Player)object2).botPvpChatMessage.toLowerCase().equals("food left") || ((Player)object2).botPvpChatMessage.toLowerCase().equals("food left?")) {
-                        void n12;
                         object = ItemDefinition.forId(((Player)object2).botFoodItemId);
                         String string = ((ItemDefinition)object).getDisplayName();
                         n2 = ((Player)object2).getInventoryManager().getItemAmount(((Player)object2).botFoodItemId);
+                        String foodName = string;
                         if (n2 > 1) {
-                            String n7 = String.valueOf(string) + "s";
+                            foodName = String.valueOf(string) + "s";
                         }
-                        ((Player)object2).queuePublicChatMessage("I have " + n2 + " " + (String)n12 + " left");
+                        ((Player)object2).queuePublicChatMessage("I have " + n2 + " " + foodName + " left");
                     } else if (((Player)object2).botPvpChatMessage.toLowerCase().equals("skills") || ((Player)object2).botPvpChatMessage.toLowerCase().equals("skills?") || ((Player)object2).botPvpChatMessage.toLowerCase().equals("lvls") || ((Player)object2).botPvpChatMessage.toLowerCase().equals("lvls?") || ((Player)object2).botPvpChatMessage.toLowerCase().equals("stats") || ((Player)object2).botPvpChatMessage.toLowerCase().equals("stats?")) {
                         int n3;
                         int n4;
@@ -221,15 +221,15 @@ extends TickTask {
             if (this.bot.currentGroup != null && this.bot.currentGroup.leader != this.bot) {
                 return;
             }
-            ArrayList<Object> arrayList = new ArrayList<Object>();
-            Object object3 = World.players;
+            ArrayList<Player> arrayList = new ArrayList<Player>();
+            Player[] playerArray = World.players;
             n2 = World.players.length;
             boolean n13 = false;
             while (var3_12 < n2) {
                 block75: {
                     block76: {
                         block77: {
-                            object = object3[var3_12];
+                            object = playerArray[var3_12];
                             if (object == null || object == this.bot || ((Player)object).clanWarsBot) break block75;
                             if (this.bot.currentGroup == null) break block76;
                             if (!this.bot.currentGroup.containsMember((Player)object)) break block77;
@@ -243,7 +243,7 @@ extends TickTask {
                     if (((Entity)object).getPosition().isWithinViewport(this.bot.getPosition())) {
                         n = BotCombatHelper.getEscapeCombatLevelMargin(this.bot);
                         if (((Player)object).getCombatLevel() <= this.bot.getCombatLevel() + n) {
-                            arrayList.add(object);
+                            arrayList.add((Player)object);
                         }
                     }
                 }
@@ -254,19 +254,19 @@ extends TickTask {
             for (Player player : arrayList) {
                 if (player.getWildernessLevel() < Math.abs(this.bot.getCombatLevel() - player.getCombatLevel()) || !player.isInMultiCombatArea() && !player.getSingleCombatTimer().hasElapsed()) continue;
                 if (!PathReachability.isReachable(this.bot, player.getPosition().getX(), player.getPosition().getY(), true, 0, 0) || BotCombatHelper.tryHandleBotPvpTeamGrouping(this.bot, player)) continue;
-                object3 = player;
+                Player teamTarget = player;
                 if (player.currentGroup != null) {
-                    object3 = player.currentGroup.leader;
+                    teamTarget = player.currentGroup.leader;
                 }
-                if (!object3.isBot && BotCombatHelper.canTeamWithBotPvpPlayer(this.bot, (Player)object3, true) && !this.bot.botPvpRejectedTeamTargets.contains(object3)) {
+                if (!teamTarget.isBot && BotCombatHelper.canTeamWithBotPvpPlayer(this.bot, teamTarget, true) && !this.bot.botPvpRejectedTeamTargets.contains(teamTarget)) {
                     this.bot.getMovementQueue().setRunning(true);
                     this.bot.getUpdateState().setFaceEntity(player.getEncodedIndex());
                     this.bot.setAttackRange(1);
                     this.bot.setMovementTarget(player);
-                    this.bot.botPvpPendingTeamTarget = object3;
+                    this.bot.botPvpPendingTeamTarget = teamTarget;
                     if (GameUtil.getDistance(this.bot.getPosition(), player.getPosition()) > 5) continue;
                     this.bot.queuePublicChatMessage("team?");
-                    object3.botPvpTeamRequesters.add(this.bot);
+                    teamTarget.botPvpTeamRequesters.add(this.bot);
                     this.bot.botPvpTeamInviteTicks = 1;
                     continue;
                 }
@@ -285,15 +285,13 @@ extends TickTask {
                 break;
             }
             if (!bl) {
-                int n11;
-                int n12;
                 int n14 = this.bot.getPosition().getX() + GameUtil.randomInt(20) - 10;
                 int n15 = this.bot.getPosition().getY() + GameUtil.randomInt(20) - 10;
                 if (n14 < 2951) {
-                    n12 = 2961;
+                    n14 = 2961;
                 }
-                if (n12 > 3376) {
-                    n11 = 3366;
+                if (n14 > 3376) {
+                    n14 = 3366;
                 }
                 if (n15 < 3520) {
                     n15 = 3530;
@@ -302,7 +300,7 @@ extends TickTask {
                     n15 = this.bot.botWildernessMaxY - 10;
                 }
                 PathFinder.getInstance();
-                PathFinder.findPath(this.bot, n11, n15, true, 0, 0);
+                PathFinder.findPath(this.bot, n14, n15, true, 0, 0);
             }
         }
     }

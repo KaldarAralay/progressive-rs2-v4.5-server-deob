@@ -22,22 +22,18 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
-            stringArray = new String[]{"I can start this quest by speaking to Thormac who is in the", "Sorcerer's Tower", "", "Requirements:", "You'll need level 31 Prayer"};
-            return stringArray;
+            return new String[]{"I can start this quest by speaking to Thormac who is in the", "Sorcerer's Tower", "", "Requirements:", "You'll need level 31 Prayer"};
         }
         if (n == 2) {
-            stringArray = new String[]{"I should go to Seers village and find someone to help me", "locate the Kharid scorpions."};
-            return stringArray;
+            return new String[]{"I should go to Seers village and find someone to help me", "locate the Kharid scorpions."};
         }
         if (n == 3) {
-            stringArray = new String[]{"I should now go and look for the scorpions and return", "to Thormac when done."};
-            return stringArray;
+            return new String[]{"I should now go and look for the scorpions and return", "to Thormac when done."};
         }
         if (n == 1) {
-            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "1 Quest Point", "6625 Strength  XP"};
-            return stringArray;
+            return new String[]{"Quest Completed!", "", "You were awarded:", "1 Quest Point", "6625 Strength  XP"};
         }
         return null;
     }
@@ -255,7 +251,7 @@ extends QuestScript {
                 if (n2 == 12) {
                     if (n3 == 2) {
                         player.getDialogueManager().showPlayerOneLineDialogue("Ok, I will do it then.", 591);
-                        this.d(player);
+                        this.startQuest(player);
                         player.getDialogueManager().finishDialogue();
                         return true;
                     }

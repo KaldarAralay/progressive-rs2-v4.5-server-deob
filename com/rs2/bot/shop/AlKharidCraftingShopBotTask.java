@@ -60,8 +60,7 @@ extends BotTaskDefinition {
     @Override
     public final void startCustomTaskAction(Player object) {
         ItemStack itemStack = new ItemStack(((Player)object).botTaskItemId, ((Player)object).botShopItemAmount);
-        object = new AlKharidCraftingShopTradeTickTask(this, 2, (Player)object, itemStack);
-        World.getTaskScheduler().schedule((TickTask)object);
+        World.getTaskScheduler().schedule(new AlKharidCraftingShopTradeTickTask(this, 2, (Player)object, itemStack));
     }
 
     @Override

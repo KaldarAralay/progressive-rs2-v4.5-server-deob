@@ -12,9 +12,9 @@ import com.rs2.model.combat.hit.HitType;
 import com.rs2.model.combat.special.SaradominGodswordSpecialDefinition;
 import com.rs2.model.player.Player;
 
-final class SaradominGodswordSpecialAttack
+public final class SaradominGodswordSpecialAttack
 extends WeaponCombatAttack {
-    SaradominGodswordSpecialAttack(SaradominGodswordSpecialDefinition saradominGodswordSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile) {
+    public SaradominGodswordSpecialAttack(SaradominGodswordSpecialDefinition saradominGodswordSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile) {
         super(player, entity, weaponProfile);
     }
 

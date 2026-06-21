@@ -7,17 +7,17 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 import java.util.ArrayList;
 
-final class RetryMissingObjectSearchTask
+public final class RetryMissingObjectSearchTask
 extends TickTask {
     private /* synthetic */ Player a;
     private final /* synthetic */ Player b;
     private final /* synthetic */ ArrayList targetIds;
 
-    RetryMissingObjectSearchTask(Player player, int n, Player player2, ArrayList arrayList) {
+    public RetryMissingObjectSearchTask(Player player, int n, Player player2, ArrayList arrayList) {
+        super(10);
         this.a = player;
         this.b = player2;
         this.targetIds = arrayList;
-        super(10);
     }
 
     @Override

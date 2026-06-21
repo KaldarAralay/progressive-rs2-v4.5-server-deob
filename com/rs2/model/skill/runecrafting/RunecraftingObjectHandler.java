@@ -149,147 +149,92 @@ public class RunecraftingObjectHandler {
     }
 
     public static boolean handleRuinsOrPortalObject(Player player, int n) {
-        Object object;
-        RunecraftingAltarDefinition runecraftingAltarDefinition;
-        Object object2;
-        block13: {
-            RunecraftingAltarDefinition runecraftingAltarDefinition2;
-            RunecraftingAltarDefinition runecraftingAltarDefinition3;
-            RunecraftingAltarDefinition runecraftingAltarDefinition4;
-            int n2;
-            int n3;
-            RunecraftingAltarDefinition[] runecraftingAltarDefinitionArray;
-            int n4;
-            block12: {
-                n4 = n;
-                runecraftingAltarDefinitionArray = RunecraftingAltarDefinition.values();
-                n3 = runecraftingAltarDefinitionArray.length;
-                n2 = 0;
-                while (n2 < n3) {
-                    object2 = runecraftingAltarDefinition4 = runecraftingAltarDefinitionArray[n2];
-                    if (n4 == object2.ruinsObjectId) {
-                        runecraftingAltarDefinition3 = runecraftingAltarDefinition4;
-                        break block12;
-                    }
-                    ++n2;
-                }
-                runecraftingAltarDefinition3 = null;
+        RunecraftingAltarDefinition ruinsDefinition = null;
+        for (RunecraftingAltarDefinition candidate : RunecraftingAltarDefinition.values()) {
+            if (n == candidate.ruinsObjectId) {
+                ruinsDefinition = candidate;
+                break;
             }
-            runecraftingAltarDefinition = runecraftingAltarDefinition3;
-            n4 = n;
-            runecraftingAltarDefinitionArray = RunecraftingAltarDefinition.values();
-            n3 = runecraftingAltarDefinitionArray.length;
-            n2 = 0;
-            while (n2 < n3) {
-                object = runecraftingAltarDefinition4 = runecraftingAltarDefinitionArray[n2];
-                if (n4 == object.portalObjectId) {
-                    runecraftingAltarDefinition2 = runecraftingAltarDefinition4;
-                    break block13;
-                }
-                ++n2;
-            }
-            runecraftingAltarDefinition2 = object = null;
         }
-        if (runecraftingAltarDefinition == null && object == null) {
+        RunecraftingAltarDefinition portalDefinition = null;
+        for (RunecraftingAltarDefinition candidate : RunecraftingAltarDefinition.values()) {
+            if (n == candidate.portalObjectId) {
+                portalDefinition = candidate;
+                break;
+            }
+        }
+        if (ruinsDefinition == null && portalDefinition == null) {
             return false;
         }
         if (!ServerSettings.runecraftingEnabled) {
-            object2 = player;
-            ((Player)object2).packetSender.sendGameMessage("This skill is currently disabled.");
+            player.packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
-        if (runecraftingAltarDefinition != null) {
-            object2 = runecraftingAltarDefinition;
-            if (object2.membersOnly && !player.isMember()) {
+        if (ruinsDefinition != null) {
+            if (ruinsDefinition.membersOnly && !player.isMember()) {
                 player.packetSender.sendGameMessage("You need a members account to access members content.");
                 return true;
             }
-            object2 = runecraftingAltarDefinition;
-            if (object2.membersOnly && ServerSettings.freeToPlayWorld) {
+            if (ruinsDefinition.membersOnly && ServerSettings.freeToPlayWorld) {
                 player.packetSender.sendGameMessage("You need to be in members world to access members content.");
                 return true;
             }
         }
         if (player.getQuestState(14) != 1) {
-            object = QuestDefinition.forId(14);
-            object = ((QuestDefinition)object).getName();
-            object2 = player;
-            ((Player)object2).packetSender.sendGameMessage("You need to complete " + (String)object + " to do this.");
+            QuestDefinition questDefinition = QuestDefinition.forId(14);
+            String string = questDefinition.getName();
+            player.packetSender.sendGameMessage("You need to complete " + string + " to do this.");
             return true;
         }
-        if (runecraftingAltarDefinition != null) {
-            object2 = runecraftingAltarDefinition;
-            player.moveTo(object2.altarPosition);
-            object2 = player;
-            ((Player)object2).packetSender.sendGameMessage("You feel a powerful force take hold of you...");
+        if (ruinsDefinition != null) {
+            player.moveTo(ruinsDefinition.altarPosition);
+            player.packetSender.sendGameMessage("You feel a powerful force take hold of you...");
             return true;
         }
-        if (object != null) {
-            object2 = object;
-            player.moveTo(object2.ruinsPosition);
-            object2 = player;
-            ((Player)object2).packetSender.sendGameMessage("You step through the portal...");
+        if (portalDefinition != null) {
+            player.moveTo(portalDefinition.ruinsPosition);
+            player.packetSender.sendGameMessage("You step through the portal...");
             return true;
         }
         return false;
     }
 
     public static boolean handleTalismanOnMysteriousRuins(Player player, int n, int n2) {
-        Object object;
-        RunecraftingAltarDefinition runecraftingAltarDefinition;
-        Object object2;
-        block8: {
-            RunecraftingAltarDefinition[] runecraftingAltarDefinitionArray = RunecraftingAltarDefinition.values();
-            int n3 = runecraftingAltarDefinitionArray.length;
-            int n4 = 0;
-            while (n4 < n3) {
-                RunecraftingAltarDefinition runecraftingAltarDefinition2;
-                object2 = runecraftingAltarDefinition2 = runecraftingAltarDefinitionArray[n4];
-                if (n == object2.talismanItemId) {
-                    object2 = runecraftingAltarDefinition2;
-                    if (n2 == object2.ruinsObjectId) {
-                        runecraftingAltarDefinition = runecraftingAltarDefinition2;
-                        break block8;
-                    }
-                }
-                ++n4;
+        RunecraftingAltarDefinition altarDefinition = null;
+        for (RunecraftingAltarDefinition candidate : RunecraftingAltarDefinition.values()) {
+            if (n == candidate.talismanItemId && n2 == candidate.ruinsObjectId) {
+                altarDefinition = candidate;
+                break;
             }
-            runecraftingAltarDefinition = object = null;
         }
-        if (runecraftingAltarDefinition == null) {
+        if (altarDefinition == null) {
             return false;
         }
         if (!ServerSettings.runecraftingEnabled) {
-            object2 = player;
-            ((Player)object2).packetSender.sendGameMessage("This skill is currently disabled.");
+            player.packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
-        object2 = object;
-        if (object2.membersOnly && !player.isMember()) {
+        if (altarDefinition.membersOnly && !player.isMember()) {
             player.packetSender.sendGameMessage("You need a members account to access members content.");
             return true;
         }
-        object2 = object;
-        if (object2.membersOnly && ServerSettings.freeToPlayWorld) {
+        if (altarDefinition.membersOnly && ServerSettings.freeToPlayWorld) {
             player.packetSender.sendGameMessage("You need to be in members world to access members content.");
             return true;
         }
         if (player.getQuestState(14) != 1) {
-            object = QuestDefinition.forId(14);
-            object = ((QuestDefinition)object).getName();
-            object2 = player;
-            ((Player)object2).packetSender.sendGameMessage("You need to complete " + (String)object + " to do this.");
+            QuestDefinition questDefinition = QuestDefinition.forId(14);
+            String string = questDefinition.getName();
+            player.packetSender.sendGameMessage("You need to complete " + string + " to do this.");
             return true;
         }
-        object2 = player;
-        PacketSender packetSender = ((Player)object2).packetSender;
+        PacketSender packetSender = player.packetSender;
         StringBuilder stringBuilder = new StringBuilder("You hold the ");
         ItemService.getInstance();
-        object2 = object;
-        packetSender.sendGameMessage(stringBuilder.append(ItemService.getItemName(object2.talismanItemId)).append(" towards the mysterious ruins.").toString());
+        packetSender.sendGameMessage(stringBuilder.append(ItemService.getItemName(altarDefinition.talismanItemId)).append(" towards the mysterious ruins.").toString());
         player.getUpdateState().setAnimation(827);
         player.setActionLocked(true);
-        CycleEventHandler.getInstance().schedule(player, new MysteriousRuinsTeleportTask(player, (RunecraftingAltarDefinition)((Object)object)), 2);
+        CycleEventHandler.getInstance().schedule(player, new MysteriousRuinsTeleportTask(player, altarDefinition), 2);
         return true;
     }
 

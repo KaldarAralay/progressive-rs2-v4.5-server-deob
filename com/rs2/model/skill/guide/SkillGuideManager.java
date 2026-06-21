@@ -289,40 +289,31 @@ public final class SkillGuideManager {
         }
     }
 
-    private void sendGuideFrame(String string, String string2, String stringArray, String object, String string3, String object2, String string4, String string5, String string6, String string7, String string8, String string9, String string10, String string11, String string12) {
-        int[] nArray = new int[]{8844, 8813, 8813, 8825, 8828, 8838, 8841, 8850, 8860, 8863, 15294, 15304, 15307};
-        stringArray = new String[]{stringArray, object, string3, object2, string4, string5, string6, string7, string8, string9, string10, string11, string12};
-        object = new int[]{8846, 8823, 8824, 8827, 8837, 8840, 8843, 8859, 8862, 8865, 15303, 15306, 15309};
-        object2 = this.player;
-        ((Player)object2).packetSender.sendInterfaceScrollPosition(8717, 0);
-        object2 = this.player;
-        ((Player)object2).packetSender.setInterfaceHiddenFlag(stringArray[1] == "" ? 1 : 0, 8800);
-        object2 = this.player;
-        ((Player)object2).packetSender.setInterfaceHiddenFlag(stringArray[1] == "" ? 1 : 0, nArray[0]);
-        object2 = this.player;
-        ((Player)object2).packetSender.setInterfaceHiddenFlag(stringArray[1] == "" ? 1 : 0, nArray[1]);
-        if (stringArray[2] == "") {
-            stringArray[2] = "Milestones";
+    private void sendGuideFrame(String title, String subtitle, String category0, String category1, String category2, String category3, String category4, String category5, String category6, String category7, String category8, String category9, String category10, String category11, String category12) {
+        int[] hiddenComponentIds = new int[]{8844, 8813, 8813, 8825, 8828, 8838, 8841, 8850, 8860, 8863, 15294, 15304, 15307};
+        int[] textComponentIds = new int[]{8846, 8823, 8824, 8827, 8837, 8840, 8843, 8859, 8862, 8865, 15303, 15306, 15309};
+        String[] categories = new String[]{category0, category1, category2, category3, category4, category5, category6, category7, category8, category9, category10, category11, category12};
+        this.player.packetSender.sendInterfaceScrollPosition(8717, 0);
+        this.player.packetSender.setInterfaceHiddenFlag(categories[1] == "" ? 1 : 0, 8800);
+        this.player.packetSender.setInterfaceHiddenFlag(categories[1] == "" ? 1 : 0, hiddenComponentIds[0]);
+        this.player.packetSender.setInterfaceHiddenFlag(categories[1] == "" ? 1 : 0, hiddenComponentIds[1]);
+        if (categories[2] == "") {
+            categories[2] = "Milestones";
         }
-        int n = 3;
-        while (n < 13) {
-            object2 = this.player;
-            ((Player)object2).packetSender.setInterfaceHiddenFlag(stringArray[n] == "" ? 1 : 0, nArray[n]);
-            ++n;
+        int categoryIndex = 3;
+        while (categoryIndex < 13) {
+            this.player.packetSender.setInterfaceHiddenFlag(categories[categoryIndex] == "" ? 1 : 0, hiddenComponentIds[categoryIndex]);
+            ++categoryIndex;
         }
-        object2 = this.player;
-        ((Player)object2).packetSender.sendInterfaceText(string, 8716);
-        object2 = this.player;
-        ((Player)object2).packetSender.sendInterfaceText(string2, 8849);
-        n = 0;
-        while (n < 13) {
-            object2 = this.player;
-            ((Player)object2).packetSender.sendInterfaceText(stringArray[n], (int)object[n]);
-            ++n;
+        this.player.packetSender.sendInterfaceText(title, 8716);
+        this.player.packetSender.sendInterfaceText(subtitle, 8849);
+        categoryIndex = 0;
+        while (categoryIndex < 13) {
+            this.player.packetSender.sendInterfaceText(categories[categoryIndex], textComponentIds[categoryIndex]);
+            ++categoryIndex;
         }
         this.player.resetInteractionState();
-        object2 = this.player;
-        ((Player)object2).packetSender.showInterface(8714);
+        this.player.packetSender.showInterface(8714);
     }
 
     private void sendEntryRow(String string, String string2, int n, int n2) {
@@ -348,79 +339,63 @@ public final class SkillGuideManager {
         }
     }
 
-    private void sendItemContainer(int[] object) {
-        ItemStack[] itemStackArray = new ItemStack[((int[])object).length];
+    private void sendItemContainer(int[] itemIds) {
+        ItemStack[] itemStackArray = new ItemStack[itemIds.length];
         int n = 0;
-        while (n < ((int[])object).length) {
-            itemStackArray[n] = new ItemStack(object[n]);
+        while (n < itemIds.length) {
+            itemStackArray[n] = new ItemStack(itemIds[n]);
             ++n;
         }
-        Player player = this.player;
-        object = player;
-        player.packetSender.sendItemContainer(8847, itemStackArray);
+        this.player.packetSender.sendItemContainer(8847, itemStackArray);
     }
 
-    private void showSkillGuide(String string, ArrayList arrayList, int n) {
-        int n2;
-        Object object;
-        String[] stringArray;
-        String string2 = "";
+    private void showSkillGuide(String title, ArrayList arrayList, int n) {
+        String subtitle = "";
         if (n >= arrayList.size()) {
             this.clearEntryRows();
             this.sendItemContainer(this.displayItemIds);
         } else {
-            String string3;
-            object = stringArray = (String[])arrayList.get(n);
-            string2 = string3 = stringArray.name;
-            object = stringArray;
-            if (stringArray.skipItemDefinitionLookup) {
-                string2 = String.valueOf(string2) + " - Members";
+            SkillGuideCategory category = (SkillGuideCategory)arrayList.get(n);
+            subtitle = category.name;
+            if (category.skipItemDefinitionLookup) {
+                subtitle = String.valueOf(subtitle) + " - Members";
             }
             this.clearEntryRows();
-            n2 = 0;
-            while (n2 < stringArray.entries.size()) {
-                SkillGuideEntry skillGuideEntry = (SkillGuideEntry)stringArray.entries.get(n2);
-                String string4 = stringArray.getLevelText();
-                if (string4.equals("-1") && (string4 = skillGuideEntry.getLevelText()).equals("-1")) {
-                    string4 = "";
+            int entryIndex = 0;
+            while (entryIndex < category.entries.size()) {
+                SkillGuideEntry skillGuideEntry = (SkillGuideEntry)category.entries.get(entryIndex);
+                String levelText = category.getLevelText();
+                if (levelText.equals("-1") && (levelText = skillGuideEntry.getLevelText()).equals("-1")) {
+                    levelText = "";
                 }
-                object = skillGuideEntry;
-                int n3 = object.itemId;
-                String string5 = "";
-                if (n3 >= 0) {
-                    object = stringArray;
-                    if (!stringArray.skipItemDefinitionLookup) {
-                        object = stringArray;
-                        if (ItemDefinition.isDefined(n3)) {
-                            Object object2 = new ItemStack(n3);
-                            if (((ItemDefinition)(object2 = ((ItemStack)object2).getDefinition())).isMembersOnly()) {
-                                string5 = "Members: ";
-                            }
-                        }
+                int itemId = skillGuideEntry.itemId;
+                String displayLabelPrefix = "";
+                if (itemId >= 0 && !category.skipItemDefinitionLookup && ItemDefinition.isDefined(itemId)) {
+                    ItemStack itemStack = new ItemStack(itemId);
+                    if (itemStack.getDefinition().isMembersOnly()) {
+                        displayLabelPrefix = "Members: ";
                     }
                 }
-                string5 = String.valueOf(string5) + skillGuideEntry.getDisplayLabel();
-                String[] stringArray2 = stringArray;
-                if (stringArray.prefixEntriesWithName && !skillGuideEntry.suppressCategoryPrefix) {
-                    string5 = String.valueOf(string3) + " " + skillGuideEntry.getDisplayLabel();
+                String displayLabel = String.valueOf(displayLabelPrefix) + skillGuideEntry.getDisplayLabel();
+                if (category.prefixEntriesWithName && !skillGuideEntry.suppressCategoryPrefix) {
+                    displayLabel = String.valueOf(category.name) + " " + skillGuideEntry.getDisplayLabel();
                 }
-                object = skillGuideEntry;
-                this.sendEntryRow(string4, string5, object.itemId, n2);
-                ++n2;
+                this.sendEntryRow(levelText, displayLabel, skillGuideEntry.itemId, entryIndex);
+                ++entryIndex;
             }
         }
-        stringArray = new String[13];
-        n2 = 0;
-        while (n2 < 13) {
-            if (n2 < arrayList.size()) {
-                object = (SkillGuideCategory)arrayList.get(n2);
-                stringArray[n2] = object.name;
+        String[] categoryNames = new String[13];
+        int categoryIndex = 0;
+        while (categoryIndex < 13) {
+            if (categoryIndex < arrayList.size()) {
+                SkillGuideCategory category = (SkillGuideCategory)arrayList.get(categoryIndex);
+                categoryNames[categoryIndex] = category.name;
             } else {
-                stringArray[n2] = "";
+                categoryNames[categoryIndex] = "";
             }
-            ++n2;
+            ++categoryIndex;
         }
-        this.sendGuideFrame(string, string2, stringArray[0], stringArray[1], stringArray[2], stringArray[3], stringArray[4], stringArray[5], stringArray[6], stringArray[7], stringArray[8], stringArray[9], stringArray[10], stringArray[11], stringArray[12]);
+        this.sendGuideFrame(title, subtitle, categoryNames[0], categoryNames[1], categoryNames[2], categoryNames[3], categoryNames[4], categoryNames[5], categoryNames[6], categoryNames[7], categoryNames[8], categoryNames[9], categoryNames[10], categoryNames[11], categoryNames[12]);
     }
 
     public final void showAttackGuide(int n) {
@@ -684,7 +659,7 @@ public final class SkillGuideManager {
         skillGuideCategory7.addEntry(new SkillGuideEntry(31, "Adamant pickaxe", 1271));
         skillGuideCategory7.addEntry(new SkillGuideEntry(41, "Rune pickaxe", 1275));
         object = new SkillGuideCategory("Milestones");
-        skillGuideCategory7 = object;
+        skillGuideCategory7 = (SkillGuideCategory)object;
         ((SkillGuideCategory)object).addEntry(new SkillGuideEntry(60, "Mining Guild", 447));
         SkillGuideManager.addCategoryIfNotEmpty(miningCategories, skillGuideCategory6);
         SkillGuideManager.addCategoryIfNotEmpty(miningCategories, skillGuideCategory8);
@@ -736,7 +711,7 @@ public final class SkillGuideManager {
         skillGuideCategory7.addEntry(new SkillGuideEntry(49, "contortion in Yanille Dungeon small room", 6520), true);
         skillGuideCategory7.addEntry(new SkillGuideEntry(67, "Yanille Dungeon's rubble climb", 6521), true);
         object = new SkillGuideCategory("Shortcuts", true);
-        skillGuideCategory7 = object;
+        skillGuideCategory7 = (SkillGuideCategory)object;
         ((SkillGuideCategory)object).addEntry(new SkillGuideEntry(5, "Falador Agility shortcut", 6517), true);
         skillGuideCategory7.addEntry(new SkillGuideEntry(8, "Cross the River Lum to Al Kharid", 6515), true);
         skillGuideCategory7.addEntry(new SkillGuideEntry(11, "Scale Falador wall", 6517), true);
@@ -815,7 +790,7 @@ public final class SkillGuideManager {
         skillGuideCategory7.addEntry(new SkillGuideEntry(16, "plateskirts - 3 bars", 1087));
         skillGuideCategory7.addEntry(new SkillGuideEntry(18, "platebodies - 5 bars", 1117));
         object = new SkillGuideCategory("Iron", -1, true);
-        skillGuideCategory7 = object;
+        skillGuideCategory7 = (SkillGuideCategory)object;
         ((SkillGuideCategory)object).addEntry(new SkillGuideEntry(15, "daggers - 1 bar", 1203));
         skillGuideCategory7.addEntry(new SkillGuideEntry(16, "axes - 1 bar", 1349));
         skillGuideCategory7.addEntry(new SkillGuideEntry(17, "maces - 1 bar", 1420));

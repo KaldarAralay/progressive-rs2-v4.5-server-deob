@@ -13,9 +13,9 @@ import com.rs2.model.combat.attack.BaseCombatAttack;
 import com.rs2.model.combat.attack.CombatAttack;
 import com.rs2.model.npc.combat.NpcCombatDefinition;
 
-final class IronDragonCombatDefinition
+public final class IronDragonCombatDefinition
 extends NpcCombatDefinition {
-    IronDragonCombatDefinition() {
+    public IronDragonCombatDefinition() {
     }
 
     @Override

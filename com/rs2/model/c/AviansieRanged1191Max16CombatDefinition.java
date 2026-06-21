@@ -12,9 +12,9 @@ import com.rs2.model.combat.attack.BaseCombatAttack;
 import com.rs2.model.combat.attack.CombatAttack;
 import com.rs2.model.npc.combat.NpcCombatDefinition;
 
-final class AviansieRanged1191Max16CombatDefinition
+public final class AviansieRanged1191Max16CombatDefinition
 extends NpcCombatDefinition {
-    AviansieRanged1191Max16CombatDefinition() {
+    public AviansieRanged1191Max16CombatDefinition() {
     }
 
     @Override

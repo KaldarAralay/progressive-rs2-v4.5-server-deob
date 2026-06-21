@@ -12,13 +12,13 @@ import com.rs2.model.skill.cooking.CookingManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class CookingTask
+public final class CookingTask
 extends CycleEvent {
     private int remainingActions;
     private final /* synthetic */ Player player;
     private final /* synthetic */ int actionSequence;
 
-    CookingTask(int n, Player player, int n2) {
+    public CookingTask(int n, Player player, int n2) {
         this.player = player;
         this.actionSequence = n2;
         this.remainingActions = n;
@@ -48,7 +48,7 @@ extends CycleEvent {
             return;
         }
         Object object = this.player;
-        if (object.interfaceAction.equals("cookFire") && !SkillActionHelper.isObjectPresent(this.player.getCookingObjectId(), this.player.getCookingManager().firePosition.getX(), this.player.getCookingManager().firePosition.getY(), this.player.getCookingManager().firePosition.getPlane())) {
+        if (((Player)object).interfaceAction.equals("cookFire") && !SkillActionHelper.isObjectPresent(this.player.getCookingObjectId(), this.player.getCookingManager().firePosition.getX(), this.player.getCookingManager().firePosition.getY(), this.player.getCookingManager().firePosition.getPlane())) {
             if (this.player.botEnabled) {
                 object = CookableFoodDefinition.forRawItemId(this.player.getSelectedSkillItemId());
                 if (object != null && this.player.getInventoryManager().getContainer().containsItem(((CookableFoodDefinition)((Object)object)).getBurntItemId())) {

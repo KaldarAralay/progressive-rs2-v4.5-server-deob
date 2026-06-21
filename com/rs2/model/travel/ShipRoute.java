@@ -38,15 +38,13 @@ public enum ShipRoute {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private ShipRoute(Position position, int n, int n2, int n3) {
-        void var8_6;
-        void var7_5;
-        this.arrivalName = position;
-        this.destinationPosition = (Position)n;
-        this.interfaceDestinationPosition = (Position)n2;
-        this.arrivalDelayTicks = n3;
-        this.fareCoins = var7_5;
-        this.jingleDelayTicks = var8_6;
+    private ShipRoute(String string2, Position position, Position position2, int n2, int n3, int n4) {
+        this.arrivalName = string2;
+        this.destinationPosition = position;
+        this.interfaceDestinationPosition = position2;
+        this.arrivalDelayTicks = n2;
+        this.fareCoins = n3;
+        this.jingleDelayTicks = n4;
     }
 }
 

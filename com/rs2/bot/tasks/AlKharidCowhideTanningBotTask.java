@@ -54,8 +54,7 @@ extends BotTaskDefinition {
 
     @Override
     public final void startCustomTaskAction(Player object) {
-        object = new TanningBotTickTask(this, 2, (Player)object);
-        World.getTaskScheduler().schedule((TickTask)object);
+        World.getTaskScheduler().schedule(new TanningBotTickTask(this, 2, (Player)object));
     }
 
     @Override

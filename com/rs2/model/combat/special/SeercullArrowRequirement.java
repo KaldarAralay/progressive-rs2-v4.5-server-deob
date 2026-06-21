@@ -6,9 +6,9 @@ package com.rs2.model.combat.special;
 import com.rs2.model.combat.requirement.EquipmentItemRequirement;
 import com.rs2.model.combat.special.SeercullSpecialAttack;
 
-final class SeercullArrowRequirement
+public final class SeercullArrowRequirement
 extends EquipmentItemRequirement {
-    SeercullArrowRequirement(SeercullSpecialAttack seercullSpecialAttack, int n, int n2, int n3, boolean bl) {
+    public SeercullArrowRequirement(SeercullSpecialAttack seercullSpecialAttack, int n, int n2, int n3, boolean bl) {
         super(n, n2, 2, true);
     }
 

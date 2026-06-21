@@ -10,15 +10,15 @@ import com.rs2.model.combat.special.DragonHalberdSpecialAttack;
 import com.rs2.model.combat.special.SpecialAttackDefinition;
 import com.rs2.model.player.Player;
 
-final class DragonHalberdSpecialDefinition
+public final class DragonHalberdSpecialDefinition
 extends SpecialAttackDefinition {
-    DragonHalberdSpecialDefinition(int n2, String ... stringArray) {
+    public DragonHalberdSpecialDefinition(int n2, String ... stringArray) {
+        super(n2, stringArray);
     }
 
     @Override
-    public final WeaponCombatAttack createAttack(Player object, Entity entity, WeaponProfile weaponProfile) {
-        object = new DragonHalberdSpecialAttack(this, (Player)object, entity, weaponProfile, entity);
-        return object;
+    public final WeaponCombatAttack createAttack(Player player, Entity entity, WeaponProfile weaponProfile) {
+        return new DragonHalberdSpecialAttack(this, player, entity, weaponProfile, entity);
     }
 }
 

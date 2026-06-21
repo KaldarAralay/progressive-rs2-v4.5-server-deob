@@ -46,16 +46,15 @@ public final class World {
         instance = new World();
     }
 
-    public static void logoutBotAndScheduleRelogin(Player object) {
-        if (!((Player)object).isBot) {
+    public static void logoutBotAndScheduleRelogin(Player player) {
+        if (!player.isBot) {
             return;
         }
-        String string = ((Player)object).getUsername();
-        Player player = object;
+        String username = player.getUsername();
         player.packetSender.sendLogout();
-        ((Player)object).disconnect();
-        object = new BotReloginTask(30, string);
-        taskScheduler.schedule((TickTask)object);
+        player.disconnect();
+        TickTask reloginTask = new BotReloginTask(30, username);
+        taskScheduler.schedule(reloginTask);
     }
 
     public static synchronized void processTick() {
@@ -64,13 +63,13 @@ public final class World {
         Object object3;
         ++tickCount;
         ProfilerTimer profilerTimer = ProfilerRegistry.getTimer("executeTicks");
-        Object object4 = new LinkedList();
-        object4.addAll(taskScheduler.getTasks());
-        object4 = object4.iterator();
+        LinkedList taskSnapshot = new LinkedList();
+        taskSnapshot.addAll(taskScheduler.getTasks());
+        java.util.Iterator taskIterator = taskSnapshot.iterator();
         taskScheduler.getTasks().clear();
         profilerTimer.start();
-        while (object4.hasNext()) {
-            object3 = (TickTask)object4.next();
+        while (taskIterator.hasNext()) {
+            object3 = (TickTask)taskIterator.next();
             try {
                 ((TickTask)object3).tick();
                 if (!((TickTask)object3).isActive()) continue;
@@ -324,21 +323,20 @@ public final class World {
         throw new IllegalStateException("Server is full!");
     }
 
-    public static synchronized void unregisterPlayer(Player object) {
+    public static synchronized void unregisterPlayer(Player player) {
         try {
-            CharacterFileManager.savePlayer((Player)object);
-            ((Player)object).setRegistered(false);
-            ((Player)object).setConnectionState(PlayerConnectionState.DISCONNECTED);
-            if (((Entity)object).getIndex() == -1) {
+            CharacterFileManager.savePlayer(player);
+            player.setRegistered(false);
+            player.setConnectionState(PlayerConnectionState.DISCONNECTED);
+            if (player.getIndex() == -1) {
                 return;
             }
-            object.ad();
-            World.players[((Entity)object).getIndex()] = null;
-            ((Entity)object).setIndex(-1);
+            player.clearCombatEffectTasks();
+            World.players[player.getIndex()] = null;
+            player.setIndex(-1);
             return;
         }
         catch (Exception exception) {
-            object = exception;
             exception.printStackTrace();
             return;
         }
@@ -348,7 +346,7 @@ public final class World {
         if (npc.getIndex() == -1) {
             return;
         }
-        npc.ad();
+        npc.clearCombatEffectTasks();
         World.npcs[npc.getIndex()] = null;
         npc.setIndex(-1);
     }
@@ -427,17 +425,17 @@ public final class World {
         return n;
     }
 
-    public static Player findPlayerByUsername(String object) {
-        long l = TextUtil.encodeNameHash((String)object);
+    public static Player findPlayerByUsername(String username) {
+        long nameHash = TextUtil.encodeNameHash(username);
         Player[] playerArray = players;
-        int n = players.length;
-        int n2 = 0;
-        while (n2 < n) {
-            object = playerArray[n2];
-            if (object != null && ((Player)object).getNameHash() == l) {
-                return object;
+        int length = players.length;
+        int index = 0;
+        while (index < length) {
+            Player player = playerArray[index];
+            if (player != null && player.getNameHash() == nameHash) {
+                return player;
             }
-            ++n2;
+            ++index;
         }
         return null;
     }

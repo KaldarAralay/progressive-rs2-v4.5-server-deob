@@ -28,43 +28,41 @@ public class PluginManager {
      */
     public static void loadPlugins() {
         try {
-            Serializable serializable;
-            Object object = "com.rs2.util.plugin.impl";
-            Object object2 = Thread.currentThread().getContextClassLoader();
-            assert (object2 != null);
-            Object object3 = ((String)object).replace('.', '/');
-            object3 = ((ClassLoader)object2).getResources((String)object3);
-            Object object4 = new ArrayList<File>();
-            while (object3.hasMoreElements()) {
-                serializable = (URL)object3.nextElement();
-                object4.add(new File(((URL)serializable).getFile()));
+            String packageName = "com.rs2.util.plugin.impl";
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            assert (classLoader != null);
+            String packagePath = packageName.replace('.', '/');
+            java.util.Enumeration resources = classLoader.getResources(packagePath);
+            ArrayList pluginDirectories = new ArrayList();
+            while (resources.hasMoreElements()) {
+                URL url = (URL)resources.nextElement();
+                pluginDirectories.add(new File(url.getFile()));
             }
-            serializable = new ArrayList();
-            object4 = object4.iterator();
-            while (object4.hasNext()) {
-                object3 = (File)object4.next();
-                ((ArrayList)serializable).addAll(PluginManager.findPluginClasses((File)object3, (String)object));
+            ArrayList pluginClassList = new ArrayList();
+            Iterator directoryIterator = pluginDirectories.iterator();
+            while (directoryIterator.hasNext()) {
+                File pluginDirectory = (File)directoryIterator.next();
+                pluginClassList.addAll(PluginManager.findPluginClasses(pluginDirectory, packageName));
             }
-            object = ((ArrayList)serializable).toArray(new Class[((ArrayList)serializable).size()]);
-            serializable = object;
-            int n = ((Class[])object).length;
+            Class[] pluginClasses = (Class[])pluginClassList.toArray(new Class[pluginClassList.size()]);
+            int n = pluginClasses.length;
             int n2 = 0;
             while (n2 < n) {
-                object = serializable[n2];
-                object2 = (Plugin)((Class)object).newInstance();
-                if (((Plugin)object2).getPluginType() == PluginType.GLOBAL) {
-                    object = (GlobalPlugin)object2;
-                    object2 = playerPluginClasses;
-                    synchronized (object2) {
-                        System.out.println("Loaded global plugin: " + ((Plugin)object).getName() + " v" + ((Plugin)object).getVersion() + " by " + ((Plugin)object).getAuthor());
-                        globalPlugins.add(object);
+                Class pluginClass = pluginClasses[n2];
+                Plugin plugin = (Plugin)pluginClass.newInstance();
+                if (plugin.getPluginType() == PluginType.GLOBAL) {
+                    GlobalPlugin globalPlugin = (GlobalPlugin)plugin;
+                    List list = playerPluginClasses;
+                    synchronized (list) {
+                        System.out.println("Loaded global plugin: " + globalPlugin.getName() + " v" + globalPlugin.getVersion() + " by " + globalPlugin.getAuthor());
+                        globalPlugins.add(globalPlugin);
                     }
                 }
-                if (((Plugin)object2).getPluginType() == PluginType.PLAYER_LOCAL) {
-                    object2 = playerPluginClasses;
-                    synchronized (object2) {
-                        System.out.println("Loaded local plugin: " + ((Class)object).getSimpleName());
-                        playerPluginClasses.add(object);
+                if (plugin.getPluginType() == PluginType.PLAYER_LOCAL) {
+                    List list = playerPluginClasses;
+                    synchronized (list) {
+                        System.out.println("Loaded local plugin: " + pluginClass.getSimpleName());
+                        playerPluginClasses.add(pluginClass);
                     }
                 }
                 ++n2;
@@ -165,26 +163,29 @@ public class PluginManager {
         }
     }
 
-    private static List findPluginClasses(File object, String string) {
+    private static List findPluginClasses(File file, String string) throws ClassNotFoundException {
         ArrayList arrayList = new ArrayList();
-        if (!((File)object).exists()) {
+        if (!file.exists()) {
             return arrayList;
         }
-        object = ((File)object).listFiles();
-        File[] fileArray = object;
-        int n = ((File[])object).length;
+        File[] fileArray = file.listFiles();
+        if (fileArray == null) {
+            return arrayList;
+        }
+        int n = fileArray.length;
         int n2 = 0;
         while (n2 < n) {
-            object = fileArray[n2];
-            if (((File)object).isDirectory()) {
-                assert (!((File)object).getName().contains("."));
-                arrayList.addAll(PluginManager.findPluginClasses((File)object, String.valueOf(string) + "." + ((File)object).getName()));
-            } else if (((File)object).getName().endsWith(".class")) {
-                arrayList.add(Class.forName(String.valueOf(string) + '.' + ((File)object).getName().substring(0, ((File)object).getName().length() - 6)));
+            File child = fileArray[n2];
+            if (child.isDirectory()) {
+                assert (!child.getName().contains("."));
+                arrayList.addAll(PluginManager.findPluginClasses(child, String.valueOf(string) + "." + child.getName()));
+            } else if (child.getName().endsWith(".class")) {
+                arrayList.add(Class.forName(String.valueOf(string) + '.' + child.getName().substring(0, child.getName().length() - 6)));
             }
             ++n2;
         }
         return arrayList;
     }
+
 }
 

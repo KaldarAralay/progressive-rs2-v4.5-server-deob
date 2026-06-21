@@ -29,7 +29,7 @@ import com.rs2.model.task.CycleEventHandler;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 
-final class SecondObjectActionTask
+public final class SecondObjectActionTask
 extends TickTask {
     private final /* synthetic */ Player player;
     private final /* synthetic */ int actionSequence;
@@ -38,14 +38,14 @@ extends TickTask {
     private final /* synthetic */ int objectY;
     private final /* synthetic */ int objectPlane;
 
-    SecondObjectActionTask(int n, boolean bl, Player player, int n2, int n3, int n4, int n5, int n6) {
+    public SecondObjectActionTask(int n, boolean bl, Player player, int n2, int n3, int n4, int n5, int n6) {
+        super(1, true);
         this.player = player;
         this.actionSequence = n2;
         this.objectId = n3;
         this.objectX = n4;
         this.objectY = n5;
         this.objectPlane = n6;
-        super(1, true);
     }
 
     @Override
@@ -192,7 +192,7 @@ extends TickTask {
                 break;
             }
             case 2644: {
-                GameplayHelper.a(this.player, "spinning");
+                GameplayHelper.openProductionInterface(this.player, "spinning");
                 if (!this.player.botEnabled) break;
                 CraftingHandler.startBotSpinningTask(this.player);
                 break;
@@ -209,7 +209,7 @@ extends TickTask {
                 break;
             }
             case 8717: {
-                GameplayHelper.a(this.player, "weaving");
+                GameplayHelper.openProductionInterface(this.player, "weaving");
                 break;
             }
             default: {

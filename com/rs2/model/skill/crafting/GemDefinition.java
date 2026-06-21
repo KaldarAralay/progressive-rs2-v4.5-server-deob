@@ -44,14 +44,12 @@ public enum GemDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private GemDefinition(int n3, int n4, double d) {
-        void var7_5;
-        void var6_4;
-        this.uncutItemId = (short)n3;
-        this.cutItemId = (short)n4;
-        this.requiredLevel = (byte)d;
-        this.animationId = (short)var6_4;
-        this.experience = var7_5;
+    private GemDefinition(int n2, int n3, int n4, int n5, double d) {
+        this.uncutItemId = (short)n2;
+        this.cutItemId = (short)n3;
+        this.requiredLevel = (byte)n4;
+        this.animationId = (short)n5;
+        this.experience = d;
     }
 
     public final int getCutItemId() {

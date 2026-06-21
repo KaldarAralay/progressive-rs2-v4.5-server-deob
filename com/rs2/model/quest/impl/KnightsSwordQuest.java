@@ -22,46 +22,36 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
-            stringArray = new String[]{"I can start this quest by speaking to the Squire in the", "courtyard of the White Knights' Castle in southern Falador", "To complete this quest I need:", "Level 10 Mining", "and to be unafraid of Level 57 Ice Warriors."};
-            return stringArray;
+            return new String[]{"I can start this quest by speaking to the Squire in the", "courtyard of the White Knights' Castle in southern Falador", "To complete this quest I need:", "Level 10 Mining", "and to be unafraid of Level 57 Ice Warriors."};
         }
         if (n == 2) {
-            stringArray = new String[]{"I should go speak with Reldo in the library of the", "Palace of Varrock."};
-            return stringArray;
+            return new String[]{"I should go speak with Reldo in the library of the", "Palace of Varrock."};
         }
         if (n == 3) {
-            stringArray = new String[]{"Reldo couldn't give me much information about the", "Imcando except a few live on the southern peninsula of", "Asgarnia, they dislike strangers, and LOVE redberry pies."};
-            return stringArray;
+            return new String[]{"Reldo couldn't give me much information about the", "Imcando except a few live on the southern peninsula of", "Asgarnia, they dislike strangers, and LOVE redberry pies."};
         }
         if (n == 4) {
-            stringArray = new String[]{"I gave Thurgo a redberry pie, I should now ask him", "to make me the sword."};
-            return stringArray;
+            return new String[]{"I gave Thurgo a redberry pie, I should now ask him", "to make me the sword."};
         }
         if (n == 5) {
-            stringArray = new String[]{"Thurgo needs a picture of the sword before he can help.", "I should probably ask the Squire about obtaining one"};
-            return stringArray;
+            return new String[]{"Thurgo needs a picture of the sword before he can help.", "I should probably ask the Squire about obtaining one"};
         }
         if (n == 6) {
-            stringArray = new String[]{"Squire told me there might be a picture of the sword", "in the cupboard in Sir Vyvin's room."};
-            return stringArray;
+            return new String[]{"Squire told me there might be a picture of the sword", "in the cupboard in Sir Vyvin's room."};
         }
         if (n == 7) {
-            stringArray = new String[]{"I found a picture of the sword. I should now take", "the picture to Thurgo."};
-            return stringArray;
+            return new String[]{"I found a picture of the sword. I should now take", "the picture to Thurgo."};
         }
         if (n == 8) {
-            stringArray = new String[]{"According to Thurgo to make a replica sword he will need", "two Iron Bars and some Blurite Ore. Blurite Ore can only be", "found deep in the caves below Thurgo's house"};
-            return stringArray;
+            return new String[]{"According to Thurgo to make a replica sword he will need", "two Iron Bars and some Blurite Ore. Blurite Ore can only be", "found deep in the caves below Thurgo's house"};
         }
         if (n == 9) {
-            stringArray = new String[]{"I should now bring the sword back to the squire."};
-            return stringArray;
+            return new String[]{"I should now bring the sword back to the squire."};
         }
         if (n == 1) {
-            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "1 Quest Point", "12,725 Smithing XP"};
-            return stringArray;
+            return new String[]{"Quest Completed!", "", "You were awarded:", "1 Quest Point", "12,725 Smithing XP"};
         }
         return null;
     }
@@ -244,7 +234,7 @@ extends QuestScript {
                     if (n3 == 1) {
                         player.getDialogueManager().showPlayerOneLineDialogue("Ok, I'll give it a go.", 591);
                         player.getDialogueManager().setNextDialogueStep(19);
-                        this.d(player);
+                        this.startQuest(player);
                         return true;
                     }
                     player.getDialogueManager().finishDialogue();

@@ -7,13 +7,13 @@ import com.rs2.LanDiscoveryService;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 
-final class LanDiscoveryListener
+public final class LanDiscoveryListener
 extends Thread {
     private final /* synthetic */ DatagramPacket packet;
 
-    LanDiscoveryListener(String string, DatagramPacket datagramPacket) {
-        this.packet = datagramPacket;
+    public LanDiscoveryListener(String string, DatagramPacket datagramPacket) {
         super(string);
+        this.packet = datagramPacket;
     }
 
     @Override
@@ -21,28 +21,28 @@ extends Thread {
         try {
             while (LanDiscoveryService.running) {
                 LanDiscoveryService.getSocket().receive(this.packet);
-                Object object = new String(this.packet.getData()).trim();
-                if (!((String)object).equals(LanDiscoveryService.requestMessage)) continue;
-                object = LanDiscoveryService.responseMessage.getBytes();
-                object = new DatagramPacket((byte[])object, ((Object)object).length, this.packet.getAddress(), this.packet.getPort());
-                LanDiscoveryService.getSocket().send((DatagramPacket)object);
-                object = LanDiscoveryService.d.getBytes();
-                byte[] byArray = LanDiscoveryService.c.getBytes();
-                String string = InetAddress.getLocalHost().getHostName();
-                if (((Object)object).length > byArray.length) {
-                    string = "invalid";
+                String request = new String(this.packet.getData()).trim();
+                if (!request.equals(LanDiscoveryService.requestMessage)) continue;
+                byte[] responseBytes = LanDiscoveryService.responseMessage.getBytes();
+                DatagramPacket responsePacket = new DatagramPacket(responseBytes, responseBytes.length, this.packet.getAddress(), this.packet.getPort());
+                LanDiscoveryService.getSocket().send(responsePacket);
+                byte[] reservedBytes = LanDiscoveryService.d.getBytes();
+                byte[] maxBytes = LanDiscoveryService.c.getBytes();
+                String hostName = InetAddress.getLocalHost().getHostName();
+                if (reservedBytes.length > maxBytes.length) {
+                    hostName = "invalid";
                 }
-                object = string.getBytes();
-                object = new DatagramPacket((byte[])object, ((Object)object).length, this.packet.getAddress(), this.packet.getPort());
-                LanDiscoveryService.getSocket().send((DatagramPacket)object);
+                byte[] hostBytes = hostName.getBytes();
+                DatagramPacket hostPacket = new DatagramPacket(hostBytes, hostBytes.length, this.packet.getAddress(), this.packet.getPort());
+                LanDiscoveryService.getSocket().send(hostPacket);
             }
             return;
         }
         catch (Exception exception) {
-            Exception exception2 = exception;
             exception.printStackTrace();
             return;
         }
     }
+
 }
 

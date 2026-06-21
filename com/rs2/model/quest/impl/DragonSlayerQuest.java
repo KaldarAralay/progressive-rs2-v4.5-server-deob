@@ -32,34 +32,27 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
-            stringArray = new String[]{"I can start this quest by speaking to the Guild master in", "the Champions' Guild, south-west of Varrock.", "I will need to be able to defeat a level 83 dragon.", String.valueOf(stringArray.getQuestPoints() >= 32 ? "@str@" : "") + "To enter the Champions' Guild I need 32 Quest Points."};
-            return stringArray;
+            return new String[]{"I can start this quest by speaking to the Guild master in", "the Champions' Guild, south-west of Varrock.", "I will need to be able to defeat a level 83 dragon.", String.valueOf(player.getQuestPoints() >= 32 ? "@str@" : "") + "To enter the Champions' Guild I need 32 Quest Points."};
         }
         if (n == 2) {
-            stringArray = new String[]{"The Guildmaster told me to go speak with Oziach, who", "can be found by the cliffs west of Edgeville."};
-            return stringArray;
+            return new String[]{"The Guildmaster told me to go speak with Oziach, who", "can be found by the cliffs west of Edgeville."};
         }
         if (n == 3) {
-            stringArray = new String[]{"Oziach told me to slay the dragon of Crandor. I should", "go and ask some tips from the Guildmaster."};
-            return stringArray;
+            return new String[]{"Oziach told me to slay the dragon of Crandor. I should", "go and ask some tips from the Guildmaster."};
         }
         if (n >= 4 && n < 260) {
-            stringArray = new String[]{"I should now find the following things:", "- Map to Crandor", "- Ship and Captain", "- Way to protect from dragonbreath"};
-            return stringArray;
+            return new String[]{"I should now find the following things:", "- Map to Crandor", "- Ship and Captain", "- Way to protect from dragonbreath"};
         }
         if (n == 260) {
-            stringArray = new String[]{"I should go back to the ship, when I'm ready to go", "to Crandor to defeat the dragon."};
-            return stringArray;
+            return new String[]{"I should go back to the ship, when I'm ready to go", "to Crandor to defeat the dragon."};
         }
         if (n == 261) {
-            stringArray = new String[]{"I should now find and kill the dragon."};
-            return stringArray;
+            return new String[]{"I should now find and kill the dragon."};
         }
         if (n == 1) {
-            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "2 Quest Points", "Ability to wear rune platebody", "18,650 Strength XP", "18,650 Defence XP"};
-            return stringArray;
+            return new String[]{"Quest Completed!", "", "You were awarded:", "2 Quest Points", "Ability to wear rune platebody", "18,650 Strength XP", "18,650 Defence XP"};
         }
         return null;
     }
@@ -536,8 +529,8 @@ extends QuestScript {
                 entity.getUpdateState().setForcedText("Ow!");
                 Entity entity2 = object;
                 ((Player)entity2).packetSender.sendGameMessage("Wormbrain drops a map piece on the floor.");
-                object = new GroundItem(new ItemStack(1536, 1), (Entity)object, entity.getPosition());
-                GroundItemManager.getInstance().spawn((GroundItem)object);
+                GroundItem groundItem = new GroundItem(new ItemStack(1536, 1), (Entity)object, entity.getPosition());
+                GroundItemManager.getInstance().spawn(groundItem);
                 return true;
             }
         }
@@ -631,7 +624,7 @@ extends QuestScript {
             }
             if (n2 == 8) {
                 player.getDialogueManager().showNpcTwoLineDialogue("Oziach lives in a hut, by the cliffs to the west of", "Edgeville. He can be a little...odd...sometimes, though.", 591);
-                this.d(player);
+                this.startQuest(player);
                 player.getDialogueManager().finishDialogue();
                 return true;
             }

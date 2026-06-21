@@ -10,14 +10,14 @@ import com.rs2.model.task.CycleEventContainer;
 import com.rs2.model.travel.canoe.CanoeTravelManager;
 import com.rs2.model.travel.canoe.CanoeTreeDefinition;
 
-final class CanoeTreeCutTask
+public final class CanoeTreeCutTask
 extends CycleEvent {
     private final /* synthetic */ Player player;
     private final /* synthetic */ int actionSequence;
     private final /* synthetic */ CanoeTreeDefinition treeDefinition;
     private final /* synthetic */ GatheringToolDefinition gatheringTool;
 
-    CanoeTreeCutTask(Player player, int n, CanoeTreeDefinition canoeTreeDefinition, GatheringToolDefinition gatheringToolDefinition) {
+    public CanoeTreeCutTask(Player player, int n, CanoeTreeDefinition canoeTreeDefinition, GatheringToolDefinition gatheringToolDefinition) {
         this.player = player;
         this.actionSequence = n;
         this.treeDefinition = canoeTreeDefinition;

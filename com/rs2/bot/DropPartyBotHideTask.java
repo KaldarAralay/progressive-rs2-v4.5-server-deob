@@ -7,13 +7,13 @@ import com.rs2.bot.BotPlayer;
 import com.rs2.model.Position;
 import com.rs2.model.task.TickTask;
 
-final class DropPartyBotHideTask
+public final class DropPartyBotHideTask
 extends TickTask {
     private final /* synthetic */ BotPlayer botToHide;
 
-    DropPartyBotHideTask(BotPlayer botPlayer, int n, BotPlayer botPlayer2) {
-        this.botToHide = botPlayer2;
+    public DropPartyBotHideTask(BotPlayer botPlayer, int n, BotPlayer botPlayer2) {
         super(2);
+        this.botToHide = botPlayer2;
     }
 
     @Override

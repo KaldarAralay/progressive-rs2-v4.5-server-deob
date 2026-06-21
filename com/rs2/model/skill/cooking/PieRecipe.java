@@ -62,21 +62,19 @@ public enum PieRecipe {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private PieRecipe(int n3, int n4, int n5, int n6, int n7, int n8, double d, boolean bl, int n22, int n9, int n10) {
-        void var15_12;
-        void var10_8;
-        this.firstIngredientItemId = n3;
-        this.secondIngredientItemId = n4;
-        this.thirdIngredientItemId = n5;
+    private PieRecipe(int n2, int n3, int n4, int n5, int n6, int n7, int n8, int n9, double d, boolean bl, int n10, int n11, int n12) {
+        this.firstIngredientItemId = n2;
+        this.secondIngredientItemId = n3;
+        this.thirdIngredientItemId = n4;
         this.pieShellItemId = 2315;
-        this.firstStagePieItemId = n7;
-        this.secondStagePieItemId = n8;
-        this.rawPieItemId = (int)d;
-        this.requiredLevel = var10_8;
-        this.experience = (double)bl;
+        this.firstStagePieItemId = n6;
+        this.secondStagePieItemId = n7;
+        this.rawPieItemId = n8;
+        this.requiredLevel = n9;
+        this.experience = d;
         this.putIntoMessage = true;
         this.firstStageReturnedItemId = n10;
-        this.secondStageReturnedItemId = var15_12;
+        this.secondStageReturnedItemId = n11;
         this.thirdStageReturnedItemId = 0;
     }
 

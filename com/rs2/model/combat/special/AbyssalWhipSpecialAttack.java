@@ -13,9 +13,9 @@ import com.rs2.model.combat.special.AbyssalWhipSpecialDefinition;
 import com.rs2.model.player.Player;
 import com.rs2.util.GameUtil;
 
-final class AbyssalWhipSpecialAttack
+public final class AbyssalWhipSpecialAttack
 extends WeaponCombatAttack {
-    AbyssalWhipSpecialAttack(AbyssalWhipSpecialDefinition abyssalWhipSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile) {
+    public AbyssalWhipSpecialAttack(AbyssalWhipSpecialDefinition abyssalWhipSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile) {
         super(player, entity, weaponProfile);
     }
 

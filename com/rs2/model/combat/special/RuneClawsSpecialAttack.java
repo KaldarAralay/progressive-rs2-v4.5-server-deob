@@ -12,9 +12,9 @@ import com.rs2.model.combat.hit.HitType;
 import com.rs2.model.combat.special.RuneClawsSpecialDefinition;
 import com.rs2.model.player.Player;
 
-final class RuneClawsSpecialAttack
+public final class RuneClawsSpecialAttack
 extends WeaponCombatAttack {
-    RuneClawsSpecialAttack(RuneClawsSpecialDefinition runeClawsSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile) {
+    public RuneClawsSpecialAttack(RuneClawsSpecialDefinition runeClawsSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile) {
         super(player, entity, weaponProfile);
     }
 

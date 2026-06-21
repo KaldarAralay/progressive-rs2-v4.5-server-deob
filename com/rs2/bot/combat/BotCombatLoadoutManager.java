@@ -110,11 +110,11 @@ public final class BotCombatLoadoutManager {
                 BotCombatLoadoutManager.prepareMagicLoadout(player2);
             } else if (player2.botCombatStyle == 1) {
                 BotCombatLoadoutManager.prepareRangedLoadout(player2);
-                int n4 = player2.getSkillManager().getCurrentLevels()[4] >= 40 ? 1731 : (n = GameUtil.randomInt(3) == 0 ? 1478 : 1729);
+                int n4 = player2.getSkillManager().getCurrentLevels()[4] >= 40 ? 1731 : (GameUtil.randomInt(3) == 0 ? 1478 : 1729);
                 if (!BotCombatHelper.isFreeToPlayWorld() && player2.getCombatLevel() >= 60 && GameUtil.randomInt(2) == 0) {
-                    n = 1712;
+                    n4 = 1712;
                 }
-                player2.getEquipmentManager().getContainer().setItem(2, new ItemStack(n));
+                player2.getEquipmentManager().getContainer().setItem(2, new ItemStack(n4));
             }
             BotCombatLoadoutManager.equipRandomCape(player2);
             BotCombatLoadoutManager.addCombatSupplies(player2);
@@ -316,29 +316,29 @@ public final class BotCombatLoadoutManager {
             ++n2;
         }
         if (player2.botPrimaryCombatStyle == BotPvpCombatHandler.MAGIC_COMBAT_STYLE) {
-            object2 = player2;
+            Player magicPlayer = player2;
             ArrayList<SpellDefinition> arrayList = new ArrayList<SpellDefinition>();
-            object = BotCombatLoadoutTables.standardCombatSpellProgression;
+            SpellDefinition[] spellDefinitions = BotCombatLoadoutTables.standardCombatSpellProgression;
             int n3 = 0;
             while (n3 < 12) {
-                SpellDefinition spellDefinition = object[n3];
+                SpellDefinition spellDefinition = spellDefinitions[n3];
                 arrayList.add(spellDefinition);
                 ++n3;
             }
             if (!ServerSettings.freeToPlayWorld) {
-                object = BotCombatLoadoutTables.standardWaveSpellProgression;
+                spellDefinitions = BotCombatLoadoutTables.standardWaveSpellProgression;
                 n3 = 0;
                 while (n3 < 4) {
-                    SpellDefinition spellDefinition = object[n3];
+                    SpellDefinition spellDefinition = spellDefinitions[n3];
                     arrayList.add(spellDefinition);
                     ++n3;
                 }
-                if (((Player)object2).botWeaponItemId == 4675) {
-                    arrayList = new ArrayList();
-                    object = BotCombatLoadoutTables.ancientCombatSpellProgression;
+                if (magicPlayer.botWeaponItemId == 4675) {
+                    arrayList = new ArrayList<SpellDefinition>();
+                    spellDefinitions = BotCombatLoadoutTables.ancientCombatSpellProgression;
                     n3 = 0;
                     while (n3 < 16) {
-                        SpellDefinition spellDefinition = object[n3];
+                        SpellDefinition spellDefinition = spellDefinitions[n3];
                         arrayList.add(spellDefinition);
                         ++n3;
                     }
@@ -347,15 +347,15 @@ public final class BotCombatLoadoutManager {
             int n4 = -1;
             n3 = 0;
             while (n3 < arrayList.size()) {
-                object = (SpellDefinition)((Object)arrayList.get(n3));
-                if (object.getRequiredLevel() > ((Player)object2).getSkillManager().getCurrentLevels()[6]) break;
-                if (((Player)object2).getSkillManager().getCurrentLevels()[6] >= object.getRequiredLevel() && BotCombatHelper.hasRunesForSpell((Player)object2, (SpellDefinition)((Object)object))) {
+                SpellDefinition spellDefinition = arrayList.get(n3);
+                if (spellDefinition.getRequiredLevel() > magicPlayer.getSkillManager().getCurrentLevels()[6]) break;
+                if (magicPlayer.getSkillManager().getCurrentLevels()[6] >= spellDefinition.getRequiredLevel() && BotCombatHelper.hasRunesForSpell(magicPlayer, spellDefinition)) {
                     n4 = n3;
                 }
                 ++n3;
             }
             if (n4 != -1) {
-                ((Player)object2).setAutocastSpell((SpellDefinition)((Object)arrayList.get(n4)));
+                magicPlayer.setAutocastSpell(arrayList.get(n4));
             }
             if (!ServerSettings.freeToPlayWorld) {
                 if (SpellDefinition.ENTANGLE.getRequiredLevel() <= player2.getSkillManager().getCurrentLevels()[6] && BotCombatHelper.hasRunesForSpell(player2, SpellDefinition.ENTANGLE)) {
@@ -374,8 +374,7 @@ public final class BotCombatLoadoutManager {
             }
         }
         player2 = player;
-        object2 = new BotGroupCombatTickTask(1, player2);
-        World.getTaskScheduler().schedule((TickTask)object2);
+        World.getTaskScheduler().schedule(new BotGroupCombatTickTask(1, player2));
     }
 
     public static void selectCombatStyleFromStats(Player player, boolean n) {
@@ -391,22 +390,22 @@ public final class BotCombatLoadoutManager {
             return;
         }
         if (n4 == n2 && n3 == n2) {
-            n = GameUtil.randomInt(3);
-            if (n == 0) {
+            int n5 = GameUtil.randomInt(3);
+            if (n5 == 0) {
                 player.botCombatStyle = 1;
                 return;
             }
-            if (n == 1) {
+            if (n5 == 1) {
                 player.botCombatStyle = 2;
                 return;
             }
-            if (n == 2) {
+            if (n5 == 2) {
                 player.botCombatStyle = 0;
                 return;
             }
         } else {
             player.botCombatStyle = 0;
-            if (n == 0 && GameUtil.randomInt(5) == 0 && player.getSkillManager().getCurrentLevels()[0] >= 40 && player.getSkillManager().getCurrentLevels()[1] >= 40 && n4 >= 40) {
+            if (!n && GameUtil.randomInt(5) == 0 && player.getSkillManager().getCurrentLevels()[0] >= 40 && player.getSkillManager().getCurrentLevels()[1] >= 40 && n4 >= 40) {
                 player.botCombatStyle = 7;
             }
         }
@@ -494,10 +493,6 @@ public final class BotCombatLoadoutManager {
         BotCombatLoadoutManager.prepareMeleeLoadout(player, false);
     }
 
-    /*
-     * WARNING - void declaration
-     * Enabled aggressive block sorting
-     */
     public static void prepareMeleeLoadout(Player player, boolean bl) {
         int n;
         int n2;
@@ -553,69 +548,46 @@ public final class BotCombatLoadoutManager {
                 n2 = 1540;
             }
             if (n6 != 2 && n6 != 4 && n6 != 5) break block40;
-            boolean bl3 = false;
-            int n9 = GameUtil.randomInt(3);
+            int n9 = 0;
+            int n10 = GameUtil.randomInt(3);
             if (n6 == 4) {
-                boolean bl4 = true;
+                n9 = 1;
             } else if (n6 == 5) {
-                int n10 = 2;
+                n9 = 2;
             }
             int n11 = 0;
             while (n11 < 4) {
-                block43: {
-                    int n12;
-                    block45: {
-                        void var1_5;
-                        block47: {
-                            block46: {
-                                block41: {
-                                    block44: {
-                                        block42: {
-                                            n12 = n6 == 5 ? 1500 : 1000;
-                                            if ((n12 = GameUtil.randomInt(n12)) != 0) break block41;
-                                            if (n11 != 0) break block42;
-                                            n5 = BotCombatLoadoutTables.trimmedFullHelmetIds[var1_5];
-                                            break block43;
-                                        }
-                                        if (n11 != 1) break block44;
-                                        n4 = BotCombatLoadoutTables.trimmedPlatebodyIds[var1_5];
-                                        break block43;
-                                    }
-                                    if (n11 == 2) {
-                                        n3 = GameUtil.randomInt(2) == 0 ? BotCombatLoadoutTables.trimmedPlateskirtIds[var1_5] : BotCombatLoadoutTables.trimmedPlatelegIds[var1_5];
-                                        break block43;
-                                    } else if (n11 == 3) {
-                                        n2 = BotCombatLoadoutTables.trimmedKiteshieldIds[var1_5];
-                                    }
-                                    break block43;
-                                }
-                                if (n12 != 1) break block45;
-                                if (n11 != 0) break block46;
-                                n5 = BotCombatLoadoutTables.goldTrimmedFullHelmetIds[var1_5];
-                                break block43;
-                            }
-                            if (n11 != 1) break block47;
-                            n4 = BotCombatLoadoutTables.goldTrimmedPlatebodyIds[var1_5];
-                            break block43;
-                        }
-                        if (n11 == 2) {
-                            n3 = GameUtil.randomInt(2) == 0 ? BotCombatLoadoutTables.goldTrimmedPlateskirtIds[var1_5] : BotCombatLoadoutTables.goldTrimmedPlatelegIds[var1_5];
-                            break block43;
-                        } else if (n11 == 3) {
-                            n2 = BotCombatLoadoutTables.goldTrimmedKiteshieldIds[var1_5];
-                        }
-                        break block43;
+                int n12 = n6 == 5 ? 1500 : 1000;
+                n12 = GameUtil.randomInt(n12);
+                if (n12 == 0) {
+                    if (n11 == 0) {
+                        n5 = BotCombatLoadoutTables.trimmedFullHelmetIds[n9];
+                    } else if (n11 == 1) {
+                        n4 = BotCombatLoadoutTables.trimmedPlatebodyIds[n9];
+                    } else if (n11 == 2) {
+                        n3 = GameUtil.randomInt(2) == 0 ? BotCombatLoadoutTables.trimmedPlateskirtIds[n9] : BotCombatLoadoutTables.trimmedPlatelegIds[n9];
+                    } else if (n11 == 3) {
+                        n2 = BotCombatLoadoutTables.trimmedKiteshieldIds[n9];
                     }
-                    if (n12 == 3 && n6 == 5) {
-                        if (n11 == 0) {
-                            n5 = BotCombatLoadoutTables.godFullHelmetIds[n9];
-                        } else if (n11 == 1) {
-                            n4 = BotCombatLoadoutTables.godPlatebodyIds[n9];
-                        } else if (n11 == 2) {
-                            n3 = GameUtil.randomInt(2) == 0 ? BotCombatLoadoutTables.godPlateskirtIds[n9] : BotCombatLoadoutTables.godPlatelegIds[n9];
-                        } else if (n11 == 3) {
-                            n2 = BotCombatLoadoutTables.godKiteshieldIds[n9];
-                        }
+                } else if (n12 == 1) {
+                    if (n11 == 0) {
+                        n5 = BotCombatLoadoutTables.goldTrimmedFullHelmetIds[n9];
+                    } else if (n11 == 1) {
+                        n4 = BotCombatLoadoutTables.goldTrimmedPlatebodyIds[n9];
+                    } else if (n11 == 2) {
+                        n3 = GameUtil.randomInt(2) == 0 ? BotCombatLoadoutTables.goldTrimmedPlateskirtIds[n9] : BotCombatLoadoutTables.goldTrimmedPlatelegIds[n9];
+                    } else if (n11 == 3) {
+                        n2 = BotCombatLoadoutTables.goldTrimmedKiteshieldIds[n9];
+                    }
+                } else if (n12 == 3 && n6 == 5) {
+                    if (n11 == 0) {
+                        n5 = BotCombatLoadoutTables.godFullHelmetIds[n10];
+                    } else if (n11 == 1) {
+                        n4 = BotCombatLoadoutTables.godPlatebodyIds[n10];
+                    } else if (n11 == 2) {
+                        n3 = GameUtil.randomInt(2) == 0 ? BotCombatLoadoutTables.godPlateskirtIds[n10] : BotCombatLoadoutTables.godPlatelegIds[n10];
+                    } else if (n11 == 3) {
+                        n2 = BotCombatLoadoutTables.godKiteshieldIds[n10];
                     }
                 }
                 ++n11;
@@ -629,11 +601,11 @@ public final class BotCombatLoadoutManager {
             player.getEquipmentManager().getContainer().setItem(5, new ItemStack(player.botShieldItemId));
         }
         if (player.getCombatLevel() <= 15) {
-            int n13 = 1478;
+            n = 1478;
         } else if (player.getCombatLevel() <= 40 && player.getCombatLevel() > 15) {
-            int n14 = GameUtil.randomInt(2) == 0 ? 1725 : 1729;
+            n = GameUtil.randomInt(2) == 0 ? 1725 : 1729;
         } else {
-            int n15 = 1731;
+            n = 1731;
         }
         if (!BotCombatHelper.isFreeToPlayWorld() && player.getCombatLevel() >= 60 && GameUtil.randomInt(2) == 0) {
             n = 1712;
@@ -690,164 +662,165 @@ public final class BotCombatLoadoutManager {
         }
     }
 
-    /*
-     * Unable to fully structure code
-     */
-    public static void prepareMagicLoadout(Player var0) {
-        var1_1 = new int[]{579, 1017};
-        var2_3 = new int[]{577, 546};
-        var3_5 = new int[]{1011, 548};
-        var4_7 = 2;
-        if (!BotCombatHelper.isFreeToPlayWorld()) {
-            var4_7 = 3;
-        }
-        if ((var5_10 = GameUtil.randomInt(var4_7)) != 2) ** GOTO lbl22
-        var6_11 = BotCombatHelper.filterEquippableMemberLoadoutItems(var0, null, BotCombatLoadoutTables.coloredMageHeadIds);
-        var4_8 = BotCombatHelper.filterEquippableMemberLoadoutItems(var0, null, BotCombatLoadoutTables.coloredMageBodyIds);
-        var7_13 = BotCombatHelper.filterEquippableMemberLoadoutItems(var0, null, BotCombatLoadoutTables.coloredMageLegIds);
-        var8_15 = BotCombatHelper.filterEquippableMemberLoadoutItems(var0, null, BotCombatLoadoutTables.coloredMageBootIds);
-        var9_17 = BotCombatHelper.filterEquippableMemberLoadoutItems(var0, null, BotCombatLoadoutTables.coloredMageGloveIds);
-        if (var9_17.length > 0) {
-            var5_10 = GameUtil.randomInt(var9_17.length);
-            var1_2 = var6_11[var5_10];
-            var2_4 = var4_8[var5_10];
-            var3_6 = var7_13[var5_10];
-            var4_9 = var8_15[var5_10];
-            var5_10 = var9_17[var5_10];
-        } else {
-            var5_10 = GameUtil.randomInt(2);
-lbl22:
-            // 2 sources
-
-            var1_2 = var1_1[var5_10];
-            var2_4 = var2_3[var5_10];
-            var3_6 = var3_5[var5_10];
-            var4_9 = 1061;
-            var5_10 = 1059;
-        }
-        var7_14 = var0.tradeAdvertMode != -1 || var0.dropPartyLeader != false || var0.dropPartyFollower != false;
-        var6_11 = var0;
-        var8_16 = 1381;
-        var9_18 = false;
-        var10_19 = new ArrayList<SpellDefinition>();
-        var13_20 = BotCombatLoadoutTables.standardCombatSpellProgression;
-        var12_21 = 0;
-        while (var12_21 < 12) {
-            var11_22 = var13_20[var12_21];
-            var10_19.add(var11_22);
-            ++var12_21;
-        }
-        if (!BotCombatHelper.isFreeToPlayWorld()) {
-            var13_20 = BotCombatLoadoutTables.standardWaveSpellProgression;
-            var12_21 = 0;
-            while (var12_21 < 4) {
-                var11_22 = var13_20[var12_21];
-                var10_19.add(var11_22);
-                ++var12_21;
+    public static void prepareMagicLoadout(Player player) {
+        int[] basicHeadIds = new int[]{579, 1017};
+        int[] basicBodyIds = new int[]{577, 546};
+        int[] basicLegIds = new int[]{1011, 548};
+        int styleRollLimit = BotCombatHelper.isFreeToPlayWorld() ? 2 : 3;
+        int styleRoll = GameUtil.randomInt(styleRollLimit);
+        int headId;
+        int bodyId;
+        int legId;
+        int bootsId;
+        int glovesId;
+        if (styleRoll == 2) {
+            int[] coloredHeadIds = BotCombatHelper.filterEquippableMemberLoadoutItems(player, null, BotCombatLoadoutTables.coloredMageHeadIds);
+            int[] coloredBodyIds = BotCombatHelper.filterEquippableMemberLoadoutItems(player, null, BotCombatLoadoutTables.coloredMageBodyIds);
+            int[] coloredLegIds = BotCombatHelper.filterEquippableMemberLoadoutItems(player, null, BotCombatLoadoutTables.coloredMageLegIds);
+            int[] coloredBootIds = BotCombatHelper.filterEquippableMemberLoadoutItems(player, null, BotCombatLoadoutTables.coloredMageBootIds);
+            int[] coloredGloveIds = BotCombatHelper.filterEquippableMemberLoadoutItems(player, null, BotCombatLoadoutTables.coloredMageGloveIds);
+            if (coloredGloveIds.length > 0) {
+                int colorIndex = GameUtil.randomInt(coloredGloveIds.length);
+                headId = coloredHeadIds[colorIndex];
+                bodyId = coloredBodyIds[colorIndex];
+                legId = coloredLegIds[colorIndex];
+                bootsId = coloredBootIds[colorIndex];
+                glovesId = coloredGloveIds[colorIndex];
+            } else {
+                int basicIndex = GameUtil.randomInt(2);
+                headId = basicHeadIds[basicIndex];
+                bodyId = basicBodyIds[basicIndex];
+                legId = basicLegIds[basicIndex];
+                bootsId = 1061;
+                glovesId = 1059;
             }
-            if (var6_11.getSkillManager().getCurrentLevels()[6] >= 50 && ItemDefinition.isDefined(4675) && GameUtil.randomInt(3) == 0) {
-                var9_18 = true;
-                var10_19 = var6_11;
-                var10_19.packetSender.setSidebarInterface(6, 12855);
-                var6_11.setSpellbook(Spellbook.ANCIENT);
-                var10_19 = new ArrayList<SpellDefinition>();
-                var13_20 = BotCombatLoadoutTables.ancientCombatSpellProgression;
-                var12_21 = 0;
-                while (var12_21 < 16) {
-                    var11_22 = var13_20[var12_21];
-                    var10_19.add(var11_22);
-                    ++var12_21;
+        } else {
+            headId = basicHeadIds[styleRoll];
+            bodyId = basicBodyIds[styleRoll];
+            legId = basicLegIds[styleRoll];
+            bootsId = 1061;
+            glovesId = 1059;
+        }
+        boolean skipRuneGrant = player.tradeAdvertMode != -1 || player.dropPartyLeader || player.dropPartyFollower;
+        int weaponId = 1381;
+        boolean ancientSpellbook = false;
+        ArrayList<SpellDefinition> spellProgression = new ArrayList<SpellDefinition>();
+        SpellDefinition[] standardSpells = BotCombatLoadoutTables.standardCombatSpellProgression;
+        int i = 0;
+        while (i < 12) {
+            spellProgression.add(standardSpells[i]);
+            ++i;
+        }
+        if (!BotCombatHelper.isFreeToPlayWorld()) {
+            SpellDefinition[] waveSpells = BotCombatLoadoutTables.standardWaveSpellProgression;
+            i = 0;
+            while (i < 4) {
+                spellProgression.add(waveSpells[i]);
+                ++i;
+            }
+            if (player.getSkillManager().getCurrentLevels()[6] >= 50 && ItemDefinition.isDefined(4675) && GameUtil.randomInt(3) == 0) {
+                ancientSpellbook = true;
+                player.packetSender.setSidebarInterface(6, 12855);
+                player.setSpellbook(Spellbook.ANCIENT);
+                spellProgression = new ArrayList<SpellDefinition>();
+                SpellDefinition[] ancientSpells = BotCombatLoadoutTables.ancientCombatSpellProgression;
+                i = 0;
+                while (i < 16) {
+                    spellProgression.add(ancientSpells[i]);
+                    ++i;
                 }
             }
         }
-        var11_23 = 0;
-        var12_21 = 0;
-        while (var12_21 < var10_19.size()) {
-            var11_24 = (SpellDefinition)var10_19.get(var12_21);
-            if (var11_24.getRequiredLevel() > var6_11.getSkillManager().getCurrentLevels()[6]) {
-                var11_23 = var12_21 - 1;
+        int selectedSpellIndex = 0;
+        i = 0;
+        while (i < spellProgression.size()) {
+            SpellDefinition candidateSpell = spellProgression.get(i);
+            if (candidateSpell.getRequiredLevel() > player.getSkillManager().getCurrentLevels()[6]) {
+                selectedSpellIndex = i - 1;
                 break;
             }
-            var11_23 = var12_21++;
+            selectedSpellIndex = i;
+            ++i;
         }
-        if (var9_18) {
-            var8_16 = 4675;
-        } else if (var10_19.get(var11_23) == SpellDefinition.WIND_STRIKE || var10_19.get(var11_23) == SpellDefinition.WIND_BOLT || var10_19.get(var11_23) == SpellDefinition.WIND_BLAST || var10_19.get(var11_23) == SpellDefinition.WIND_WAVE) {
-            var8_16 = 1381;
-        } else if (var10_19.get(var11_23) == SpellDefinition.WATER_STRIKE || var10_19.get(var11_23) == SpellDefinition.WATER_BOLT || var10_19.get(var11_23) == SpellDefinition.WATER_BLAST || var10_19.get(var11_23) == SpellDefinition.WATER_WAVE) {
-            var8_16 = 1383;
-        } else if (var10_19.get(var11_23) == SpellDefinition.EARTH_STRIKE || var10_19.get(var11_23) == SpellDefinition.EARTH_BOLT || var10_19.get(var11_23) == SpellDefinition.EARTH_BLAST || var10_19.get(var11_23) == SpellDefinition.EARTH_WAVE) {
-            var8_16 = 1385;
-        } else if (var10_19.get(var11_23) == SpellDefinition.FIRE_STRIKE || var10_19.get(var11_23) == SpellDefinition.FIRE_BOLT || var10_19.get(var11_23) == SpellDefinition.FIRE_BLAST || var10_19.get(var11_23) == SpellDefinition.FIRE_WAVE) {
-            var8_16 = 1387;
+        SpellDefinition selectedSpell = spellProgression.get(selectedSpellIndex);
+        if (ancientSpellbook) {
+            weaponId = 4675;
+        } else if (selectedSpell == SpellDefinition.WIND_STRIKE || selectedSpell == SpellDefinition.WIND_BOLT || selectedSpell == SpellDefinition.WIND_BLAST || selectedSpell == SpellDefinition.WIND_WAVE) {
+            weaponId = 1381;
+        } else if (selectedSpell == SpellDefinition.WATER_STRIKE || selectedSpell == SpellDefinition.WATER_BOLT || selectedSpell == SpellDefinition.WATER_BLAST || selectedSpell == SpellDefinition.WATER_WAVE) {
+            weaponId = 1383;
+        } else if (selectedSpell == SpellDefinition.EARTH_STRIKE || selectedSpell == SpellDefinition.EARTH_BOLT || selectedSpell == SpellDefinition.EARTH_BLAST || selectedSpell == SpellDefinition.EARTH_WAVE) {
+            weaponId = 1385;
+        } else if (selectedSpell == SpellDefinition.FIRE_STRIKE || selectedSpell == SpellDefinition.FIRE_BOLT || selectedSpell == SpellDefinition.FIRE_BLAST || selectedSpell == SpellDefinition.FIRE_WAVE) {
+            weaponId = 1387;
         }
-        var6_11.botWeaponItemId = var8_16;
-        var6_11.getEquipmentManager().getContainer().setItem(3, new ItemStack(var6_11.botWeaponItemId));
-        if (!var7_14) {
-            var12_21 = 30 + GameUtil.randomInt(30);
-            if (var6_11.clanWarsBot) {
-                var12_21 *= ClanWarsBotManager.clanWarsSupplyMultiplier;
+        player.botWeaponItemId = weaponId;
+        player.getEquipmentManager().getContainer().setItem(3, new ItemStack(player.botWeaponItemId));
+        if (!skipRuneGrant) {
+            int runeAmount = 30 + GameUtil.randomInt(30);
+            if (player.clanWarsBot) {
+                runeAmount *= ClanWarsBotManager.clanWarsSupplyMultiplier;
             }
-            if (var6_11.currentBotTask != null) {
-                var12_21 = 1000;
+            if (player.currentBotTask != null) {
+                runeAmount = 1000;
             }
-            BotCombatHelper.grantBotSpellRunes((Player)var6_11, (SpellDefinition)var10_19.get(var11_23), var12_21);
-            if (!var9_18 && var6_11.currentBotTask == null) {
-                if (!BotCombatHelper.isFreeToPlayWorld() && GameUtil.randomInt(3) == 0 && 12445 < InterfaceDefinition.interfaceCount && SpellDefinition.TELE_BLOCK.getRequiredLevel() <= var6_11.getSkillManager().getCurrentLevels()[6]) {
-                    var12_21 = GameUtil.randomInt(11);
-                    BotCombatHelper.grantBotSpellRunes((Player)var6_11, SpellDefinition.TELE_BLOCK, var12_21);
+            BotCombatHelper.grantBotSpellRunes(player, selectedSpell, runeAmount);
+            if (!ancientSpellbook && player.currentBotTask == null) {
+                if (!BotCombatHelper.isFreeToPlayWorld() && GameUtil.randomInt(3) == 0 && 12445 < InterfaceDefinition.interfaceCount && SpellDefinition.TELE_BLOCK.getRequiredLevel() <= player.getSkillManager().getCurrentLevels()[6]) {
+                    runeAmount = GameUtil.randomInt(11);
+                    BotCombatHelper.grantBotSpellRunes(player, SpellDefinition.TELE_BLOCK, runeAmount);
                 }
                 if (GameUtil.randomInt(3) == 0) {
-                    var12_21 = GameUtil.randomInt(11);
+                    runeAmount = GameUtil.randomInt(11);
                     if (!BotCombatHelper.isFreeToPlayWorld()) {
-                        if (SpellDefinition.ENTANGLE.getRequiredLevel() <= var6_11.getSkillManager().getCurrentLevels()[6]) {
-                            BotCombatHelper.grantBotSpellRunes((Player)var6_11, SpellDefinition.ENTANGLE, var12_21);
-                            var6_11.botCombatSpell = SpellDefinition.ENTANGLE;
-                        } else if (SpellDefinition.SNARE.getRequiredLevel() <= var6_11.getSkillManager().getCurrentLevels()[6]) {
-                            BotCombatHelper.grantBotSpellRunes((Player)var6_11, SpellDefinition.SNARE, var12_21);
-                            var6_11.botCombatSpell = SpellDefinition.SNARE;
-                        } else if (SpellDefinition.BIND.getRequiredLevel() <= var6_11.getSkillManager().getCurrentLevels()[6]) {
-                            BotCombatHelper.grantBotSpellRunes((Player)var6_11, SpellDefinition.BIND, var12_21);
-                            var6_11.botCombatSpell = SpellDefinition.BIND;
+                        if (SpellDefinition.ENTANGLE.getRequiredLevel() <= player.getSkillManager().getCurrentLevels()[6]) {
+                            BotCombatHelper.grantBotSpellRunes(player, SpellDefinition.ENTANGLE, runeAmount);
+                            player.botCombatSpell = SpellDefinition.ENTANGLE;
+                        } else if (SpellDefinition.SNARE.getRequiredLevel() <= player.getSkillManager().getCurrentLevels()[6]) {
+                            BotCombatHelper.grantBotSpellRunes(player, SpellDefinition.SNARE, runeAmount);
+                            player.botCombatSpell = SpellDefinition.SNARE;
+                        } else if (SpellDefinition.BIND.getRequiredLevel() <= player.getSkillManager().getCurrentLevels()[6]) {
+                            BotCombatHelper.grantBotSpellRunes(player, SpellDefinition.BIND, runeAmount);
+                            player.botCombatSpell = SpellDefinition.BIND;
                         }
-                    } else if (SpellDefinition.BIND.getRequiredLevel() <= var6_11.getSkillManager().getCurrentLevels()[6]) {
-                        BotCombatHelper.grantBotSpellRunes((Player)var6_11, SpellDefinition.BIND, var12_21);
-                        var6_11.botCombatSpell = SpellDefinition.BIND;
+                    } else if (SpellDefinition.BIND.getRequiredLevel() <= player.getSkillManager().getCurrentLevels()[6]) {
+                        BotCombatHelper.grantBotSpellRunes(player, SpellDefinition.BIND, runeAmount);
+                        player.botCombatSpell = SpellDefinition.BIND;
                     }
                 }
             }
-            var6_11.setAutocastSpell((SpellDefinition)var10_19.get(var11_23));
+            player.setAutocastSpell(selectedSpell);
         }
-        if (!BotCombatHelper.isFreeToPlayWorld() && var0.getSkillManager().getCurrentLevels()[6] >= 20 && var0.getSkillManager().getCurrentLevels()[1] >= 20 && ItemDefinition.isDefined(3755)) {
-            if (var0.getSkillManager().getCurrentLevels()[1] >= 45) {
-                var1_2 = 3755;
+        if (!BotCombatHelper.isFreeToPlayWorld() && player.getSkillManager().getCurrentLevels()[6] >= 20 && player.getSkillManager().getCurrentLevels()[1] >= 20 && ItemDefinition.isDefined(3755)) {
+            if (player.getSkillManager().getCurrentLevels()[1] >= 45) {
+                headId = 3755;
             }
             if (ItemDefinition.isDefined(4097)) {
-                var1_2 = BotCombatHelper.selectBestBotLoadoutItemId(var0, null, BotCombatLoadoutTables.mageHeadIds);
-                var2_4 = BotCombatHelper.selectBestBotLoadoutItemId(var0, null, BotCombatLoadoutTables.mageBodyIds);
-                var3_6 = BotCombatHelper.selectBestBotLoadoutItemId(var0, null, BotCombatLoadoutTables.mageLegIds);
-                var4_9 = BotCombatHelper.selectBestBotLoadoutItemId(var0, null, BotCombatLoadoutTables.mageGloveIds);
-                var5_10 = BotCombatHelper.selectBestBotLoadoutItemId(var0, null, BotCombatLoadoutTables.mageBootIds);
+                headId = BotCombatHelper.selectBestBotLoadoutItemId(player, null, BotCombatLoadoutTables.mageHeadIds);
+                bodyId = BotCombatHelper.selectBestBotLoadoutItemId(player, null, BotCombatLoadoutTables.mageBodyIds);
+                legId = BotCombatHelper.selectBestBotLoadoutItemId(player, null, BotCombatLoadoutTables.mageLegIds);
+                glovesId = BotCombatHelper.selectBestBotLoadoutItemId(player, null, BotCombatLoadoutTables.mageGloveIds);
+                bootsId = BotCombatHelper.selectBestBotLoadoutItemId(player, null, BotCombatLoadoutTables.mageBootIds);
             }
         }
-        var0.getEquipmentManager().getContainer().setItem(0, new ItemStack(var1_2));
-        var0.getEquipmentManager().getContainer().setItem(4, new ItemStack(var2_4));
-        var0.getEquipmentManager().getContainer().setItem(7, new ItemStack(var3_6));
-        var6_12 = 1727;
-        var0.botShieldItemId = 1540;
-        if (var0.botCombatStyle == 2 && GameUtil.randomInt(2) == 0) {
-            var6_12 = 1731;
+        player.getEquipmentManager().getContainer().setItem(0, new ItemStack(headId));
+        player.getEquipmentManager().getContainer().setItem(4, new ItemStack(bodyId));
+        player.getEquipmentManager().getContainer().setItem(7, new ItemStack(legId));
+        int amuletId = 1727;
+        player.botShieldItemId = 1540;
+        if (player.botCombatStyle == 2 && GameUtil.randomInt(2) == 0) {
+            amuletId = 1731;
         }
         if (!BotCombatHelper.isFreeToPlayWorld()) {
-            v0 = var0.botShieldItemId = GameUtil.randomInt(3) == 0 ? 2890 : 1540;
-            if (var0.getCombatLevel() >= 60 && GameUtil.randomInt(2) == 0) {
-                var6_12 = 1712;
+            player.botShieldItemId = GameUtil.randomInt(3) == 0 ? 2890 : 1540;
+            if (player.getCombatLevel() >= 60 && GameUtil.randomInt(2) == 0) {
+                amuletId = 1712;
             }
         }
-        var0.getEquipmentManager().getContainer().setItem(5, new ItemStack(var0.botShieldItemId));
-        var0.getEquipmentManager().getContainer().setItem(2, new ItemStack(var6_12));
-        var0.getEquipmentManager().getContainer().setItem(9, new ItemStack(var5_10));
-        var0.getEquipmentManager().getContainer().setItem(10, new ItemStack(var4_9));
+        player.getEquipmentManager().getContainer().setItem(5, new ItemStack(player.botShieldItemId));
+        player.getEquipmentManager().getContainer().setItem(2, new ItemStack(amuletId));
+        player.getEquipmentManager().getContainer().setItem(9, new ItemStack(glovesId));
+        player.getEquipmentManager().getContainer().setItem(10, new ItemStack(bootsId));
     }
 
     public static void prepareCombatLoadout(Player player, boolean bl) {
@@ -860,7 +833,7 @@ lbl22:
         }
         switch (n) {
             case 4: {
-                int player2;
+                int amuletId = 1725;
                 player.botActiveCombatStyle = player.botPrimaryCombatStyle = 0;
                 int[] nArray = new int[]{1303, 1333, 1373};
                 player.botWeaponItemId = nArray[GameUtil.randomInt(3)];
@@ -877,14 +850,13 @@ lbl22:
                     player.botShieldItemId = GameUtil.randomInt(2) == 0 ? 1191 : 1540;
                 }
                 player.getEquipmentManager().getContainer().setItem(5, new ItemStack(player.botShieldItemId));
-                int n2 = 1725;
                 if (player.botCombatStyle == 2 && GameUtil.randomInt(2) == 0) {
-                    int nArray2 = 1731;
+                    amuletId = 1731;
                 }
                 if (!BotCombatHelper.isFreeToPlayWorld() && player.getCombatLevel() >= 60 && GameUtil.randomInt(2) == 0) {
-                    player2 = 1712;
+                    amuletId = 1712;
                 }
-                player.getEquipmentManager().getContainer().setItem(2, new ItemStack(player2));
+                player.getEquipmentManager().getContainer().setItem(2, new ItemStack(amuletId));
                 BotCombatLoadoutManager.equipGlovesAndBoots(player);
                 player.getInventoryManager().addItem(new ItemStack(113, 1));
                 if (GameUtil.randomInt(3) != 0) break;
@@ -954,7 +926,7 @@ lbl22:
                 break;
             }
             case 7: {
-                int n2;
+                int n2 = 1731;
                 player.botActiveCombatStyle = player.botPrimaryCombatStyle = 0;
                 int[] player3 = new int[]{1303, 1333, 1373};
                 player.botWeaponItemId = player3[GameUtil.randomInt(3)];
@@ -964,7 +936,6 @@ lbl22:
                 player.getEquipmentManager().getContainer().setItem(5, new ItemStack(player.botShieldItemId));
                 int n4 = 1065;
                 int n5 = 1061;
-                int n6 = 1731;
                 if (!BotCombatHelper.isFreeToPlayWorld()) {
                     if (player.getCombatLevel() >= 60 && GameUtil.randomInt(2) == 0) {
                         n2 = 1712;
@@ -1023,11 +994,9 @@ lbl22:
             }
             case 1: 
             case 5: {
-                int n10;
-                int n11;
                 player.botActiveCombatStyle = player.botPrimaryCombatStyle = BotPvpCombatHandler.RANGED_COMBAT_STYLE;
                 BotCombatLoadoutManager.prepareRangedLoadout(player);
-                int n12 = player.getSkillManager().getCurrentLevels()[4] >= 40 ? 1731 : (n11 = GameUtil.randomInt(3) == 0 ? 1478 : 1729);
+                int n10 = player.getSkillManager().getCurrentLevels()[4] >= 40 ? 1731 : (GameUtil.randomInt(3) == 0 ? 1478 : 1729);
                 if (!BotCombatHelper.isFreeToPlayWorld() && player.getCombatLevel() >= 60 && GameUtil.randomInt(2) == 0) {
                     n10 = 1712;
                 }
@@ -1042,4 +1011,3 @@ lbl22:
         player.getEquipmentManager().refresh();
     }
 }
-

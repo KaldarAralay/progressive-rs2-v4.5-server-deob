@@ -8,13 +8,13 @@ import com.rs2.model.skill.farming.SpecialTreePatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class SpecialTreeCompostTask
+public final class SpecialTreeCompostTask
 extends CycleEvent {
     private /* synthetic */ SpecialTreePatchManager manager;
     private final /* synthetic */ SpecialTreePatch patch;
     private final /* synthetic */ int compostItemId;
 
-    SpecialTreeCompostTask(SpecialTreePatchManager specialTreePatchManager, SpecialTreePatch specialTreePatch, int n) {
+    public SpecialTreeCompostTask(SpecialTreePatchManager specialTreePatchManager, SpecialTreePatch specialTreePatch, int n) {
         this.manager = specialTreePatchManager;
         this.patch = specialTreePatch;
         this.compostItemId = n;

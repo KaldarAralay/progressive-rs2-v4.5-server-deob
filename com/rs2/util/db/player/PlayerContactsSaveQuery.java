@@ -8,17 +8,17 @@ import com.rs2.util.db.player.PlayerSaveQueryFactory;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-final class PlayerContactsSaveQuery
+public final class PlayerContactsSaveQuery
 extends DatabaseQuery {
     private /* synthetic */ PlayerSaveQueryFactory factory;
 
     public PlayerContactsSaveQuery(PlayerSaveQueryFactory playerSaveQueryFactory) {
-        this.factory = playerSaveQueryFactory;
         super(PlayerSaveQueryFactory.getContactsSaveSql());
+        this.factory = playerSaveQueryFactory;
     }
 
     @Override
-    public final ResultSet executeStatement(PreparedStatement preparedStatement) {
+    public final ResultSet executeStatement(PreparedStatement preparedStatement) throws java.sql.SQLException {
         int n = 1;
         long[] lArray = PlayerSaveQueryFactory.getPlayer(this.factory).getIgnoreList();
         int n2 = 0;

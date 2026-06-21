@@ -9,13 +9,13 @@ import com.rs2.model.skill.farming.AllotmentPatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class AllotmentInspectTask
+public final class AllotmentInspectTask
 extends CycleEvent {
     private /* synthetic */ AllotmentPatchManager manager;
     private final /* synthetic */ AllotmentPatch patch;
     private final /* synthetic */ AllotmentGrowthDefinition growthDefinition;
 
-    AllotmentInspectTask(AllotmentPatchManager allotmentPatchManager, AllotmentPatch allotmentPatch, AllotmentGrowthDefinition allotmentGrowthDefinition) {
+    public AllotmentInspectTask(AllotmentPatchManager allotmentPatchManager, AllotmentPatch allotmentPatch, AllotmentGrowthDefinition allotmentGrowthDefinition) {
         this.manager = allotmentPatchManager;
         this.patch = allotmentPatch;
         this.growthDefinition = allotmentGrowthDefinition;

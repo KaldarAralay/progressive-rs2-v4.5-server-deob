@@ -13,9 +13,9 @@ import com.rs2.model.combat.attack.BaseCombatAttack;
 import com.rs2.model.combat.attack.CombatAttack;
 import com.rs2.model.npc.combat.NpcCombatDefinition;
 
-final class ElvargCombatDefinition
+public final class ElvargCombatDefinition
 extends NpcCombatDefinition {
-    ElvargCombatDefinition() {
+    public ElvargCombatDefinition() {
     }
 
     @Override

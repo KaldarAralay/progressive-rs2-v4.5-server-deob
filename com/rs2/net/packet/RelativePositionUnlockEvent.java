@@ -7,13 +7,13 @@ import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.net.packet.PacketSender;
 
-final class RelativePositionUnlockEvent
+public final class RelativePositionUnlockEvent
 extends CycleEvent {
     private boolean delayElapsed = false;
     private /* synthetic */ PacketSender packetSender;
     private final /* synthetic */ boolean clearForcedMovementFlag;
 
-    RelativePositionUnlockEvent(PacketSender packetSender, boolean bl) {
+    public RelativePositionUnlockEvent(PacketSender packetSender, boolean bl) {
         this.packetSender = packetSender;
         this.clearForcedMovementFlag = bl;
     }

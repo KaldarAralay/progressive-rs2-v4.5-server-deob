@@ -35,12 +35,13 @@ public class WorldObjectLookup {
     public static LoadedWorldObject findObjectAt(int n, int n2, int n3) {
         Position position = new Position(n, n2, n3);
         World.getInstance().getObjectRegionIndex();
-        Object object2 = WorldObjectRegionIndex.getOrCreateRegionBucket(position);
-        for (Object object2 : ((AgilityObstacleHandler)object2).getLoadedObjects()) {
-            if (!((LoadedWorldObject)object2).getPosition().equals(position)) continue;
-            ObjectDefinition objectDefinition = ObjectDefinition.forId(((LoadedWorldObject)object2).getWorldObject().getObjectId());
-            if (((LoadedWorldObject)object2).getType() == 0 && !objectDefinition.interactive || ((LoadedWorldObject)object2).getType() == 3 && !objectDefinition.interactive || ((LoadedWorldObject)object2).getType() == 4 && !objectDefinition.interactive || ((LoadedWorldObject)object2).getType() == 22 && !objectDefinition.interactive) continue;
-            return object2;
+        AgilityObstacleHandler bucket = WorldObjectRegionIndex.getOrCreateRegionBucket(position);
+        for (Object loadedObject : bucket.getLoadedObjects()) {
+            LoadedWorldObject loadedWorldObject = (LoadedWorldObject)loadedObject;
+            if (!loadedWorldObject.getPosition().equals(position)) continue;
+            ObjectDefinition objectDefinition = ObjectDefinition.forId(loadedWorldObject.getWorldObject().getObjectId());
+            if (loadedWorldObject.getType() == 0 && !objectDefinition.interactive || loadedWorldObject.getType() == 3 && !objectDefinition.interactive || loadedWorldObject.getType() == 4 && !objectDefinition.interactive || loadedWorldObject.getType() == 22 && !objectDefinition.interactive) continue;
+            return loadedWorldObject;
         }
         return null;
     }
@@ -48,10 +49,11 @@ public class WorldObjectLookup {
     public static LoadedWorldObject findObjectByIdAt(int n, int n2, int n3, int n4) {
         Position position = new Position(n2, n3, n4);
         World.getInstance().getObjectRegionIndex();
-        Object object2 = WorldObjectRegionIndex.getOrCreateRegionBucket(position);
-        for (Object object2 : ((AgilityObstacleHandler)object2).getLoadedObjects()) {
-            if (((LoadedWorldObject)object2).getWorldObject().getObjectId() != n || !((LoadedWorldObject)object2).getPosition().equals(position)) continue;
-            return object2;
+        AgilityObstacleHandler bucket = WorldObjectRegionIndex.getOrCreateRegionBucket(position);
+        for (Object loadedObject : bucket.getLoadedObjects()) {
+            LoadedWorldObject loadedWorldObject = (LoadedWorldObject)loadedObject;
+            if (loadedWorldObject.getWorldObject().getObjectId() != n || !loadedWorldObject.getPosition().equals(position)) continue;
+            return loadedWorldObject;
         }
         return null;
     }
@@ -59,20 +61,21 @@ public class WorldObjectLookup {
     public static LoadedWorldObject findObjectByNameAt(String string, int n, int n2, int n3) {
         Position position = new Position(n, n2, n3);
         World.getInstance().getObjectRegionIndex();
-        Object object2 = WorldObjectRegionIndex.getOrCreateRegionBucket(position);
-        for (Object object2 : ((AgilityObstacleHandler)object2).getLoadedObjects()) {
-            Object object3;
-            Object object4;
-            if (ObjectDefinition.forId(((LoadedWorldObject)object2).getWorldObject().getObjectId()) != null) {
-                object4 = ObjectDefinition.forId(((LoadedWorldObject)object2).getWorldObject().getObjectId());
-                object3 = ((ObjectDefinition)object4).name.toLowerCase();
+        AgilityObstacleHandler bucket = WorldObjectRegionIndex.getOrCreateRegionBucket(position);
+        for (Object loadedObject : bucket.getLoadedObjects()) {
+            LoadedWorldObject loadedWorldObject = (LoadedWorldObject)loadedObject;
+            String objectName;
+            if (ObjectDefinition.forId(loadedWorldObject.getWorldObject().getObjectId()) != null) {
+                ObjectDefinition objectDefinition = ObjectDefinition.forId(loadedWorldObject.getWorldObject().getObjectId());
+                objectName = objectDefinition.name.toLowerCase();
             } else {
-                object3 = object4 = "";
+                objectName = "";
             }
-            if (!((String)object3).contains(string.toLowerCase()) || !((LoadedWorldObject)object2).getPosition().equals(position)) continue;
-            return object2;
+            if (!objectName.contains(string.toLowerCase()) || !loadedWorldObject.getPosition().equals(position)) continue;
+            return loadedWorldObject;
         }
         return null;
     }
+
 }
 

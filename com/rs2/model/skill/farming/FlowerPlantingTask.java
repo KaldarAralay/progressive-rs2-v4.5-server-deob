@@ -10,14 +10,14 @@ import com.rs2.model.skill.farming.FlowerPatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class FlowerPlantingTask
+public final class FlowerPlantingTask
 extends CycleEvent {
     private /* synthetic */ FlowerPatchManager manager;
     private final /* synthetic */ FlowerPatch patch;
     private final /* synthetic */ int seedId;
     private final /* synthetic */ FlowerDefinition definition;
 
-    FlowerPlantingTask(FlowerPatchManager flowerPatchManager, FlowerPatch flowerPatch, int n, FlowerDefinition flowerDefinition) {
+    public FlowerPlantingTask(FlowerPatchManager flowerPatchManager, FlowerPatch flowerPatch, int n, FlowerDefinition flowerDefinition) {
         this.manager = flowerPatchManager;
         this.patch = flowerPatch;
         this.seedId = n;

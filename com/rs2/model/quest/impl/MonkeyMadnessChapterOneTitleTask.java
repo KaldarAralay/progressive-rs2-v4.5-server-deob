@@ -7,22 +7,22 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.MonkeyMadnessQuest;
 import com.rs2.model.task.TickTask;
 
-final class MonkeyMadnessChapterOneTitleTask
+public final class MonkeyMadnessChapterOneTitleTask
 extends TickTask {
     private /* synthetic */ MonkeyMadnessQuest a;
-    private final /* synthetic */ Player b;
+    private final /* synthetic */ Player player;
 
-    MonkeyMadnessChapterOneTitleTask(MonkeyMadnessQuest monkeyMadnessQuest, int n, Player player) {
-        this.a = monkeyMadnessQuest;
-        this.b = player;
+    public MonkeyMadnessChapterOneTitleTask(MonkeyMadnessQuest monkeyMadnessQuest, int n, Player player) {
         super(2);
+        this.a = monkeyMadnessQuest;
+        this.player = player;
     }
 
     @Override
     public final void execute() {
         Player player;
-        this.b.setActionLocked(false);
-        Player player2 = player = this.b;
+        this.player.setActionLocked(false);
+        Player player2 = player = this.player;
         player.packetSender.sendInterfaceText("", 3026);
         player2 = player;
         player2.packetSender.sendInterfaceText("@cya@Monkey Madness: Chapter 1", 3027);

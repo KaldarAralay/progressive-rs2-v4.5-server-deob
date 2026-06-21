@@ -9,9 +9,10 @@ import com.rs2.model.combat.attack.WeaponCombatAttack;
 import com.rs2.model.combat.special.SpecialAttackDefinition;
 import com.rs2.model.player.Player;
 
-final class ExcaliburSpecialDefinition
+public final class ExcaliburSpecialDefinition
 extends SpecialAttackDefinition {
-    ExcaliburSpecialDefinition(int n2, String ... stringArray) {
+    public ExcaliburSpecialDefinition(int n2, String ... stringArray) {
+        super(n2, stringArray);
     }
 
     @Override

@@ -8,7 +8,7 @@ import com.rs2.model.skill.farming.CompostBinManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class CompostBinFillTask
+public final class CompostBinFillTask
 extends CycleEvent {
     private /* synthetic */ CompostBinManager manager;
     private final /* synthetic */ int actionSequence;
@@ -16,7 +16,7 @@ extends CycleEvent {
     private final /* synthetic */ int binIndex;
     private final /* synthetic */ int fillAmount;
 
-    CompostBinFillTask(CompostBinManager compostBinManager, int n, int n2, int n3, int n4) {
+    public CompostBinFillTask(CompostBinManager compostBinManager, int n, int n2, int n3, int n4) {
         this.manager = compostBinManager;
         this.actionSequence = n;
         this.itemId = n2;

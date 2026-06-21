@@ -59,8 +59,7 @@ extends BotTaskDefinition {
 
     @Override
     public final void startCustomTaskAction(Player object) {
-        object = new CatherbyGeneralStoreTradeTickTask(this, 2, (Player)object);
-        World.getTaskScheduler().schedule((TickTask)object);
+        World.getTaskScheduler().schedule(new CatherbyGeneralStoreTradeTickTask(this, 2, (Player)object));
     }
 
     @Override

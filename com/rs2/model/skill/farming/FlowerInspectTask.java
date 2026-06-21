@@ -9,13 +9,13 @@ import com.rs2.model.skill.farming.FlowerPatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class FlowerInspectTask
+public final class FlowerInspectTask
 extends CycleEvent {
     private /* synthetic */ FlowerPatchManager manager;
     private final /* synthetic */ FlowerPatch patch;
     private final /* synthetic */ FlowerGrowthDefinition growthDefinition;
 
-    FlowerInspectTask(FlowerPatchManager flowerPatchManager, FlowerPatch flowerPatch, FlowerGrowthDefinition flowerGrowthDefinition) {
+    public FlowerInspectTask(FlowerPatchManager flowerPatchManager, FlowerPatch flowerPatch, FlowerGrowthDefinition flowerGrowthDefinition) {
         this.manager = flowerPatchManager;
         this.patch = flowerPatch;
         this.growthDefinition = flowerGrowthDefinition;

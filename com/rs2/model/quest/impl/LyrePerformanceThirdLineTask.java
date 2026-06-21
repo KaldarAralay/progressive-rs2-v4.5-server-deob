@@ -8,17 +8,17 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.LyrePerformanceStartTask;
 import com.rs2.model.task.TickTask;
 
-final class LyrePerformanceThirdLineTask
+public final class LyrePerformanceThirdLineTask
 extends TickTask {
     private /* synthetic */ LyrePerformanceStartTask startTask;
     private final /* synthetic */ Player player;
     private final /* synthetic */ int performanceLineIndex;
 
-    LyrePerformanceThirdLineTask(LyrePerformanceStartTask lyrePerformanceStartTask, int n, Player player, int n2) {
+    public LyrePerformanceThirdLineTask(LyrePerformanceStartTask lyrePerformanceStartTask, int n, Player player, int n2) {
+        super(4);
         this.startTask = lyrePerformanceStartTask;
         this.player = player;
         this.performanceLineIndex = n2;
-        super(4);
     }
 
     @Override

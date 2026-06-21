@@ -33,103 +33,93 @@ extends CycleEvent {
     }
 
     @Override
-    public final void execute(CycleEventContainer object) {
+    public final void execute(CycleEventContainer container) {
         try {
-            Object object2;
-            Player player;
             if (!this.attacker.isCurrentActionSequence(this.actionSequence) || this.attacker.getCombatTarget() == null) {
-                Player player2;
-                if (this.attacker.isPlayer() && (player2 = (Player)this.attacker).getUsername().toLowerCase().equals("mod test")) {
-                    System.out.println("check combat cycle3 " + this.attacker.getCombatTarget() + " " + this.target.isDead());
+                if (this.attacker.isPlayer()) {
+                    Player player = (Player)this.attacker;
+                    if (player.getUsername().toLowerCase().equals("mod test")) {
+                        System.out.println("check combat cycle3 " + this.attacker.getCombatTarget() + " " + this.target.isDead());
+                    }
                 }
-                ((CycleEventContainer)object).stop();
+                container.stop();
                 return;
             }
-            Object object3 = CombatCycleEvent.validateAttack(this.attacker, this.target);
-            if (object3 != AttackValidationResult.VALID) {
-                ((CycleEventContainer)object).stop();
+            AttackValidationResult attackValidationResult = CombatCycleEvent.validateAttack(this.attacker, this.target);
+            if (attackValidationResult != AttackValidationResult.VALID) {
+                container.stop();
                 CombatManager.stopCombat(this.attacker);
                 if (this.attacker.isPlayer()) {
-                    Player player3 = (Player)this.attacker;
-                    if (player3.currentBotTask != null) {
-                        player3.interactWithBotNpcTargets(player3.botInteractionTargetIds);
+                    Player player = (Player)this.attacker;
+                    if (player.currentBotTask != null) {
+                        player.interactWithBotNpcTargets(player.botInteractionTargetIds);
                     }
-                    switch (object3) {
+                    switch (attackValidationResult) {
                         case INVALID_TARGET_LOCATION: {
-                            object = (Player)this.attacker;
-                            ((Player)object).packetSender.sendGameMessage("You can't attack that npc from here.");
+                            player.packetSender.sendGameMessage("You can't attack that npc from here.");
                             return;
                         }
                         case WILDERNESS_LEVEL_MISMATCH: {
-                            object = (Player)this.attacker;
-                            ((Player)object).packetSender.sendGameMessage("Your level difference is too great!");
-                            object = (Player)this.attacker;
-                            ((Player)object).packetSender.sendGameMessage("You need to move deeper into the Wilderness.");
-                            CombatManager.stopCombat((Player)this.attacker);
+                            player.packetSender.sendGameMessage("Your level difference is too great!");
+                            player.packetSender.sendGameMessage("You need to move deeper into the Wilderness.");
+                            CombatManager.stopCombat(player);
                             return;
                         }
                         case ALREADY_IN_COMBAT: {
-                            object = (Player)this.attacker;
-                            ((Player)object).packetSender.sendGameMessage("You are already under attack!");
+                            player.packetSender.sendGameMessage("You are already under attack!");
                             return;
                         }
                         case NOT_DUEL_OPPONENT: {
-                            object = (Player)this.attacker;
-                            ((Player)object).packetSender.sendGameMessage("That player is not your opponent!");
+                            player.packetSender.sendGameMessage("That player is not your opponent!");
                             return;
                         }
                         case TARGET_NOT_IN_WILDERNESS: {
-                            object = (Player)this.attacker;
-                            ((Player)object).packetSender.sendGameMessage("That player is not in the wilderness!");
+                            player.packetSender.sendGameMessage("That player is not in the wilderness!");
                         }
                     }
                 }
                 return;
             }
-            object3 = CombatCycleEvent.validateAttack(this.target, this.attacker);
-            if (object3 != AttackValidationResult.VALID) {
-                ((CycleEventContainer)object).stop();
+            attackValidationResult = CombatCycleEvent.validateAttack(this.target, this.attacker);
+            if (attackValidationResult != AttackValidationResult.VALID) {
+                container.stop();
                 CombatManager.stopCombat(this.attacker);
                 if (this.attacker.isPlayer()) {
-                    Player player4 = (Player)this.attacker;
-                    if (player4.currentBotTask != null) {
-                        player4.interactWithBotNpcTargets(player4.botInteractionTargetIds);
+                    Player player = (Player)this.attacker;
+                    if (player.currentBotTask != null) {
+                        player.interactWithBotNpcTargets(player.botInteractionTargetIds);
                     }
-                    switch (object3) {
+                    switch (attackValidationResult) {
                         case WILDERNESS_LEVEL_MISMATCH: {
-                            object = (Player)this.attacker;
-                            ((Player)object).packetSender.sendGameMessage("Your level difference is too great!");
-                            object = (Player)this.attacker;
-                            ((Player)object).packetSender.sendGameMessage("You need to move deeper into the Wilderness.");
-                            CombatManager.stopCombat((Player)this.attacker);
+                            player.packetSender.sendGameMessage("Your level difference is too great!");
+                            player.packetSender.sendGameMessage("You need to move deeper into the Wilderness.");
+                            CombatManager.stopCombat(player);
                             return;
                         }
                         case ALREADY_IN_COMBAT: {
-                            object = (Player)this.attacker;
-                            ((Player)object).packetSender.sendGameMessage("That " + (this.target.isPlayer() ? "player" : "monster") + " is already in combat!");
+                            player.packetSender.sendGameMessage("That " + (this.target.isPlayer() ? "player" : "monster") + " is already in combat!");
                             return;
                         }
                         case NOT_DUEL_OPPONENT: {
-                            object = (Player)this.attacker;
-                            ((Player)object).packetSender.sendGameMessage("That player is not your opponent!");
+                            player.packetSender.sendGameMessage("That player is not your opponent!");
                         }
                     }
                 }
                 return;
             }
             if (this.attacker.isPlayer() && this.target.isPlayer()) {
-                player = (Player)this.attacker;
-                object3 = (Player)this.target;
-                if (player.botEnabled || ((Player)object3).botEnabled) {
+                Player player = (Player)this.attacker;
+                Player targetPlayer = (Player)this.target;
+                if (player.botEnabled || targetPlayer.botEnabled) {
                     if (player.botCombatState != null) {
                         return;
                     }
-                    BotPvpCombatHandler.startBotPvpCombatTicks(player, (Player)object3);
+                    BotPvpCombatHandler.startBotPvpCombatTicks(player, targetPlayer);
                 }
             }
             if (this.attacker.isPlayer() && this.target.isNpc()) {
-                player = (Player)this.attacker;
-                object3 = (Npc)this.target;
+                Player player = (Player)this.attacker;
+                Npc targetNpc = (Npc)this.target;
                 if (player.botEnabled) {
                     if (player.currentBotTask == null) {
                         return;
@@ -137,68 +127,74 @@ extends CycleEvent {
                     if (!player.botTaskState.equals("do task")) {
                         return;
                     }
-                    player.currentBotTask.startNpcCombatTick(player, (Npc)object3);
+                    player.currentBotTask.startNpcCombatTick(player, targetNpc);
                 }
             }
-            int n = GameUtil.getDistance(this.attacker.getPosition(), this.target.getPosition());
-            object3 = new LinkedList();
-            n = this.attacker.collectCombatAttackOptions((List)object3, this.target, n);
-            CombatAttack combatAttack = null;
-            boolean bl = this.attacker.getAttackDelayTimer().hasElapsed();
-            if (bl) {
-                Collections.shuffle(object3);
+            int distance = GameUtil.getDistance(this.attacker.getPosition(), this.target.getPosition());
+            List<SmithingHandler> attackOptions = new LinkedList<SmithingHandler>();
+            int usableAttackCount = this.attacker.collectCombatAttackOptions(attackOptions, this.target, distance);
+            CombatAttack movementAttack = null;
+            boolean attackDelayElapsed = this.attacker.getAttackDelayTimer().hasElapsed();
+            if (attackDelayElapsed) {
+                Collections.shuffle(attackOptions);
             }
-            Iterator iterator = object3.iterator();
+            Iterator<SmithingHandler> iterator = attackOptions.iterator();
             while (iterator.hasNext()) {
-                object2 = (SmithingHandler)iterator.next();
-                CombatAttackState combatAttackState = ((SmithingHandler)object2).getState();
+                SmithingHandler attackOption = iterator.next();
+                CombatAttackState combatAttackState = attackOption.getState();
                 if (this.attacker.isStunned()) {
                     combatAttackState = CombatAttackState.b;
                 }
                 this.attacker.getUpdateState().setFaceEntity(this.target.getEncodedIndex());
                 if (combatAttackState == CombatAttackState.b) {
-                    combatAttack = ((SmithingHandler)object2).getAttack();
+                    movementAttack = attackOption.getAttack();
                     continue;
                 }
-                if (combatAttackState != CombatAttackState.c) continue;
-                if (!this.attacker.isPlayer()) {
-                    this.attacker.setAttackRange(((SmithingHandler)object2).getAttack().getAttackRange());
+                if (combatAttackState != CombatAttackState.c) {
+                    continue;
                 }
-                if (bl) {
-                    int n2 = ((SmithingHandler)object2).getAttack().execute((CycleEventContainer)object);
-                    if (n2 == -1) {
-                        Player player5;
+                if (!this.attacker.isPlayer()) {
+                    this.attacker.setAttackRange(attackOption.getAttack().getAttackRange());
+                }
+                if (attackDelayElapsed) {
+                    int delayTicks = attackOption.getAttack().execute(container);
+                    if (delayTicks == -1) {
                         CombatManager.stopCombat(this.attacker);
-                        if (this.attacker.isPlayer() && (player5 = (Player)this.attacker).getUsername().toLowerCase().equals("mod test")) {
-                            System.out.println("check combat cycle2");
+                        if (this.attacker.isPlayer()) {
+                            Player player = (Player)this.attacker;
+                            if (player.getUsername().toLowerCase().equals("mod test")) {
+                                System.out.println("check combat cycle2");
+                            }
                         }
-                        ((CycleEventContainer)object).stop();
+                        container.stop();
                         return;
                     }
                     this.target.getRecentCombatTimer().setTargetDelay(this.attacker, 17);
                     this.target.getSingleCombatTimer().setTargetDelay(this.attacker, 8);
-                    this.attacker.setAttackDelayTicks(n2);
+                    this.attacker.setAttackDelayTicks(delayTicks);
                 }
                 return;
             }
-            if (combatAttack == null) {
-                if (n <= object3.size()) {
+            if (movementAttack == null) {
+                if (usableAttackCount <= attackOptions.size()) {
                     CombatManager.stopCombat(this.attacker);
-                    if (this.attacker.isPlayer() && ((Player)(object2 = (Player)this.attacker)).getUsername().toLowerCase().equals("mod test")) {
-                        System.out.println("check combat cycle1");
+                    if (this.attacker.isPlayer()) {
+                        Player player = (Player)this.attacker;
+                        if (player.getUsername().toLowerCase().equals("mod test")) {
+                            System.out.println("check combat cycle1");
+                        }
                     }
-                    ((CycleEventContainer)object).stop();
+                    container.stop();
                 }
                 this.attacker.getMovementQueue().clear();
                 return;
             }
             if (!this.attacker.isPlayer()) {
-                this.attacker.setAttackRange(combatAttack.getAttackRange());
+                this.attacker.setAttackRange(movementAttack.getAttackRange());
             }
             return;
         }
         catch (Exception exception) {
-            Exception exception2 = exception;
             exception.printStackTrace();
             return;
         }

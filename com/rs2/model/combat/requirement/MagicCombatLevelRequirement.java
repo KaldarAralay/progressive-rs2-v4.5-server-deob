@@ -6,9 +6,9 @@ package com.rs2.model.combat.requirement;
 import com.rs2.model.combat.attack.MagicCombatAttack;
 import com.rs2.model.combat.requirement.SkillLevelRequirement;
 
-final class MagicCombatLevelRequirement
+public final class MagicCombatLevelRequirement
 extends SkillLevelRequirement {
-    MagicCombatLevelRequirement(MagicCombatAttack magicCombatAttack, int n, int n2) {
+    public MagicCombatLevelRequirement(MagicCombatAttack magicCombatAttack, int n, int n2) {
         super(6, n2);
     }
 

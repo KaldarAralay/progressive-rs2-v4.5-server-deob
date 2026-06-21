@@ -81,8 +81,7 @@ extends BotTaskDefinition {
 
     @Override
     public final void startEscapeMonitor(Player object) {
-        object = new WildernessRuniteMineEscapeMonitorTickTask(this, 2, (Player)object);
-        World.getTaskScheduler().schedule((TickTask)object);
+        World.getTaskScheduler().schedule(new WildernessRuniteMineEscapeMonitorTickTask(this, 2, (Player)object));
     }
 
     @Override

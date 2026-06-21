@@ -55,7 +55,7 @@ public final class CookingManager {
                 this.player.beginInterruptibleAction();
                 object2 = "cookFire";
                 object = this.player;
-                this.player.interfaceAction = object2;
+                this.player.interfaceAction = (String)object2;
                 this.firePosition = new Position(n3, n4, this.player.getPosition().getPlane());
                 this.player.setSelectedSkillItemId(n);
                 if (this.player.getQuestState(0) != 1 || this.player.getInventoryManager().getItemAmount(n) == 1 || ServerSettings.cacheVersion < 334) {
@@ -75,7 +75,7 @@ public final class CookingManager {
                 this.player.beginInterruptibleAction();
                 object2 = "cookRange";
                 object = this.player;
-                this.player.interfaceAction = object2;
+                this.player.interfaceAction = (String)object2;
                 this.player.setSelectedSkillItemId(n);
                 if (this.player.botEnabled) {
                     CookingManager.startCookingTask(this.player, 28);

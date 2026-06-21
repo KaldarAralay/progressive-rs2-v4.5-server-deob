@@ -6,9 +6,9 @@ package com.rs2.bot;
 import com.rs2.bot.ClanWarsBotManager;
 import com.rs2.model.task.TickTask;
 
-final class ClanWarsBotManagerTickTask
+public final class ClanWarsBotManagerTickTask
 extends TickTask {
-    ClanWarsBotManagerTickTask(int n) {
+    public ClanWarsBotManagerTickTask(int n) {
         super(10);
     }
 

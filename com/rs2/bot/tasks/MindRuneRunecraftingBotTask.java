@@ -173,17 +173,17 @@ extends BotTaskDefinition {
     }
 
     @Override
-    public final void advanceTaskRouteSegment(Player player, boolean n) {
-        if (player.botTaskState.equals("walk towards task") || player.botTaskState.equals("walk to task") && n != 0) {
-            if (n == 0) {
+    public final void advanceTaskRouteSegment(Player player, boolean continuing) {
+        if (player.botTaskState.equals("walk towards task") || player.botTaskState.equals("walk to task") && continuing) {
+            if (!continuing) {
                 ++player.botPathSegmentIndex;
             }
             player.currentBotRoute = taskRouteSegments[player.botPathSegmentIndex];
-            if (n == 0) {
+            if (!continuing) {
                 player.botPathWaypointIndex = 0;
             }
-            n = GameUtil.getRegionId(player.getPosition().getX(), player.getPosition().getY());
-            if (player.botPathSegmentIndex == taskRouteSegments.length - 1 && n != 11083) {
+            int regionId = GameUtil.getRegionId(player.getPosition().getX(), player.getPosition().getY());
+            if (player.botPathSegmentIndex == taskRouteSegments.length - 1 && regionId != 11083) {
                 player.botTaskState = "walk to task";
                 ArrayList<Integer> arrayList = new ArrayList<Integer>();
                 arrayList.add(2453);

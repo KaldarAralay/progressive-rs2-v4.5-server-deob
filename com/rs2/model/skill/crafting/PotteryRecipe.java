@@ -59,17 +59,15 @@ public enum PotteryRecipe {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private PotteryRecipe(int n3, int n4, int n5, int n6, double d, double d2) {
-        void cfr_renamed_6;
-        void var8_6;
-        this.buttonId = n3;
+    private PotteryRecipe(int n2, int n3, int n4, int n5, int n6, int n7, double d, double d2) {
+        this.buttonId = n2;
         this.softClayItemId = 1761;
-        this.unfiredItemId = n5;
-        this.firedItemId = n6;
-        this.quantity = (int)d;
-        this.requiredLevel = var8_6;
-        this.wheelExperience = d2;
-        this.firingExperience = cfr_renamed_6;
+        this.unfiredItemId = n4;
+        this.firedItemId = n5;
+        this.quantity = n6;
+        this.requiredLevel = n7;
+        this.wheelExperience = d;
+        this.firingExperience = d2;
     }
 
     public final int getButtonId() {

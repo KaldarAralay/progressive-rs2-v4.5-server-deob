@@ -60,8 +60,7 @@ extends BotTaskDefinition {
 
     @Override
     public final void startCustomTaskAction(Player object) {
-        object = new FaladorGeneralStoreTradeTickTask(this, 2, (Player)object);
-        World.getTaskScheduler().schedule((TickTask)object);
+        World.getTaskScheduler().schedule(new FaladorGeneralStoreTradeTickTask(this, 2, (Player)object));
     }
 
     @Override

@@ -5,9 +5,15 @@ package com.rs2.util;
 
 import java.util.Comparator;
 
-final class WeightedChanceEntryThresholdComparator
+public final class WeightedChanceEntryThresholdComparator
 implements Comparator {
-    WeightedChanceEntryThresholdComparator() {
+    public WeightedChanceEntryThresholdComparator() {
     }
+    public final int compare(Object object, Object object2) {
+        WeightedChanceEntry entry = (WeightedChanceEntry)object;
+        WeightedChanceEntry entry2 = (WeightedChanceEntry)object2;
+        return Integer.compare(entry2.requiredLevel, entry.requiredLevel);
+    }
+
 }
 

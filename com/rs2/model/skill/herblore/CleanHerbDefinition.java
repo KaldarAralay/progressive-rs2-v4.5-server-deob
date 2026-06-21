@@ -53,13 +53,11 @@ public enum CleanHerbDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private CleanHerbDefinition(int n3, double d) {
-        void var6_4;
-        void var5_3;
-        this.grimyItemId = n3;
-        this.cleanItemId = (int)d;
-        this.requiredLevel = var5_3;
-        this.experience = var6_4;
+    private CleanHerbDefinition(int n2, int n3, int n4, double d) {
+        this.grimyItemId = n2;
+        this.cleanItemId = n3;
+        this.requiredLevel = n4;
+        this.experience = d;
     }
 
     public final int getCleanItemId() {

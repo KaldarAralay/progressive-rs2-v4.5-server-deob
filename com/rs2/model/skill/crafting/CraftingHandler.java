@@ -121,7 +121,8 @@ public class CraftingHandler {
 
     public static boolean startPotteryFiring(Player player, int n) {
         PotteryRecipe object2 = null;
-        for (Map.Entry entry : PotteryRecipe.definitionsByButtonId.entrySet()) {
+        for (Object entryObject : PotteryRecipe.definitionsByButtonId.entrySet()) {
+            Map.Entry entry = (Map.Entry)entryObject;
             PotteryRecipe object3 = (PotteryRecipe)((Object)entry.getValue());
             int n2 = object3.getUnfiredItemId();
             if (n2 != n) continue;

@@ -10,14 +10,14 @@ import com.rs2.model.skill.farming.TreePatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class TreeHealthCheckTask
+public final class TreeHealthCheckTask
 extends CycleEvent {
     private /* synthetic */ TreePatchManager manager;
     private final /* synthetic */ int actionSequence;
     private final /* synthetic */ FarmedTreeDefinition definition;
     private final /* synthetic */ TreePatch patch;
 
-    TreeHealthCheckTask(TreePatchManager treePatchManager, int n, FarmedTreeDefinition farmedTreeDefinition, TreePatch treePatch) {
+    public TreeHealthCheckTask(TreePatchManager treePatchManager, int n, FarmedTreeDefinition farmedTreeDefinition, TreePatch treePatch) {
         this.manager = treePatchManager;
         this.actionSequence = n;
         this.definition = farmedTreeDefinition;

@@ -72,29 +72,25 @@ public enum TreeDefinition {
         return -1;
     }
 
-    public static int[] collectObjectIds(TreeDefinition[] object) {
+    public static int[] collectObjectIds(TreeDefinition[] treeDefinitions) {
         ArrayList<Integer> arrayList = new ArrayList<Integer>();
-        TreeDefinition[] treeDefinitionArray = object;
-        int n = 0;
-        while (n <= 0) {
-            object = treeDefinitionArray[0];
-            int[] nArray = object.objectIds;
-            int n2 = object.objectIds.length;
-            int n3 = 0;
-            while (n3 < n2) {
-                int n4 = nArray[n3];
-                arrayList.add(n4);
-                ++n3;
+        for (TreeDefinition treeDefinition : treeDefinitions) {
+            int[] nArray = treeDefinition.objectIds;
+            int n = nArray.length;
+            int n2 = 0;
+            while (n2 < n) {
+                int n3 = nArray[n2];
+                arrayList.add(n3);
+                ++n2;
             }
+        }
+        int[] objectIds = new int[arrayList.size()];
+        int n = 0;
+        while (n < objectIds.length) {
+            objectIds[n] = arrayList.get(n);
             ++n;
         }
-        object = new int[arrayList.size()];
-        n = 0;
-        while (n < ((TreeDefinition[])object).length) {
-            object[n] = (TreeDefinition)((Object)((Integer)arrayList.get(n)));
-            ++n;
-        }
-        return object;
+        return objectIds;
     }
 
     public static TreeDefinition forEntNpcId(int n) {
@@ -133,23 +129,18 @@ public enum TreeDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private TreeDefinition(int n, double d, int n2, int n3, int n4, int nArray22, double d2, int n5, int n6) {
-        void cfr_renamed_8;
-        void var14_11;
-        void var11_8;
-        void cfr_renamed_5;
-        void var5_3;
-        this.objectIds = (int[])n;
-        this.entNpcIds = (int[])d;
-        this.requiredLevel = var5_3;
-        this.experience = n2;
-        this.logItemId = n4;
-        this.stumpObjectId = cfr_renamed_5;
-        this.respawnTicksLow = (int)d2;
-        this.respawnTicksHigh = var11_8;
-        this.depletionChance = n5;
-        this.cutChanceLow = var14_11;
-        this.cutChanceHigh = cfr_renamed_8;
+    private TreeDefinition(int[] nArray, int[] nArray2, int n2, double d, int n3, int n4, int n5, int n6, double d2, int n7, int n8) {
+        this.objectIds = nArray;
+        this.entNpcIds = nArray2;
+        this.requiredLevel = n2;
+        this.experience = d;
+        this.logItemId = n3;
+        this.stumpObjectId = n4;
+        this.respawnTicksLow = n5;
+        this.respawnTicksHigh = n6;
+        this.depletionChance = d2;
+        this.cutChanceLow = n7;
+        this.cutChanceHigh = n8;
     }
 
     public final int[] getEntNpcIds() {

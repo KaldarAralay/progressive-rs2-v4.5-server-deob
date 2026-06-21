@@ -9,13 +9,13 @@ import com.rs2.model.skill.farming.BushPatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class BushInspectTask
+public final class BushInspectTask
 extends CycleEvent {
     private /* synthetic */ BushPatchManager manager;
     private final /* synthetic */ BushPatch patch;
     private final /* synthetic */ BushGrowthDefinition growthDefinition;
 
-    BushInspectTask(BushPatchManager bushPatchManager, BushPatch bushPatch, BushGrowthDefinition bushGrowthDefinition) {
+    public BushInspectTask(BushPatchManager bushPatchManager, BushPatch bushPatch, BushGrowthDefinition bushGrowthDefinition) {
         this.manager = bushPatchManager;
         this.patch = bushPatch;
         this.growthDefinition = bushGrowthDefinition;

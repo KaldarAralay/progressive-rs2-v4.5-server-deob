@@ -10,7 +10,7 @@ import com.rs2.model.skill.crafting.SilverCraftingRecipe;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class SilverCraftingTask
+public final class SilverCraftingTask
 extends CycleEvent {
     private int remainingActions;
     private final /* synthetic */ Player player;
@@ -18,7 +18,7 @@ extends CycleEvent {
     private final /* synthetic */ SilverCraftingRecipe recipe;
     private final /* synthetic */ ItemStack productItem;
 
-    SilverCraftingTask(SilverCraftingRecipe silverCraftingRecipe, int n, Player player, int n2, ItemStack itemStack) {
+    public SilverCraftingTask(SilverCraftingRecipe silverCraftingRecipe, int n, Player player, int n2, ItemStack itemStack) {
         this.recipe = silverCraftingRecipe;
         this.player = player;
         this.actionSequence = n2;
@@ -34,10 +34,8 @@ extends CycleEvent {
         }
         ((CycleEventContainer)object).setTickDelay(3);
         this.player.getUpdateState().setAnimation(899);
-        object = this.player;
-        ((Player)object).packetSender.sendSoundEffect(469, 1, 0);
-        object = this.player;
-        ((Player)object).packetSender.sendGameMessage("You make the silver bar into " + GameplayHelper.a(new ItemStack(this.recipe.getProductItemId()).getDefinition().getName().toLowerCase()) + " " + new ItemStack(this.recipe.getProductItemId()).getDefinition().getName().toLowerCase() + ".");
+        this.player.packetSender.sendSoundEffect(469, 1, 0);
+        this.player.packetSender.sendGameMessage("You make the silver bar into " + GameplayHelper.getIndefiniteArticle(new ItemStack(this.recipe.getProductItemId()).getDefinition().getName().toLowerCase()) + " " + new ItemStack(this.recipe.getProductItemId()).getDefinition().getName().toLowerCase() + ".");
         this.player.getInventoryManager().removeItem(new ItemStack(2355));
         this.player.getInventoryManager().addItem(this.productItem);
         this.player.getSkillManager().addExperience(12, this.recipe.getExperience());

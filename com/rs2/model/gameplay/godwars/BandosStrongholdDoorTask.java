@@ -6,13 +6,13 @@ package com.rs2.model.gameplay.godwars;
 import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 
-final class BandosStrongholdDoorTask
+public final class BandosStrongholdDoorTask
 extends TickTask {
     private final /* synthetic */ Player player;
 
-    BandosStrongholdDoorTask(int n, Player player) {
-        this.player = player;
+    public BandosStrongholdDoorTask(int n, Player player) {
         super(2);
+        this.player = player;
     }
 
     @Override

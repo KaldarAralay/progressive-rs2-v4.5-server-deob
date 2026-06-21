@@ -74,14 +74,12 @@ public enum MapClue {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private MapClue(Position position, boolean bl, int n3) {
-        void var7_5;
-        void var6_4;
-        this.clueItemId = (int)position;
-        this.interfaceId = bl ? 1 : 0;
-        this.position = (Position)n3;
-        this.objectSearchClue = var6_4;
-        this.level = var7_5;
+    private MapClue(int n2, int n3, Position position, boolean bl, int n4) {
+        this.clueItemId = n2;
+        this.interfaceId = n3;
+        this.position = position;
+        this.objectSearchClue = bl;
+        this.level = n4;
     }
 
     public final int getClueItemId() {

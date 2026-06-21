@@ -320,316 +320,316 @@ extends QuestScript {
         if (n == 0 || n == 2) {
             object = itemStackArray;
             itemStackArray.packetSender.sendEntityHintIcon(1, Npc.findByDefinitionId(945).getIndex());
-            itemStackArray.getDialogueManager().a("Getting Started", "To start the tutorial use your left mouse-button to click on the", "'Guide' in this room. He is indicated by a flashing", "yellow arrow above his head. If you can't see him, use your", "keyboard's arrow keys to rotate the view.", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Getting Started", "To start the tutorial use your left mouse-button to click on the", "'Guide' in this room. He is indicated by a flashing", "yellow arrow above his head. If you can't see him, use your", "keyboard's arrow keys to rotate the view.", true);
         }
         if (n == 3) {
             object = itemStackArray;
             itemStackArray.packetSender.flashSidebarIcon(QuestConstants.OPTIONS_TAB_INTERFACE[0]);
-            itemStackArray.getDialogueManager().a("", "Player controls", "Please click on the flashing spanner icon found at the bottom", "right of your screen. This will display your player controls.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("", "Player controls", "Please click on the flashing spanner icon found at the bottom", "right of your screen. This will display your player controls.", "", true);
         }
         if (n == 4) {
             object = itemStackArray;
             itemStackArray.packetSender.sendEntityHintIcon(1, Npc.findByDefinitionId(945).getIndex());
-            itemStackArray.getDialogueManager().a("Player controls", "On the side panel, you can now see a variety of options from", "changing the brightness of the screen and the volume of", "music, to selecting whether your player should accept help", "from other players. Don't worry about these too much for now.", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Player controls", "On the side panel, you can now see a variety of options from", "changing the brightness of the screen and the volume of", "music, to selecting whether your player should accept help", "from other players. Don't worry about these too much for now.", true);
         }
         if (n == 5) {
             object = itemStackArray;
             itemStackArray.packetSender.sendPositionHintIcon(3098, 3107, 130, 3);
-            itemStackArray.getDialogueManager().a("Interacting with scenery", "You can interact with many items of the scenery by simply clicking", "on them. Right clicking will also give more options. Feel free to", "try it with the things in this room, then click on the door", "indicated with the yellow arrow to go through.", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Interacting with scenery", "You can interact with many items of the scenery by simply clicking", "on them. Right clicking will also give more options. Feel free to", "try it with the things in this room, then click on the door", "indicated with the yellow arrow to go through.", true);
         }
         if (n == 6) {
             object = itemStackArray;
             itemStackArray.packetSender.sendEntityHintIcon(1, Npc.findByDefinitionId(943).getIndex());
-            itemStackArray.getDialogueManager().a("Moving around", "Follow the path to find the next instructor. Clicking on the", "ground will walk you to that point. Talk to the Survival Expert by", "the pond to continue the tutorial. Remember you can rotate", "the view by pressing the arrow keys.", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Moving around", "Follow the path to find the next instructor. Clicking on the", "ground will walk you to that point. Talk to the Survival Expert by", "the pond to continue the tutorial. Remember you can rotate", "the view by pressing the arrow keys.", true);
         }
         if (n == 7) {
             object = itemStackArray;
             itemStackArray.packetSender.flashSidebarIcon(QuestConstants.INVENTORY_TAB_INTERFACE[0]);
-            itemStackArray.getDialogueManager().a("Viewing the items that you were given.", "Click on the flashing backpack icon to the right hand side of", "the main window to view your inventory. Your inventory is a list", "of everything you have in your backpack.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Viewing the items that you were given.", "Click on the flashing backpack icon to the right hand side of", "the main window to view your inventory. Your inventory is a list", "of everything you have in your backpack.", "", true);
         }
         if (n == 8) {
             object = itemStackArray;
             itemStackArray.packetSender.sendPositionHintIcon(3100, 3095, 170, 3);
-            itemStackArray.getDialogueManager().a("Cut down a tree", "You can click on the backpack icon at any time to view the", "items that you currently have in your inventory. You will see", "that you now have an axe in your inventory. Use this to get", "some logs by clicking on one of the trees in the area.", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Cut down a tree", "You can click on the backpack icon at any time to view the", "items that you currently have in your inventory. You will see", "that you now have an axe in your inventory. Use this to get", "some logs by clicking on one of the trees in the area.", true);
         }
         if (n == 9) {
-            itemStackArray.getDialogueManager().a("Making a fire", "Well done! You managed to cut some logs from the tree! Next,", "use the tinderbox in your inventory to light the logs.", "First click on the tinderbox to 'use' it.", "Then click on the logs in your inventory to light them.", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Making a fire", "Well done! You managed to cut some logs from the tree! Next,", "use the tinderbox in your inventory to light the logs.", "First click on the tinderbox to 'use' it.", "Then click on the logs in your inventory to light them.", true);
         }
         if (n == 10) {
             object = itemStackArray;
             itemStackArray.packetSender.flashSidebarIcon(QuestConstants.STATS_TAB_INTERFACE[0]);
-            itemStackArray.getDialogueManager().a("", "You gained some experience.", "Click on the flashing bar graph icon near the inventory button", "to see your skill stats.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("", "You gained some experience.", "Click on the flashing bar graph icon near the inventory button", "to see your skill stats.", "", true);
         }
         if (n == 11) {
             object = itemStackArray;
             itemStackArray.packetSender.sendEntityHintIcon(1, Npc.findByDefinitionId(943).getIndex());
-            itemStackArray.getDialogueManager().a("Your skill stats.", "Here you will see how good your skills are. As you move your", "mouse over any of the icons in this panel, the small yellow", "popup box will show you the exact amount of experience you", "have and how much you need. Speak to Brynna to continue. ", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Your skill stats.", "Here you will see how good your skills are. As you move your", "mouse over any of the icons in this panel, the small yellow", "popup box will show you the exact amount of experience you", "have and how much you need. Speak to Brynna to continue. ", true);
         }
         if (n == 12) {
             object = itemStackArray;
             itemStackArray.packetSender.sendPositionHintIcon(3101, 3092, 70, 2);
-            itemStackArray.getDialogueManager().a("Catch some Shrimp.", "Click on the sparkling fishing spot, indicated by the flashing", "arrow. Remember, you can check your inventory by clicking the", "backpack icon.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Catch some Shrimp.", "Click on the sparkling fishing spot, indicated by the flashing", "arrow. Remember, you can check your inventory by clicking the", "backpack icon.", "", true);
         }
         if (n == 13) {
-            itemStackArray.getDialogueManager().a("Cooking your shrimp.", "Now you have caught some shrimp, let's cook it. First light a", "fire: chop down a tree and then use the tinderbox on the logs.", "If you've lost your axe or tinderbox Brynna will give you", "another.", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Cooking your shrimp.", "Now you have caught some shrimp, let's cook it. First light a", "fire: chop down a tree and then use the tinderbox on the logs.", "If you've lost your axe or tinderbox Brynna will give you", "another.", true);
         }
         if (n == 14) {
-            itemStackArray.getDialogueManager().a("Burning your shrimp.", "You have just burnt your first shrimp. This is normal. As you", "get more experience in Cooking, you will burn stuff less often.", "Let's try cooking without burning it this time. First catch some", "more shrimp, then use them on a fire.", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Burning your shrimp.", "You have just burnt your first shrimp. This is normal. As you", "get more experience in Cooking, you will burn stuff less often.", "Let's try cooking without burning it this time. First catch some", "more shrimp, then use them on a fire.", true);
         }
         if (n == 15) {
             object = itemStackArray;
             itemStackArray.packetSender.sendPositionHintIcon(3089, 3091, 120, 4);
-            itemStackArray.getDialogueManager().a("Well done, you've just cooked your first RuneScape meal.", "If you'd like a recap on anything you've learnt so far, speak to", "the Survival Expert. You can now move on to the next", "instructor. Click on the gate shown and follow the path.", "Remember, you can move the camera with the arrow keys.", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Well done, you've just cooked your first RuneScape meal.", "If you'd like a recap on anything you've learnt so far, speak to", "the Survival Expert. You can now move on to the next", "instructor. Click on the gate shown and follow the path.", "Remember, you can move the camera with the arrow keys.", true);
         }
         if (n == 16) {
             object = itemStackArray;
             itemStackArray.packetSender.sendPositionHintIcon(3079, 3084, 130, 3);
-            itemStackArray.getDialogueManager().a("Find your next instructor.", "Follow the path until you get to the door with the yellow arrow", "above it. Click on the door to open it. Notice the mini-map in", "the top right; this shows a top down view of the area around", "you. This can also be used for navigation.", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Find your next instructor.", "Follow the path until you get to the door with the yellow arrow", "above it. Click on the door to open it. Notice the mini-map in", "the top right; this shows a top down view of the area around", "you. This can also be used for navigation.", true);
         }
         if (n == 17) {
             object = itemStackArray;
             itemStackArray.packetSender.sendEntityHintIcon(1, Npc.findByDefinitionId(942).getIndex());
-            itemStackArray.getDialogueManager().a("Find your next instructor.", "Talk to the chef indicated. He will teach you the more advanced", "aspects of Cooking such as combining ingredients. He will also", "teach you about your music player menu as well.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Find your next instructor.", "Talk to the chef indicated. He will teach you the more advanced", "aspects of Cooking such as combining ingredients. He will also", "teach you about your music player menu as well.", "", true);
         }
         if (n == 18) {
-            itemStackArray.getDialogueManager().a("Making dough.", "This is the base for many of the meals. To make dough we must", "mix flour and water. First, right click the bucket of water and", "select use, then left click on the pot of flour.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Making dough.", "This is the base for many of the meals. To make dough we must", "mix flour and water. First, right click the bucket of water and", "select use, then left click on the pot of flour.", "", true);
         }
         if (n == 19) {
             object = itemStackArray;
             itemStackArray.packetSender.sendPositionHintIcon(3076, 3081, 100, 2);
-            itemStackArray.getDialogueManager().a("Cooking dough.", "Now you have made dough, you can cook it. To cook the dough,", "use it with the range shown by the arrow. If you lose your", "dough, talk to Lev - he will give you more ingredients.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Cooking dough.", "Now you have made dough, you can cook it. To cook the dough,", "use it with the range shown by the arrow. If you lose your", "dough, talk to Lev - he will give you more ingredients.", "", true);
         }
         if (n == 20) {
             object = itemStackArray;
             itemStackArray.packetSender.flashSidebarIcon(QuestConstants.MUSIC_TAB_INTERFACE[0]);
-            itemStackArray.getDialogueManager().a("Cooking dough.", "Well done! Your first loaf of bread. As you gain experience in", "Cooking, you will be able to make other things like pies, cakes", "and even kebabs. Now you've got the hang of cooking, let's", "move on. Click on the flashing icon in the bottom right.", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Cooking dough.", "Well done! Your first loaf of bread. As you gain experience in", "Cooking, you will be able to make other things like pies, cakes", "and even kebabs. Now you've got the hang of cooking, let's", "move on. Click on the flashing icon in the bottom right.", true);
         }
         if (n == 21) {
             object = itemStackArray;
             itemStackArray.packetSender.sendPositionHintIcon(3073, 3090, 130, 3);
-            itemStackArray.getDialogueManager().a("The music player.", "From this interface you can control the music that is played.", "As you explore the world, more of the tunes will become", "unlocked. Once you've examined this menu use the next door", "to continue. If you need a recap talk to the Master Chef.", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("The music player.", "From this interface you can control the music that is played.", "As you explore the world, more of the tunes will become", "unlocked. Once you've examined this menu use the next door", "to continue. If you need a recap talk to the Master Chef.", true);
         }
         if (n == 22) {
             object = itemStackArray;
             itemStackArray.packetSender.flashSidebarIcon(QuestConstants.EMOTES_TAB_INTERFACE[0]);
-            itemStackArray.getDialogueManager().a("It's only a short distance to the next guide", "", "Why not try running there. Start by opening the player", "controls, that's the flashing icon of a running man.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("It's only a short distance to the next guide", "", "Why not try running there. Start by opening the player", "controls, that's the flashing icon of a running man.", "", true);
         }
         if (n == 23) {
-            itemStackArray.getDialogueManager().a("Running.", "In this menu you will see many options from waving to walking.", "At the top of the panel there are two buttons. One is walk the", "other one is run. Click the run button.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Running.", "In this menu you will see many options from waving to walking.", "At the top of the panel there are two buttons. One is walk the", "other one is run. Click the run button.", "", true);
         }
         if (n == 24) {
             object = itemStackArray;
             itemStackArray.packetSender.sendPositionHintIcon(3086, 3126, 130, 5);
-            itemStackArray.getDialogueManager().a("Run to the next guide.", "Now that you have the run turned on follow the path, until you", "come to the end. You may notice that your energy left goes", "down. If this reaches zero you'll stop running. Click on the door", "to pass through it.", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Run to the next guide.", "Now that you have the run turned on follow the path, until you", "come to the end. You may notice that your energy left goes", "down. If this reaches zero you'll stop running. Click on the door", "to pass through it.", true);
         }
         if (n == 25) {
             object = itemStackArray;
             itemStackArray.packetSender.sendEntityHintIcon(1, Npc.findByDefinitionId(949).getIndex());
-            itemStackArray.getDialogueManager().a("", "Talk with the Quest Guide.", "", "He will tell you all about quests.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("", "Talk with the Quest Guide.", "", "He will tell you all about quests.", "", true);
         }
         if (n == 26) {
             object = itemStackArray;
             itemStackArray.packetSender.flashSidebarIcon(QuestConstants.QUEST_TAB_INTERFACE[0]);
-            itemStackArray.getDialogueManager().a("", "Open the Quest Journal.", "", "Click on the flashing icon next to your inventory.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("", "Open the Quest Journal.", "", "Click on the flashing icon next to your inventory.", "", true);
         }
         if (n == 27) {
             object = itemStackArray;
             itemStackArray.packetSender.sendEntityHintIcon(1, Npc.findByDefinitionId(949).getIndex());
-            itemStackArray.getDialogueManager().a("Your Quest Journal.", "", "This is your Quest Journal, a list of all the quests in the game.", "Talk to the Quest Guide again for an explanation.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Your Quest Journal.", "", "This is your Quest Journal, a list of all the quests in the game.", "Talk to the Quest Guide again for an explanation.", "", true);
         }
         if (n == 28) {
             object = itemStackArray;
             itemStackArray.packetSender.sendPositionHintIcon(3088, 3119, 100, 2);
-            itemStackArray.getDialogueManager().a("", "Moving on.", "It's time to enter some caves. Click on the ladder to go down to", "the next area.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("", "Moving on.", "It's time to enter some caves. Click on the ladder to go down to", "the next area.", "", true);
         }
         if (n == 29) {
             object = itemStackArray;
             itemStackArray.packetSender.sendEntityHintIcon(1, Npc.findByDefinitionId(948).getIndex());
-            itemStackArray.getDialogueManager().a("Mining and Smithing.", "Next let's get you a weapon, or more to the point, you can", "make your first weapon yourself. Don't panic, the Mining", "Instructor will help you. Talk to him and he'll tell you all about it.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Mining and Smithing.", "Next let's get you a weapon, or more to the point, you can", "make your first weapon yourself. Don't panic, the Mining", "Instructor will help you. Talk to him and he'll tell you all about it.", "", true);
         }
         if (n == 30) {
             object = itemStackArray;
             itemStackArray.packetSender.sendPositionHintIcon(3076, 9504, 70, 2);
-            itemStackArray.getDialogueManager().a("Prospecting.", "To prospect a mineable rock, just right click it and select the", "'prospect rock' option. This will tell you the type of ore you can", "mine from it. Try it now on one of the rocks indicated.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Prospecting.", "To prospect a mineable rock, just right click it and select the", "'prospect rock' option. This will tell you the type of ore you can", "mine from it. Try it now on one of the rocks indicated.", "", true);
         }
         if (n == 31) {
             object = itemStackArray;
             itemStackArray.packetSender.sendPositionHintIcon(3086, 9501, 70, 2);
-            itemStackArray.getDialogueManager().a("It's tin.", "", "So now you know there's tin in the grey rocks, try prospecting", "the brown ones next.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("It's tin.", "", "So now you know there's tin in the grey rocks, try prospecting", "the brown ones next.", "", true);
         }
         if (n == 32) {
             object = itemStackArray;
             itemStackArray.packetSender.sendEntityHintIcon(1, Npc.findByDefinitionId(948).getIndex());
-            itemStackArray.getDialogueManager().a("It's copper.", "Talk to the Mining Instructor to find out about these types of", "ore and how you can mine them. He'll even give you the", "required tools.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("It's copper.", "Talk to the Mining Instructor to find out about these types of", "ore and how you can mine them. He'll even give you the", "required tools.", "", true);
         }
         if (n == 33) {
             object = itemStackArray;
             itemStackArray.packetSender.sendPositionHintIcon(3076, 9504, 70, 2);
-            itemStackArray.getDialogueManager().a("Mining.", "It's quite simple really. All you need to do is right click on the", "rock and select 'mine'. You can only mine when you have a", "pickaxe. So give it a try: first mine one tin ore.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Mining.", "It's quite simple really. All you need to do is right click on the", "rock and select 'mine'. You can only mine when you have a", "pickaxe. So give it a try: first mine one tin ore.", "", true);
         }
         if (n == 34) {
             object = itemStackArray;
             itemStackArray.packetSender.sendPositionHintIcon(3086, 9501, 70, 2);
-            itemStackArray.getDialogueManager().a("Mining.", "Now you have some tin ore you just need some copper ore,", "then you'll have all you need to create a bronze bar. As you", "did before right click on the copper rock and select 'mine'.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Mining.", "Now you have some tin ore you just need some copper ore,", "then you'll have all you need to create a bronze bar. As you", "did before right click on the copper rock and select 'mine'.", "", true);
         }
         if (n == 35) {
             object = itemStackArray;
             itemStackArray.packetSender.sendPositionHintIcon(3079, 9496, 120, 2);
-            itemStackArray.getDialogueManager().a("Smelting.", "You should now have both some copper and tin ore. So let's", "smelt them to make a bronze bar. To do this, right click on", "either tin or copper ore and select use then left click on the", "furnace. Try it now.", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Smelting.", "You should now have both some copper and tin ore. So let's", "smelt them to make a bronze bar. To do this, right click on", "either tin or copper ore and select use then left click on the", "furnace. Try it now.", true);
         }
         if (n == 36) {
             object = itemStackArray;
             itemStackArray.packetSender.sendEntityHintIcon(1, Npc.findByDefinitionId(948).getIndex());
-            itemStackArray.getDialogueManager().a("You've made a bronze bar!", "", "Speak to the Mining Instructor and he'll show you how to make", "it into a weapon.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("You've made a bronze bar!", "", "Speak to the Mining Instructor and he'll show you how to make", "it into a weapon.", "", true);
         }
         if (n == 37) {
             object = itemStackArray;
             itemStackArray.packetSender.sendPositionHintIcon(3083, 9499, 70, 2);
-            itemStackArray.getDialogueManager().a("Smithing a dagger.", "To smith you'll need a hammer - like the one you were given by", "Dezzick - access to an anvil like the one with the arrow over it", "and enough metal bars to make what you are trying to smith.", "To start the process, use the bar on one of the anvils.", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Smithing a dagger.", "To smith you'll need a hammer - like the one you were given by", "Dezzick - access to an anvil like the one with the arrow over it", "and enough metal bars to make what you are trying to smith.", "To start the process, use the bar on one of the anvils.", true);
         }
         if (n == 38) {
-            itemStackArray.getDialogueManager().a("Smithing a dagger.", "Now you have the Smithing menu open, you will see a list of all", "the things you can make. Only the dagger can be made at your", "skill level; this is shown by the white text under it. You'll need", "to select the dagger to continue.", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Smithing a dagger.", "Now you have the Smithing menu open, you will see a list of all", "the things you can make. Only the dagger can be made at your", "skill level; this is shown by the white text under it. You'll need", "to select the dagger to continue.", true);
         }
         if (n == 39) {
             object = itemStackArray;
             itemStackArray.packetSender.sendPositionHintIcon(3094, 9502, 120, 4);
-            itemStackArray.getDialogueManager().a("You've finished in this area.", "So let's move on. Go through the gates shown by the arrow.", "Remember, you may need to move the camera to see your", "surroundings. Speak to the guide for a recap at any time.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("You've finished in this area.", "So let's move on. Go through the gates shown by the arrow.", "Remember, you may need to move the camera to see your", "surroundings. Speak to the guide for a recap at any time.", "", true);
         }
         if (n == 40) {
             object = itemStackArray;
             itemStackArray.packetSender.sendEntityHintIcon(1, Npc.findByDefinitionId(944).getIndex());
-            itemStackArray.getDialogueManager().a("Combat.", "", "In this area you will find out about combat with swords and", "bows. Speak to the guide and he will tell you all about it.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Combat.", "", "In this area you will find out about combat with swords and", "bows. Speak to the guide and he will tell you all about it.", "", true);
         }
         if (n == 41) {
             object = itemStackArray;
             itemStackArray.packetSender.flashSidebarIcon(QuestConstants.EQUIPMENT_TAB_INTERFACE[0]);
-            itemStackArray.getDialogueManager().a("Wielding weapons.", "", "You now have access to a new interface. Click on the flashing", "icon of a man, the one to the right of your backpack icon.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Wielding weapons.", "", "You now have access to a new interface. Click on the flashing", "icon of a man, the one to the right of your backpack icon.", "", true);
         }
         if (n == 42) {
-            itemStackArray.getDialogueManager().a("This is your worn inventory.", "From here you can see what items you have equipped. Let's", "get one of those slots filled, go back to your inventory", "and right click your dagger, select wield from the menu.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("This is your worn inventory.", "From here you can see what items you have equipped. Let's", "get one of those slots filled, go back to your inventory", "and right click your dagger, select wield from the menu.", "", true);
         }
         if (n == 43) {
             object = itemStackArray;
             itemStackArray.packetSender.sendEntityHintIcon(1, Npc.findByDefinitionId(944).getIndex());
-            itemStackArray.getDialogueManager().a("You're now holding your dagger.", "Clothes, armour, weapons and many other items are equipped", "like this. You can unequip items by clicking on the item in the", "worn inventory. Speak to the Combat Instructor to continue.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("You're now holding your dagger.", "Clothes, armour, weapons and many other items are equipped", "like this. You can unequip items by clicking on the item in the", "worn inventory. Speak to the Combat Instructor to continue.", "", true);
         }
         if (n == 44) {
-            itemStackArray.getDialogueManager().a("Unequipping items.", "In your worn inventory panel, right click on the dagger and", "select remove option from the drop down list. After you've", "unequipped the dagger, wield the sword and shield. As you", "pass the mouse over an item you will see it's name.", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Unequipping items.", "In your worn inventory panel, right click on the dagger and", "select remove option from the drop down list. After you've", "unequipped the dagger, wield the sword and shield. As you", "pass the mouse over an item you will see it's name.", true);
         }
         if (n == 45) {
             object = itemStackArray;
             itemStackArray.packetSender.flashSidebarIcon(QuestConstants.COMBAT_TAB_INTERFACE[0]);
-            itemStackArray.getDialogueManager().a("Combat Interface.", "", "Click on the flashing crossed swords icon to see the combat", "interface.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Combat Interface.", "", "Click on the flashing crossed swords icon to see the combat", "interface.", "", true);
         }
         if (n == 46) {
             object = itemStackArray;
             itemStackArray.packetSender.sendPositionHintIcon(3110, 9518, 120, 4);
-            itemStackArray.getDialogueManager().a("This is your combat interface.", "From this interface you can select the type of attack your", "character will use. Different monsters have different", "weaknesses. Now you have the tools needed for battle why", "not slay some rats. Click on the gate indicated to continue.", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("This is your combat interface.", "From this interface you can select the type of attack your", "character will use. Different monsters have different", "weaknesses. Now you have the tools needed for battle why", "not slay some rats. Click on the gate indicated to continue.", true);
         }
         if (n == 47) {
             object = itemStackArray;
             itemStackArray.packetSender.sendEntityHintIcon(1, Npc.findByDefinitionId(950).getIndex());
-            itemStackArray.getDialogueManager().a("Attacking.", "", "To attack the rat, right click it and select the attack option. You", "will then walk over to it and start hitting it.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Attacking.", "", "To attack the rat, right click it and select the attack option. You", "will then walk over to it and start hitting it.", "", true);
         }
         if (n == 48) {
             object = itemStackArray;
             itemStackArray.packetSender.sendEntityHintIcon(1, Npc.findByDefinitionId(944).getIndex());
-            itemStackArray.getDialogueManager().a("Well done, you've made your first kill!", "", "Pass through the gate and talk to the Combat Instructor; he", "will give you your next task.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Well done, you've made your first kill!", "", "Pass through the gate and talk to the Combat Instructor; he", "will give you your next task.", "", true);
         }
         if (n == 49) {
             object = itemStackArray;
             itemStackArray.packetSender.sendEntityHintIcon(1, Npc.findByDefinitionId(950).getIndex());
-            itemStackArray.getDialogueManager().a("Rat ranging.", "Now you have a bow and some arrows. Before you can use", "them you'll need to equip them. Once equipped with the", "ranging gear, try killing another rat. Remember: to attack, right", "click on the monster and select attack.", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Rat ranging.", "Now you have a bow and some arrows. Before you can use", "them you'll need to equip them. Once equipped with the", "ranging gear, try killing another rat. Remember: to attack, right", "click on the monster and select attack.", true);
         }
         if (n == 50) {
             object = itemStackArray;
             itemStackArray.packetSender.sendPositionHintIcon(3111, 9526, 100, 2);
-            itemStackArray.getDialogueManager().a("Moving on.", "You have completed the tasks here. To move on, click on the", "ladder shown. If you need to go over any of what you learnt", "here, just talk to the Combat Instructor and he'll tell you what", "he can.", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Moving on.", "You have completed the tasks here. To move on, click on the", "ladder shown. If you need to go over any of what you learnt", "here, just talk to the Combat Instructor and he'll tell you what", "he can.", true);
         }
         if (n == 51) {
             object = itemStackArray;
             itemStackArray.packetSender.sendPositionHintIcon(3122, 3124, 100, 2);
-            itemStackArray.getDialogueManager().a("Banking.", "Follow the path and you will come to the front of the building.", "This is the Bank of Runescape, where you can store all your", "most valued items. To open your bank box just right click on an", "open booth indicated and select 'use'.", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Banking.", "Follow the path and you will come to the front of the building.", "This is the Bank of Runescape, where you can store all your", "most valued items. To open your bank box just right click on an", "open booth indicated and select 'use'.", true);
         }
         if (n == 52) {
             object = itemStackArray;
             itemStackArray.packetSender.sendPositionHintIcon(3125, 3124, 130, 3);
-            itemStackArray.getDialogueManager().a("This is your bank box.", "You can store stuff here for safekeeping. If you die, anything", "in your bank will be saved. To deposit something, right click it", "and select 'store'. Once you've had a good look, close the", "window and move on through the door indicated.", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("This is your bank box.", "You can store stuff here for safekeeping. If you die, anything", "in your bank will be saved. To deposit something, right click it", "and select 'store'. Once you've had a good look, close the", "window and move on through the door indicated.", true);
         }
         if (n == 53) {
             object = itemStackArray;
             itemStackArray.packetSender.sendEntityHintIcon(1, Npc.findByDefinitionId(947).getIndex());
-            itemStackArray.getDialogueManager().a("Financial advice.", "", "The guide here will tell you all about making cash. Just click on", "him to hear what he's got to say.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Financial advice.", "", "The guide here will tell you all about making cash. Just click on", "him to hear what he's got to say.", "", true);
         }
         if (n == 54) {
             object = itemStackArray;
             itemStackArray.packetSender.sendPositionHintIcon(3130, 3124, 130, 3);
-            itemStackArray.getDialogueManager().a("", "", "Continue through the next door.", "", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("", "", "Continue through the next door.", "", "", true);
         }
         if (n == 55) {
             object = itemStackArray;
             itemStackArray.packetSender.sendEntityHintIcon(1, Npc.findByDefinitionId(954).getIndex());
-            itemStackArray.getDialogueManager().a("Prayer.", "Follow the path to the chapel and enter it.", "Once inside talk to the monk. He'll tell you all about the Prayer", "skill.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Prayer.", "Follow the path to the chapel and enter it.", "Once inside talk to the monk. He'll tell you all about the Prayer", "skill.", "", true);
         }
         if (n == 56) {
             object = itemStackArray;
             itemStackArray.packetSender.flashSidebarIcon(QuestConstants.PRAYER_TAB_INTERFACE[0]);
-            itemStackArray.getDialogueManager().a("Your Prayer menu.", "", "Click on the flashing icon to open the Prayer menu.", "", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Your Prayer menu.", "", "Click on the flashing icon to open the Prayer menu.", "", "", true);
         }
         if (n == 57) {
             object = itemStackArray;
             itemStackArray.packetSender.sendEntityHintIcon(1, Npc.findByDefinitionId(954).getIndex());
-            itemStackArray.getDialogueManager().a("", "Your Prayer menu.", "", "Talk with Brother Brace and he'll tell you about prayers.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("", "Your Prayer menu.", "", "Talk with Brother Brace and he'll tell you about prayers.", "", true);
         }
         if (n == 58) {
             object = itemStackArray;
             itemStackArray.packetSender.flashSidebarIcon(QuestConstants.FRIENDS_TAB_INTERFACE[0]);
-            itemStackArray.getDialogueManager().a("", "Friends list.", "You should now see another new icon. Click on the flashing", "smiling face to open your friends list.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("", "Friends list.", "You should now see another new icon. Click on the flashing", "smiling face to open your friends list.", "", true);
         }
         if (n == 59) {
             object = itemStackArray;
             itemStackArray.packetSender.flashSidebarIcon(QuestConstants.IGNORE_TAB_INTERFACE[0]);
-            itemStackArray.getDialogueManager().a("This is your friends list.", "", "This will be explained by Brother Brace shortly, but first click", "on the other flashing face to the right of your screen.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("This is your friends list.", "", "This will be explained by Brother Brace shortly, but first click", "on the other flashing face to the right of your screen.", "", true);
         }
         if (n == 60) {
             object = itemStackArray;
             itemStackArray.packetSender.sendEntityHintIcon(1, Npc.findByDefinitionId(954).getIndex());
-            itemStackArray.getDialogueManager().a("This is your ignore list.", "The two lists - friends and ignore - can be very helpful for", "keeping track of when your friends are online or for blocking", "messages from people you simply don't like. Speak with", "Brother Brace and he will tell you more.", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("This is your ignore list.", "The two lists - friends and ignore - can be very helpful for", "keeping track of when your friends are online or for blocking", "messages from people you simply don't like. Speak with", "Brother Brace and he will tell you more.", true);
         }
         if (n == 61) {
             object = itemStackArray;
             itemStackArray.packetSender.sendPositionHintIcon(3122, 3102, 130, 6);
-            itemStackArray.getDialogueManager().a("", "Your final instructor!", "You're almost finished on tutorial island. Pass through the", "door to find the path leading to your final instructor.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("", "Your final instructor!", "You're almost finished on tutorial island. Pass through the", "door to find the path leading to your final instructor.", "", true);
         }
         if (n == 62) {
             object = itemStackArray;
             itemStackArray.packetSender.sendEntityHintIcon(1, Npc.findByDefinitionId(946).getIndex());
-            itemStackArray.getDialogueManager().a("Your final instructor!", "Just follow the path to the Wizard's house, where you will be", "shown how to cast spells. Just talk with the mage indicated to", "find out more.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Your final instructor!", "Just follow the path to the Wizard's house, where you will be", "shown how to cast spells. Just talk with the mage indicated to", "find out more.", "", true);
         }
         if (n == 63) {
             object = itemStackArray;
             itemStackArray.packetSender.flashSidebarIcon(QuestConstants.MAGIC_TAB_INTERFACE[0]);
-            itemStackArray.getDialogueManager().a("Open up your final menu.", "", "Open up the Magic menu by clicking on the flashing icon next", "to the Prayer button you just learned about.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Open up your final menu.", "", "Open up the Magic menu by clicking on the flashing icon next", "to the Prayer button you just learned about.", "", true);
         }
         if (n == 64) {
             object = itemStackArray;
             itemStackArray.packetSender.sendEntityHintIcon(1, Npc.findByDefinitionId(946).getIndex());
-            itemStackArray.getDialogueManager().a("", "This is where all of your magic spells are.", "Talk to Terrova to learn more.", "", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("", "This is where all of your magic spells are.", "Talk to Terrova to learn more.", "", "", true);
         }
         if (n == 65) {
             object = itemStackArray;
             itemStackArray.packetSender.sendEntityHintIcon(1, Npc.findByDefinitionId(951).getIndex());
-            itemStackArray.getDialogueManager().a("Cast Wind Strike at a chicken.", "Now you have runes you should see the Wind Strike icon at the", "top left corner of the Magic interface - first in from the", "left. Walk over to the caged chickens, click the Wind Strike icon", "and then select one of the chickens to cast it on.", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Cast Wind Strike at a chicken.", "Now you have runes you should see the Wind Strike icon at the", "top left corner of the Magic interface - first in from the", "left. Walk over to the caged chickens, click the Wind Strike icon", "and then select one of the chickens to cast it on.", true);
         }
         if (n == 66) {
             object = itemStackArray;
             itemStackArray.packetSender.sendEntityHintIcon(1, Npc.findByDefinitionId(951).getIndex());
-            itemStackArray.getDialogueManager().a("Cast Wind Strike on a chicken.", "That's it, you cast a spell! Sadly it didn't have any effect this time, but", "the more you practice, the better you'll get. Repeat this process until", "you successfully cast the spell. Click the Wind Strike icon again and", "then select one of the chickens.", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("Cast Wind Strike on a chicken.", "That's it, you cast a spell! Sadly it didn't have any effect this time, but", "the more you practice, the better you'll get. Repeat this process until", "you successfully cast the spell. Click the Wind Strike icon again and", "then select one of the chickens.", true);
         }
         if (n == 67) {
             object = itemStackArray;
             itemStackArray.packetSender.sendEntityHintIcon(1, Npc.findByDefinitionId(946).getIndex());
-            itemStackArray.getDialogueManager().a("You have almost completed the tutorial!", "", "All you need to do now is move on to the mainland. Just speak", "with Terrova and he'll teleport you to Lumbridge Castle.", "", true);
+            itemStackArray.getDialogueManager().showTutorialInstructionOverlay("You have almost completed the tutorial!", "", "All you need to do now is move on to the mainland. Just speak", "with Terrova and he'll teleport you to Lumbridge Castle.", "", true);
         }
         if (n == 68) {
             object = itemStackArray;
@@ -639,27 +639,27 @@ extends QuestScript {
             object = itemStackArray;
             itemStackArray.packetSender.showWalkableInterface(-1);
             itemStackArray.getDialogueManager().showFiveLineStatement("Welcome to Lumbridge! To get more help, simply click on the", "Lumbridge Guide and he will give you some tips.", "He can be found by looking for the question mark icon on", "your minimap. If you find that you are lost any time, look for", "other players, they might help you to make your way back.");
-            Object object2 = itemStackArray;
+            Player player2 = itemStackArray;
             itemStackArray.getInventoryManager().getContainer().clear();
-            object2.getEquipmentManager().getContainer().clear();
-            object2.getBankContainer().clear();
-            object2.getInventoryManager().refresh();
-            object2.getEquipmentManager().refresh();
-            object2.setAppearanceUpdateRequired(true);
-            object2.getBankContainer().addToTab(new ItemStack(995, 25), 0);
+            player2.getEquipmentManager().getContainer().clear();
+            player2.getBankContainer().clear();
+            player2.getInventoryManager().refresh();
+            player2.getEquipmentManager().refresh();
+            player2.setAppearanceUpdateRequired(true);
+            player2.getBankContainer().addToTab(new ItemStack(995, 25), 0);
             object = new ItemStack[]{new ItemStack(1351), new ItemStack(590), new ItemStack(303), new ItemStack(315), new ItemStack(1925), new ItemStack(1931), new ItemStack(2309), new ItemStack(1265), new ItemStack(1205), new ItemStack(1277), new ItemStack(1171), new ItemStack(841), new ItemStack(882, 25), new ItemStack(556, 25), new ItemStack(558, 15), new ItemStack(555, 6), new ItemStack(557, 4), new ItemStack(559, 2)};
-            ItemStack[] itemStackArray2 = object;
+            ItemStack[] itemStackArray2 = (ItemStack[])object;
             int n2 = 0;
             while (n2 < 18) {
                 object = itemStackArray2[n2];
-                object2.getInventoryManager().addItem((ItemStack)object);
+                player2.getInventoryManager().addItem((ItemStack)object);
                 ++n2;
             }
             itemStackArray.setQuestState(0, 1);
             if (itemStackArray.loginRestrictionExempt) {
-                object2 = new ItemStack(7956, 1);
-                itemStackArray.getInventoryManager().addItem((ItemStack)object2);
-                GameUtil.addTrackedRareItemAmount((ItemStack)object2);
+                ItemStack itemStack = new ItemStack(7956, 1);
+                itemStackArray.getInventoryManager().addItem(itemStack);
+                GameUtil.addTrackedRareItemAmount(itemStack);
                 object = itemStackArray;
                 itemStackArray.packetSender.sendGameMessage("You received a reward for participating the test week.");
             }

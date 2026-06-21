@@ -27,13 +27,11 @@ public enum AmmunitionProfile {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private AmmunitionProfile(ProjectileTiming projectileTiming, AmmunitionDefinition[] ammunitionDefinitionArray) {
-        void var6_4;
-        void var5_3;
-        this.equipmentSlot = (int)projectileTiming;
+    private AmmunitionProfile(int n2, int n3, ProjectileTiming projectileTiming, AmmunitionDefinition[] ammunitionDefinitionArray) {
+        this.equipmentSlot = n2;
         this.graphicDelay = 90;
-        this.projectileTiming = var5_3;
-        this.allowedAmmunition = var6_4;
+        this.projectileTiming = projectileTiming;
+        this.allowedAmmunition = ammunitionDefinitionArray;
     }
 
     public final ProjectileTiming getProjectileTiming() {

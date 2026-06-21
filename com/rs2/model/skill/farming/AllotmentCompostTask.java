@@ -8,13 +8,13 @@ import com.rs2.model.skill.farming.AllotmentPatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class AllotmentCompostTask
+public final class AllotmentCompostTask
 extends CycleEvent {
     private /* synthetic */ AllotmentPatchManager manager;
     private final /* synthetic */ AllotmentPatch patch;
     private final /* synthetic */ int compostItemId;
 
-    AllotmentCompostTask(AllotmentPatchManager allotmentPatchManager, AllotmentPatch allotmentPatch, int n) {
+    public AllotmentCompostTask(AllotmentPatchManager allotmentPatchManager, AllotmentPatch allotmentPatch, int n) {
         this.manager = allotmentPatchManager;
         this.patch = allotmentPatch;
         this.compostItemId = n;

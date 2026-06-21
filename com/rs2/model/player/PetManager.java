@@ -54,7 +54,7 @@ public final class PetManager {
         this.owner.getInventoryManager().removeItem(new ItemStack(n, 1));
         this.activePetItemId = n;
         this.activePetNpc = new Npc(n2);
-        this.activePetNpc.a(new Position(this.owner.getPosition().getX() - 1, this.owner.getPosition().getY(), this.owner.getPosition().getPlane()));
+        this.activePetNpc.moveTo(new Position(this.owner.getPosition().getX() - 1, this.owner.getPosition().getY(), this.owner.getPosition().getPlane()));
         this.activePetNpc.setSpawnPosition(new Position(this.owner.getPosition().getX() - 1, this.owner.getPosition().getY(), this.owner.getPosition().getPlane()));
         this.activePetNpc.setSpawnX(this.owner.getPosition().getX() - 1);
         this.activePetNpc.setSpawnY(this.owner.getPosition().getY() - 1);
@@ -65,7 +65,7 @@ public final class PetManager {
     public final void spawnQuestCatFollower(int n, int n2) {
         this.activePetItemId = 1561;
         this.activePetNpc = new Npc(768);
-        this.activePetNpc.a(new Position(this.owner.getPosition().getX(), this.owner.getPosition().getY() - 1, this.owner.getPosition().getPlane()));
+        this.activePetNpc.moveTo(new Position(this.owner.getPosition().getX(), this.owner.getPosition().getY() - 1, this.owner.getPosition().getPlane()));
         this.activePetNpc.setSpawnPosition(new Position(this.owner.getPosition().getX(), this.owner.getPosition().getY() - 1, this.owner.getPosition().getPlane()));
         this.activePetNpc.setSpawnX(this.owner.getPosition().getX() - 1);
         this.activePetNpc.setSpawnY(this.owner.getPosition().getY() - 1);

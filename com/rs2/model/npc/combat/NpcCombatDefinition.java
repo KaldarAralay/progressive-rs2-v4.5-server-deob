@@ -91,7 +91,7 @@ public abstract class NpcCombatDefinition {
             if (npcDefinition != null && npcDefinition.respawnDelaySeconds > 0) {
                 double d;
                 double d2 = npcDefinition.getCombatLevel();
-                if (d <= 0.0) {
+                if (d2 <= 0.0) {
                     npcCombatDefinition.respawnDelayTicks = npcDefinition.respawnDelaySeconds;
                 } else {
                     double d3;

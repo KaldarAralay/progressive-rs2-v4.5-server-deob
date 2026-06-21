@@ -130,7 +130,7 @@ public final class FlowerPatchManager {
                 } else {
                     Object object = FlowerDefinition.forSeedId(this.cropIds[n]);
                     if (object != null && this.cropIds[n] != 33 && !this.shouldStopGrowthCycle(n)) {
-                        n2 = (int)(l / (long)object.getGrowthCycleTicks());
+                        n2 = (int)(l / (long)((FlowerDefinition)object).getGrowthCycleTicks());
                         int n6 = this.growthStages[n] - 4;
                         if ((n6 = n2 - n6) > 0) {
                             int n7 = 0;
@@ -220,7 +220,7 @@ public final class FlowerPatchManager {
             this.player.getDialogueManager().showTwoLineStatement("This plant is dead. You did not cure it while it was diseased.", "Clear the patch with a spade.");
             return true;
         }
-        if (this.patchStates[flowerPatch.getIndex()] == 1 || this.growthStages[flowerPatch.getIndex()] <= 1 || this.growthStages[flowerPatch.getIndex()] == object.getGrowthStageCount() + 4) {
+        if (this.patchStates[flowerPatch.getIndex()] == 1 || this.growthStages[flowerPatch.getIndex()] <= 1 || this.growthStages[flowerPatch.getIndex()] == ((FlowerDefinition)object).getGrowthStageCount() + 4) {
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("This patch doesn't need watering.");
             return true;
@@ -320,7 +320,7 @@ public final class FlowerPatchManager {
         if (object == null) {
             return false;
         }
-        FlowerDefinition flowerDefinition = FlowerDefinition.forSeedId(this.cropIds[object.getIndex()]);
+        FlowerDefinition flowerDefinition = FlowerDefinition.forSeedId(this.cropIds[((FlowerPatch)object).getIndex()]);
         if (flowerDefinition == null) {
             return false;
         }
@@ -430,7 +430,7 @@ public final class FlowerPatchManager {
         if (object == null) {
             return false;
         }
-        FlowerDefinition flowerDefinition = FlowerDefinition.forSeedId(this.cropIds[object.getIndex()]);
+        FlowerDefinition flowerDefinition = FlowerDefinition.forSeedId(this.cropIds[((FlowerPatch)object).getIndex()]);
         if (flowerDefinition == null) {
             return false;
         }
@@ -439,12 +439,12 @@ public final class FlowerPatchManager {
             ((Player)object).packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
-        if (this.patchStates[object.getIndex()] != 3) {
+        if (this.patchStates[((FlowerPatch)object).getIndex()] != 3) {
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("This plant doesn't need to be resurrected.");
             return true;
         }
-        this.player.setPendingCropResurrectionTarget("flower", object.getIndex());
+        this.player.setPendingCropResurrectionTarget("flower", ((FlowerPatch)object).getIndex());
         return true;
     }
 
@@ -453,7 +453,7 @@ public final class FlowerPatchManager {
             Object object = FlowerDefinition.forSeedId(this.cropIds[this.player.pendingCropResurrectionPatchIndex]);
             this.patchStates[this.player.pendingCropResurrectionPatchIndex] = 0;
             int n = this.growthStages[this.player.pendingCropResurrectionPatchIndex] - 4;
-            this.lastUpdateTicks[this.player.pendingCropResurrectionPatchIndex] = Server.getElapsedMinutes() - (long)(object.getGrowthCycleTicks() * n);
+            this.lastUpdateTicks[this.player.pendingCropResurrectionPatchIndex] = Server.getElapsedMinutes() - (long)(((FlowerDefinition)object).getGrowthCycleTicks() * n);
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("You succesfully resurrected the crop.");
         } else {
@@ -472,7 +472,7 @@ public final class FlowerPatchManager {
         if (object == null || n3 != 6036) {
             return false;
         }
-        FlowerDefinition flowerDefinition = FlowerDefinition.forSeedId(this.cropIds[object.getIndex()]);
+        FlowerDefinition flowerDefinition = FlowerDefinition.forSeedId(this.cropIds[((FlowerPatch)object).getIndex()]);
         if (flowerDefinition == null) {
             return false;
         }
@@ -481,7 +481,7 @@ public final class FlowerPatchManager {
             ((Player)object).packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
-        if (this.patchStates[object.getIndex()] != 2) {
+        if (this.patchStates[((FlowerPatch)object).getIndex()] != 2) {
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("This plant doesn't need to be cured.");
             return true;
@@ -489,7 +489,7 @@ public final class FlowerPatchManager {
         this.player.getInventoryManager().removeItem(new ItemStack(n3));
         this.player.getInventoryManager().addItem(new ItemStack(229));
         this.player.getUpdateState().setAnimation(2288);
-        this.patchStates[object.getIndex()] = 0;
+        this.patchStates[((FlowerPatch)object).getIndex()] = 0;
         this.player.setActionLocked(true);
         CycleEventHandler.getInstance().schedule(this.player, new FlowerCureTask(this), 7);
         return true;
@@ -505,7 +505,7 @@ public final class FlowerPatchManager {
             ((Player)object).packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
-        if (this.growthStages[object.getIndex()] != 3) {
+        if (this.growthStages[((FlowerPatch)object).getIndex()] != 3) {
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("You need to clear the patch before planting a scarecrow");
             return false;
@@ -527,7 +527,7 @@ public final class FlowerPatchManager {
         return flowerPatchManager.player;
     }
 
-    static /* synthetic */ void a(FlowerPatchManager flowerPatchManager, int n) {
+    static /* synthetic */ void resetPatch(FlowerPatchManager flowerPatchManager, int n) {
         flowerPatchManager.resetPatch(n);
     }
 }

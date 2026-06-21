@@ -669,7 +669,8 @@ extends Entity {
 
     public final void clearTemporaryCutsceneNpcs() {
         if (this.temporaryCutsceneNpcs.size() > 0) {
-            for (Npc npc : this.temporaryCutsceneNpcs) {
+            for (Object npcObject : this.temporaryCutsceneNpcs) {
+                Npc npc = (Npc)npcObject;
                 if (npc == null) continue;
                 GameplayHelper.unregisterTemporaryNpc(npc);
             }
@@ -679,7 +680,8 @@ extends Entity {
 
     public final Npc findTemporaryCutsceneNpc(int n) {
         if (this.temporaryCutsceneNpcs.size() > 0) {
-            for (Npc npc : this.temporaryCutsceneNpcs) {
+            for (Object npcObject : this.temporaryCutsceneNpcs) {
+                Npc npc = (Npc)npcObject;
                 if (npc == null || npc.getNpcId() != n) continue;
                 return npc;
             }
@@ -693,11 +695,11 @@ extends Entity {
         Npc npc3 = new Npc(1414);
         Npc npc4 = new Npc(1416);
         Npc npc5 = new Npc(1418);
-        GameplayHelper.a(this, npc, 2699, 9168, n, -1, false, false);
-        GameplayHelper.a(this, npc2, 2697, 9175, n, -1, false, false);
-        GameplayHelper.a(this, npc3, 2703, 9168, n, -1, false, false);
-        GameplayHelper.a(this, npc4, 2698, 9172, n, -1, false, false);
-        GameplayHelper.a(this, npc5, 2697, 9171, n, -1, false, false);
+        GameplayHelper.spawnRoamingNpcFacingPlayer(this, npc, 2699, 9168, n, -1, false, false);
+        GameplayHelper.spawnRoamingNpcFacingPlayer(this, npc2, 2697, 9175, n, -1, false, false);
+        GameplayHelper.spawnRoamingNpcFacingPlayer(this, npc3, 2703, 9168, n, -1, false, false);
+        GameplayHelper.spawnRoamingNpcFacingPlayer(this, npc4, 2698, 9172, n, -1, false, false);
+        GameplayHelper.spawnRoamingNpcFacingPlayer(this, npc5, 2697, 9171, n, -1, false, false);
         npc.getUpdateState().setGraphic(86, 25);
         npc2.getUpdateState().setGraphic(86, 25);
         npc3.getUpdateState().setGraphic(86, 25);
@@ -727,24 +729,21 @@ extends Entity {
     }
 
     public final void d(int n, int n2) {
+        ItemStack itemStack = new ItemStack(n, n2);
         ItemStack[] itemStackArray;
-        Object object = new ItemStack(n, n2);
-        ItemStack itemStack = object;
-        object = this;
-        if (((Player)object).botTaskRequiredItems != null) {
-            itemStackArray = new ItemStack[((Player)object).botTaskRequiredItems.length + 1];
+        if (this.botTaskRequiredItems != null) {
+            itemStackArray = new ItemStack[this.botTaskRequiredItems.length + 1];
             int n3 = 0;
-            while (n3 < ((Player)object).botTaskRequiredItems.length) {
-                itemStackArray[n3] = ((Player)object).botTaskRequiredItems[n3];
+            while (n3 < this.botTaskRequiredItems.length) {
+                itemStackArray[n3] = this.botTaskRequiredItems[n3];
                 ++n3;
             }
-            itemStackArray[((Player)object).botTaskRequiredItems.length] = itemStack;
+            itemStackArray[this.botTaskRequiredItems.length] = itemStack;
         } else {
-            ItemStack[] itemStackArray2 = new ItemStack[1];
-            itemStackArray = itemStackArray2;
-            itemStackArray2[0] = itemStack;
+            itemStackArray = new ItemStack[1];
+            itemStackArray[0] = itemStack;
         }
-        ((Player)object).botTaskRequiredItems = itemStackArray;
+        this.botTaskRequiredItems = itemStackArray;
     }
 
     private boolean recoverBotTaskStall(boolean bl) {
@@ -783,8 +782,7 @@ extends Entity {
         this.botShopSellItemIds.clear();
         this.botTaskRequiredItems = null;
         this.moveTo(new Position(ServerSettings.respawnX, ServerSettings.respawnY, ServerSettings.respawnPlane));
-        object = new BotLumbridgeResetTask(this, 2, (Player)object);
-        World.getTaskScheduler().schedule((TickTask)object);
+        World.getTaskScheduler().schedule(new BotLumbridgeResetTask(this, 2, (Player)object));
     }
 
     public final boolean hasBotStalled() {
@@ -824,7 +822,7 @@ extends Entity {
         if (this.currentBotTaskIndex != -1 && this.currentBotTaskTypeId != -1) {
             object = BotTaskDefinition.getTaskByTypeAndIndex(this.currentBotTaskTypeId, this.currentBotTaskIndex);
             player = this;
-            this.currentBotTask = object;
+            this.currentBotTask = (BotTaskDefinition)object;
             this.currentBotTask.configureTaskInteractionTargets(this);
         }
         if (this.deferredBotTaskIndex != -1 && this.deferredBotTaskTypeId != -1) {
@@ -941,7 +939,7 @@ extends Entity {
                 this.resetBotToLumbridge();
                 return;
             }
-            BotWorldRouteWalker.continueWorldRoute(this, object2);
+            BotWorldRouteWalker.continueWorldRoute(this, (BotWorldRouteChoice)object2);
             return;
         }
         if (this.botTaskState.equals("world walk towards")) {
@@ -952,7 +950,7 @@ extends Entity {
                 this.resetBotToLumbridge();
                 return;
             }
-            BotWorldRouteWalker.continueWorldRoute(this, object2);
+            BotWorldRouteWalker.continueWorldRoute(this, (BotWorldRouteChoice)object2);
             return;
         }
         if (this.botTaskState.equals("world walk finish")) {
@@ -963,7 +961,7 @@ extends Entity {
                 this.resetBotToLumbridge();
                 return;
             }
-            BotWorldRouteWalker.continueWorldRoute(this, object2);
+            BotWorldRouteWalker.continueWorldRoute(this, (BotWorldRouteChoice)object2);
             return;
         }
         if (this.botTaskState.equals("do task")) {
@@ -1005,25 +1003,20 @@ extends Entity {
         }
     }
 
-    public final void queuePublicChatMessage(String object, int n, int n2) {
-        if (object == null) {
+    public final void queuePublicChatMessage(String message, int n, int n2) {
+        if (message == null) {
             return;
         }
-        if (((String)object).equals("")) {
+        if (message.equals("")) {
             return;
         }
         byte[] byArray = new byte[100];
-        int n3 = ChatTextCodec.encode((String)object, byArray);
+        int n3 = ChatTextCodec.encode(message, byArray);
         byte[] byArray2 = new byte[n3];
-        ChatTextCodec.encode((String)object, byArray2);
-        object = this;
+        ChatTextCodec.encode(message, byArray2);
         this.publicChatEffects = n2;
-        n2 = n;
-        object = this;
-        this.publicChatColor = n2;
-        byte[] byArray3 = byArray2;
-        object = this;
-        this.publicChatPayload = byArray3;
+        this.publicChatColor = n;
+        this.publicChatPayload = byArray2;
         this.ay = true;
         this.flagAppearanceUpdate(true);
         this.getUpdateState().setUpdateRequired(true);
@@ -1250,167 +1243,118 @@ extends Entity {
         boolean bl = true;
         Player player = object;
         ((Player)object).actionLocked = bl;
-        object = new DropGodCapeTask(this, 4, (Player)object, n);
-        World.getTaskScheduler().schedule((TickTask)object);
+        World.getTaskScheduler().schedule(new DropGodCapeTask(this, 4, (Player)object, n));
     }
 
-    /*
-     * Unable to fully structure code
-     */
     public final void process() {
-        block28: {
-            block29: {
-                this.pruneExpiredDamageContributions();
-                var1_1 = this;
-                var2_4 = var1_1.pvpCombatReferences.size();
-                if (var2_4 != 0) {
-                    var3_7 = var1_1.pvpCombatReferences.iterator();
-                    while (var3_7.hasNext()) {
-                        if (!((PvpCombatReference)var3_7.next()).hasExpired()) continue;
-                        var3_7.remove();
-                    }
-                    var2_4 = var1_1.pvpCombatReferences.size();
-                    if (var2_4 == 0) {
-                        var1_1.setSkulled(false);
-                    }
-                }
-                this.prayerManager.drainPrayerPoints();
-                this.skillManager.startRestorationTasks();
-                var2_5 = this.hm.iterator();
-                while (var2_5.hasNext()) {
-                    var2_5.next();
-                }
-                var1_1 = this;
-                if (var1_1.botEnabled) break block28;
-                var6_9 = var1_1;
-                if (var6_9.idlePacketCount > 20 || !var1_1.getSingleCombatTimer().hasElapsed() && !var1_1.isInMultiCombatArea()) break block28;
-                var6_9 = var1_1;
-                if (var6_9.H == null || var1_1.mageArenaProgressStage >= 5) break block29;
-                var6_9 = var1_1;
-                if (var6_9.H.getNpcId() < 907) break block29;
-                var6_9 = var1_1;
-                if (var6_9.H.getNpcId() <= 911) break block28;
+        this.pruneExpiredDamageContributions();
+        if (this.pvpCombatReferences.size() != 0) {
+            Iterator iterator = this.pvpCombatReferences.iterator();
+            while (iterator.hasNext()) {
+                PvpCombatReference pvpCombatReference = (PvpCombatReference)iterator.next();
+                if (!pvpCombatReference.hasExpired()) continue;
+                iterator.remove();
             }
-            var6_9 = var1_1;
-            if (var6_9.equipmentManager.getItemIdAtSlot(3) == 4024 && var1_1.isInApeAtoll()) break block28;
-            var6_9 = var1_1;
-            for (Object var2_5 : var6_9.localNpcs) {
-                block31: {
-                    block35: {
-                        block34: {
-                            block33: {
-                                block32: {
-                                    block30: {
-                                        if (var2_5.getOwnerPlayer() != null) continue;
-                                        if (var2_5.getDefinition().getAggressionType() != 3 && var1_1.co != 0L && !var2_5.isInWilderness() && System.currentTimeMillis() - var1_1.co > 900000L) break;
-                                        var5_13 = var2_5;
-                                        var4_10 = var1_1;
-                                        if (!var5_13.hasCombatTarget() && var5_13.getDefinition().isAttackable()) break block30;
-                                        v0 = false;
-                                        break block31;
-                                    }
-                                    if (var5_13.getNpcId() != 2429 && var5_13.getNpcId() != 1827 && var5_13.getNpcId() != 1266 && var5_13.getNpcId() != 1268 && var5_13.getNpcId() != 2453 && var5_13.getNpcId() != 2890) break block32;
-                                    v0 = true;
-                                    break block31;
-                                }
-                                if (var5_13.getNpcId() != 18) break block33;
-                                if (var4_10.getCombatTarget() != null) ** GOTO lbl-1000
-                                v0 = false;
-                                break block31;
-                            }
-                            if (!var5_13.isInWilderness() && var5_13.getDefinition().getAggressionType() < 2) break block34;
-                            v0 = true;
-                            break block31;
+            if (this.pvpCombatReferences.size() == 0) {
+                this.setSkulled(false);
+            }
+        }
+        this.prayerManager.drainPrayerPoints();
+        this.skillManager.startRestorationTasks();
+        Iterator iterator = this.hm.iterator();
+        while (iterator.hasNext()) {
+            iterator.next();
+        }
+        if (!this.botEnabled && this.idlePacketCount <= 20 && (this.getSingleCombatTimer().hasElapsed() || this.isInMultiCombatArea())) {
+            boolean mageArenaTargetActive = this.H != null && this.mageArenaProgressStage < 5 && this.H.getNpcId() >= 907 && this.H.getNpcId() <= 911;
+            if (!mageArenaTargetActive && (this.equipmentManager.getItemIdAtSlot(3) != 4024 || !this.isInApeAtoll())) {
+                for (Object localNpcObject : this.localNpcs) {
+                    Npc npc = (Npc)localNpcObject;
+                    if (npc.getOwnerPlayer() != null) continue;
+                    if (npc.getDefinition().getAggressionType() != 3 && this.co != 0L && !npc.isInWilderness() && System.currentTimeMillis() - this.co > 900000L) break;
+                    boolean aggressive;
+                    if (npc.hasCombatTarget() || !npc.getDefinition().isAttackable()) {
+                        aggressive = false;
+                    } else if (npc.getNpcId() == 2429 || npc.getNpcId() == 1827 || npc.getNpcId() == 1266 || npc.getNpcId() == 1268 || npc.getNpcId() == 2453 || npc.getNpcId() == 2890) {
+                        aggressive = true;
+                    } else if (npc.getNpcId() == 18) {
+                        aggressive = this.getCombatTarget() != null;
+                    } else if (npc.isInWilderness() || npc.getDefinition().getAggressionType() >= 2) {
+                        aggressive = true;
+                    } else if (npc.getDefinition().getAggressionType() == 0) {
+                        aggressive = false;
+                    } else if (npc.getDefinition().getAggressionType() == 1 && this.combatLevel > npc.getDefinition().getCombatLevel() << 1) {
+                        aggressive = false;
+                    } else {
+                        aggressive = true;
+                    }
+                    if (!aggressive || !GameUtil.hasClearPath(this.getPosition(), npc.getPosition(), false)) continue;
+                    int aggressionRange = npc.getDefinition().getAggressionRange();
+                    if (ServerSettings.content2007Enabled && (npc.getNpcId() != 6203 && npc.getNpcId() != 6204 && npc.getNpcId() != 6206 && npc.getNpcId() != 6208 && GodWarsDungeonManager.zamorakNpcIds.contains(npc.getNpcId()) && (this.m("zamorak") || this.m("unholy")) || npc.getNpcId() != 6247 && npc.getNpcId() != 6248 && npc.getNpcId() != 6250 && npc.getNpcId() != 6252 && GodWarsDungeonManager.saradominNpcIds.contains(npc.getNpcId()) && (this.m("saradomin") || this.m("holy")) || npc.getNpcId() != 6222 && npc.getNpcId() != 6223 && npc.getNpcId() != 6225 && npc.getNpcId() != 6227 && GodWarsDungeonManager.armadylNpcIds.contains(npc.getNpcId()) && this.m("armadyl") || npc.getNpcId() != 6260 && npc.getNpcId() != 6261 && npc.getNpcId() != 6263 && npc.getNpcId() != 6265 && GodWarsDungeonManager.bandosNpcIds.contains(npc.getNpcId()) && this.m("bandos"))) continue;
+                    if (npc.getNpcId() == 912 && this.equipmentManager.getItemIdAtSlot(1) == 2414) {
+                        if (GameUtil.isWithinDistance(npc.getSpawnPosition(), this.getPosition(), aggressionRange) && GameUtil.randomInt(4) == 0) {
+                            npc.getUpdateState().setForcedText("Hail Zamorak!");
                         }
-                        if (var5_13.getDefinition().getAggressionType() != 0) break block35;
-                        v0 = false;
-                        break block31;
-                    }
-                    if (var5_13.getDefinition().getAggressionType() != 1) ** GOTO lbl-1000
-                    var6_9 = var4_10;
-                    if (var6_9.combatLevel > var5_13.getDefinition().getCombatLevel() << 1) {
-                        v0 = false;
-                    } else lbl-1000:
-                    // 3 sources
-
-                    {
-                        v0 = true;
-                    }
-                }
-                if (!v0 || !GameUtil.hasClearPath(var1_1.getPosition(), var2_5.getPosition(), false)) continue;
-                var4_11 = var2_5.getDefinition().getAggressionRange();
-                if (ServerSettings.content2007Enabled && (var2_5.getNpcId() != 6203 && var2_5.getNpcId() != 6204 && var2_5.getNpcId() != 6206 && var2_5.getNpcId() != 6208 && GodWarsDungeonManager.zamorakNpcIds.contains(var2_5.getNpcId()) && (var1_1.m("zamorak") || var1_1.m("unholy")) || var2_5.getNpcId() != 6247 && var2_5.getNpcId() != 6248 && var2_5.getNpcId() != 6250 && var2_5.getNpcId() != 6252 && GodWarsDungeonManager.saradominNpcIds.contains(var2_5.getNpcId()) && (var1_1.m("saradomin") || var1_1.m("holy")) || var2_5.getNpcId() != 6222 && var2_5.getNpcId() != 6223 && var2_5.getNpcId() != 6225 && var2_5.getNpcId() != 6227 && GodWarsDungeonManager.armadylNpcIds.contains(var2_5.getNpcId()) && var1_1.m("armadyl") || var2_5.getNpcId() != 6260 && var2_5.getNpcId() != 6261 && var2_5.getNpcId() != 6263 && var2_5.getNpcId() != 6265 && GodWarsDungeonManager.bandosNpcIds.contains(var2_5.getNpcId()) && var1_1.m("bandos"))) continue;
-                if (var2_5.getNpcId() == 912) {
-                    var6_9 = var1_1;
-                    if (var6_9.equipmentManager.getItemIdAtSlot(1) == 2414) {
-                        if (!GameUtil.isWithinDistance(var2_5.getSpawnPosition(), var1_1.getPosition(), var4_11) || GameUtil.randomInt(4) != 0) continue;
-                        var2_5.getUpdateState().setForcedText("Hail Zamorak!");
                         continue;
                     }
-                }
-                if (var2_5.getNpcId() == 913) {
-                    var6_9 = var1_1;
-                    if (var6_9.equipmentManager.getItemIdAtSlot(1) == 2412) {
-                        if (!GameUtil.isWithinDistance(var2_5.getSpawnPosition(), var1_1.getPosition(), var4_11) || GameUtil.randomInt(4) != 0) continue;
-                        var2_5.getUpdateState().setForcedText("Hail Saradomin!");
+                    if (npc.getNpcId() == 913 && this.equipmentManager.getItemIdAtSlot(1) == 2412) {
+                        if (GameUtil.isWithinDistance(npc.getSpawnPosition(), this.getPosition(), aggressionRange) && GameUtil.randomInt(4) == 0) {
+                            npc.getUpdateState().setForcedText("Hail Saradomin!");
+                        }
                         continue;
                     }
-                }
-                if (var2_5.getNpcId() == 914) {
-                    var6_9 = var1_1;
-                    if (var6_9.equipmentManager.getItemIdAtSlot(1) == 2413) {
-                        if (!GameUtil.isWithinDistance(var2_5.getSpawnPosition(), var1_1.getPosition(), var4_11) || GameUtil.randomInt(4) != 0) continue;
-                        var2_5.getUpdateState().setForcedText("Hail Guthix!");
+                    if (npc.getNpcId() == 914 && this.equipmentManager.getItemIdAtSlot(1) == 2413) {
+                        if (GameUtil.isWithinDistance(npc.getSpawnPosition(), this.getPosition(), aggressionRange) && GameUtil.randomInt(4) == 0) {
+                            npc.getUpdateState().setForcedText("Hail Guthix!");
+                        }
                         continue;
                     }
+                    if (npc.getNpcId() == 1266 || npc.getNpcId() == 1268 || npc.getNpcId() == 2453 || npc.getNpcId() == 2890) {
+                        aggressionRange = 1;
+                    }
+                    if (npc.getNpcId() == 2894 || npc.getNpcId() == 2896) {
+                        aggressionRange = 10;
+                    }
+                    if (!GameUtil.isWithinDistance(npc.getSpawnPosition(), this.getPosition(), aggressionRange) || CombatCycleEvent.validateAttack((Entity)npc, this) != AttackValidationResult.VALID) continue;
+                    if (npc.getNpcId() == 180) {
+                        npc.getUpdateState().setForcedText("Stand and deliver!");
+                    }
+                    if (npc.getNpcId() == 18) {
+                        npc.getUpdateState().setForcedText("Brother, I will help thee with this infidel!");
+                    }
+                    if (npc.getTransformTicksRemaining() <= 0 && npc.getCombatTransformNpcId() > 0) {
+                        npc.transformToNpcId(npc.getCombatTransformNpcId(), 999999);
+                    }
+                    CombatManager.startCombat((Entity)npc, this);
+                    break;
                 }
-                if (var2_5.getNpcId() == 1266 || var2_5.getNpcId() == 1268 || var2_5.getNpcId() == 2453 || var2_5.getNpcId() == 2890) {
-                    var4_11 = 1;
-                }
-                if (var2_5.getNpcId() == 2894 || var2_5.getNpcId() == 2896) {
-                    var4_11 = 10;
-                }
-                if (!GameUtil.isWithinDistance(var2_5.getSpawnPosition(), var1_1.getPosition(), var4_11) || (var4_12 = CombatCycleEvent.validateAttack((Entity)var2_5, var1_1)) != AttackValidationResult.VALID) continue;
-                if (var2_5.getNpcId() == 180) {
-                    var2_5.getUpdateState().setForcedText("Stand and deliver!");
-                }
-                if (var2_5.getNpcId() == 18) {
-                    var2_5.getUpdateState().setForcedText("Brother, I will help thee with this infidel!");
-                }
-                if (var2_5.getTransformTicksRemaining() <= 0 && var2_5.getCombatTransformNpcId() > 0) {
-                    var2_5.transformToNpcId(var2_5.getCombatTransformNpcId(), 999999);
-                }
-                CombatManager.startCombat((Entity)var2_5, var1_1);
-                break;
             }
         }
         this.getTargetMovement().process();
-        var1_2 = false;
+        boolean shouldRestoreRunEnergy = false;
         if (this.getMovementTarget() != null) {
             if (this.getMovementTarget().isPlayer()) {
-                var2_5 = (Player)this.getMovementTarget();
-                if (!var2_5.isRunningMovement()) {
-                    var1_2 = true;
+                Player player = (Player)this.getMovementTarget();
+                if (!player.isRunningMovement()) {
+                    shouldRestoreRunEnergy = true;
                 }
             } else if (!this.isRunningMovement()) {
-                var1_2 = true;
+                shouldRestoreRunEnergy = true;
             }
         } else if (!this.isRunningMovement()) {
-            var1_2 = true;
+            shouldRestoreRunEnergy = true;
         }
-        if (this.getRunEnergyPercent() < 100 && var1_2) {
-            var6_9 = var1_3 = this;
-            var2_6 = var1_3.skillManager.getCurrentLevels()[16];
+        if (this.getRunEnergyPercent() < 100 && shouldRestoreRunEnergy) {
+            int agilityLevel = this.skillManager.getCurrentLevels()[16];
             if (ServerSettings.freeToPlayWorld) {
-                var2_6 = 1;
+                agilityLevel = 1;
             }
-            var3_8 = var2_6 / 6 + 8;
-            this.addRunEnergyRaw(var3_8);
+            int restoreAmount = agilityLevel / 6 + 8;
+            this.addRunEnergyRaw(restoreAmount);
             this.packetSender.sendRunEnergy();
         }
         if (this.cl != 0L && System.currentTimeMillis() - this.cl >= 60000L && (this.getSingleCombatTimer().hasElapsed() || this.cn)) {
-            var6_9 = this;
-            var6_9.packetSender.sendLogout();
+            this.packetSender.sendLogout();
             this.disconnect();
         }
     }
@@ -1728,25 +1672,19 @@ extends Entity {
             this.socketChannel = (SocketChannel)((SelectionKey)object).channel();
             this.hostAddress = this.socketChannel.socket().getInetAddress().getHostAddress();
         }
-        this.a(new Position(ServerSettings.startX, ServerSettings.startY, ServerSettings.startPlane));
-        object = this;
-        ((Entity)object).getAttributes().put("smithing", Boolean.FALSE);
-        ((Entity)object).getAttributes().put("smelting", Boolean.FALSE);
-        ((Entity)object).getAttributes().put("isBanking", Boolean.FALSE);
-        ((Entity)object).getAttributes().put("isShopping", Boolean.FALSE);
-        ((Entity)object).getAttributes().put("canPickup", Boolean.FALSE);
-        ((Entity)object).getAttributes().put("canTakeDamage", Boolean.TRUE);
+        this.setPosition(new Position(ServerSettings.startX, ServerSettings.startY, ServerSettings.startPlane));
+        this.getAttributes().put("smithing", Boolean.FALSE);
+        this.getAttributes().put("smelting", Boolean.FALSE);
+        this.getAttributes().put("isBanking", Boolean.FALSE);
+        this.getAttributes().put("isShopping", Boolean.FALSE);
+        this.getAttributes().put("canPickup", Boolean.FALSE);
+        this.getAttributes().put("canTakeDamage", Boolean.TRUE);
         this.resetAppearance();
-        object = this;
-        ((Player)object).appearanceColors[0] = 7;
-        object = this;
-        ((Player)object).appearanceColors[1] = 0;
-        object = this;
-        ((Player)object).appearanceColors[2] = 9;
-        object = this;
-        ((Player)object).appearanceColors[3] = 5;
-        object = this;
-        ((Player)object).appearanceColors[4] = 0;
+        this.appearanceColors[0] = 7;
+        this.appearanceColors[1] = 0;
+        this.appearanceColors[2] = 9;
+        this.appearanceColors[3] = 5;
+        this.appearanceColors[4] = 0;
         int n = 0;
         while (n < this.queuedLoginItemIds.length) {
             this.queuedLoginItemIds[n] = -1;
@@ -1915,7 +1853,7 @@ extends Entity {
                 this.disconnectGraceExpiresAtMillis = l;
                 object = PlayerConnectionState.DISCONNECTING;
                 object2 = this;
-                this.connectionState = object;
+                this.connectionState = (PlayerConnectionState)object;
             }
             if (!this.isBot) {
                 this.selectionKey.attach(null);
@@ -1978,106 +1916,85 @@ extends Entity {
     }
 
     public final void showHiscoreInterface(int n) {
-        Object object;
-        Object object2 = this;
         int n2 = 0;
         while (n2 < 16) {
-            object = object2;
-            ((Player)object).packetSender.sendInterfaceText("", 18819 + 4 * n2);
-            object = object2;
-            ((Player)object).packetSender.sendInterfaceText("", 18820 + 4 * n2);
-            object = object2;
-            ((Player)object).packetSender.sendInterfaceText("", 18821 + 4 * n2);
-            object = object2;
-            ((Player)object).packetSender.sendInterfaceText("", 18822 + 4 * n2);
+            this.packetSender.sendInterfaceText("", 18819 + 4 * n2);
+            this.packetSender.sendInterfaceText("", 18820 + 4 * n2);
+            this.packetSender.sendInterfaceText("", 18821 + 4 * n2);
+            this.packetSender.sendInterfaceText("", 18822 + 4 * n2);
             ++n2;
         }
         ArrayList<CharacterFileRecord> arrayList = new ArrayList<CharacterFileRecord>();
-        for (CharacterFileRecord characterFileRecord : CharacterFileManager.liveHiscoreRecords) {
-            object = characterFileRecord;
+        for (Object recordObject : CharacterFileManager.liveHiscoreRecords) {
+            CharacterFileRecord characterFileRecord = (CharacterFileRecord)recordObject;
             if (characterFileRecord.playerRights >= 2 || characterFileRecord.gameMode != n) continue;
             arrayList.add(characterFileRecord);
         }
         if (n == 3) {
-            for (CharacterFileRecord characterFileRecord : CharacterFileManager.deadHardcoreIronmanRecords) {
-                arrayList.add(characterFileRecord);
+            for (Object recordObject : CharacterFileManager.deadHardcoreIronmanRecords) {
+                arrayList.add((CharacterFileRecord)recordObject);
             }
         }
         int n3 = this.et;
         int n4 = this.es;
         String string = n3 != 22 ? String.valueOf(n3 < 21 ? SkillManager.SKILL_NAMES[n3] : "Overall") + " Hiscores" : "Wealth Hiscores";
-        Object object3 = "";
+        String string2 = "";
         if (n == 1) {
-            object3 = "<img=3>";
+            string2 = "<img=3>";
         } else if (n == 2) {
-            object3 = "<img=4>";
+            string2 = "<img=4>";
         }
         if (n == 3) {
-            object3 = String.valueOf(object3) + "<img=5>";
+            string2 = String.valueOf(string2) + "<img=5>";
         }
-        object = this;
-        ((Player)object).packetSender.sendInterfaceText(String.valueOf(object3) + string + (String)object3, 18814);
+        this.packetSender.sendInterfaceText(String.valueOf(string2) + string + string2, 18814);
         Collections.sort(arrayList, new HiscoreEntryComparator(this, n3));
         int n5 = n4 << 4;
         while (n5 < arrayList.size()) {
-            object3 = (CharacterFileRecord)arrayList.get(n5);
+            CharacterFileRecord characterFileRecord = (CharacterFileRecord)arrayList.get(n5);
             int n6 = n5 - (n4 << 4);
-            if (n5 == n4 + 1 << 4) break;
-            if (!(n3 == 22 ? ((CharacterFileRecord)object3).getStoredItemValue() < 100000 : n3 < 21 && CharacterFileRecord.getLevelForExperience(((CharacterFileRecord)object3).getSkillExperience(n3)) < 30)) {
-                Object object4;
-                String string2 = "@bla@";
-                object = object3;
-                object = this;
-                if (((CharacterFileRecord)object4).username.equals(((Player)object).username)) {
-                    string2 = "@whi@";
+            if (n5 == ((n4 + 1) << 4)) break;
+            if (!(n3 == 22 ? characterFileRecord.getStoredItemValue() < 100000 : n3 < 21 && CharacterFileRecord.getLevelForExperience(characterFileRecord.getSkillExperience(n3)) < 30)) {
+                String string3 = "@bla@";
+                if (characterFileRecord.username.equals(this.username)) {
+                    string3 = "@whi@";
                 }
-                object = object3;
-                object = object3;
-                int cfr_ignored_0 = ((CharacterFileRecord)object3).gameMode;
-                boolean bl = ((CharacterFileRecord)object).memberFlag;
-                int n7 = ((CharacterFileRecord)object).playerRights;
-                object = "";
+                boolean bl = characterFileRecord.memberFlag;
+                int n7 = characterFileRecord.playerRights;
+                String string4 = "";
                 if (n7 == 1) {
-                    object = String.valueOf(object) + "<img=0>";
+                    string4 = String.valueOf(string4) + "<img=0>";
                 }
                 if (n7 == 2) {
-                    object = String.valueOf(object) + "<img=1>";
+                    string4 = String.valueOf(string4) + "<img=1>";
                 }
                 if (bl && n7 < 2) {
-                    object = String.valueOf(object) + "<img=2>";
+                    string4 = String.valueOf(string4) + "<img=2>";
                 }
-                object2 = object;
-                if (n == 3 && ((CharacterFileRecord)object3).gameMode != 3) {
-                    object2 = "<img=6>" + (String)object2;
+                if (n == 3 && characterFileRecord.gameMode != 3) {
+                    string4 = "<img=6>" + string4;
                 }
-                object = this;
-                ((Player)object).packetSender.sendInterfaceText(String.valueOf(string2) + (n5 + 1), 18819 + 4 * n6);
-                Player player = this;
-                object = player;
-                object = object3;
-                player.packetSender.sendInterfaceText(String.valueOf(string2) + (String)object2 + ((CharacterFileRecord)object).username, 18820 + 4 * n6);
-                object2 = "";
-                String string3 = "";
+                this.packetSender.sendInterfaceText(String.valueOf(string3) + (n5 + 1), 18819 + 4 * n6);
+                this.packetSender.sendInterfaceText(String.valueOf(string3) + string4 + characterFileRecord.username, 18820 + 4 * n6);
+                String string5 = "";
+                String string6 = "";
                 if (n3 < 21) {
-                    object2 = GameUtil.formatNumber((long)CharacterFileRecord.getLevelForExperience(((CharacterFileRecord)object3).getSkillExperience(n3)));
-                    string3 = GameUtil.formatNumber(((CharacterFileRecord)object3).getSkillExperience(n3));
+                    string5 = GameUtil.formatNumber((long)CharacterFileRecord.getLevelForExperience(characterFileRecord.getSkillExperience(n3)));
+                    string6 = GameUtil.formatNumber(characterFileRecord.getSkillExperience(n3));
                 }
                 if (n3 == 21) {
-                    object2 = GameUtil.formatNumber((long)((CharacterFileRecord)object3).getTotalLevel());
-                    string3 = GameUtil.formatNumber(((CharacterFileRecord)object3).getSkillExperience(n3));
+                    string5 = GameUtil.formatNumber((long)characterFileRecord.getTotalLevel());
+                    string6 = GameUtil.formatNumber(characterFileRecord.getSkillExperience(n3));
                 }
                 if (n3 == 22) {
-                    object2 = GameUtil.formatCompactAmountHighThreshold(((CharacterFileRecord)object3).getStoredItemValue());
+                    string5 = GameUtil.formatCompactAmountHighThreshold(characterFileRecord.getStoredItemValue());
                 }
-                object = this;
-                ((Player)object).packetSender.sendInterfaceText(String.valueOf(string2) + (String)object2, 18821 + 4 * n6);
-                object = this;
-                ((Player)object).packetSender.sendInterfaceText(String.valueOf(string2) + string3, 18822 + 4 * n6);
+                this.packetSender.sendInterfaceText(String.valueOf(string3) + string5, 18821 + 4 * n6);
+                this.packetSender.sendInterfaceText(String.valueOf(string3) + string6, 18822 + 4 * n6);
             }
             ++n5;
         }
-        object = this;
-        ((Player)object).packetSender.showInterface(18788);
+        this.packetSender.showInterface(18788);
     }
 
     public final void completeQuestJournal() {
@@ -2231,8 +2148,8 @@ extends Entity {
                 if (!(itemDefinition = ItemDefinition.forId(n)).isStackable() && n3 > 28) {
                     n = itemDefinition.getNotedId();
                 }
-                object = new ItemStack(n, n3);
-                this.inventoryManager.addItem((ItemStack)object);
+                ItemStack itemStack = new ItemStack(n, n3);
+                this.inventoryManager.addItem(itemStack);
             }
         } else if (string.equals("char")) {
             Player player = this;
@@ -2672,12 +2589,13 @@ extends Entity {
     public final void interactWithBotNpcTargets(ArrayList arrayList) {
         Object object;
         Object object2;
+        Position var8_30 = null;
         block42: {
             block40: {
                 Object object3;
                 block41: {
                     int n;
-                    void npc;
+                    int npc = 0;
                     int n2;
                     int n3 = 30;
                     if (arrayList.size() == 1 && this.botMode == 4 && (n2 = ((Integer)arrayList.get(0)).intValue()) == -1 && !this.recoverBotTaskStall(true)) {
@@ -2727,7 +2645,7 @@ extends Entity {
                     int n5 = ((Npc[])object4).length;
                     boolean n6 = false;
                     while (npc < n5) {
-                        object3 = object4[npc];
+                        object3 = ((Npc[])object4)[npc];
                         if (object3 != null && !((Entity)object3).isDead() && ((Npc)object3).isActive() && ((Npc)object3).getOwnerPlayer() == null && (n = GameUtil.getDistance(position2, ((Entity)object3).getPosition())) <= n3) {
                             int n7 = ((Entity)object3).getPosition().getY();
                             int n8 = ((Entity)object3).getPosition().getX();
@@ -2765,22 +2683,27 @@ extends Entity {
                         ++npc;
                     }
                     object3 = new ArrayList();
-                    for (Npc position : arrayList2) {
+                    for (Object positionObject : arrayList2) {
+                        Npc position = (Npc)positionObject;
                         int n14 = GameUtil.getDistance(position2, position.getPosition());
                         if (n14 > n4 + 3) continue;
                         ((ArrayList)object3).add(position);
                     }
-                    Object var8_26 = null;
+                    var8_30 = null;
                     if (((ArrayList)object3).size() <= 1) break block41;
-                    Collections.shuffle(object3);
+                    Collections.shuffle((ArrayList)object3);
                     object4 = ((ArrayList)object3).iterator();
-                    while (object4.hasNext()) {
+                    while (((Iterator)object4).hasNext()) {
                         Position position;
-                        object = (Npc)object4.next();
+                        object = (Npc)((Iterator)object4).next();
                         boolean bl = GameUtil.hasClearPath(this.getPosition(), ((Entity)object).getPosition(), false);
                         n = bl ? 1 : 0;
-                        if (!bl && (position = this.d((Npc)object)) == null) {
-                            continue;
+                        if (!bl) {
+                            position = this.d((Npc)object);
+                            if (position == null) {
+                                continue;
+                            }
+                            var8_30 = position;
                         }
                         break block40;
                     }
@@ -2790,13 +2713,12 @@ extends Entity {
                 object = (Npc)((ArrayList)object3).get(0);
                 boolean bl = GameUtil.hasClearPath(this.getPosition(), ((Entity)object).getPosition(), false);
                 if (!bl) {
-                    Position position = this.d((Npc)object);
+                    var8_30 = this.d((Npc)object);
                 }
             }
             object2 = object;
         }
         if (object2 != null) {
-            void var8_30;
             int n = ((Entity)object2).getIndex();
             if (n < 0 || n > World.getNpcs().length) {
                 return;
@@ -2998,12 +2920,8 @@ extends Entity {
         if (arrayList.size() == 1 && this.botMode == 4 && (n4 = ((Integer)arrayList.get(0)).intValue()) == -1) {
             Player player = this;
             System.out.println("Detected bugged bot: " + player.username + ", trying to fix by reseting and relogging.");
-            arrayList = null;
-            player = this;
-            this.currentBotTask = arrayList;
-            arrayList = null;
-            player = this;
-            this.deferredBotTask = arrayList;
+            this.currentBotTask = null;
+            this.deferredBotTask = null;
             this.applyTeleportPosition(new Position(ServerSettings.respawnX, ServerSettings.respawnY, ServerSettings.respawnPlane));
             World.logoutBotAndScheduleRelogin(this);
             return false;
@@ -3126,12 +3044,12 @@ extends Entity {
         Object object = null;
         if (arrayList2.size() > 1) {
             Collections.shuffle(arrayList2);
-            for (WorldObject worldObject7 : arrayList2) {
-                ObjectDefinition objectDefinition = ObjectDefinition.forId(worldObject7.getObjectId());
-                n3 = GameUtil.getDistance(this.getPosition(), worldObject7.getPosition());
-                object = this.a(worldObject7, objectDefinition);
+            for (WorldObject nearbyObject : arrayList2) {
+                ObjectDefinition objectDefinition = ObjectDefinition.forId(nearbyObject.getObjectId());
+                n3 = GameUtil.getDistance(this.getPosition(), nearbyObject.getPosition());
+                object = this.a(nearbyObject, objectDefinition);
                 if (object == null && n3 > 2) continue;
-                worldObject2 = worldObject7;
+                worldObject2 = nearbyObject;
                 break;
             }
         } else if (arrayList2.size() == 1) {
@@ -3257,8 +3175,7 @@ extends Entity {
         }
         object = this;
         ((Player)object).packetSender.sendCameraShake(2, 3, 2, 3);
-        object = new BarrowsChestDamageTask(this, 50);
-        World.getTaskScheduler().schedule((TickTask)object);
+        World.getTaskScheduler().schedule(new BarrowsChestDamageTask(this, 50));
         this.barrowsChestOpened = true;
     }
 
@@ -3304,10 +3221,9 @@ extends Entity {
             }
         }
         if (this.barrowsChestOpened && !this.isInBarrows()) {
-            object = this;
-            player = object;
-            ((Player)object).packetSender.resetCamera();
-            ((Player)object).barrowsChestOpened = false;
+            player = this;
+            player.packetSender.resetCamera();
+            this.barrowsChestOpened = false;
             BarrowsManager.resetBarrowsState(this);
         }
         CycleEventHandler.getInstance().schedule(this, new PostTeleportBotContinuationTask(this, n != 0, player2), 1);
@@ -3315,7 +3231,7 @@ extends Entity {
 
     public final void refreshRegionState() {
         GameplayHelper.refreshPlayerAreaOverlay(this);
-        GameplayHelper.h(this);
+        GameplayHelper.refreshRubberChickenPlayerOption(this);
         ObjectManager.getInstance().refreshDynamicObjectsForPlayer(this);
         GroundItemManager.getInstance();
         GroundItemManager.clearVisibleItems(this);
@@ -3328,17 +3244,12 @@ extends Entity {
         this.getPosition().setPreviousX(((Position)object).getX());
         this.getPosition().setPreviousY(((Position)object).getY() + 1);
         this.getMovementQueue().clear();
-        boolean bl = true;
-        object = this;
-        this.teleportPlacementUpdateRequired = bl;
-        bl = true;
-        object = this;
-        this.teleporting = bl;
-        object = this;
-        ((Player)object).packetSender.sendPlayerIndex();
+        this.teleportPlacementUpdateRequired = true;
+        this.teleporting = true;
+        this.packetSender.sendPlayerIndex();
     }
 
-    public final void a(int n, int n2, int n3) {
+    public final void moveToGroundPosition(int n, int n2, int n3) {
         this.moveTo(new Position(n, n2, 0));
     }
 
@@ -3409,39 +3320,37 @@ extends Entity {
         }
         ErnestTheChickenQuest.refreshBasementLeverDoorConfig(player3);
         player3.bp();
-        int n2 = 1;
         player = this;
-        this.actionLocked = n2;
+        this.actionLocked = true;
         World.registerPlayer(this);
         this.packetSender.sendPostLoginState().syncPlayerConfigs();
         this.getPoisonDamage();
         this.getMovementQueue().isRunning();
         if (this.isInTenthSquadSigilInstance()) {
-            n2 = this.getPosition().getPlane() + 4 + (this.getIndex() << 2);
-            this.moveTo(new Position(this.getPosition().getX(), this.getPosition().getY(), n2));
-            this.spawnTenthSquadSigilNpcs(n2);
+            int instancePlane = this.getPosition().getPlane() + 4 + (this.getIndex() << 2);
+            this.moveTo(new Position(this.getPosition().getX(), this.getPosition().getY(), instancePlane));
+            this.spawnTenthSquadSigilNpcs(instancePlane);
         }
-        n2 = 1;
         player = this;
-        this.teleporting = n2;
+        this.teleporting = true;
         PluginManager.attachPlayerPlugins(this);
         this.packetSender.sendPlayerOption("Follow", 2, false);
         this.packetSender.sendPlayerOption("Trade with", 3, false);
         this.skillManager.refreshAllSkills();
         this.registered = true;
-        Object object = this.equipmentManager.getContainer().getItemAt(3);
-        if (object != null && object.getDefinition().isMembersOnly() && ServerSettings.freeToPlayWorld) {
-            object = null;
+        ItemStack weaponItem = this.equipmentManager.getContainer().getItemAt(3);
+        if (weaponItem != null && weaponItem.getDefinition().isMembersOnly() && ServerSettings.freeToPlayWorld) {
+            weaponItem = null;
         }
-        if (object != null && object.getId() == 4024) {
+        if (weaponItem != null && weaponItem.getId() == 4024) {
             this.npcTransformationId = 1463;
         }
         this.getUpdateState().setUpdateRequired(true);
         this.setAppearanceUpdateRequired(true);
-        this.setWeaponProfile(WeaponProfile.forItem(object));
-        object = SpecialAttackDefinition.forItem(object);
+        this.setWeaponProfile(WeaponProfile.forItem(weaponItem));
+        SpecialAttackDefinition specialAttackDefinition = SpecialAttackDefinition.forItem(weaponItem);
         player = this;
-        this.specialAttackDefinition = object;
+        this.specialAttackDefinition = specialAttackDefinition;
         player = this;
         player.duelSession.moveToDuelArenaExit();
         player = this;
@@ -3453,20 +3362,17 @@ extends Entity {
         player = this;
         this.combatLevel = n3;
         player = this;
-        GameplayHelper.f(this, player.equipmentManager.getItemIdAtSlot(0));
+        GameplayHelper.refreshRunecraftingTiaraConfig(this, player.equipmentManager.getItemIdAtSlot(0));
         player = this;
         player.equipmentManager.refreshWeaponAmmunitionState();
         player = this;
         player.equipmentManager.refreshBarrowsSetEffects();
         Player player4 = this;
-        Object object2 = player4.inventoryManager;
-        ((InventoryManager)object2).refresh();
-        object2 = player4.equipmentManager;
-        ((EquipmentManager)object2).refresh();
+        player4.inventoryManager.refresh();
+        player4.equipmentManager.refresh();
         player4.bankPinManager.processPendingPinChanges();
-        object2 = player4;
-        player = object2;
-        World.scheduleTickTask(new PostLoginSyncTask((Player)object2, 3, player));
+        player = player4;
+        World.scheduleTickTask(new PostLoginSyncTask(player4, 3, player));
         player4.prayerManager.deactivateAll();
         player4.skillManager.d();
         player4.questManager.refreshQuestPointText();
@@ -3503,8 +3409,8 @@ extends Entity {
         if (this.getPoisonDamage() > 0.0) {
             object3 = new HitDefinition(null, HitType.POISON, Math.ceil(this.getPoisonDamage())).setDelay(30);
             object3 = new CombatAction(this, this, (HitDefinition)object3);
-            object2 = new PoisonEffect(this.getPoisonDamage(), false);
-            object2.a((CombatAction)object3);
+            PoisonEffect poisonEffect = new PoisonEffect(this.getPoisonDamage(), false);
+            poisonEffect.apply((CombatAction)object3);
         }
         int n4 = 0;
         while (n4 < 6) {
@@ -3626,7 +3532,7 @@ extends Entity {
         }
         Object object2 = this.submittedPassword;
         object = this;
-        this.password = object2;
+        this.password = (String)object2;
         object = this;
         if (((Player)object).playerRights > 1 || this.username.toLowerCase().startsWith("bot ")) {
             object = this;
@@ -3672,11 +3578,8 @@ extends Entity {
                 }
                 object = this;
                 if (!((Player)object).hostAddress.equals("127.0.0.1")) {
-                    Object object4;
-                    object = object2;
-                    object = object2;
                     object = this;
-                    if (((Player)object4).hostAddress.equals(((Player)object).hostAddress)) {
+                    if (((Player)object2).hostAddress.equals(((Player)object).hostAddress)) {
                         int n4 = 9;
                         object = this;
                         this.loginResponseCode = n4;
@@ -4821,36 +4724,26 @@ extends Entity {
         return n;
     }
 
-    public final void addPvpCombatReference(Player object, int n) {
-        object = new PvpCombatReference((Entity)object, n);
-        this.pvpCombatReferences.add(object);
+    public final void addPvpCombatReference(Player player, int n) {
+        PvpCombatReference pvpCombatReference = new PvpCombatReference((Entity)player, n);
+        this.pvpCombatReferences.add(pvpCombatReference);
         this.setSkulled(true);
     }
 
     public final void recordPvpAttack(Player player) {
-        boolean bl;
-        block5: {
-            if (!player.isPlayer()) {
-                return;
-            }
-            Object object2 = player;
-            if (this.isInDuelArena()) {
-                return;
-            }
-            Player player2 = this;
-            for (Object object2 : ((Player)object2).pvpCombatReferences) {
-                if (((EntityReference)object2).resolve() != player2) continue;
-                bl = true;
-                break block5;
-            }
-            bl = false;
-        }
-        if (bl) {
+        if (!player.isPlayer()) {
             return;
         }
-        for (Object object2 : this.pvpCombatReferences) {
-            if (((EntityReference)object2).resolve() != player) continue;
-            ((PvpCombatReference)object2).resetTimer();
+        if (this.isInDuelArena()) {
+            return;
+        }
+        for (Object referenceObject : player.pvpCombatReferences) {
+            if (((EntityReference)referenceObject).resolve() != this) continue;
+            return;
+        }
+        for (Object referenceObject : this.pvpCombatReferences) {
+            if (((EntityReference)referenceObject).resolve() != player) continue;
+            ((PvpCombatReference)referenceObject).resetTimer();
             return;
         }
         this.addPvpCombatReference(player, 2000);
@@ -4864,31 +4757,30 @@ extends Entity {
         this.setAppearanceUpdateRequired(true);
     }
 
-    public final ArrayList getUnprotectedItems(ItemStack[] object) {
+    public final ArrayList getUnprotectedItems(ItemStack[] items) {
         ArrayList<ItemStack> arrayList = new ArrayList<ItemStack>();
         PriorityQueue<ItemStack> priorityQueue = new PriorityQueue<ItemStack>(1, new ProtectedItemValueComparator(this));
-        ItemStack[] itemStackArray = object;
-        int n = ((ItemStack[])object).length;
-        int n2 = 0;
-        while (n2 < n) {
-            object = itemStackArray[n2];
-            if (!(object == null || ((ItemStack)object).getDefinition().isUntradeable() && ((ItemStack)object).getDefinition().getValue() == 1)) {
-                priorityQueue.add(new ItemStack(((ItemStack)object).getId()));
-                arrayList.add(new ItemStack(((ItemStack)object).getId()));
+        int n = 0;
+        while (n < items.length) {
+            ItemStack itemStack = items[n];
+            if (!(itemStack == null || itemStack.getDefinition().isUntradeable() && itemStack.getDefinition().getValue() == 1)) {
+                ItemStack protectedItem = new ItemStack(itemStack.getId());
+                priorityQueue.add(protectedItem);
+                arrayList.add(protectedItem);
             }
-            ++n2;
+            ++n;
         }
-        object = new ArrayList();
-        int n3 = n2 = this.skulled ? 0 : 3;
+        int n2 = this.skulled ? 0 : 3;
         if (this.activePrayers[8]) {
             ++n2;
         }
         if (this.gameMode == 2) {
             n2 = 0;
         }
-        while (((ArrayList)object).size() < n2 && priorityQueue.size() > 0) {
+        ArrayList<ItemStack> protectedItems = new ArrayList<ItemStack>();
+        while (protectedItems.size() < n2 && priorityQueue.size() > 0) {
             ItemStack itemStack = (ItemStack)priorityQueue.poll();
-            ((ArrayList)object).add(itemStack);
+            protectedItems.add(itemStack);
             arrayList.remove(itemStack);
         }
         return arrayList;
@@ -4911,107 +4803,95 @@ extends Entity {
 
     @Override
     public final void dropDeathItems(Entity entity) {
-        Object object = this;
         if (this.playerRights >= 2 || this.isInDuelArena() || this.creatureGraveyardController.isInsideGraveyard() || this.isInFightCave()) {
             return;
         }
         if (entity == null || !(entity instanceof Player)) {
             entity = this;
         }
-        object = new ItemStack[this.equipmentManager.getContainer().g() + this.inventoryManager.getContainer().g()];
-        System.arraycopy(this.equipmentManager.getContainer().getItems(), 0, object, 0, this.equipmentManager.getContainer().getItems().length);
-        System.arraycopy(this.inventoryManager.getContainer().getItems(), 0, object, this.equipmentManager.getContainer().getItems().length, this.inventoryManager.getContainer().getItems().length);
-        Object object2 = object;
-        Object object3 = this;
-        Object object4 = new PriorityQueue<ItemStack>(1, new DeathItemValueComparator((Player)object3));
-        Object object5 = object2;
-        int n = ((ItemStack[])object2).length;
-        int n2 = 0;
-        while (n2 < n) {
-            object2 = object5[n2];
-            if (!(object2 == null || ((ItemStack)object2).getDefinition().isUntradeable() && ((ItemStack)object2).getDefinition().getValue() == 1)) {
-                ((PriorityQueue)object4).add(new ItemStack(((ItemStack)object2).getId(), ((ItemStack)object2).getAmount(), ((ItemStack)object2).getMetadata()));
+        ItemStack[] itemStackArray = new ItemStack[this.equipmentManager.getContainer().g() + this.inventoryManager.getContainer().g()];
+        System.arraycopy(this.equipmentManager.getContainer().getItems(), 0, itemStackArray, 0, this.equipmentManager.getContainer().getItems().length);
+        System.arraycopy(this.inventoryManager.getContainer().getItems(), 0, itemStackArray, this.equipmentManager.getContainer().getItems().length, this.inventoryManager.getContainer().getItems().length);
+        PriorityQueue<ItemStack> priorityQueue = new PriorityQueue<ItemStack>(1, new DeathItemValueComparator(this));
+        int n = 0;
+        while (n < itemStackArray.length) {
+            ItemStack itemStack = itemStackArray[n];
+            if (!(itemStack == null || itemStack.getDefinition().isUntradeable() && itemStack.getDefinition().getValue() == 1)) {
+                priorityQueue.add(new ItemStack(itemStack.getId(), itemStack.getAmount(), itemStack.getMetadata()));
             }
+            ++n;
+        }
+        ArrayList<ItemStack> protectedItems = new ArrayList<ItemStack>();
+        int n2 = this.skulled ? 0 : 3;
+        if (this.activePrayers[8]) {
             ++n2;
         }
-        object2 = new ArrayList();
-        int n3 = n2 = ((Player)object3).skulled ? 0 : 3;
-        if (((Player)object3).activePrayers[8]) {
-            ++n2;
-        }
-        if (((Player)object3).gameMode == 2) {
+        if (this.gameMode == 2) {
             n2 = 0;
         }
         n = 0;
-        while (n < n2 && ((PriorityQueue)object4).size() > 0) {
-            object5 = (ItemStack)((PriorityQueue)object4).poll();
-            int n4 = n2 - n;
-            if (((ItemStack)object5).getAmount() < n4) {
-                n4 = ((ItemStack)object5).getAmount();
+        while (n < n2 && priorityQueue.size() > 0) {
+            ItemStack itemStack = (ItemStack)priorityQueue.poll();
+            int n3 = n2 - n;
+            if (itemStack.getAmount() < n3) {
+                n3 = itemStack.getAmount();
             }
-            n += n4;
-            ((ItemStack)object5).setAmount(n4);
-            ((ArrayList)object2).add(object5);
+            n += n3;
+            itemStack.setAmount(n3);
+            protectedItems.add(itemStack);
         }
-        object3 = object2;
-        object = new ArrayList<ItemStack>(Arrays.asList(object));
-        object4 = ((ArrayList)object3).iterator();
-        block2: while (object4.hasNext()) {
-            object2 = (ItemStack)object4.next();
-            if (object2 == null) continue;
-            Iterator iterator = object.iterator();
+        ArrayList<ItemStack> droppedItems = new ArrayList<ItemStack>(Arrays.asList(itemStackArray));
+        block0: for (ItemStack protectedItem : protectedItems) {
+            if (protectedItem == null) continue;
+            Iterator iterator = droppedItems.iterator();
             while (iterator.hasNext()) {
                 ItemStack itemStack = (ItemStack)iterator.next();
-                if (itemStack == null || itemStack.getId() != ((ItemStack)object2).getId()) continue;
-                itemStack.setAmount(itemStack.getAmount() - ((ItemStack)object2).getAmount());
-                if (itemStack.getAmount() > 0) continue block2;
+                if (itemStack == null || itemStack.getId() != protectedItem.getId()) continue;
+                itemStack.setAmount(itemStack.getAmount() - protectedItem.getAmount());
+                if (itemStack.getAmount() > 0) continue block0;
                 iterator.remove();
-                continue block2;
+                continue block0;
             }
         }
         this.equipmentManager.getContainer().clear();
         this.inventoryManager.getContainer().clear();
-        object2 = entity;
+        Entity lootOwner = entity;
         if (entity.isPlayer() && entity != this) {
-            object4 = (Player)entity;
-            if (((Player)object4).gameMode != 0) {
-                ((Player)object4).packetSender.sendGameMessage("You are not playing on normal gamemode and cannot receive the loot.");
-                object2 = this;
+            Player killer = (Player)entity;
+            if (killer.gameMode != 0) {
+                killer.packetSender.sendGameMessage("You are not playing on normal gamemode and cannot receive the loot.");
+                lootOwner = this;
             }
         }
-        Object object6 = ((ArrayList)object3).iterator();
-        while (object6.hasNext()) {
-            object4 = (ItemStack)object6.next();
-            this.inventoryManager.addItem((ItemStack)object4);
+        for (ItemStack itemStack : protectedItems) {
+            this.inventoryManager.addItem(itemStack);
         }
-        object6 = object.iterator();
-        while (object6.hasNext()) {
-            object4 = (ItemStack)object6.next();
-            if (object4 == null) continue;
-            if (((ItemStack)object4).getDefinition().getName().toLowerCase().contains("clue scroll")) {
+        for (ItemStack itemStack : droppedItems) {
+            if (itemStack == null) continue;
+            if (itemStack.getDefinition().getName().toLowerCase().contains("clue scroll")) {
                 this.treasureTrailStepCount = 0;
             }
-            BarrowsRepairHandler barrowsRepairHandler = BarrowsRepairHandler.forItem((ItemStack)object4);
-            if (((ItemStack)object4).getDefinition().isUntradeable() && barrowsRepairHandler == null) continue;
-            object = new ItemStack(((ItemStack)object4).getId(), ((ItemStack)object4).getAmount());
+            BarrowsRepairHandler barrowsRepairHandler = BarrowsRepairHandler.forItem(itemStack);
+            if (itemStack.getDefinition().isUntradeable() && barrowsRepairHandler == null) continue;
+            ItemStack groundStack = new ItemStack(itemStack.getId(), itemStack.getAmount());
             if (barrowsRepairHandler != null) {
-                object = new ItemStack(barrowsRepairHandler.getFullyDegradedItemId(), 1);
+                groundStack = new ItemStack(barrowsRepairHandler.getFullyDegradedItemId(), 1);
             }
-            object = new GroundItem((ItemStack)object, (Entity)this, (Entity)object2, this.getDeathPosition());
-            GroundItemManager.getInstance().spawn((GroundItem)object);
+            GroundItem groundItem = new GroundItem(groundStack, (Entity)this, lootOwner, this.getDeathPosition());
+            GroundItemManager.getInstance().spawn(groundItem);
             if (!entity.isPlayer() || entity == this) continue;
-            object3 = (Player)entity;
-            if (!((Player)object3).botEnabled) continue;
-            ((Player)object3).botLootGroundItems.add(object);
+            Player killer = (Player)entity;
+            if (!killer.botEnabled) continue;
+            killer.botLootGroundItems.add(groundItem);
         }
         if (entity.isPlayer() && entity != this) {
-            object4 = (Player)entity;
-            if (((Player)object4).botEnabled) {
-                if (((Player)object4).botLootGroundItems.size() > 0) {
-                    ((Player)object4).botCombatState = "loot items";
-                    BotCombatHelper.processBotLootQueue((Player)object4);
+            Player killer = (Player)entity;
+            if (killer.botEnabled) {
+                if (killer.botLootGroundItems.size() > 0) {
+                    killer.botCombatState = "loot items";
+                    BotCombatHelper.processBotLootQueue(killer);
                 } else {
-                    ((Player)object4).botCombatState = null;
+                    killer.botCombatState = null;
                 }
             }
         }
@@ -5027,8 +4907,8 @@ extends Entity {
             CharacterFileManager.archiveDeadHardcoreIronman((Player)this);
         }
         if (entity != null && this.getDeathPosition() != null) {
-            object6 = new GroundItem(new ItemStack(526, 1), (Entity)this, entity, this.getDeathPosition());
-            GroundItemManager.getInstance().spawn((GroundItem)object6);
+            GroundItem groundItem = new GroundItem(new ItemStack(526, 1), (Entity)this, entity, this.getDeathPosition());
+            GroundItemManager.getInstance().spawn(groundItem);
         }
         this.equipmentManager.refresh();
         this.inventoryManager.refresh();
@@ -5074,7 +4954,7 @@ extends Entity {
             object = this;
             Object object2 = spellDefinition;
             object = ((Player)object).packetSender;
-            object2 = TextUtil.capitalizeFirst(object2.name().toLowerCase().replaceAll("_", " "));
+            object2 = TextUtil.capitalizeFirst(((SpellDefinition)object2).name().toLowerCase().replaceAll("_", " "));
             ((PacketSender)object).sendInterfaceText((String)object2, 352);
             ((PacketSender)object).sendConfig(108, 3);
             ((PacketSender)object).sendConfig(43, 3);
@@ -5195,7 +5075,7 @@ extends Entity {
         player = this;
         object = player.skillManager.getCurrentLevels();
         int n = 0;
-        while (n < ((Object)object).length) {
+        while (n < ((int[])object).length) {
             Player player2 = this;
             player = player2;
             player = this;
@@ -5745,7 +5625,7 @@ extends Entity {
             CaveLightSourceDefinition caveLightSourceDefinition;
             object = itemStackArray[n2];
             if (object != null && ((ItemStack)object).getDefinition().getEquipmentSlot() == -1 && ((caveLightSourceDefinition = CaveLightSourceDefinition.forItemId(n3 = ((ItemStack)object).getId())) == null ? false : (caveLightSourceDefinition.getUnlitItemId() == n3 ? false : caveLightSourceDefinition.canFlareInSwampGas()))) {
-                return object;
+                return (ItemStack)object;
             }
             ++n2;
         }
@@ -6040,4 +5920,3 @@ extends Entity {
         this.idlePacketCount = n;
     }
 }
-

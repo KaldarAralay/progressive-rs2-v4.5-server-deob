@@ -216,8 +216,8 @@ public abstract class BotTaskDefinition {
     public static ArrayList leatherCraftingTasks = new LeatherCraftingBotTaskList();
     public static ArrayList combatTasks = new CombatBotTaskList();
     private static ArrayList lootSellShopTasks = new ArrayList();
-    static ArrayList tradeAdvertTaskPool = new ArrayList();
-    static ArrayList dropPartyTaskPool = new ArrayList();
+    public static ArrayList tradeAdvertTaskPool = new ArrayList();
+    public static ArrayList dropPartyTaskPool = new ArrayList();
     private static int totalTradeAdvertTaskWeight;
     public static ArrayList progressiveTaskPool;
     private static int totalProgressiveTaskWeight;
@@ -226,9 +226,9 @@ public abstract class BotTaskDefinition {
     public boolean usesCustomTaskAction = false;
     public boolean usesEscapeMonitor = false;
     private RectangularArea[] taskAreas;
-    Position startPosition;
+    public Position startPosition;
     private BotRoute pretaskRoute;
-    BotRoute taskRoute;
+    public BotRoute taskRoute;
     public BotRoute[] taskRouteSegments;
     public int[] ignoredLootItemIds;
     public int interactionTargetType;
@@ -236,16 +236,16 @@ public abstract class BotTaskDefinition {
     public int interactionOption = -1;
     public boolean combatTask = false;
     public boolean usesDepositBox = false;
-    int selectionWeight;
+    public int selectionWeight;
     public int targetSearchRadius = -1;
-    ArrayList assignedBotPlayers = new ArrayList();
+    public ArrayList assignedBotPlayers = new ArrayList();
     public int targetMaxX = -1;
     public int targetMaxY = -1;
     public int targetMinX = -1;
     public int targetMinY = -1;
     int forcedCombatStyle = -1;
     public boolean usesCombatTradeAdvertItems = false;
-    static int dropPartyBotJoinIndex;
+    public static int dropPartyBotJoinIndex;
 
     static {
         progressiveTaskPool = new ArrayList();
@@ -254,7 +254,8 @@ public abstract class BotTaskDefinition {
 
     public static ArrayList getLootSellShopTasks() {
         if (lootSellShopTasks.size() == 0) {
-            for (BotTaskDefinition botTaskDefinition : shopTasks) {
+            for (Object taskObject : shopTasks) {
+                BotTaskDefinition botTaskDefinition = (BotTaskDefinition)taskObject;
                 int n = botTaskDefinition.getShopId();
                 ShopDefinition shopDefinition = (ShopDefinition)ShopManager.getShopDefinitions().get(n);
                 if (!shopDefinition.isGeneralStore()) continue;
@@ -416,11 +417,11 @@ public abstract class BotTaskDefinition {
 
     public static void initializeTradeAdvertTaskPool() {
         BotTradeAdvertManager.initializeTradeAdvertOfferPools();
-        Object object2 = tradeAdvertTaskDefinitions;
+        BotTaskDefinition[] taskDefinitions = tradeAdvertTaskDefinitions;
         int n = tradeAdvertTaskDefinitions.length;
         int n2 = 0;
         while (n2 < n) {
-            BotTaskDefinition botTaskDefinition = object2[n2];
+            BotTaskDefinition botTaskDefinition = taskDefinitions[n2];
             if (!ServerSettings.freeToPlayWorld || !botTaskDefinition.membersOnly) {
                 tradeAdvertTaskPool.add(botTaskDefinition);
                 totalTradeAdvertTaskWeight += botTaskDefinition.selectionWeight;
@@ -434,8 +435,8 @@ public abstract class BotTaskDefinition {
             n3 = 100;
         }
         if (n3 == 100) {
-            for (Object object2 : tradeAdvertTaskPool) {
-                ++object2.selectionWeight;
+            for (Object taskObject : tradeAdvertTaskPool) {
+                ++((BotTaskDefinition)taskObject).selectionWeight;
             }
         }
     }
@@ -455,11 +456,11 @@ public abstract class BotTaskDefinition {
     }
 
     public static void initializeProgressiveTaskPool() {
-        Object object2 = progressiveTaskDefinitions;
+        BotTaskDefinition[] taskDefinitions = progressiveTaskDefinitions;
         int n = progressiveTaskDefinitions.length;
         int n2 = 0;
         while (n2 < n) {
-            BotTaskDefinition botTaskDefinition = object2[n2];
+            BotTaskDefinition botTaskDefinition = taskDefinitions[n2];
             if (!(ServerSettings.freeToPlayWorld && botTaskDefinition.membersOnly || botTaskDefinition.minimumServerRevision != -1 && ServerSettings.cacheVersion < botTaskDefinition.minimumServerRevision)) {
                 progressiveTaskPool.add(botTaskDefinition);
                 totalProgressiveTaskWeight += botTaskDefinition.selectionWeight;
@@ -473,8 +474,8 @@ public abstract class BotTaskDefinition {
             n3 = 100;
         }
         if (n3 == 100) {
-            for (Object object2 : progressiveTaskPool) {
-                ++object2.selectionWeight;
+            for (Object taskObject : progressiveTaskPool) {
+                ++((BotTaskDefinition)taskObject).selectionWeight;
             }
         }
     }
@@ -509,21 +510,21 @@ public abstract class BotTaskDefinition {
         return true;
     }
 
-    public ArrayList getRequiredItems(Player object) {
-        object = new ArrayList();
-        return object;
+    public ArrayList getRequiredItems(Player player) {
+        return new ArrayList();
     }
 
     public final ArrayList getMissingRequiredItems(Player player) {
         ArrayList<Object> arrayList = new ArrayList<Object>();
-        Object object = this.getRequiredItems(player);
-        player.botTaskRequiredItems = new ItemStack[((ArrayList)object).size()];
+        ArrayList requiredItems = this.getRequiredItems(player);
+        player.botTaskRequiredItems = new ItemStack[requiredItems.size()];
         int n = 0;
-        Iterator iterator = ((ArrayList)object).iterator();
+        Iterator iterator = requiredItems.iterator();
         while (iterator.hasNext()) {
-            player.botTaskRequiredItems[n] = object = (ItemStack)iterator.next();
-            if (!player.ownsItemAmount(((ItemStack)object).getId(), ((ItemStack)object).getAmount())) {
-                arrayList.add(object);
+            ItemStack itemStack = (ItemStack)iterator.next();
+            player.botTaskRequiredItems[n] = itemStack;
+            if (!player.ownsItemAmount(itemStack.getId(), itemStack.getAmount())) {
+                arrayList.add(itemStack);
             }
             ++n;
         }

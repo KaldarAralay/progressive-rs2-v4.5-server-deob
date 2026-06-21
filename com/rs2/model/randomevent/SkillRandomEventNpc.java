@@ -17,9 +17,8 @@ public enum SkillRandomEventNpc {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private SkillRandomEventNpc() {
-        void var3_2;
-        this.baseNpcId = var3_2;
+    private SkillRandomEventNpc(int n2) {
+        this.baseNpcId = n2;
     }
 
     public final int getBaseNpcId() {

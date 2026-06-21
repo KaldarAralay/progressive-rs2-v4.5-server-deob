@@ -53,7 +53,7 @@ import com.rs2.model.travel.canoe.CanoeTravelManager;
 import com.rs2.model.travel.canoe.CanoeTreeDefinition;
 import com.rs2.util.GameUtil;
 
-final class FirstObjectActionTask
+public final class FirstObjectActionTask
 extends TickTask {
     private final /* synthetic */ Player player;
     private final /* synthetic */ int actionSequence;
@@ -63,7 +63,8 @@ extends TickTask {
     private final /* synthetic */ int objectPlane;
     private final /* synthetic */ String objectName;
 
-    FirstObjectActionTask(int n, boolean bl, Player player, int n2, int n3, int n4, int n5, int n6, String string) {
+    public FirstObjectActionTask(int n, boolean bl, Player player, int n2, int n3, int n4, int n5, int n6, String string) {
+        super(1, true);
         this.player = player;
         this.actionSequence = n2;
         this.objectId = n3;
@@ -71,7 +72,6 @@ extends TickTask {
         this.objectY = n5;
         this.objectPlane = n6;
         this.objectName = string;
-        super(1, true);
     }
 
     @Override
@@ -188,7 +188,7 @@ extends TickTask {
             this.stop();
             return;
         }
-        if (GameplayHelper.a(this.player, this.objectId, this.objectX, this.objectY)) {
+        if (GameplayHelper.handleAgilityObjectAction(this.player, this.objectId, this.objectX, this.objectY)) {
             this.stop();
             return;
         }
@@ -254,7 +254,7 @@ extends TickTask {
                 this.stop();
                 return;
             }
-            GameplayHelper.a(this.player, "dairyChurn");
+            GameplayHelper.openProductionInterface(this.player, "dairyChurn");
             this.stop();
             return;
         }
@@ -663,7 +663,7 @@ extends TickTask {
             this.stop();
             return;
         }
-        if (GameplayHelper.b(this.player, this.objectX, this.objectY)) {
+        if (GameplayHelper.handleFarmingPatchObjectAction(this.player, this.objectX, this.objectY)) {
             this.stop();
             return;
         }
@@ -679,7 +679,7 @@ extends TickTask {
             return;
         }
         if (TreeDefinition.forObjectId(this.objectId) != null) {
-            WoodcuttingHandler.a(this.player, this.objectId, this.objectX, this.objectY, false);
+            WoodcuttingHandler.startWoodcutting(this.player, this.objectId, this.objectX, this.objectY, false);
             this.stop();
             return;
         }
@@ -1573,7 +1573,7 @@ extends TickTask {
             }
             case 3566: {
                 int n = this.player.getPosition().getX() > 2768 ? -5 : 5;
-                AgilityObstacleHandler.a(this.player, 50, n, 0, 2, 30, 751);
+                AgilityObstacleHandler.startDelayedShortcutMovement(this.player, 50, n, 0, 2, 30, 751);
                 break;
             }
             case 5492: {
@@ -1799,7 +1799,7 @@ extends TickTask {
                         this.player.packetSender.sendGameMessage("You need to be in members world to access members content.");
                         break;
                     }
-                    this.player.a(2480, 5175, 0);
+                    this.player.moveToGroundPosition(2480, 5175, 0);
                     break;
                 }
                 this.player.packetSender.sendGameMessage("You need a members account to access members content.");
@@ -1883,27 +1883,27 @@ extends TickTask {
                 break;
             }
             case 194: {
-                this.player.a(2409, 9819, 0);
+                this.player.moveToGroundPosition(2409, 9819, 0);
                 break;
             }
             case 3735: {
-                this.player.a(2269, 4752, 0);
+                this.player.moveToGroundPosition(2269, 4752, 0);
                 break;
             }
             case 3736: {
-                this.player.a(2858, 3577, 0);
+                this.player.moveToGroundPosition(2858, 3577, 0);
                 break;
             }
             case 3379: {
-                this.player.a(2647, 9378, 0);
+                this.player.moveToGroundPosition(2647, 9378, 0);
                 break;
             }
             case 3381: {
-                this.player.a(2630, 2997, 0);
+                this.player.moveToGroundPosition(2630, 2997, 0);
                 break;
             }
             case 9359: {
-                this.player.a(2862, 9571, 0);
+                this.player.moveToGroundPosition(2862, 9571, 0);
                 break;
             }
             case 2871: {

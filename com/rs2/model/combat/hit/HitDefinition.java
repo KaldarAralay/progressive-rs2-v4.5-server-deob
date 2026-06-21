@@ -131,10 +131,8 @@ public final class HitDefinition {
         if (hitDefinition2.effects != null) {
             hitDefinition2 = this;
             if (hitDefinition2.effects.size() > 0) {
-                HitDefinition hitDefinition3 = this;
-                hitDefinition2 = hitDefinition3;
-                hitDefinition2 = this;
-                hitDefinition.addEffects(hitDefinition3.effects.toArray(new CombatEffect[hitDefinition2.effects.size()]));
+                CombatEffect[] effects = (CombatEffect[])this.effects.toArray(new CombatEffect[this.effects.size()]);
+                hitDefinition.addEffects(effects);
             }
         }
         return hitDefinition;
@@ -151,12 +149,12 @@ public final class HitDefinition {
     public final HitDefinition addEffects(CombatEffect[] object) {
         if (object != null) {
             CombatEffect[] combatEffectArray = object;
-            int n = ((CombatEffect[])object).length;
+            int n = object.length;
             int n2 = 0;
             while (n2 < n) {
-                object = combatEffectArray[n2];
-                if (object != null) {
-                    this.effects.add(object);
+                CombatEffect combatEffect = combatEffectArray[n2];
+                if (combatEffect != null) {
+                    this.effects.add(combatEffect);
                 }
                 ++n2;
             }
@@ -297,9 +295,9 @@ public final class HitDefinition {
     public final int calculateDelay(Position position, Position object) {
         int n = this.delay;
         if (position != null && this.projectile != null) {
-            int n2 = GameUtil.getDistance(position, (Position)object);
-            object = this.projectile.getTiming();
-            double d = (double)(((ProjectileTiming)object).getStartDelay() + ((ProjectileTiming)object).getSpeed()) + (double)n2 * 5.0;
+            int n2 = GameUtil.getDistance(position, object);
+            ProjectileTiming timing = this.projectile.getTiming();
+            double d = (double)(timing.getStartDelay() + timing.getSpeed()) + (double)n2 * 5.0;
             d = Math.ceil(d * 12.0 / 600.0);
             if (n2 > 1) {
                 d += 1.0;

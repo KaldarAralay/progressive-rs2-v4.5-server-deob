@@ -10,15 +10,15 @@ import com.rs2.model.combat.special.DarklightSpecialAttack;
 import com.rs2.model.combat.special.SpecialAttackDefinition;
 import com.rs2.model.player.Player;
 
-final class DarklightSpecialDefinition
+public final class DarklightSpecialDefinition
 extends SpecialAttackDefinition {
-    DarklightSpecialDefinition(int n2, String ... stringArray) {
+    public DarklightSpecialDefinition(int n2, String ... stringArray) {
+        super(n2, stringArray);
     }
 
     @Override
-    public final WeaponCombatAttack createAttack(Player object, Entity entity, WeaponProfile weaponProfile) {
-        object = new DarklightSpecialAttack(this, (Player)object, entity, weaponProfile);
-        return object;
+    public final WeaponCombatAttack createAttack(Player player, Entity entity, WeaponProfile weaponProfile) {
+        return new DarklightSpecialAttack(this, player, entity, weaponProfile);
     }
 }
 

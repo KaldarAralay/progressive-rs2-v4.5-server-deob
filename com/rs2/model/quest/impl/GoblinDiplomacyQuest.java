@@ -17,30 +17,24 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
-            stringArray = new String[]{"I can start this quest by speaking to Generals Wartface", "and Bentnoze in the Goblin Village.", "There are no requirements for this quest."};
-            return stringArray;
+            return new String[]{"I can start this quest by speaking to Generals Wartface", "and Bentnoze in the Goblin Village.", "There are no requirements for this quest."};
         }
         if (n == 2) {
-            stringArray = new String[]{"I should bring orange goblin armour to Generals Wartface", "and Bentnoze in the Goblin Village."};
-            return stringArray;
+            return new String[]{"I should bring orange goblin armour to Generals Wartface", "and Bentnoze in the Goblin Village."};
         }
         if (n == 3) {
-            stringArray = new String[]{"I should bring blue goblin armour to Generals Wartface", "and Bentnoze in the Goblin Village."};
-            return stringArray;
+            return new String[]{"I should bring blue goblin armour to Generals Wartface", "and Bentnoze in the Goblin Village."};
         }
         if (n == 4) {
-            stringArray = new String[]{"I should bring brown goblin armour to Generals Wartface", "and Bentnoze in the Goblin Village."};
-            return stringArray;
+            return new String[]{"I should bring brown goblin armour to Generals Wartface", "and Bentnoze in the Goblin Village."};
         }
         if (n == 5) {
-            stringArray = new String[]{"I should speak with Generals Wartface and Bentnoze", "in the Goblin Village to finish this quest."};
-            return stringArray;
+            return new String[]{"I should speak with Generals Wartface and Bentnoze", "in the Goblin Village to finish this quest."};
         }
         if (n == 1) {
-            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "5 Quest Points", "200 Crafting XP", "A gold bar"};
-            return stringArray;
+            return new String[]{"Quest Completed!", "", "You were awarded:", "5 Quest Points", "200 Crafting XP", "A gold bar"};
         }
         return null;
     }
@@ -267,7 +261,7 @@ extends QuestScript {
             if (n2 == 22) {
                 player.getDialogueManager().setDialogueNpcId(297);
                 player.getDialogueManager().showNpcOneLineDialogue("Yep. bring us orange armour.", 591);
-                this.d(player);
+                this.startQuest(player);
                 player.getDialogueManager().finishDialogue();
                 return true;
             }

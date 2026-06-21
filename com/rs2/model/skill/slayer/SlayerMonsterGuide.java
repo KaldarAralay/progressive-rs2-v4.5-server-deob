@@ -78,11 +78,9 @@ public enum SlayerMonsterGuide {
     /*
      * WARNING - void declaration
      */
-    private SlayerMonsterGuide() {
-        void var4_1;
-        void var3_2;
-        this.monsterName = var3_2;
-        this.guideTextLines = var4_1;
+    private SlayerMonsterGuide(String string2, String[] stringArray) {
+        this.monsterName = string2;
+        this.guideTextLines = stringArray;
     }
 
     public static SlayerMonsterGuide forMonsterName(String string) {

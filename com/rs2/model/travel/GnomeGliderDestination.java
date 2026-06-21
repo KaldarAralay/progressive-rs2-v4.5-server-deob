@@ -21,12 +21,10 @@ public enum GnomeGliderDestination {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private GnomeGliderDestination(int n3) {
-        void var5_3;
-        void var4_2;
-        this.buttonId = n3;
-        this.destination = var4_2;
-        this.routeIndex = var5_3;
+    private GnomeGliderDestination(int n2, Position position, int n3) {
+        this.buttonId = n2;
+        this.destination = position;
+        this.routeIndex = n3;
     }
 }
 

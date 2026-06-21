@@ -39,12 +39,10 @@ public enum FruitTreePatch {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private FruitTreePatch(int n3) {
-        void var5_3;
-        void var4_2;
-        this.index = n3;
-        this.bounds = var4_2;
-        this.objectId = var5_3;
+    private FruitTreePatch(int n2, Position[] positionArray, int n3) {
+        this.index = n2;
+        this.bounds = positionArray;
+        this.objectId = n3;
     }
 
     public static FruitTreePatch forPosition(Position position) {

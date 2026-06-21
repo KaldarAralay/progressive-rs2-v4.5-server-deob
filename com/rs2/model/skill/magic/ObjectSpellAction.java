@@ -10,7 +10,7 @@ import com.rs2.model.player.Player;
 import com.rs2.model.skill.magic.MagicSpellAction;
 import com.rs2.model.skill.magic.SpellDefinition;
 
-final class ObjectSpellAction
+public final class ObjectSpellAction
 extends MagicSpellAction {
     private final /* synthetic */ int objectId;
     private final /* synthetic */ int objectX;
@@ -19,13 +19,13 @@ extends MagicSpellAction {
     private final /* synthetic */ SpellDefinition objectSpell;
     private static /* synthetic */ int[] f;
 
-    ObjectSpellAction(Player player, SpellDefinition spellDefinition, int n, int n2, int n3, int n4, SpellDefinition spellDefinition2) {
+    public ObjectSpellAction(Player player, SpellDefinition spellDefinition, int n, int n2, int n3, int n4, SpellDefinition spellDefinition2) {
+        super(player, spellDefinition, (byte)0);
         this.objectId = n;
         this.objectX = n2;
         this.objectY = n3;
         this.objectPlane = n4;
         this.objectSpell = spellDefinition2;
-        super(player, spellDefinition, (byte)0);
     }
 
     @Override

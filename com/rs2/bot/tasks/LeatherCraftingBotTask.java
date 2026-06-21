@@ -28,11 +28,11 @@ extends BotTaskDefinition {
     }
 
     @Override
-    public final ArrayList getRequiredItems(Player object) {
-        object = new ArrayList<ItemStack>();
-        ((ArrayList)object).add(new ItemStack(1734, 200));
-        ((ArrayList)object).add(new ItemStack(1733, 1));
-        return object;
+    public final ArrayList getRequiredItems(Player player) {
+        ArrayList<ItemStack> requiredItems = new ArrayList<ItemStack>();
+        requiredItems.add(new ItemStack(1734, 200));
+        requiredItems.add(new ItemStack(1733, 1));
+        return requiredItems;
     }
 
     @Override
@@ -101,8 +101,8 @@ extends BotTaskDefinition {
             this.startWalkToBank(player);
             return;
         }
-        GameplayHelper.a(player, 1733, player.botTaskItemId, player.getInventoryManager().getContainer().indexOfItem(1733), player.getInventoryManager().getContainer().indexOfItem(player.botTaskItemId));
-        GameplayHelper.a(player, -1, 26);
+        GameplayHelper.handleLeatherCraftingItemUse(player, 1733, player.botTaskItemId, player.getInventoryManager().getContainer().indexOfItem(1733), player.getInventoryManager().getContainer().indexOfItem(player.botTaskItemId));
+        GameplayHelper.handleCraftedArmorButton(player, -1, 26);
     }
 
     @Override

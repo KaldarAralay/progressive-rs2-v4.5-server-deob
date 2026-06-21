@@ -31,16 +31,16 @@ public final class FiremakingHandler {
         block16: {
             GroundItem groundItem;
             FiremakingLog firemakingLog;
-            void var9_19;
-            void var3_7;
-            int n6;
+            int var9_19 = n4;
+            int var3_7 = n5;
+            int n6 = n4;
             Object object;
             Object object2;
             int n7;
             block17: {
                 block15: {
-                    void player;
-                    boolean groundItem2;
+                    int player = n5;
+                    int groundItem2 = n3;
                     Object object3;
                     block14: {
                         if (!ServerSettings.firemakingEnabled) {
@@ -81,25 +81,24 @@ public final class FiremakingHandler {
                         return;
                     }
                     ObjectManager.getInstance();
-                    object = ObjectManager.findDynamicObjectAt(groundItem2 ? 1 : 0, n6, (int)player);
+                    object = ObjectManager.findDynamicObjectAt(groundItem2, n6, player);
                     if (object != null) {
                         Player object4 = this.player;
                         object4.packetSender.sendGameMessage("You can't light a fire here.");
                         return;
                     }
-                    if (!SkillActionHelper.checkSkillRequirement(this.player, 11, ((FiremakingLog)((Object)object2)).getRequiredLevel(), "light these logs")) {
+                    if (!SkillActionHelper.checkSkillRequirement(this.player, 11, ((FiremakingLog)object3).getRequiredLevel(), "light these logs")) {
                         return;
                     }
-                    void v1 = groundItem2;
-                    groundItem2 = bl;
+                    boolean useGroundItem = bl;
                     var3_7 = player;
                     var9_19 = n6;
-                    n7 = v1;
-                    firemakingLog = object2;
+                    n7 = groundItem2;
+                    firemakingLog = (FiremakingLog)object3;
                     object2 = this.player;
                     object = this;
                     n6 = firemakingLog.getLogItemId();
-                    if (groundItem2) break block15;
+                    if (useGroundItem) break block15;
                     if (!((Player)object2).getInventoryManager().removeItem(new ItemStack(n6))) break block16;
                     groundItem = new GroundItem(new ItemStack(n6), (Entity)object2);
                     GroundItemManager.getInstance().spawn(groundItem);
@@ -110,7 +109,7 @@ public final class FiremakingHandler {
                 if (groundItem == null) break block16;
             }
             if (((Player)object2).getQuestState(0) != 1) {
-                ((Player)object2).getDialogueManager().a("Please wait.", "", "Your character is now attempting to light the fire.", "This should only take a few seconds.", "", true);
+                ((Player)object2).getDialogueManager().showTutorialInstructionOverlay("Please wait.", "", "Your character is now attempting to light the fire.", "This should only take a few seconds.", "", true);
             }
             Object n10 = object2;
             ((Player)n10).packetSender.sendGameMessage("You attempt to light the logs.");

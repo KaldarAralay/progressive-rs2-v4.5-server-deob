@@ -10,13 +10,13 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 
-final class BarrowsPrayerDrainTask
+public final class BarrowsPrayerDrainTask
 extends TickTask {
     private final /* synthetic */ Player player;
 
-    BarrowsPrayerDrainTask(int n, Player player) {
-        this.player = player;
+    public BarrowsPrayerDrainTask(int n, Player player) {
         super(30);
+        this.player = player;
     }
 
     @Override

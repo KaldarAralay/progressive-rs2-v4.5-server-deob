@@ -12,7 +12,7 @@ import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.util.GameUtil;
 
-final class PickableObjectEvent
+public final class PickableObjectEvent
 extends CycleEvent {
     private final /* synthetic */ int objectId;
     private final /* synthetic */ int objectX;
@@ -21,7 +21,7 @@ extends CycleEvent {
     private final /* synthetic */ ItemStack item;
     private final /* synthetic */ String itemName;
 
-    PickableObjectEvent(int n, int n2, int n3, Player player, ItemStack itemStack, String string) {
+    public PickableObjectEvent(int n, int n2, int n3, Player player, ItemStack itemStack, String string) {
         this.objectId = n;
         this.objectX = n2;
         this.objectY = n3;

@@ -10,13 +10,13 @@ import com.rs2.model.shop.ShopManager;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 
-final class VarrockGeneralStoreTradeTickTask
+public final class VarrockGeneralStoreTradeTickTask
 extends TickTask {
     private final /* synthetic */ Player player;
 
-    VarrockGeneralStoreTradeTickTask(VarrockGeneralStoreBotTask varrockGeneralStoreBotTask, int n, Player player) {
-        this.player = player;
+    public VarrockGeneralStoreTradeTickTask(VarrockGeneralStoreBotTask varrockGeneralStoreBotTask, int n, Player player) {
         super(2);
+        this.player = player;
     }
 
     @Override

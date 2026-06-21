@@ -12,25 +12,25 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.GrandTreeQuest;
 import com.rs2.model.task.TickTask;
 
-final class GrandTreeGloughCaveEncounterTask
+public final class GrandTreeGloughCaveEncounterTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
-    GrandTreeGloughCaveEncounterTask(GrandTreeQuest grandTreeQuest, int n, Player player) {
-        this.a = player;
+    public GrandTreeGloughCaveEncounterTask(GrandTreeQuest grandTreeQuest, int n, Player player) {
         super(2);
+        this.player = player;
     }
 
     @Override
     public final void execute() {
-        Entity entity = this.a;
+        Entity entity = this.player;
         ((Player)entity).packetSender.sendGameMessage("You can hear footsteps approaching.");
-        DialogueManager.continueDialogue(this.a, 671, 100, 0);
+        DialogueManager.continueDialogue(this.player, 671, 100, 0);
         entity = new Npc(671);
-        GameplayHelper.b(this.a, (Npc)entity, 2484, 9864, 0, -1, false, false);
+        GameplayHelper.replaceOwnedRoamingNpcAtPosition(this.player, (Npc)entity, 2484, 9864, 0, -1, false, false);
         ((Npc)entity).queueScriptedPath(new Position[]{new Position(2490, 9864, 0)});
-        this.a.setInteractionTarget(entity);
-        this.a.setActionLocked(false);
+        this.player.setInteractionTarget(entity);
+        this.player.setActionLocked(false);
         this.stop();
     }
 }

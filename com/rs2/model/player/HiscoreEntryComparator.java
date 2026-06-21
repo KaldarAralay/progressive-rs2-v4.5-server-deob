@@ -7,11 +7,11 @@ import com.rs2.model.player.CharacterFileRecord;
 import com.rs2.model.player.Player;
 import java.util.Comparator;
 
-final class HiscoreEntryComparator
+public final class HiscoreEntryComparator
 implements Comparator {
     private final /* synthetic */ int a;
 
-    HiscoreEntryComparator(Player player, int n) {
+    public HiscoreEntryComparator(Player player, int n) {
         this.a = n;
     }
 

@@ -8,9 +8,10 @@ import com.rs2.model.gameplay.duel.DuelRule;
 import com.rs2.model.item.ItemStack;
 import com.rs2.model.player.Player;
 
-final class NoMeleeDuelRule
+public final class NoMeleeDuelRule
 extends DuelRule {
-    NoMeleeDuelRule(int n2, int n3, int n4) {
+    public NoMeleeDuelRule(int n2, int n3, int n4) {
+        super(n2, n3, n4);
     }
 
     @Override
@@ -26,7 +27,7 @@ extends DuelRule {
             }
             bl2 = false;
         } else {
-            if (!object.isEnabledFor(player2)) {
+            if (!((DuelRule)object).isEnabledFor(player2)) {
                 if (player2.getDuelSession().getCurrentCombatType() == CombatType.MELEE) {
                     player2.getDuelSession().getEquipmentToRemove().add(new ItemStack(player2.getEquipmentManager().getItemIdAtSlot(3)));
                 }

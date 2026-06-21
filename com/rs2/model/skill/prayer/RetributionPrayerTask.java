@@ -13,7 +13,7 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 
-final class RetributionPrayerTask
+public final class RetributionPrayerTask
 extends TickTask {
     private final /* synthetic */ Player player;
     private final /* synthetic */ boolean multiCombat;
@@ -21,13 +21,13 @@ extends TickTask {
     private final /* synthetic */ Entity primaryTarget;
     private final /* synthetic */ HitDefinition hitDefinition;
 
-    RetributionPrayerTask(int n, Player player, boolean bl, Entity entity, Entity entity2, HitDefinition hitDefinition) {
+    public RetributionPrayerTask(int n, Player player, boolean bl, Entity entity, Entity entity2, HitDefinition hitDefinition) {
+        super(3);
         this.player = player;
         this.multiCombat = bl;
         this.source = entity;
         this.primaryTarget = entity2;
         this.hitDefinition = hitDefinition;
-        super(3);
     }
 
     @Override

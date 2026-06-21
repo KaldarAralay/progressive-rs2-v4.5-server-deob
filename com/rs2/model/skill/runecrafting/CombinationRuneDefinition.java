@@ -42,15 +42,13 @@ public enum CombinationRuneDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private CombinationRuneDefinition(int n3, int n4, int n5, double d) {
-        void var8_6;
-        void var7_5;
-        this.talismanItemId = n3;
-        this.runeItemId = n4;
-        this.altarObjectId = n5;
-        this.productRuneItemId = (int)d;
-        this.requiredLevel = var7_5;
-        this.experience = var8_6;
+    private CombinationRuneDefinition(int n2, int n3, int n4, int n5, int n6, double d) {
+        this.talismanItemId = n2;
+        this.runeItemId = n3;
+        this.altarObjectId = n4;
+        this.productRuneItemId = n5;
+        this.requiredLevel = n6;
+        this.experience = d;
     }
 
     public final int getTalismanItemId() {

@@ -8,12 +8,12 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class DuelCountdownTask
+public final class DuelCountdownTask
 extends CycleEvent {
     private int countdownValue = 3;
     private /* synthetic */ DuelSession session;
 
-    DuelCountdownTask(DuelSession duelSession) {
+    public DuelCountdownTask(DuelSession duelSession) {
         this.session = duelSession;
     }
 

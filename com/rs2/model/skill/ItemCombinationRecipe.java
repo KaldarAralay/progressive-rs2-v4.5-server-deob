@@ -46,17 +46,15 @@ public enum ItemCombinationRecipe {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private ItemCombinationRecipe(ItemStack[] itemStackArray, ItemStack[] itemStackArray2, int n3, int[] nArray, double d, String string) {
-        void var11_8;
-        void var8_6;
-        this.firstItemId = (int)itemStackArray;
-        this.secondItemId = (int)itemStackArray2;
-        this.requiredItems = (ItemStack[])n3;
-        this.productItems = (ItemStack[])nArray;
+    private ItemCombinationRecipe(int n2, int n3, ItemStack[] itemStackArray, ItemStack[] itemStackArray2, int n4, int[] nArray, double d, String string2) {
+        this.firstItemId = n2;
+        this.secondItemId = n3;
+        this.requiredItems = itemStackArray;
+        this.productItems = itemStackArray2;
         this.animationId = -1;
-        this.skillRequirement = var8_6;
-        this.experience = (double)string;
-        this.message = var11_8;
+        this.skillRequirement = nArray;
+        this.experience = d;
+        this.message = string2;
     }
 
     public static ItemCombinationRecipe forItemIds(int n, int n2) {

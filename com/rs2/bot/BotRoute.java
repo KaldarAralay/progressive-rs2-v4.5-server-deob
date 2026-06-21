@@ -59,9 +59,9 @@ public class BotRoute {
     }
 
     public BotRoute reversed() {
-        Position[] positionArray = new ArrayList(Arrays.asList(this.waypoints));
-        Collections.reverse(positionArray);
-        positionArray = positionArray.toArray(new Position[positionArray.size()]);
+        ArrayList positionList = new ArrayList(Arrays.asList(this.waypoints));
+        Collections.reverse(positionList);
+        Position[] positionArray = (Position[])positionList.toArray(new Position[positionList.size()]);
         return new BotRoute(positionArray);
     }
 

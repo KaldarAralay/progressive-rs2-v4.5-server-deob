@@ -9,13 +9,13 @@ import com.rs2.model.skill.farming.HopsPatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class HopsInspectTask
+public final class HopsInspectTask
 extends CycleEvent {
     private /* synthetic */ HopsPatchManager manager;
     private final /* synthetic */ HopsPatch patch;
     private final /* synthetic */ HopsGrowthDefinition growthDefinition;
 
-    HopsInspectTask(HopsPatchManager hopsPatchManager, HopsPatch hopsPatch, HopsGrowthDefinition hopsGrowthDefinition) {
+    public HopsInspectTask(HopsPatchManager hopsPatchManager, HopsPatch hopsPatch, HopsGrowthDefinition hopsGrowthDefinition) {
         this.manager = hopsPatchManager;
         this.patch = hopsPatch;
         this.growthDefinition = hopsGrowthDefinition;

@@ -10,25 +10,25 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.GrandTreeQuest;
 import com.rs2.model.task.TickTask;
 
-final class GloughDemonSpawnTask
+public final class GloughDemonSpawnTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
-    GloughDemonSpawnTask(GrandTreeQuest grandTreeQuest, int n, Player player) {
-        this.a = player;
+    public GloughDemonSpawnTask(GrandTreeQuest grandTreeQuest, int n, Player player) {
         super(3);
+        this.player = player;
     }
 
     @Override
     public final void execute() {
         Npc npc;
-        if (this.a.getInteractionTarget() != null && this.a.getInteractionTarget().isNpc() && (npc = (Npc)this.a.getInteractionTarget()).getNpcId() == 671) {
+        if (this.player.getInteractionTarget() != null && this.player.getInteractionTarget().isNpc() && (npc = (Npc)this.player.getInteractionTarget()).getNpcId() == 671) {
             npc.setActive(false);
             World.unregisterNpc(npc);
         }
         npc = new Npc(677);
-        GameplayHelper.b(this.a, npc, 2484, 9864, 0, -1, true, false);
-        this.a.setActionLocked(false);
+        GameplayHelper.replaceOwnedRoamingNpcAtPosition(this.player, npc, 2484, 9864, 0, -1, true, false);
+        this.player.setActionLocked(false);
         this.stop();
     }
 }

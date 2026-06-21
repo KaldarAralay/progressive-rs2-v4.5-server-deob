@@ -45,24 +45,20 @@ public enum BushDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private BushDefinition(int n3, int n4, int[] nArray, int n5, double d, double d2, double d3, int n6, int n222, int n7, int n222, double d4) {
-        void var19_14;
-        void var18_13;
-        void cfr_renamed_9;
-        void var8_6;
-        this.seedId = n3;
-        this.produceItemId = n4;
+    private BushDefinition(int n2, int n3, int n4, int n5, int[] nArray, int n6, double d, double d2, double d3, int n7, int n8, int n9, int n10, double d4) {
+        this.seedId = n2;
+        this.produceItemId = n3;
         this.seedAmount = 1;
         this.requiredLevel = n5;
-        this.protectionPayment = (int[])d;
-        this.totalGrowthTicks = var8_6;
+        this.protectionPayment = nArray;
+        this.totalGrowthTicks = n6;
         this.diseaseChance = 0.2;
-        this.plantingExperience = d3;
-        this.harvestExperience = n6;
+        this.plantingExperience = d2;
+        this.harvestExperience = d3;
         this.configStartStage = n7;
-        this.configEndStage = cfr_renamed_9;
-        this.healthCheckConfigStage = var18_13;
-        this.healthCheckExperience = var19_14;
+        this.configEndStage = n8;
+        this.healthCheckConfigStage = n10;
+        this.healthCheckExperience = d4;
     }
 
     public static BushDefinition forSeedId(int n) {

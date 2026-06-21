@@ -1,16 +1,16 @@
 /*
- * Decompiled with CFR 0.152.
+ * Source recovery overlay for CFR control-flow damage.
  */
 package com.rs2.model.combat.requirement;
 
 import com.rs2.model.Entity;
-import com.rs2.model.combat.requirement.InventoryItemRequirement;
 import com.rs2.model.gameplay.magetrainingarena.AlchemistPlaygroundController;
 import com.rs2.model.item.ItemDefinition;
 import com.rs2.model.item.ItemStack;
 import com.rs2.model.player.Player;
 import com.rs2.model.skill.magic.SpellDefinition;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public abstract class SpellRuneCostRequirement
 extends InventoryItemRequirement {
@@ -37,162 +37,146 @@ extends InventoryItemRequirement {
         if (!entity.isPlayer()) {
             return true;
         }
-        ArrayList<ItemStack> arrayList = (Player)entity;
+        Player player = (Player)entity;
         ItemStack[] itemStackArray = (ItemStack[])this.spell.getRuneCosts().clone();
-        if ((this.spell == SpellDefinition.LOW_LEVEL_ALCHEMY || this.spell == SpellDefinition.HIGH_LEVEL_ALCHEMY) && ((Player)((Object)arrayList)).getAlchemistPlaygroundController().isInsidePlayground() && AlchemistPlaygroundController.currentFreeAlchemyItemId == ((Player)((Object)arrayList)).temporaryActionValue) {
-            arrayList = new ArrayList<ItemStack>();
+        if ((this.spell == SpellDefinition.LOW_LEVEL_ALCHEMY || this.spell == SpellDefinition.HIGH_LEVEL_ALCHEMY) && player.getAlchemistPlaygroundController().isInsidePlayground() && AlchemistPlaygroundController.currentFreeAlchemyItemId == player.temporaryActionValue) {
+            ArrayList arrayList = new ArrayList();
             arrayList.add(new ItemStack(561, 0));
             this.runeCosts = arrayList;
         } else {
-            this.runeCosts = this.buildRuneCosts((Player)((Object)arrayList), itemStackArray);
+            this.runeCosts = this.buildRuneCosts(player, itemStackArray);
         }
-        arrayList = this;
-        super.setRequiredItems(((SpellRuneCostRequirement)((Object)arrayList)).runeCosts);
+        super.setRequiredItems(this.runeCosts);
         return super.isSatisfiedBy(entity);
     }
 
-    /*
-     * Unable to fully structure code
-     */
-    private ArrayList buildRuneCosts(Player var1_1, ItemStack[] var2_2) {
-        var3_5 = new ArrayList<ItemStack>();
-        var4_6 = new ArrayList<ItemStack>();
-        var5_7 = new ArrayList<Integer>();
-        var6_8 = new ArrayList<Integer>();
-        var9_9 = var2_2;
-        var8_10 = ((ItemStack[])var2_2).length;
-        var7_12 = 0;
-        while (var7_12 < var8_10) {
-            block33: {
-                block32: {
-                    var2_2 = var9_9[var7_12];
-                    var10_15 = var2_2.getId();
-                    var2_3 = var2_2.getAmount();
-                    var12_17 = var10_15;
-                    var11_16 = var1_1;
-                    if (var11_16.isPlayer()) break block32;
-                    v0 = true;
-                    break block33;
+    private ArrayList buildRuneCosts(Player player, ItemStack[] itemStackArray) {
+        ArrayList required = new ArrayList();
+        ArrayList credits = new ArrayList();
+        ArrayList removeIndexes = new ArrayList();
+        ArrayList pendingIndexes = new ArrayList();
+        int n = 0;
+        while (n < itemStackArray.length) {
+            ItemStack itemStack = itemStackArray[n];
+            int runeId = itemStack.getId();
+            int amount = itemStack.getAmount();
+            if (!SpellRuneCostRequirement.hasStaffForRune(player, runeId)) {
+                ItemStack flatItem = player.getInventoryManager().getContainer().findFlatItem(runeId);
+                int flatAmount = 0;
+                if (flatItem != null) {
+                    flatAmount = flatItem.getAmount();
                 }
-                if ((var11_16 = var11_16.getEquipmentManager().getContainer().getItemAt(3)) == null || !(var11_16 = ItemDefinition.forId(var11_16.getId()).getName().toLowerCase()).contains("staff")) ** GOTO lbl-1000
-                switch (var12_17) {
-                    case 554: {
-                        if (var11_16.contains("fire") || var11_16.contains("lava") || var11_16.contains("steam")) {
-                            v0 = true;
-                            break;
-                        }
-                        ** GOTO lbl37
-                    }
-                    case 555: {
-                        if (var11_16.contains("water") || var11_16.contains("mud") || var11_16.contains("steam")) {
-                            v0 = true;
-                            break;
-                        }
-                        ** GOTO lbl37
-                    }
-                    case 556: {
-                        v0 = var11_16.contains("air");
-                        break;
-                    }
-                    case 557: {
-                        if (var11_16.contains("earth") || var11_16.contains("lava") || var11_16.contains("mud")) {
-                            v0 = true;
-                            break;
-                        }
-                    }
-lbl37:
-                    // 5 sources
-
-                    default: lbl-1000:
-                    // 2 sources
-
-                    {
-                        v0 = false;
-                    }
-                }
-            }
-            if (!v0) {
-                var11_16 = var1_1.getInventoryManager().getContainer().findFlatItem(var10_15);
-                var12_17 = 0;
-                if (var11_16 != null) {
-                    var12_17 = var11_16.getAmount();
-                }
-                if (var12_17 >= var2_3) {
-                    var3_5.add(new ItemStack(var10_15, var2_3));
-                } else if (this.collectCombinationRuneCosts(var1_1, var10_15, var2_3)) {
-                    if (var3_5.size() != 0) {
-                        var2_3 = 0;
-                        var10_15 = 0;
-                        while (var10_15 < this.combinationRuneCosts.size()) {
-                            var11_16 = (ItemStack)this.combinationRuneCosts.get(var10_15);
-                            for (ItemStack var12_18 : var3_5) {
-                                if (var12_18.getId() != var11_16.getId() || var12_18.getAmount() >= var11_16.getAmount()) continue;
-                                var12_18.setAmount(var11_16.getAmount());
-                                var2_3 = 1;
+                if (flatAmount >= amount) {
+                    required.add(new ItemStack(runeId, amount));
+                } else if (this.collectCombinationRuneCosts(player, runeId, amount)) {
+                    if (required.size() != 0) {
+                        int i = 0;
+                        while (i < this.combinationRuneCosts.size()) {
+                            ItemStack combinationCost = (ItemStack)this.combinationRuneCosts.get(i);
+                            boolean merged = false;
+                            Iterator iterator = required.iterator();
+                            while (iterator.hasNext()) {
+                                ItemStack requiredItem = (ItemStack)iterator.next();
+                                if (requiredItem.getId() != combinationCost.getId() || requiredItem.getAmount() >= combinationCost.getAmount()) continue;
+                                requiredItem.setAmount(combinationCost.getAmount());
+                                merged = true;
                             }
-                            if (var2_3 == 0) {
-                                var6_8.add(var10_15);
+                            if (!merged) {
+                                pendingIndexes.add(Integer.valueOf(i));
                             }
-                            ++var10_15;
+                            ++i;
                         }
-                        var11_16 = var6_8.iterator();
-                        while (var11_16.hasNext()) {
-                            var10_15 = (Integer)var11_16.next();
-                            var3_5.add((ItemStack)this.combinationRuneCosts.get(var10_15));
+                        Iterator iterator = pendingIndexes.iterator();
+                        while (iterator.hasNext()) {
+                            int index = ((Integer)iterator.next()).intValue();
+                            required.add((ItemStack)this.combinationRuneCosts.get(index));
                         }
-                        var6_8.clear();
+                        pendingIndexes.clear();
                     } else {
-                        var3_5.addAll(this.combinationRuneCosts);
+                        required.addAll(this.combinationRuneCosts);
                     }
-                    if (var4_6.size() != 0) {
-                        var2_3 = 0;
-                        var10_15 = 0;
-                        while (var10_15 < this.combinationRuneCredits.size()) {
-                            var11_16 = (ItemStack)this.combinationRuneCredits.get(var10_15);
-                            for (ItemStack var12_19 : var4_6) {
-                                if (var12_19.getId() != var11_16.getId() || var12_19.getAmount() >= var12_19.getAmount()) continue;
-                                var12_19.setAmount(var12_19.getAmount());
-                                var2_3 = 1;
+                    if (credits.size() != 0) {
+                        int i = 0;
+                        while (i < this.combinationRuneCredits.size()) {
+                            ItemStack combinationCredit = (ItemStack)this.combinationRuneCredits.get(i);
+                            boolean merged = false;
+                            Iterator iterator = credits.iterator();
+                            while (iterator.hasNext()) {
+                                ItemStack credit = (ItemStack)iterator.next();
+                                if (credit.getId() != combinationCredit.getId() || credit.getAmount() >= credit.getAmount()) continue;
+                                credit.setAmount(credit.getAmount());
+                                merged = true;
                             }
-                            if (var2_3 == 0) {
-                                var6_8.add(var10_15);
+                            if (!merged) {
+                                pendingIndexes.add(Integer.valueOf(i));
                             }
-                            ++var10_15;
+                            ++i;
                         }
-                        var11_16 = var6_8.iterator();
-                        while (var11_16.hasNext()) {
-                            var10_15 = (Integer)var11_16.next();
-                            var4_6.add((ItemStack)this.combinationRuneCredits.get(var10_15));
+                        Iterator iterator = pendingIndexes.iterator();
+                        while (iterator.hasNext()) {
+                            int index = ((Integer)iterator.next()).intValue();
+                            credits.add((ItemStack)this.combinationRuneCredits.get(index));
                         }
-                        var6_8.clear();
+                        pendingIndexes.clear();
                     } else {
-                        var4_6.addAll(this.combinationRuneCredits);
+                        credits.addAll(this.combinationRuneCredits);
                     }
                 } else {
-                    var3_5.add(new ItemStack(var10_15, var2_3));
+                    required.add(new ItemStack(runeId, amount));
                 }
             }
-            ++var7_12;
+            ++n;
         }
-        var2_4 = 0;
-        while (var2_4 < var3_5.size()) {
-            var7_13 = (ItemStack)var3_5.get(var2_4);
-            for (ItemStack var8_11 : var4_6) {
-                if (var7_13.getId() != var8_11.getId()) continue;
-                if (var7_13.getAmount() <= var8_11.getAmount()) {
-                    var5_7.add(var2_4);
+        int i = 0;
+        while (i < required.size()) {
+            ItemStack requiredItem = (ItemStack)required.get(i);
+            Iterator iterator = credits.iterator();
+            while (iterator.hasNext()) {
+                ItemStack credit = (ItemStack)iterator.next();
+                if (requiredItem.getId() != credit.getId()) continue;
+                if (requiredItem.getAmount() <= credit.getAmount()) {
+                    removeIndexes.add(Integer.valueOf(i));
                     continue;
                 }
-                var7_13.setAmount(var7_13.getAmount() - var8_11.getAmount());
+                requiredItem.setAmount(requiredItem.getAmount() - credit.getAmount());
             }
-            ++var2_4;
+            ++i;
         }
-        var7_14 = var5_7.iterator();
-        while (var7_14.hasNext()) {
-            var2_4 = (Integer)var7_14.next();
-            var3_5.remove(var2_4);
+        Iterator iterator = removeIndexes.iterator();
+        while (iterator.hasNext()) {
+            int index = ((Integer)iterator.next()).intValue();
+            required.remove(index);
         }
-        return var3_5;
+        return required;
+    }
+
+    private static boolean hasStaffForRune(Player player, int n) {
+        if (!player.isPlayer()) {
+            return true;
+        }
+        ItemStack itemStack = player.getEquipmentManager().getContainer().getItemAt(3);
+        if (itemStack == null) {
+            return false;
+        }
+        String string = ItemDefinition.forId(itemStack.getId()).getName().toLowerCase();
+        if (!string.contains("staff")) {
+            return false;
+        }
+        switch (n) {
+            case 554: {
+                return string.contains("fire") || string.contains("lava") || string.contains("steam");
+            }
+            case 555: {
+                return string.contains("water") || string.contains("mud") || string.contains("steam");
+            }
+            case 556: {
+                return string.contains("air");
+            }
+            case 557: {
+                return string.contains("earth") || string.contains("lava") || string.contains("mud");
+            }
+        }
+        return false;
     }
 
     private static int getPairedCombinationRuneId(int n, int n2) {
@@ -241,102 +225,81 @@ lbl37:
         return -1;
     }
 
-    /*
-     * WARNING - void declaration
-     */
-    private boolean collectCombinationRuneCosts(Player object, int n, int n2) {
-        void itemStack2;
+    private boolean collectCombinationRuneCosts(Player player, int n, int n2) {
         this.combinationRuneCosts.clear();
         this.combinationRuneCredits.clear();
-        ArrayList<Object> arrayList = new ArrayList<Object>();
-        ItemStack itemStack = ((Player)object).getInventoryManager().getContainer().findFlatItem(n);
-        int n3 = 0;
-        if (itemStack != null) {
-            n3 = itemStack.getAmount();
+        ArrayList matchingCombinationRunes = new ArrayList();
+        ItemStack flatItem = player.getInventoryManager().getContainer().findFlatItem(n);
+        int flatAmount = 0;
+        if (flatItem != null) {
+            flatAmount = flatItem.getAmount();
         }
-        if (n3 >= n2) {
+        if (flatAmount >= n2) {
             return true;
         }
-        ItemStack[] itemStackArray = ((Player)object).getInventoryManager().getContainer().getItems();
-        int n4 = itemStackArray.length;
-        boolean n5 = false;
-        while (itemStack2 < n4) {
-            object = itemStackArray[itemStack2];
-            if (object != null) {
-                switch (n) {
-                    case 554: {
-                        if (((ItemStack)object).getId() != 4697 && ((ItemStack)object).getId() != 4694 && ((ItemStack)object).getId() != 4699) break;
-                        arrayList.add(object);
-                        break;
-                    }
-                    case 555: {
-                        if (((ItemStack)object).getId() != 4695 && ((ItemStack)object).getId() != 4694 && ((ItemStack)object).getId() != 4698) break;
-                        arrayList.add(object);
-                        break;
-                    }
-                    case 556: {
-                        if (((ItemStack)object).getId() != 4695 && ((ItemStack)object).getId() != 4696 && ((ItemStack)object).getId() != 4697) break;
-                        arrayList.add(object);
-                        break;
-                    }
-                    case 557: {
-                        if (((ItemStack)object).getId() != 4696 && ((ItemStack)object).getId() != 4698 && ((ItemStack)object).getId() != 4699) break;
-                        arrayList.add(object);
-                    }
-                }
+        ItemStack[] itemStackArray = player.getInventoryManager().getContainer().getItems();
+        int i = 0;
+        while (i < itemStackArray.length) {
+            ItemStack itemStack = itemStackArray[i];
+            if (itemStack != null && SpellRuneCostRequirement.isCombinationRuneFor(itemStack.getId(), n)) {
+                matchingCombinationRunes.add(itemStack);
             }
-            ++itemStack2;
+            ++i;
         }
-        int n6 = 0;
-        for (ItemStack n7 : arrayList) {
-            n6 += n7.getAmount();
+        int combinationAmount = 0;
+        Iterator iterator = matchingCombinationRunes.iterator();
+        while (iterator.hasNext()) {
+            ItemStack itemStack = (ItemStack)iterator.next();
+            combinationAmount += itemStack.getAmount();
         }
-        if (arrayList.size() == 0) {
+        if (matchingCombinationRunes.size() == 0) {
             return false;
         }
-        if (n3 + n6 >= n2) {
-            int n7;
-            int n8;
-            int n9;
-            int n10 = n2;
-            if (itemStack != null) {
-                this.combinationRuneCosts.add(itemStack);
-            }
-            if ((n9 = n10 - n3) >= ((ItemStack)arrayList.get(0)).getAmount()) {
-                this.combinationRuneCosts.add((ItemStack)arrayList.get(0));
-                this.combinationRuneCredits.add(new ItemStack(SpellRuneCostRequirement.getPairedCombinationRuneId(((ItemStack)arrayList.get(0)).getId(), n), ((ItemStack)arrayList.get(0)).getAmount()));
-                n8 = n9 - ((ItemStack)arrayList.get(0)).getAmount();
+        if (flatAmount + combinationAmount < n2) {
+            return false;
+        }
+        int remaining = n2;
+        if (flatItem != null) {
+            this.combinationRuneCosts.add(flatItem);
+        }
+        remaining -= flatAmount;
+        int supplied = flatAmount;
+        i = 0;
+        while (i < matchingCombinationRunes.size() && remaining > 0) {
+            ItemStack combinationRune = (ItemStack)matchingCombinationRunes.get(i);
+            int usedAmount = combinationRune.getAmount();
+            if (remaining >= usedAmount) {
+                this.combinationRuneCosts.add(combinationRune);
             } else {
-                this.combinationRuneCosts.add(new ItemStack(((ItemStack)arrayList.get(0)).getId(), n9));
-                this.combinationRuneCredits.add(new ItemStack(SpellRuneCostRequirement.getPairedCombinationRuneId(((ItemStack)arrayList.get(0)).getId(), n), n9));
+                usedAmount = remaining;
+                this.combinationRuneCosts.add(new ItemStack(combinationRune.getId(), usedAmount));
             }
-            if (n3 + ((ItemStack)arrayList.get(0)).getAmount() >= n2) {
+            this.combinationRuneCredits.add(new ItemStack(SpellRuneCostRequirement.getPairedCombinationRuneId(combinationRune.getId(), n), usedAmount));
+            supplied += combinationRune.getAmount();
+            remaining -= usedAmount;
+            if (supplied >= n2) {
                 return true;
             }
-            if (n8 >= ((ItemStack)arrayList.get(1)).getAmount()) {
-                this.combinationRuneCosts.add((ItemStack)arrayList.get(1));
-                n7 = n8 - ((ItemStack)arrayList.get(1)).getAmount();
-                this.combinationRuneCredits.add(new ItemStack(SpellRuneCostRequirement.getPairedCombinationRuneId(((ItemStack)arrayList.get(1)).getId(), n), ((ItemStack)arrayList.get(1)).getAmount()));
-            } else {
-                this.combinationRuneCosts.add(new ItemStack(((ItemStack)arrayList.get(1)).getId(), n8));
-                this.combinationRuneCredits.add(new ItemStack(SpellRuneCostRequirement.getPairedCombinationRuneId(((ItemStack)arrayList.get(1)).getId(), n), n8));
+            ++i;
+        }
+        return supplied >= n2;
+    }
+
+    private static boolean isCombinationRuneFor(int n, int n2) {
+        switch (n2) {
+            case 554: {
+                return n == 4697 || n == 4694 || n == 4699;
             }
-            if (n3 + ((ItemStack)arrayList.get(0)).getAmount() + ((ItemStack)arrayList.get(1)).getAmount() >= n2) {
-                return true;
+            case 555: {
+                return n == 4695 || n == 4694 || n == 4698;
             }
-            if (n7 >= ((ItemStack)arrayList.get(2)).getAmount()) {
-                this.combinationRuneCosts.add((ItemStack)arrayList.get(2));
-                ((ItemStack)arrayList.get(2)).getAmount();
-                this.combinationRuneCredits.add(new ItemStack(SpellRuneCostRequirement.getPairedCombinationRuneId(((ItemStack)arrayList.get(2)).getId(), n), ((ItemStack)arrayList.get(2)).getAmount()));
-            } else {
-                this.combinationRuneCosts.add(new ItemStack(((ItemStack)arrayList.get(2)).getId(), n7));
-                this.combinationRuneCredits.add(new ItemStack(SpellRuneCostRequirement.getPairedCombinationRuneId(((ItemStack)arrayList.get(2)).getId(), n), n7));
+            case 556: {
+                return n == 4695 || n == 4696 || n == 4697;
             }
-            if (n3 + ((ItemStack)arrayList.get(0)).getAmount() + ((ItemStack)arrayList.get(1)).getAmount() + ((ItemStack)arrayList.get(2)).getAmount() >= n2) {
-                return true;
+            case 557: {
+                return n == 4696 || n == 4698 || n == 4699;
             }
         }
         return false;
     }
 }
-

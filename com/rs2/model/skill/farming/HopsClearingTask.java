@@ -11,13 +11,13 @@ import com.rs2.model.skill.farming.HopsPatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class HopsClearingTask
+public final class HopsClearingTask
 extends CycleEvent {
     private /* synthetic */ HopsPatchManager manager;
     private final /* synthetic */ int animationId;
     private final /* synthetic */ HopsPatch patch;
 
-    HopsClearingTask(HopsPatchManager hopsPatchManager, int n, HopsPatch hopsPatch) {
+    public HopsClearingTask(HopsPatchManager hopsPatchManager, int n, HopsPatch hopsPatch) {
         this.manager = hopsPatchManager;
         this.animationId = n;
         this.patch = hopsPatch;
@@ -47,7 +47,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        HopsPatchManager.a(this.manager, this.patch.getIndex());
+        HopsPatchManager.resetPatch(this.manager, this.patch.getIndex());
         Player player = HopsPatchManager.getPlayer(this.manager);
         player.packetSender.sendGameMessage("You clear the patch.");
         HopsPatchManager.getPlayer(this.manager).setActionLocked(false);

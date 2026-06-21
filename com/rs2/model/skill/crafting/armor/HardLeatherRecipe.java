@@ -39,14 +39,14 @@ public enum HardLeatherRecipe {
         return (HardLeatherRecipe)((Object)definitionsByButtonId.get(n));
     }
 
-    private HardLeatherRecipe(int n3, int n4, int n5, int n6, double d) {
-        this.buttonId = n3;
-        this.materialItemId = 1743;
-        this.materialAmount = 1;
-        this.productItemId = 1131;
-        this.quantity = (int)d;
-        this.requiredLevel = 28;
-        this.experience = 35.0;
+    private HardLeatherRecipe(int buttonId, int materialItemId, int materialAmount, int productItemId, int quantity, int requiredLevel, double experience) {
+        this.buttonId = buttonId;
+        this.materialItemId = materialItemId;
+        this.materialAmount = materialAmount;
+        this.productItemId = productItemId;
+        this.quantity = quantity;
+        this.requiredLevel = requiredLevel;
+        this.experience = experience;
     }
 
     public final int getButtonId() {

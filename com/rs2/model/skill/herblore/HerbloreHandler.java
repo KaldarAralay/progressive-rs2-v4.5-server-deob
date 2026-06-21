@@ -39,7 +39,9 @@ public final class HerbloreHandler {
                         if (player.getInventoryManager().containsItem(((ItemStack)object).getId()) && player.getInventoryManager().containsItem(((ItemStack)object2).getId())) break block6;
                         return false;
                     }
-                    catch (Exception exception) {}
+                    catch (Exception exception) {
+                        return false;
+                    }
                 }
                 if (n5 <= 4) break block7;
                 object = String.valueOf(string.substring(0, string.indexOf("(") + 1)) + 4 + ")";
@@ -61,72 +63,65 @@ public final class HerbloreHandler {
         return false;
     }
 
-    public static boolean handlePotionMaking(Player player, ItemStack object, ItemStack itemStack, int n, int n2) {
-        n = ((ItemStack)object).getId();
-        int n3 = itemStack.getId();
+    public static boolean handlePotionMaking(Player player, ItemStack itemStack, ItemStack itemStack2, int n, int n2) {
+        n = itemStack.getId();
+        int n3 = itemStack2.getId();
         double[][] dArray = POTION_RECIPES;
         int n4 = 0;
         while (n4 < 27) {
-            double[] dArray2 = dArray[n4];
-            object = dArray2;
-            n2 = (int)dArray2[0];
-            Object object2 = object[1];
-            Object object3 = object[2];
-            Object object4 = object[3];
-            Object object5 = object[4];
-            Object object6 = object[5];
-            int n5 = n2 == 2398 || object2 == 6018.0 || n2 == 6016 || object2 == 6049.0 ? 5935 : 227;
-            if (n == n2 && n3 == n5 || n == n5 && n3 == n2) {
-                if ((double)player.getSkillManager().getCurrentLevels()[15] < object6) {
-                    player.getDialogueManager().showOneLineStatement("You need a Herblore level of " + (int)object6 + " in order to make this potion.");
+            double[] recipe = dArray[n4];
+            int n5 = (int)recipe[0];
+            double ingredientId = recipe[1];
+            double unfinishedPotionId = recipe[2];
+            double finishedPotionId = recipe[3];
+            double experience = recipe[4];
+            double requiredLevel = recipe[5];
+            int n6 = n5 == 2398 || ingredientId == 6018.0 || n5 == 6016 || ingredientId == 6049.0 ? 5935 : 227;
+            if (n == n5 && n3 == n6 || n == n6 && n3 == n5) {
+                if ((double)player.getSkillManager().getCurrentLevels()[15] < requiredLevel) {
+                    player.getDialogueManager().showOneLineStatement("You need a Herblore level of " + (int)requiredLevel + " in order to make this potion.");
                     return true;
                 }
-                int n6 = n5;
-                Object object7 = object3;
-                int n7 = n2;
-                ItemStack itemStack2 = new ItemStack(n7, 1);
-                ItemStack itemStack3 = new ItemStack(n6, 1);
+                int vialItemId = n6;
+                ItemStack itemStack3 = new ItemStack(n5, 1);
+                ItemStack itemStack4 = new ItemStack(vialItemId, 1);
                 if (!ServerSettings.herbloreEnabled) {
                     Player player2 = player;
                     player2.packetSender.sendGameMessage("This skill is currently disabled.");
                 } else if (player.getQuestState(29) != 1) {
-                    Object object8 = QuestDefinition.forId(29);
-                    object8 = ((QuestDefinition)object8).getName();
+                    QuestDefinition questDefinition = QuestDefinition.forId(29);
+                    String string = questDefinition.getName();
                     Player player3 = player;
-                    player3.packetSender.sendGameMessage("You need to complete " + (String)object8 + " to do this.");
+                    player3.packetSender.sendGameMessage("You need to complete " + string + " to do this.");
                 } else {
                     player.getUpdateState().setAnimation(363);
                     Player player4 = player;
-                    player4.packetSender.sendGameMessage("You put the " + itemStack2.getDefinition().getName().replace(" herb", "").toLowerCase() + " into the " + itemStack3.getDefinition().getName() + ".");
-                    n5 = player.nextActionSequence();
-                    CycleEventHandler.getInstance().schedule(player, new UnfinishedPotionTask(player, n5, itemStack2, n6, (double)object7), 1);
+                    player4.packetSender.sendGameMessage("You put the " + itemStack3.getDefinition().getName().replace(" herb", "").toLowerCase() + " into the " + itemStack4.getDefinition().getName() + ".");
+                    int n7 = player.nextActionSequence();
+                    CycleEventHandler.getInstance().schedule(player, new UnfinishedPotionTask(player, n7, itemStack3, vialItemId, unfinishedPotionId), 1);
                 }
                 return true;
             }
-            if ((double)n == object3 && (double)n3 == object2 || (double)n == object2 && (double)n3 == object3) {
-                if ((double)player.getSkillManager().getCurrentLevels()[15] < object6) {
-                    player.getDialogueManager().showOneLineStatement("You need a Herblore level of " + (int)object6 + " in order to make this potion.");
+            if ((double)n == unfinishedPotionId && (double)n3 == ingredientId || (double)n == ingredientId && (double)n3 == unfinishedPotionId) {
+                if ((double)player.getSkillManager().getCurrentLevels()[15] < requiredLevel) {
+                    player.getDialogueManager().showOneLineStatement("You need a Herblore level of " + (int)requiredLevel + " in order to make this potion.");
                     return true;
                 }
-                Object object9 = object5;
-                Object object10 = object4;
-                Object object11 = object3;
-                Object object12 = object2;
-                Object object13 = new ItemStack((int)object12, 1);
+                ItemStack ingredientStack = new ItemStack((int)ingredientId, 1);
                 if (!ServerSettings.herbloreEnabled) {
                     Player player5 = player;
                     player5.packetSender.sendGameMessage("This skill is currently disabled.");
                 } else if (player.getQuestState(29) != 1) {
-                    Object object14 = QuestDefinition.forId(29);
-                    object13 = ((QuestDefinition)object14).getName();
-                    object14 = player;
-                    ((Player)object14).packetSender.sendGameMessage("You need to complete " + (String)object13 + " to do this.");
+                    QuestDefinition questDefinition = QuestDefinition.forId(29);
+                    String string = questDefinition.getName();
+                    Player player6 = player;
+                    player6.packetSender.sendGameMessage("You need to complete " + string + " to do this.");
                 } else {
                     player.getUpdateState().setAnimation(363);
-                    Player player6 = player;
-                    player6.packetSender.sendGameMessage("You mix the " + ((ItemStack)object13).getDefinition().getName().toLowerCase() + " into your potion");
+                    Player player7 = player;
+                    player7.packetSender.sendGameMessage("You mix the " + ingredientStack.getDefinition().getName().toLowerCase() + " into your potion");
                     int n8 = player.nextActionSequence();
-                    CycleEventHandler.getInstance().schedule(player, new FinishedPotionTask(player, n8, (ItemStack)object13, (double)object11, (double)object10, (double)object9), 1);
+                    CycleEventHandler.getInstance().schedule(player, new FinishedPotionTask(player, n8, ingredientStack, unfinishedPotionId, finishedPotionId, experience), 1);
                 }
                 return true;
             }
@@ -151,9 +146,9 @@ public final class HerbloreHandler {
         return false;
     }
 
-    private static int getEmptyContainerItemId(ItemStack object) {
-        String string = ((ItemStack)object).getDefinition().getDescription().toLowerCase();
-        object = ((ItemStack)object).getDefinition().getName().toLowerCase();
+    private static int getEmptyContainerItemId(ItemStack itemStack) {
+        String string = itemStack.getDefinition().getDescription().toLowerCase();
+        String string2 = itemStack.getDefinition().getName().toLowerCase();
         if (string.contains("potion") || string.contains("vial") || string.contains("dose")) {
             return 229;
         }
@@ -163,10 +158,10 @@ public final class HerbloreHandler {
         if (string.contains("bowl") || string.contains("curry")) {
             return 1923;
         }
-        if (((String)object).contains("jug") || string.contains("jug")) {
+        if (string2.contains("jug") || string.contains("jug")) {
             return 1935;
         }
-        if (((String)object).contains("flour")) {
+        if (string2.contains("flour")) {
             return 1931;
         }
         if (string.contains("cup")) {
@@ -174,5 +169,6 @@ public final class HerbloreHandler {
         }
         return -1;
     }
+
 }
 

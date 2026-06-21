@@ -213,14 +213,15 @@ public final class TreasureTrailManager {
             case 1: {
                 if (player.treasureTrailStepCount > 0 && GameUtil.randomInclusive(6) == 0 || player.treasureTrailStepCount >= 3) {
                     if (bl) {
-                        DialogueManager.a(player, 10009, 1);
+                        player.getDialogueManager().setDialogueId(10009);
+                        player.getDialogueManager().setNextDialogueStep(1);
                         player.getDialogueManager().showNpcOneLineDialogue(string2, 588);
                         return;
                     }
                     TreasureTrailManager.completeTreasureTrail(player, n);
                     return;
                 }
-                player.getDialogueManager().a(string, 2701);
+                player.getDialogueManager().showItemIdMessage(string, 2701);
                 player.getDialogueManager().finishDialogue();
                 TreasureTrailManager.awardNextClueScroll(player, n);
                 return;
@@ -228,14 +229,15 @@ public final class TreasureTrailManager {
             case 2: {
                 if (player.treasureTrailStepCount >= 2 && GameUtil.randomInclusive(6) == 0 || player.treasureTrailStepCount >= 4) {
                     if (bl) {
-                        DialogueManager.a(player, 10009, 1);
+                        player.getDialogueManager().setDialogueId(10009);
+                        player.getDialogueManager().setNextDialogueStep(1);
                         player.getDialogueManager().showNpcOneLineDialogue(string2, 588);
                         return;
                     }
                     TreasureTrailManager.completeTreasureTrail(player, n);
                     return;
                 }
-                player.getDialogueManager().a(string, 2701);
+                player.getDialogueManager().showItemIdMessage(string, 2701);
                 player.getDialogueManager().finishDialogue();
                 TreasureTrailManager.awardNextClueScroll(player, n);
                 return;
@@ -243,14 +245,15 @@ public final class TreasureTrailManager {
             case 3: {
                 if (player.treasureTrailStepCount >= 3 && GameUtil.randomInclusive(6) == 0 || player.treasureTrailStepCount >= 5) {
                     if (bl) {
-                        DialogueManager.a(player, 10009, 1);
+                        player.getDialogueManager().setDialogueId(10009);
+                        player.getDialogueManager().setNextDialogueStep(1);
                         player.getDialogueManager().showNpcOneLineDialogue(string2, 588);
                         return;
                     }
                     TreasureTrailManager.completeTreasureTrail(player, n);
                     return;
                 }
-                player.getDialogueManager().a(string, 2701);
+                player.getDialogueManager().showItemIdMessage(string, 2701);
                 player.getDialogueManager().finishDialogue();
                 TreasureTrailManager.awardNextClueScroll(player, n);
             }
@@ -316,38 +319,33 @@ public final class TreasureTrailManager {
                 ++player.hardCluesCompleted;
             }
         }
-        Object object = new int[itemStackArray.length];
+        int[] rewardItemIds = new int[itemStackArray.length];
         int[] nArray = new int[itemStackArray.length];
         int n3 = 0;
         int n4 = 0;
         while (n4 < itemStackArray.length) {
-            object[n4] = itemStackArray[n4].getId();
+            rewardItemIds[n4] = itemStackArray[n4].getId();
             nArray[n4] = itemStackArray[n4].getAmount();
-            player.getInventoryManager().addOrDropItem(new ItemStack(object[n4], nArray[n4]));
-            int n5 = GrandExchangeManager.getGuidePrice(object[n4]);
+            player.getInventoryManager().addOrDropItem(new ItemStack(rewardItemIds[n4], nArray[n4]));
+            int n5 = GrandExchangeManager.getGuidePrice(rewardItemIds[n4]);
             n3 += n5 * nArray[n4];
             ++n4;
         }
         Player player2 = player;
-        object = player2;
         player2.packetSender.sendGameMessage("Well done, you've completed the Treasure Trail! (" + player.treasureTrailStepCount + " " + (player.treasureTrailStepCount < 2 ? "step" : "steps") + ")");
         Player player3 = player;
-        object = player3;
         player3.packetSender.sendGameMessage("Your treasure is worth around " + GameUtil.formatNumber(n3) + " coins!");
         player.treasureTrailStepCount = 0;
         player.sliderPuzzlePieces = new ItemStack[25];
         Player player4 = player;
-        object = player4;
         player4.packetSender.sendItemContainer(6963, itemStackArray);
         Player player5 = player;
-        object = player5;
         player5.packetSender.showInterface(6960);
         Player player6 = player;
-        object = player6;
         player6.packetSender.sendMusicJingle(237, 256);
     }
 
-    private static ItemStack[] rollRewardItems(Player itemStackArray, int n) {
+    private static ItemStack[] rollRewardItems(Player player, int n) {
         int n2;
         ArrayList<ItemStack> arrayList = new ArrayList<ItemStack>();
         int n3 = 0;
@@ -362,20 +360,20 @@ public final class TreasureTrailManager {
         int n4 = 0;
         while (n4 < n3) {
             n2 = n;
-            ItemStack[] itemStackArray2 = itemStackArray;
             ItemStack[] itemStackArray3 = null;
             if (n2 == 1) {
-                itemStackArray3 = NpcDropManager.rollDrops((Entity)itemStackArray2, 6420, false);
+                itemStackArray3 = NpcDropManager.rollDrops((Entity)player, 6420, false);
             } else if (n2 == 2) {
-                itemStackArray3 = NpcDropManager.rollDrops((Entity)itemStackArray2, 6421, false);
+                itemStackArray3 = NpcDropManager.rollDrops((Entity)player, 6421, false);
             } else if (n2 == 3) {
-                itemStackArray3 = NpcDropManager.rollDrops((Entity)itemStackArray2, 6422, false);
+                itemStackArray3 = NpcDropManager.rollDrops((Entity)player, 6422, false);
             }
-            itemStackArray2 = itemStackArray3;
-            n2 = 0;
-            while (n2 < itemStackArray2.length) {
-                arrayList.add(itemStackArray2[n2]);
-                ++n2;
+            if (itemStackArray3 != null) {
+                n2 = 0;
+                while (n2 < itemStackArray3.length) {
+                    arrayList.add(itemStackArray3[n2]);
+                    ++n2;
+                }
             }
             ++n4;
         }
@@ -383,17 +381,17 @@ public final class TreasureTrailManager {
         int n5 = 0;
         while (n5 < arrayList.size()) {
             n2 = ((ItemStack)arrayList.get(n5)).getId();
-            n = ((ItemStack)arrayList.get(n5)).getAmount();
+            int amount = ((ItemStack)arrayList.get(n5)).getAmount();
             if (!hashMap.containsKey(n2)) {
-                hashMap.put(n2, n);
+                hashMap.put(n2, amount);
             } else {
                 int n6 = (Integer)hashMap.get(n2);
-                hashMap.put(n2, n6 + n);
+                hashMap.put(n2, n6 + amount);
             }
             ++n5;
         }
         ArrayList<ItemStack> arrayList2 = new ArrayList<ItemStack>();
-        for (Map.Entry entry : hashMap.entrySet()) {
+        for (Map.Entry<Integer, Integer> entry : hashMap.entrySet()) {
             int n7 = (Integer)entry.getKey();
             int n8 = (Integer)entry.getValue();
             arrayList2.add(new ItemStack(n7, n8));
@@ -415,7 +413,7 @@ public final class TreasureTrailManager {
             }
             ++n9;
         }
-        itemStackArray = new ItemStack[arrayList3.size()];
+        ItemStack[] itemStackArray = new ItemStack[arrayList3.size()];
         n9 = 0;
         while (n9 < arrayList3.size()) {
             itemStackArray[n9] = (ItemStack)arrayList3.get(n9);
@@ -425,56 +423,49 @@ public final class TreasureTrailManager {
     }
 
     public static int randomClueItemForLevel(int n) {
-        Iterator<Integer> iterator = new ArrayList<Integer>();
+        ArrayList<Integer> candidateItems = new ArrayList<Integer>();
         ArrayList<Integer> arrayList = new ArrayList<Integer>();
         switch (n) {
             case 1: {
-                ((ArrayList)((Object)iterator)).add(CacheArchiveEntry.randomMapClueItemForLevel(1));
-                ((ArrayList)((Object)iterator)).add(CacheFile.randomSearchClueItemForLevel(1));
-                ((ArrayList)((Object)iterator)).add(CacheDefinitionIndex.randomNpcClueItemForLevel(1));
-                ((ArrayList)((Object)iterator)).add(CacheArchiveEntry.randomMapClueItemForLevel(1));
-                ((ArrayList)((Object)iterator)).add(CacheFile.randomSearchClueItemForLevel(1));
-                ((ArrayList)((Object)iterator)).add(CacheDefinitionIndex.randomNpcClueItemForLevel(1));
-                ((ArrayList)((Object)iterator)).add(BotWorldRouteChoice.randomCrypticDigClueItemForLevel(1));
-                iterator = ((ArrayList)((Object)iterator)).iterator();
-                while (iterator.hasNext()) {
-                    n = (Integer)iterator.next();
-                    if (!ItemDefinition.isDefined(n)) continue;
-                    arrayList.add(n);
-                }
-                return (Integer)arrayList.get(GameUtil.randomInclusive(arrayList.size() - 1));
+                candidateItems.add(CacheArchiveEntry.randomMapClueItemForLevel(1));
+                candidateItems.add(CacheFile.randomSearchClueItemForLevel(1));
+                candidateItems.add(CacheDefinitionIndex.randomNpcClueItemForLevel(1));
+                candidateItems.add(CacheArchiveEntry.randomMapClueItemForLevel(1));
+                candidateItems.add(CacheFile.randomSearchClueItemForLevel(1));
+                candidateItems.add(CacheDefinitionIndex.randomNpcClueItemForLevel(1));
+                candidateItems.add(BotWorldRouteChoice.randomCrypticDigClueItemForLevel(1));
+                break;
             }
             case 2: {
-                ((ArrayList)((Object)iterator)).add(GameplayHelper.e(2));
-                ((ArrayList)((Object)iterator)).add(CacheArchiveEntry.randomMapClueItemForLevel(2));
-                ((ArrayList)((Object)iterator)).add(CacheFile.randomSearchClueItemForLevel(2));
-                ((ArrayList)((Object)iterator)).add(CacheDefinitionIndex.randomNpcClueItemForLevel(2));
-                ((ArrayList)((Object)iterator)).add(CoordinateClueHandler.randomClueItemForLevel(2));
-                iterator = ((ArrayList)((Object)iterator)).iterator();
-                while (iterator.hasNext()) {
-                    n = (Integer)iterator.next();
-                    if (!ItemDefinition.isDefined(n)) continue;
-                    arrayList.add(n);
-                }
-                return (Integer)arrayList.get(GameUtil.randomInclusive(arrayList.size() - 1));
+                candidateItems.add(GameplayHelper.randomAnagramClueItemForLevel(2));
+                candidateItems.add(CacheArchiveEntry.randomMapClueItemForLevel(2));
+                candidateItems.add(CacheFile.randomSearchClueItemForLevel(2));
+                candidateItems.add(CacheDefinitionIndex.randomNpcClueItemForLevel(2));
+                candidateItems.add(CoordinateClueHandler.randomClueItemForLevel(2));
+                break;
             }
             case 3: {
-                ((ArrayList)((Object)iterator)).add(GameplayHelper.e(3));
-                ((ArrayList)((Object)iterator)).add(CacheArchiveEntry.randomMapClueItemForLevel(3));
-                ((ArrayList)((Object)iterator)).add(CacheFile.randomSearchClueItemForLevel(3));
-                ((ArrayList)((Object)iterator)).add(CacheDefinitionIndex.randomNpcClueItemForLevel(3));
-                ((ArrayList)((Object)iterator)).add(BotWorldRouteChoice.randomCrypticDigClueItemForLevel(3));
-                ((ArrayList)((Object)iterator)).add(CoordinateClueHandler.randomClueItemForLevel(3));
-                iterator = ((ArrayList)((Object)iterator)).iterator();
-                while (iterator.hasNext()) {
-                    n = (Integer)iterator.next();
-                    if (!ItemDefinition.isDefined(n)) continue;
-                    arrayList.add(n);
-                }
-                return (Integer)arrayList.get(GameUtil.randomInclusive(arrayList.size() - 1));
+                candidateItems.add(GameplayHelper.randomAnagramClueItemForLevel(3));
+                candidateItems.add(CacheArchiveEntry.randomMapClueItemForLevel(3));
+                candidateItems.add(CacheFile.randomSearchClueItemForLevel(3));
+                candidateItems.add(CacheDefinitionIndex.randomNpcClueItemForLevel(3));
+                candidateItems.add(BotWorldRouteChoice.randomCrypticDigClueItemForLevel(3));
+                candidateItems.add(CoordinateClueHandler.randomClueItemForLevel(3));
+                break;
+            }
+            default: {
+                return -1;
             }
         }
-        return -1;
+        for (Integer clueItemId : candidateItems) {
+            n = clueItemId;
+            if (!ItemDefinition.isDefined(n)) continue;
+            arrayList.add(n);
+        }
+        if (arrayList.isEmpty()) {
+            return -1;
+        }
+        return (Integer)arrayList.get(GameUtil.randomInclusive(arrayList.size() - 1));
     }
 
     public static boolean handleRewardContainerItem(Player player, int n) {
@@ -517,18 +508,18 @@ public final class TreasureTrailManager {
         String string;
         int n = player.isInWilderness() ? 1007 : 1264;
         String string2 = string = player.isInWilderness() ? "Die, human!" : "For Saradomin!";
-        if (!GameplayHelper.i(player, n)) {
+        if (!GameplayHelper.hasActiveTemporaryNpc(player, n)) {
             Npc npc = new Npc(n);
-            GameplayHelper.a(player, npc, true, true);
+            GameplayHelper.spawnOwnedNpcAdjacentToPlayer(player, npc, true, true);
             npc.getUpdateState().setForcedText(string);
         }
     }
 
     public static void recordClueWizardKill(Player player, Npc npc) {
         if (npc.getNpcId() == 1007 || npc.getNpcId() == 1264) {
-            boolean bl;
-            v0.killedClueAttacker = bl = true;
+            player.killedClueAttacker = true;
         }
     }
+
 }
 

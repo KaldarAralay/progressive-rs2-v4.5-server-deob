@@ -160,7 +160,6 @@ public final class PacketDispatcher {
             return;
         }
         catch (Exception exception) {
-            object = exception;
             exception.printStackTrace();
             player.disconnect();
             return;

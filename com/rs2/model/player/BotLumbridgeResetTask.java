@@ -7,15 +7,15 @@ import com.rs2.model.GameplayHelper;
 import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 
-final class BotLumbridgeResetTask
+public final class BotLumbridgeResetTask
 extends TickTask {
     private /* synthetic */ Player resetPlayer;
     private final /* synthetic */ Player bot;
 
-    BotLumbridgeResetTask(Player player, int n, Player player2) {
+    public BotLumbridgeResetTask(Player player, int n, Player player2) {
+        super(2);
         this.resetPlayer = player;
         this.bot = player2;
-        super(2);
     }
 
     @Override

@@ -7,13 +7,13 @@ import com.rs2.model.GameplayHelper;
 import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 
-final class BotTradeItemShortageResetTask
+public final class BotTradeItemShortageResetTask
 extends TickTask {
     private final /* synthetic */ Player player;
 
-    BotTradeItemShortageResetTask(int n, Player player) {
-        this.player = player;
+    public BotTradeItemShortageResetTask(int n, Player player) {
         super(10);
+        this.player = player;
     }
 
     @Override

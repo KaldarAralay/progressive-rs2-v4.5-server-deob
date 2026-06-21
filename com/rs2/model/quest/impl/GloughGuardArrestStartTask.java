@@ -9,21 +9,21 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.GrandTreeQuest;
 import com.rs2.model.task.TickTask;
 
-final class GloughGuardArrestStartTask
+public final class GloughGuardArrestStartTask
 extends TickTask {
-    private final /* synthetic */ Player a;
-    private final /* synthetic */ Npc b;
+    private final /* synthetic */ Player player;
+    private final /* synthetic */ Npc guardNpc;
 
-    GloughGuardArrestStartTask(GrandTreeQuest grandTreeQuest, int n, Player player, Npc npc) {
-        this.a = player;
-        this.b = npc;
+    public GloughGuardArrestStartTask(GrandTreeQuest grandTreeQuest, int n, Player player, Npc npc) {
         super(3);
+        this.player = player;
+        this.guardNpc = npc;
     }
 
     @Override
     public final void execute() {
-        DialogueManager.continueDialogue(this.a, 2781, 100, 0);
-        this.b.setScriptedMovementEnabled(true);
+        DialogueManager.continueDialogue(this.player, 2781, 100, 0);
+        this.guardNpc.setScriptedMovementEnabled(true);
         this.stop();
     }
 }

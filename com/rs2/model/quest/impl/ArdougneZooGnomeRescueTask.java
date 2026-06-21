@@ -8,20 +8,20 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.MonkeyMadnessQuest;
 import com.rs2.model.task.TickTask;
 
-final class ArdougneZooGnomeRescueTask
+public final class ArdougneZooGnomeRescueTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
-    ArdougneZooGnomeRescueTask(MonkeyMadnessQuest monkeyMadnessQuest, int n, Player player) {
-        this.a = player;
+    public ArdougneZooGnomeRescueTask(MonkeyMadnessQuest monkeyMadnessQuest, int n, Player player) {
         super(5);
+        this.player = player;
     }
 
     @Override
     public final void execute() {
-        this.a.setActionLocked(false);
-        this.a.moveTo(new Position(2606, 3274, 0));
-        Player player = this.a;
+        this.player.setActionLocked(false);
+        this.player.moveTo(new Position(2606, 3274, 0));
+        Player player = this.player;
         player.packetSender.closeInterfaces();
         this.stop();
     }

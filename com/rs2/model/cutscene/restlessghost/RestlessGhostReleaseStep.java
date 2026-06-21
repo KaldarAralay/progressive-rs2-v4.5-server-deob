@@ -10,13 +10,13 @@ import com.rs2.model.cutscene.CutsceneStep;
 import com.rs2.model.cutscene.restlessghost.RestlessGhostCutscene;
 import com.rs2.model.player.Player;
 
-final class RestlessGhostReleaseStep
+public final class RestlessGhostReleaseStep
 extends CutsceneStep {
     private /* synthetic */ RestlessGhostCutscene cutscene;
 
-    RestlessGhostReleaseStep(RestlessGhostCutscene restlessGhostCutscene, Cutscene cutscene, int n) {
-        this.cutscene = restlessGhostCutscene;
+    public RestlessGhostReleaseStep(RestlessGhostCutscene restlessGhostCutscene, Cutscene cutscene, int n) {
         super(cutscene, 2);
+        this.cutscene = restlessGhostCutscene;
     }
 
     @Override

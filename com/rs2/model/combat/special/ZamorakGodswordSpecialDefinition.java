@@ -10,15 +10,15 @@ import com.rs2.model.combat.special.SpecialAttackDefinition;
 import com.rs2.model.combat.special.ZamorakGodswordSpecialAttack;
 import com.rs2.model.player.Player;
 
-final class ZamorakGodswordSpecialDefinition
+public final class ZamorakGodswordSpecialDefinition
 extends SpecialAttackDefinition {
-    ZamorakGodswordSpecialDefinition(int n2, String ... stringArray) {
+    public ZamorakGodswordSpecialDefinition(int n2, String ... stringArray) {
+        super(n2, stringArray);
     }
 
     @Override
-    public final WeaponCombatAttack createAttack(Player object, Entity entity, WeaponProfile weaponProfile) {
-        object = new ZamorakGodswordSpecialAttack(this, (Player)object, entity, weaponProfile);
-        return object;
+    public final WeaponCombatAttack createAttack(Player player, Entity entity, WeaponProfile weaponProfile) {
+        return new ZamorakGodswordSpecialAttack(this, player, entity, weaponProfile);
     }
 }
 

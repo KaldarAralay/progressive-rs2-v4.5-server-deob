@@ -1,5 +1,5 @@
 /*
- * Decompiled with CFR 0.152.
+ * Source recovered from CFR output plus javap bytecode for handleGnomeGliderButton.
  */
 package com.rs2.model.travel;
 
@@ -25,129 +25,89 @@ public class TravelManager {
     private int a;
     private int b;
 
-    /*
-     * Unable to fully structure code
-     * Could not resolve type clashes
-     */
-    public static boolean handleGnomeGliderButton(Player var0, int var1_1) {
-        var5_4 = GnomeGliderDestination.values();
-        var4_6 = var5_4.length;
-        var3_7 = 0;
-        while (var3_7 < var4_6) {
-            block33: {
-                block34: {
-                    block36: {
-                        block35: {
-                            var2_14 = var5_4[var3_7];
-                            if (var1_1 != var2_14.buttonId) break block33;
-                            if (!var0.getInteractionTarget().isNpc()) {
-                                return false;
-                            }
-                            var1_2 = (Npc)var0.getInteractionTarget();
-                            if (var0.getInteractionTarget() == null) break block34;
-                            var3_8 /* !! */  = var0;
-                            var3_8 /* !! */ .packetSender.showInterface(802);
-                            var3_8 /* !! */  = var2_14;
-                            var4_6 = 0;
-                            var3_9 = var3_8 /* !! */ .routeIndex;
-                            var5_5 = var1_2.getNpcId();
-                            var1_3 = GameUtil.getRegionId(var1_2.getPosition().getX(), var1_2.getPosition().getY());
-                            if (var5_5 == 3810 || var1_3 == 11318) {
-                                var4_6 = 0;
-                            } else if (var5_5 == 3811 || var1_3 == 9782) {
-                                var4_6 = 1;
-                            } else if (var5_5 == 3809 || var1_3 == 13106) {
-                                var4_6 = 3;
-                            } else if (var5_5 == 3812 || var1_3 == 11822) {
-                                var4_6 = 4;
-                            } else if (var5_5 == 1800 || var1_3 == 10030) {
-                                var4_6 = 5;
-                            }
-                            if (var4_6 != var3_9) break block35;
-                            v0 = 20;
-                            break block36;
-                        }
-                        switch (var4_6) {
-                            case 0: {
-                                if (var3_9 == 1) {
-                                    v0 = 2;
-                                    break;
-                                }
-                                ** GOTO lbl74
-                            }
-                            case 1: {
-                                if (var3_9 == 0) {
-                                    v0 = 1;
-                                    break;
-                                }
-                                if (var3_9 == 2) {
-                                    v0 = 3;
-                                    break;
-                                }
-                                if (var3_9 == 3) {
-                                    v0 = 4;
-                                    break;
-                                }
-                                if (var3_9 == 4) {
-                                    v0 = 7;
-                                    break;
-                                }
-                                if (var3_9 == 5) {
-                                    v0 = 25;
-                                    break;
-                                }
-                                ** GOTO lbl74
-                            }
-                            case 3: {
-                                if (var3_9 == 1) {
-                                    v0 = 5;
-                                    break;
-                                }
-                                ** GOTO lbl74
-                            }
-                            case 4: {
-                                if (var3_9 == 1) {
-                                    v0 = 6;
-                                    break;
-                                }
-                                ** GOTO lbl74
-                            }
-                            case 5: {
-                                if (var3_9 == 1) {
-                                    v0 = 11;
-                                    break;
-                                }
-                            }
-lbl74:
-                            // 7 sources
-
-                            default: {
-                                v0 = var1_3 = 0;
-                            }
-                        }
-                    }
-                    if (v0 <= 0) {
-                        var3_10 = var0;
-                        var3_10.packetSender.sendGameMessage("You can't fly there from here.");
-                    } else if (var1_3 == 20) {
-                        var3_11 = var0;
-                        var3_11.packetSender.sendGameMessage("You can't fly to the same place you are at.");
-                    } else if (var1_3 == 25) {
-                        var3_12 = var0;
-                        var3_12.packetSender.sendGameMessage("You can't fly to that place yet.");
-                    } else {
-                        var3_13 = var0;
-                        var3_13.packetSender.sendConfig(153, var1_3);
-                        var0.setActionLocked(true);
-                        CycleEventHandler.getInstance().schedule(var0, new GnomeGliderTravelTask(var0, var2_14), 3);
-                        CycleEventHandler.getInstance().schedule(var0, new GnomeGliderLandingTask(var0), 4);
-                    }
-                }
-                return true;
+    public static boolean handleGnomeGliderButton(Player player, int buttonId) {
+        for (GnomeGliderDestination destination : GnomeGliderDestination.values()) {
+            if (buttonId != destination.buttonId) {
+                continue;
             }
-            ++var3_7;
+            if (!player.getInteractionTarget().isNpc()) {
+                return false;
+            }
+            Npc gliderNpc = (Npc)player.getInteractionTarget();
+            if (player.getInteractionTarget() != null) {
+                player.packetSender.showInterface(802);
+                int targetRouteIndex = destination.routeIndex;
+                int currentRouteIndex = getCurrentGnomeGliderRouteIndex(gliderNpc);
+                int routeConfig = getGnomeGliderRouteConfig(currentRouteIndex, targetRouteIndex);
+                if (routeConfig <= 0) {
+                    player.packetSender.sendGameMessage("You can't fly there from here.");
+                } else if (routeConfig == 20) {
+                    player.packetSender.sendGameMessage("You can't fly to the same place you are at.");
+                } else if (routeConfig == 25) {
+                    player.packetSender.sendGameMessage("You can't fly to that place yet.");
+                } else {
+                    player.packetSender.sendConfig(153, routeConfig);
+                    player.setActionLocked(true);
+                    CycleEventHandler.getInstance().schedule(player, new GnomeGliderTravelTask(player, destination), 3);
+                    CycleEventHandler.getInstance().schedule(player, new GnomeGliderLandingTask(player), 4);
+                }
+            }
+            return true;
         }
         return false;
+    }
+
+    private static int getCurrentGnomeGliderRouteIndex(Npc gliderNpc) {
+        int npcId = gliderNpc.getNpcId();
+        int regionId = GameUtil.getRegionId(gliderNpc.getPosition().getX(), gliderNpc.getPosition().getY());
+        if (npcId == 3810 || regionId == 11318) {
+            return 0;
+        }
+        if (npcId == 3811 || regionId == 9782) {
+            return 1;
+        }
+        if (npcId == 3809 || regionId == 13106) {
+            return 3;
+        }
+        if (npcId == 3812 || regionId == 11822) {
+            return 4;
+        }
+        if (npcId == 1800 || regionId == 10030) {
+            return 5;
+        }
+        return 0;
+    }
+
+    private static int getGnomeGliderRouteConfig(int currentRouteIndex, int targetRouteIndex) {
+        if (currentRouteIndex == targetRouteIndex) {
+            return 20;
+        }
+        switch (currentRouteIndex) {
+            case 0:
+                return targetRouteIndex == 1 ? 2 : 0;
+            case 1:
+                if (targetRouteIndex == 0) {
+                    return 1;
+                }
+                if (targetRouteIndex == 2) {
+                    return 3;
+                }
+                if (targetRouteIndex == 3) {
+                    return 4;
+                }
+                if (targetRouteIndex == 4) {
+                    return 7;
+                }
+                return targetRouteIndex == 5 ? 25 : 0;
+            case 3:
+                return targetRouteIndex == 1 ? 5 : 0;
+            case 4:
+                return targetRouteIndex == 1 ? 6 : 0;
+            case 5:
+                return targetRouteIndex == 1 ? 11 : 0;
+            default:
+                return 0;
+        }
     }
 
     public TravelManager(TravelBootstrap travelBootstrap) {
@@ -194,8 +154,8 @@ lbl74:
         ((Player)object2).packetSender.sendMusicJingle(shipRoute.jingleDelayTicks > 250 ? 225 : 298, shipRoute.jingleDelayTicks);
         object2 = object;
         ((Player)object2).packetSender.sendMinimapState(2);
-        object = new ShipTravelArrivalTask(shipRoute.arrivalDelayTicks, shipRoute, (Player)object);
-        World.getTaskScheduler().schedule((TickTask)object);
+        TickTask arrivalTask = new ShipTravelArrivalTask(shipRoute.arrivalDelayTicks, shipRoute, (Player)object);
+        World.getTaskScheduler().schedule(arrivalTask);
         return true;
     }
 
@@ -213,4 +173,3 @@ lbl74:
         return true;
     }
 }
-

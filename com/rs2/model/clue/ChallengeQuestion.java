@@ -55,13 +55,11 @@ public enum ChallengeQuestion {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private ChallengeQuestion(int n, int n2) {
-        void var6_4;
-        void var5_3;
-        this.questionLines = (String[])n;
+    private ChallengeQuestion(String[] stringArray, int n2, int n3, int n4) {
+        this.questionLines = stringArray;
         this.clueItemId = n2;
-        this.answerItemId = var5_3;
-        this.answerValue = var6_4;
+        this.answerItemId = n3;
+        this.answerValue = n4;
     }
 
     public final String[] getQuestionLines() {

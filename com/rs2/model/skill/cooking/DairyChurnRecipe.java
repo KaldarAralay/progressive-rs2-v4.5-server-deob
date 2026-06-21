@@ -37,14 +37,12 @@ public enum DairyChurnRecipe {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private DairyChurnRecipe(int n3, int n4, double d) {
-        void var7_5;
-        void var6_4;
-        this.buttonId = n3;
-        this.ingredientItemIds = (int[])n4;
-        this.productItemId = (int)d;
-        this.requiredLevel = var6_4;
-        this.experience = var7_5;
+    private DairyChurnRecipe(int n2, int[] nArray, int n3, int n4, double d) {
+        this.buttonId = n2;
+        this.ingredientItemIds = nArray;
+        this.productItemId = n3;
+        this.requiredLevel = n4;
+        this.experience = d;
     }
 
     public final int[] getIngredientItemIds() {

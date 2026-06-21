@@ -12,9 +12,9 @@ import com.rs2.model.combat.hit.HitType;
 import com.rs2.model.combat.special.DragonScimitarSpecialDefinition;
 import com.rs2.model.player.Player;
 
-final class DragonScimitarSpecialAttack
+public final class DragonScimitarSpecialAttack
 extends WeaponCombatAttack {
-    DragonScimitarSpecialAttack(DragonScimitarSpecialDefinition dragonScimitarSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile) {
+    public DragonScimitarSpecialAttack(DragonScimitarSpecialDefinition dragonScimitarSpecialDefinition, Player player, Entity entity, WeaponProfile weaponProfile) {
         super(player, entity, weaponProfile);
     }
 

@@ -64,14 +64,12 @@ public enum AnagramClue {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private AnagramClue(String string, String string2, int n3) {
-        void var7_5;
-        void var6_4;
-        this.clueItemId = (int)string;
-        this.npcId = (int)string2;
-        this.anagramText = (String)n3;
-        this.followupType = var6_4;
-        this.level = var7_5;
+    private AnagramClue(int n2, int n3, String string2, String string3, int n4) {
+        this.clueItemId = n2;
+        this.npcId = n3;
+        this.anagramText = string2;
+        this.followupType = string3;
+        this.level = n4;
     }
 
     public final int getClueItemId() {

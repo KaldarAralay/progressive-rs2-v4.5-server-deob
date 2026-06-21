@@ -1,5 +1,5 @@
 /*
- * Decompiled with CFR 0.152.
+ * Source recovered from CFR output plus javap bytecode for handleObjectAction.
  */
 package com.rs2.model.gameplay.magetrainingarena;
 
@@ -93,131 +93,107 @@ public final class EnchantmentChamberController {
         }
     }
 
-    /*
-     * Unable to fully structure code
-     */
-    public final boolean handleObjectAction(int var1_1) {
-        block17: {
-            block19: {
-                block20: {
-                    block18: {
-                        if (var1_1 == 10802 || var1_1 == 10799 || var1_1 == 10800 || var1_1 == 10801) {
-                            var2_6 = var1_1;
-                            var1_2 = this;
-                            if (var1_2.player.getInventoryManager().getContainer().getFreeSlots() <= 0) {
-                                var4_11 = var1_2.player;
-                                var4_11.packetSender.sendGameMessage("Not enough space in your inventory.");
-                            } else {
-                                var1_2.player.getUpdateState().setAnimation(832, 0);
-                                v0 = var1_2.player.getInventoryManager();
-                                var3_20 = var2_6;
-                                switch (var3_20) {
-                                    case 10802: {
-                                        v1 = 6901;
-                                        break;
-                                    }
-                                    case 10799: {
-                                        v1 = 6899;
-                                        break;
-                                    }
-                                    case 10800: {
-                                        v1 = 6898;
-                                        break;
-                                    }
-                                    case 10801: {
-                                        v1 = 6900;
-                                        break;
-                                    }
-                                    default: {
-                                        v1 = 0;
-                                    }
-                                }
-                                v0.addItem(new ItemStack(v1));
-                            }
-                            return true;
-                        }
-                        if (var1_1 == 10782 && this.isInsideChamber()) {
-                            var1_3 = this;
-                            var4_12 = var1_3.player;
-                            var4_12.packetSender.sendGameMessage("You've left the Enchantment Chamber");
-                            var4_12 = var1_3.player;
-                            var4_12.packetSender.showWalkableInterface(-1);
-                            var1_3.player.moveTo(MageTrainingArenaLobby.LOBBY_POSITION);
-                            var2_7 = var1_3;
-                            var2_7.player.getInventoryManager().removeItem(new ItemStack(6901, var2_7.player.getInventoryManager().getItemAmount(6901)));
-                            var2_7.player.getInventoryManager().removeItem(new ItemStack(6899, var2_7.player.getInventoryManager().getItemAmount(6899)));
-                            var2_7.player.getInventoryManager().removeItem(new ItemStack(6898, var2_7.player.getInventoryManager().getItemAmount(6898)));
-                            var2_7.player.getInventoryManager().removeItem(new ItemStack(6900, var2_7.player.getInventoryManager().getItemAmount(6900)));
-                            var2_7.player.getInventoryManager().removeItem(new ItemStack(6902, var2_7.player.getInventoryManager().getItemAmount(6902)));
-                            var2_7.player.getInventoryManager().removeItem(new ItemStack(6903, var2_7.player.getInventoryManager().getItemAmount(6903)));
-                            var4_12 = var1_3.player;
-                            var4_12.packetSender.showWalkableInterface(-1);
-                            return true;
-                        }
-                        if (var1_1 == 10779) {
-                            var1_4 = this;
-                            if (var1_4.player.getSkillManager().getCurrentLevels()[6] < 7) {
-                                var4_13 = var1_4.player;
-                                var4_13.packetSender.sendGameMessage("You need a magic level of 7 to enter here.");
-                            } else {
-                                var4_14 = var1_4.player;
-                                var4_14.packetSender.sendGameMessage("You've entered the Enchantment Chamber");
-                                var2_8 = EnchantmentChamberController.random.nextInt(16);
-                                var1_4.player.moveTo(EnchantmentChamberController.entryPositions[var2_8]);
-                                var1_4.player.getEnchantmentChamberController().refreshBonusColorIndicator(EnchantmentChamberController.currentBonusColor);
-                            }
-                            return true;
-                        }
-                        if (var1_1 != 10803) break block17;
-                        var1_5 = this;
-                        if (var1_5.player.getInventoryManager().getContainer().containsItem(6902)) break block18;
-                        var4_15 = var1_5.player;
-                        var4_15.packetSender.sendGameMessage("You don't have any orbs to deposit.");
-                        break block19;
+    public final boolean handleObjectAction(int objectId) {
+        if (objectId == 10802 || objectId == 10799 || objectId == 10800 || objectId == 10801) {
+            if (this.player.getInventoryManager().getContainer().getFreeSlots() <= 0) {
+                Player player = this.player;
+                player.packetSender.sendGameMessage("Not enough space in your inventory.");
+            } else {
+                this.player.getUpdateState().setAnimation(832, 0);
+                this.player.getInventoryManager().addItem(new ItemStack(EnchantmentChamberController.getRawOrbItemId(objectId)));
+            }
+            return true;
+        }
+        if (objectId == 10782 && this.isInsideChamber()) {
+            Player player = this.player;
+            player.packetSender.sendGameMessage("You've left the Enchantment Chamber");
+            player = this.player;
+            player.packetSender.showWalkableInterface(-1);
+            this.player.moveTo(MageTrainingArenaLobby.LOBBY_POSITION);
+            this.removeAllChamberItems();
+            player = this.player;
+            player.packetSender.showWalkableInterface(-1);
+            return true;
+        }
+        if (objectId == 10779) {
+            if (this.player.getSkillManager().getCurrentLevels()[6] < 7) {
+                Player player = this.player;
+                player.packetSender.sendGameMessage("You need a magic level of 7 to enter here.");
+            } else {
+                Player player = this.player;
+                player.packetSender.sendGameMessage("You've entered the Enchantment Chamber");
+                int entryIndex = random.nextInt(16);
+                this.player.moveTo(entryPositions[entryIndex]);
+                this.player.getEnchantmentChamberController().refreshBonusColorIndicator(currentBonusColor);
+            }
+            return true;
+        }
+        if (objectId == 10803) {
+            if (!this.player.getInventoryManager().getContainer().containsItem(6902)) {
+                Player player = this.player;
+                player.packetSender.sendGameMessage("You don't have any orbs to deposit.");
+                return true;
+            }
+            int orbCount = this.player.getInventoryManager().getContainer().getItemAmount(6902);
+            int bonusPoints = 0;
+            if (this.pizazzPoints < 16000 && this.player.hasActiveProgressHat()) {
+                this.pizazzPoints = (int)((double)this.pizazzPoints + Math.floor(orbCount / 10) * 10.0);
+                int tier = 0;
+                while (tier < this.enchantmentOrbCountsBySpellTier.length) {
+                    while (this.enchantmentOrbCountsBySpellTier[tier] - 10 >= 0) {
+                        this.enchantmentOrbCountsBySpellTier[tier] = this.enchantmentOrbCountsBySpellTier[tier] - 10;
+                        this.pizazzPoints += EnchantmentChamberController.getBonusPizazzPointsForSpellTier(tier);
+                        bonusPoints += EnchantmentChamberController.getBonusPizazzPointsForSpellTier(tier);
                     }
-                    var2_9 = var1_5.player.getInventoryManager().getContainer().getItemAmount(6902);
-                    var3_21 = 0;
-                    if (var1_5.pizazzPoints >= 16000 || !var1_5.player.hasActiveProgressHat()) break block20;
-                    var1_5.pizazzPoints = (int)((double)var1_5.pizazzPoints + Math.floor(var2_9 / 10) * 10.0);
-                    var4_16 = 0;
-                    ** GOTO lbl92
-                    {
-                        v2 = var4_16;
-                        var1_5.enchantmentOrbCountsBySpellTier[v2] = var1_5.enchantmentOrbCountsBySpellTier[v2] - 10;
-                        var1_5.pizazzPoints += EnchantmentChamberController.getBonusPizazzPointsForSpellTier(var4_16);
-                        var3_21 += EnchantmentChamberController.getBonusPizazzPointsForSpellTier(var4_16);
-                        do {
-                            if (var1_5.enchantmentOrbCountsBySpellTier[var4_16] - 10 >= 0) continue block6;
-                            ++var4_16;
-lbl92:
-                            // 2 sources
-
-                        } while (var4_16 < var1_5.enchantmentOrbCountsBySpellTier.length);
-                    }
-                    if (var1_5.pizazzPoints >= 16000) {
-                        var1_5.pizazzPoints = 16000;
-                    }
+                    ++tier;
                 }
-                var4_17 = var1_5.player;
-                var4_17.packetSender.showChatboxInterface(359);
-                var4_17 = var1_5.player;
-                var4_17.packetSender.sendInterfaceText("You've just deposited " + var2_9 + " orbs, earning you " + (int)(Math.floor(var2_9 / 10) * 10.0) + " Enchanting Pizazz", 360);
-                var4_17 = var1_5.player;
-                var4_17.packetSender.sendInterfaceText("Points and " + var3_21 + " extra points for the enchanting spell used.", 361);
-                var1_5.resetEnchantSpellTierCounts();
-                var1_5.player.getInventoryManager().removeItem(new ItemStack(6902, var1_5.player.getInventoryManager().getItemAmount(6902)));
-                var1_5.player.getUpdateState().setAnimation(832, 0);
-                if (var2_9 >= 20) {
-                    var4_18 = EnchantmentChamberController.bonusRuneRewardItemIds[EnchantmentChamberController.random.nextInt(EnchantmentChamberController.bonusRuneRewardItemIds.length)];
-                    var2_10 = new ItemStack(var4_18, 3);
-                    var1_5.player.getInventoryManager().addOrDropItem(var2_10);
-                    var4_19 = var1_5.player;
-                    var4_19.packetSender.sendGameMessage("Congratulations! You've been rewarded with 3 " + var2_10.getDefinition().getName() + "s for your efforts.");
+                if (this.pizazzPoints >= 16000) {
+                    this.pizazzPoints = 16000;
                 }
+            }
+            Player player = this.player;
+            player.packetSender.showChatboxInterface(359);
+            player = this.player;
+            player.packetSender.sendInterfaceText("You've just deposited " + orbCount + " orbs, earning you " + (int)(Math.floor(orbCount / 10) * 10.0) + " Enchanting Pizazz", 360);
+            player = this.player;
+            player.packetSender.sendInterfaceText("Points and " + bonusPoints + " extra points for the enchanting spell used.", 361);
+            this.resetEnchantSpellTierCounts();
+            this.player.getInventoryManager().removeItem(new ItemStack(6902, this.player.getInventoryManager().getItemAmount(6902)));
+            this.player.getUpdateState().setAnimation(832, 0);
+            if (orbCount >= 20) {
+                int rewardItemId = bonusRuneRewardItemIds[random.nextInt(bonusRuneRewardItemIds.length)];
+                ItemStack reward = new ItemStack(rewardItemId, 3);
+                this.player.getInventoryManager().addOrDropItem(reward);
+                player = this.player;
+                player.packetSender.sendGameMessage("Congratulations! You've been rewarded with 3 " + reward.getDefinition().getName() + "s for your efforts.");
             }
             return true;
         }
         return false;
+    }
+
+    private static int getRawOrbItemId(int objectId) {
+        switch (objectId) {
+            case 10802:
+                return 6901;
+            case 10799:
+                return 6899;
+            case 10800:
+                return 6898;
+            case 10801:
+                return 6900;
+            default:
+                return 0;
+        }
+    }
+
+    private void removeAllChamberItems() {
+        this.player.getInventoryManager().removeItem(new ItemStack(6901, this.player.getInventoryManager().getItemAmount(6901)));
+        this.player.getInventoryManager().removeItem(new ItemStack(6899, this.player.getInventoryManager().getItemAmount(6899)));
+        this.player.getInventoryManager().removeItem(new ItemStack(6898, this.player.getInventoryManager().getItemAmount(6898)));
+        this.player.getInventoryManager().removeItem(new ItemStack(6900, this.player.getInventoryManager().getItemAmount(6900)));
+        this.player.getInventoryManager().removeItem(new ItemStack(6902, this.player.getInventoryManager().getItemAmount(6902)));
+        this.player.getInventoryManager().removeItem(new ItemStack(6903, this.player.getInventoryManager().getItemAmount(6903)));
     }
 
     private static int getBasePizazzPointsForSpellTier(int n) {
@@ -315,4 +291,3 @@ lbl92:
         return currentBonusColor;
     }
 }
-

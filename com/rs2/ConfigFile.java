@@ -252,7 +252,7 @@ public final class ConfigFile {
         }
     }
 
-    private static void writeConfigLine(BufferedWriter bufferedWriter, String string) {
+    private static void writeConfigLine(BufferedWriter bufferedWriter, String string) throws IOException {
         bufferedWriter.write(string);
         bufferedWriter.newLine();
     }
@@ -261,7 +261,7 @@ public final class ConfigFile {
         block13: {
             BufferedWriter bufferedWriter = null;
             Serializable serializable = new File("./Config.cfg");
-            serializable.delete();
+            ((File)serializable).delete();
             try {
                 try {
                     bufferedWriter = new BufferedWriter(new FileWriter("./Config.cfg", true));

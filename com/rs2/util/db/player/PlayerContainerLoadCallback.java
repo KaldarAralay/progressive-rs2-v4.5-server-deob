@@ -9,7 +9,7 @@ import com.rs2.util.db.DatabaseCallback;
 import com.rs2.util.db.player.PlayerLoadQueryFactory;
 import java.sql.ResultSet;
 
-final class PlayerContainerLoadCallback
+public final class PlayerContainerLoadCallback
 implements DatabaseCallback {
     private ItemContainer container;
 
@@ -18,7 +18,7 @@ implements DatabaseCallback {
     }
 
     @Override
-    public final void onResult(ResultSet resultSet) {
+    public final void onResult(ResultSet resultSet) throws java.sql.SQLException {
         while (resultSet.next()) {
             int n = resultSet.getInt("item_id");
             if (n == -1) continue;

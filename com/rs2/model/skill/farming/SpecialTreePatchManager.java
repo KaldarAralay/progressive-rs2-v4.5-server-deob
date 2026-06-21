@@ -28,7 +28,7 @@ public final class SpecialTreePatchManager {
     public int[] patchStates = new int[4];
     public long[] lastUpdateTicks = new long[4];
     public double[] diseaseChanceMultipliers = new double[]{1.0, 1.0, 1.0, 1.0};
-    public boolean[] f = new boolean[4];
+    public boolean[] calquatRegrowthFlags = new boolean[4];
 
     public SpecialTreePatchManager(Player player) {
         this.player = player;
@@ -62,7 +62,7 @@ public final class SpecialTreePatchManager {
                     break;
                 }
                 default: {
-                    n2 = object == null ? -1 : (SpecialTreePatchManager.a(n3, (SpecialTreeDefinition)((Object)object), n5) == 3 ? ((SpecialTreeDefinition)((Object)object)).getHealthCheckConfigStage() : SpecialTreePatchManager.a(n3, (SpecialTreeDefinition)((Object)object), n5));
+                    n2 = object == null ? -1 : (SpecialTreePatchManager.getConfigStageForPatchState(n3, (SpecialTreeDefinition)((Object)object), n5) == 3 ? ((SpecialTreeDefinition)((Object)object)).getHealthCheckConfigStage() : SpecialTreePatchManager.getConfigStageForPatchState(n3, (SpecialTreeDefinition)((Object)object), n5));
                 }
             }
             nArray[n] = n2;
@@ -73,7 +73,7 @@ public final class SpecialTreePatchManager {
         player.packetSender.sendConfig(507, n6);
     }
 
-    private static int a(int n, SpecialTreeDefinition specialTreeDefinition, int n2) {
+    private static int getConfigStageForPatchState(int n, SpecialTreeDefinition specialTreeDefinition, int n2) {
         n2 -= 4;
         n2 = specialTreeDefinition.getConfigStartStage() + n2;
         switch (n) {
@@ -114,7 +114,7 @@ public final class SpecialTreePatchManager {
                 } else {
                     SpecialTreeDefinition specialTreeDefinition = SpecialTreeDefinition.forSaplingId(this.treeIds[n]);
                     if (specialTreeDefinition != null && !this.shouldStopGrowthCycle(n)) {
-                        if (specialTreeDefinition == SpecialTreeDefinition.CALQUAT && this.f[n] && this.growthStages[n] < 18) {
+                        if (specialTreeDefinition == SpecialTreeDefinition.CALQUAT && this.calquatRegrowthFlags[n] && this.growthStages[n] < 18) {
                             int n5 = n;
                             this.growthStages[n5] = this.growthStages[n5] + 1;
                         } else {
@@ -137,7 +137,7 @@ public final class SpecialTreePatchManager {
                                             if (specialTreePatchManager.patchStates[n9] == 5 && specialTreePatchManager.growthStages[n9] != 2) {
                                                 specialTreePatchManager.patchStates[n9] = 0;
                                             }
-                                            if (specialTreePatchManager.patchStates[n9] == 0 && specialTreePatchManager.growthStages[n9] >= 4 && !specialTreePatchManager.f[n9] && (specialTreeDefinition2 = SpecialTreeDefinition.forSaplingId(specialTreePatchManager.treeIds[n9])) != null) {
+                                            if (specialTreePatchManager.patchStates[n9] == 0 && specialTreePatchManager.growthStages[n9] >= 4 && !specialTreePatchManager.calquatRegrowthFlags[n9] && (specialTreeDefinition2 = SpecialTreeDefinition.forSaplingId(specialTreePatchManager.treeIds[n9])) != null) {
                                                 double d = specialTreePatchManager.diseaseChanceMultipliers[n9] * specialTreeDefinition2.getDiseaseChance();
                                                 double d2 = d * 100.0;
                                                 int n10 = (int)d2;
@@ -274,7 +274,7 @@ public final class SpecialTreePatchManager {
         if (object == null) {
             return false;
         }
-        SpecialTreeDefinition specialTreeDefinition = SpecialTreeDefinition.forSaplingId(this.treeIds[object.getIndex()]);
+        SpecialTreeDefinition specialTreeDefinition = SpecialTreeDefinition.forSaplingId(this.treeIds[((SpecialTreePatch)object).getIndex()]);
         if (specialTreeDefinition == null) {
             return false;
         }
@@ -283,7 +283,7 @@ public final class SpecialTreePatchManager {
             ((Player)object).packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
-        if (specialTreeDefinition == SpecialTreeDefinition.SPIRIT_TREE && this.patchStates[object.getIndex()] != 3) {
+        if (specialTreeDefinition == SpecialTreeDefinition.SPIRIT_TREE && this.patchStates[((SpecialTreePatch)object).getIndex()] != 3) {
             object = this;
             DialogueManager.startDialogue(((SpecialTreePatchManager)object).player, 3636);
             return true;
@@ -401,7 +401,7 @@ public final class SpecialTreePatchManager {
         if (object == null) {
             return false;
         }
-        SpecialTreeDefinition specialTreeDefinition = SpecialTreeDefinition.forSaplingId(this.treeIds[object.getIndex()]);
+        SpecialTreeDefinition specialTreeDefinition = SpecialTreeDefinition.forSaplingId(this.treeIds[((SpecialTreePatch)object).getIndex()]);
         if (specialTreeDefinition == null) {
             return false;
         }
@@ -410,12 +410,12 @@ public final class SpecialTreePatchManager {
             ((Player)object).packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
-        if (this.patchStates[object.getIndex()] != 2) {
+        if (this.patchStates[((SpecialTreePatch)object).getIndex()] != 2) {
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("This plant doesn't need to be resurrected.");
             return true;
         }
-        this.player.setPendingCropResurrectionTarget("special1", object.getIndex());
+        this.player.setPendingCropResurrectionTarget("special1", ((SpecialTreePatch)object).getIndex());
         return true;
     }
 
@@ -424,7 +424,7 @@ public final class SpecialTreePatchManager {
             Object object = SpecialTreeDefinition.forSaplingId(this.treeIds[this.player.pendingCropResurrectionPatchIndex]);
             this.patchStates[this.player.pendingCropResurrectionPatchIndex] = 0;
             int n = this.growthStages[this.player.pendingCropResurrectionPatchIndex] - 4;
-            this.lastUpdateTicks[this.player.pendingCropResurrectionPatchIndex] = Server.getElapsedMinutes() - (long)(object.getGrowthCycleTicks() * n);
+            this.lastUpdateTicks[this.player.pendingCropResurrectionPatchIndex] = Server.getElapsedMinutes() - (long)(((SpecialTreeDefinition)object).getGrowthCycleTicks() * n);
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("You succesfully resurrected the crop.");
         } else {
@@ -443,7 +443,7 @@ public final class SpecialTreePatchManager {
         if (object == null || n3 != 6036) {
             return false;
         }
-        SpecialTreeDefinition specialTreeDefinition = SpecialTreeDefinition.forSaplingId(this.treeIds[object.getIndex()]);
+        SpecialTreeDefinition specialTreeDefinition = SpecialTreeDefinition.forSaplingId(this.treeIds[((SpecialTreePatch)object).getIndex()]);
         if (specialTreeDefinition == null) {
             return false;
         }
@@ -452,7 +452,7 @@ public final class SpecialTreePatchManager {
             ((Player)object).packetSender.sendGameMessage("This skill is currently disabled.");
             return true;
         }
-        if (this.patchStates[object.getIndex()] != 1) {
+        if (this.patchStates[((SpecialTreePatch)object).getIndex()] != 1) {
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("This plant doesn't need to be cured.");
             return true;
@@ -461,7 +461,7 @@ public final class SpecialTreePatchManager {
         this.player.getInventoryManager().addItem(new ItemStack(229));
         this.player.getUpdateState().setAnimation(2288);
         this.player.setActionLocked(true);
-        this.patchStates[object.getIndex()] = 0;
+        this.patchStates[((SpecialTreePatch)object).getIndex()] = 0;
         CycleEventHandler.getInstance().schedule(this.player, new SpecialTreeCureTask(this), 7);
         return true;
     }
@@ -470,14 +470,14 @@ public final class SpecialTreePatchManager {
         this.treeIds[n] = 0;
         this.patchStates[n] = 0;
         this.diseaseChanceMultipliers[n] = 1.0;
-        this.f[n] = false;
+        this.calquatRegrowthFlags[n] = false;
     }
 
     static /* synthetic */ Player getPlayer(SpecialTreePatchManager specialTreePatchManager) {
         return specialTreePatchManager.player;
     }
 
-    static /* synthetic */ void a(SpecialTreePatchManager specialTreePatchManager, int n) {
+    static /* synthetic */ void resetPatch(SpecialTreePatchManager specialTreePatchManager, int n) {
         specialTreePatchManager.resetPatch(n);
     }
 }

@@ -8,11 +8,11 @@ import com.rs2.model.skill.farming.BushPatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class BushCureTask
+public final class BushCureTask
 extends CycleEvent {
     private /* synthetic */ BushPatchManager manager;
 
-    BushCureTask(BushPatchManager bushPatchManager) {
+    public BushCureTask(BushPatchManager bushPatchManager) {
         this.manager = bushPatchManager;
     }
 

@@ -8,11 +8,11 @@ import com.rs2.model.skill.farming.SpecialTreePatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class SpecialTreeCureTask
+public final class SpecialTreeCureTask
 extends CycleEvent {
     private /* synthetic */ SpecialTreePatchManager manager;
 
-    SpecialTreeCureTask(SpecialTreePatchManager specialTreePatchManager) {
+    public SpecialTreeCureTask(SpecialTreePatchManager specialTreePatchManager) {
         this.manager = specialTreePatchManager;
     }
 

@@ -52,12 +52,12 @@ public final class DoorHandler {
     }
 
     private static DoorHandler getOrCreateDoorState(int n, int n2, int n3, int n4) {
-        DoorHandler doorHandler2;
-        for (DoorHandler doorHandler2 : doorStates) {
+        for (Object doorStateObject : doorStates) {
+            DoorHandler doorHandler2 = (DoorHandler)doorStateObject;
             if (doorHandler2.currentX != n2 || doorHandler2.currentY != n3 || doorHandler2.plane != n4) continue;
             return doorHandler2;
         }
-        doorHandler2 = new DoorHandler(n, n2, n3, n4);
+        DoorHandler doorHandler2 = new DoorHandler(n, n2, n3, n4);
         doorStates.add(doorHandler2);
         return doorHandler2;
     }
@@ -76,7 +76,7 @@ public final class DoorHandler {
         } else {
             object2 = object = "";
         }
-        if (!((String)object2).contains("fence") && !((String)object).contains("gate") && !((String)object).contains("door") || ((String)object).contains("trapdoor") || ((String)object).contains("tree")) {
+        if (!((String)object2).contains("fence") && !((String)object2).contains("gate") && !((String)object2).contains("door") || ((String)object2).contains("trapdoor") || ((String)object2).contains("tree")) {
             return false;
         }
         if (n == 9300 || n == 9299 || n == 883 || n == 1805 || n == 2882 || n == 2883 || n == 2623 || n == 2112 || n == 1804 || n == 2266 || n == 2406 || n == 2407 || n == 2631 || n == 2623 || n == 8958 || n == 8959 || n == 8960 || n == 1589 || n == 1590 || n == 2155 && n2 == 2592 && n3 == 9490 || n == 2154 && n2 == 2593 && n3 == 9490) {

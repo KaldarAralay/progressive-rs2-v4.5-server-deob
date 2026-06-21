@@ -40,17 +40,15 @@ public final class HiscoresDatabase {
         }
     }
 
-    private static ResultSet executeSql(String object) {
-        if (((String)object).toLowerCase().startsWith("select")) {
-            object = statement.executeQuery((String)object);
-            return object;
-        }
+    private static ResultSet executeSql(String sql) {
         try {
-            statement.executeUpdate((String)object);
+            if (sql.toLowerCase().startsWith("select")) {
+                return statement.executeQuery(sql);
+            }
+            statement.executeUpdate(sql);
             return null;
         }
         catch (Exception exception) {
-            object = exception;
             exception.printStackTrace();
             HiscoresDatabase.disconnect();
             return null;
@@ -87,7 +85,6 @@ public final class HiscoresDatabase {
             System.out.println("Hiscores saved for: " + ((Player)object).getUsername());
         }
         catch (Exception exception) {
-            object = exception;
             exception.printStackTrace();
             return false;
         }

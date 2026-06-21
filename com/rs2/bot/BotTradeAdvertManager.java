@@ -102,7 +102,7 @@ public final class BotTradeAdvertManager {
         player.botAdvertItemId = ((GameplayHelper)tradeAdvertOfferPool.get(player.tradeAdvertOfferPoolIndex)).getTradeAdvertItemId();
         object = ItemDefinition.forId(player.botAdvertItemId);
         double d2 = GrandExchangeManager.getGuidePrice(player.botAdvertItemId);
-        if (d < 1.0) {
+        if (d2 < 1.0) {
             d2 = 1.0;
         }
         if (player.botAdvertItemId == 381) {
@@ -198,7 +198,7 @@ public final class BotTradeAdvertManager {
         nArray[2] = 3;
         object = nArray;
         n2 = GameUtil.randomInt(3);
-        player.botPublicChatEffect = (int)object[n2];
+        player.botPublicChatEffect = ((int[])object)[n2];
     }
 
     public static void updateTradeAdvertMessage(Player player) {
@@ -293,7 +293,7 @@ public final class BotTradeAdvertManager {
         } else if (player2.botCombatStyle == 1) {
             int n;
             BotCombatLoadoutManager.prepareRangedLoadout(player2);
-            int n2 = player2.getSkillManager().getCurrentLevels()[4] >= 40 ? 1731 : (n = GameUtil.randomInt(3) == 0 ? 1478 : 1729);
+            n = player2.getSkillManager().getCurrentLevels()[4] >= 40 ? 1731 : (GameUtil.randomInt(3) == 0 ? 1478 : 1729);
             if (!BotCombatHelper.isFreeToPlayWorld() && player2.getCombatLevel() >= 60 && GameUtil.randomInt(2) == 0) {
                 n = 1712;
             }

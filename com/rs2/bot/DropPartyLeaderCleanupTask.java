@@ -7,13 +7,13 @@ import com.rs2.model.Position;
 import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 
-final class DropPartyLeaderCleanupTask
+public final class DropPartyLeaderCleanupTask
 extends TickTask {
     private final /* synthetic */ Player leader;
 
-    DropPartyLeaderCleanupTask(int n, Player player) {
-        this.leader = player;
+    public DropPartyLeaderCleanupTask(int n, Player player) {
         super(10);
+        this.leader = player;
     }
 
     @Override

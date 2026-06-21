@@ -9,19 +9,19 @@ import com.rs2.model.player.Player;
 import com.rs2.model.skill.magic.MagicSpellAction;
 import com.rs2.model.skill.magic.SpellDefinition;
 
-final class ItemSpellAction
+public final class ItemSpellAction
 extends MagicSpellAction {
     private final /* synthetic */ SpellDefinition itemSpell;
     private final /* synthetic */ int itemId;
     private final /* synthetic */ Player caster;
     private final /* synthetic */ int inventorySlot;
 
-    ItemSpellAction(Player player, SpellDefinition spellDefinition, SpellDefinition spellDefinition2, int n, Player player2, int n2) {
+    public ItemSpellAction(Player player, SpellDefinition spellDefinition, SpellDefinition spellDefinition2, int n, Player player2, int n2) {
+        super(player, spellDefinition, (byte)0);
         this.itemSpell = spellDefinition2;
         this.itemId = n;
         this.caster = player2;
         this.inventorySlot = n2;
-        super(player, spellDefinition, (byte)0);
     }
 
     @Override

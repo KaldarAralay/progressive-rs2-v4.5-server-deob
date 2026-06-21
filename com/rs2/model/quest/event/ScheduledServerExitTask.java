@@ -6,9 +6,9 @@ package com.rs2.model.quest.event;
 import com.rs2.model.quest.event.ServerMaintenanceEventHook;
 import com.rs2.model.task.TickTask;
 
-final class ScheduledServerExitTask
+public final class ScheduledServerExitTask
 extends TickTask {
-    ScheduledServerExitTask(ServerMaintenanceEventHook serverMaintenanceEventHook, int n) {
+    public ScheduledServerExitTask(ServerMaintenanceEventHook serverMaintenanceEventHook, int n) {
         super(n);
     }
 

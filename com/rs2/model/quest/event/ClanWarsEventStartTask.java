@@ -10,9 +10,9 @@ import com.rs2.model.quest.event.ServerMaintenanceEventHook;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 
-final class ClanWarsEventStartTask
+public final class ClanWarsEventStartTask
 extends TickTask {
-    ClanWarsEventStartTask(ServerMaintenanceEventHook serverMaintenanceEventHook, int n) {
+    public ClanWarsEventStartTask(ServerMaintenanceEventHook serverMaintenanceEventHook, int n) {
         super(500);
     }
 

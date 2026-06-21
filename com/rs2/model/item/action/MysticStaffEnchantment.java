@@ -39,12 +39,10 @@ public enum MysticStaffEnchantment {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private MysticStaffEnchantment(int n3) {
-        void var5_3;
-        void var4_2;
-        this.buttonId = n3;
-        this.battlestaffItemId = var4_2;
-        this.mysticStaffItemId = var5_3;
+    private MysticStaffEnchantment(int n2, int n3, int n4) {
+        this.buttonId = n2;
+        this.battlestaffItemId = n3;
+        this.mysticStaffItemId = n4;
     }
 
     public final int getBattlestaffItemId() {

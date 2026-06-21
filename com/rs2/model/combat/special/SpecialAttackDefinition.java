@@ -17,30 +17,6 @@ import com.rs2.model.combat.WeaponProfile;
 import com.rs2.model.combat.attack.WeaponCombatAttack;
 import com.rs2.model.combat.hit.HitDefinition;
 import com.rs2.model.combat.hit.HitType;
-import com.rs2.model.combat.special.AbyssalWhipSpecialDefinition;
-import com.rs2.model.combat.special.ArmadylGodswordSpecialDefinition;
-import com.rs2.model.combat.special.BandosGodswordSpecialDefinition;
-import com.rs2.model.combat.special.DarkBowSpecialDefinition;
-import com.rs2.model.combat.special.DarklightSpecialDefinition;
-import com.rs2.model.combat.special.Dragon2hSwordSpecialDefinition;
-import com.rs2.model.combat.special.DragonAxeSpecialDefinition;
-import com.rs2.model.combat.special.DragonBattleaxeSpecialDefinition;
-import com.rs2.model.combat.special.DragonDaggerSpecialDefinition;
-import com.rs2.model.combat.special.DragonHalberdSpecialDefinition;
-import com.rs2.model.combat.special.DragonLongswordSpecialDefinition;
-import com.rs2.model.combat.special.DragonMaceSpecialDefinition;
-import com.rs2.model.combat.special.DragonScimitarSpecialDefinition;
-import com.rs2.model.combat.special.DragonSpearSpecialDefinition;
-import com.rs2.model.combat.special.ExcaliburSpecialDefinition;
-import com.rs2.model.combat.special.GraniteMaulSpecialDefinition;
-import com.rs2.model.combat.special.MagicLongbowSpecialDefinition;
-import com.rs2.model.combat.special.MagicShortbowSpecialDefinition;
-import com.rs2.model.combat.special.RuneClawsSpecialDefinition;
-import com.rs2.model.combat.special.RuneThrownaxeSpecialDefinition;
-import com.rs2.model.combat.special.SaradominGodswordSpecialDefinition;
-import com.rs2.model.combat.special.SaradominSwordSpecialDefinition;
-import com.rs2.model.combat.special.SeercullSpecialDefinition;
-import com.rs2.model.combat.special.ZamorakGodswordSpecialDefinition;
 import com.rs2.model.gameplay.duel.DuelRule;
 import com.rs2.model.item.ItemDefinition;
 import com.rs2.model.item.ItemStack;
@@ -48,53 +24,66 @@ import com.rs2.model.npc.Npc;
 import com.rs2.model.player.Player;
 import com.rs2.util.GameUtil;
 
-public abstract class SpecialAttackDefinition
-extends Enum {
-    private static /* enum */ SpecialAttackDefinition DRAGON_DAGGER = new DragonDaggerSpecialDefinition(25, "drag dagger", "dragon dagger");
-    private static /* enum */ SpecialAttackDefinition ABYSSAL_WHIP = new AbyssalWhipSpecialDefinition(50, new String[0]);
-    private static /* enum */ SpecialAttackDefinition RUNE_THROWNAXE = new RuneThrownaxeSpecialDefinition(10, new String[0]);
-    private static /* enum */ SpecialAttackDefinition DRAGON_LONGSWORD = new DragonLongswordSpecialDefinition(25, new String[0]);
-    private static /* enum */ SpecialAttackDefinition DRAGON_SCIMITAR = new DragonScimitarSpecialDefinition(55, new String[0]);
-    private static /* enum */ SpecialAttackDefinition RUNE_CLAWS = new RuneClawsSpecialDefinition(25, new String[0]);
-    private static /* enum */ SpecialAttackDefinition DRAGON_MACE = new DragonMaceSpecialDefinition(25, new String[0]);
-    private static /* enum */ SpecialAttackDefinition DRAGON_AXE = new DragonAxeSpecialDefinition(100, new String[0]);
-    private static /* enum */ SpecialAttackDefinition DARKLIGHT = new DarklightSpecialDefinition(50, new String[0]);
-    private static /* enum */ SpecialAttackDefinition DRAGON_SPEAR = new DragonSpearSpecialDefinition(25, "dragon spear", "zamorakian spear");
-    private static /* enum */ SpecialAttackDefinition DRAGON_HALBERD = new DragonHalberdSpecialDefinition(30, new String[0]);
-    private static /* enum */ SpecialAttackDefinition DRAGON_2H_SWORD = new Dragon2hSwordSpecialDefinition(60, new String[0]);
-    private static /* enum */ SpecialAttackDefinition SEERCULL = new SeercullSpecialDefinition(100, new String[0]);
-    private static /* enum */ SpecialAttackDefinition DARK_BOW = new DarkBowSpecialDefinition(55, new String[0]);
-    private static /* enum */ SpecialAttackDefinition MAGIC_SHORTBOW = new MagicShortbowSpecialDefinition(ServerSettings.cacheVersion < 296 ? 35 : 55, new String[0]);
-    private static /* enum */ SpecialAttackDefinition MAGIC_LONGBOW = new MagicLongbowSpecialDefinition(35, new String[0]);
-    private static /* enum */ SpecialAttackDefinition DRAGON_BATTLEAXE = new DragonBattleaxeSpecialDefinition(100, new String[0]);
-    private static /* enum */ SpecialAttackDefinition EXCALIBUR = new ExcaliburSpecialDefinition(100, new String[0]);
-    private static /* enum */ SpecialAttackDefinition BANDOS_GODSWORD = new BandosGodswordSpecialDefinition(50, new String[0]);
-    private static /* enum */ SpecialAttackDefinition ARMADYL_GODSWORD = new ArmadylGodswordSpecialDefinition(50, new String[0]);
-    private static /* enum */ SpecialAttackDefinition ZAMORAK_GODSWORD = new ZamorakGodswordSpecialDefinition(50, new String[0]);
-    private static /* enum */ SpecialAttackDefinition SARADOMIN_GODSWORD = new SaradominGodswordSpecialDefinition(50, new String[0]);
-    private static /* enum */ SpecialAttackDefinition SARADOMIN_SWORD = new SaradominSwordSpecialDefinition(100, new String[0]);
-    private static /* enum */ SpecialAttackDefinition GRANITE_MAUL = new GraniteMaulSpecialDefinition(50, new String[0]);
-    private byte energyCost;
-    private String[] weaponNamePatterns;
-    private static final /* synthetic */ SpecialAttackDefinition[] VALUES;
+public abstract class SpecialAttackDefinition {
+    private static SpecialAttackDefinition DRAGON_DAGGER = new DragonDaggerSpecialDefinition(25, "drag dagger", "dragon dagger");
+    private static SpecialAttackDefinition ABYSSAL_WHIP = new AbyssalWhipSpecialDefinition(50, new String[0]);
+    private static SpecialAttackDefinition RUNE_THROWNAXE = new RuneThrownaxeSpecialDefinition(10, new String[0]);
+    private static SpecialAttackDefinition DRAGON_LONGSWORD = new DragonLongswordSpecialDefinition(25, new String[0]);
+    private static SpecialAttackDefinition DRAGON_SCIMITAR = new DragonScimitarSpecialDefinition(55, new String[0]);
+    private static SpecialAttackDefinition RUNE_CLAWS = new RuneClawsSpecialDefinition(25, new String[0]);
+    private static SpecialAttackDefinition DRAGON_MACE = new DragonMaceSpecialDefinition(25, new String[0]);
+    private static SpecialAttackDefinition DRAGON_AXE = new DragonAxeSpecialDefinition(100, new String[0]);
+    private static SpecialAttackDefinition DARKLIGHT = new DarklightSpecialDefinition(50, new String[0]);
+    private static SpecialAttackDefinition DRAGON_SPEAR = new DragonSpearSpecialDefinition(25, "dragon spear", "zamorakian spear");
+    private static SpecialAttackDefinition DRAGON_HALBERD = new DragonHalberdSpecialDefinition(30, new String[0]);
+    private static SpecialAttackDefinition DRAGON_2H_SWORD = new Dragon2hSwordSpecialDefinition(60, new String[0]);
+    private static SpecialAttackDefinition SEERCULL = new SeercullSpecialDefinition(100, new String[0]);
+    private static SpecialAttackDefinition DARK_BOW = new DarkBowSpecialDefinition(55, new String[0]);
+    private static SpecialAttackDefinition MAGIC_SHORTBOW = new MagicShortbowSpecialDefinition(ServerSettings.cacheVersion < 296 ? 35 : 55, new String[0]);
+    private static SpecialAttackDefinition MAGIC_LONGBOW = new MagicLongbowSpecialDefinition(35, new String[0]);
+    private static SpecialAttackDefinition DRAGON_BATTLEAXE = new DragonBattleaxeSpecialDefinition(100, new String[0]);
+    private static SpecialAttackDefinition EXCALIBUR = new ExcaliburSpecialDefinition(100, new String[0]);
+    private static SpecialAttackDefinition BANDOS_GODSWORD = new BandosGodswordSpecialDefinition(50, new String[0]);
+    private static SpecialAttackDefinition ARMADYL_GODSWORD = new ArmadylGodswordSpecialDefinition(50, new String[0]);
+    private static SpecialAttackDefinition ZAMORAK_GODSWORD = new ZamorakGodswordSpecialDefinition(50, new String[0]);
+    private static SpecialAttackDefinition SARADOMIN_GODSWORD = new SaradominGodswordSpecialDefinition(50, new String[0]);
+    private static SpecialAttackDefinition SARADOMIN_SWORD = new SaradominSwordSpecialDefinition(100, new String[0]);
+    private static SpecialAttackDefinition GRANITE_MAUL = new GraniteMaulSpecialDefinition(50, new String[0]);
+    private static final SpecialAttackDefinition[] VALUES;
 
     static {
         VALUES = new SpecialAttackDefinition[]{DRAGON_DAGGER, ABYSSAL_WHIP, RUNE_THROWNAXE, DRAGON_LONGSWORD, DRAGON_SCIMITAR, RUNE_CLAWS, DRAGON_MACE, DRAGON_AXE, DARKLIGHT, DRAGON_SPEAR, DRAGON_HALBERD, DRAGON_2H_SWORD, SEERCULL, DARK_BOW, MAGIC_SHORTBOW, MAGIC_LONGBOW, DRAGON_BATTLEAXE, EXCALIBUR, BANDOS_GODSWORD, ARMADYL_GODSWORD, ZAMORAK_GODSWORD, SARADOMIN_GODSWORD, SARADOMIN_SWORD, GRANITE_MAUL};
     }
 
-    /*
-     * WARNING - void declaration
-     */
-    private SpecialAttackDefinition() {
-        void var4_1;
-        void var3_2;
-        void cfr_renamed_1;
-        void cfr_renamed_0;
-        this.energyCost = (byte)var3_2;
-        this.weaponNamePatterns = var4_1;
+    private final String name;
+    private final byte energyCost;
+    private String[] weaponNamePatterns;
+
+    protected SpecialAttackDefinition(int energyCost, String ... weaponNamePatterns) {
+        this.name = SpecialAttackDefinition.deriveName(this.getClass().getSimpleName());
+        this.energyCost = (byte)energyCost;
+        this.weaponNamePatterns = weaponNamePatterns;
         if (this.weaponNamePatterns == null || this.weaponNamePatterns.length == 0) {
             this.weaponNamePatterns = new String[]{this.name().toLowerCase().replaceAll("_", " ")};
         }
+    }
+
+    private static String deriveName(String simpleName) {
+        String baseName = simpleName.endsWith("SpecialDefinition") ? simpleName.substring(0, simpleName.length() - "SpecialDefinition".length()) : simpleName;
+        StringBuilder builder = new StringBuilder();
+        for (int index = 0; index < baseName.length(); ++index) {
+            char character = baseName.charAt(index);
+            if (index > 0) {
+                char previous = baseName.charAt(index - 1);
+                if (Character.isDigit(character) && !Character.isDigit(previous)) {
+                    builder.append('_');
+                } else if (Character.isUpperCase(character) && (Character.isLowerCase(previous) || Character.isDigit(previous))) {
+                    builder.append('_');
+                }
+            }
+            builder.append(Character.toUpperCase(character));
+        }
+        return builder.toString();
     }
 
     public abstract WeaponCombatAttack createAttack(Player var1, Entity var2, WeaponProfile var3);
@@ -103,27 +92,44 @@ extends Enum {
         return this.energyCost;
     }
 
-    public static SpecialAttackDefinition forItem(ItemStack object) {
-        if (object == null) {
+    public final String name() {
+        return this.name;
+    }
+
+    public final int ordinal() {
+        for (int index = 0; index < VALUES.length; ++index) {
+            if (VALUES[index] == this) {
+                return index;
+            }
+        }
+        return -1;
+    }
+
+    public final String toString() {
+        return this.name;
+    }
+
+    public static SpecialAttackDefinition forItem(ItemStack itemStack) {
+        if (itemStack == null) {
             return null;
         }
-        object = ItemDefinition.forId(((ItemStack)object).getId()).getName().toLowerCase();
-        SpecialAttackDefinition[] specialAttackDefinitionArray = SpecialAttackDefinition.values();
-        int n = specialAttackDefinitionArray.length;
-        int n2 = 0;
-        while (n2 < n) {
-            SpecialAttackDefinition specialAttackDefinition = specialAttackDefinitionArray[n2];
-            String[] stringArray = specialAttackDefinition.weaponNamePatterns;
-            int n3 = specialAttackDefinition.weaponNamePatterns.length;
-            int n4 = 0;
-            while (n4 < n3) {
-                String string = stringArray[n4];
-                if (((String)object).contains(string.replace("_", " "))) {
-                    return specialAttackDefinition;
+        String itemName = ItemDefinition.forId(itemStack.getId()).getName().toLowerCase();
+        SpecialAttackDefinition[] definitions = SpecialAttackDefinition.values();
+        int count = definitions.length;
+        int index = 0;
+        while (index < count) {
+            SpecialAttackDefinition definition = definitions[index];
+            String[] patterns = definition.weaponNamePatterns;
+            int patternCount = patterns.length;
+            int patternIndex = 0;
+            while (patternIndex < patternCount) {
+                String pattern = patterns[patternIndex];
+                if (itemName.contains(pattern.replace("_", " "))) {
+                    return definition;
                 }
-                ++n4;
+                ++patternIndex;
             }
-            ++n2;
+            ++index;
         }
         return null;
     }
@@ -201,248 +207,224 @@ extends Enum {
         if (player.getCombatTarget().isDoorSupportNpc()) {
             return;
         }
-        Object object = CombatCycleEvent.validateAttack(player, player.getCombatTarget());
-        if (object != AttackValidationResult.VALID) {
+        AttackValidationResult validationResult = CombatCycleEvent.validateAttack(player, player.getCombatTarget());
+        if (validationResult != AttackValidationResult.VALID) {
             return;
         }
         if (DuelRule.NO_SPECIAL_ATTACK.isEnabledFor(player)) {
-            object = player;
-            ((Player)object).packetSender.sendGameMessage("Special attacks have been disabled during this fight!");
+            player.packetSender.sendGameMessage("Special attacks have been disabled during this fight!");
             return;
         }
         if (player.getSpecialEnergy() < 50) {
-            object = player;
-            ((Player)object).packetSender.sendGameMessage("You don't have enough special attack to do that.");
+            player.packetSender.sendGameMessage("You don't have enough special attack to do that.");
             return;
         }
         player.setSpecialAttackEnabled(!player.isSpecialAttackEnabled());
-        object = player;
-        ((Player)object).packetSender.refreshSpecialAttackConfig();
+        player.packetSender.refreshSpecialAttackConfig();
         player.getUpdateState().setAnimation(1667);
         player.getUpdateState().setGraphic(new GraphicEffect(337, 100));
-        object = new WeaponCombatAttack(player, player.getCombatTarget(), player.getWeaponProfile());
-        object = new HitDefinition(((WeaponCombatAttack)object).getAttackStyle(), HitType.NORMAL, CombatManager.calculateMeleeMaxHit(player, (WeaponCombatAttack)object)).enableRandomDamage().enableAccuracyCheck(true);
-        new CombatAction(player, player.getCombatTarget(), (HitDefinition)object).queue();
+        WeaponCombatAttack weaponCombatAttack = new WeaponCombatAttack(player, player.getCombatTarget(), player.getWeaponProfile());
+        HitDefinition hitDefinition = new HitDefinition(weaponCombatAttack.getAttackStyle(), HitType.NORMAL, CombatManager.calculateMeleeMaxHit(player, weaponCombatAttack)).enableRandomDamage().enableAccuracyCheck(true);
+        new CombatAction(player, player.getCombatTarget(), hitDefinition).queue();
         player.setSpecialAttackEnabled(false);
         player.setSpecialEnergy(player.getSpecialEnergy() - 50);
-        object = player;
-        ((Player)object).packetSender.refreshSpecialEnergyBar(7486);
-        object = player;
-        ((Player)object).packetSender.refreshSpecialAttackConfig();
+        player.packetSender.refreshSpecialEnergyBar(7486);
+        player.packetSender.refreshSpecialAttackConfig();
     }
 
-    public static void applyHitSpecialEffect(Entity entity, Entity entity2, HitDefinition object, int n) {
-        if (entity != null && entity.isPlayer()) {
-            Player[] playerArray;
-            Object object2 = playerArray = (Player[])entity;
-            playerArray.packetSender.closeInterfaces();
-            block0 : switch (((HitDefinition)object).getSpecialEffectId()) {
-                case 1: {
-                    entity2.getUpdateState().setGraphic(474);
-                    if (n <= 0 || !entity2.isPlayer()) break;
-                    entity = (Player)entity2;
-                    object2 = entity;
-                    ((Player)entity).packetSender.modifySkillLevel(6, -n, true);
-                    return;
+    public static void applyHitSpecialEffect(Entity entity, Entity target, HitDefinition hitDefinition, int damage) {
+        if (entity == null || !entity.isPlayer()) {
+            return;
+        }
+        Player player = (Player)entity;
+        player.packetSender.closeInterfaces();
+        switch (hitDefinition.getSpecialEffectId()) {
+            case 1: {
+                target.getUpdateState().setGraphic(474);
+                if (damage <= 0 || !target.isPlayer()) break;
+                Player targetPlayer = (Player)target;
+                targetPlayer.packetSender.modifySkillLevel(6, -damage, true);
+                return;
+            }
+            case 2: {
+                if (!target.isPlayer()) break;
+                Player targetPlayer = (Player)target;
+                targetPlayer.getPrayerManager().deactivatePrayer(12);
+                targetPlayer.getPrayerManager().deactivatePrayer(13);
+                targetPlayer.getPrayerManager().deactivatePrayer(14);
+                targetPlayer.setProtectionPrayerDisabledUntil(System.currentTimeMillis() + 5000L);
+                targetPlayer.packetSender.sendGameMessage("You have been injured!");
+                return;
+            }
+            case 3: {
+                if (damage <= 0 || !target.isPlayer()) break;
+                Player targetPlayer = (Player)target;
+                targetPlayer.packetSender.modifySkillLevel(1, -damage, true);
+                targetPlayer.packetSender.modifySkillLevel(6, -damage, true);
+                return;
+            }
+            case 4: {
+                if (damage <= 0 || !target.isPlayer()) break;
+                Player targetPlayer = (Player)target;
+                targetPlayer.packetSender.modifySkillLevel(0, -((int)((double)targetPlayer.getSkillManager().getBaseLevel(0) * 0.05)), true);
+                targetPlayer.packetSender.modifySkillLevel(2, -((int)((double)targetPlayer.getSkillManager().getBaseLevel(2) * 0.05)), true);
+                targetPlayer.packetSender.modifySkillLevel(1, -((int)((double)targetPlayer.getSkillManager().getBaseLevel(1) * 0.05)), true);
+                return;
+            }
+            case 5: {
+                int playerX = player.getPosition().getX();
+                int playerY = player.getPosition().getY();
+                int deltaX = 0;
+                int deltaY = 0;
+                int targetX = target.getPosition().getX();
+                int targetY = target.getPosition().getY();
+                if (playerX > targetX) {
+                    deltaX = -1;
+                } else if (playerX < targetX) {
+                    deltaX = 1;
                 }
-                case 2: {
-                    if (!entity2.isPlayer()) break;
-                    entity = (Player)entity2;
-                    ((Player)entity).getPrayerManager().deactivatePrayer(12);
-                    ((Player)entity).getPrayerManager().deactivatePrayer(13);
-                    ((Player)entity).getPrayerManager().deactivatePrayer(14);
-                    ((Player)entity).setProtectionPrayerDisabledUntil(System.currentTimeMillis() + 5000L);
-                    object2 = entity;
-                    object2.packetSender.sendGameMessage("You have been injured!");
-                    return;
+                if (playerY > targetY) {
+                    deltaY = -1;
+                } else if (playerY < targetY) {
+                    deltaY = 1;
                 }
-                case 3: {
-                    if (n <= 0 || !entity2.isPlayer()) break;
-                    entity = (Player)entity2;
-                    object2 = entity;
-                    ((Player)entity).packetSender.modifySkillLevel(1, -n, true);
-                    object2 = entity;
-                    object2.packetSender.modifySkillLevel(6, -n, true);
-                    return;
-                }
-                case 4: {
-                    if (n <= 0 || !entity2.isPlayer()) break;
-                    entity = (Player)entity2;
-                    object2 = entity;
-                    ((Player)entity).packetSender.modifySkillLevel(0, -((int)((double)((Player)entity).getSkillManager().getBaseLevel(0) * 0.05)), true);
-                    object2 = entity;
-                    object2.packetSender.modifySkillLevel(2, -((int)((double)((Player)entity).getSkillManager().getBaseLevel(2) * 0.05)), true);
-                    object2 = entity;
-                    object2.packetSender.modifySkillLevel(1, -((int)((double)((Player)entity).getSkillManager().getBaseLevel(1) * 0.05)), true);
-                    return;
-                }
-                case 5: {
-                    int n2 = playerArray.getPosition().getX();
-                    int n3 = playerArray.getPosition().getY();
-                    n = 0;
-                    int n4 = 0;
-                    int n5 = entity2.getPosition().getX();
-                    int n6 = entity2.getPosition().getY();
-                    if (n2 > n5) {
-                        n = -1;
-                    } else if (n2 < n5) {
-                        n = 1;
+                boolean canMoveTarget = target.getSize() > 1;
+                target.getUpdateState().setGraphicHeight100(254);
+                if (canMoveTarget) {
+                    if (target.isPlayer()) {
+                        Player targetPlayer = (Player)target;
+                        targetPlayer.packetSender.queueRelativeMovementStep(deltaX, deltaY, false);
+                    } else {
+                        Npc npc = (Npc)target;
+                        npc.queuePathTo(new Position(npc.getPosition().getX() + deltaX, npc.getPosition().getY() + deltaY), false);
                     }
-                    if (n3 > n6) {
-                        n4 = -1;
-                    } else if (n3 < n6) {
-                        n4 = 1;
-                    }
-                    n2 = entity2.getSize() > 1 ? 1 : 0;
-                    entity2.getUpdateState().setGraphicHeight100(254);
-                    if (n2 != 0) {
-                        if (entity2.isPlayer()) {
-                            Player player;
-                            Player player2 = player = (Player)entity2;
-                            player.packetSender.queueRelativeMovementStep(n, n4, false);
-                        } else {
-                            Npc npc = (Npc)entity2;
-                            npc.queuePathTo(new Position(npc.getPosition().getX() + n, npc.getPosition().getY() + n4), false);
+                }
+                target.getStunTimer().setDelayTicks(10);
+                target.getStunTimer().reset();
+                return;
+            }
+            case 6: {
+                if (!entity.isInMultiCombatArea()) break;
+                int queuedTargets = 0;
+                Player[] players = World.getPlayers();
+                int playerCount = players.length;
+                int playerIndex = 0;
+                while (playerIndex < playerCount) {
+                    Player targetPlayer = players[playerIndex];
+                    if (targetPlayer != null && targetPlayer != entity && targetPlayer != entity.getCombatTarget()) {
+                        AttackValidationResult validationResult = CombatCycleEvent.validateAttack(entity, targetPlayer);
+                        if (GameUtil.getDistance(entity.getPosition(), targetPlayer.getPosition()) <= 1 && validationResult == AttackValidationResult.VALID) {
+                            WeaponCombatAttack weaponCombatAttack = new WeaponCombatAttack(player, targetPlayer, player.getWeaponProfile());
+                            HitDefinition extraHit = new HitDefinition(weaponCombatAttack.getAttackStyle(), HitType.NORMAL, CombatManager.calculateMeleeMaxHit(player, weaponCombatAttack)).enableRandomDamage().enableAccuracyCheck(true);
+                            new CombatAction(entity, targetPlayer, extraHit).queue();
+                            if (++queuedTargets > 13) break;
                         }
                     }
-                    entity2.getStunTimer().setDelayTicks(10);
-                    entity2.getStunTimer().reset();
-                    return;
+                    ++playerIndex;
                 }
-                case 6: {
-                    Object object3;
-                    boolean bl = entity.isInMultiCombatArea();
-                    int n7 = 0;
-                    if (!bl) break;
-                    object2 = World.getPlayers();
-                    n = ((Player[])object2).length;
-                    int n8 = 0;
-                    while (n8 < n) {
-                        Player player = object2[n8];
-                        if (player != null && player != entity && player != entity.getCombatTarget()) {
-                            object3 = CombatCycleEvent.validateAttack(entity, player);
-                            if (GameUtil.getDistance(entity.getPosition(), player.getPosition()) <= 1 && object3 == AttackValidationResult.VALID) {
-                                object3 = new WeaponCombatAttack((Player)playerArray, player, playerArray.getWeaponProfile());
-                                object3 = new HitDefinition(((WeaponCombatAttack)object3).getAttackStyle(), HitType.NORMAL, CombatManager.calculateMeleeMaxHit((Player)playerArray, (WeaponCombatAttack)object3)).enableRandomDamage().enableAccuracyCheck(true);
-                                new CombatAction(entity, player, (HitDefinition)object3).queue();
-                                if (++n7 > 13) break;
-                            }
+                Npc[] npcs = World.getNpcs();
+                int npcCount = npcs.length;
+                int npcIndex = 0;
+                while (npcIndex < npcCount) {
+                    Npc targetNpc = npcs[npcIndex];
+                    if (targetNpc != null && targetNpc != entity.getCombatTarget()) {
+                        AttackValidationResult validationResult = CombatCycleEvent.validateAttack(entity, targetNpc);
+                        if (entity.isWithinReach(targetNpc, 1) && validationResult == AttackValidationResult.VALID) {
+                            WeaponCombatAttack weaponCombatAttack = new WeaponCombatAttack(player, targetNpc, player.getWeaponProfile());
+                            HitDefinition extraHit = new HitDefinition(weaponCombatAttack.getAttackStyle(), HitType.NORMAL, CombatManager.calculateMeleeMaxHit(player, weaponCombatAttack)).enableRandomDamage().enableAccuracyCheck(true);
+                            new CombatAction(entity, targetNpc, extraHit).queue();
+                            if (++queuedTargets > 13) break;
                         }
-                        ++n8;
                     }
-                    object2 = World.getNpcs();
-                    n = ((Npc[])object2).length;
-                    n8 = 0;
-                    while (n8 < n) {
-                        Player player = object2[n8];
-                        if (player != null && player != entity.getCombatTarget()) {
-                            object3 = CombatCycleEvent.validateAttack(entity, player);
-                            if (entity.isWithinReach(player, 1) && object3 == AttackValidationResult.VALID) {
-                                object3 = new WeaponCombatAttack((Player)playerArray, player, playerArray.getWeaponProfile());
-                                object3 = new HitDefinition(((WeaponCombatAttack)object3).getAttackStyle(), HitType.NORMAL, CombatManager.calculateMeleeMaxHit((Player)playerArray, (WeaponCombatAttack)object3)).enableRandomDamage().enableAccuracyCheck(true);
-                                new CombatAction(entity, player, (HitDefinition)object3).queue();
-                                if (++n7 > 13) break block0;
-                            }
-                        }
-                        ++n8;
-                    }
-                    return;
+                    ++npcIndex;
                 }
-                case 7: {
-                    entity2.getUpdateState().setGraphic(398);
-                    entity.heal(n);
-                    return;
+                return;
+            }
+            case 7: {
+                target.getUpdateState().setGraphic(398);
+                entity.heal(damage);
+                return;
+            }
+            case 8: {
+                target.getUpdateState().setGraphic(399);
+                if (!target.isPlayer()) break;
+                Player targetPlayer = (Player)target;
+                targetPlayer.addRunEnergyPercent(-4);
+                targetPlayer.packetSender.sendRunEnergy();
+                return;
+            }
+            case 9: {
+                target.getUpdateState().setGraphicHeight100(400);
+                if (!target.isPlayer()) break;
+                Player targetPlayer = (Player)target;
+                targetPlayer.packetSender.modifySkillLevel(2, -5, false);
+                return;
+            }
+            case 10: {
+                target.getUpdateState().setGraphicHeight100(401);
+                if (!target.isPlayer()) break;
+                Player targetPlayer = (Player)target;
+                targetPlayer.packetSender.modifySkillLevel(16, -((int)((double)targetPlayer.getSkillManager().getCurrentLevels()[16] * 0.2)), true);
+                return;
+            }
+            case 11: {
+                if (damage <= 0 || !target.isPlayer()) break;
+                Player targetPlayer = (Player)target;
+                targetPlayer.packetSender.sendGameMessage("You have been drained.");
+                int remainder = targetPlayer.packetSender.modifySkillLevelReturningRemainder(1, -damage, true);
+                if (remainder <= 0) break;
+                if ((remainder = targetPlayer.packetSender.modifySkillLevelReturningRemainder(2, -remainder, true)) <= 0) break;
+                if ((remainder = targetPlayer.packetSender.modifySkillLevelReturningRemainder(0, -remainder, true)) <= 0) break;
+                if ((remainder = targetPlayer.packetSender.modifySkillLevelReturningRemainder(5, -remainder, true)) <= 0) break;
+                if ((remainder = targetPlayer.packetSender.modifySkillLevelReturningRemainder(6, -remainder, true)) <= 0) break;
+                targetPlayer.packetSender.modifySkillLevelReturningRemainder(4, -remainder, true);
+                return;
+            }
+            case 12: {
+                if (damage <= 0) break;
+                int hitpointsRestore = 10;
+                int prayerRestore = 5;
+                if (damage > 21) {
+                    hitpointsRestore = damage / 2;
+                    prayerRestore = damage / 4;
                 }
-                case 8: {
-                    entity2.getUpdateState().setGraphic(399);
-                    if (!entity2.isPlayer()) break;
-                    ((Player)entity2).addRunEnergyPercent(-4);
-                    object2 = (Player)entity2;
-                    object2.packetSender.sendRunEnergy();
-                    return;
-                }
-                case 9: {
-                    entity2.getUpdateState().setGraphicHeight100(400);
-                    if (!entity2.isPlayer()) break;
-                    object2 = (Player)entity2;
-                    object2.packetSender.modifySkillLevel(2, -5, false);
-                    return;
-                }
-                case 10: {
-                    entity2.getUpdateState().setGraphicHeight100(401);
-                    if (!entity2.isPlayer()) break;
-                    object2 = (Player)entity2;
-                    object2.packetSender.modifySkillLevel(16, -((int)((double)((Player)entity2).getSkillManager().getCurrentLevels()[16] * 0.2)), true);
-                    return;
-                }
-                case 11: {
-                    if (n <= 0 || !entity2.isPlayer()) break;
-                    object = (Player)entity2;
-                    object2 = object;
-                    ((Player)object).packetSender.sendGameMessage("You have been drained.");
-                    object2 = object;
-                    int n9 = object2.packetSender.modifySkillLevelReturningRemainder(1, -n, true);
-                    if (n9 <= 0) break;
-                    object2 = object;
-                    if ((n9 = object2.packetSender.modifySkillLevelReturningRemainder(2, -n9, true)) <= 0) break;
-                    object2 = object;
-                    if ((n9 = object2.packetSender.modifySkillLevelReturningRemainder(0, -n9, true)) <= 0) break;
-                    object2 = object;
-                    if ((n9 = object2.packetSender.modifySkillLevelReturningRemainder(5, -n9, true)) <= 0) break;
-                    object2 = object;
-                    if ((n9 = object2.packetSender.modifySkillLevelReturningRemainder(6, -n9, true)) <= 0) break;
-                    object2 = object;
-                    object2.packetSender.modifySkillLevelReturningRemainder(4, -n9, true);
-                    return;
-                }
-                case 12: {
-                    if (n <= 0) break;
-                    int n10 = 10;
-                    int n11 = 5;
-                    if (n > 21) {
-                        n10 = n / 2;
-                        n11 = n / 4;
-                    }
-                    object2 = playerArray;
-                    playerArray.packetSender.modifySkillLevelReturningRemainder(3, n10, true);
-                    object2 = playerArray;
-                    playerArray.packetSender.modifySkillLevelReturningRemainder(5, n11, true);
-                    return;
-                }
-                case 13: {
-                    object = new HitDefinition(ServerSettings.SARADOMIN_SWORD_ATTACK_STYLE, HitType.NORMAL, 16).enableRandomDamage().setAccuracyMultiplier(1.0);
-                    new CombatAction(entity, entity2, (HitDefinition)object).queue();
-                    return;
-                }
-                case 14: {
-                    if (GameUtil.randomInt(100) >= 6) break;
-                    n = playerArray.getSkillManager().getCurrentLevels()[4] / 5;
-                    object2 = new HitDefinition(ServerSettings.DRAGONFIRE_ATTACK_STYLE, HitType.NORMAL, n).setAccuracyMultiplier(1.0);
-                    new CombatAction(entity, entity2, (HitDefinition)object2).queue();
-                    entity2.getUpdateState().setGraphic(756);
-                }
+                player.packetSender.modifySkillLevelReturningRemainder(3, hitpointsRestore, true);
+                player.packetSender.modifySkillLevelReturningRemainder(5, prayerRestore, true);
+                return;
+            }
+            case 13: {
+                HitDefinition extraHit = new HitDefinition(ServerSettings.SARADOMIN_SWORD_ATTACK_STYLE, HitType.NORMAL, 16).enableRandomDamage().setAccuracyMultiplier(1.0);
+                new CombatAction(entity, target, extraHit).queue();
+                return;
+            }
+            case 14: {
+                if (GameUtil.randomInt(100) >= 6) break;
+                int maxHit = player.getSkillManager().getCurrentLevels()[4] / 5;
+                HitDefinition extraHit = new HitDefinition(ServerSettings.DRAGONFIRE_ATTACK_STYLE, HitType.NORMAL, maxHit).setAccuracyMultiplier(1.0);
+                new CombatAction(entity, target, extraHit).queue();
+                target.getUpdateState().setGraphic(756);
             }
         }
     }
 
     public static SpecialAttackDefinition[] values() {
-        SpecialAttackDefinition[] specialAttackDefinitionArray = new SpecialAttackDefinition[24];
-        System.arraycopy(VALUES, 0, specialAttackDefinitionArray, 0, 24);
-        return specialAttackDefinitionArray;
+        return VALUES.clone();
     }
 
     public static SpecialAttackDefinition valueOf(String string) {
-        return Enum.valueOf(SpecialAttackDefinition.class, string);
-    }
-
-    /*
-     * WARNING - Possible parameter corruption
-     * WARNING - void declaration
-     */
-    /* synthetic */ SpecialAttackDefinition(int n, String[] stringArray, byte by) {
-        this((String)cfr_renamed_0, (int)stringArray, by, (String[])var4_3);
-        void var4_3;
-        void cfr_renamed_0;
+        if (string == null) {
+            throw new NullPointerException("Name is null");
+        }
+        SpecialAttackDefinition[] definitions = SpecialAttackDefinition.values();
+        int count = definitions.length;
+        int index = 0;
+        while (index < count) {
+            SpecialAttackDefinition definition = definitions[index];
+            if (definition.name().equals(string)) {
+                return definition;
+            }
+            ++index;
+        }
+        throw new IllegalArgumentException("No enum constant com.rs2.model.combat.special.SpecialAttackDefinition." + string);
     }
 }
-

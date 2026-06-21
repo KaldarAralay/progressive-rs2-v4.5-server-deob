@@ -10,15 +10,15 @@ import com.rs2.model.shop.ShopManager;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 
-final class DraynorAxeShopTradeTickTask
+public final class DraynorAxeShopTradeTickTask
 extends TickTask {
     private final /* synthetic */ Player player;
     private final /* synthetic */ ItemStack shopItem;
 
-    DraynorAxeShopTradeTickTask(DraynorAxeShopBotTask draynorAxeShopBotTask, int n, Player player, ItemStack itemStack) {
+    public DraynorAxeShopTradeTickTask(DraynorAxeShopBotTask draynorAxeShopBotTask, int n, Player player, ItemStack itemStack) {
+        super(2);
         this.player = player;
         this.shopItem = itemStack;
-        super(2);
     }
 
     @Override

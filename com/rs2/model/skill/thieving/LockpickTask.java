@@ -10,7 +10,7 @@ import com.rs2.model.skill.thieving.ThievingObjectHandler;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class LockpickTask
+public final class LockpickTask
 extends CycleEvent {
     private final /* synthetic */ Player player;
     private final /* synthetic */ double experience;
@@ -19,7 +19,7 @@ extends CycleEvent {
     private final /* synthetic */ int moveDeltaX;
     private final /* synthetic */ int moveDeltaY;
 
-    LockpickTask(Player player, double d, int n, Position position, int n2, int n3) {
+    public LockpickTask(Player player, double d, int n, Position position, int n2, int n3) {
         this.player = player;
         this.experience = d;
         this.objectId = n;

@@ -73,13 +73,12 @@ public final class BotCombatHelper {
         player.executeCheatCommand("setlevel", new String[]{String.valueOf(n), String.valueOf(n2)}, false);
     }
 
-    public static boolean isPlayerInAnyArea(Player player, RectangularArea[] object) {
-        RectangularArea[] rectangularAreaArray = object;
-        int n = ((RectangularArea[])object).length;
+    public static boolean isPlayerInAnyArea(Player player, RectangularArea[] areas) {
+        int n = areas.length;
         int n2 = 0;
         while (n2 < n) {
-            object = rectangularAreaArray[n2];
-            if (object.contains(player.getPosition())) {
+            RectangularArea area = areas[n2];
+            if (area.contains(player.getPosition())) {
                 return true;
             }
             ++n2;
@@ -87,13 +86,12 @@ public final class BotCombatHelper {
         return false;
     }
 
-    private static boolean isPositionInAnyArea(Position position, RectangularArea[] object) {
-        RectangularArea[] rectangularAreaArray = object;
-        int n = ((RectangularArea[])object).length;
+    private static boolean isPositionInAnyArea(Position position, RectangularArea[] areas) {
+        int n = areas.length;
         int n2 = 0;
         while (n2 < n) {
-            object = rectangularAreaArray[n2];
-            if (object.contains(position)) {
+            RectangularArea area = areas[n2];
+            if (area.contains(position)) {
                 return true;
             }
             ++n2;
@@ -140,7 +138,8 @@ public final class BotCombatHelper {
                 n = (Integer)botTaskDefinition.lootSellShopIds.get(n2);
             }
             ShopManager.openShop(player, n);
-            for (ItemStack itemStack : player.botLootSellItems) {
+            for (Object itemStackObject : player.botLootSellItems) {
+                ItemStack itemStack = (ItemStack)itemStackObject;
                 int n3 = GrandExchangeManager.getGuidePrice(itemStack.getId());
                 if (n3 >= 10000) continue;
                 ShopManager.sellItemStack(player, itemStack);
@@ -163,7 +162,8 @@ public final class BotCombatHelper {
             return false;
         }
         player.botLootPickupTargets.clear();
-        for (GroundItem groundItem : player.botLootGroundItems) {
+        for (Object groundItemObject : player.botLootGroundItems) {
+            GroundItem groundItem = (GroundItem)groundItemObject;
             int n;
             int n2;
             ItemStack itemStack = groundItem.getItem();
@@ -265,8 +265,7 @@ public final class BotCombatHelper {
                 InventoryManager inventoryManager = ((Player)object).getInventoryManager();
                 if (!(itemStack == null ? false : inventoryManager.hasSpaceFor(itemStack)) && ((Player)object).getInventoryManager().getItemAmount(((Player)object).botFoodItemId) > 0) {
                     BotCombatHelper.eatBotFood((Player)object);
-                    object = new BotGroundItemPickupTask(2, (Player)object, position, n, groundItem);
-                    World.getTaskScheduler().schedule((TickTask)object);
+                    World.getTaskScheduler().schedule(new BotGroundItemPickupTask(2, (Player)object, position, n, groundItem));
                     return true;
                 }
             }
@@ -330,13 +329,13 @@ public final class BotCombatHelper {
         player.botMagicPenaltyGearUnequipped = false;
     }
 
-    public static boolean hasRunesForSpell(Player player, SpellDefinition object) {
-        ItemStack[] itemStackArray = ((SpellDefinition)((Object)object)).getRuneCosts();
+    public static boolean hasRunesForSpell(Player player, SpellDefinition spellDefinition) {
+        ItemStack[] itemStackArray = spellDefinition.getRuneCosts();
         int n = itemStackArray.length;
         int n2 = 0;
         while (n2 < n) {
-            object = itemStackArray[n2];
-            if (!(((ItemStack)object).getId() == 556 && player.getEquipmentManager().getItemIdAtSlot(3) == 1381 || ((ItemStack)object).getId() == 555 && player.getEquipmentManager().getItemIdAtSlot(3) == 1383 || ((ItemStack)object).getId() == 557 && player.getEquipmentManager().getItemIdAtSlot(3) == 1385 || ((ItemStack)object).getId() == 554 && player.getEquipmentManager().getItemIdAtSlot(3) == 1387 || player.getInventoryManager().containsItemAmount(((ItemStack)object).getId(), ((ItemStack)object).getAmount()))) {
+            ItemStack runeCost = itemStackArray[n2];
+            if (!(runeCost.getId() == 556 && player.getEquipmentManager().getItemIdAtSlot(3) == 1381 || runeCost.getId() == 555 && player.getEquipmentManager().getItemIdAtSlot(3) == 1383 || runeCost.getId() == 557 && player.getEquipmentManager().getItemIdAtSlot(3) == 1385 || runeCost.getId() == 554 && player.getEquipmentManager().getItemIdAtSlot(3) == 1387 || player.getInventoryManager().containsItemAmount(runeCost.getId(), runeCost.getAmount()))) {
                 return false;
             }
             ++n2;
@@ -653,133 +652,120 @@ public final class BotCombatHelper {
     }
 
     static boolean isTargetLootWorthRisk(Player player, Player player2) {
-        int n;
-        ItemStack itemStack2;
         if (player.skulled) {
             return true;
         }
         if (player.currentGroup != null && player2.currentGroup == null && player.isInMultiCombatArea() && player2.isInMultiCombatArea()) {
             return true;
         }
-        double d = player2.getCombatLevel() > player.getCombatLevel() + 5 ? 0.3 : 0.2;
+        double riskRatio = player2.getCombatLevel() > player.getCombatLevel() + 5 ? 0.3 : 0.2;
+        int targetLootValue = 0;
+        for (Object itemStackObject : player2.getUnprotectedItems(player2.getEquipmentManager().getContainer().getItems())) {
+            ItemStack itemStack = (ItemStack)itemStackObject;
+            if (itemStack == null) continue;
+            int guidePrice = GrandExchangeManager.getGuidePrice(itemStack.getId());
+            targetLootValue += guidePrice * itemStack.getAmount();
+        }
+        int playerRiskValue = 0;
+        ItemStack[] itemStackArray = player.getInventoryManager().getContainer().getItems();
+        int n = itemStackArray.length;
         int n2 = 0;
-        for (ItemStack itemStack2 : player2.getUnprotectedItems(player2.getEquipmentManager().getContainer().getItems())) {
-            if (itemStack2 == null) continue;
-            n = GrandExchangeManager.getGuidePrice(itemStack2.getId());
-            int n3 = n * itemStack2.getAmount();
-            n2 += n3;
+        while (n2 < n) {
+            ItemStack itemStack = itemStackArray[n2];
+            if (itemStack != null) {
+                int guidePrice = GrandExchangeManager.getGuidePrice(itemStack.getId());
+                playerRiskValue += guidePrice * itemStack.getAmount();
+            }
+            ++n2;
         }
-        double d2 = n2;
-        player2 = player;
+        itemStackArray = player.getEquipmentManager().getContainer().getItems();
+        n = itemStackArray.length;
         n2 = 0;
-        ItemStack[] itemStackArray = player2.getInventoryManager().getContainer().getItems();
-        n = itemStackArray.length;
-        int n4 = 0;
-        while (n4 < n) {
-            itemStack2 = itemStackArray[n4];
-            if (itemStack2 != null) {
-                int n5 = GrandExchangeManager.getGuidePrice(itemStack2.getId());
-                n2 += (n5 *= itemStack2.getAmount());
+        while (n2 < n) {
+            ItemStack itemStack = itemStackArray[n2];
+            if (itemStack != null) {
+                int guidePrice = GrandExchangeManager.getGuidePrice(itemStack.getId());
+                playerRiskValue += guidePrice * itemStack.getAmount();
             }
-            ++n4;
+            ++n2;
         }
-        itemStackArray = player2.getEquipmentManager().getContainer().getItems();
-        n = itemStackArray.length;
-        n4 = 0;
-        while (n4 < n) {
-            itemStack2 = itemStackArray[n4];
-            if (itemStack2 != null) {
-                int n6 = GrandExchangeManager.getGuidePrice(itemStack2.getId());
-                n2 += (n6 *= itemStack2.getAmount());
-            }
-            ++n4;
-        }
-        return !(d2 < (double)n2 * d);
+        return !((double)targetLootValue < (double)playerRiskValue * riskRatio);
     }
 
-    public static int selectBotLoadoutItemId(Player player, int[] object, int[] nArray, boolean bl) {
-        int n;
-        int n2;
-        int n3;
-        int[] nArray2;
-        ArrayList<Integer> arrayList = new ArrayList<Integer>();
-        if (object != null) {
-            nArray2 = object;
-            n3 = ((int[])object).length;
-            n2 = 0;
-            while (n2 < n3) {
-                int n4 = nArray2[n2];
-                arrayList.add(n4);
+    public static int selectBotLoadoutItemId(Player player, int[] freeItemIds, int[] memberItemIds, boolean randomize) {
+        ArrayList<Integer> itemIds = new ArrayList<Integer>();
+        if (freeItemIds != null) {
+            int n = freeItemIds.length;
+            int n2 = 0;
+            while (n2 < n) {
+                itemIds.add(freeItemIds[n2]);
                 ++n2;
             }
         }
-        if (!BotCombatHelper.isFreeToPlayWorld() && nArray != null) {
-            nArray2 = nArray;
-            n3 = nArray.length;
-            n2 = 0;
-            while (n2 < n3) {
-                int n5 = nArray2[n2];
-                arrayList.add(n5);
+        if (!BotCombatHelper.isFreeToPlayWorld() && memberItemIds != null) {
+            int n = memberItemIds.length;
+            int n2 = 0;
+            while (n2 < n) {
+                itemIds.add(memberItemIds[n2]);
                 ++n2;
             }
         }
-        if (!bl) {
-            int n6 = 0;
-            n2 = 0;
-            while (n2 < arrayList.size()) {
-                if (ItemDefinition.isDefined((Integer)arrayList.get(n2))) {
-                    if (!player.getEquipmentManager().canEquipItem((Integer)arrayList.get(n2))) {
-                        n6 = n2 - 1;
+        if (!randomize) {
+            int selectedIndex = 0;
+            int n = 0;
+            while (n < itemIds.size()) {
+                int itemId = (Integer)itemIds.get(n);
+                if (ItemDefinition.isDefined(itemId)) {
+                    if (!player.getEquipmentManager().canEquipItem(itemId)) {
+                        selectedIndex = n - 1;
                         break;
                     }
-                    n6 = n2;
+                    selectedIndex = n;
                 }
-                ++n2;
-            }
-            n = (Integer)arrayList.get(n6);
-        } else {
-            object = new ArrayList();
-            Iterator iterator = arrayList.iterator();
-            while (iterator.hasNext()) {
-                n2 = (Integer)iterator.next();
-                if (!ItemDefinition.isDefined(n2) || !player.getEquipmentManager().canEquipItem(n2)) continue;
-                ((ArrayList)object).add(n2);
-            }
-            if (((ArrayList)object).size() == 0) {
-                return -1;
-            }
-            n = (Integer)((ArrayList)object).get(GameUtil.randomInt(((ArrayList)object).size()));
-        }
-        return n;
-    }
-
-    public static int[] filterEquippableMemberLoadoutItems(Player player, int[] object, int[] object2) {
-        int n;
-        object = new ArrayList();
-        if (!BotCombatHelper.isFreeToPlayWorld() && object2 != null) {
-            int[] nArray = object2;
-            int n2 = ((int[])object2).length;
-            n = 0;
-            while (n < n2) {
-                int n3 = nArray[n];
-                ((ArrayList)object).add(n3);
                 ++n;
             }
+            if (selectedIndex < 0 || itemIds.size() == 0) {
+                return -1;
+            }
+            return (Integer)itemIds.get(selectedIndex);
         }
-        object2 = new ArrayList();
-        Iterator iterator = ((ArrayList)object).iterator();
+        ArrayList<Integer> equippableItemIds = new ArrayList<Integer>();
+        Iterator iterator = itemIds.iterator();
         while (iterator.hasNext()) {
-            n = (Integer)iterator.next();
-            if (!ItemDefinition.isDefined(n) || !player.getEquipmentManager().canEquipItem(n)) continue;
-            ((ArrayList)object2).add(n);
+            int itemId = (Integer)iterator.next();
+            if (!ItemDefinition.isDefined(itemId) || !player.getEquipmentManager().canEquipItem(itemId)) continue;
+            equippableItemIds.add(itemId);
         }
-        int[] nArray = new int[((ArrayList)object2).size()];
-        int n4 = 0;
-        while (n4 < ((ArrayList)object2).size()) {
-            nArray[n4] = (Integer)((ArrayList)object2).get(n4);
-            ++n4;
+        if (equippableItemIds.size() == 0) {
+            return -1;
         }
-        return nArray;
+        return (Integer)equippableItemIds.get(GameUtil.randomInt(equippableItemIds.size()));
+    }
+
+    public static int[] filterEquippableMemberLoadoutItems(Player player, int[] freeItemIds, int[] memberItemIds) {
+        ArrayList<Integer> candidateItemIds = new ArrayList<Integer>();
+        if (!BotCombatHelper.isFreeToPlayWorld() && memberItemIds != null) {
+            int n = memberItemIds.length;
+            int n2 = 0;
+            while (n2 < n) {
+                candidateItemIds.add(memberItemIds[n2]);
+                ++n2;
+            }
+        }
+        ArrayList<Integer> equippableItemIds = new ArrayList<Integer>();
+        Iterator iterator = candidateItemIds.iterator();
+        while (iterator.hasNext()) {
+            int itemId = (Integer)iterator.next();
+            if (!ItemDefinition.isDefined(itemId) || !player.getEquipmentManager().canEquipItem(itemId)) continue;
+            equippableItemIds.add(itemId);
+        }
+        int[] itemIds = new int[equippableItemIds.size()];
+        int n = 0;
+        while (n < equippableItemIds.size()) {
+            itemIds[n] = (Integer)equippableItemIds.get(n);
+            ++n;
+        }
+        return itemIds;
     }
 
     static int selectBestBotLoadoutItemId(Player player, int[] nArray, int[] nArray2) {
@@ -795,50 +781,53 @@ public final class BotCombatHelper {
         GameplayHelper.castSelectedItemTeleport(player, TeleportManager.EDGEVILLE_TELEPORT_POSITION);
     }
 
-    public static void grantBotSpellRunes(Player player, SpellDefinition object, int n) {
+    public static void grantBotSpellRunes(Player player, SpellDefinition spellDefinition, int n) {
         if (player.botMode == 4 || BotPlayer.defaultProgressiveBotNames.contains(player.getUsername().toLowerCase())) {
             String string = "CRITICAL BUG, REPORT! BotUtil " + player.getUsername() + " " + player.botMode + " " + player.currentBotTaskIndex + " " + player.currentBotTaskTypeId + " " + player.currentBotTask;
             System.out.println(string);
             GameplayHelper.appendLogLine(string, "errors");
             return;
         }
-        ArrayList<ItemStack[]> arrayList = new ArrayList<ItemStack[]>();
-        ItemStack[] itemStackArray = object.getRuneCosts();
+        ArrayList<ItemStack> grantedRuneCosts = new ArrayList<ItemStack>();
+        ItemStack[] itemStackArray = spellDefinition.getRuneCosts();
         int n2 = itemStackArray.length;
         int n3 = 0;
         while (n3 < n2) {
-            object = itemStackArray[n3];
-            if (!(object.getId() == 556 && player.getEquipmentManager().getItemIdAtSlot(3) == 1381 || object.getId() == 555 && player.getEquipmentManager().getItemIdAtSlot(3) == 1383 || object.getId() == 557 && player.getEquipmentManager().getItemIdAtSlot(3) == 1385 || object.getId() == 554 && player.getEquipmentManager().getItemIdAtSlot(3) == 1387)) {
-                object = new ItemStack(object.getId(), object.getAmount() * n);
-                arrayList.add((ItemStack[])object);
-                player.getInventoryManager().addItem((ItemStack)object);
+            ItemStack runeCost = itemStackArray[n3];
+            if (!(runeCost.getId() == 556 && player.getEquipmentManager().getItemIdAtSlot(3) == 1381 || runeCost.getId() == 555 && player.getEquipmentManager().getItemIdAtSlot(3) == 1383 || runeCost.getId() == 557 && player.getEquipmentManager().getItemIdAtSlot(3) == 1385 || runeCost.getId() == 554 && player.getEquipmentManager().getItemIdAtSlot(3) == 1387)) {
+                ItemStack grantedRuneCost = new ItemStack(runeCost.getId(), runeCost.getAmount() * n);
+                grantedRuneCosts.add(grantedRuneCost);
+                player.getInventoryManager().addItem(grantedRuneCost);
             }
             ++n3;
         }
         if (player.currentBotTask != null) {
+            ItemStack[] requiredItems;
             if (player.botTaskRequiredItems != null) {
-                object = new ItemStack[player.botTaskRequiredItems.length + arrayList.size()];
+                requiredItems = new ItemStack[player.botTaskRequiredItems.length + grantedRuneCosts.size()];
                 n3 = 0;
                 while (n3 < player.botTaskRequiredItems.length) {
-                    object[n3] = player.botTaskRequiredItems[n3];
+                    requiredItems[n3] = player.botTaskRequiredItems[n3];
                     ++n3;
                 }
                 n3 = 0;
-                while (n3 < arrayList.size()) {
-                    object[player.botTaskRequiredItems.length + n3] = (ItemStack)arrayList.get(n3);
-                    player.getBankContainer().addToTab(new ItemStack(((ItemStack)arrayList.get(n3)).getId(), ((ItemStack)arrayList.get(n3)).getAmount() * 10), 0);
+                while (n3 < grantedRuneCosts.size()) {
+                    ItemStack grantedRuneCost = (ItemStack)grantedRuneCosts.get(n3);
+                    requiredItems[player.botTaskRequiredItems.length + n3] = grantedRuneCost;
+                    player.getBankContainer().addToTab(new ItemStack(grantedRuneCost.getId(), grantedRuneCost.getAmount() * 10), 0);
                     ++n3;
                 }
             } else {
-                object = new ItemStack[arrayList.size()];
+                requiredItems = new ItemStack[grantedRuneCosts.size()];
                 n3 = 0;
-                while (n3 < arrayList.size()) {
-                    object[n3] = (ItemStack)arrayList.get(n3);
-                    player.getBankContainer().addToTab(new ItemStack(((ItemStack)arrayList.get(n3)).getId(), ((ItemStack)arrayList.get(n3)).getAmount() * 10), 0);
+                while (n3 < grantedRuneCosts.size()) {
+                    ItemStack grantedRuneCost = (ItemStack)grantedRuneCosts.get(n3);
+                    requiredItems[n3] = grantedRuneCost;
+                    player.getBankContainer().addToTab(new ItemStack(grantedRuneCost.getId(), grantedRuneCost.getAmount() * 10), 0);
                     ++n3;
                 }
             }
-            player.botTaskRequiredItems = object;
+            player.botTaskRequiredItems = requiredItems;
         }
     }
 

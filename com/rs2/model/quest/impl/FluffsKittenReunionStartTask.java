@@ -11,16 +11,16 @@ import com.rs2.model.quest.impl.FluffsKittenReunionFinishTask;
 import com.rs2.model.quest.impl.GertrudesCatQuest;
 import com.rs2.model.task.TickTask;
 
-final class FluffsKittenReunionStartTask
+public final class FluffsKittenReunionStartTask
 extends TickTask {
     private TickTask a;
     private final /* synthetic */ Npc b;
     private final /* synthetic */ Npc c;
 
-    FluffsKittenReunionStartTask(GertrudesCatQuest gertrudesCatQuest, int n, Npc npc, Npc npc2, Player player) {
+    public FluffsKittenReunionStartTask(GertrudesCatQuest gertrudesCatQuest, int n, Npc npc, Npc npc2, Player player) {
+        super(2);
         this.b = npc;
         this.c = npc2;
-        super(2);
         this.a = new FluffsKittenReunionFinishTask(this, 3, npc2, player, npc);
     }
 

@@ -61,16 +61,14 @@ public enum LeatherRecipe {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private LeatherRecipe(int n3, int n4, int n5, int n6, double d) {
-        void var9_7;
-        void var8_6;
-        this.buttonId = n3;
+    private LeatherRecipe(int n2, int n3, int n4, int n5, int n6, int n7, double d) {
+        this.buttonId = n2;
         this.materialItemId = 1741;
         this.materialAmount = 1;
-        this.productItemId = n6;
-        this.quantity = (int)d;
-        this.requiredLevel = var8_6;
-        this.experience = var9_7;
+        this.productItemId = n5;
+        this.quantity = n6;
+        this.requiredLevel = n7;
+        this.experience = d;
     }
 
     public final int getButtonId() {

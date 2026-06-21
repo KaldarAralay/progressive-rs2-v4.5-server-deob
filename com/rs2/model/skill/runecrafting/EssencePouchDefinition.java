@@ -39,16 +39,14 @@ public enum EssencePouchDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private EssencePouchDefinition(int n3, int n4, int n5, int n6, int n7) {
-        void var9_7;
-        void var8_6;
-        this.pouchIndex = n3;
-        this.itemId = n4;
-        this.degradedItemId = n5;
-        this.capacity = n6;
-        this.requiredLevel = n7;
-        this.degradeAfterUses = var8_6;
-        this.degradedCapacityPenalty = var9_7;
+    private EssencePouchDefinition(int n2, int n3, int n4, int n5, int n6, int n7, int n8) {
+        this.pouchIndex = n2;
+        this.itemId = n3;
+        this.degradedItemId = n4;
+        this.capacity = n5;
+        this.requiredLevel = n6;
+        this.degradeAfterUses = n7;
+        this.degradedCapacityPenalty = n8;
     }
 
     public static EssencePouchDefinition forItemOrIndex(int n) {

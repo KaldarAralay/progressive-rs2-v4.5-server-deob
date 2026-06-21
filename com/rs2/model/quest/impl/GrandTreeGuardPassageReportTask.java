@@ -8,21 +8,21 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.GrandTreeQuest;
 import com.rs2.model.task.TickTask;
 
-final class GrandTreeGuardPassageReportTask
+public final class GrandTreeGuardPassageReportTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
-    GrandTreeGuardPassageReportTask(GrandTreeQuest grandTreeQuest, int n, Player player) {
-        this.a = player;
+    public GrandTreeGuardPassageReportTask(GrandTreeQuest grandTreeQuest, int n, Player player) {
         super(5);
+        this.player = player;
     }
 
     @Override
     public final void execute() {
-        this.a.setActionLocked(false);
-        Player player = this.a;
+        this.player.setActionLocked(false);
+        Player player = this.player;
         player.packetSender.closeInterfaces();
-        DialogueManager.continueDialogue(this.a, 2781, 100, 0);
+        DialogueManager.continueDialogue(this.player, 2781, 100, 0);
         this.stop();
     }
 }

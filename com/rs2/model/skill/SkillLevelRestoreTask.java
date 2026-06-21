@@ -6,15 +6,15 @@ package com.rs2.model.skill;
 import com.rs2.model.skill.SkillManager;
 import com.rs2.model.task.TickTask;
 
-final class SkillLevelRestoreTask
+public final class SkillLevelRestoreTask
 extends TickTask {
     private /* synthetic */ SkillManager skillManager;
     private final /* synthetic */ int skillId;
 
-    SkillLevelRestoreTask(SkillManager skillManager, int n, int n2) {
+    public SkillLevelRestoreTask(SkillManager skillManager, int n, int n2) {
+        super(n);
         this.skillManager = skillManager;
         this.skillId = n2;
-        super(n);
     }
 
     @Override

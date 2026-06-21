@@ -28,50 +28,39 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
-            if (stringArray.getQuestState(61) == 1) {
-                stringArray = new String[]{"I can start this quest by speaking to King Arthur at", "Camelot Castle, just North West of Catherby", "To complete this quest I must be able to defeat a Level", "120 Black Knight Titan."};
-                return stringArray;
+            if (player.getQuestState(61) == 1) {
+                return new String[]{"I can start this quest by speaking to King Arthur at", "Camelot Castle, just North West of Catherby", "To complete this quest I must be able to defeat a Level", "120 Black Knight Titan."};
             }
-            stringArray = new String[]{"To start this quest I need to:", String.valueOf(stringArray.getQuestState(61) == 1 ? "@str@" : "") + "-Complete The Merlin's Crystal quest", "", "To complete this quest I need:", "-To be able to defeat a level 120 Black Knight Titan."};
-            return stringArray;
+            return new String[]{"To start this quest I need to:", String.valueOf(player.getQuestState(61) == 1 ? "@str@" : "") + "-Complete The Merlin's Crystal quest", "", "To complete this quest I need:", "-To be able to defeat a level 120 Black Knight Titan."};
         }
         if (n == 2) {
-            stringArray = new String[]{"I should go ask Merlin for clues about Holy Grail."};
-            return stringArray;
+            return new String[]{"I should go ask Merlin for clues about Holy Grail."};
         }
         if (n == 3) {
-            stringArray = new String[]{"Merlin told me that I should speak someone on the holy", "island, and could also go speak to Sir Galahad who lives", "west of McGrubor's Wood."};
-            return stringArray;
+            return new String[]{"Merlin told me that I should speak someone on the holy", "island, and could also go speak to Sir Galahad who lives", "west of McGrubor's Wood."};
         }
         if (n == 4) {
-            stringArray = new String[]{"I need a magic whistle, which can be found inside", "a haunted manor, then I need to find the point of", "realm crossing."};
-            return stringArray;
+            return new String[]{"I need a magic whistle, which can be found inside", "a haunted manor, then I need to find the point of", "realm crossing."};
         }
         if (n == 5) {
-            stringArray = new String[]{"I should find a way to enter the castle."};
-            return stringArray;
+            return new String[]{"I should find a way to enter the castle."};
         }
         if (n == 6) {
-            stringArray = new String[]{"I should go look for Fisher King's son Percival", "who also was a knight of the round table."};
-            return stringArray;
+            return new String[]{"I should go look for Fisher King's son Percival", "who also was a knight of the round table."};
         }
         if (n == 7) {
-            stringArray = new String[]{"King Arthur gave me a magic gold feather, which", "should assist me on finding Percival."};
-            return stringArray;
+            return new String[]{"King Arthur gave me a magic gold feather, which", "should assist me on finding Percival."};
         }
         if (n == 8) {
-            stringArray = new String[]{"I should now go back to Fisher King's realm to", "meet with Percival."};
-            return stringArray;
+            return new String[]{"I should now go back to Fisher King's realm to", "meet with Percival."};
         }
         if (n == 9) {
-            stringArray = new String[]{"I should now return the Holy Grail to King Arhur", "in Camelot."};
-            return stringArray;
+            return new String[]{"I should now return the Holy Grail to King Arhur", "in Camelot."};
         }
         if (n == 1) {
-            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "2 Quest Points", "11,000 Prayer XP", "15,300 Defence XP"};
-            return stringArray;
+            return new String[]{"Quest Completed!", "", "You were awarded:", "2 Quest Points", "11,000 Prayer XP", "15,300 Defence XP"};
         }
         return null;
     }
@@ -117,7 +106,7 @@ extends QuestScript {
             }
             if (n3 == 2) {
                 Npc npc = new Npc(211);
-                GameplayHelper.a(player, new Position(2961, 3505, 0), npc, false, false);
+                GameplayHelper.spawnOwnedNpcAtPosition(player, new Position(2961, 3505, 0), npc, false, false);
                 player.getUpdateState().setFaceEntity(npc.getEncodedIndex());
                 npc.getUpdateState().setFaceEntity(player.getEncodedIndex());
                 DialogueManager.continueDialogue(player, 211, 100, 0);
@@ -186,10 +175,10 @@ extends QuestScript {
             player = object;
             player.packetSender.queueRelativeMovementStep(0, ((Entity)object).getPosition().getY() < 3362 ? 1 : -1, true);
             if (((Player)object).getQuestState(61) == 1 && ((Player)object).getInventoryManager().containsItem(15) && !((Player)object).ownsItemAmount(16, 2) && n4 >= 4) {
-                object = new GroundItem(new ItemStack(16, 1), (Entity)object, new Position(3107, 3359, 2));
-                GroundItemManager.getInstance().spawn((GroundItem)object);
+                GroundItem groundItem = new GroundItem(new ItemStack(16, 1), (Entity)object, new Position(3107, 3359, 2));
+                GroundItemManager.getInstance().spawn(groundItem);
                 if (n4 < 8) {
-                    GroundItemManager.getInstance().spawn((GroundItem)object);
+                    GroundItemManager.getInstance().spawn(groundItem);
                 }
             }
             return true;
@@ -295,7 +284,7 @@ extends QuestScript {
                 }
                 if (n2 == 11) {
                     player.getDialogueManager().showNpcTwoLineDialogue("He has set up his workshop in the room next to the", "library.", 591);
-                    this.d(player);
+                    this.startQuest(player);
                     player.getDialogueManager().finishDialogue();
                     return true;
                 }
@@ -446,7 +435,7 @@ extends QuestScript {
             }
             if (n2 == 5) {
                 Npc npc = new Npc(217);
-                GameplayHelper.a(player, new Position(2851, 3342, 0), npc, false, false);
+                GameplayHelper.spawnOwnedNpcAtPosition(player, new Position(2851, 3342, 0), npc, false, false);
                 npc.queueScriptedPath(new Position[]{new Position(player.getPosition().getX(), player.getPosition().getY() - 1, 0)});
                 player.getUpdateState().setFaceEntity(npc.getEncodedIndex());
                 DialogueManager.continueDialogue(player, 217, 100, 0);

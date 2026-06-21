@@ -10,15 +10,15 @@ import com.rs2.model.combat.special.Dragon2hSwordSpecialAttack;
 import com.rs2.model.combat.special.SpecialAttackDefinition;
 import com.rs2.model.player.Player;
 
-final class Dragon2hSwordSpecialDefinition
+public final class Dragon2hSwordSpecialDefinition
 extends SpecialAttackDefinition {
-    Dragon2hSwordSpecialDefinition(int n2, String ... stringArray) {
+    public Dragon2hSwordSpecialDefinition(int n2, String ... stringArray) {
+        super(n2, stringArray);
     }
 
     @Override
-    public final WeaponCombatAttack createAttack(Player object, Entity entity, WeaponProfile weaponProfile) {
-        object = new Dragon2hSwordSpecialAttack(this, (Player)object, entity, weaponProfile);
-        return object;
+    public final WeaponCombatAttack createAttack(Player player, Entity entity, WeaponProfile weaponProfile) {
+        return new Dragon2hSwordSpecialAttack(this, player, entity, weaponProfile);
     }
 }
 

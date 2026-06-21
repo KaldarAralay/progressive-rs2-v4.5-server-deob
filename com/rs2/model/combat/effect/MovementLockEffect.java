@@ -1,19 +1,13 @@
-/*
- * Decompiled with CFR 0.152.
- */
 package com.rs2.model.combat.effect;
 
 import com.rs2.model.Entity;
 import com.rs2.model.combat.CombatAction;
-import com.rs2.model.combat.effect.CombatEffect;
-import com.rs2.model.combat.effect.CombatEffectTask;
 
-public class MovementLockEffect
-extends CombatEffect {
+public class MovementLockEffect extends CombatEffect {
     private int durationTicks;
 
-    public MovementLockEffect(int n) {
-        this.durationTicks = n;
+    public MovementLockEffect(int durationTicks) {
+        this.durationTicks = durationTicks;
     }
 
     @Override
@@ -26,17 +20,17 @@ extends CombatEffect {
     }
 
     @Override
-    public final void onApply(CombatAction object, CombatEffectTask combatEffectTask) {
-        object = ((CombatAction)object).getTarget();
-        ((Entity)object).getMovementQueue().clear();
-        ((Entity)object).getMovementLockTimer().setDelayTicks(this.durationTicks);
-        ((Entity)object).getMovementLockTimer().reset();
-        ((Entity)object).getMovementLockImmunityTimer().setDelayTicks(this.durationTicks + 6);
-        ((Entity)object).getMovementLockImmunityTimer().reset();
+    public final void onApply(CombatAction combatAction, CombatEffectTask combatEffectTask) {
+        Entity target = combatAction.getTarget();
+        target.getMovementQueue().clear();
+        target.getMovementLockTimer().setDelayTicks(this.durationTicks);
+        target.getMovementLockTimer().reset();
+        target.getMovementLockImmunityTimer().setDelayTicks(this.durationTicks + 6);
+        target.getMovementLockImmunityTimer().reset();
     }
 
     @Override
-    public final CombatEffectTask createTask(Entity entity, Entity entity2) {
+    public final CombatEffectTask createTask(Entity entity, Entity target) {
         return null;
     }
 
@@ -49,4 +43,3 @@ extends CombatEffect {
         return this.durationTicks;
     }
 }
-

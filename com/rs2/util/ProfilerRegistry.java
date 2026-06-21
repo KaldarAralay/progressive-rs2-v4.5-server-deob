@@ -20,7 +20,8 @@ public final class ProfilerRegistry {
     }
 
     public static void resetAll() {
-        for (Map.Entry entry : timers.entrySet()) {
+        for (Object entryObject : timers.entrySet()) {
+            Map.Entry entry = (Map.Entry)entryObject;
             ((ProfilerTimer)entry.getValue()).reset();
         }
     }

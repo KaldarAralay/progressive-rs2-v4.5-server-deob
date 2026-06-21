@@ -8,13 +8,13 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.LyrePerformanceStartTask;
 import com.rs2.model.task.TickTask;
 
-final class LyrePerformanceFinishDialogueTask
+public final class LyrePerformanceFinishDialogueTask
 extends TickTask {
     private final /* synthetic */ Player player;
 
-    LyrePerformanceFinishDialogueTask(LyrePerformanceStartTask lyrePerformanceStartTask, int n, Player player) {
-        this.player = player;
+    public LyrePerformanceFinishDialogueTask(LyrePerformanceStartTask lyrePerformanceStartTask, int n, Player player) {
         super(4);
+        this.player = player;
     }
 
     @Override

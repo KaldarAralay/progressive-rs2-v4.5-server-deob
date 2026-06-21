@@ -9,22 +9,22 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.GrandTreeQuest;
 import com.rs2.model.task.TickTask;
 
-final class KingNarnodePrisonReleaseTask
+public final class KingNarnodePrisonReleaseTask
 extends TickTask {
-    private final /* synthetic */ Player a;
-    private final /* synthetic */ Npc b;
+    private final /* synthetic */ Player player;
+    private final /* synthetic */ Npc kingNarnodeNpc;
 
-    KingNarnodePrisonReleaseTask(GrandTreeQuest grandTreeQuest, int n, Player player, Npc npc) {
-        this.a = player;
-        this.b = npc;
+    public KingNarnodePrisonReleaseTask(GrandTreeQuest grandTreeQuest, int n, Player player, Npc npc) {
         super(3);
+        this.player = player;
+        this.kingNarnodeNpc = npc;
     }
 
     @Override
     public final void execute() {
-        DialogueManager.continueDialogue(this.a, 670, 100, 0);
-        this.a.setInteractionTarget(this.b);
-        this.b.setScriptedMovementEnabled(true);
+        DialogueManager.continueDialogue(this.player, 670, 100, 0);
+        this.player.setInteractionTarget(this.kingNarnodeNpc);
+        this.kingNarnodeNpc.setScriptedMovementEnabled(true);
         this.stop();
     }
 }

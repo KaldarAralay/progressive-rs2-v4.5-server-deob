@@ -8,7 +8,7 @@ import com.rs2.util.db.player.PlayerLoadQueryFactory;
 import java.sql.ResultSet;
 import java.util.HashMap;
 
-final class PlayerSkillsLoadCallback
+public final class PlayerSkillsLoadCallback
 implements DatabaseCallback {
     private /* synthetic */ PlayerLoadQueryFactory factory;
 
@@ -17,7 +17,7 @@ implements DatabaseCallback {
     }
 
     @Override
-    public final void onResult(ResultSet resultSet) {
+    public final void onResult(ResultSet resultSet) throws java.sql.SQLException {
         while (resultSet.next()) {
             HashMap<Integer, Integer> hashMap = new HashMap<Integer, Integer>();
             hashMap.put(0, resultSet.getInt("cur_attack"));
@@ -82,7 +82,7 @@ implements DatabaseCallback {
         exception.printStackTrace();
     }
 
-    /* synthetic */ PlayerSkillsLoadCallback(PlayerLoadQueryFactory playerLoadQueryFactory, byte by) {
+    public /* synthetic */ PlayerSkillsLoadCallback(PlayerLoadQueryFactory playerLoadQueryFactory, byte by) {
         this(playerLoadQueryFactory);
     }
 }

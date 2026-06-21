@@ -8,17 +8,17 @@ import com.rs2.model.npc.Npc;
 import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 
-final class DeathAnimationTask
+public final class DeathAnimationTask
 extends TickTask {
     private final /* synthetic */ int deathAnimationId;
     private final /* synthetic */ Entity defeatedEntity;
     private final /* synthetic */ Entity killer;
 
-    DeathAnimationTask(int n, int n2, Entity entity, Entity entity2) {
+    public DeathAnimationTask(int n, int n2, Entity entity, Entity entity2) {
+        super(2);
         this.deathAnimationId = n2;
         this.defeatedEntity = entity;
         this.killer = entity2;
-        super(2);
     }
 
     @Override

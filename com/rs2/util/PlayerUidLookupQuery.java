@@ -8,17 +8,17 @@ import com.rs2.util.db.DatabaseQuery;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-final class PlayerUidLookupQuery
+public final class PlayerUidLookupQuery
 extends DatabaseQuery {
     private final /* synthetic */ Player player;
 
-    PlayerUidLookupQuery(String string, Player player) {
-        this.player = player;
+    public PlayerUidLookupQuery(String string, Player player) {
         super(string);
+        this.player = player;
     }
 
     @Override
-    public final ResultSet executeStatement(PreparedStatement preparedStatement) {
+    public final ResultSet executeStatement(PreparedStatement preparedStatement) throws java.sql.SQLException {
         preparedStatement.setString(1, this.player.getUsername().toLowerCase());
         return preparedStatement.executeQuery();
     }

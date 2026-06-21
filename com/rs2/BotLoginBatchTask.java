@@ -8,13 +8,13 @@ import com.rs2.ServerSettings;
 import com.rs2.bot.BotPlayer;
 import com.rs2.model.task.TickTask;
 
-final class BotLoginBatchTask
+public final class BotLoginBatchTask
 extends TickTask {
     private final /* synthetic */ int finalBatchIndex;
 
-    BotLoginBatchTask(int n, int n2) {
-        this.finalBatchIndex = n2;
+    public BotLoginBatchTask(int n, int n2) {
         super(n);
+        this.finalBatchIndex = n2;
     }
 
     @Override

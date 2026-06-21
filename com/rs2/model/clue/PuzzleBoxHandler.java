@@ -120,22 +120,19 @@ public final class PuzzleBoxHandler {
         return null;
     }
 
-    private static void showCluePuzzleInterface(Player itemStackArray) {
-        ItemStack[] itemStackArray2 = itemStackArray;
-        itemStackArray.packetSender.showInterface(6976);
-        itemStackArray2 = itemStackArray;
-        itemStackArray.packetSender.sendItemContainer(6980, itemStackArray.sliderPuzzlePieces);
-        itemStackArray2 = itemStackArray;
-        PacketSender packetSender = itemStackArray.packetSender;
-        itemStackArray2 = new ItemStack[25];
+    private static void showCluePuzzleInterface(Player player) {
+        player.packetSender.showInterface(6976);
+        player.packetSender.sendItemContainer(6980, player.sliderPuzzlePieces);
+        PacketSender packetSender = player.packetSender;
+        ItemStack[] itemStackArray = new ItemStack[25];
         int n = 0;
         while (n < 25) {
-            itemStackArray2[n] = new ItemStack(PuzzleBoxHandler.getPiecesForPuzzleType(activePuzzleType)[n]);
+            itemStackArray[n] = new ItemStack(PuzzleBoxHandler.getPiecesForPuzzleType(activePuzzleType)[n]);
             ++n;
         }
-        packetSender.sendItemContainer(6985, itemStackArray2);
-        if (!PuzzleBoxHandler.isCluePuzzleSolved((Player)itemStackArray)) {
-            itemStackArray.en = false;
+        packetSender.sendItemContainer(6985, itemStackArray);
+        if (!PuzzleBoxHandler.isCluePuzzleSolved(player)) {
+            player.en = false;
         }
     }
 
@@ -288,7 +285,7 @@ public final class PuzzleBoxHandler {
         return n == player.sliderPuzzlePieces.length;
     }
 
-    private static void swapBlankWithPosition(Player player, Position object, boolean bl) {
+    private static void swapBlankWithPosition(Player player, Position position, boolean bl) {
         int n = 0;
         int n2 = 0;
         int n3 = 0;
@@ -296,13 +293,13 @@ public final class PuzzleBoxHandler {
             if (player.sliderPuzzlePieces[n3].getId() == -1) {
                 n = n3;
             }
-            if (PuzzleBoxHandler.getPiecePosition(player, player.sliderPuzzlePieces[n3].getId()).equals(object)) {
+            if (PuzzleBoxHandler.getPiecePosition(player, player.sliderPuzzlePieces[n3].getId()).equals(position)) {
                 n2 = n3;
             }
             ++n3;
         }
         ItemStack itemStack = player.sliderPuzzlePieces[n];
-        player.sliderPuzzlePieces[n] = object = player.sliderPuzzlePieces[n2];
+        player.sliderPuzzlePieces[n] = player.sliderPuzzlePieces[n2];
         player.sliderPuzzlePieces[n2] = itemStack;
         if (bl) {
             if (player.getOpenInterfaceId() == 6976) {

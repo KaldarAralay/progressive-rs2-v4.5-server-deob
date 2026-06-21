@@ -17,10 +17,9 @@ public final class ProjectileTiming {
     private int slope;
 
     static {
-        int n = 40;
         ProjectileTiming projectileTiming = b.copy();
-        b.copy().startDelay = n;
-        v0.speed = n = 2;
+        projectileTiming.startDelay = 40;
+        projectileTiming.speed = 2;
         c = projectileTiming;
         d = new ProjectileTiming(50, 6, 45, 30, 15);
         e = new ProjectileTiming(50, 25, 100, 26, 15);

@@ -9,13 +9,13 @@ import com.rs2.model.skill.fletching.logs.LogFletchingAction;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class LogFletchingTask
+public final class LogFletchingTask
 extends CycleEvent {
     private int remainingActions;
     private /* synthetic */ LogFletchingAction action;
     private final /* synthetic */ int actionSequence;
 
-    LogFletchingTask(LogFletchingAction logFletchingAction, int n) {
+    public LogFletchingTask(LogFletchingAction logFletchingAction, int n) {
         this.action = logFletchingAction;
         this.actionSequence = n;
         this.remainingActions = logFletchingAction.menuQuantity != 0 ? logFletchingAction.menuQuantity : logFletchingAction.requestedQuantity;

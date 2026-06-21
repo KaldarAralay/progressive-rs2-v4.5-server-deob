@@ -6,13 +6,13 @@ package com.rs2.model.skill;
 import com.rs2.model.skill.SkillManager;
 import com.rs2.model.task.TickTask;
 
-final class SpecialEnergyRestoreTask
+public final class SpecialEnergyRestoreTask
 extends TickTask {
     private /* synthetic */ SkillManager skillManager;
 
-    SpecialEnergyRestoreTask(SkillManager skillManager, int n) {
-        this.skillManager = skillManager;
+    public SpecialEnergyRestoreTask(SkillManager skillManager, int n) {
         super(50);
+        this.skillManager = skillManager;
     }
 
     @Override

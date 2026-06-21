@@ -6,9 +6,9 @@ package com.rs2.model.skill.smithing;
 import com.rs2.model.skill.smithing.SmithableItemDefinition;
 import com.rs2.model.skill.smithing.SmithingBarDefinition;
 
-final class MithrilBarDefinition
+public final class MithrilBarDefinition
 extends SmithingBarDefinition {
-    MithrilBarDefinition(int n, double d, int n2, SmithableItemDefinition[] smithableItemDefinitionArray) {
+    public MithrilBarDefinition(int n, double d, int n2, SmithableItemDefinition[] smithableItemDefinitionArray) {
         super(50, 50.0, 2359, smithableItemDefinitionArray);
     }
 }

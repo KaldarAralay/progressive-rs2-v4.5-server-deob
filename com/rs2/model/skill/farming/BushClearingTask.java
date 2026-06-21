@@ -11,13 +11,13 @@ import com.rs2.model.skill.farming.BushPatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class BushClearingTask
+public final class BushClearingTask
 extends CycleEvent {
     private /* synthetic */ BushPatchManager manager;
     private final /* synthetic */ int animationId;
     private final /* synthetic */ BushPatch patch;
 
-    BushClearingTask(BushPatchManager bushPatchManager, int n, BushPatch bushPatch) {
+    public BushClearingTask(BushPatchManager bushPatchManager, int n, BushPatch bushPatch) {
         this.manager = bushPatchManager;
         this.animationId = n;
         this.patch = bushPatch;
@@ -47,7 +47,7 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
-        BushPatchManager.a(this.manager, this.patch.getIndex());
+        BushPatchManager.resetPatch(this.manager, this.patch.getIndex());
         Player player = BushPatchManager.getPlayer(this.manager);
         player.packetSender.sendGameMessage("You clear the patch.");
         BushPatchManager.getPlayer(this.manager).setActionLocked(false);

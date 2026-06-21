@@ -14,9 +14,9 @@ import com.rs2.model.combat.attack.CombatAttack;
 import com.rs2.model.combat.effect.StatDrainEffect;
 import com.rs2.model.npc.combat.NpcCombatDefinition;
 
-final class KalphiteQueenFirstFormCombatDefinition
+public final class KalphiteQueenFirstFormCombatDefinition
 extends NpcCombatDefinition {
-    KalphiteQueenFirstFormCombatDefinition() {
+    public KalphiteQueenFirstFormCombatDefinition() {
     }
 
     @Override

@@ -31,30 +31,24 @@ extends QuestScript {
     }
 
     @Override
-    public final String[] buildQuestJournal(Player stringArray, int n) {
+    public final String[] buildQuestJournal(Player player, int n) {
         if (n == 0) {
-            stringArray = new String[]{"I can start this quest by speaking to Morgan who is in", "Draynor Village.", "", "Requirements:", "Must be able to kill a level 34 Vampire"};
-            return stringArray;
+            return new String[]{"I can start this quest by speaking to Morgan who is in", "Draynor Village.", "", "Requirements:", "Must be able to kill a level 34 Vampire"};
         }
         if (n == 2) {
-            stringArray = new String[]{"Morgan told me to speak with Dr Harlow, who can", "normally be found in Jolly Boar Inn in Varrock."};
-            return stringArray;
+            return new String[]{"Morgan told me to speak with Dr Harlow, who can", "normally be found in Jolly Boar Inn in Varrock."};
         }
         if (n == 3) {
-            stringArray = new String[]{"I should go and get some beer for Dr Harlow."};
-            return stringArray;
+            return new String[]{"I should go and get some beer for Dr Harlow."};
         }
         if (n == 4) {
-            stringArray = new String[]{"I should now ask Dr Harlow some tips to kill", "vampires."};
-            return stringArray;
+            return new String[]{"I should now ask Dr Harlow some tips to kill", "vampires."};
         }
         if (n == 5) {
-            stringArray = new String[]{"Dr Harlow told me that I need the following items", "to kill a vampire:", "Garlic", "Stake", "Hammer"};
-            return stringArray;
+            return new String[]{"Dr Harlow told me that I need the following items", "to kill a vampire:", "Garlic", "Stake", "Hammer"};
         }
         if (n == 1) {
-            stringArray = new String[]{"Quest Completed!", "", "You were awarded:", "3 Quest Points", "4825 Attack XP"};
-            return stringArray;
+            return new String[]{"Quest Completed!", "", "You were awarded:", "3 Quest Points", "4825 Attack XP"};
         }
         return null;
     }
@@ -182,8 +176,7 @@ extends QuestScript {
             }
             Npc npc = new Npc(757);
             ((Player)object).setActionLocked(true);
-            object = new VampireCoffinRiseTask(this, 3, npc, (Player)object);
-            World.getTaskScheduler().schedule((TickTask)object);
+            World.getTaskScheduler().schedule(new VampireCoffinRiseTask(this, 3, npc, (Player)object));
             return true;
         }
         return false;
@@ -251,7 +244,7 @@ extends QuestScript {
             }
             if (n2 == 8) {
                 player.getDialogueManager().showPlayerOneLineDialogue("I'll look him up then.", 591);
-                this.d(player);
+                this.startQuest(player);
                 player.getDialogueManager().finishDialogue();
                 return true;
             }

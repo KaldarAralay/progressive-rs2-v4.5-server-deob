@@ -12,13 +12,13 @@ import com.rs2.model.item.ItemStack;
 import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 
-final class SwampGasExplosionTask
+public final class SwampGasExplosionTask
 extends TickTask {
     private final /* synthetic */ Player player;
 
-    SwampGasExplosionTask(int n, Player player) {
-        this.player = player;
+    public SwampGasExplosionTask(int n, Player player) {
         super(7);
+        this.player = player;
     }
 
     @Override
@@ -29,7 +29,7 @@ extends TickTask {
         }
         Object object = this.player.findLitCaveLightSource();
         if (CaveLightManager.isInSwampGasArea(this.player) && object != null) {
-            ItemStack itemStack = object;
+            ItemStack itemStack = (ItemStack)object;
             object = this.player;
             ((Entity)object).applyDirectHit(12, HitType.NORMAL);
             Object object2 = object;

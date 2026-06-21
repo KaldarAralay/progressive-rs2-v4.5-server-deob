@@ -41,12 +41,10 @@ public enum CropStorageDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private CropStorageDefinition(boolean bl) {
-        void var5_3;
-        void var4_2;
-        this.baseContainerItemId = bl ? 1 : 0;
-        this.produceItemId = var4_2;
-        this.sack = var5_3;
+    private CropStorageDefinition(int n2, int n3, boolean bl) {
+        this.baseContainerItemId = n2;
+        this.produceItemId = n3;
+        this.sack = bl;
     }
 
     public final int getBaseContainerItemId() {

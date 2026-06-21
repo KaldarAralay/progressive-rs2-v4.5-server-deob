@@ -252,11 +252,11 @@ public class PlayerGroup {
         }
         if (bl2 && this.members.size() > 0) {
             this.leader = (Player)this.members.get(0);
-            object = this.members.iterator();
-            while (object.hasNext()) {
-                Player player3 = (Player)object.next();
+            Iterator memberIterator = this.members.iterator();
+            while (memberIterator.hasNext()) {
+                Player player3 = (Player)memberIterator.next();
                 if (this.deferredRemovedMembers.contains(player3)) {
-                    object.remove();
+                    memberIterator.remove();
                     continue;
                 }
                 player = player3;
@@ -326,9 +326,9 @@ public class PlayerGroup {
                 arrayList3.add(player2);
             }
             for (Player player2 : arrayList) {
-                object = arrayList3.iterator();
-                while (object.hasNext()) {
-                    Player player3 = (Player)object.next();
+                Iterator distantIterator = arrayList3.iterator();
+                while (distantIterator.hasNext()) {
+                    Player player3 = (Player)distantIterator.next();
                     object2 = player2;
                     ((Player)object2).packetSender.sendGameMessage(String.valueOf(player3.getUsername()) + " was too far away to roll for the loot.");
                 }

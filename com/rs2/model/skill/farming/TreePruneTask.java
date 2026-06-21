@@ -8,11 +8,11 @@ import com.rs2.model.skill.farming.TreePatchManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class TreePruneTask
+public final class TreePruneTask
 extends CycleEvent {
     private /* synthetic */ TreePatchManager manager;
 
-    TreePruneTask(TreePatchManager treePatchManager) {
+    public TreePruneTask(TreePatchManager treePatchManager) {
         this.manager = treePatchManager;
     }
 

@@ -11,7 +11,7 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.LyrePerformanceStartTask;
 import com.rs2.model.task.TickTask;
 
-final class LyrePerformanceHeckleTask
+public final class LyrePerformanceHeckleTask
 extends TickTask {
     private /* synthetic */ LyrePerformanceStartTask startTask;
     private final /* synthetic */ int hecklerNpcIndex;
@@ -19,13 +19,13 @@ extends TickTask {
     private final /* synthetic */ Player player;
     private final /* synthetic */ int performanceLineIndex;
 
-    LyrePerformanceHeckleTask(LyrePerformanceStartTask lyrePerformanceStartTask, int n, int n2, int n3, Player player, int n4) {
+    public LyrePerformanceHeckleTask(LyrePerformanceStartTask lyrePerformanceStartTask, int n, int n2, int n3, Player player, int n4) {
+        super(4);
         this.startTask = lyrePerformanceStartTask;
         this.hecklerNpcIndex = n2;
         this.heckleLineIndex = n3;
         this.player = player;
         this.performanceLineIndex = n4;
-        super(4);
     }
 
     @Override

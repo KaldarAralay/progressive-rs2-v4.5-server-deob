@@ -7,29 +7,29 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.GertrudesCatQuest;
 import com.rs2.model.task.TickTask;
 
-final class FluffsInteractionHintTask
+public final class FluffsInteractionHintTask
 extends TickTask {
     private final /* synthetic */ int a;
-    private final /* synthetic */ Player b;
+    private final /* synthetic */ Player player;
 
-    FluffsInteractionHintTask(GertrudesCatQuest gertrudesCatQuest, int n, int n2, Player player) {
-        this.a = n2;
-        this.b = player;
+    public FluffsInteractionHintTask(GertrudesCatQuest gertrudesCatQuest, int n, int n2, Player player) {
         super(2);
+        this.a = n2;
+        this.player = player;
     }
 
     @Override
     public final void execute() {
         if (this.a == 3) {
-            this.b.getDialogueManager().showOneLineStatement("Maybe the cat is thirsty?");
+            this.player.getDialogueManager().showOneLineStatement("Maybe the cat is thirsty?");
         }
         if (this.a == 4) {
-            this.b.getDialogueManager().showOneLineStatement("Maybe the cat is hungry?");
+            this.player.getDialogueManager().showOneLineStatement("Maybe the cat is hungry?");
         }
         if (this.a == 5) {
-            this.b.getDialogueManager().showTwoLineStatement("The cat seems afraid to leave.", "In the distance you can hear kittens mewing...");
+            this.player.getDialogueManager().showTwoLineStatement("The cat seems afraid to leave.", "In the distance you can hear kittens mewing...");
         }
-        this.b.setActionLocked(false);
+        this.player.setActionLocked(false);
         this.stop();
     }
 }

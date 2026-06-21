@@ -16,11 +16,9 @@ public enum TeleotherDestination {
     /*
      * WARNING - void declaration
      */
-    private TeleotherDestination() {
-        void var4_1;
-        void var3_2;
-        this.position = var3_2;
-        this.displayName = var4_1;
+    private TeleotherDestination(Position position, String string2) {
+        this.position = position;
+        this.displayName = string2;
     }
 }
 

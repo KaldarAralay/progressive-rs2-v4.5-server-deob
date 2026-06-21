@@ -7,9 +7,9 @@ import com.rs2.model.grandexchange.GrandExchangeOffer;
 import com.rs2.model.quest.event.ServerMaintenanceEventHook;
 import com.rs2.model.task.TickTask;
 
-final class GrandExchangeOfferUpdateTask
+public final class GrandExchangeOfferUpdateTask
 extends TickTask {
-    GrandExchangeOfferUpdateTask(ServerMaintenanceEventHook serverMaintenanceEventHook, int n) {
+    public GrandExchangeOfferUpdateTask(ServerMaintenanceEventHook serverMaintenanceEventHook, int n) {
         super(100);
     }
 

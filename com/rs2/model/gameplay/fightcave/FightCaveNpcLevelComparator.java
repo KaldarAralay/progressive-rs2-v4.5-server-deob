@@ -7,9 +7,9 @@ import com.rs2.model.npc.Npc;
 import com.rs2.model.npc.NpcDefinition;
 import java.util.Comparator;
 
-final class FightCaveNpcLevelComparator
+public final class FightCaveNpcLevelComparator
 implements Comparator {
-    FightCaveNpcLevelComparator() {
+    public FightCaveNpcLevelComparator() {
     }
 
     public final /* synthetic */ int compare(Object object, Object object2) {

@@ -8,12 +8,12 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class DelayedPositionMoveTask
+public final class DelayedPositionMoveTask
 extends CycleEvent {
     private /* synthetic */ Player player;
     private final /* synthetic */ Position destination;
 
-    DelayedPositionMoveTask(Player player, Position position) {
+    public DelayedPositionMoveTask(Player player, Position position) {
         this.player = player;
         this.destination = position;
     }

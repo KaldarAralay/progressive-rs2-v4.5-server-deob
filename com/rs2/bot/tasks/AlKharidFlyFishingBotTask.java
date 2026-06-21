@@ -34,11 +34,11 @@ extends BotTaskDefinition {
     }
 
     @Override
-    public final ArrayList getRequiredItems(Player object) {
-        object = new ArrayList<ItemStack>();
-        ((ArrayList)object).add(new ItemStack(309, 1));
-        ((ArrayList)object).add(new ItemStack(314, 200));
-        return object;
+    public final ArrayList getRequiredItems(Player player) {
+        ArrayList<ItemStack> requiredItems = new ArrayList<ItemStack>();
+        requiredItems.add(new ItemStack(309, 1));
+        requiredItems.add(new ItemStack(314, 200));
+        return requiredItems;
     }
 
     @Override

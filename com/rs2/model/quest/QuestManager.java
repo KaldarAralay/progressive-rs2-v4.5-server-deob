@@ -436,13 +436,12 @@ public final class QuestManager {
         boolean bl;
         block10: {
             int n2;
-            Object object;
             int n3;
             if (ServerSettings.cacheVersion > 245) {
                 n3 = 1;
                 while (n3 < QuestDefinition.questCount) {
                     QuestDefinition questDefinition = QuestDefinition.forId(n3);
-                    object = questDefinition.getName();
+                    String string = questDefinition.getName();
                     n2 = questDefinition.getJournalButtonId();
                     if (n == n2) {
                         QuestManager questManager = this;
@@ -461,18 +460,18 @@ public final class QuestManager {
                             ++n2;
                         }
                         player = this.player;
-                        player.packetSender.sendInterfaceText((String)object, 8144);
+                        player.packetSender.sendInterfaceText(string, 8144);
                         this.player.getQuestPoints();
                         n2 = n3;
                         questManager = this;
                         QuestScript questScript = QuestDefinition.getQuestScript(n2);
-                        object = questScript.buildQuestJournal(questManager.player, questManager.player.getQuestState(n2));
+                        String[] stringArray = questScript.buildQuestJournal(questManager.player, questManager.player.getQuestState(n2));
                         player = questManager.player;
-                        player.packetSender.sendInterfaceText(object[0], 8145);
+                        player.packetSender.sendInterfaceText(stringArray[0], 8145);
                         int n4 = 1;
-                        while (n4 < ((String[])object).length) {
+                        while (n4 < stringArray.length) {
                             player = questManager.player;
-                            player.packetSender.sendInterfaceText(object[n4], n4 + 8146);
+                            player.packetSender.sendInterfaceText(stringArray[n4], n4 + 8146);
                             ++n4;
                         }
                         player = this.player;
@@ -486,12 +485,10 @@ public final class QuestManager {
             QuestManager questManager = this;
             n3 = 1;
             while (n3 < QuestDefinition.questCount) {
-                object = QuestDefinition.getQuestScript(n3);
-                if (object.getQuestId() != -1 && QuestManager.isQuestJournalButtonAvailable(object.getQuestId())) {
-                    String[] stringArray = object;
-                    if (!QuestDefinition.forId(object.getQuestId()).isMembersOnly() || questManager.player.isMember()) {
-                        stringArray = object;
-                        if (!(QuestDefinition.forId(object.getQuestId()).isMembersOnly() && ServerSettings.freeToPlayWorld || !object.handleButtonClick(questManager.player, n2, questManager.player.getQuestState(n3)))) {
+                QuestScript questScript = QuestDefinition.getQuestScript(n3);
+                if (questScript.getQuestId() != -1 && QuestManager.isQuestJournalButtonAvailable(questScript.getQuestId())) {
+                    if (!QuestDefinition.forId(questScript.getQuestId()).isMembersOnly() || questManager.player.isMember()) {
+                        if (!(QuestDefinition.forId(questScript.getQuestId()).isMembersOnly() && ServerSettings.freeToPlayWorld || !questScript.handleButtonClick(questManager.player, n2, questManager.player.getQuestState(n3)))) {
                             bl = true;
                             break block10;
                         }
@@ -503,5 +500,6 @@ public final class QuestManager {
         }
         return bl;
     }
+
 }
 

@@ -8,19 +8,19 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.MonkeyMadnessQuest;
 import com.rs2.model.task.TickTask;
 
-final class MonkeyAmuletMouldCrateSearchTask
+public final class MonkeyAmuletMouldCrateSearchTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
-    MonkeyAmuletMouldCrateSearchTask(MonkeyMadnessQuest monkeyMadnessQuest, int n, Player player) {
-        this.a = player;
+    public MonkeyAmuletMouldCrateSearchTask(MonkeyMadnessQuest monkeyMadnessQuest, int n, Player player) {
         super(2);
+        this.player = player;
     }
 
     @Override
     public final void execute() {
-        this.a.setActionLocked(false);
-        this.a.getDialogueManager().showItemMessage("This crate is full of ... monkey amulet moulds!", new ItemStack(4020, 1));
+        this.player.setActionLocked(false);
+        this.player.getDialogueManager().showItemMessage("This crate is full of ... monkey amulet moulds!", new ItemStack(4020, 1));
         this.stop();
     }
 }

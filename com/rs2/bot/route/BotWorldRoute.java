@@ -40,19 +40,16 @@ public enum BotWorldRoute {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private BotWorldRoute() {
-        void var3_2;
-        this.route = var3_2;
+    private BotWorldRoute(BotRoute botRoute) {
+        this.route = botRoute;
     }
 
     /*
      * WARNING - void declaration
      */
-    private BotWorldRoute() {
-        void var4_1;
-        void var3_2;
-        this.routeNpcId = var3_2;
-        this.segments = var4_1;
+    private BotWorldRoute(int n2, BotRoute[] botRouteArray) {
+        this.routeNpcId = n2;
+        this.segments = botRouteArray;
     }
 
     public final BotRoute getRoute() {

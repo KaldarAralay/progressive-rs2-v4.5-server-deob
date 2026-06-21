@@ -12,7 +12,7 @@ import com.rs2.model.skill.thieving.StallThievingHandler;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class StallThievingTask
+public final class StallThievingTask
 extends CycleEvent {
     private final /* synthetic */ Player player;
     private final /* synthetic */ int actionSequence;
@@ -22,7 +22,7 @@ extends CycleEvent {
     private final /* synthetic */ ItemStack reward;
     private final /* synthetic */ StallDefinition stallDefinition;
 
-    StallThievingTask(Player player, int n, int n2, int n3, int n4, ItemStack itemStack, StallDefinition stallDefinition) {
+    public StallThievingTask(Player player, int n, int n2, int n3, int n4, ItemStack itemStack, StallDefinition stallDefinition) {
         this.player = player;
         this.actionSequence = n;
         this.objectId = n2;

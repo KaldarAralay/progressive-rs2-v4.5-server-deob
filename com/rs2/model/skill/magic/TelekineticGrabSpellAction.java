@@ -15,7 +15,7 @@ import com.rs2.model.skill.magic.MagicSpellAction;
 import com.rs2.model.skill.magic.SpellDefinition;
 import com.rs2.util.GameUtil;
 
-final class TelekineticGrabSpellAction
+public final class TelekineticGrabSpellAction
 extends MagicSpellAction {
     private final /* synthetic */ GroundItem groundItem;
     private final /* synthetic */ SpellDefinition telegrabSpell;
@@ -23,13 +23,13 @@ extends MagicSpellAction {
     private final /* synthetic */ Position targetPosition;
     private final /* synthetic */ int itemId;
 
-    TelekineticGrabSpellAction(Player player, SpellDefinition spellDefinition, GroundItem groundItem, SpellDefinition spellDefinition2, Player player2, Position position, int n) {
+    public TelekineticGrabSpellAction(Player player, SpellDefinition spellDefinition, GroundItem groundItem, SpellDefinition spellDefinition2, Player player2, Position position, int n) {
+        super(player, spellDefinition, (byte)0);
         this.groundItem = groundItem;
         this.telegrabSpell = spellDefinition2;
         this.caster = player2;
         this.targetPosition = position;
         this.itemId = n;
-        super(player, spellDefinition, (byte)0);
     }
 
     @Override
@@ -51,20 +51,18 @@ extends MagicSpellAction {
      * Enabled aggressive block sorting
      */
     @Override
-    public final void applyImpact(HitDefinition object) {
+    public final void applyImpact(HitDefinition hitDefinition) {
         switch (this.telegrabSpell) {
             case TELEKINETIC_GRAB: {
                 Position position;
                 GroundItemManager.getInstance();
                 if (!GroundItemManager.isVisible(this.caster, this.groundItem)) {
-                    ((HitDefinition)object).setGraphic(null);
+                    hitDefinition.setGraphic(null);
                     return;
                 }
                 if (!GroundItemManager.getInstance().removeForPickup(this.groundItem, this.caster)) {
-                    object = this.caster;
-                    ((Player)object).packetSender.sendGameMessage("That item does not seem to exist anymore.");
-                    object = this.caster;
-                    ((Player)object).packetSender.sendGroundItemRemove(this.groundItem);
+                    this.caster.packetSender.sendGameMessage("That item does not seem to exist anymore.");
+                    this.caster.packetSender.sendGroundItemRemove(this.groundItem);
                     if (!this.caster.botEnabled) return;
                     TelekineticGrabSpellAction.continueBotGroundItemLoot(this.caster, this.groundItem, false);
                     return;
@@ -76,16 +74,16 @@ extends MagicSpellAction {
                     return;
                 }
                 if (this.itemId != 6888) return;
-                object = this.caster.getTelekineticTheatreController().getPlayerMazeSide(this.caster.getTelekineticTheatreController().mazeIndex);
+                String mazeSide = this.caster.getTelekineticTheatreController().getPlayerMazeSide(this.caster.getTelekineticTheatreController().mazeIndex);
                 int n = 0;
                 int n2 = 0;
-                if (object == "right") {
+                if (mazeSide == "right") {
                     n += 20;
-                } else if (object == "left") {
+                } else if (mazeSide == "left") {
                     n -= 20;
-                } else if (object == "bottom") {
+                } else if (mazeSide == "bottom") {
                     n2 -= 20;
-                } else if (object == "upper") {
+                } else if (mazeSide == "upper") {
                     n2 += 20;
                 }
                 boolean bl = true;

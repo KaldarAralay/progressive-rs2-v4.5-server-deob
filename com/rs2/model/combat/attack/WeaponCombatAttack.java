@@ -1,6 +1,3 @@
-/*
- * Decompiled with CFR 0.152.
- */
 package com.rs2.model.combat.attack;
 
 import com.rs2.model.Entity;
@@ -13,8 +10,6 @@ import com.rs2.model.combat.CombatManager;
 import com.rs2.model.combat.CombatType;
 import com.rs2.model.combat.ProjectileTiming;
 import com.rs2.model.combat.WeaponProfile;
-import com.rs2.model.combat.attack.BaseCombatAttack;
-import com.rs2.model.combat.attack.CombatAttackState;
 import com.rs2.model.combat.effect.PoisonEffect;
 import com.rs2.model.combat.hit.HitDefinition;
 import com.rs2.model.combat.hit.HitType;
@@ -28,8 +23,7 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.util.GameUtil;
 
-public class WeaponCombatAttack
-extends BaseCombatAttack {
+public class WeaponCombatAttack extends BaseCombatAttack {
     private WeaponProfile weaponProfile;
     private int attackStyleIndex;
     private AttackStyleDefinition attackStyle;
@@ -47,13 +41,11 @@ extends BaseCombatAttack {
     private static PoisonEffect RANGED_POISON_PLUS_PLUS_EFFECT = new PoisonEffect(4.0);
     private static PoisonEffect KARAMBWAN_POISON_EFFECT = new PoisonEffect(6.0);
 
-    public WeaponCombatAttack(Player object, Entity object2, WeaponProfile weaponProfile) {
-        super((Entity)object, (Entity)object2);
+    public WeaponCombatAttack(Player player, Entity target, WeaponProfile weaponProfile) {
+        super(player, target);
         this.weaponProfile = weaponProfile;
-        this.attackStyleIndex = ((Player)this.getAttacker()).getFightMode();
-        object2 = weaponProfile.getInterfaceDefinition().getAttackStyles()[this.attackStyleIndex];
-        object = this;
-        this.attackStyle = object2;
+        this.attackStyleIndex = player.getFightMode();
+        this.attackStyle = weaponProfile.getInterfaceDefinition().getAttackStyles()[this.attackStyleIndex];
         this.droppedAmmunitionId = -1;
     }
 
@@ -71,90 +63,66 @@ extends BaseCombatAttack {
 
     @Override
     public final CombatType getCombatType() {
-        WeaponCombatAttack weaponCombatAttack = this;
-        return weaponCombatAttack.attackStyle.getCombatType();
+        return this.attackStyle.getCombatType();
     }
 
     @Override
     public final void prepare() {
-        HitDefinition[] hitDefinitionArray;
-        Object object = (Player)this.getAttacker();
-        Object object2 = this;
-        if (((WeaponCombatAttack)object2).attackStyle.getCombatType() == CombatType.MELEE && this.getTarget().isDoorSupportNpc()) {
+        Player player = (Player)this.getAttacker();
+        if (this.attackStyle.getCombatType() == CombatType.MELEE && this.getTarget().isDoorSupportNpc()) {
             this.cancelled = true;
-            CombatManager.stopCombat((Entity)object);
+            CombatManager.stopCombat(player);
             return;
         }
-        Object object3 = ((Player)object).getEquipmentManager().getContainer().getItemAt(3);
-        Object object4 = "";
-        if (object3 != null) {
-            object3 = ItemDefinition.forId(((ItemStack)object3).getId());
-            object4 = ((ItemDefinition)object3).getName().toLowerCase();
+        ItemStack weaponItem = player.getEquipmentManager().getContainer().getItemAt(3);
+        String weaponName = "";
+        if (weaponItem != null) {
+            weaponName = ItemDefinition.forId(weaponItem.getId()).getName().toLowerCase();
         }
-        object2 = this;
-        if (((WeaponCombatAttack)object2).attackStyle.getCombatType() == CombatType.RANGED && ((String)object4).contains("crystal bow")) {
+        if (this.attackStyle.getCombatType() == CombatType.RANGED && weaponName.contains("crystal bow")) {
             this.ammunition = AmmunitionDefinition.CRYSTAL_BOW_ARROW;
+        } else if (this.attackStyle.getCombatType() == CombatType.RANGED && !weaponName.contains("crystal bow")) {
+            this.ammunition = AmmunitionDefinition.findEquippedAmmunition(player, this.weaponProfile, true);
+            if (this.ammunition == null) {
+                this.cancelled = true;
+                return;
+            }
+            int slot = this.weaponProfile.getAmmunitionProfile().getEquipmentSlot();
+            this.droppedAmmunitionId = player.getEquipmentManager().getItemIdAtSlot(slot);
+            this.droppedAmmunitionAmount = 1;
+            this.setRequirements(new CombatRequirement[]{new AmmunitionRequirement(this, slot, this.droppedAmmunitionId, this.droppedAmmunitionAmount, true)});
+            this.poisonEffect = WeaponCombatAttack.a(player, CombatType.RANGED, slot);
+        } else if (this.attackStyle.getCombatType() == CombatType.MELEE) {
+            this.poisonEffect = WeaponCombatAttack.a(player, CombatType.MELEE, 3);
+        }
+        double maxHit = this.calculateMaxHit();
+        HitDefinition[] hitDefinitions;
+        if (this.weaponProfile == WeaponProfile.DARK_BOW) {
+            ProjectileTiming timing = this.weaponProfile.getAmmunitionProfile().getProjectileTiming();
+            ProjectileDefinition firstProjectile = new ProjectileDefinition(this.ammunition.getProjectileId(), timing.copy().setStartDelay(40).setSpeed(3));
+            ProjectileDefinition secondProjectile = new ProjectileDefinition(this.ammunition.getProjectileId(), timing.copy().setStartDelay(41).setSpeed(2));
+            HitDefinition firstHit = new HitDefinition(this.attackStyle, HitType.NORMAL, maxHit).enableRandomDamage().enableAccuracyCheck().setProjectile(firstProjectile);
+            HitDefinition secondHit = new HitDefinition(this.attackStyle, HitType.NORMAL, maxHit).enableRandomDamage().enableAccuracyCheck().setProjectile(secondProjectile);
+            hitDefinitions = new HitDefinition[]{firstHit, secondHit};
         } else {
-            object2 = this;
-            if (((WeaponCombatAttack)object2).attackStyle.getCombatType() == CombatType.RANGED && !((String)object4).contains("crystal bow")) {
-                this.ammunition = AmmunitionDefinition.findEquippedAmmunition((Player)object, this.weaponProfile, true);
-                if (this.ammunition == null) {
-                    this.cancelled = true;
-                    return;
-                }
-                int n = this.weaponProfile.getAmmunitionProfile().getEquipmentSlot();
-                this.droppedAmmunitionId = ((Player)object).getEquipmentManager().getItemIdAtSlot(n);
-                this.droppedAmmunitionAmount = 1;
-                this.setRequirements(new CombatRequirement[]{new AmmunitionRequirement(this, n, this.droppedAmmunitionId, this.droppedAmmunitionAmount, true)});
-                this.poisonEffect = WeaponCombatAttack.a((Player)object, CombatType.RANGED, n);
-            } else {
-                object2 = this;
-                if (((WeaponCombatAttack)object2).attackStyle.getCombatType() == CombatType.MELEE) {
-                    this.poisonEffect = WeaponCombatAttack.a((Player)object, CombatType.MELEE, 3);
-                }
+            ProjectileDefinition projectile = null;
+            if (this.ammunition != null) {
+                projectile = new ProjectileDefinition(this.ammunition.getProjectileId(), this.weaponProfile.getAmmunitionProfile().getProjectileTiming());
             }
-        }
-        object = this;
-        double d = ((WeaponCombatAttack)object).calculateMaxHit();
-        if (((WeaponCombatAttack)object).weaponProfile == WeaponProfile.DARK_BOW) {
-            Object object5 = ((WeaponCombatAttack)object).weaponProfile.getAmmunitionProfile().getProjectileTiming();
-            object4 = new ProjectileDefinition(((WeaponCombatAttack)object).ammunition.getProjectileId(), ((ProjectileTiming)object5).copy().setStartDelay(40).setSpeed(3));
-            object5 = new ProjectileDefinition(((WeaponCombatAttack)object).ammunition.getProjectileId(), ((ProjectileTiming)object5).copy().setStartDelay(41).setSpeed(2));
-            object2 = object;
-            object4 = new HitDefinition(((WeaponCombatAttack)object2).attackStyle, HitType.NORMAL, d).enableRandomDamage().enableAccuracyCheck().setProjectile((ProjectileDefinition)object4);
-            object2 = object;
-            object = new HitDefinition(((WeaponCombatAttack)object2).attackStyle, HitType.NORMAL, d).enableRandomDamage().enableAccuracyCheck().setProjectile((ProjectileDefinition)object5);
-            HitDefinition[] hitDefinitionArray2 = new HitDefinition[2];
-            hitDefinitionArray2[0] = object4;
-            hitDefinitionArray = hitDefinitionArray2;
-            hitDefinitionArray2[1] = object;
-        } else {
-            ProjectileDefinition projectileDefinition = null;
-            if (((WeaponCombatAttack)object).ammunition != null) {
-                projectileDefinition = new ProjectileDefinition(((WeaponCombatAttack)object).ammunition.getProjectileId(), ((WeaponCombatAttack)object).weaponProfile.getAmmunitionProfile().getProjectileTiming());
+            HitDefinition hitDefinition = new HitDefinition(this.attackStyle, HitType.NORMAL, maxHit).enableRandomDamage().enableAccuracyCheck().setProjectile(projectile);
+            if (this.ammunition != null) {
+                hitDefinition.setAmmunition(this.ammunition);
             }
-            object2 = object;
-            object4 = new HitDefinition(((WeaponCombatAttack)object2).attackStyle, HitType.NORMAL, d).enableRandomDamage().enableAccuracyCheck().setProjectile(projectileDefinition);
-            if (((WeaponCombatAttack)object).ammunition != null) {
-                ((HitDefinition)object4).setAmmunition(((WeaponCombatAttack)object).ammunition);
-            }
-            HitDefinition[] hitDefinitionArray3 = new HitDefinition[1];
-            hitDefinitionArray = hitDefinitionArray3;
-            hitDefinitionArray3[0] = object4;
+            hitDefinitions = new HitDefinition[]{hitDefinition};
         }
-        this.setHitDefinitions(hitDefinitionArray);
-        object = this;
-        int n = 0;
-        object2 = object;
-        AttackStyleDefinition attackStyleDefinition = ((WeaponCombatAttack)object2).attackStyle;
-        if (attackStyleDefinition.getXpMode() == AttackXpMode.RAPID) {
-            n = -1;
+        this.setHitDefinitions(hitDefinitions);
+        int delayModifier = 0;
+        if (this.attackStyle.getXpMode() == AttackXpMode.RAPID) {
+            delayModifier = -1;
         }
-        this.setAttackDelay(((WeaponCombatAttack)object).weaponProfile.getAttackDelay() + n);
-        object = this;
-        this.setAttackerGraphic(((WeaponCombatAttack)object).ammunition != null && ((WeaponCombatAttack)object).weaponProfile.getAmmunitionProfile() != null ? (((WeaponCombatAttack)object).weaponProfile == WeaponProfile.DARK_BOW ? new GraphicEffect(((WeaponCombatAttack)object).ammunition.getAlternateGraphicId(), ((WeaponCombatAttack)object).weaponProfile.getAmmunitionProfile().getGraphicDelay()) : new GraphicEffect(((WeaponCombatAttack)object).ammunition.getGraphicId(), ((WeaponCombatAttack)object).weaponProfile.getAmmunitionProfile().getGraphicDelay())) : null);
-        object = this;
-        this.setAnimationId(((WeaponCombatAttack)object).weaponProfile.getAttackAnimations()[((WeaponCombatAttack)object).attackStyleIndex]);
+        this.setAttackDelay(this.weaponProfile.getAttackDelay() + delayModifier);
+        this.setAttackerGraphic(this.ammunition != null && this.weaponProfile.getAmmunitionProfile() != null ? (this.weaponProfile == WeaponProfile.DARK_BOW ? new GraphicEffect(this.ammunition.getAlternateGraphicId(), this.weaponProfile.getAmmunitionProfile().getGraphicDelay()) : new GraphicEffect(this.ammunition.getGraphicId(), this.weaponProfile.getAmmunitionProfile().getGraphicDelay())) : null);
+        this.setAnimationId(this.weaponProfile.getAttackAnimations()[this.attackStyleIndex]);
         this.setAttackSoundId(this.weaponProfile.getInterfaceDefinition().attackSoundId);
         this.cancelled = !this.prepareSpecialAttack();
     }
@@ -196,22 +164,17 @@ extends BaseCombatAttack {
 
     @Override
     public final CombatAttackState getState() {
-        if (this.cancelled) {
-            return CombatAttackState.a;
-        }
-        Object object = ((Player)this.getAttacker()).getSpecialAttackDefinition();
-        boolean bl = ((Player)this.getAttacker()).isSpecialAttackEnabled();
-        if (object != null && bl) {
+        SpecialAttackDefinition specialAttackDefinition = ((Player)this.getAttacker()).getSpecialAttackDefinition();
+        boolean specialAttackEnabled = ((Player)this.getAttacker()).isSpecialAttackEnabled();
+        if (specialAttackDefinition != null && specialAttackEnabled) {
             Player player = (Player)this.getAttacker();
-            this.specialAttack = object;
-            if (player.getSpecialEnergy() < object.getEnergyCost()) {
-                object = player;
-                ((Player)object).packetSender.sendGameMessage("You have no special energy left.");
+            this.specialAttack = specialAttackDefinition;
+            if (player.getSpecialEnergy() < specialAttackDefinition.getEnergyCost()) {
+                player.packetSender.sendGameMessage("You have no special energy left.");
                 return CombatAttackState.a;
             }
             if (DuelRule.NO_SPECIAL_ATTACK.isEnabledFor(player)) {
-                object = player;
-                ((Player)object).packetSender.sendGameMessage("Special attacks have been disabled during this fight!");
+                player.packetSender.sendGameMessage("Special attacks have been disabled during this fight!");
                 return CombatAttackState.a;
             }
         }
@@ -220,61 +183,57 @@ extends BaseCombatAttack {
 
     @Override
     public int execute(CycleEventContainer cycleEventContainer) {
-        Object object = (Player)this.getAttacker();
-        if (((Player)object).isSpecialAttackEnabled() && this.specialAttack != null) {
-            ((Player)object).setSpecialEnergy(((Player)object).getSpecialEnergy() - this.specialAttack.getEnergyCost());
-            ((Player)object).refreshSpecialAttackWidgets();
-            ((Player)object).setSpecialAttackEnabled(false);
-            ((Player)object).refreshSpecialAttackWidgets();
+        Player player = (Player)this.getAttacker();
+        if (player.isSpecialAttackEnabled() && this.specialAttack != null) {
+            player.setSpecialEnergy(player.getSpecialEnergy() - this.specialAttack.getEnergyCost());
+            player.refreshSpecialAttackWidgets();
+            player.setSpecialAttackEnabled(false);
+            player.refreshSpecialAttackWidgets();
         }
         if (this.getHitDefinitions() != null) {
-            HitDefinition[] hitDefinitionArray = this.getHitDefinitions();
-            int n = hitDefinitionArray.length;
-            int n2 = 0;
-            while (n2 < n) {
-                object = hitDefinitionArray[n2];
+            for (HitDefinition hitDefinition : this.getHitDefinitions()) {
                 if (this.droppedAmmunitionId != -1) {
-                    ((HitDefinition)object).setDroppedAmmunition(new ItemStack(this.droppedAmmunitionId, this.droppedAmmunitionAmount));
+                    hitDefinition.setDroppedAmmunition(new ItemStack(this.droppedAmmunitionId, this.droppedAmmunitionAmount));
                 }
                 if (this.poisonEffect != null) {
                     if (this.attackStyle.getCombatType() == CombatType.MELEE) {
                         if (GameUtil.rollChance(0.25)) {
-                            ((HitDefinition)object).addEffect(this.poisonEffect);
+                            hitDefinition.addEffect(this.poisonEffect);
                         }
                     } else if (this.attackStyle.getCombatType() == CombatType.RANGED && GameUtil.rollChance(0.125)) {
-                        ((HitDefinition)object).addEffect(this.poisonEffect);
+                        hitDefinition.addEffect(this.poisonEffect);
                     }
                 }
-                ++n2;
             }
         }
         return super.execute(cycleEventContainer);
     }
 
-    private static PoisonEffect a(Player object, CombatType combatType, int n) {
+    private static PoisonEffect a(Player player, CombatType combatType, int slot) {
         if (combatType == CombatType.MAGIC) {
             return null;
         }
-        if ((object = ((Player)object).getEquipmentManager().getContainer().getItemAt(n)) == null) {
+        ItemStack itemStack = player.getEquipmentManager().getContainer().getItemAt(slot);
+        if (itemStack == null) {
             return null;
         }
-        object = ItemDefinition.forId(((ItemStack)object).getId());
-        if (((String)(object = ((ItemDefinition)object).getName().toLowerCase())).contains("(kp)")) {
+        String itemName = ItemDefinition.forId(itemStack.getId()).getName().toLowerCase();
+        if (itemName.contains("(kp)")) {
             return KARAMBWAN_POISON_EFFECT;
         }
-        if (((String)object).contains("(s)") || ((String)object).contains("(p++)") || ((String)object).contains("++")) {
+        if (itemName.contains("(s)") || itemName.contains("(p++)") || itemName.contains("++")) {
             if (combatType == CombatType.MELEE) {
                 return MELEE_POISON_PLUS_PLUS_EFFECT;
             }
             return RANGED_POISON_PLUS_PLUS_EFFECT;
         }
-        if (((String)object).contains("(+)") || ((String)object).contains("(p+)")) {
+        if (itemName.contains("(+)") || itemName.contains("(p+)")) {
             if (combatType == CombatType.MELEE) {
                 return MELEE_POISON_PLUS_EFFECT;
             }
             return RANGED_POISON_PLUS_EFFECT;
         }
-        if (((String)object).contains("(p)")) {
+        if (itemName.contains("(p)")) {
             if (combatType == CombatType.MELEE) {
                 return MELEE_POISON_EFFECT;
             }
@@ -283,4 +242,3 @@ extends BaseCombatAttack {
         return null;
     }
 }
-

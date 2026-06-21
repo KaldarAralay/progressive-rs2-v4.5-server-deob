@@ -44,15 +44,13 @@ public enum MapleLogFletchingRecipe {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private MapleLogFletchingRecipe(int n3, int n4, int n5, double d) {
-        void var8_6;
-        void var7_5;
-        this.buttonId = n3;
+    private MapleLogFletchingRecipe(int n2, int n3, int n4, int n5, int n6, double d) {
+        this.buttonId = n2;
         this.logItemId = 1517;
-        this.productItemId = n5;
-        this.menuQuantity = (int)d;
-        this.requiredLevel = var7_5;
-        this.experience = var8_6;
+        this.productItemId = n4;
+        this.menuQuantity = n5;
+        this.requiredLevel = n6;
+        this.experience = d;
     }
 
     public final int getLogItemId() {

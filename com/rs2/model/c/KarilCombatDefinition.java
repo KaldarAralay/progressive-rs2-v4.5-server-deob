@@ -12,9 +12,9 @@ import com.rs2.model.combat.attack.BaseCombatAttack;
 import com.rs2.model.combat.attack.CombatAttack;
 import com.rs2.model.npc.combat.NpcCombatDefinition;
 
-final class KarilCombatDefinition
+public final class KarilCombatDefinition
 extends NpcCombatDefinition {
-    KarilCombatDefinition() {
+    public KarilCombatDefinition() {
     }
 
     @Override

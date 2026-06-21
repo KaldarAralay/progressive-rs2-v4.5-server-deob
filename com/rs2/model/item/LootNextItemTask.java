@@ -9,13 +9,13 @@ import com.rs2.model.item.ItemService;
 import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 
-final class LootNextItemTask
+public final class LootNextItemTask
 extends TickTask {
     private final /* synthetic */ Player player;
 
-    LootNextItemTask(ItemService itemService, int n, Player player) {
-        this.player = player;
+    public LootNextItemTask(ItemService itemService, int n, Player player) {
         super(1);
+        this.player = player;
     }
 
     @Override

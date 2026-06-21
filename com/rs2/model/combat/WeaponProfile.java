@@ -9,8 +9,7 @@ import com.rs2.model.combat.WeaponInterfaceDefinition;
 import com.rs2.model.item.ItemDefinition;
 import com.rs2.model.item.ItemStack;
 
-public final class WeaponProfile
-extends Enum {
+public final class WeaponProfile {
     public static final /* enum */ WeaponProfile FISTS;
     private static /* enum */ WeaponProfile SHORT_BOW;
     public static final /* enum */ WeaponProfile SPECIAL_BOW;
@@ -62,6 +61,8 @@ extends Enum {
     private int[] movementAnimations;
     private int blockAnimationId;
     private int attackDelay;
+    private final String name;
+    private final int ordinal;
     private static final /* synthetic */ WeaponProfile[] Z;
 
     static {
@@ -146,25 +147,19 @@ extends Enum {
         Z = new WeaponProfile[]{FISTS, SHORT_BOW, SPECIAL_BOW, CRYSTAL_BOW, OGRE_BOW, OGRE_COMP_BOW, LONG_BOW, WAND, STAFF, SPECSTAFF, THROWING_KNIFE, THROWING_DART, JAVELIN, THROWING_AXE, HALBERD, MACE, SPEAR, DRAGON_DAGGER, DAGGER, TWO_HANDED, PICKAXE, AXE, BATTLE_AXE, LONGSWORD, SCIMITAR, SWORD, KARILS_CROSSBOW, CROSSBOW, DHAROKS, TORAGS, AHRIMS, VERACS, GRANITE_MAUL, WHIP, OBBY_RING, OBBY_MAUL, OBBY_SWORD_AND_KNIFE, OBBY_MACE, OBBY_STAFF, WARHAMMER, CLAWS, GODSWORD, METAL_CROSSBOW, DARK_BOW, SCYTHE};
     }
 
-    /*
-     * WARNING - Possible parameter corruption
-     * WARNING - void declaration
-     */
-    private WeaponProfile(int n, int[] nArray, int[] nArray2, int n2) {
-        void var8_6;
-        void var7_5;
-        void cfr_renamed_1;
-        void cfr_renamed_0;
-        this.interfaceDefinition = (WeaponInterfaceDefinition)n;
-        this.ammunitionProfile = (AmmunitionProfile)nArray;
-        this.attackDelay = (int)nArray2;
-        this.attackAnimations = (int[])n2;
-        this.movementAnimations = var7_5;
+    private WeaponProfile(String string, int n, WeaponInterfaceDefinition weaponInterfaceDefinition, AmmunitionProfile ammunitionProfile, int n2, int[] nArray, int[] nArray2, int n3) {
+        this.name = string;
+        this.ordinal = n;
+        this.interfaceDefinition = weaponInterfaceDefinition;
+        this.ammunitionProfile = ammunitionProfile;
+        this.attackDelay = n2;
+        this.attackAnimations = nArray;
+        this.movementAnimations = nArray2;
         if (this.movementAnimations.length != 3) {
             throw new IllegalArgumentException("There must be 3 elements in movementAnimations array. [stand, walk, run]");
         }
-        this.blockAnimationId = var8_6;
-        if (n.getAttackStyles().length != ((int)n2).length) {
+        this.blockAnimationId = n3;
+        if (weaponInterfaceDefinition.getAttackStyles().length != nArray.length) {
             throw new IllegalArgumentException("There are not the same amount of animations as attack styles for weapon: " + this.name());
         }
     }
@@ -173,12 +168,20 @@ extends Enum {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private WeaponProfile(int[] nArray, int[] nArray2, int n) {
-        this((String)cfr_renamed_0, (int)cfr_renamed_1, (WeaponInterfaceDefinition)nArray, null, (int)nArray2, (int[])n, (int[])var6_4, (int)var7_5);
-        void var7_5;
-        void var6_4;
-        void cfr_renamed_1;
-        void cfr_renamed_0;
+    private WeaponProfile(String string, int n, WeaponInterfaceDefinition weaponInterfaceDefinition, int n2, int[] nArray, int[] nArray2, int n3) {
+        this(string, n, weaponInterfaceDefinition, null, n2, nArray, nArray2, n3);
+    }
+
+    public final String name() {
+        return this.name;
+    }
+
+    public final int ordinal() {
+        return this.ordinal;
+    }
+
+    public final String toString() {
+        return this.name;
     }
 
     public final WeaponInterfaceDefinition getInterfaceDefinition() {
@@ -355,7 +358,20 @@ extends Enum {
     }
 
     public static WeaponProfile valueOf(String string) {
-        return Enum.valueOf(WeaponProfile.class, string);
+        if (string == null) {
+            throw new NullPointerException("Name is null");
+        }
+        WeaponProfile[] weaponProfileArray = WeaponProfile.values();
+        int n = weaponProfileArray.length;
+        int n2 = 0;
+        while (n2 < n) {
+            WeaponProfile weaponProfile = weaponProfileArray[n2];
+            if (weaponProfile.name().equals(string)) {
+                return weaponProfile;
+            }
+            ++n2;
+        }
+        throw new IllegalArgumentException("No enum constant com.rs2.model.combat.WeaponProfile." + string);
     }
 }
 

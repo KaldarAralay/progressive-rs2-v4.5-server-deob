@@ -1,5 +1,5 @@
 /*
- * Decompiled with CFR 0.152.
+ * Source recovery overlay: make remapped event accessible to recovered callers.
  */
 package com.rs2.model.objects.functions;
 
@@ -9,7 +9,7 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class WebSlashEvent
+public final class WebSlashEvent
 extends CycleEvent {
     private final /* synthetic */ Boolean successful;
     private final /* synthetic */ Player player;
@@ -17,7 +17,7 @@ extends CycleEvent {
     private final /* synthetic */ int objectY;
     private final /* synthetic */ int orientation;
 
-    WebSlashEvent(Boolean bl, Player player, int n, int n2, int n3) {
+    public WebSlashEvent(Boolean bl, Player player, int n, int n2, int n3) {
         this.successful = bl;
         this.player = player;
         this.objectX = n;
@@ -49,4 +49,3 @@ extends CycleEvent {
         this.player.setActionLocked(false);
     }
 }
-

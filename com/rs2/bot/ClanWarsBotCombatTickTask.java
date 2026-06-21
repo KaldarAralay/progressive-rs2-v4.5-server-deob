@@ -14,13 +14,13 @@ import com.rs2.model.skill.SkillManager;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 
-final class ClanWarsBotCombatTickTask
+public final class ClanWarsBotCombatTickTask
 extends TickTask {
     private final /* synthetic */ Player player;
 
-    ClanWarsBotCombatTickTask(int n, Player player) {
-        this.player = player;
+    public ClanWarsBotCombatTickTask(int n, Player player) {
         super(3);
+        this.player = player;
     }
 
     @Override

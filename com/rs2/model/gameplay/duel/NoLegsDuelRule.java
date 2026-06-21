@@ -7,9 +7,10 @@ import com.rs2.model.gameplay.duel.DuelRule;
 import com.rs2.model.item.ItemStack;
 import com.rs2.model.player.Player;
 
-final class NoLegsDuelRule
+public final class NoLegsDuelRule
 extends DuelRule {
-    NoLegsDuelRule(int n2, int n3, int n4) {
+    public NoLegsDuelRule(int n2, int n3, int n4) {
+        super(n2, n3, n4);
     }
 
     @Override

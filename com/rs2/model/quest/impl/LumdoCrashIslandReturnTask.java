@@ -8,20 +8,20 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.MonkeyMadnessQuest;
 import com.rs2.model.task.TickTask;
 
-final class LumdoCrashIslandReturnTask
+public final class LumdoCrashIslandReturnTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
-    LumdoCrashIslandReturnTask(MonkeyMadnessQuest monkeyMadnessQuest, int n, Player player) {
-        this.a = player;
+    public LumdoCrashIslandReturnTask(MonkeyMadnessQuest monkeyMadnessQuest, int n, Player player) {
         super(5);
+        this.player = player;
     }
 
     @Override
     public final void execute() {
-        this.a.setActionLocked(false);
-        this.a.moveTo(new Position(2892, 2725, 0));
-        Player player = this.a;
+        this.player.setActionLocked(false);
+        this.player.moveTo(new Position(2892, 2725, 0));
+        Player player = this.player;
         player.packetSender.closeInterfaces();
         this.stop();
     }

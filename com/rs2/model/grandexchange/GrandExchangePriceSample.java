@@ -45,26 +45,22 @@ public final class GrandExchangePriceSample {
         }
     }
 
-    GrandExchangePriceSample(GrandExchangeOffer object) {
+    GrandExchangePriceSample(GrandExchangeOffer grandExchangeOffer) {
         this.timestampMillis = System.currentTimeMillis();
-        GrandExchangeOffer grandExchangeOffer = object;
         this.itemId = grandExchangeOffer.itemId;
-        grandExchangeOffer = object;
         this.quantity = grandExchangeOffer.quantity;
-        grandExchangeOffer = object;
         this.unitPrice = grandExchangeOffer.unitPrice;
-        object = ItemDefinition.forId(this.itemId);
+        ItemDefinition itemDefinition = ItemDefinition.forId(this.itemId);
         if (!sampledItemIds.contains(this.itemId)) {
             sampledItemIds.add(this.itemId);
         }
-        ((ItemDefinition)object).grandExchangePriceSamples.add(this);
+        itemDefinition.grandExchangePriceSamples.add(this);
         allSamples.add(this);
         try {
             GrandExchangePriceSample.savePriceSamples();
             return;
         }
         catch (IOException iOException) {
-            object = iOException;
             iOException.printStackTrace();
             return;
         }
@@ -136,7 +132,8 @@ public final class GrandExchangePriceSample {
             n2 = (int)d2;
             ArrayList<GrandExchangePriceSample> arrayList = new ArrayList<GrandExchangePriceSample>();
             int n7 = 0;
-            for (GrandExchangePriceSample grandExchangePriceSample : ((ItemDefinition)object).grandExchangePriceSamples) {
+            for (Object grandExchangePriceSampleObject : ((ItemDefinition)object).grandExchangePriceSamples) {
+                GrandExchangePriceSample grandExchangePriceSample = (GrandExchangePriceSample)grandExchangePriceSampleObject;
                 if (n7 >= n2) {
                     arrayList.add(grandExchangePriceSample);
                     continue;
@@ -151,7 +148,7 @@ public final class GrandExchangePriceSample {
         }
     }
 
-    private static void savePriceSamples() {
+    private static void savePriceSamples() throws IOException {
         CountingDataOutputStream countingDataOutputStream = new CountingDataOutputStream(new FileOutputStream("./data/geOfferData.dat"));
         countingDataOutputStream.writeInt(allSamples.size());
         Iterator iterator = allSamples.iterator();

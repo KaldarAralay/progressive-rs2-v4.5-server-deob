@@ -6,11 +6,11 @@ package com.rs2.launcher;
 import java.awt.Color;
 import java.awt.image.RGBImageFilter;
 
-final class TransparentColorFilter
+public final class TransparentColorFilter
 extends RGBImageFilter {
     private int transparentRgb;
 
-    TransparentColorFilter(Color color) {
+    public TransparentColorFilter(Color color) {
         this.transparentRgb = color.getRGB() | 0xFF000000;
     }
 

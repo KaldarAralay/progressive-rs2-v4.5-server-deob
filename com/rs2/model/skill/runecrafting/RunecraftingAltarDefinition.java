@@ -35,18 +35,16 @@ public enum RunecraftingAltarDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private RunecraftingAltarDefinition(int n3, Position position, int n4, int n5, Position position2, double d, boolean bl) {
-        void var12_9;
-        void var9_7;
-        this.talismanItemId = n3;
-        this.tiaraItemId = (int)position;
+    private RunecraftingAltarDefinition(int n2, int n3, int n4, Position position, int n5, int n6, Position position2, double d, boolean bl) {
+        this.talismanItemId = n2;
+        this.tiaraItemId = n3;
         this.ruinsObjectId = n4;
-        this.ruinsPosition = (Position)n5;
-        this.altarObjectId = (int)position2;
-        this.portalObjectId = (int)d;
-        this.altarPosition = var9_7;
-        this.tiaraExperience = (double)bl;
-        this.membersOnly = var12_9;
+        this.ruinsPosition = position;
+        this.altarObjectId = n5;
+        this.portalObjectId = n6;
+        this.altarPosition = position2;
+        this.tiaraExperience = d;
+        this.membersOnly = bl;
     }
 
     public final int getTalismanItemId() {

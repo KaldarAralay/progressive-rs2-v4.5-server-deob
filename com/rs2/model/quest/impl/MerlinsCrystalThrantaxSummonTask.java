@@ -10,21 +10,21 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.MerlinsCrystalQuest;
 import com.rs2.model.task.TickTask;
 
-final class MerlinsCrystalThrantaxSummonTask
+public final class MerlinsCrystalThrantaxSummonTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
-    MerlinsCrystalThrantaxSummonTask(MerlinsCrystalQuest merlinsCrystalQuest, int n, Player player) {
-        this.a = player;
+    public MerlinsCrystalThrantaxSummonTask(MerlinsCrystalQuest merlinsCrystalQuest, int n, Player player) {
         super(3);
+        this.player = player;
     }
 
     @Override
     public final void execute() {
-        this.a.setActionLocked(false);
+        this.player.setActionLocked(false);
         Npc npc = new Npc(238);
-        GameplayHelper.b(this.a, npc, 2780, 3515, 0, 86, false, false);
-        DialogueManager.continueDialogue(this.a, 238, 100, 0);
+        GameplayHelper.replaceOwnedRoamingNpcAtPosition(this.player, npc, 2780, 3515, 0, 86, false, false);
+        DialogueManager.continueDialogue(this.player, 238, 100, 0);
         npc.setScriptedMovementEnabled(true);
         this.stop();
     }

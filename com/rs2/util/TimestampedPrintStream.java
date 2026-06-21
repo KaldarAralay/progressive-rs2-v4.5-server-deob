@@ -17,7 +17,7 @@ extends PrintStream {
     private BufferedWriter logWriter;
     private DateFormat dateFormat = new SimpleDateFormat();
 
-    public TimestampedPrintStream(OutputStream outputStream, String string) {
+    public TimestampedPrintStream(OutputStream outputStream, String string) throws IOException {
         super(outputStream);
         this.logWriter = new BufferedWriter(new FileWriter(string, true));
     }
@@ -27,22 +27,19 @@ extends PrintStream {
     }
 
     @Override
-    public final void println(String object) {
-        object = "[" + this.dateFormat.format(new Date()) + "]: " + (String)object;
-        super.println((String)object);
-        String string = object;
-        object = this;
+    public final void println(String string) {
+        string = "[" + this.dateFormat.format(new Date()) + "]: " + string;
+        super.println(string);
         try {
-            if (((TimestampedPrintStream)object).logWriter == null) {
+            if (this.logWriter == null) {
                 return;
             }
-            ((TimestampedPrintStream)object).logWriter.write(string);
-            ((TimestampedPrintStream)object).logWriter.newLine();
-            ((TimestampedPrintStream)object).logWriter.flush();
+            this.logWriter.write(string);
+            this.logWriter.newLine();
+            this.logWriter.flush();
             return;
         }
         catch (IOException iOException) {
-            object = iOException;
             iOException.printStackTrace();
             return;
         }

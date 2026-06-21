@@ -6,9 +6,9 @@ package com.rs2.bot;
 import com.rs2.bot.BotTaskDefinition;
 import java.util.ArrayList;
 
-final class FishingBotTaskList
+public final class FishingBotTaskList
 extends ArrayList {
-    FishingBotTaskList() {
+    public FishingBotTaskList() {
         this.add(BotTaskDefinition.getDraynorNetFishingTask());
         this.add(BotTaskDefinition.getBarbarianVillageFlyFishingTask());
         this.add(BotTaskDefinition.getKaramjaFishingTask());

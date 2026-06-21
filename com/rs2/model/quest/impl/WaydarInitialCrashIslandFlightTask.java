@@ -8,23 +8,23 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.MonkeyMadnessQuest;
 import com.rs2.model.task.TickTask;
 
-final class WaydarInitialCrashIslandFlightTask
+public final class WaydarInitialCrashIslandFlightTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
     private final /* synthetic */ int b;
 
-    WaydarInitialCrashIslandFlightTask(MonkeyMadnessQuest monkeyMadnessQuest, int n, Player player, int n2) {
-        this.a = player;
-        this.b = n2;
+    public WaydarInitialCrashIslandFlightTask(MonkeyMadnessQuest monkeyMadnessQuest, int n, Player player, int n2) {
         super(5);
+        this.player = player;
+        this.b = n2;
     }
 
     @Override
     public final void execute() {
-        this.a.setActionLocked(false);
-        this.a.setQuestState(this.b, 10);
-        this.a.moveTo(new Position(2894, 2726, 0));
-        Player player = this.a;
+        this.player.setActionLocked(false);
+        this.player.setQuestState(this.b, 10);
+        this.player.moveTo(new Position(2894, 2726, 0));
+        Player player = this.player;
         player.packetSender.closeInterfaces();
         this.stop();
     }

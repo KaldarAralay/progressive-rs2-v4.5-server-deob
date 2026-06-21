@@ -32,7 +32,8 @@ extends CombatCostRequirement {
             ((Player)entity).getInventoryManager().removeItem(new ItemStack(this.itemId, this.amount));
             return;
         }
-        for (ItemStack itemStack : this.requiredItems) {
+        for (Object itemObject : this.requiredItems) {
+            ItemStack itemStack = (ItemStack)itemObject;
             ((Player)entity).getInventoryManager().removeItem(itemStack);
         }
     }
@@ -46,7 +47,8 @@ extends CombatCostRequirement {
         if (this.requiredItems.size() == 0) {
             return ((Player)entity).getInventoryManager().getItemAmount(this.itemId) >= this.amount;
         }
-        for (ItemStack itemStack : this.requiredItems) {
+        for (Object itemObject : this.requiredItems) {
+            ItemStack itemStack = (ItemStack)itemObject;
             if (((Player)entity).getInventoryManager().getItemAmount(itemStack.getId()) >= itemStack.getAmount()) continue;
             return false;
         }

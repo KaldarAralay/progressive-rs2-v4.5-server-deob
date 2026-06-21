@@ -9,32 +9,32 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
 
-final class WildernessRuniteMineEscapeMonitorTickTask
+public final class WildernessRuniteMineEscapeMonitorTickTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
-    WildernessRuniteMineEscapeMonitorTickTask(WildernessRuniteMineBotTask wildernessRuniteMineBotTask, int n, Player player) {
-        this.a = player;
+    public WildernessRuniteMineEscapeMonitorTickTask(WildernessRuniteMineBotTask wildernessRuniteMineBotTask, int n, Player player) {
         super(2);
+        this.player = player;
     }
 
     @Override
     public final void execute() {
-        if (this.a.isDead() || !this.a.isRegistered() || !this.a.currentBotTask.usesEscapeMonitor) {
+        if (this.player.isDead() || !this.player.isRegistered() || !this.player.currentBotTask.usesEscapeMonitor) {
             this.stop();
             return;
         }
-        if (this.a.getInventoryManager().getItemAmount(451) >= 8 && this.a.botTaskState.equals("do task") && GameUtil.randomInt(3) == 0) {
-            this.a.currentBotTask.startWalkToBank(this.a);
+        if (this.player.getInventoryManager().getItemAmount(451) >= 8 && this.player.botTaskState.equals("do task") && GameUtil.randomInt(3) == 0) {
+            this.player.currentBotTask.startWalkToBank(this.player);
             return;
         }
-        if (this.a.getInventoryManager().getContainer().getFreeSlots() <= 0 && this.a.botTaskState.equals("do task")) {
-            this.a.currentBotTask.startWalkToBank(this.a);
+        if (this.player.getInventoryManager().getContainer().getFreeSlots() <= 0 && this.player.botTaskState.equals("do task")) {
+            this.player.currentBotTask.startWalkToBank(this.player);
             return;
         }
-        if (!this.a.getRecentCombatTimer().hasElapsed()) {
-            BotCombatEscapeHandler.tryStartBotCombatEscape(this.a);
-            this.a.botTaskState = "escape";
+        if (!this.player.getRecentCombatTimer().hasElapsed()) {
+            BotCombatEscapeHandler.tryStartBotCombatEscape(this.player);
+            this.player.botTaskState = "escape";
         }
     }
 }

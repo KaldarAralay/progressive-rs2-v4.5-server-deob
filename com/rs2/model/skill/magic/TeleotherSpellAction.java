@@ -9,17 +9,17 @@ import com.rs2.model.skill.magic.MagicSpellAction;
 import com.rs2.model.skill.magic.SpellDefinition;
 import com.rs2.model.skill.magic.TeleotherDestination;
 
-final class TeleotherSpellAction
+public final class TeleotherSpellAction
 extends MagicSpellAction {
     private final /* synthetic */ SpellDefinition teleotherSpell;
     private final /* synthetic */ Player target;
     private final /* synthetic */ Player caster;
 
-    TeleotherSpellAction(Player player, SpellDefinition spellDefinition, SpellDefinition spellDefinition2, Player player2, Player player3) {
+    public TeleotherSpellAction(Player player, SpellDefinition spellDefinition, SpellDefinition spellDefinition2, Player player2, Player player3) {
+        super(player, spellDefinition, (byte)0);
         this.teleotherSpell = spellDefinition2;
         this.target = player2;
         this.caster = player3;
-        super(player, spellDefinition, (byte)0);
     }
 
     @Override

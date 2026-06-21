@@ -8,20 +8,20 @@ import com.rs2.model.player.Player;
 import com.rs2.model.quest.impl.GrandTreeQuest;
 import com.rs2.model.task.TickTask;
 
-final class GloughChestScrollFindTask
+public final class GloughChestScrollFindTask
 extends TickTask {
-    private final /* synthetic */ Player a;
+    private final /* synthetic */ Player player;
 
-    GloughChestScrollFindTask(GrandTreeQuest grandTreeQuest, int n, Player player) {
-        this.a = player;
+    public GloughChestScrollFindTask(GrandTreeQuest grandTreeQuest, int n, Player player) {
         super(2);
+        this.player = player;
     }
 
     @Override
     public final void execute() {
-        this.a.setActionLocked(false);
-        this.a.getDialogueManager().showItemMessage("You have found a scroll!", new ItemStack(794, 1));
-        this.a.getInventoryManager().addOrDropItem(new ItemStack(794, 1));
+        this.player.setActionLocked(false);
+        this.player.getDialogueManager().showItemMessage("You have found a scroll!", new ItemStack(794, 1));
+        this.player.getInventoryManager().addOrDropItem(new ItemStack(794, 1));
         this.stop();
     }
 }

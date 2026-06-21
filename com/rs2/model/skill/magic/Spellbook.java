@@ -8,13 +8,14 @@ import com.rs2.model.skill.magic.SpellDefinition;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class Spellbook
-extends Enum {
+public final class Spellbook {
     public static final /* enum */ Spellbook MODERN;
     public static final /* enum */ Spellbook ANCIENT;
     public static final /* enum */ Spellbook NECROMANCY;
     private Map spellByButtonId;
     private Map autocastSpellByButtonId;
+    private final String name;
+    private final int ordinal;
     private static final /* synthetic */ Spellbook[] VALUES;
 
     static {
@@ -182,16 +183,11 @@ extends Enum {
         VALUES = new Spellbook[]{MODERN, ANCIENT, NECROMANCY};
     }
 
-    /*
-     * WARNING - void declaration
-     */
-    private Spellbook() {
-        void var4_1;
-        void var3_2;
-        void cfr_renamed_1;
-        void cfr_renamed_0;
-        this.spellByButtonId = var3_2;
-        this.autocastSpellByButtonId = var4_1;
+    private Spellbook(String string, int n, Map map, Map map2) {
+        this.name = string;
+        this.ordinal = n;
+        this.spellByButtonId = map;
+        this.autocastSpellByButtonId = map2;
     }
 
     public static SpellDefinition getSpellForButtonId(Player player, int n) {
@@ -206,6 +202,18 @@ extends Enum {
         return this.spellByButtonId;
     }
 
+    public final String name() {
+        return this.name;
+    }
+
+    public final int ordinal() {
+        return this.ordinal;
+    }
+
+    public final String toString() {
+        return this.name;
+    }
+
     public static Spellbook[] values() {
         Spellbook[] spellbookArray = new Spellbook[3];
         System.arraycopy(VALUES, 0, spellbookArray, 0, 3);
@@ -213,7 +221,20 @@ extends Enum {
     }
 
     public static Spellbook valueOf(String string) {
-        return Enum.valueOf(Spellbook.class, string);
+        if (string == null) {
+            throw new NullPointerException("Name is null");
+        }
+        Spellbook[] spellbookArray = Spellbook.values();
+        int n = spellbookArray.length;
+        int n2 = 0;
+        while (n2 < n) {
+            Spellbook spellbook = spellbookArray[n2];
+            if (spellbook.name().equals(string)) {
+                return spellbook;
+            }
+            ++n2;
+        }
+        throw new IllegalArgumentException("No enum constant com.rs2.model.skill.magic.Spellbook." + string);
     }
 }
 

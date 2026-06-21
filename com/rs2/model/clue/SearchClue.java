@@ -122,14 +122,13 @@ public enum SearchClue {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private SearchClue(Position position, int n2, int n3, int n4) {
-        void cfr_renamed_2;
-        this.clueTextLines = position;
+    private SearchClue(String[] stringArray, int n2, Position position, int n3, int n4, int n5) {
+        this.clueTextLines = stringArray;
         this.clueItemId = n2;
-        this.position = (Position)n3;
-        this.replacementObjectId = n4;
+        this.position = position;
+        this.replacementObjectId = n3;
         this.animationId = 832;
-        this.level = cfr_renamed_2;
+        this.level = n5;
     }
 
     public final String[] getClueTextLines() {

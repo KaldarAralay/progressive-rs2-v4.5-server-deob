@@ -9,14 +9,14 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 
-final class DuelVictoryTask
+public final class DuelVictoryTask
 extends CycleEvent {
     private final /* synthetic */ Player winner;
     private final /* synthetic */ String loserUsername;
     private final /* synthetic */ String loserCombatLevel;
     private final /* synthetic */ ItemStack[] rewardItems;
 
-    DuelVictoryTask(Player player, String string, String string2, ItemStack[] itemStackArray) {
+    public DuelVictoryTask(Player player, String string, String string2, ItemStack[] itemStackArray) {
         this.winner = player;
         this.loserUsername = string;
         this.loserCombatLevel = string2;

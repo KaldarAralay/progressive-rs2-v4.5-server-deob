@@ -359,21 +359,21 @@ public final class CharacterFileRecord {
                 }
                 ++n2;
             }
-            object = this.inventoryItems;
+            ItemStack[] inventoryItems = this.inventoryItems;
             n = this.inventoryItems.length;
             int n3 = 0;
             while (n3 < n) {
-                ItemStack itemStack = object[n3];
+                ItemStack itemStack = inventoryItems[n3];
                 if (itemStack != null && itemStack.getAmount() > 0 && !(itemDefinition = itemStack.getDefinition()).isUntradeable()) {
                     this.cachedItemValue += itemDefinition.getValue() * itemStack.getAmount();
                 }
                 ++n3;
             }
-            object = this.equipmentItems;
+            ItemStack[] equipmentItems = this.equipmentItems;
             n = this.equipmentItems.length;
             n3 = 0;
             while (n3 < n) {
-                Object object3 = object[n3];
+                ItemStack object3 = equipmentItems[n3];
                 if (object3 != null && ((ItemStack)object3).getAmount() > 0 && !(itemDefinition = ((ItemStack)object3).getDefinition()).isUntradeable()) {
                     this.cachedItemValue += itemDefinition.getValue() * ((ItemStack)object3).getAmount();
                 }

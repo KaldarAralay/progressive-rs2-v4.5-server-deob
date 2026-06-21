@@ -26,14 +26,12 @@ public enum WildernessObelisk {
     /*
      * WARNING - void declaration
      */
-    private WildernessObelisk() {
-        void var4_1;
-        void var3_2;
-        this.objectId = var3_2;
-        this.basePosition = var4_1;
+    private WildernessObelisk(int n2, Position position) {
+        this.objectId = n2;
+        this.basePosition = position;
         this.active = false;
-        this.effectArea = RectangularArea.fromPositionOffset(new Position(var4_1.getX() + 1, var4_1.getY() + 1, var4_1.getPlane()), 2, 2);
-        this.teleportBounds = new Rectangle(var4_1.getX(), var4_1.getY(), 5, 5);
+        this.effectArea = RectangularArea.fromPositionOffset(new Position(position.getX() + 1, position.getY() + 1, position.getPlane()), 2, 2);
+        this.teleportBounds = new Rectangle(position.getX(), position.getY(), 5, 5);
         this.cornerPositions = ObeliskTick.getCornerPositions(this);
     }
 }

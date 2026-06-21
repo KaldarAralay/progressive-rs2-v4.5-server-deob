@@ -64,7 +64,7 @@ public final class CoordinateClueHandler {
                 player.getInventoryManager().addOrDropItem(new ItemStack(2728, 1));
             }
         }
-        player.getDialogueManager().a("You've found a casket!", 2724);
+        player.getDialogueManager().showItemIdMessage("You've found a casket!", 2724);
         return true;
     }
 

@@ -46,8 +46,8 @@ public final class SlayerManager {
     }
 
     public final void assignTaskFromMaster(int n) {
-        Object object = SlayerMasterDefinition.forNpcId(n);
-        if (object == null) {
+        SlayerMasterDefinition slayerMasterDefinition = SlayerMasterDefinition.forNpcId(n);
+        if (slayerMasterDefinition == null) {
             return;
         }
         if (!ServerSettings.slayerEnabled) {
@@ -57,15 +57,16 @@ public final class SlayerManager {
             player.packetSender.closeInterfaces();
             return;
         }
-        if (this.player.getCombatLevel() < object.getRequiredCombatLevel()) {
-            this.player.getDialogueManager().showNpcOneLineDialogue("You need a combat level of " + object.getRequiredCombatLevel() + " to recieve a task from me.", 588);
+        if (this.player.getCombatLevel() < slayerMasterDefinition.getRequiredCombatLevel()) {
+            this.player.getDialogueManager().showNpcOneLineDialogue("You need a combat level of " + slayerMasterDefinition.getRequiredCombatLevel() + " to recieve a task from me.", 588);
             return;
         }
-        if (object.getNpcId() == 1599 && this.player.getSkillManager().getCurrentLevels()[18] < 50) {
+        if (slayerMasterDefinition.getNpcId() == 1599 && this.player.getSkillManager().getCurrentLevels()[18] < 50) {
             this.player.getDialogueManager().showNpcOneLineDialogue("You need a slayer level of 50 to recieve a task from me.", 588);
             return;
         }
-        if ((object = SlayerManager.chooseWeightedAssignment(object.getAssignments(), this.player)) == null) {
+        SlayerAssignmentDefinition slayerAssignmentDefinition = SlayerManager.chooseWeightedAssignment(slayerMasterDefinition.getAssignments(), this.player);
+        if (slayerAssignmentDefinition == null) {
             Player player = this.player;
             player.packetSender.sendGameMessage("No tasks available currently.");
             player = this.player;
@@ -73,37 +74,34 @@ public final class SlayerManager {
             return;
         }
         this.slayerMasterId = n;
-        Object object2 = object;
-        this.slayerTaskName = ((SlayerAssignmentDefinition)object2).taskName;
-        object = object2 = object;
-        object = object2;
-        this.taskAmount = GameUtil.randomBetweenInclusive(((SlayerAssignmentDefinition)object2).minAmount, ((SlayerAssignmentDefinition)object).maxAmount);
+        this.slayerTaskName = slayerAssignmentDefinition.taskName;
+        this.taskAmount = GameUtil.randomBetweenInclusive(slayerAssignmentDefinition.minAmount, slayerAssignmentDefinition.maxAmount);
         this.player.getDialogueManager().showNpcOneLineDialogue("Your new task is to kill " + this.taskAmount + " " + this.slayerTaskName + "s.", 588);
     }
 
-    private static SlayerAssignmentDefinition chooseWeightedAssignment(SlayerAssignmentDefinition[] slayerAssignmentDefinitionArray, Player object) {
+    private static SlayerAssignmentDefinition chooseWeightedAssignment(SlayerAssignmentDefinition[] slayerAssignmentDefinitionArray, Player player) {
         ArrayList<SlayerAssignmentDefinition> arrayList = new ArrayList<SlayerAssignmentDefinition>();
         SlayerAssignmentDefinition[] slayerAssignmentDefinitionArray2 = slayerAssignmentDefinitionArray;
         int n = slayerAssignmentDefinitionArray.length;
         int n2 = 0;
         while (n2 < n) {
             SlayerAssignmentDefinition slayerAssignmentDefinition = slayerAssignmentDefinitionArray2[n2];
-            if (slayerAssignmentDefinition.isAvailableFor((Player)object)) {
+            if (slayerAssignmentDefinition.isAvailableFor(player)) {
                 arrayList.add(slayerAssignmentDefinition);
             }
             ++n2;
         }
+        if (arrayList.isEmpty()) {
+            return null;
+        }
         double d = 0.0;
         for (SlayerAssignmentDefinition slayerAssignmentDefinition : arrayList) {
-            object = slayerAssignmentDefinition;
-            d += (double)((SlayerAssignmentDefinition)object).weight;
+            d += (double)slayerAssignmentDefinition.weight;
         }
         double[] dArray = new double[arrayList.size()];
         int n3 = 0;
         while (n3 < arrayList.size()) {
             SlayerAssignmentDefinition slayerAssignmentDefinition = (SlayerAssignmentDefinition)arrayList.get(n3);
-            object = slayerAssignmentDefinition;
-            object = slayerAssignmentDefinition;
             double d2 = slayerAssignmentDefinition.weight;
             dArray[n3] = d2 / d;
             ++n3;
@@ -158,17 +156,17 @@ public final class SlayerManager {
         }
     }
 
-    public final boolean canAttackSlayerMonster(Npc object) {
-        Object object2;
-        if ((object = SlayerMonsterDefinition.forName(((Npc)object).getDefinition().getName().toLowerCase())) == null) {
+    public final boolean canAttackSlayerMonster(Npc npc) {
+        SlayerMonsterDefinition slayerMonsterDefinition = SlayerMonsterDefinition.forName(npc.getDefinition().getName().toLowerCase());
+        if (slayerMonsterDefinition == null) {
             return true;
         }
-        if (this.player.getSkillManager().getCurrentLevels()[18] < ((SlayerMonsterDefinition)((Object)object)).getRequiredSlayerLevel()) {
+        if (this.player.getSkillManager().getCurrentLevels()[18] < slayerMonsterDefinition.getRequiredSlayerLevel()) {
             Player player = this.player;
-            player.packetSender.sendGameMessage("You need a slayer level of " + ((SlayerMonsterDefinition)((Object)object)).getRequiredSlayerLevel() + " to attack this monster.");
+            player.packetSender.sendGameMessage("You need a slayer level of " + slayerMonsterDefinition.getRequiredSlayerLevel() + " to attack this monster.");
             return false;
         }
-        if (((SlayerMonsterDefinition)((Object)object)).getMonsterName().equalsIgnoreCase("kurask") || ((SlayerMonsterDefinition)((Object)object)).getMonsterName().equalsIgnoreCase("turoth")) {
+        if (slayerMonsterDefinition.getMonsterName().equalsIgnoreCase("kurask") || slayerMonsterDefinition.getMonsterName().equalsIgnoreCase("turoth")) {
             if (this.player.getWeaponProfile() != null && (this.player.getWeaponProfile().getInterfaceDefinition() != null && this.player.getWeaponProfile().getInterfaceDefinition() == WeaponInterfaceDefinition.LONG_BOW || this.player.getWeaponProfile().getInterfaceDefinition() == WeaponInterfaceDefinition.BOW) && this.player.getEquipmentManager().getContainer().getItemAt(13) != null && this.player.getEquipmentManager().getContainer().getItemAt(13).getId() == 4160) {
                 return true;
             }
@@ -176,24 +174,24 @@ public final class SlayerManager {
                 return true;
             }
         }
-        if (((SlayerMonsterDefinition)((Object)object)).getRequiredItemIds() == null) {
+        if (slayerMonsterDefinition.getRequiredItemIds() == null) {
             return true;
         }
-        if (((SlayerMonsterDefinition)((Object)object)).getRequirementMode().equals("use") || ((SlayerMonsterDefinition)((Object)object)).getRequirementMode().equals("none")) {
+        if (slayerMonsterDefinition.getRequirementMode().equals("use") || slayerMonsterDefinition.getRequirementMode().equals("none")) {
             return true;
         }
         ItemStack[] itemStackArray = this.player.getEquipmentManager().getContainer().getRawItems();
         int n = itemStackArray.length;
         int n2 = 0;
         while (n2 < n) {
-            object2 = itemStackArray[n2];
-            if (object2 != null) {
-                int[] nArray = ((SlayerMonsterDefinition)((Object)object)).getRequiredItemIds();
+            ItemStack itemStack = itemStackArray[n2];
+            if (itemStack != null) {
+                int[] nArray = slayerMonsterDefinition.getRequiredItemIds();
                 int n3 = nArray.length;
                 int n4 = 0;
                 while (n4 < n3) {
                     int n5 = nArray[n4];
-                    if (((ItemStack)object2).getId() == n5) {
+                    if (itemStack.getId() == n5) {
                         return true;
                     }
                     ++n4;
@@ -201,8 +199,8 @@ public final class SlayerManager {
             }
             ++n2;
         }
-        object2 = this.player;
-        ((Player)object2).packetSender.sendGameMessage("You don't have the required protection against this kind of monster!");
+        Player player = this.player;
+        player.packetSender.sendGameMessage("You don't have the required protection against this kind of monster!");
         return false;
     }
 
@@ -216,8 +214,7 @@ public final class SlayerManager {
         }
         int n = entity.getMaxHitpoints() / 10;
         if (slayerMonsterDefinition.getRequirementMode().equals("use") && entity.getCurrentHitpoints() <= n) {
-            entity = this.player;
-            ((Player)entity).packetSender.sendGameMessage("The " + GameUtil.capitalizeLowercaseFirst(slayerMonsterDefinition.getMonsterName()) + " is on its last legs! Finish it quickly!");
+            this.player.packetSender.sendGameMessage("The " + GameUtil.capitalizeLowercaseFirst(slayerMonsterDefinition.getMonsterName()) + " is on its last legs! Finish it quickly!");
             return true;
         }
         return false;
@@ -256,7 +253,7 @@ public final class SlayerManager {
                 Player player = this.player;
                 player.packetSender.sendGameMessage("You throw the shuddering vial into the water...");
                 this.player.getInventoryManager().removeItem(new ItemStack(6664));
-                new WoodcuttingHandler(this.player.getPosition(), 3, new Position(n2, n3), 0, new ProjectileDefinition(29, ProjectileTiming.d)).a();
+                new WoodcuttingHandler(this.player.getPosition(), 3, new Position(n2, n3), 0, new ProjectileDefinition(29, ProjectileTiming.d)).sendProjectileToNearbyPlayers();
                 this.player.setActionLocked(true);
                 CycleEventHandler.getInstance().schedule(this.player, new MogreSpawnTask(this), 5);
                 return true;
@@ -266,21 +263,23 @@ public final class SlayerManager {
     }
 
     public final void useFinishingItemOnMonster(Npc npc, int n) {
-        Object object = SlayerMonsterDefinition.forName(npc.getDefinition().getName().toLowerCase());
-        if (object == null) {
+        SlayerMonsterDefinition slayerMonsterDefinition = SlayerMonsterDefinition.forName(npc.getDefinition().getName().toLowerCase());
+        if (slayerMonsterDefinition == null) {
             return;
         }
         int n2 = npc.getMaxHitpoints() / 10;
-        if (!object.getRequirementMode().equals("use") || npc.getCurrentHitpoints() > n2) {
+        if (!slayerMonsterDefinition.getRequirementMode().equals("use") || npc.getCurrentHitpoints() > n2) {
             return;
         }
-        int[] nArray = object.getRequiredItemIds();
-        object = nArray;
+        int[] nArray = slayerMonsterDefinition.getRequiredItemIds();
+        if (nArray == null) {
+            return;
+        }
         n2 = nArray.length;
         int n3 = 0;
         while (n3 < n2) {
-            SlayerMonsterDefinition slayerMonsterDefinition = object[n3];
-            if (slayerMonsterDefinition == n) {
+            int requiredItemId = nArray[n3];
+            if (requiredItemId == n) {
                 this.player.getUpdateState().setAnimation(832);
                 npc.setDead(true);
                 CombatManager.handleDeath(npc);

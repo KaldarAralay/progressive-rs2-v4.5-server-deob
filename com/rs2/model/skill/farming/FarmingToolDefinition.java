@@ -62,16 +62,14 @@ public enum FarmingToolDefinition {
      * WARNING - Possible parameter corruption
      * WARNING - void declaration
      */
-    private FarmingToolDefinition(int n3, int n4, int n5, int n6, String string) {
-        void var9_7;
-        void var8_6;
-        this.storageIndex = n3;
-        this.itemId = n4;
-        this.configValue = n5;
-        this.maxStoredAmount = n6;
-        this.nameTextInterfaceId = (int)string;
-        this.amountTextInterfaceId = var8_6;
-        this.displayName = var9_7;
+    private FarmingToolDefinition(int n2, int n3, int n4, int n5, int n6, int n7, String string2) {
+        this.storageIndex = n2;
+        this.itemId = n3;
+        this.configValue = n4;
+        this.maxStoredAmount = n5;
+        this.nameTextInterfaceId = n6;
+        this.amountTextInterfaceId = n7;
+        this.displayName = string2;
     }
 
     public final int getStorageIndex() {
