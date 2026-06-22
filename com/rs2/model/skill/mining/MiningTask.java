@@ -22,6 +22,7 @@ import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.net.packet.PacketSender;
 import com.rs2.util.GameUtil;
+import com.rs2.util.GameplayTrace;
 import com.rs2.util.TextUtil;
 
 public final class MiningTask
@@ -61,6 +62,9 @@ extends CycleEvent {
         block48: {
             block47: {
                 if (!MiningManager.getPlayer(this.manager).isCurrentActionSequence(this.actionSequence)) {
+                    if (GameplayTrace.enabled()) {
+                        GameplayTrace.log("mining stop invalid-sequence player=" + GameplayTrace.describe(MiningManager.getPlayer(this.manager)) + " seq=" + this.actionSequence + " rockObjectId=" + this.rockObjectId + " x=" + this.x + " y=" + this.y);
+                    }
                     if (MiningManager.getPlayer((MiningManager)this.manager).botEnabled) {
                         MiningManager.getPlayer((MiningManager)this.manager).currentBotTask.startWalkToBank(MiningManager.getPlayer(this.manager));
                     }
@@ -101,6 +105,9 @@ extends CycleEvent {
         ObjectManager.getInstance();
         DynamicObject dynamicObject2 = ObjectManager.findDynamicObjectAt(this.x, this.y, MiningManager.getPlayer(this.manager).getPosition().getPlane());
         if (dynamicObject2 != null && dynamicObject2.getWorldObject().getObjectId() != this.rockObjectId) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("mining stop depleted-before-roll player=" + GameplayTrace.describe(MiningManager.getPlayer(this.manager)) + " seq=" + this.actionSequence + " rockObjectId=" + this.rockObjectId + " dynamicId=" + dynamicObject2.getWorldObject().getObjectId() + " x=" + this.x + " y=" + this.y);
+            }
             if (MiningManager.getPlayer(this.manager).getQuestState(0) != 1) {
                 MiningManager.getPlayer(this.manager).getDialogueManager().showOneLineStatement("There is no more ore in this rock.");
                 MiningManager.getPlayer(this.manager).setInteractionTargetId(0);
@@ -170,6 +177,10 @@ extends CycleEvent {
             } else {
                 MiningManager.getPlayer(this.manager).getInventoryManager().addItem(new ItemStack(n3, 1));
             }
+            if (GameplayTrace.enabled()) {
+                ItemService.getInstance();
+                GameplayTrace.log("mining success player=" + GameplayTrace.describe(MiningManager.getPlayer(this.manager)) + " seq=" + this.actionSequence + " rockObjectId=" + this.rockObjectId + " minedItemId=" + n3 + " minedItem=" + ItemService.getItemName(n3) + " xp=" + MiningManager.getExperienceForMinedItem(n3, this.baseExperience) + " x=" + this.x + " y=" + this.y);
+            }
             Object object = MiningManager.getPlayer(this.manager);
             PacketSender packetSender = ((Player)object).packetSender;
             StringBuilder stringBuilder = new StringBuilder("You manage to mine some ");
@@ -215,6 +226,9 @@ extends CycleEvent {
                 try {
                     int n7 = SkillActionHelper.getObjectOrientation(this.rockObjectId, this.x, this.y, MiningManager.getPlayer(this.manager).getPosition().getPlane());
                     n = SkillActionHelper.getObjectType(this.rockObjectId, this.x, this.y, MiningManager.getPlayer(this.manager).getPosition().getPlane());
+                    if (GameplayTrace.enabled()) {
+                        GameplayTrace.log("mining depleted player=" + GameplayTrace.describe(MiningManager.getPlayer(this.manager)) + " seq=" + this.actionSequence + " rockObjectId=" + this.rockObjectId + " depletedObjectId=" + MiningManager.getDepletedRockObjectId(this.rockObjectId) + " x=" + this.x + " y=" + this.y);
+                    }
                     new DynamicObject(MiningManager.getDepletedRockObjectId(this.rockObjectId), this.x, this.y, MiningManager.getPlayer(this.manager).getPosition().getPlane(), n == 22 ? MiningManager.rotateDepletedRockOrientation(n7) : n7, n == 11 ? 11 : 10, this.rockObjectId, this.respawnTicks);
                 }
                 catch (Exception exception) {

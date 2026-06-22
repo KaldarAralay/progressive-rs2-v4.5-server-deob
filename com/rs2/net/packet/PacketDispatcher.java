@@ -33,6 +33,7 @@ import com.rs2.net.packet.handler.RegionLoadPacketHandler;
 import com.rs2.net.packet.handler.ReportAbusePacketHandler;
 import com.rs2.net.packet.handler.SkillMenuPacketHandler;
 import com.rs2.net.packet.handler.SocialPacketHandler;
+import com.rs2.util.GameplayTrace;
 import com.rs2.util.ProfilerTimer;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -143,6 +144,9 @@ public final class PacketDispatcher {
     public static void dispatchPacket(Player player, IncomingPacket object) {
         PacketHandler packetHandler = packetHandlers[((IncomingPacket)object).getOpcode()];
         if (packetHandler == null) {
+            if (GameplayTrace.enabled() && PacketDispatcher.isGameplayTraceOpcode(((IncomingPacket)object).getOpcode())) {
+                GameplayTrace.log("packet unhandled opcode=" + ((IncomingPacket)object).getOpcode() + " length=" + ((IncomingPacket)object).getLength() + " player=" + GameplayTrace.describe(player));
+            }
             if (ServerSettings.debugModeEnabled) {
                 System.out.println("Unhandled packet opcode = " + ((IncomingPacket)object).getOpcode() + " length = " + ((IncomingPacket)object).getLength());
             }
@@ -152,6 +156,9 @@ public final class PacketDispatcher {
             return;
         }
         try {
+            if (GameplayTrace.enabled() && PacketDispatcher.isGameplayTraceOpcode(((IncomingPacket)object).getOpcode())) {
+                GameplayTrace.log("packet dispatch opcode=" + ((IncomingPacket)object).getOpcode() + " length=" + ((IncomingPacket)object).getLength() + " player=" + GameplayTrace.describe(player));
+            }
             if (!(packetHandler instanceof NoOpPacketHandler) && ((IncomingPacket)object).getOpcode() != 202) {
                 player.setIdlePacketCount(0);
             }
@@ -160,6 +167,7 @@ public final class PacketDispatcher {
             return;
         }
         catch (Exception exception) {
+            GameplayTrace.logException("packet dispatch opcode=" + ((IncomingPacket)object).getOpcode() + " player=" + GameplayTrace.describe(player), exception);
             exception.printStackTrace();
             player.disconnect();
             return;
@@ -251,9 +259,56 @@ public final class PacketDispatcher {
             return;
         }
         catch (Exception exception) {
+            GameplayTrace.logException("packet processIncoming player=" + GameplayTrace.describe(player), exception);
             player.disconnect();
             return;
         }
+    }
+
+    private static boolean isGameplayTraceOpcode(int opcode) {
+        switch (opcode) {
+            case 16:
+            case 17:
+            case 21:
+            case 25:
+            case 35:
+            case 40:
+            case 41:
+            case 43:
+            case 53:
+            case 57:
+            case 70:
+            case 72:
+            case 75:
+            case 87:
+            case 98:
+            case 103:
+            case 117:
+            case 122:
+            case 129:
+            case 130:
+            case 131:
+            case 132:
+            case 135:
+            case 145:
+            case 155:
+            case 164:
+            case 181:
+            case 185:
+            case 192:
+            case 208:
+            case 214:
+            case 230:
+            case 234:
+            case 236:
+            case 237:
+            case 248:
+            case 253:
+            case 252: {
+                return true;
+            }
+        }
+        return false;
     }
 }
 

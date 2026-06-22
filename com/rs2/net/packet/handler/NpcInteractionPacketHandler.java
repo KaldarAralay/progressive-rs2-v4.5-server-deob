@@ -15,6 +15,7 @@ import com.rs2.net.packet.ByteOrder;
 import com.rs2.net.packet.ByteTransform;
 import com.rs2.net.packet.IncomingPacket;
 import com.rs2.net.packet.PacketHandler;
+import com.rs2.util.GameplayTrace;
 
 public final class NpcInteractionPacketHandler implements PacketHandler {
     @Override
@@ -74,7 +75,13 @@ public final class NpcInteractionPacketHandler implements PacketHandler {
                 int index = packet.getReader().readSignedShort(ByteTransform.ADD);
                 Npc npc = getInteractableNpc(index);
                 if (npc == null) {
+                    if (GameplayTrace.enabled()) {
+                        GameplayTrace.log("npc attack decoded missing-npc player=" + GameplayTrace.describe(player) + " index=" + index);
+                    }
                     break;
+                }
+                if (GameplayTrace.enabled()) {
+                    GameplayTrace.log("npc attack decoded player=" + GameplayTrace.describe(player) + " npc=" + GameplayTrace.describe(npc) + " index=" + index + " attackable=" + npc.getDefinition().isAttackable() + " doorSupport=" + npc.isDoorSupportNpc());
                 }
                 player.setQueuedCombatSpell(null);
                 if (npc.getOwnerPlayer() != null && npc.getOwnerPlayer() != player) {
@@ -84,6 +91,9 @@ public final class NpcInteractionPacketHandler implements PacketHandler {
                 if (npc.getDefinition().isAttackable() || npc.isDoorSupportNpc()) {
                     int npcId = npc.getDefinition().getId();
                     if (player.dv != 2 || npcId != 643) {
+                        if (GameplayTrace.enabled()) {
+                            GameplayTrace.log("npc attack start-combat player=" + GameplayTrace.describe(player) + " npc=" + GameplayTrace.describe(npc));
+                        }
                         CombatManager.startCombat(player, npc);
                         break;
                     }

@@ -10,6 +10,7 @@ import com.rs2.model.combat.AttackValidationResult;
 import com.rs2.model.combat.AttackXpMode;
 import com.rs2.model.combat.CombatAction;
 import com.rs2.model.combat.CombatCycleEvent;
+import com.rs2.model.combat.CombatManager;
 import com.rs2.model.combat.CombatType;
 import com.rs2.model.combat.ProjectileTiming;
 import com.rs2.model.combat.WeaponProfile;
@@ -25,6 +26,7 @@ import com.rs2.model.player.Player;
 import com.rs2.model.skill.magic.SpellDefinition;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.util.GameUtil;
+import com.rs2.util.GameplayTrace;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -143,6 +145,9 @@ public abstract class BaseCombatAttack extends CombatAttack {
                     hitDefinition.setChainedSource(this.getAttacker());
                     hitDefinition.setChainedTargets(players);
                 }
+                if (GameplayTrace.enabled()) {
+                    GameplayTrace.log("combat base queue-hit attacker=" + GameplayTrace.describe(this.getAttacker()) + " target=" + GameplayTrace.describe(this.getTarget()) + " style=" + hitDefinition.getAttackStyle().getXpMode() + "/" + hitDefinition.getAttackStyle().getCombatType() + " maxDamage=" + hitDefinition.getMaxDamage() + " minDamage=" + hitDefinition.getMinimumDamage() + " random=" + hitDefinition.isRandomDamageEnabled() + " accuracy=" + hitDefinition.isAccuracyCheckEnabled() + " always=" + hitDefinition.isAlwaysHit());
+                }
                 combatAction.queue();
             }
         }
@@ -209,8 +214,8 @@ public abstract class BaseCombatAttack extends CombatAttack {
         return this;
     }
 
-    public static BaseCombatAttack createForcedMeleeAttack(Entity entity, Entity target, AttackXpMode xpMode, AttackBonusType attackBonusType, int maxHit, int attackDelay, int animationId, boolean alwaysHits) {
-        return new ForcedMeleeCombatAttack(entity, target, xpMode, attackBonusType, 97, true, 2655, 8);
+    public static BaseCombatAttack createForcedMeleeAttack(Entity entity, Entity target, AttackXpMode xpMode, AttackBonusType attackBonusType, int maxHit, int attackDelay, int animationId, boolean deferProtectionPrayerReduction) {
+        return new ForcedMeleeCombatAttack(entity, target, xpMode, attackBonusType, maxHit, deferProtectionPrayerReduction, animationId, attackDelay);
     }
 
     public static BaseCombatAttack createMeleeAttack(Entity entity, Entity target, AttackXpMode xpMode, AttackBonusType attackBonusType, int maxHit, int attackDelay, int animationId) {
@@ -229,19 +234,20 @@ public abstract class BaseCombatAttack extends CombatAttack {
             throw new IllegalArgumentException("That weapon does not contain an attack style with the given mode!");
         }
         AttackStyleDefinition attackStyleDefinition = weaponProfile.getInterfaceDefinition().getAttackStyles()[styleIndex];
-        return BaseCombatAttack.createMeleeAttack(entity, target, xpMode, attackStyleDefinition.getAttackBonusType(), 0, weaponProfile.getAttackDelay(), weaponProfile.getAttackAnimations()[styleIndex]);
+        int maxHit = entity.isNpc() ? CombatManager.calculateMeleeMaxHit(entity, null) : 0;
+        return BaseCombatAttack.createMeleeAttack(entity, target, xpMode, attackStyleDefinition.getAttackBonusType(), maxHit, weaponProfile.getAttackDelay(), weaponProfile.getAttackAnimations()[styleIndex]);
     }
 
     private static BaseCombatAttack createProjectileAttackInternal(Entity entity, Entity target, CombatType combatType, AttackXpMode xpMode, int maxHit, int attackDelay, int animationId, GraphicEffect attackerGraphic, GraphicEffect hitGraphic, int projectileId, ProjectileTiming projectileTiming, int hitDelay, CombatEffect combatEffect) {
-        return new ProjectileCombatAttack(entity, target, xpMode, combatType, projectileTiming, projectileId, maxHit, 0, hitGraphic, combatEffect, animationId, attackDelay, attackerGraphic);
+        return new ProjectileCombatAttack(entity, target, xpMode, combatType, projectileTiming, projectileId, maxHit, hitDelay, hitGraphic, combatEffect, animationId, attackDelay, attackerGraphic);
     }
 
     private static BaseCombatAttack createForcedProjectileAttackInternal(Entity entity, Entity target, CombatType combatType, AttackXpMode xpMode, int maxHit, int attackDelay, int animationId, GraphicEffect attackerGraphic, GraphicEffect hitGraphic, int projectileId, ProjectileTiming projectileTiming, int hitDelay, CombatEffect combatEffect, boolean alwaysHits) {
-        return new ForcedProjectileCombatAttack(entity, target, xpMode, combatType, projectileTiming, projectileId, alwaysHits, maxHit, 0, hitGraphic, combatEffect, animationId, attackDelay, attackerGraphic);
+        return new ForcedProjectileCombatAttack(entity, target, xpMode, combatType, projectileTiming, projectileId, alwaysHits, maxHit, hitDelay, hitGraphic, combatEffect, animationId, attackDelay, attackerGraphic);
     }
 
     public static BaseCombatAttack createFlaggedProjectileAttack(Entity entity, Entity target, CombatType combatType, AttackXpMode xpMode, int maxHit, int attackDelay, int animationId, GraphicEffect attackerGraphic, GraphicEffect hitGraphic, int projectileId, ProjectileTiming projectileTiming, boolean alwaysHits, boolean deferProtectionPrayerReduction) {
-        return new FlaggedProjectileCombatAttack(entity, target, xpMode, combatType, projectileTiming, projectileId, false, 97, true, 0, hitGraphic, null, animationId, 8, attackerGraphic);
+        return new FlaggedProjectileCombatAttack(entity, target, xpMode, combatType, projectileTiming, projectileId, alwaysHits, maxHit, deferProtectionPrayerReduction, 0, hitGraphic, null, animationId, attackDelay, attackerGraphic);
     }
 
     public static BaseCombatAttack createProjectileAttack(Entity entity, Entity target, CombatType combatType, AttackXpMode xpMode, int maxHit, int attackDelay, int animationId, GraphicEffect attackerGraphic, GraphicEffect hitGraphic, int projectileId, ProjectileTiming projectileTiming) {
@@ -249,7 +255,7 @@ public abstract class BaseCombatAttack extends CombatAttack {
     }
 
     public static BaseCombatAttack createKalphiteQueenMagicAttack(Entity entity, Entity target, CombatType combatType, AttackXpMode xpMode, int maxHit, int attackDelay, int animationId, GraphicEffect attackerGraphic, GraphicEffect hitGraphic, int projectileId, ProjectileTiming projectileTiming, boolean alwaysHits) {
-        return BaseCombatAttack.createForcedProjectileAttackInternal(entity, target, combatType, xpMode, 31, 4, animationId, attackerGraphic, hitGraphic, 280, projectileTiming, 0, null, true);
+        return BaseCombatAttack.createForcedProjectileAttackInternal(entity, target, combatType, xpMode, maxHit, attackDelay, animationId, attackerGraphic, hitGraphic, projectileId, projectileTiming, 0, null, alwaysHits);
     }
 
     public static BaseCombatAttack createProjectileAttackWithEffect(Entity entity, Entity target, CombatType combatType, AttackXpMode xpMode, int maxHit, int attackDelay, int animationId, GraphicEffect attackerGraphic, GraphicEffect hitGraphic, int projectileId, ProjectileTiming projectileTiming, CombatEffect combatEffect) {
@@ -257,7 +263,7 @@ public abstract class BaseCombatAttack extends CombatAttack {
     }
 
     public static BaseCombatAttack createKalphiteQueenRangedAttackWithEffect(Entity entity, Entity target, CombatType combatType, AttackXpMode xpMode, int maxHit, int attackDelay, int animationId, GraphicEffect attackerGraphic, GraphicEffect hitGraphic, int projectileId, ProjectileTiming projectileTiming, CombatEffect combatEffect, boolean alwaysHits) {
-        return BaseCombatAttack.createForcedProjectileAttackInternal(entity, target, combatType, xpMode, 31, attackDelay, animationId, attackerGraphic, hitGraphic, 289, projectileTiming, 0, combatEffect, true);
+        return BaseCombatAttack.createForcedProjectileAttackInternal(entity, target, combatType, xpMode, maxHit, attackDelay, animationId, attackerGraphic, hitGraphic, projectileId, projectileTiming, 0, combatEffect, alwaysHits);
     }
 
     public static BaseCombatAttack createMagicAttack(Entity entity, Entity target, SpellDefinition spellDefinition) {

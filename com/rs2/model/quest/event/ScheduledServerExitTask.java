@@ -14,6 +14,9 @@ extends TickTask {
 
     @Override
     public final void execute() {
+        if (Boolean.getBoolean("prs.traceGameplay")) {
+            new Exception("[exit-trace] ScheduledServerExitTask calling System.exit").printStackTrace();
+        }
         System.exit(0);
     }
 }

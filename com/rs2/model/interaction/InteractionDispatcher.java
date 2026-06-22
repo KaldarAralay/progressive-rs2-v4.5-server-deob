@@ -30,6 +30,7 @@ import com.rs2.model.player.PetManager;
 import com.rs2.model.player.Player;
 import com.rs2.model.skill.magic.SpellDefinition;
 import com.rs2.util.GameUtil;
+import com.rs2.util.GameplayTrace;
 import com.rs2.util.path.ProjectileCollisionMap;
 
 public final class InteractionDispatcher {
@@ -56,6 +57,9 @@ public final class InteractionDispatcher {
                 }
                 object = string;
                 int n5 = player.nextActionSequence();
+                if (GameplayTrace.enabled()) {
+                    GameplayTrace.log("schedule first-object task player=" + GameplayTrace.describe(player) + " seq=" + n5 + " objectId=" + n + " name=" + object + " x=" + n2 + " y=" + n3 + " plane=" + n4);
+                }
                 World.scheduleTickTask(new FirstObjectActionTask(1, true, player, n5, n, n2, n3, n4, (String)object));
                 return;
             }
@@ -210,4 +214,3 @@ public final class InteractionDispatcher {
         return bl;
     }
 }
-

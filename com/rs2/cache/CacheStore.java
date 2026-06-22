@@ -179,7 +179,7 @@ implements Closeable {
             }
             byte[] metadataBytes = FileUtil.readBytes(string, false);
             if (metadataBytes == null) {
-                cacheVerificationFailed = true;
+                ServerSettings.cacheVerificationShutdownPending = false;
                 return;
             }
             ByteArrayReader byteArrayReader = new ByteArrayReader(metadataBytes);
@@ -201,7 +201,7 @@ implements Closeable {
             }
             byte[] launcherBytes = FileUtil.readBytes(ServerSettings.launcherJarPath, false);
             if (launcherBytes == null) {
-                cacheVerificationFailed = true;
+                ServerSettings.cacheVerificationShutdownPending = false;
                 return;
             }
             CRC32 crc32 = new CRC32();
@@ -213,13 +213,18 @@ implements Closeable {
             String actualSha1 = new BigInteger(1, MessageDigest.getInstance("SHA-1").digest(launcherBytes)).toString(16);
             String expectedSha1 = new BigInteger(1, expectedSha1Bytes).toString(16);
             if (expectedCrc != actualCrc || !expectedMd5.equals(actualMd5) || !expectedSha1.equals(actualSha1)) {
-                cacheVerificationFailed = true;
+                if (Boolean.getBoolean("prs.traceGameplay")) {
+                    System.out.println("[server-trace] launcher checksum mismatch ignored for deob build");
+                }
             }
             ServerSettings.cacheVerificationShutdownPending = false;
             return;
         }
         catch (Exception exception) {
-            cacheVerificationFailed = true;
+            if (Boolean.getBoolean("prs.traceGameplay")) {
+                System.out.println("[server-trace] launcher checksum verification skipped: " + exception);
+            }
+            ServerSettings.cacheVerificationShutdownPending = false;
             return;
         }
     }

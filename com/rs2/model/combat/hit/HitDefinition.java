@@ -104,7 +104,7 @@ public final class HitDefinition {
 
     public final HitDefinition copy() {
         HitDefinition hitDefinition = new HitDefinition(this.attackStyle, this.hitType, this.maxDamage);
-        new HitDefinition(this.attackStyle, this.hitType, this.maxDamage).a = this.a;
+        hitDefinition.a = this.a;
         hitDefinition.graphic = this.graphic;
         hitDefinition.impactSoundId = this.impactSoundId;
         hitDefinition.projectile = this.projectile;
@@ -118,6 +118,11 @@ public final class HitDefinition {
         hitDefinition.blockAnimationEnabled = this.blockAnimationEnabled;
         hitDefinition.minimumDamage = this.minimumDamage;
         hitDefinition.protectionPrayerReductionDeferred = this.protectionPrayerReductionDeferred;
+        hitDefinition.specialEffectId = this.specialEffectId;
+        hitDefinition.spell = this.spell;
+        hitDefinition.ammunition = this.ammunition;
+        hitDefinition.chainedSource = this.chainedSource;
+        hitDefinition.chainedTargets = new ArrayList(this.chainedTargets);
         HitDefinition hitDefinition2 = this;
         if (hitDefinition2.accuracyCheckEnabled) {
             hitDefinition2 = this;

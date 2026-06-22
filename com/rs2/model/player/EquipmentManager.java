@@ -17,6 +17,7 @@ import com.rs2.model.player.EquipmentContainer;
 import com.rs2.model.player.Player;
 import com.rs2.model.quest.QuestDefinition;
 import com.rs2.model.skill.SkillManager;
+import com.rs2.util.GameplayTrace;
 import com.rs2.util.GameUtil;
 
 public final class EquipmentManager {
@@ -138,10 +139,19 @@ public final class EquipmentManager {
                         block60: {
                             itemStack = this.player.getInventoryManager().getContainer().getItemAt(n);
                             if (itemStack == null) {
+                                if (GameplayTrace.enabled()) {
+                                    GameplayTrace.log("equipment equip missing-item player=" + GameplayTrace.describe(this.player) + " inventorySlot=" + n);
+                                }
                                 return;
                             }
                             n3 = itemStack.getDefinition().getEquipmentSlot();
+                            if (GameplayTrace.enabled()) {
+                                GameplayTrace.log("equipment equip request player=" + GameplayTrace.describe(this.player) + " inventorySlot=" + n + " itemId=" + itemStack.getId() + " item=" + itemStack.getDefinition().getName() + " equipmentSlot=" + n3);
+                            }
                             if (!this.player.getInventoryManager().containsItemStack(itemStack)) {
+                                if (GameplayTrace.enabled()) {
+                                    GameplayTrace.log("equipment equip missing-stack player=" + GameplayTrace.describe(this.player) + " inventorySlot=" + n + " itemId=" + itemStack.getId());
+                                }
                                 return;
                             }
                             int n4 = n3;
@@ -204,9 +214,15 @@ public final class EquipmentManager {
                             }
                         }
                         if (!bl) {
+                            if (GameplayTrace.enabled()) {
+                                GameplayTrace.log("equipment equip blocked-requirements player=" + GameplayTrace.describe(this.player) + " inventorySlot=" + n + " itemId=" + itemStack.getId() + " item=" + itemStack.getDefinition().getName());
+                            }
                             return;
                         }
                         if (this.player.getQuestState(0) < 42 && this.player.getQuestState(0) != 1) {
+                            if (GameplayTrace.enabled()) {
+                                GameplayTrace.log("equipment equip blocked-tutorial player=" + GameplayTrace.describe(this.player) + " inventorySlot=" + n + " itemId=" + itemStack.getId() + " item=" + itemStack.getDefinition().getName() + " quest0=" + this.player.getQuestState(0));
+                            }
                             this.player.getDialogueManager().showOneLineStatement("You haven't learned how to wield items yet!");
                             return;
                         }
@@ -377,6 +393,9 @@ public final class EquipmentManager {
         Player player = this.player;
         player.packetSender.sendSoundEffect(this.equipSoundIds[GameUtil.randomInt(this.equipSoundIds.length)], 1, 0);
         this.player.setAppearanceUpdateRequired(true);
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("equipment equip success player=" + GameplayTrace.describe(this.player) + " inventorySlot=" + n + " itemId=" + itemStack.getId() + " item=" + itemStack.getDefinition().getName() + " equipmentSlot=" + n3);
+        }
     }
 
     public final void unequipSlot(int n) {

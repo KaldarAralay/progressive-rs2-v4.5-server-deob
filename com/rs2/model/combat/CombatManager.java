@@ -40,6 +40,7 @@ import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventHandler;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
+import com.rs2.util.GameplayTrace;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -63,7 +64,13 @@ extends TickTask {
     }
 
     public static void startCombat(Entity entity, Entity entity2) {
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("combat start requested attacker=" + GameplayTrace.describe(entity) + " target=" + GameplayTrace.describe(entity2));
+        }
         if (entity2.isNpc() && !((Npc)entity2).isActive() || entity2.isDead()) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("combat start blocked inactive-or-dead-target attacker=" + GameplayTrace.describe(entity) + " target=" + GameplayTrace.describe(entity2));
+            }
             if (entity.isPlayer()) {
                 Player player = (Player)entity;
                 if (player.currentBotTask != null) {
@@ -73,6 +80,9 @@ extends TickTask {
             return;
         }
         if (entity2.getMaxHitpoints() <= 0 || entity2.isNpc() && (((Npc)entity2).getNpcId() == 411 || RandomEventManager.isRandomEventCombatExcludedNpcId(((Npc)entity2).getNpcId()))) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("combat start blocked invalid-target attacker=" + GameplayTrace.describe(entity) + " target=" + GameplayTrace.describe(entity2));
+            }
             if (entity.isPlayer()) {
                 Player player = (Player)entity;
                 player.packetSender.sendGameMessage("You cannot attack this npc.");
@@ -105,6 +115,9 @@ extends TickTask {
         List attackOptions = new LinkedList();
         int n = GameUtil.getDistance(entity.getPosition(), entity2.getPosition());
         entity.collectCombatAttackOptions(attackOptions, entity2, n);
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("combat start options attacker=" + GameplayTrace.describe(entity) + " target=" + GameplayTrace.describe(entity2) + " distance=" + n + " options=" + attackOptions.size());
+        }
         SmithingHandler selectedAttackOption = null;
         Iterator iterator = attackOptions.iterator();
         while (iterator.hasNext()) {
@@ -122,6 +135,9 @@ extends TickTask {
         }
         int n2 = selectedAttackOption == null ? 1 : selectedAttackOption.getAttack().getAttackRange();
         entity.setAttackRange(n2);
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("combat start selected attacker=" + GameplayTrace.describe(entity) + " target=" + GameplayTrace.describe(entity2) + " selected=" + (selectedAttackOption == null ? "null" : selectedAttackOption.getAttack().getCombatType() + "/range=" + selectedAttackOption.getAttack().getAttackRange() + "/state=" + selectedAttackOption.getState()) + " attackRange=" + n2);
+        }
         if (entity.isPlayer() && ((Player)entity).getUsername().toLowerCase().equals("mod test")) {
             System.out.println("check attack");
         }
@@ -158,7 +174,12 @@ extends TickTask {
                     player.setAppearanceUpdateRequired(true);
                 }
             }
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("combat cycle scheduled attacker=" + GameplayTrace.describe(attacker) + " target=" + GameplayTrace.describe(target));
+            }
             CycleEventHandler.getInstance().schedule(attacker, attacker.getActiveCycleEvent(), 1);
+        } else if (GameplayTrace.enabled()) {
+            GameplayTrace.log("combat cycle not-scheduled attacker=" + GameplayTrace.describe(attacker) + " target=" + GameplayTrace.describe(target));
         }
         if (entity.isPlayer() && ((Player)entity).getQuestState(0) == 47) {
             ((Player)entity).getDialogueManager().showTutorialInstructionOverlay("Sit back and watch.", "While you are fighting you will see a bar over your head. The", "bar shows how much health you have left. Your opponent will", "have one too. You will continue to attack the rat until it's dead", "or you do something else.", true);
@@ -532,6 +553,9 @@ extends TickTask {
     }
 
     public final void queueAction(CombatAction combatAction) {
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("combat manager queue-action attacker=" + GameplayTrace.describe(combatAction.getAttacker()) + " target=" + GameplayTrace.describe(combatAction.getTarget()) + " damage=" + combatAction.getDamage());
+        }
         this.pendingActions.add(combatAction);
     }
 

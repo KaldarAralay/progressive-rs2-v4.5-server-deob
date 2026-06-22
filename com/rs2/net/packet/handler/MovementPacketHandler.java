@@ -10,6 +10,7 @@ import com.rs2.net.packet.ByteOrder;
 import com.rs2.net.packet.ByteTransform;
 import com.rs2.net.packet.IncomingPacket;
 import com.rs2.net.packet.PacketHandler;
+import com.rs2.util.GameplayTrace;
 import com.rs2.util.GameUtil;
 import com.rs2.util.path.PathFinder;
 import com.rs2.util.plugin.PluginManager;
@@ -36,6 +37,9 @@ implements PacketHandler {
         if (DuelRule.NO_MOVEMENT.isEnabledFor(player)) {
             player.packetSender.sendGameMessage("Movements have been disabled during this fight!");
             return;
+        }
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("movement packet opcode=" + incomingPacket.getOpcode() + " rawLength=" + incomingPacket.getLength() + " adjustedLength=" + packetLength + " player=" + GameplayTrace.describe(player));
         }
         if (incomingPacket.getOpcode() != 98) {
             player.resetInteractionState();
@@ -78,7 +82,17 @@ implements PacketHandler {
         }
         int baseY = incomingPacket.getReader().readSignedShort(ByteOrder.LITTLE);
         player.getMovementQueue().clear();
-        player.getMovementQueue().setRunPath(incomingPacket.getReader().readSignedByte(ByteTransform.NEGATE) == 1);
+        boolean runPath = incomingPacket.getReader().readSignedByte(ByteTransform.NEGATE) == 1;
+        player.getMovementQueue().setRunPath(runPath);
+        if (GameplayTrace.enabled()) {
+            int finalX = baseX;
+            int finalY = baseY;
+            if (pathLength > 0) {
+                finalX = baseX + pathSteps[pathLength - 1][0];
+                finalY = baseY + pathSteps[pathLength - 1][1];
+            }
+            GameplayTrace.log("movement decoded opcode=" + incomingPacket.getOpcode() + " base=" + baseX + "," + baseY + " final=" + finalX + "," + finalY + " pathLength=" + pathLength + " runPath=" + runPath + " player=" + GameplayTrace.describe(player));
+        }
         int regionId = GameUtil.getRegionId(player.getPosition().getX(), player.getPosition().getY());
         if (player.movementSystemMode == 0 || regionId == 9886 || regionId == 10142) {
             player.getMovementQueue().addStep(new Position(baseX, baseY));

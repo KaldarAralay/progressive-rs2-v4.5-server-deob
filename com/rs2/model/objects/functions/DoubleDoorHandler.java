@@ -53,15 +53,10 @@ public final class DoubleDoorHandler {
      * Lifted jumps to return sites
      */
     public static boolean handleDoubleDoor(int n, int n2, int n3, int n4) {
-        Object object;
         Object object2;
-        if (ObjectDefinition.forId(n) != null) {
-            object2 = ObjectDefinition.forId(n);
-            object = ((ObjectDefinition)object2).name.toLowerCase();
-        } else {
-            object = object2 = "";
-        }
-        if (!((String)object).contains("fence") && !((String)object2).contains("gate") && !((String)object2).contains("door") || ((String)object2).contains("trapdoor") || ((String)object2).contains("tree")) {
+        ObjectDefinition objectDefinition = ObjectDefinition.forId(n);
+        String string = objectDefinition != null && objectDefinition.name != null ? objectDefinition.name.toLowerCase() : "";
+        if (!string.contains("fence") && !string.contains("gate") && !string.contains("door") || string.contains("trapdoor") || string.contains("tree")) {
             return false;
         }
         if (n == 2882 || n == 2883 || n == 1589 || n == 1590 || n == 2155 && n2 == 2592 && n3 == 9490 || n == 2154 && n2 == 2593 && n3 == 9490) {

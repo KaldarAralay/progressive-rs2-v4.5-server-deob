@@ -12,6 +12,7 @@ import com.rs2.model.World;
 import com.rs2.model.bankpin.BankPinEntryMode;
 import com.rs2.model.item.ItemStack;
 import com.rs2.model.skill.smithing.SmeltingHandler;
+import com.rs2.util.GameplayTrace;
 import com.rs2.util.GameUtil;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -75,6 +76,9 @@ public final class BankManager {
         player.packetSender.sendItemContainer(5064, inventoryItems);
         player.packetSender.showInterfaceWithInventory(5292, 5063);
         player.getAttributes().put("isBanking", Boolean.TRUE);
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("bank open player=" + GameplayTrace.describe(player) + " owner=" + GameplayTrace.describe(bankOwner) + " usedSlots=" + bankOwner.getBankContainer().getUsedSlots() + " inventoryFree=" + player.getInventoryManager().getContainer().getFreeSlots());
+        }
         if (player.getQuestState(0) == 51) {
             player.ea();
         }
@@ -377,6 +381,9 @@ public final class BankManager {
 
     public static void depositInventoryItem(Player player, int slot, int itemId, int amount) {
         ItemStack itemStack = player.getInventoryManager().getContainer().getItemAt(slot);
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("bank deposit request player=" + GameplayTrace.describe(player) + " slot=" + slot + " itemId=" + itemId + " amount=" + amount + " selected=" + (itemStack == null ? "null" : itemStack.getId() + ":" + itemStack.getDefinition().getName() + "x" + itemStack.getAmount()));
+        }
         if (itemStack == null || itemStack.getId() != itemId || !itemStack.isValid()) {
             return;
         }
@@ -433,6 +440,9 @@ public final class BankManager {
             player.getBankContainer().setTabItem(existingSlot, new ItemStack(bankItemId, existingAmount + inventoryAmount, metadata), tab);
         }
         BankManager.refreshBankAndInventory(player);
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("bank deposit success player=" + GameplayTrace.describe(player) + " itemId=" + bankItemId + " item=" + itemStack.getDefinition().getName() + " amount=" + inventoryAmount + " tab=" + tab + " bankAmount=" + player.getBankContainer().getItemAmount(bankItemId));
+        }
     }
 
     private static void withdrawItem(Player player, int itemId, int amount) {
@@ -507,6 +517,9 @@ public final class BankManager {
         boolean hasNote = itemStack.getDefinition().hasNote();
         int notedId = itemStack.getDefinition().getNotedId();
         int bankAmount = player.getBankContainer().getItemAmount(itemId);
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("bank withdraw request player=" + GameplayTrace.describe(player) + " slot=" + slot + " itemId=" + itemId + " item=" + itemStack.getDefinition().getName() + " amount=" + amount + " interfaceId=" + interfaceId + " tab=" + tab + " bankAmount=" + bankAmount + " noteMode=" + noteMode);
+        }
         if (amount <= 0 || player.getBankContainer().getItemAtTabSlot(slot, tab) == null || player.getBankContainer().getItemAtTabSlot(slot, tab).getId() != itemStack.getId()) {
             return;
         }
@@ -545,6 +558,9 @@ public final class BankManager {
         player.getBankContainer().removeEmptyTabs();
         player.getInventoryManager().sendToInterface(5064);
         BankManager.refreshBankTabs(player);
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("bank withdraw success player=" + GameplayTrace.describe(player) + " itemId=" + itemId + " item=" + itemStack.getDefinition().getName() + " requested=" + amount + " added=" + addedAmount + " remainingBankAmount=" + player.getBankContainer().getItemAmount(itemId));
+        }
     }
 
     private static void refreshBankTabs(Player player) {

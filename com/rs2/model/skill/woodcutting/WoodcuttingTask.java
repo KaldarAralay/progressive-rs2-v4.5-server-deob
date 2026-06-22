@@ -23,6 +23,7 @@ import com.rs2.model.skill.woodcutting.TreeDefinition;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.util.GameUtil;
+import com.rs2.util.GameplayTrace;
 
 public final class WoodcuttingTask
 extends CycleEvent {
@@ -51,6 +52,9 @@ extends CycleEvent {
         Object object;
         block39: {
             if (!this.player.isCurrentActionSequence(this.actionSequence)) {
+                if (GameplayTrace.enabled()) {
+                    GameplayTrace.log("woodcutting stop invalid-sequence player=" + GameplayTrace.describe(this.player) + " seq=" + this.actionSequence + " tree=" + this.treeDefinition + " objectId=" + this.treeObjectId + " x=" + this.x + " y=" + this.y);
+                }
                 cycleEventContainer.stop();
                 return;
             }
@@ -95,6 +99,9 @@ extends CycleEvent {
         ObjectManager.getInstance();
         Object object3 = ObjectManager.findDynamicObjectAt(this.x, this.y, this.player.getPosition().getPlane());
         if (object3 != null && ((DynamicObject)object3).getWorldObject().getObjectId() != this.treeObjectId) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("woodcutting stop depleted-before-roll player=" + GameplayTrace.describe(this.player) + " seq=" + this.actionSequence + " tree=" + this.treeDefinition + " objectId=" + this.treeObjectId + " dynamicId=" + ((DynamicObject)object3).getWorldObject().getObjectId() + " x=" + this.x + " y=" + this.y);
+            }
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("The tree has run out of logs.");
             cycleEventContainer.stop();
@@ -109,6 +116,9 @@ extends CycleEvent {
         }
         object3 = new ItemStack(this.treeDefinition.getLogItemId(), 1);
         if (((ItemStack)object3).getId() > 0 && this.player.getInventoryManager().getContainer().getFirstFreeSlot() == -1) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("woodcutting stop full-inventory player=" + GameplayTrace.describe(this.player) + " seq=" + this.actionSequence + " tree=" + this.treeDefinition + " logItemId=" + ((ItemStack)object3).getId());
+            }
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("Your inventory is too full to hold any more " + ((ItemStack)object3).getDefinition().getName().toLowerCase() + ".");
             object = this.player;
@@ -130,6 +140,9 @@ extends CycleEvent {
             this.player.getSkillManager().addExperience(8, this.treeDefinition.getExperience());
             if (((ItemStack)object3).getId() > 0) {
                 this.player.getInventoryManager().addItem((ItemStack)object3);
+                if (GameplayTrace.enabled()) {
+                    GameplayTrace.log("woodcutting success player=" + GameplayTrace.describe(this.player) + " seq=" + this.actionSequence + " tree=" + this.treeDefinition + " logItemId=" + ((ItemStack)object3).getId() + " logName=" + ((ItemStack)object3).getDefinition().getName() + " xp=" + this.treeDefinition.getExperience() + " x=" + this.x + " y=" + this.y);
+                }
                 WoodcuttingTask woodcuttingTask = this;
                 woodcuttingTask.player.rollActionReward();
                 if (this.player.getQuestState(0) != 1) {
@@ -155,6 +168,9 @@ extends CycleEvent {
             }
             if (this.treeDefinition != TreeDefinition.DRAMEN_TREE && this.treeDefinition != TreeDefinition.STRANGE_MUSICAL_TREE && GameUtil.rollChance(TreeDefinition.getDepletionChance(this.treeDefinition))) {
                 if (this.treeDefinition != TreeDefinition.VINES) {
+                    if (GameplayTrace.enabled()) {
+                        GameplayTrace.log("woodcutting depleted player=" + GameplayTrace.describe(this.player) + " seq=" + this.actionSequence + " tree=" + this.treeDefinition + " stumpId=" + this.treeDefinition.getStumpObjectId() + " objectId=" + this.treeObjectId + " x=" + this.x + " y=" + this.y);
+                    }
                     object = this.player;
                     ((Player)object).packetSender.sendGameMessage("The tree has run out of logs.");
                     object = this.player;
@@ -192,6 +208,9 @@ extends CycleEvent {
             }
         }
         if (((ItemStack)object3).getId() > 0 && this.player.getInventoryManager().getContainer().getFreeSlots() <= 0) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("woodcutting stop no-space-after-roll player=" + GameplayTrace.describe(this.player) + " seq=" + this.actionSequence + " tree=" + this.treeDefinition + " logItemId=" + ((ItemStack)object3).getId());
+            }
             object = this.player;
             ((Player)object).packetSender.sendGameMessage("Not enough space in your inventory.");
             object = this.player;

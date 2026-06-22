@@ -15,6 +15,7 @@ import com.rs2.model.skill.smithing.SmithingHandler;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.util.GameUtil;
+import com.rs2.util.GameplayTrace;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -47,6 +48,9 @@ extends CycleEvent {
             }
             AttackValidationResult attackValidationResult = CombatCycleEvent.validateAttack(this.attacker, this.target);
             if (attackValidationResult != AttackValidationResult.VALID) {
+                if (GameplayTrace.enabled()) {
+                    GameplayTrace.log("combat cycle stop attacker-validation=" + attackValidationResult + " attacker=" + GameplayTrace.describe(this.attacker) + " target=" + GameplayTrace.describe(this.target));
+                }
                 container.stop();
                 CombatManager.stopCombat(this.attacker);
                 if (this.attacker.isPlayer()) {
@@ -82,6 +86,9 @@ extends CycleEvent {
             }
             attackValidationResult = CombatCycleEvent.validateAttack(this.target, this.attacker);
             if (attackValidationResult != AttackValidationResult.VALID) {
+                if (GameplayTrace.enabled()) {
+                    GameplayTrace.log("combat cycle stop target-validation=" + attackValidationResult + " attacker=" + GameplayTrace.describe(this.attacker) + " target=" + GameplayTrace.describe(this.target));
+                }
                 container.stop();
                 CombatManager.stopCombat(this.attacker);
                 if (this.attacker.isPlayer()) {
@@ -135,6 +142,9 @@ extends CycleEvent {
             int usableAttackCount = this.attacker.collectCombatAttackOptions(attackOptions, this.target, distance);
             CombatAttack movementAttack = null;
             boolean attackDelayElapsed = this.attacker.getAttackDelayTimer().hasElapsed();
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("combat cycle tick attacker=" + GameplayTrace.describe(this.attacker) + " target=" + GameplayTrace.describe(this.target) + " distance=" + distance + " options=" + attackOptions.size() + " usable=" + usableAttackCount + " delayElapsed=" + attackDelayElapsed);
+            }
             if (attackDelayElapsed) {
                 Collections.shuffle(attackOptions);
             }
@@ -146,6 +156,9 @@ extends CycleEvent {
                     combatAttackState = CombatAttackState.b;
                 }
                 this.attacker.getUpdateState().setFaceEntity(this.target.getEncodedIndex());
+                if (GameplayTrace.enabled()) {
+                    GameplayTrace.log("combat cycle option attacker=" + GameplayTrace.describe(this.attacker) + " state=" + combatAttackState + " type=" + attackOption.getAttack().getCombatType() + " range=" + attackOption.getAttack().getAttackRange());
+                }
                 if (combatAttackState == CombatAttackState.b) {
                     movementAttack = attackOption.getAttack();
                     continue;
@@ -158,6 +171,9 @@ extends CycleEvent {
                 }
                 if (attackDelayElapsed) {
                     int delayTicks = attackOption.getAttack().execute(container);
+                    if (GameplayTrace.enabled()) {
+                        GameplayTrace.log("combat cycle execute attacker=" + GameplayTrace.describe(this.attacker) + " target=" + GameplayTrace.describe(this.target) + " type=" + attackOption.getAttack().getCombatType() + " delayTicks=" + delayTicks);
+                    }
                     if (delayTicks == -1) {
                         CombatManager.stopCombat(this.attacker);
                         if (this.attacker.isPlayer()) {
@@ -177,6 +193,9 @@ extends CycleEvent {
             }
             if (movementAttack == null) {
                 if (usableAttackCount <= attackOptions.size()) {
+                    if (GameplayTrace.enabled()) {
+                        GameplayTrace.log("combat cycle stop no-movement-attack attacker=" + GameplayTrace.describe(this.attacker) + " target=" + GameplayTrace.describe(this.target) + " usable=" + usableAttackCount + " options=" + attackOptions.size());
+                    }
                     CombatManager.stopCombat(this.attacker);
                     if (this.attacker.isPlayer()) {
                         Player player = (Player)this.attacker;
@@ -191,6 +210,9 @@ extends CycleEvent {
             }
             if (!this.attacker.isPlayer()) {
                 this.attacker.setAttackRange(movementAttack.getAttackRange());
+            }
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("combat cycle needs-movement attacker=" + GameplayTrace.describe(this.attacker) + " target=" + GameplayTrace.describe(this.target) + " movementType=" + movementAttack.getCombatType() + " range=" + movementAttack.getAttackRange());
             }
             return;
         }

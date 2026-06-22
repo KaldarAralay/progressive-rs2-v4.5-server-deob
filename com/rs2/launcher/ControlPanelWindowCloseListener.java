@@ -22,6 +22,9 @@ extends WindowAdapter {
             JOptionPane.showMessageDialog(ControlPanel.getTabbedPane(this.controlPanel), "Please use the shutdown button for closing!");
             return;
         }
+        if (Boolean.getBoolean("prs.traceGameplay")) {
+            new Exception("[exit-trace] ControlPanelWindowCloseListener calling System.exit").printStackTrace();
+        }
         System.exit(0);
     }
 }

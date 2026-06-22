@@ -24,6 +24,7 @@ import com.rs2.model.skill.woodcutting.TreeDefinition;
 import com.rs2.model.skill.woodcutting.WoodcuttingTask;
 import com.rs2.model.task.CycleEventHandler;
 import com.rs2.util.GameUtil;
+import com.rs2.util.GameplayTrace;
 
 public class WoodcuttingHandler {
     private int a;
@@ -38,10 +39,16 @@ public class WoodcuttingHandler {
         Object object;
         Object object2;
         Object object3;
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("woodcutting enter player=" + GameplayTrace.describe(player) + " targetId=" + n + " x=" + n2 + " y=" + n3 + " npcTree=" + bl);
+        }
         if (!bl) {
             ObjectManager.getInstance();
             object3 = ObjectManager.findDynamicObjectAt(n2, n3, player.getPosition().getPlane());
             if (object3 != null && ((DynamicObject)object3).getWorldObject().getObjectId() != n) {
+                if (GameplayTrace.enabled()) {
+                    GameplayTrace.log("woodcutting blocked dynamic-object-mismatch player=" + GameplayTrace.describe(player) + " targetId=" + n + " dynamicId=" + ((DynamicObject)object3).getWorldObject().getObjectId() + " x=" + n2 + " y=" + n3);
+                }
                 if (player.botEnabled) {
                     player.interactWithBotObjectTargets(player.botInteractionTargetIds);
                 }
@@ -50,19 +57,31 @@ public class WoodcuttingHandler {
         } else {
             object3 = Npc.findByDefinitionIdAtPosition(n, new Position(n2, n3, player.getPosition().getPlane()));
             if (object3 == null) {
+                if (GameplayTrace.enabled()) {
+                    GameplayTrace.log("woodcutting blocked missing-npc-tree player=" + GameplayTrace.describe(player) + " targetId=" + n + " x=" + n2 + " y=" + n3);
+                }
                 return;
             }
         }
         if ((object3 = TreeDefinition.forTargetId(n, bl)) == null) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("woodcutting blocked missing-tree-definition player=" + GameplayTrace.describe(player) + " targetId=" + n + " x=" + n2 + " y=" + n3 + " npcTree=" + bl);
+            }
             return;
         }
         if (!ServerSettings.woodcuttingEnabled) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("woodcutting blocked disabled player=" + GameplayTrace.describe(player) + " tree=" + object3);
+            }
             Player player2 = player;
             player2.packetSender.sendGameMessage("This skill is currently disabled.");
             return;
         }
         GatheringToolDefinition gatheringToolDefinition = ItemCombinationHandler.findUsableGatheringTool(player, 8);
         if (gatheringToolDefinition == null) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("woodcutting blocked no-axe player=" + GameplayTrace.describe(player) + " tree=" + object3);
+            }
             Player player3 = player;
             player3.packetSender.sendGameMessage("You do not have an axe which you have the woodcutting level to use.");
             if (player.botEnabled) {
@@ -71,6 +90,9 @@ public class WoodcuttingHandler {
             return;
         }
         if (player.getSkillManager().getCurrentLevels()[8] < ((TreeDefinition)((Object)object3)).getRequiredLevel()) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("woodcutting blocked level player=" + GameplayTrace.describe(player) + " current=" + player.getSkillManager().getCurrentLevels()[8] + " required=" + ((TreeDefinition)((Object)object3)).getRequiredLevel() + " tree=" + object3);
+            }
             Player player4 = player;
             player4.packetSender.sendGameMessage("You need a Woodcutting level of " + ((TreeDefinition)((Object)object3)).getRequiredLevel() + " to cut this tree.");
             return;
@@ -78,6 +100,9 @@ public class WoodcuttingHandler {
         if (((TreeDefinition)((Object)object3)).getLogItemId() != -1) {
             object2 = new ItemStack(((TreeDefinition)((Object)object3)).getLogItemId(), 1);
             if (player.getInventoryManager().getContainer().getFirstFreeSlot() == -1) {
+                if (GameplayTrace.enabled()) {
+                    GameplayTrace.log("woodcutting blocked full-inventory player=" + GameplayTrace.describe(player) + " tree=" + object3);
+                }
                 Player player5 = player;
                 player5.packetSender.sendGameMessage("Your inventory is too full to hold any more " + ((ItemStack)object2).getDefinition().getName().toLowerCase() + ".");
                 player5 = player;
@@ -110,6 +135,9 @@ public class WoodcuttingHandler {
             }
         }
         int n5 = player.nextActionSequence();
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("woodcutting scheduled player=" + GameplayTrace.describe(player) + " seq=" + n5 + " tree=" + object3 + " objectId=" + n + " x=" + n2 + " y=" + n3 + " animation=" + gatheringToolDefinition.getGatherAnimationId());
+        }
         player.setActiveCycleEvent(new WoodcuttingTask(player, n5, (TreeDefinition)((Object)object3), n2, n3, gatheringToolDefinition, n));
         CycleEventHandler.getInstance().schedule(player, player.getActiveCycleEvent(), 4);
     }
@@ -151,4 +179,3 @@ public class WoodcuttingHandler {
         }
     }
 }
-

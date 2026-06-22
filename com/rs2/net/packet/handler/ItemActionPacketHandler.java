@@ -83,6 +83,7 @@ import com.rs2.net.packet.PacketSender;
 import com.rs2.net.packet.handler.DigSearchTask;
 import com.rs2.net.packet.handler.GroundItemFiremakingTask;
 import com.rs2.net.packet.handler.TinderboxOnGroundItemTask;
+import com.rs2.util.GameplayTrace;
 import com.rs2.util.GameUtil;
 
 public final class ItemActionPacketHandler
@@ -852,6 +853,9 @@ implements PacketHandler {
         }
         player.setSelectedItemSlot(slot);
         ItemStack itemStack = player.getInventoryManager().getContainer().getItemAt(player.getSelectedItemSlot());
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("item drop decoded player=" + GameplayTrace.describe(player) + " slot=" + player.getSelectedItemSlot() + " itemId=" + itemId + " item=" + (itemStack == null ? "null" : itemStack.getDefinition().getName()));
+        }
         if (PuzzleBoxHandler.movePuzzlePiece(player, itemId)) {
             return;
         }
@@ -908,6 +912,9 @@ implements PacketHandler {
             }
             if (!player.getInventoryManager().removeItemFromSlot(itemStack, player.getSelectedItemSlot())) {
                 player.getInventoryManager().removeItem(itemStack);
+            }
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("item drop spawned player=" + GameplayTrace.describe(player) + " slot=" + player.getSelectedItemSlot() + " itemId=" + itemStack.getId() + " item=" + itemStack.getDefinition().getName() + " amount=" + itemStack.getAmount());
             }
         }
         player.getEquipmentManager().refreshCarriedValue();
@@ -1225,10 +1232,16 @@ implements PacketHandler {
         player.setSelectedItemSlot(incomingPacket.getReader().readSignedShort(ByteTransform.ADD));
         int itemId = incomingPacket.getReader().readSignedShort(ByteOrder.LITTLE);
         InterfaceDefinition interfaceDefinition = InterfaceDefinition.forId(interfaceId);
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("item first-option decoded player=" + GameplayTrace.describe(player) + " interfaceId=" + interfaceId + " slot=" + player.getSelectedItemSlot() + " itemId=" + itemId + " interfaceOpen=" + player.isInterfaceOpen(interfaceDefinition));
+        }
         if (!player.isInterfaceOpen(interfaceDefinition)) {
             return;
         }
         ItemStack selectedItem = player.getInventoryManager().getContainer().getItemAt(player.getSelectedItemSlot());
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("item first-option selected player=" + GameplayTrace.describe(player) + " slot=" + player.getSelectedItemSlot() + " selected=" + (selectedItem == null ? "null" : selectedItem.getId() + ":" + selectedItem.getDefinition().getName()));
+        }
         if (selectedItem == null || selectedItem.getId() != itemId) {
             return;
         }
@@ -1302,6 +1315,9 @@ implements PacketHandler {
             return;
         }
         if (player.getFoodHandler().eatFood(itemId, player.getSelectedItemSlot())) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("item first-option food-handled player=" + GameplayTrace.describe(player) + " slot=" + player.getSelectedItemSlot() + " itemId=" + itemId + " item=" + selectedItem.getDefinition().getName());
+            }
             return;
         }
         if (TreasureTrailManager.handleRewardContainerItem(player, itemId)) {
@@ -1647,10 +1663,16 @@ implements PacketHandler {
         player.setSelectedItemSlot(incomingPacket.getReader().readSignedShort(ByteTransform.ADD));
         player.setSelectedItemInterfaceId(incomingPacket.getReader().readSignedShort(ByteTransform.ADD));
         InterfaceDefinition interfaceDefinition = InterfaceDefinition.forId(player.getSelectedItemInterfaceId());
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("item equip decoded player=" + GameplayTrace.describe(player) + " interfaceId=" + player.getSelectedItemInterfaceId() + " slot=" + player.getSelectedItemSlot() + " itemId=" + itemId + " interfaceOpen=" + player.isInterfaceOpen(interfaceDefinition));
+        }
         if (!player.isInterfaceOpen(interfaceDefinition)) {
             return;
         }
         ItemStack itemStack = player.getInventoryManager().getContainer().getItemAt(player.getSelectedItemSlot());
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("item equip selected player=" + GameplayTrace.describe(player) + " slot=" + player.getSelectedItemSlot() + " selected=" + (itemStack == null ? "null" : itemStack.getId() + ":" + itemStack.getDefinition().getName() + " equipSlot=" + itemStack.getDefinition().getEquipmentSlot()));
+        }
         if (itemStack == null || itemStack.getId() != itemId || !itemStack.isValid()) {
             return;
         }
@@ -1708,11 +1730,17 @@ implements PacketHandler {
             }
         }
         if (new ItemStack(itemId).getDefinition().getEquipmentSlot() == -1) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("item equip ignored not-equipment player=" + GameplayTrace.describe(player) + " itemId=" + itemId + " item=" + itemStack.getDefinition().getName());
+            }
             return;
         }
         if (player.getDuelSession().getOpponent() != null && !player.isInDuelArena()) {
             player.getDuelController().resetDuel(true);
             return;
+        }
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("item equip dispatch player=" + GameplayTrace.describe(player) + " slot=" + player.getSelectedItemSlot() + " itemId=" + itemId + " item=" + itemStack.getDefinition().getName() + " equipSlot=" + itemStack.getDefinition().getEquipmentSlot());
         }
         player.getEquipmentManager().equipFromInventorySlot(player.getSelectedItemSlot());
     }

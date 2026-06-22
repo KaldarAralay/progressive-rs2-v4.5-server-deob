@@ -37,6 +37,7 @@ import com.rs2.model.skill.thieving.PickpocketTask;
 import com.rs2.model.skill.woodcutting.WoodcuttingHandler;
 import com.rs2.model.task.CycleEventHandler;
 import com.rs2.util.GameUtil;
+import com.rs2.util.GameplayTrace;
 
 public class CombatAction {
     private HitDefinition hitDefinition;
@@ -476,6 +477,10 @@ public class CombatAction {
             }
         }
         this.delay = this.hitDefinition.calculateDelay(this.attacker != null ? this.attacker.getPosition() : null, this.target.getPosition());
+        if (GameplayTrace.enabled()) {
+            String style = this.hitDefinition.getAttackStyle() == null ? "null" : this.hitDefinition.getAttackStyle().getXpMode() + "/" + this.hitDefinition.getAttackStyle().getCombatType();
+            GameplayTrace.log("combat action queued attacker=" + GameplayTrace.describe(this.attacker) + " target=" + GameplayTrace.describe(this.target) + " style=" + style + " maxDamage=" + this.hitDefinition.getMaxDamage() + " damage=" + this.damage + " hitSuccessful=" + this.hitSuccessful + " random=" + this.hitDefinition.isRandomDamageEnabled() + " accuracy=" + this.hitDefinition.isAccuracyCheckEnabled() + " always=" + this.hitDefinition.isAlwaysHit() + " delay=" + this.delay + " canTakeDamage=" + this.target.getAttributes().get("canTakeDamage"));
+        }
         CombatManager.getInstance().queueAction(this);
         if (this.target != null && this.attacker != null) {
             int questDamageOverride = this.attacker.isPlayer() ? ((Player)this.attacker).getQuestManager().getQuestDamageOverride(this.attacker, this.target) : ((Player)this.target).getQuestManager().getQuestDamageOverride(this.attacker, this.target);
@@ -562,7 +567,13 @@ public class CombatAction {
 
     public void applyHitUpdate() {
         Object object;
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("combat hit-update attacker=" + GameplayTrace.describe(this.attacker) + " target=" + GameplayTrace.describe(this.target) + " damage=" + this.damage + " canTakeDamage=" + this.target.getAttributes().get("canTakeDamage"));
+        }
         if (!this.canTargetTakeDamage() || this.damage < 0) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("combat hit-update blocked attacker=" + GameplayTrace.describe(this.attacker) + " target=" + GameplayTrace.describe(this.target) + " damage=" + this.damage);
+            }
             return;
         }
         Object object2 = this.target.getUpdateState();
@@ -651,11 +662,18 @@ public class CombatAction {
         Object object;
         Object object2;
         Object object32;
+        if (GameplayTrace.enabled()) {
+            String style = this.hitDefinition.getAttackStyle() == null ? "null" : this.hitDefinition.getAttackStyle().getXpMode() + "/" + this.hitDefinition.getAttackStyle().getCombatType();
+            GameplayTrace.log("combat apply-hit start attacker=" + GameplayTrace.describe(this.attacker) + " target=" + GameplayTrace.describe(this.target) + " style=" + style + " damage=" + this.damage + " hitSuccessful=" + this.hitSuccessful + " always=" + this.hitDefinition.isAlwaysHit() + " canTakeDamage=" + this.target.getAttributes().get("canTakeDamage"));
+        }
         if (this.hitDefinition.getDroppedAmmunition() != null && this.attacker != null && this.attacker.isPlayer() && this.hitDefinition.getChainedTargets().isEmpty() && ((Player)(object32 = (Player)this.attacker)).isAmmunitionDropsEnabled() && GameUtil.randomInt(5) > 0) {
             object2 = new GroundItem(new ItemStack(this.hitDefinition.getDroppedAmmunition().getId(), this.hitDefinition.getDroppedAmmunition().getAmount()), (Entity)object32, this.target.getPosition().copy());
             GroundItemManager.getInstance().spawn((GroundItem)object2);
         }
         if (!this.canTargetTakeDamage()) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("combat apply-hit blocked canTakeDamage=false attacker=" + GameplayTrace.describe(this.attacker) + " target=" + GameplayTrace.describe(this.target) + " damage=" + this.damage);
+            }
             return;
         }
         if (!this.hitDefinition.getChainedTargets().isEmpty()) {
@@ -763,6 +781,9 @@ public class CombatAction {
             if (this.damage > 0) {
                 this.damage = 0;
             }
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("combat apply-hit miss attacker=" + GameplayTrace.describe(this.attacker) + " target=" + GameplayTrace.describe(this.target) + " damage=" + this.damage);
+            }
             if (this.hitDefinition.getAttackStyle() != null && this.hitDefinition.getAttackStyle().getCombatType() != CombatType.MAGIC) {
                 this.applyHitUpdate();
                 return;
@@ -854,6 +875,7 @@ public class CombatAction {
         }
         SpecialAttackDefinition.applyHitSpecialEffect(this.attacker, this.target, this.hitDefinition, this.damage);
         int n4 = this.target.getCurrentHitpoints();
+        int hpBefore = n4;
         if (this.damage > n4) {
             this.damage = n4;
         }
@@ -903,6 +925,9 @@ public class CombatAction {
             if (this.attacker.isPlayer() && (player = (Player)this.attacker).getActivePrayers()[17] && this.target.isPlayer()) {
                 PrayerManager.drainPrayerForSmite((Player)this.target, this.damage);
             }
+        }
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("combat apply-hit final attacker=" + GameplayTrace.describe(this.attacker) + " target=" + GameplayTrace.describe(this.target) + " damage=" + this.damage + " hpBefore=" + hpBefore + " hpAfter=" + n4 + " hitSuccessful=" + this.hitSuccessful);
         }
         this.target.setCurrentHitpoints(n4);
         if (this.target.isPlayer()) {

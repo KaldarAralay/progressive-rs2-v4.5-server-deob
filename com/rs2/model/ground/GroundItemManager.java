@@ -13,6 +13,7 @@ import com.rs2.model.ground.GroundItem;
 import com.rs2.model.ground.GroundItemVisibility;
 import com.rs2.model.item.ItemDefinition;
 import com.rs2.model.player.Player;
+import com.rs2.util.GameplayTrace;
 import com.rs2.util.GameUtil;
 import java.util.LinkedList;
 
@@ -213,6 +214,9 @@ implements Runnable {
         if (groundItem == null) {
             return false;
         }
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("ground pickup remove-request player=" + GameplayTrace.describe(player) + " itemId=" + groundItem.getItem().getId() + " item=" + groundItem.getItem().getDefinition().getName() + " amount=" + groundItem.getItem().getAmount() + " position=" + GameplayTrace.position(groundItem.getPosition()) + " visibility=" + groundItem.getVisibility());
+        }
         if (DropPartyBotManager.pendingDropPartyGroundItems.contains(groundItem)) {
             DropPartyBotManager.pendingDropPartyGroundItems.remove(groundItem);
         }
@@ -249,11 +253,18 @@ implements Runnable {
             ++n2;
         }
         player.getVisibleGroundItems().contains(groundItem);
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("ground pickup removed player=" + GameplayTrace.describe(player) + " itemId=" + groundItem.getItem().getId() + " item=" + groundItem.getItem().getDefinition().getName() + " amount=" + groundItem.getItem().getAmount() + " position=" + GameplayTrace.position(groundItem.getPosition()));
+        }
         return true;
     }
 
     public final void spawn(GroundItem groundItem) {
         Player[] playerArray = null;
+        if (GameplayTrace.enabled() && groundItem != null) {
+            String owner = groundItem.getOwner() == null || groundItem.getOwner().resolve() == null ? "null" : GameplayTrace.describe(groundItem.getOwner().resolve());
+            GameplayTrace.log("ground spawn request owner=" + owner + " itemId=" + groundItem.getItem().getId() + " item=" + groundItem.getItem().getDefinition().getName() + " amount=" + groundItem.getItem().getAmount() + " position=" + GameplayTrace.position(groundItem.getPosition()) + " visibility=" + groundItem.getVisibility());
+        }
         if (groundItem.getSource() != null && BotPlayer.dropPartyBots.size() > 0 && groundItem.getSource().resolve() == BotPlayer.dropPartyBots.get(0)) {
             DropPartyBotManager.pendingDropPartyGroundItems.add(groundItem);
         }

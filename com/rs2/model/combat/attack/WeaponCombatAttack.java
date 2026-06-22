@@ -22,6 +22,7 @@ import com.rs2.model.item.ItemStack;
 import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEventContainer;
 import com.rs2.util.GameUtil;
+import com.rs2.util.GameplayTrace;
 
 public class WeaponCombatAttack extends BaseCombatAttack {
     private WeaponProfile weaponProfile;
@@ -96,6 +97,9 @@ public class WeaponCombatAttack extends BaseCombatAttack {
             this.poisonEffect = WeaponCombatAttack.a(player, CombatType.MELEE, 3);
         }
         double maxHit = this.calculateMaxHit();
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("weapon prepare player=" + GameplayTrace.describe(player) + " target=" + GameplayTrace.describe(this.getTarget()) + " profile=" + this.weaponProfile + " style=" + this.attackStyle.getXpMode() + "/" + this.attackStyle.getCombatType() + " maxHit=" + maxHit + " attackStyleIndex=" + this.attackStyleIndex);
+        }
         HitDefinition[] hitDefinitions;
         if (this.weaponProfile == WeaponProfile.DARK_BOW) {
             ProjectileTiming timing = this.weaponProfile.getAmmunitionProfile().getProjectileTiming();

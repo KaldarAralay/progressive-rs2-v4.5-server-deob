@@ -52,6 +52,7 @@ import com.rs2.model.task.TickTask;
 import com.rs2.model.travel.canoe.CanoeTravelManager;
 import com.rs2.model.travel.canoe.CanoeTreeDefinition;
 import com.rs2.util.GameUtil;
+import com.rs2.util.GameplayTrace;
 
 public final class FirstObjectActionTask
 extends TickTask {
@@ -62,6 +63,10 @@ extends TickTask {
     private final /* synthetic */ int objectY;
     private final /* synthetic */ int objectPlane;
     private final /* synthetic */ String objectName;
+    private boolean loggedWaitingForMovement;
+    private boolean loggedMissingWorldObject;
+    private boolean loggedMissingReachPosition;
+    private boolean loggedOutsideDistance;
 
     public FirstObjectActionTask(int n, boolean bl, Player player, int n2, int n3, int n4, int n5, int n6, String string) {
         super(1, true);
@@ -77,24 +82,45 @@ extends TickTask {
     @Override
     public final void execute() {
         if (this.player == null || !this.player.isCurrentActionSequence(this.actionSequence)) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("first-object stop invalid-sequence seq=" + this.actionSequence + " player=" + GameplayTrace.describe(this.player) + " objectId=" + this.objectId + " x=" + this.objectX + " y=" + this.objectY + " plane=" + this.objectPlane);
+            }
             this.stop();
             return;
         }
         if (this.player.isMoving() || this.player.isStunned()) {
+            if (GameplayTrace.enabled() && !this.loggedWaitingForMovement) {
+                this.loggedWaitingForMovement = true;
+                GameplayTrace.log("first-object wait moving-or-stunned seq=" + this.actionSequence + " moving=" + this.player.isMoving() + " stunned=" + this.player.isStunned() + " player=" + GameplayTrace.describe(this.player) + " objectId=" + this.objectId + " x=" + this.objectX + " y=" + this.objectY + " plane=" + this.objectPlane);
+            }
             return;
         }
         WorldObject worldObject = SkillActionHelper.findWorldObjectById(this.objectId, this.objectX, this.objectY, this.objectPlane);
         if (worldObject == null) {
+            if (GameplayTrace.enabled() && !this.loggedMissingWorldObject) {
+                this.loggedMissingWorldObject = true;
+                GameplayTrace.log("first-object wait missing-world-object seq=" + this.actionSequence + " player=" + GameplayTrace.describe(this.player) + " objectId=" + this.objectId + " x=" + this.objectX + " y=" + this.objectY + " plane=" + this.objectPlane);
+            }
             return;
         }
         Object object = ObjectDefinition.forId(this.player.getInteractionTargetId());
         Position position = GameUtil.findReachableInteractionPosition(worldObject.getPosition().getX(), worldObject.getPosition().getY(), this.player.getPosition().getX(), this.player.getPosition().getY(), ((ObjectDefinition)object).getWidthForOrientation(worldObject.getOrientation()), ((ObjectDefinition)object).getLengthForOrientation(worldObject.getOrientation()), this.objectPlane);
         if (position == null) {
+            if (GameplayTrace.enabled() && !this.loggedMissingReachPosition) {
+                this.loggedMissingReachPosition = true;
+                GameplayTrace.log("first-object wait no-reachable-position seq=" + this.actionSequence + " player=" + GameplayTrace.describe(this.player) + " objectId=" + this.objectId + " x=" + this.objectX + " y=" + this.objectY + " plane=" + this.objectPlane + " worldObjectType=" + worldObject.getType() + " orientation=" + worldObject.getOrientation());
+            }
             return;
         }
         if (!InteractionDispatcher.canReachObjectInteraction(this.player, position, worldObject)) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("first-object stop reach-check-failed seq=" + this.actionSequence + " player=" + GameplayTrace.describe(this.player) + " objectId=" + this.objectId + " targetPos=" + GameplayTrace.position(position) + " object=" + this.objectX + "," + this.objectY + "," + this.objectPlane);
+            }
             this.stop();
             return;
+        }
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("first-object reachable seq=" + this.actionSequence + " player=" + GameplayTrace.describe(this.player) + " objectId=" + this.objectId + " targetPos=" + GameplayTrace.position(position) + " object=" + this.objectX + "," + this.objectY + "," + this.objectPlane);
         }
         if (this.objectId == 4031) {
             if (this.player.getPosition().getY() > this.objectY) {
@@ -130,7 +156,14 @@ extends TickTask {
             return;
         }
         if (!GameUtil.isWithinDistance(this.player.getPosition().getX(), this.player.getPosition().getY(), this.objectX, this.objectY, 7)) {
+            if (GameplayTrace.enabled() && !this.loggedOutsideDistance) {
+                this.loggedOutsideDistance = true;
+                GameplayTrace.log("first-object wait outside-distance seq=" + this.actionSequence + " player=" + GameplayTrace.describe(this.player) + " objectId=" + this.objectId + " object=" + this.objectX + "," + this.objectY + "," + this.objectPlane);
+            }
             return;
+        }
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("first-object milestone after-distance seq=" + this.actionSequence + " player=" + GameplayTrace.describe(this.player) + " objectId=" + this.objectId);
         }
         if (this.objectId == 12045 || this.objectId == 12047) {
             if (this.objectX == 2469 && this.player.getPosition().getX() < 2470 || this.objectY == 4434 && this.player.getPosition().getY() > 4433) {
@@ -179,6 +212,9 @@ extends TickTask {
         if (DialogueManager.startContextDialogue(1, this.player, this.player.getInteractionTargetId(), this.objectX, this.objectY)) {
             this.stop();
             return;
+        }
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("first-object milestone after-dialogue seq=" + this.actionSequence + " player=" + GameplayTrace.describe(this.player) + " objectId=" + this.objectId);
         }
         if (this.player.getSlayerManager().handleMogreLure(this.objectId, this.objectX, this.objectY)) {
             this.stop();
@@ -655,6 +691,9 @@ extends TickTask {
             this.stop();
             return;
         }
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("first-object milestone pre-resource seq=" + this.actionSequence + " player=" + GameplayTrace.describe(this.player) + " objectId=" + this.objectId);
+        }
         if (CacheArchiveEntry.searchMapClueObject(this.player, this.objectX, this.objectY)) {
             this.stop();
             return;
@@ -678,12 +717,21 @@ extends TickTask {
             this.stop();
             return;
         }
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("first-object milestone pre-woodcutting seq=" + this.actionSequence + " player=" + GameplayTrace.describe(this.player) + " objectId=" + this.objectId + " treeDef=" + TreeDefinition.forObjectId(this.objectId) + " canoeDef=" + CanoeTreeDefinition.forObjectId(this.objectId));
+        }
         if (TreeDefinition.forObjectId(this.objectId) != null) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("first-object woodcutting-start seq=" + this.actionSequence + " player=" + GameplayTrace.describe(this.player) + " objectId=" + this.objectId + " object=" + this.objectX + "," + this.objectY + "," + this.objectPlane);
+            }
             WoodcuttingHandler.startWoodcutting(this.player, this.objectId, this.objectX, this.objectY, false);
             this.stop();
             return;
         }
         if (MiningManager.isMineableRockObjectId(this.objectId)) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("first-object mining-start seq=" + this.actionSequence + " player=" + GameplayTrace.describe(this.player) + " objectId=" + this.objectId + " object=" + this.objectX + "," + this.objectY + "," + this.objectPlane);
+            }
             if (this.player.getMiningManager().canMineRock(this.objectId)) {
                 this.player.getMiningManager().startMining(this.objectId, this.objectX, this.objectY);
             }
@@ -700,11 +748,17 @@ extends TickTask {
             return;
         }
         if (DoubleDoorHandler.handleDoubleDoor(this.objectId, this.objectX, this.objectY, this.objectPlane)) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("first-object double-door handled seq=" + this.actionSequence + " player=" + GameplayTrace.describe(this.player) + " objectId=" + this.objectId + " object=" + this.objectX + "," + this.objectY + "," + this.objectPlane);
+            }
             this.player.getPacketSender().sendSoundEffect(318, 1, 0);
             this.stop();
             return;
         }
         if (this.player.getQuestState(0) == 1 && DoorHandler.handleDoor(this.player, this.objectId, this.objectX, this.objectY, this.objectPlane)) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("first-object door handled seq=" + this.actionSequence + " player=" + GameplayTrace.describe(this.player) + " objectId=" + this.objectId + " object=" + this.objectX + "," + this.objectY + "," + this.objectPlane);
+            }
             this.stop();
             return;
         }

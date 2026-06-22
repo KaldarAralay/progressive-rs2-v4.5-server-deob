@@ -14,6 +14,7 @@ import com.rs2.model.path.PathReachability;
 import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 import com.rs2.util.GameUtil;
+import com.rs2.util.GameplayTrace;
 import com.rs2.util.path.PathFinder;
 
 public final class PickupItemTask
@@ -54,6 +55,9 @@ extends TickTask {
         GroundItemManager.getInstance();
         GroundItem groundItem = GroundItemManager.findVisibleItem(this.player, this.itemId, this.groundItemPosition);
         if (groundItem == null) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("ground pickup missing-visible player=" + GameplayTrace.describe(this.player) + " itemId=" + this.itemId + " position=" + GameplayTrace.position(this.groundItemPosition));
+            }
             if (this.player.dropPartyFollower) {
                 if (GameUtil.randomInt(3) == 0 && this.player.currentBotTask != null) {
                     Position position = this.player.currentBotTask.getRandomTaskAreaPosition();
@@ -78,6 +82,9 @@ extends TickTask {
             bl = true;
         }
         if (!GameUtil.isWithinDistance(this.player.getPosition(), this.groundItemPosition, 1)) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("ground pickup wait distance player=" + GameplayTrace.describe(this.player) + " itemId=" + this.itemId + " position=" + GameplayTrace.position(this.groundItemPosition));
+            }
             return;
         }
         boolean bl2 = PathReachability.isReachable(this.player, this.groundItemPosition.getX(), this.groundItemPosition.getY(), true, 0, 0);
@@ -145,9 +152,15 @@ extends TickTask {
         if (groundItem.getItem().getDefinition().isStackable()) {
             if (this.player.getInventoryManager().addItem(new ItemStack(this.player.getInteractionTargetId(), groundItem.getItem().getAmount(), groundItem.getItem().getMetadata()))) {
                 this.player.getEquipmentManager().refreshCarriedValue();
+                if (GameplayTrace.enabled()) {
+                    GameplayTrace.log("ground pickup inventory-add success player=" + GameplayTrace.describe(this.player) + " itemId=" + groundItem.getItem().getId() + " item=" + groundItem.getItem().getDefinition().getName() + " amount=" + groundItem.getItem().getAmount());
+                }
             }
         } else if (this.player.getInventoryManager().addItem(new ItemStack(this.player.getInteractionTargetId(), 1, groundItem.getItem().getMetadata()))) {
             this.player.getEquipmentManager().refreshCarriedValue();
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("ground pickup inventory-add success player=" + GameplayTrace.describe(this.player) + " itemId=" + groundItem.getItem().getId() + " item=" + groundItem.getItem().getDefinition().getName() + " amount=1");
+            }
         }
         if (this.player.botEnabled) {
             this.itemService.handleBotGroundItemPickupResult(this.player, this.itemId, groundItem, true);

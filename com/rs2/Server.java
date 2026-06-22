@@ -206,7 +206,7 @@ implements Runnable {
     }
 
     public static void main(String[] args) {
-        String bindHost = "0.0.0.0";
+        String bindHost = System.getProperty("prs.bindHost", "0.0.0.0");
         runtimeMinutes = 0;
         int n = ServerSettings.serverPort;
         Server server = new Server(bindHost, n, 600);
@@ -419,6 +419,9 @@ implements Runnable {
             if (ServerSettings.mysqlHiscoresEnabled) {
                 HiscoresDatabase.connect();
             }
+            if (Boolean.getBoolean("prs.traceGameplay")) {
+                System.out.println("[server-trace] entering main loop interrupted=" + Thread.currentThread().isInterrupted() + " shutdownRequested=" + shutdownRequested);
+            }
             while (!Thread.interrupted() && !shutdownRequested) {
                 try {
                     long l8 = System.currentTimeMillis() - l7;
@@ -456,6 +459,9 @@ implements Runnable {
                     exception.printStackTrace();
                 }
             }
+            if (Boolean.getBoolean("prs.traceGameplay")) {
+                System.out.println("[server-trace] main loop exited interrupted=" + Thread.currentThread().isInterrupted() + " shutdownRequested=" + shutdownRequested);
+            }
             CharacterFileManager.saveAllPlayers();
             if (ServerSettings.mysqlHiscoresEnabled) {
                 HiscoresDatabase.disconnect();
@@ -463,6 +469,9 @@ implements Runnable {
             serverStatus = 0;
             Server.refreshControlPanelStats();
             instance = null;
+            if (Boolean.getBoolean("prs.traceGameplay")) {
+                System.out.println("[server-trace] stopping server thread from cleanup");
+            }
             serverThread.stop();
             serverThread = null;
             engineThread = null;
