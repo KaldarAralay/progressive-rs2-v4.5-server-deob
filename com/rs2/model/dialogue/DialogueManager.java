@@ -46,6 +46,7 @@ import com.rs2.model.travel.HajedyCartRoute;
 import com.rs2.model.travel.ShipRoute;
 import com.rs2.model.travel.TravelManager;
 import com.rs2.util.GameUtil;
+import com.rs2.util.GameplayTrace;
 
 public class DialogueManager {
     private Player player;
@@ -59,6 +60,12 @@ public class DialogueManager {
 
     public DialogueManager(Player player) {
         this.player = player;
+    }
+
+    private void traceDisplay(String kind, String text) {
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("dialogue display kind=" + kind + " player=" + GameplayTrace.describe(this.player) + " id=" + this.dialogueId + " step=" + this.dialogueStep + " type=" + this.dialogueType + " npcId=" + this.dialogueNpcId + " text=" + text);
+        }
     }
 
     public final void setDialogueStep(int n) {
@@ -132,6 +139,9 @@ public class DialogueManager {
     }
 
     public final boolean handleOptionButton(int n) {
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("dialogue option-button player=" + GameplayTrace.describe(this.player) + " buttonId=" + n + " id=" + this.dialogueId + " step=" + this.dialogueStep + " type=" + this.dialogueType + " npcId=" + this.dialogueNpcId);
+        }
         switch (n) {
             case 2461: 
             case 2471: 
@@ -334,6 +344,7 @@ public class DialogueManager {
     }
 
     public final void showTwoOptions(String string, String string2) {
+        this.traceDisplay("options2", string + " | " + string2);
         Player player = this.player;
         player.packetSender.sendInterfaceText(string, 2461);
         player = this.player;
@@ -349,6 +360,7 @@ public class DialogueManager {
     }
 
     public final void showThreeOptions(String string, String string2, String string3) {
+        this.traceDisplay("options3", string + " | " + string2 + " | " + string3);
         Player player = this.player;
         player.packetSender.sendInterfaceText(string, 2471);
         player = this.player;
@@ -366,6 +378,7 @@ public class DialogueManager {
     }
 
     public final void showFourOptions(String string, String string2, String string3, String string4) {
+        this.traceDisplay("options4", string + " | " + string2 + " | " + string3 + " | " + string4);
         Player player = this.player;
         player.packetSender.sendInterfaceText(string, 2482);
         player = this.player;
@@ -385,6 +398,7 @@ public class DialogueManager {
     }
 
     public final void showFiveOptions(String string, String string2, String string3, String string4, String string5) {
+        this.traceDisplay("options5", string + " | " + string2 + " | " + string3 + " | " + string4 + " | " + string5);
         Player player = this.player;
         player.packetSender.sendInterfaceText(string, 2494);
         player = this.player;
@@ -450,6 +464,7 @@ public class DialogueManager {
     }
 
     public final void showOneLineStatement(String string) {
+        this.traceDisplay("statement1", string);
         Object object = this.player;
         ((Player)object).packetSender.sendInterfaceText(string, 357);
         object = this.player;
@@ -474,6 +489,7 @@ public class DialogueManager {
     }
 
     public final void showTwoLineStatement(String string, String string2) {
+        this.traceDisplay("statement2", string + " | " + string2);
         Object object = this.player;
         ((Player)object).packetSender.sendInterfaceText(string, 360);
         object = this.player;
@@ -565,6 +581,7 @@ public class DialogueManager {
     }
 
     public final void showNpcOneLineDialogue(String line, int animationId) {
+        this.traceDisplay("npc1", line);
         int npcId = this.dialogueNpcId < 0 || this.dialogueNpcId > 6433 ? 0 : this.dialogueNpcId;
         String npcName = World.getNpcDefinitions()[npcId].getName();
         this.player.packetSender.sendInterfaceAnimation(4883, animationId);
@@ -575,6 +592,7 @@ public class DialogueManager {
     }
 
     public final void showNpcTwoLineDialogue(String line1, String line2, int animationId) {
+        this.traceDisplay("npc2", line1 + " | " + line2);
         int npcId = this.dialogueNpcId < 0 || this.dialogueNpcId > 6433 ? 0 : this.dialogueNpcId;
         String npcName = World.getNpcDefinitions()[npcId].getName();
         this.player.packetSender.sendInterfaceAnimation(4888, animationId);
@@ -586,6 +604,7 @@ public class DialogueManager {
     }
 
     public final void showNpcThreeLineDialogue(String line1, String line2, String line3, int animationId) {
+        this.traceDisplay("npc3", line1 + " | " + line2 + " | " + line3);
         int npcId = this.dialogueNpcId < 0 || this.dialogueNpcId > 6433 ? 0 : this.dialogueNpcId;
         String npcName = World.getNpcDefinitions()[npcId].getName();
         this.player.packetSender.sendInterfaceAnimation(4894, animationId);
@@ -598,6 +617,7 @@ public class DialogueManager {
     }
 
     public final void showNpcFourLineDialogue(String line1, String line2, String line3, String line4, int animationId) {
+        this.traceDisplay("npc4", line1 + " | " + line2 + " | " + line3 + " | " + line4);
         int npcId = this.dialogueNpcId < 0 || this.dialogueNpcId > 6433 ? 0 : this.dialogueNpcId;
         String npcName = World.getNpcDefinitions()[npcId].getName();
         this.player.packetSender.sendInterfaceAnimation(4901, animationId);
@@ -623,6 +643,7 @@ public class DialogueManager {
     }
 
     public final void showPlayerOneLineDialogue(String string, int n) {
+        this.traceDisplay("player1", string);
         Player player = this.player;
         player.packetSender.sendInterfaceAnimation(969, n);
         player = this.player;
@@ -636,6 +657,7 @@ public class DialogueManager {
     }
 
     public final void showPlayerTwoLineDialogue(String string, String string2, int n) {
+        this.traceDisplay("player2", string + " | " + string2);
         Player player = this.player;
         player.packetSender.sendInterfaceAnimation(974, n);
         player = this.player;
@@ -651,6 +673,7 @@ public class DialogueManager {
     }
 
     public final void showPlayerThreeLineDialogue(String string, String string2, String string3, int n) {
+        this.traceDisplay("player3", string + " | " + string2 + " | " + string3);
         Player player = this.player;
         player.packetSender.sendInterfaceAnimation(980, 591);
         player = this.player;
@@ -668,6 +691,7 @@ public class DialogueManager {
     }
 
     public final void showPlayerFourLineDialogue(String string, String string2, String string3, String string4, int n) {
+        this.traceDisplay("player4", string + " | " + string2 + " | " + string3 + " | " + string4);
         Player player = this.player;
         player.packetSender.sendInterfaceAnimation(987, 591);
         player = this.player;
@@ -745,11 +769,17 @@ public class DialogueManager {
     }
 
     public static boolean startDialogue(Player player, int n) {
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("dialogue start player=" + GameplayTrace.describe(player) + " id=" + n);
+        }
         player.getDialogueManager().resetDialogueState();
         return DialogueManager.continueDialogue(player, n, 1, 0);
     }
 
     public static boolean continueDialogue(Player player, int n, int n2, int n3) {
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("dialogue continue player=" + GameplayTrace.describe(player) + " id=" + n + " step=" + n2 + " option=" + n3);
+        }
         return DialogueManager.continueDialogueWithNpcId(player, n, n2, n3, n);
     }
 
@@ -1512,6 +1542,9 @@ public class DialogueManager {
     }
 
     public static boolean continueDialogueWithNpcId(Player var0, int var1_1, int var2_17, int var3_18, int var4_19) {
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("dialogue continue-npc player=" + GameplayTrace.describe(var0) + " id=" + var1_1 + " step=" + var2_17 + " option=" + var3_18 + " npcId=" + var4_19);
+        }
         Npc var1_2 = null;
         Npc var1_3 = null;
         Player var1_4 = null;

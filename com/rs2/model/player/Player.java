@@ -149,6 +149,7 @@ import com.rs2.util.ChatTextCodec;
 import com.rs2.util.ElapsedTimer;
 import com.rs2.util.FileUtil;
 import com.rs2.util.GameUtil;
+import com.rs2.util.GameplayTrace;
 import com.rs2.util.RectangularArea;
 import com.rs2.util.TextUtil;
 import com.rs2.util.path.PathFinder;
@@ -1046,12 +1047,20 @@ extends Entity {
     }
 
     public final void setQuestState(int n, int n2) {
+        int n3 = this.questStates[n];
         this.questStates[n] = n2;
+        if (GameplayTrace.enabled() && !this.isBot && n3 != n2) {
+            GameplayTrace.log("quest state set player=" + GameplayTrace.describe(this) + " questId=" + n + " oldState=" + n3 + " newState=" + n2);
+        }
     }
 
     public final void addQuestState(int n, int n2) {
         int n3 = n;
+        int n4 = this.questStates[n3];
         this.questStates[n3] = this.questStates[n3] + n2;
+        if (GameplayTrace.enabled() && !this.isBot && n4 != this.questStates[n3]) {
+            GameplayTrace.log("quest state add player=" + GameplayTrace.describe(this) + " questId=" + n + " delta=" + n2 + " oldState=" + n4 + " newState=" + this.questStates[n3]);
+        }
     }
 
     public static ActionRewardDefinition rollActionReward() {

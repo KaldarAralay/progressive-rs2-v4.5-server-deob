@@ -157,7 +157,15 @@ public final class InteractionDispatcher {
                 LoadedWorldObject loadedWorldObject = WorldObjectLookup.findObjectByIdAt(n22, n, n20, n21);
                 if (loadedWorldObject == null) {
                     ObjectManager.getInstance();
-                    if (ObjectManager.findDynamicObjectAt(n, n20, n21) == null) return;
+                    if (ObjectManager.findDynamicObjectAt(n, n20, n21) == null) {
+                        if (GameplayTrace.enabled()) {
+                            GameplayTrace.log("item-on-object missing-object player=" + GameplayTrace.describe(player) + " itemId=" + n23 + " objectId=" + n22 + " x=" + n + " y=" + n20 + " plane=" + n21);
+                        }
+                        return;
+                    }
+                }
+                if (GameplayTrace.enabled()) {
+                    GameplayTrace.log("schedule item-on-object task player=" + GameplayTrace.describe(player) + " seq=" + n24 + " itemId=" + n23 + " objectId=" + n22 + " x=" + n + " y=" + n20 + " plane=" + n21);
                 }
                 World.scheduleTickTask(new ItemOnObjectTask(1, true, player, n24, n22, n, n20, n21, n23));
                 return;

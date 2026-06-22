@@ -15,6 +15,7 @@ import com.rs2.model.skill.SkillActionHelper;
 import com.rs2.model.skill.firemaking.FiremakingLog;
 import com.rs2.model.skill.firemaking.FiremakingTask;
 import com.rs2.model.task.CycleEventHandler;
+import com.rs2.util.GameplayTrace;
 
 public final class FiremakingHandler {
     private Player player;
@@ -64,9 +65,15 @@ public final class FiremakingHandler {
                         object3 = object2 = null;
                     }
                     if (object3 == null) {
+                        if (GameplayTrace.enabled()) {
+                            GameplayTrace.log("firemaking no-log-match player=" + GameplayTrace.describe(this.player) + " firstItemId=" + n + " secondItemId=" + n2 + " x=" + groundItem2 + " y=" + n6 + " plane=" + player);
+                        }
                         return;
                     }
                     if (!this.player.getInventoryManager().containsItem(590)) {
+                        if (GameplayTrace.enabled()) {
+                            GameplayTrace.log("firemaking missing-tinderbox player=" + GameplayTrace.describe(this.player) + " logItemId=" + ((FiremakingLog)object3).getLogItemId());
+                        }
                         Player player3 = this.player;
                         player3.packetSender.sendGameMessage("You need a tinderbox to light this fire.");
                         return;
@@ -83,6 +90,9 @@ public final class FiremakingHandler {
                     ObjectManager.getInstance();
                     object = ObjectManager.findDynamicObjectAt(groundItem2, n6, player);
                     if (object != null) {
+                        if (GameplayTrace.enabled()) {
+                            GameplayTrace.log("firemaking blocked-existing-object player=" + GameplayTrace.describe(this.player) + " logItemId=" + ((FiremakingLog)object3).getLogItemId() + " x=" + groundItem2 + " y=" + n6 + " plane=" + player);
+                        }
                         Player object4 = this.player;
                         object4.packetSender.sendGameMessage("You can't light a fire here.");
                         return;
@@ -99,14 +109,30 @@ public final class FiremakingHandler {
                     object = this;
                     n6 = firemakingLog.getLogItemId();
                     if (useGroundItem) break block15;
-                    if (!((Player)object2).getInventoryManager().removeItem(new ItemStack(n6))) break block16;
+                    if (!((Player)object2).getInventoryManager().removeItem(new ItemStack(n6))) {
+                        if (GameplayTrace.enabled()) {
+                            GameplayTrace.log("firemaking remove-log-failed player=" + GameplayTrace.describe((Player)object2) + " logItemId=" + n6 + " x=" + n7 + " y=" + var9_19 + " plane=" + var3_7);
+                        }
+                        break block16;
+                    }
                     groundItem = new GroundItem(new ItemStack(n6), (Entity)object2);
                     GroundItemManager.getInstance().spawn(groundItem);
+                    if (GameplayTrace.enabled()) {
+                        GameplayTrace.log("firemaking ground-log spawned player=" + GameplayTrace.describe((Player)object2) + " logItemId=" + n6 + " x=" + n7 + " y=" + var9_19 + " plane=" + var3_7);
+                    }
                     break block17;
                 }
                 GroundItemManager.getInstance();
                 groundItem = GroundItemManager.findVisibleItem((Player)object2, n6, new Position(n7, (int)var9_19, ((Entity)object2).getPosition().getPlane()));
-                if (groundItem == null) break block16;
+                if (groundItem == null) {
+                    if (GameplayTrace.enabled()) {
+                        GameplayTrace.log("firemaking visible-ground-log-missing player=" + GameplayTrace.describe((Player)object2) + " logItemId=" + n6 + " x=" + n7 + " y=" + var9_19 + " plane=" + ((Entity)object2).getPosition().getPlane());
+                    }
+                    break block16;
+                }
+            }
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("firemaking start player=" + GameplayTrace.describe((Player)object2) + " logItemId=" + n6 + " fireObjectId=" + firemakingLog.getFireObjectId() + " source=" + (bl ? "ground" : "inventory") + " x=" + n7 + " y=" + var9_19 + " plane=" + var3_7);
             }
             if (((Player)object2).getQuestState(0) != 1) {
                 ((Player)object2).getDialogueManager().showTutorialInstructionOverlay("Please wait.", "", "Your character is now attempting to light the fire.", "This should only take a few seconds.", "", true);

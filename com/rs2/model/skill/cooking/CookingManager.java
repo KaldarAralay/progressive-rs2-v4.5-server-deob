@@ -16,6 +16,7 @@ import com.rs2.model.skill.SkillActionHelper;
 import com.rs2.model.skill.cooking.CookableFoodDefinition;
 import com.rs2.model.skill.cooking.CookingTask;
 import com.rs2.model.task.CycleEventHandler;
+import com.rs2.util.GameplayTrace;
 import com.rs2.util.GameUtil;
 
 public final class CookingManager {
@@ -36,6 +37,9 @@ public final class CookingManager {
     public final boolean handleItemOnCookingObject(int n, int n2, int n3, int n4) {
         Object object = CookableFoodDefinition.forRawItemId(n);
         if (object == null) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("cooking item-on-object not-cookable player=" + GameplayTrace.describe(this.player) + " itemId=" + n + " objectId=" + n2 + " x=" + n3 + " y=" + n4 + " plane=" + this.player.getPosition().getPlane());
+            }
             return false;
         }
         object = this.player;
@@ -52,6 +56,9 @@ public final class CookingManager {
             object = ObjectDefinition.forId(object != null ? ((LoadedWorldObject)object).getWorldObject().getObjectId() : ((WorldObject)object2).getObjectId());
             object2 = ((ObjectDefinition)object).name.toLowerCase();
             if (((String)object2).equalsIgnoreCase("fire") || ((String)object2).equalsIgnoreCase("fireplace")) {
+                if (GameplayTrace.enabled()) {
+                    GameplayTrace.log("cooking item-on-object accepted player=" + GameplayTrace.describe(this.player) + " rawItemId=" + n + " raw=" + ItemDefinition.forId(n).getName() + " objectId=" + n2 + " objectName=" + ((ObjectDefinition)object).name + " action=cookFire x=" + n3 + " y=" + n4 + " plane=" + this.player.getPosition().getPlane());
+                }
                 this.player.beginInterruptibleAction();
                 object2 = "cookFire";
                 object = this.player;
@@ -72,6 +79,9 @@ public final class CookingManager {
                 return true;
             }
             if (((String)object2).equalsIgnoreCase("stove") || ((String)object2).equalsIgnoreCase("range") || ((String)object2).equalsIgnoreCase("cooking range") || ((String)object2).equalsIgnoreCase("cooking pot")) {
+                if (GameplayTrace.enabled()) {
+                    GameplayTrace.log("cooking item-on-object accepted player=" + GameplayTrace.describe(this.player) + " rawItemId=" + n + " raw=" + ItemDefinition.forId(n).getName() + " objectId=" + n2 + " objectName=" + ((ObjectDefinition)object).name + " action=cookRange x=" + n3 + " y=" + n4 + " plane=" + this.player.getPosition().getPlane());
+                }
                 this.player.beginInterruptibleAction();
                 object2 = "cookRange";
                 object = this.player;
@@ -95,6 +105,12 @@ public final class CookingManager {
                 ((Player)object).packetSender.showChatboxInterface(1743);
                 return true;
             }
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("cooking item-on-object object-not-cooking-surface player=" + GameplayTrace.describe(this.player) + " rawItemId=" + n + " objectId=" + n2 + " objectName=" + ((ObjectDefinition)object).name + " x=" + n3 + " y=" + n4 + " plane=" + this.player.getPosition().getPlane());
+            }
+        }
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("cooking item-on-object no-object player=" + GameplayTrace.describe(this.player) + " rawItemId=" + n + " objectId=" + n2 + " x=" + n3 + " y=" + n4 + " plane=" + this.player.getPosition().getPlane());
         }
         return true;
     }
@@ -164,6 +180,7 @@ public final class CookingManager {
 
     private static void processCookingResult(Player player, int n, boolean bl) {
         CookableFoodDefinition cookableFoodDefinition = CookableFoodDefinition.forRawItemId(n);
+        int rawItemId = n;
         int n2 = cookableFoodDefinition.getSuccessChanceLow();
         int n3 = cookableFoodDefinition.getSuccessChanceHigh();
         if (player.getEquipmentManager().getContainer().getItemAt(9) != null && player.getEquipmentManager().getContainer().getItemAt(9).getId() == 775 && (n == 377 || n == 371 || n == 383)) {
@@ -175,6 +192,9 @@ public final class CookingManager {
         if (bl2 && !bl || player.getQuestState(0) == 14 || player.getQuestState(0) == 19) {
             player.getInventoryManager().addItem(new ItemStack(cookableFoodDefinition.getCookedItemId()));
             player.getSkillManager().addExperience(7, cookableFoodDefinition.getExperience());
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("cooking result player=" + GameplayTrace.describe(player) + " rawItemId=" + rawItemId + " cookedItemId=" + cookableFoodDefinition.getCookedItemId() + " result=success xp=" + cookableFoodDefinition.getExperience() + " action=" + player.interfaceAction);
+            }
             if (cookableFoodDefinition.getCookedItemId() != 2146) {
                 player.packetSender.sendGameMessage("You successfully cook a " + ItemDefinition.forId(cookableFoodDefinition.getCookedItemId()).getName().toLowerCase() + ".");
                 return;
@@ -183,6 +203,9 @@ public final class CookingManager {
             return;
         }
         player.getInventoryManager().addItem(new ItemStack(cookableFoodDefinition.getBurntItemId()));
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("cooking result player=" + GameplayTrace.describe(player) + " rawItemId=" + rawItemId + " burntItemId=" + cookableFoodDefinition.getBurntItemId() + " result=burn action=" + player.interfaceAction);
+        }
         if (cookableFoodDefinition.getCookedItemId() != 2146) {
             player.packetSender.sendGameMessage("You accidentally burn the " + ItemDefinition.forId(cookableFoodDefinition.getCookedItemId()).getName().toLowerCase() + ".");
             return;

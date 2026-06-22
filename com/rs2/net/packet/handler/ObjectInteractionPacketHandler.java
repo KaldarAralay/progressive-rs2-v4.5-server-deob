@@ -42,8 +42,16 @@ implements PacketHandler {
                 player.setSelectedItemId(incomingPacket.getReader().readSignedShort());
                 if (player.getSelectedItemSlot() <= 28) {
                     ItemStack itemStack = player.getInventoryManager().getContainer().getItemAt(player.getSelectedItemSlot());
-                    if (itemStack == null || itemStack.getId() != player.getSelectedItemId()) break;
+                    if (itemStack == null || itemStack.getId() != player.getSelectedItemId()) {
+                        if (GameplayTrace.enabled()) {
+                            GameplayTrace.log("item-on-object invalid-selected-item player=" + GameplayTrace.describe(player) + " interfaceId=" + player.getSelectedItemInterfaceId() + " slot=" + player.getSelectedItemSlot() + " selectedItemId=" + player.getSelectedItemId() + " inventoryItem=" + (itemStack == null ? "null" : itemStack.getId() + ":" + itemStack.getDefinition().getName()) + " objectId=" + player.getInteractionTargetId() + " x=" + player.getInteractionTargetX() + " y=" + player.getInteractionTargetY() + " plane=" + player.getInteractionTargetPlane());
+                        }
+                        break;
+                    }
                     InterfaceDefinition interfaceDefinition = InterfaceDefinition.forId(player.getSelectedItemInterfaceId());
+                    if (GameplayTrace.enabled()) {
+                        GameplayTrace.log("item-on-object decoded player=" + GameplayTrace.describe(player) + " interfaceId=" + player.getSelectedItemInterfaceId() + " slot=" + player.getSelectedItemSlot() + " itemId=" + player.getSelectedItemId() + " item=" + itemStack.getDefinition().getName() + " objectId=" + player.getInteractionTargetId() + " x=" + player.getInteractionTargetX() + " y=" + player.getInteractionTargetY() + " plane=" + player.getInteractionTargetPlane() + " interfaceOpen=" + player.isInterfaceOpen(interfaceDefinition));
+                    }
                     if (player.isInterfaceOpen(interfaceDefinition)) {
                         if (player.getPlayerRights() > 1 && ServerSettings.debugModeEnabled) {
                             System.out.println("item: " + player.getSelectedItemId() + " object: " + player.getInteractionTargetId());

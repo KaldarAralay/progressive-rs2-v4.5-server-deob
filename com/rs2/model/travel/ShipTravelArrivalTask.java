@@ -7,6 +7,7 @@ import com.rs2.model.dialogue.DialogueManager;
 import com.rs2.model.player.Player;
 import com.rs2.model.task.TickTask;
 import com.rs2.model.travel.ShipRoute;
+import com.rs2.util.GameplayTrace;
 
 public final class ShipTravelArrivalTask
 extends TickTask {
@@ -35,6 +36,9 @@ extends TickTask {
         player = this.player;
         player.packetSender.sendMinimapState(0);
         this.player.setActionLocked(false);
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("travel ship arrival player=" + GameplayTrace.describe(this.player) + " route=" + this.route);
+        }
         if (this.player.currentBotRoute != null) {
             this.player.botRouteTravelPending = false;
             this.player.continueBotRoute();

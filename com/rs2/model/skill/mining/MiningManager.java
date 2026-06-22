@@ -20,6 +20,7 @@ import com.rs2.model.skill.mining.MiningTask;
 import com.rs2.model.skill.mining.ProspectingTask;
 import com.rs2.model.task.CycleEventHandler;
 import com.rs2.util.GameUtil;
+import com.rs2.util.GameplayTrace;
 import com.rs2.util.RectangularArea;
 
 public final class MiningManager {
@@ -206,6 +207,9 @@ public final class MiningManager {
         while (n2 < 20) {
             int n3 = nArray[n2];
             if (n == n3) {
+                if (GameplayTrace.enabled()) {
+                    GameplayTrace.log("mining prospect depleted player=" + GameplayTrace.describe(this.player) + " rockObjectId=" + n);
+                }
                 Player player = this.player;
                 player.packetSender.sendGameMessage("There is currently no ores remaining in this rock.");
                 player = this.player;
@@ -227,6 +231,9 @@ public final class MiningManager {
         int n4 = MiningManager.rollMinedItemId(n, MineableRockDefinition.getOreItemId(mineableRockDefinition));
         ItemService.getInstance();
         String oreName = ItemService.getItemName(n4).toLowerCase().replaceAll("ore", "").trim();
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("mining prospect scheduled player=" + GameplayTrace.describe(this.player) + " rockObjectId=" + n + " oreItemId=" + n4 + " oreName=" + oreName);
+        }
         CycleEventHandler.getInstance().schedule(this.player, new ProspectingTask(this, n, oreName), 5);
         return true;
     }

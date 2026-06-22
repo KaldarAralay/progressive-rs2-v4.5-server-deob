@@ -202,6 +202,9 @@ implements PacketHandler {
                 player.setSelectedItemSlot(packet.getReader().readSignedShort(ByteTransform.ADD));
                 int itemId = packet.getReader().readSignedShort(ByteTransform.ADD);
                 InterfaceDefinition interfaceDefinition = InterfaceDefinition.forId(interfaceId);
+                if (GameplayTrace.enabled() && interfaceId == 1688) {
+                    GameplayTrace.log("equipment unequip decoded player=" + GameplayTrace.describe(player) + " interfaceId=" + interfaceId + " slot=" + player.getSelectedItemSlot() + " itemId=" + itemId + " interfaceOpen=" + player.isInterfaceOpen(interfaceDefinition));
+                }
                 if (player.isInterfaceOpen(interfaceDefinition)) {
                     if (interfaceId == 1119 || interfaceId == 1120 || interfaceId == 1121 || interfaceId == 1122 || interfaceId == 1123) {
                         SmithingHandler.startSmithingTask(player, itemId, 1);
@@ -327,6 +330,9 @@ implements PacketHandler {
         }
         int firstItemId = firstItem.getId();
         int secondItemId = secondItem.getId();
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("item-on-item decoded player=" + GameplayTrace.describe(player) + " firstSlot=" + firstSlot + " firstItemId=" + firstItemId + " firstItem=" + firstItem.getDefinition().getName() + " secondSlot=" + secondSlot + " secondItemId=" + secondItemId + " secondItem=" + secondItem.getDefinition().getName());
+        }
         if (player.getDuelSession().getOpponent() != null && !player.isInDuelArena()) {
             player.getDuelController().resetDuel(true);
             return;
@@ -407,12 +413,18 @@ implements PacketHandler {
             return;
         }
         if (firstItemId == 590 || secondItemId == 590) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("item-on-item firemaking-start player=" + GameplayTrace.describe(player) + " firstItemId=" + firstItemId + " secondItemId=" + secondItemId + " x=" + player.getPosition().getX() + " y=" + player.getPosition().getY() + " plane=" + player.getPosition().getPlane());
+            }
             player.getFiremakingHandler().startFiremaking(firstItemId, secondItemId, false, player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getPlane());
             return;
         }
         if (hasItemPair(firstItemId, secondItemId, 1929, 1933)) {
             ItemActionPacketHandler.handleFlourAndWater(player);
             return;
+        }
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("item-on-item unhandled player=" + GameplayTrace.describe(player) + " firstItemId=" + firstItemId + " secondItemId=" + secondItemId);
         }
         player.getPacketSender().sendGameMessage("Nothing interesting happens.");
     }
@@ -928,6 +940,9 @@ implements PacketHandler {
         if (!player.isInterfaceOpen(interfaceDefinition)) {
             return;
         }
+        if (GameplayTrace.enabled() && (interfaceId == 3900 || interfaceId == 3823)) {
+            GameplayTrace.log("shop item amount-one decoded player=" + GameplayTrace.describe(player) + " interfaceId=" + interfaceId + " slot=" + player.getSelectedItemSlot() + " itemId=" + itemId + " amount=1 openInterfaceId=" + player.getOpenInterfaceId() + " currentShopId=" + player.getCurrentShopId());
+        }
         if (interfaceId == 5064 || interfaceId == 7423) {
             BankManager.depositInventoryItem(player, player.getSelectedItemSlot(), itemId, 5);
         } else if (interfaceId == 2006) {
@@ -986,6 +1001,9 @@ implements PacketHandler {
             player.resetInteractionState();
         }
         player.setSelectedItemSlot(n3);
+        if (GameplayTrace.enabled() && (n == 3900 || n == 3823)) {
+            GameplayTrace.log("shop item amount-five decoded player=" + GameplayTrace.describe(player) + " interfaceId=" + n + " slot=" + player.getSelectedItemSlot() + " itemId=" + n2 + " amount=5 openInterfaceId=" + player.getOpenInterfaceId() + " currentShopId=" + player.getCurrentShopId());
+        }
         if (n == 5064 || n == 7423) {
             BankManager.depositInventoryItem(player, player.getSelectedItemSlot(), n2, 10);
         } else if (n == 2006) {
@@ -1154,6 +1172,9 @@ implements PacketHandler {
         Object object = InterfaceDefinition.forId(n);
         if (!player.isInterfaceOpen((InterfaceDefinition)object)) {
             return;
+        }
+        if (GameplayTrace.enabled() && (n == 3900 || n == 3823)) {
+            GameplayTrace.log("shop item amount-ten decoded player=" + GameplayTrace.describe(player) + " interfaceId=" + n + " slot=" + player.getSelectedItemSlot() + " itemId=" + n2 + " amount=10 openInterfaceId=" + player.getOpenInterfaceId() + " currentShopId=" + player.getCurrentShopId());
         }
         if (n == 5064 || n == 7423) {
             BankManager.depositInventoryItem(player, player.getSelectedItemSlot(), n2, player.getInventoryManager().getContainer().getItemAmount(n2));

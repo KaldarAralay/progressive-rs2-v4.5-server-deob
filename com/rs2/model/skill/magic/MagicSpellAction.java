@@ -126,11 +126,10 @@ extends CycleEvent {
         int n = 0;
         if (spellDefinition.isMembersOnly()) {
             this.requirements = new CombatRequirement[3];
-            this.requirements[0] = new MagicMembersAccountRequirement(this);
+            this.requirements[n++] = new MagicMembersAccountRequirement(this);
         }
-        int n2 = ++n;
-        this.requirements[n2] = new RuneRequirement(this, spellDefinition);
-        this.requirements[++n] = new MagicLevelRequirement(this, 6, spellDefinition.getRequiredLevel());
+        this.requirements[n++] = new RuneRequirement(this, spellDefinition);
+        this.requirements[n] = new MagicLevelRequirement(this, 6, spellDefinition.getRequiredLevel());
         if (this.spell == SpellDefinition.HOME_TELEPORT) {
             this.requirements = null;
         }

@@ -17,6 +17,7 @@ import com.rs2.model.player.Player;
 import com.rs2.model.skill.SkillActionHelper;
 import com.rs2.model.task.CycleEventHandler;
 import com.rs2.util.GameUtil;
+import com.rs2.util.GameplayTrace;
 import java.util.ArrayList;
 
 public class AttackStyleDefinition {
@@ -26,6 +27,9 @@ public class AttackStyleDefinition {
     private CombatType combatType;
 
     public static void startDelayedObjectMove(Player player, Position position) {
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("object travel delayed-move scheduled player=" + GameplayTrace.describe(player) + " destination=" + formatPosition(position) + " targetObjectId=" + player.getInteractionTargetId() + " targetX=" + player.getInteractionTargetX() + " targetY=" + player.getInteractionTargetY());
+        }
         player.setActionLocked(true);
         player.getUpdateState().setAnimation(828);
         player.packetSender.closeInterfaces();
@@ -62,7 +66,9 @@ public class AttackStyleDefinition {
         int targetPlane = direction.equalsIgnoreCase("up") ? plane + 1 : (plane - 1 <= 0 ? 0 : plane - 1);
         int xDelta = orientation == 1 ? (direction.equalsIgnoreCase("up") ? xOffset : -xOffset) : (orientation == 3 ? (direction.equalsIgnoreCase("up") ? -xOffset : xOffset) : 0);
         int yDelta = orientation == 0 ? (direction.equalsIgnoreCase("up") ? yOffset : -yOffset) : (orientation == 2 ? (direction.equalsIgnoreCase("up") ? -yOffset : yOffset) : 0);
-        player.moveTo(new Position(player.getPosition().getX() + xDelta, player.getPosition().getY() + yDelta, targetPlane));
+        Position destination = new Position(player.getPosition().getX() + xDelta, player.getPosition().getY() + yDelta, targetPlane);
+        traceObjectTravel(player, "directional-stairs", direction, worldObject, destination);
+        player.moveTo(destination);
     }
 
     public static void climbFourTileDirectionalStairs(Player player, int n, int n2, String string) {
@@ -75,7 +81,9 @@ public class AttackStyleDefinition {
         int targetPlane = string.equalsIgnoreCase("up") ? plane + 1 : (plane - 1 <= 0 ? 0 : plane - 1);
         int xDelta = orientation == 1 ? (string.equalsIgnoreCase("up") ? -4 : 4) : (orientation == 3 ? (string.equalsIgnoreCase("up") ? 4 : -4) : 0);
         int yDelta = orientation == 0 ? (string.equalsIgnoreCase("up") ? -4 : 4) : (orientation == 2 ? (string.equalsIgnoreCase("up") ? 4 : -4) : 0);
-        player.moveTo(new Position(player.getPosition().getX() + xDelta, player.getPosition().getY() + yDelta, targetPlane));
+        Position destination = new Position(player.getPosition().getX() + xDelta, player.getPosition().getY() + yDelta, targetPlane);
+        traceObjectTravel(player, "four-tile-stairs", string, worldObject, destination);
+        player.moveTo(destination);
     }
 
     public static void climbOffsetLadder(Player player, String direction) {
@@ -94,10 +102,14 @@ public class AttackStyleDefinition {
             yDelta = 0;
         }
         if (player.getInteractionTargetId() == 1738 && direction.equals("up") && player.getInteractionTargetX() == 2673 && player.getInteractionTargetY() == 3300) {
-            player.moveTo(new Position(2675, 3300, targetPlane));
+            Position destination = new Position(2675, 3300, targetPlane);
+            traceObjectTravel(player, "offset-ladder", direction, worldObject, destination);
+            player.moveTo(destination);
             return;
         }
-        player.moveTo(new Position(player.getPosition().getX() + xDelta, player.getPosition().getY() + yDelta, targetPlane));
+        Position destination = new Position(player.getPosition().getX() + xDelta, player.getPosition().getY() + yDelta, targetPlane);
+        traceObjectTravel(player, "offset-ladder", direction, worldObject, destination);
+        player.moveTo(destination);
     }
 
     public static void climbDungeonLadder(Player player, int n, int n2, String direction) {
@@ -108,7 +120,19 @@ public class AttackStyleDefinition {
         int orientation = worldObject.getOrientation();
         int xDelta = orientation == 1 ? (direction.equalsIgnoreCase("up") ? 4 : -4) : (orientation == 3 ? (direction.equalsIgnoreCase("up") ? -4 : 4) : 0);
         int yDelta = orientation == 0 ? (direction.equalsIgnoreCase("up") ? 4 : -4) : (orientation == 2 ? (direction.equalsIgnoreCase("up") ? -4 : 4) : 0);
-        player.moveTo(new Position(player.getPosition().getX() + xDelta, player.getPosition().getY() + yDelta + (direction.equalsIgnoreCase("up") ? -6400 : 6400), 0));
+        Position destination = new Position(player.getPosition().getX() + xDelta, player.getPosition().getY() + yDelta + (direction.equalsIgnoreCase("up") ? -6400 : 6400), 0);
+        traceObjectTravel(player, "dungeon-ladder", direction, worldObject, destination);
+        player.moveTo(destination);
+    }
+
+    private static void traceObjectTravel(Player player, String kind, String direction, WorldObject worldObject, Position destination) {
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("object travel " + kind + " player=" + GameplayTrace.describe(player) + " direction=" + direction + " objectId=" + worldObject.getObjectId() + " objectPosition=" + formatPosition(worldObject.getPosition()) + " orientation=" + worldObject.getOrientation() + " destination=" + formatPosition(destination));
+        }
+    }
+
+    private static String formatPosition(Position position) {
+        return position.getX() + "," + position.getY() + "," + position.getPlane();
     }
 
     public AttackStyleDefinition(CombatType combatType, AttackXpMode attackXpMode, AttackBonusType attackBonusType) {

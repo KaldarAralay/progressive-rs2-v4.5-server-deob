@@ -7,6 +7,7 @@ import com.rs2.model.Position;
 import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
+import com.rs2.util.GameplayTrace;
 
 public final class DelayedObjectMoveEvent
 extends CycleEvent {
@@ -20,8 +21,14 @@ extends CycleEvent {
 
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("object travel delayed-move execute player=" + GameplayTrace.describe(this.player) + " destination=" + this.destination.getX() + "," + this.destination.getY() + "," + this.destination.getPlane());
+        }
         if (this.player.getPosition() != this.destination) {
             this.player.moveTo(this.destination);
+        }
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("object travel delayed-move complete player=" + GameplayTrace.describe(this.player));
         }
         this.player.getUpdateState().setAnimation(65535);
         cycleEventContainer.stop();

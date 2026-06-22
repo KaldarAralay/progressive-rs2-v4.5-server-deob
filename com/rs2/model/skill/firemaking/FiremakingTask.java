@@ -13,6 +13,7 @@ import com.rs2.model.skill.firemaking.FiremakingHandler;
 import com.rs2.model.skill.firemaking.FiremakingLog;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
+import com.rs2.util.GameplayTrace;
 import com.rs2.util.GameUtil;
 
 public final class FiremakingTask
@@ -47,6 +48,9 @@ extends CycleEvent {
                 if (GroundItemManager.isVisible(this.player, this.groundItem)) break block12;
             }
             cycleEventContainer.stop();
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("firemaking stopped-invalid-state player=" + GameplayTrace.describe(this.player) + " logItemId=" + this.logItemId + " x=" + this.fireX + " y=" + this.fireY + " plane=" + this.plane);
+            }
             return;
         }
         boolean bl = GameUtil.rollLevelScaledChance(64, 512, this.player.getSkillManager().getCurrentLevels()[11]);
@@ -82,6 +86,9 @@ extends CycleEvent {
             }
             this.player.getUpdateState().setFacePosition(new Position(this.fireX, this.fireY));
             this.player.getSkillManager().addExperience(11, this.firemakingLog.getExperience());
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("firemaking success player=" + GameplayTrace.describe(this.player) + " logItemId=" + this.logItemId + " fireObjectId=" + this.firemakingLog.getFireObjectId() + " x=" + this.fireX + " y=" + this.fireY + " plane=" + this.plane + " xp=" + this.firemakingLog.getExperience());
+            }
             cycleEventContainer.stop();
             return;
         }

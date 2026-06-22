@@ -20,6 +20,7 @@ import com.rs2.net.packet.PacketSender;
 import com.rs2.util.ByteArrayReader;
 import com.rs2.util.FileUtil;
 import com.rs2.util.GameUtil;
+import com.rs2.util.GameplayTrace;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,16 +45,25 @@ public final class ShopManager {
     public static void openShop(Player player, int n) {
         Player player2;
         if (n >= shopDefinitions.toArray().length) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("shop open invalid-id player=" + GameplayTrace.describe(player) + " shopId=" + n + " loaded=" + shopDefinitions.size());
+            }
             return;
         }
         ShopDefinition shopDefinition = (ShopDefinition)shopDefinitions.get(n);
         if (shopDefinition.isMembersOnly()) {
             if (player.isMember()) {
                 if (ServerSettings.freeToPlayWorld) {
+                    if (GameplayTrace.enabled()) {
+                        GameplayTrace.log("shop open blocked-free-world player=" + GameplayTrace.describe(player) + " shopId=" + n + " name=" + shopDefinition.getName());
+                    }
                     player.packetSender.sendGameMessage("You need to be in members world to access members content.");
                     return;
                 }
             } else {
+                if (GameplayTrace.enabled()) {
+                    GameplayTrace.log("shop open blocked-nonmember player=" + GameplayTrace.describe(player) + " shopId=" + n + " name=" + shopDefinition.getName());
+                }
                 player.packetSender.sendGameMessage("You need a members account to access members content.");
                 return;
             }
@@ -74,6 +84,9 @@ public final class ShopManager {
         player2.packetSender.showInterfaceWithInventory(3824, 3822);
         player.setCurrentShopId(n);
         player.getAttributes().put("isShopping", Boolean.TRUE);
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("shop open success player=" + GameplayTrace.describe(player) + " shopId=" + n + " name=" + string + " stockSlots=" + itemStackArray.length + " currency=" + shopDefinition.getCurrency());
+        }
     }
 
     private static boolean isSkillcapeBundleItem(int n) {
@@ -108,6 +121,9 @@ public final class ShopManager {
         ShopDefinition shopDefinition = (ShopDefinition)shopDefinitions.get(player.getCurrentShopId());
         ItemContainer itemContainer = player.getInventoryManager().getContainer();
         ItemStack itemStack = shopDefinition.getStock().getItemAt(n);
+        int traceRequestedAmount = n3;
+        int traceStockItemId = itemStack != null ? itemStack.getId() : -1;
+        int traceStockSlotAmountBefore = itemStack != null ? itemStack.getAmount() : -1;
         if (shopDefinition.getCurrency() == ShopCurrency.ITEM_CURRENCY) {
             n6 = shopDefinition.getCurrencyItemId();
         } else {
@@ -123,7 +139,16 @@ public final class ShopManager {
                 }
             }
         }
+        int traceCurrencyBefore = shopDefinition.getCurrency() == ShopCurrency.ITEM_CURRENCY ? itemContainer.getItemAmount(n6) : -1;
+        int traceInventoryBefore = itemContainer.getItemAmount(n2);
+        int traceStockBefore = itemStack != null ? shopDefinition.getStock().getItemAmount(n2) : -1;
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("shop buy request player=" + GameplayTrace.describe(player) + " shopId=" + player.getCurrentShopId() + " slot=" + n + " itemId=" + n2 + " requestedAmount=" + traceRequestedAmount + " stockSlotItemId=" + traceStockItemId + " stockSlotAmountBefore=" + traceStockSlotAmountBefore + " stockItemAmountBefore=" + traceStockBefore + " currency=" + shopDefinition.getCurrency() + " currencyRef=" + n6 + " currencyBefore=" + traceCurrencyBefore + " inventoryItemBefore=" + traceInventoryBefore);
+        }
         if (n3 <= 0 || n2 < 0 || itemStack == null || !itemStack.isValid()) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("shop buy rejected-invalid player=" + GameplayTrace.describe(player) + " shopId=" + player.getCurrentShopId() + " slot=" + n + " itemId=" + n2 + " requestedAmount=" + traceRequestedAmount + " stockSlotItemId=" + traceStockItemId);
+            }
             if (player.botEnabled) {
                 player.deferredBotTask = null;
                 player.botTaskReturnToBankRequested = true;
@@ -132,6 +157,9 @@ public final class ShopManager {
             return;
         }
         if (n2 != itemStack.getId()) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("shop buy rejected-item-mismatch player=" + GameplayTrace.describe(player) + " shopId=" + player.getCurrentShopId() + " slot=" + n + " requestedItemId=" + n2 + " stockItemId=" + itemStack.getId());
+            }
             return;
         }
         boolean bl = false;
@@ -145,6 +173,9 @@ public final class ShopManager {
             ItemService.getInstance();
             n5 = ItemService.getPrice(n2, "donator", n6);
             if (n6 < n5 * n3) {
+                if (GameplayTrace.enabled()) {
+                    GameplayTrace.log("shop buy rejected-donator-points player=" + GameplayTrace.describe(player) + " shopId=" + player.getCurrentShopId() + " itemId=" + n2 + " requestedAmount=" + traceRequestedAmount + " points=" + n6 + " unitPrice=" + n5);
+                }
                 object = player;
                 ((Player)object).packetSender.sendGameMessage("You do not have enough donator points to buy this item.");
                 return;
@@ -153,6 +184,9 @@ public final class ShopManager {
                 ItemDefinition itemDefinition = ItemDefinition.forId(itemStack.getId());
                 n4 = player.getInventoryManager().getItemAmount(itemDefinition.b);
                 if (n4 < n3) {
+                    if (GameplayTrace.enabled()) {
+                        GameplayTrace.log("shop buy rejected-secondary-currency player=" + GameplayTrace.describe(player) + " shopId=" + player.getCurrentShopId() + " itemId=" + n2 + " requestedAmount=" + traceRequestedAmount + " secondaryItemId=" + itemDefinition.b + " secondaryAmount=" + n4);
+                    }
                     object = player;
                     PacketSender packetSender = ((Player)object).packetSender;
                     StringBuilder stringBuilder = new StringBuilder("You do not have enough ");
@@ -177,6 +211,9 @@ public final class ShopManager {
             n4 = 2 * n3;
         }
         if (!(itemStack.getDefinition().isStackable() && player.getInventoryManager().containsItem(n2) || n8 >= n4)) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("shop buy adjusted-no-space player=" + GameplayTrace.describe(player) + " shopId=" + player.getCurrentShopId() + " itemId=" + n2 + " requestedAmount=" + traceRequestedAmount + " adjustedAmount=" + n8 + " freeSlots=" + itemContainer.getFreeSlots() + " requiredSlots=" + n4);
+            }
             n3 = n8;
             object = player;
             ((Player)object).packetSender.sendGameMessage("Not enough space in your inventory.");
@@ -191,6 +228,9 @@ public final class ShopManager {
             n3 = shopDefinition.getStock().getItemAt(n).getAmount();
         }
         if (shopDefinition.isGeneralStore() && shopDefinition.getStock().getItemAt(n).getAmount() == 0) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("shop buy rejected-out-of-stock player=" + GameplayTrace.describe(player) + " shopId=" + player.getCurrentShopId() + " itemId=" + n2 + " requestedAmount=" + traceRequestedAmount);
+            }
             object = player;
             ((Player)object).packetSender.sendGameMessage("This item is out of stock.");
             return;
@@ -202,6 +242,9 @@ public final class ShopManager {
         n8 = shopDefinition.getStock().getItemAmount(n2);
         n4 = 0;
         if (player.gameMode != 0 && n8 > n) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("shop buy rejected-overstock-gamemode player=" + GameplayTrace.describe(player) + " shopId=" + player.getCurrentShopId() + " itemId=" + n2 + " requestedAmount=" + traceRequestedAmount + " stockAmount=" + n8 + " originalAmount=" + n + " gameMode=" + player.gameMode);
+            }
             object = player;
             ((Player)object).packetSender.sendGameMessage("You are not playing on normal gamemode and cannot buy overstocked items.");
             return;
@@ -212,6 +255,9 @@ public final class ShopManager {
                 int n12 = itemContainer.getItemAmount(n6);
                 n = ShopManager.calculateBuyPrice(shopDefinition, n2, n8);
                 if (n > n12) {
+                    if (GameplayTrace.enabled()) {
+                        GameplayTrace.log("shop buy rejected-currency player=" + GameplayTrace.describe(player) + " shopId=" + player.getCurrentShopId() + " itemId=" + n2 + " requestedAmount=" + traceRequestedAmount + " purchasedBeforeFailure=" + n4 + " unitPrice=" + n + " currencyHeld=" + n12 + " currencyItemId=" + n6);
+                    }
                     Player player2 = player;
                     PacketSender packetSender = player2.packetSender;
                     StringBuilder stringBuilder = new StringBuilder("You do not have enough ");
@@ -270,6 +316,11 @@ public final class ShopManager {
         }
         player.getInventoryManager().sendToInterface(3823);
         ShopManager.refreshShopForPlayers(player.getCurrentShopId());
+        if (GameplayTrace.enabled()) {
+            int traceCurrencyAfter = shopDefinition.getCurrency() == ShopCurrency.ITEM_CURRENCY ? itemContainer.getItemAmount(n6) : -1;
+            String traceResult = n3 > 0 ? "shop buy success" : "shop buy completed-none";
+            GameplayTrace.log(traceResult + " player=" + GameplayTrace.describe(player) + " shopId=" + player.getCurrentShopId() + " stockSlot=" + n8 + " itemId=" + n2 + " requestedAmount=" + traceRequestedAmount + " purchasedAmount=" + n3 + " currency=" + shopDefinition.getCurrency() + " currencyRef=" + n6 + " currencyBefore=" + traceCurrencyBefore + " currencyAfter=" + traceCurrencyAfter + " inventoryItemBefore=" + traceInventoryBefore + " inventoryItemAfter=" + itemContainer.getItemAmount(n2) + " stockItemAmountBefore=" + traceStockBefore + " stockItemAmountAfter=" + shopDefinition.getStock().getItemAmount(n2));
+        }
     }
 
     private static int calculateBuyPrice(ShopDefinition shopDefinition, int n, int n2) {
@@ -312,7 +363,13 @@ public final class ShopManager {
         ItemContainer itemContainer = player.getInventoryManager().getContainer();
         ItemStack itemStack = itemContainer.getItemAt(n);
         int n4 = shopDefinition.getCurrencyItemId();
+        int traceRequestedAmount = n3;
+        int traceCurrencyBefore = itemContainer.getItemAmount(n4);
+        int traceInventoryBefore = itemContainer.getItemAmount(n2);
         if (itemStack == null) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("shop sell rejected-empty-slot player=" + GameplayTrace.describe(player) + " shopId=" + player.getCurrentShopId() + " slot=" + n + " itemId=" + n2 + " requestedAmount=" + traceRequestedAmount);
+            }
             return;
         }
         int n5 = n2;
@@ -320,44 +377,75 @@ public final class ShopManager {
             n5 = itemStack.getDefinition().getUnnotedId();
         }
         int n6 = shopDefinition.getStock().getItemAmount(n5);
+        int traceStockBefore = n6;
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("shop sell request player=" + GameplayTrace.describe(player) + " shopId=" + player.getCurrentShopId() + " slot=" + n + " itemId=" + n2 + " stockItemId=" + n5 + " requestedAmount=" + traceRequestedAmount + " inventoryItemBefore=" + traceInventoryBefore + " stockItemAmountBefore=" + traceStockBefore + " currencyItemId=" + n4 + " currencyBefore=" + traceCurrencyBefore);
+        }
         if (!ServerSettings.adminInteractionsAllowed && player.getPlayerRights() >= 2) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("shop sell rejected-admin player=" + GameplayTrace.describe(player) + " shopId=" + player.getCurrentShopId() + " itemId=" + n2);
+            }
             Player player2 = player;
             player2.packetSender.sendGameMessage("This action is not allowed.");
             return;
         }
         if (itemStack.getId() != n2 || !itemStack.isValid()) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("shop sell rejected-item-mismatch player=" + GameplayTrace.describe(player) + " shopId=" + player.getCurrentShopId() + " slot=" + n + " requestedItemId=" + n2 + " slotItemId=" + itemStack.getId());
+            }
             return;
         }
         if (shopDefinition.getCurrency() != ShopCurrency.ITEM_CURRENCY) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("shop sell rejected-non-item-currency player=" + GameplayTrace.describe(player) + " shopId=" + player.getCurrentShopId() + " itemId=" + n2 + " currency=" + shopDefinition.getCurrency());
+            }
             Player player3 = player;
             player3.packetSender.sendGameMessage("This shop can't buy anything.");
             return;
         }
         if (shopDefinition.getStock().getFreeSlots() <= 0 && n6 <= 0) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("shop sell rejected-shop-full player=" + GameplayTrace.describe(player) + " shopId=" + player.getCurrentShopId() + " itemId=" + n2 + " stockItemId=" + n5);
+            }
             Player player4 = player;
             player4.packetSender.sendGameMessage("The shop is currently full!");
             return;
         }
         if (n2 == 995) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("shop sell rejected-currency-item player=" + GameplayTrace.describe(player) + " shopId=" + player.getCurrentShopId() + " itemId=" + n2);
+            }
             Player player5 = player;
             player5.packetSender.sendGameMessage("You cannot sell coins to the shop.");
             return;
         }
         if (!shopDefinition.isGeneralStore() && !shopDefinition.getStock().containsItem(n5) || itemStack.getDefinition().isUntradeable()) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("shop sell rejected-unsellable player=" + GameplayTrace.describe(player) + " shopId=" + player.getCurrentShopId() + " itemId=" + n2 + " stockItemId=" + n5 + " generalStore=" + shopDefinition.isGeneralStore() + " untradeable=" + itemStack.getDefinition().isUntradeable());
+            }
             Player player6 = player;
             player6.packetSender.sendGameMessage("You cannot sell this item in this shop.");
             return;
         }
         int n7 = itemContainer.getItemAmount(n2);
         if (n3 <= 0 || n2 < 0) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("shop sell rejected-invalid player=" + GameplayTrace.describe(player) + " shopId=" + player.getCurrentShopId() + " itemId=" + n2 + " requestedAmount=" + traceRequestedAmount);
+            }
             return;
         }
         if (n2 > 11883) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("shop sell rejected-unsupported-item player=" + GameplayTrace.describe(player) + " shopId=" + player.getCurrentShopId() + " itemId=" + n2);
+            }
             Player player7 = player;
             player7.packetSender.sendGameMessage("This item is not supported yet.");
             return;
         }
         if (!itemContainer.containsItem(n2)) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("shop sell rejected-not-in-inventory player=" + GameplayTrace.describe(player) + " shopId=" + player.getCurrentShopId() + " itemId=" + n2);
+            }
             return;
         }
         if (n3 >= n7) {
@@ -368,6 +456,9 @@ public final class ShopManager {
             n7 = shopDefinition.getOriginalStock().findFlatItem(n5).getAmount();
         }
         if (player.gameMode != 0 && n6 < n7) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("shop sell rejected-understock-gamemode player=" + GameplayTrace.describe(player) + " shopId=" + player.getCurrentShopId() + " itemId=" + n2 + " stockItemId=" + n5 + " stockAmount=" + n6 + " originalAmount=" + n7 + " gameMode=" + player.gameMode);
+            }
             Player player8 = player;
             player8.packetSender.sendGameMessage("You are not playing on normal gamemode and cannot sell understocked items.");
             return;
@@ -404,6 +495,9 @@ public final class ShopManager {
         }
         player.getInventoryManager().sendToInterface(3823);
         ShopManager.refreshShopForPlayers(player.getCurrentShopId());
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("shop sell success player=" + GameplayTrace.describe(player) + " shopId=" + player.getCurrentShopId() + " stockSlot=" + n7 + " itemId=" + n2 + " stockItemId=" + n5 + " requestedAmount=" + traceRequestedAmount + " soldAmount=" + n3 + " currencyItemId=" + n4 + " currencyBefore=" + traceCurrencyBefore + " currencyAfter=" + itemContainer.getItemAmount(n4) + " currencyAdded=" + (int)d + " inventoryItemBefore=" + traceInventoryBefore + " inventoryItemAfter=" + itemContainer.getItemAmount(n2) + " stockItemAmountBefore=" + traceStockBefore + " stockItemAmountAfter=" + shopDefinition.getStock().getItemAmount(n5));
+        }
     }
 
     public static void sellItemStack(Player player, ItemStack itemStack) {
@@ -415,6 +509,9 @@ public final class ShopManager {
 
     public static void sendBuyPrice(Player player, int n) {
         ShopDefinition shopDefinition = (ShopDefinition)shopDefinitions.get(player.getCurrentShopId());
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("shop buy-price request player=" + GameplayTrace.describe(player) + " shopId=" + player.getCurrentShopId() + " itemId=" + n + " currency=" + shopDefinition.getCurrency() + " currencyItemId=" + shopDefinition.getCurrencyItemId());
+        }
         if (shopDefinition.getCurrency() == ShopCurrency.ITEM_CURRENCY) {
             int n2 = n;
             ItemService.getInstance();
@@ -449,6 +546,9 @@ public final class ShopManager {
 
     public static void sendSellPrice(Player player, int n) {
         ShopDefinition shopDefinition = (ShopDefinition)shopDefinitions.get(player.getCurrentShopId());
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("shop sell-price request player=" + GameplayTrace.describe(player) + " shopId=" + player.getCurrentShopId() + " itemId=" + n + " currency=" + shopDefinition.getCurrency() + " currencyItemId=" + shopDefinition.getCurrencyItemId());
+        }
         Object object = ItemDefinition.forId(n);
         shopDefinition.getCurrencyItemId();
         int n2 = n;

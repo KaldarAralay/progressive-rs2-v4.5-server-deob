@@ -27,6 +27,7 @@ import com.rs2.net.packet.IncomingPacket;
 import com.rs2.net.packet.PacketBuffer;
 import com.rs2.net.packet.PacketHandler;
 import com.rs2.net.packet.PacketWriter;
+import com.rs2.util.GameplayTrace;
 
 public final class InterfaceInputPacketHandler
 implements PacketHandler {
@@ -69,6 +70,9 @@ implements PacketHandler {
                 player.setSelectedInterfaceSlot(incomingPacket.getReader().readSignedShort(ByteOrder.LITTLE));
                 player.setSelectedInterfaceId(incomingPacket.getReader().readSignedShort(ByteTransform.ADD));
                 player.setSelectedInterfaceItemId(incomingPacket.getReader().readSignedShort(ByteOrder.LITTLE));
+                if (GameplayTrace.enabled() && (player.getSelectedInterfaceId() == 3900 || player.getSelectedInterfaceId() == 3823)) {
+                    GameplayTrace.log("shop item amount-hundred decoded player=" + GameplayTrace.describe(player) + " interfaceId=" + player.getSelectedInterfaceId() + " slot=" + player.getSelectedInterfaceSlot() + " itemId=" + player.getSelectedInterfaceItemId() + " amount=100 openInterfaceId=" + player.getOpenInterfaceId() + " currentShopId=" + player.getCurrentShopId());
+                }
                 if (player.getSelectedInterfaceId() == 3900) {
                     ShopManager.buyItem(player, player.getSelectedInterfaceSlot(), player.getSelectedInterfaceItemId(), 100);
                     break;
@@ -86,6 +90,9 @@ implements PacketHandler {
                 int amount = incomingPacket.getReader().readInt();
                 if (amount <= 0) {
                     break;
+                }
+                if (GameplayTrace.enabled() && (player.getSelectedInterfaceId() == 3900 || player.getSelectedInterfaceId() == 3823)) {
+                    GameplayTrace.log("shop item amount-custom input player=" + GameplayTrace.describe(player) + " interfaceId=" + player.getSelectedInterfaceId() + " slot=" + player.getSelectedInterfaceSlot() + " itemId=" + player.getSelectedInterfaceItemId() + " amount=" + amount + " openInterfaceId=" + player.getOpenInterfaceId() + " currentShopId=" + player.getCurrentShopId());
                 }
                 if (player.getSelectedInterfaceId() == 5064 && player.getOpenInterfaceId() == 5292) {
                     BankManager.depositInventoryItem(player, player.getSelectedInterfaceSlot(), player.getSelectedInterfaceItemId(), amount);

@@ -15,6 +15,7 @@ import com.rs2.model.player.Player;
 import com.rs2.model.task.CycleEventHandler;
 import com.rs2.util.ByteArrayReader;
 import com.rs2.util.FileUtil;
+import com.rs2.util.GameplayTrace;
 import com.rs2.util.GameUtil;
 
 public class FoodHandler {
@@ -27,19 +28,30 @@ public class FoodHandler {
     public final boolean eatFood(int n, int n2) {
         int n3;
         if (this.player.isDead()) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("food eat ignored-dead player=" + GameplayTrace.describe(this.player) + " itemId=" + n + " slot=" + n2);
+            }
             return false;
         }
         if (DuelRule.NO_FOOD.isEnabledFor(this.player)) {
             Player player = this.player;
             player.packetSender.sendGameMessage("Usage of foods have been disabled during this fight!");
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("food eat blocked-duel player=" + GameplayTrace.describe(this.player) + " itemId=" + n + " slot=" + n2);
+            }
             return true;
         }
         FoodDefinition foodDefinition = FoodDefinition.forItemId(n);
         if (foodDefinition == null) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("food eat not-food player=" + GameplayTrace.describe(this.player) + " itemId=" + n + " slot=" + n2);
+            }
             return false;
         }
         int n4 = n3 = foodDefinition.getReplacementItemId() != -1 ? 600 : 1800;
         if (this.player.getSkillManager().tryStartActionDelay(n3) && this.player.getSkillManager().getCurrentLevels()[3] > 0) {
+            int beforeHp = this.player.getSkillManager().getCurrentLevels()[3];
+            int baseHp = this.player.getSkillManager().getBaseLevel(3);
             this.player.getUpdateState().setAnimation(829);
             if (!this.player.getInventoryManager().removeItemFromSlot(new ItemStack(n, 1), n2)) {
                 this.player.getInventoryManager().removeItem(new ItemStack(n, 1));
@@ -81,11 +93,19 @@ public class FoodHandler {
                 this.player.getInventoryManager().addItem(new ItemStack(foodDefinition.getReplacementItemId()));
             }
             this.player.heal(n5);
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("food eat healed player=" + GameplayTrace.describe(this.player) + " itemId=" + n + " item=" + string + " slot=" + n2 + " beforeHp=" + beforeHp + " afterHp=" + this.player.getSkillManager().getCurrentLevels()[3] + " baseHp=" + baseHp + " healAmount=" + n5 + " replacementItemId=" + foodDefinition.getReplacementItemId());
+            }
             this.player.nextActionSequence();
             this.player.getAttackDelayTimer().setDelayTicks(this.player.getAttackDelayTimer().getDelayTicks() + 2);
             if (n != 10476 && n != 1971) {
+                if (GameplayTrace.enabled()) {
+                    GameplayTrace.log("food heal-message scheduled player=" + GameplayTrace.describe(this.player) + " itemId=" + n + " delayTicks=2");
+                }
                 CycleEventHandler.getInstance().schedule(this.player, new FoodHealMessageEvent(this), 2);
             }
+        } else if (GameplayTrace.enabled()) {
+            GameplayTrace.log("food eat action-delay-blocked player=" + GameplayTrace.describe(this.player) + " itemId=" + n + " slot=" + n2 + " currentHp=" + this.player.getSkillManager().getCurrentLevels()[3] + " delayMillis=" + n3);
         }
         return true;
     }

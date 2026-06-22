@@ -29,6 +29,7 @@ import com.rs2.model.skill.smithing.DragonfireShieldSmithing;
 import com.rs2.model.skill.smithing.SmeltingHandler;
 import com.rs2.model.skill.smithing.SmithingHandler;
 import com.rs2.model.task.TickTask;
+import com.rs2.util.GameplayTrace;
 import com.rs2.util.GameUtil;
 
 public final class ItemOnObjectTask
@@ -57,6 +58,9 @@ extends TickTask {
         boolean bl;
         Object object;
         if (this.player == null || !this.player.isCurrentActionSequence(this.actionSequence)) {
+            if (GameplayTrace.enabled() && this.player != null) {
+                GameplayTrace.log("item-on-object task stopped stale-sequence player=" + GameplayTrace.describe(this.player) + " itemId=" + this.itemId + " objectId=" + this.objectId + " seq=" + this.actionSequence);
+            }
             this.stop();
             return;
         }
@@ -65,15 +69,24 @@ extends TickTask {
         }
         WorldObject worldObject = SkillActionHelper.findWorldObjectById(this.objectId, this.objectX, this.objectY, this.objectPlane);
         if (worldObject == null) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("item-on-object task missing-object player=" + GameplayTrace.describe(this.player) + " itemId=" + this.itemId + " objectId=" + this.objectId + " x=" + this.objectX + " y=" + this.objectY + " plane=" + this.objectPlane);
+            }
             return;
         }
         Object object2 = ObjectDefinition.forId(this.player.getInteractionTargetId());
         Object object3 = GameUtil.findReachableInteractionPosition(worldObject.getPosition().getX(), worldObject.getPosition().getY(), this.player.getPosition().getX(), this.player.getPosition().getY(), ((ObjectDefinition)object2).getWidthForOrientation(worldObject.getOrientation()), ((ObjectDefinition)object2).getLengthForOrientation(worldObject.getOrientation()), this.objectPlane);
         if (this.objectId != 2638) {
             if (object3 == null) {
+                if (GameplayTrace.enabled()) {
+                    GameplayTrace.log("item-on-object task no-reachable-position player=" + GameplayTrace.describe(this.player) + " itemId=" + this.itemId + " objectId=" + this.objectId + " x=" + this.objectX + " y=" + this.objectY + " plane=" + this.objectPlane);
+                }
                 return;
             }
             if (!InteractionDispatcher.canReachObjectInteraction(this.player, (Position)object3, worldObject)) {
+                if (GameplayTrace.enabled()) {
+                    GameplayTrace.log("item-on-object task blocked-path player=" + GameplayTrace.describe(this.player) + " itemId=" + this.itemId + " objectId=" + this.objectId + " objectX=" + this.objectX + " objectY=" + this.objectY + " reachX=" + ((Position)object3).getX() + " reachY=" + ((Position)object3).getY());
+                }
                 this.stop();
                 return;
             }
@@ -81,6 +94,9 @@ extends TickTask {
         object3 = new Position(this.player.getInteractionTargetX(), this.player.getInteractionTargetY(), this.objectPlane);
         if (object2 != null) {
             this.player.getUpdateState().setFacePosition(((Position)object3).centerForSize(((ObjectDefinition)object2).getMaxDimension()));
+        }
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("item-on-object task reached player=" + GameplayTrace.describe(this.player) + " itemId=" + this.itemId + " item=" + ItemDefinition.forId(this.itemId).getName() + " objectId=" + this.objectId + " object=" + ((ObjectDefinition)object2).name + " x=" + this.objectX + " y=" + this.objectY + " plane=" + this.objectPlane);
         }
         if (this.player.getQuestManager().handleItemOnObject(this.itemId, this.objectId)) {
             this.stop();
@@ -130,10 +146,16 @@ extends TickTask {
             return;
         }
         if (this.player.getCookingManager().handleItemOnCookingObject(this.itemId, this.objectId, this.objectX, this.objectY)) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("item-on-object cooking-handled player=" + GameplayTrace.describe(this.player) + " itemId=" + this.itemId + " objectId=" + this.objectId + " x=" + this.objectX + " y=" + this.objectY + " plane=" + this.objectPlane);
+            }
             this.stop();
             return;
         }
         if (this.player.getCookingManager().handleWaterSourceItem(this.itemId, this.objectId)) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("item-on-object water-source-handled player=" + GameplayTrace.describe(this.player) + " itemId=" + this.itemId + " item=" + ItemDefinition.forId(this.itemId).getName() + " objectId=" + this.objectId + " x=" + this.objectX + " y=" + this.objectY + " plane=" + this.objectPlane);
+            }
             this.player.getInventoryManager().refresh();
             this.stop();
             return;
@@ -377,6 +399,9 @@ extends TickTask {
             }
             case 2782: 
             case 2783: {
+                if (GameplayTrace.enabled()) {
+                    GameplayTrace.log("item-on-object smithing-interface-open player=" + GameplayTrace.describe(this.player) + " itemId=" + this.itemId + " item=" + ItemDefinition.forId(this.itemId).getName() + " objectId=" + this.objectId + " x=" + this.objectX + " y=" + this.objectY + " plane=" + this.objectPlane);
+                }
                 SmithingHandler.openSmithingInterface(this.player, this.itemId);
                 break;
             }
@@ -518,6 +543,9 @@ extends TickTask {
                 break;
             }
             default: {
+                if (GameplayTrace.enabled()) {
+                    GameplayTrace.log("item-on-object unhandled player=" + GameplayTrace.describe(this.player) + " itemId=" + this.itemId + " objectId=" + this.objectId + " x=" + this.objectX + " y=" + this.objectY + " plane=" + this.objectPlane);
+                }
                 Player player = this.player;
                 player.packetSender.sendGameMessage("Nothing interesting happens.");
             }

@@ -33,6 +33,7 @@ import com.rs2.model.travel.TravelManager;
 import com.rs2.model.travel.canoe.CanoeTravelManager;
 import com.rs2.net.packet.IncomingPacket;
 import com.rs2.net.packet.PacketHandler;
+import com.rs2.util.GameplayTrace;
 
 public final class ButtonClickPacketHandler
 implements PacketHandler {
@@ -40,7 +41,15 @@ implements PacketHandler {
     public final void handle(Player player, IncomingPacket packet) {
         int buttonId = packet.getReader().readSignedShort();
         InterfaceDefinition interfaceDefinition = InterfaceDefinition.forId(buttonId);
-        if (!player.isInterfaceOpen(interfaceDefinition)) {
+        boolean interfaceOpen = player.isInterfaceOpen(interfaceDefinition);
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("button decoded player=" + GameplayTrace.describe(player)
+                + " buttonId=" + buttonId
+                + " parentInterface=" + (interfaceDefinition == null ? -1 : interfaceDefinition.getParentInterfaceId())
+                + " interfaceOpen=" + interfaceOpen
+                + " spellbook=" + player.getSpellbook());
+        }
+        if (!interfaceOpen) {
             return;
         }
         if (ServerSettings.debugModeEnabled) {
@@ -673,6 +682,11 @@ implements PacketHandler {
         if (GameplayHelper.handleSextantButtonClick(player, buttonId) != false) return;
         if (player.interfaceAction != "tanning") {
             SpellDefinition spell = (SpellDefinition)player.getSpellbook().getSpellByButtonId().get(buttonId);
+            if (GameplayTrace.enabled() && spell != null) {
+                GameplayTrace.log("button spell resolved player=" + GameplayTrace.describe(player)
+                    + " buttonId=" + buttonId
+                    + " spell=" + spell);
+            }
             if (spell != null) {
                 MagicSpellAction.castSelfSpell(player, spell);
                 return;

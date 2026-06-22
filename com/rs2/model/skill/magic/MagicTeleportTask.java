@@ -9,6 +9,7 @@ import com.rs2.model.player.Player;
 import com.rs2.model.skill.magic.TeleportManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
+import com.rs2.util.GameplayTrace;
 
 public final class MagicTeleportTask
 extends CycleEvent {
@@ -50,7 +51,13 @@ extends CycleEvent {
                     object = TeleportManager.getPlayer(this.teleportManager);
                     ((Player)object).packetSender.sendGameMessage("Why is the rum gone?");
                 }
+                if (GameplayTrace.enabled()) {
+                    GameplayTrace.log("magic teleport move player=" + GameplayTrace.describe(TeleportManager.getPlayer(this.teleportManager)) + " destination=" + this.destinationX + "," + this.destinationY + "," + this.destinationPlane + " ancient=" + this.ancientSpellbookTeleport);
+                }
                 TeleportManager.getPlayer(this.teleportManager).moveTo(new Position(this.destinationX, this.destinationY, this.destinationPlane));
+                if (GameplayTrace.enabled()) {
+                    GameplayTrace.log("magic teleport moved player=" + GameplayTrace.describe(TeleportManager.getPlayer(this.teleportManager)));
+                }
             }
         } else {
             this.ticksRemaining = 0;
@@ -62,6 +69,9 @@ extends CycleEvent {
 
     @Override
     public final void onStop() {
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("magic teleport complete player=" + GameplayTrace.describe(TeleportManager.getPlayer(this.teleportManager)) + " destination=" + this.destinationX + "," + this.destinationY + "," + this.destinationPlane + " ancient=" + this.ancientSpellbookTeleport);
+        }
         TeleportManager.getPlayer(this.teleportManager).setActionLocked(false);
         TeleportManager.getPlayer(this.teleportManager).getAttributes().put("canTakeDamage", Boolean.TRUE);
     }

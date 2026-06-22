@@ -7,6 +7,7 @@ import com.rs2.model.player.Player;
 import com.rs2.model.skill.mining.MiningManager;
 import com.rs2.model.task.CycleEvent;
 import com.rs2.model.task.CycleEventContainer;
+import com.rs2.util.GameplayTrace;
 
 public final class ProspectingTask
 extends CycleEvent {
@@ -23,6 +24,9 @@ extends CycleEvent {
     @Override
     public final void execute(CycleEventContainer cycleEventContainer) {
         Player player = MiningManager.getPlayer(this.manager);
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("mining prospect complete player=" + GameplayTrace.describe(player) + " rockObjectId=" + this.rockObjectId + " oreName=" + this.oreName);
+        }
         player.packetSender.sendGameMessage("This rock contains " + (this.rockObjectId == 2111 ? "gems" : (this.rockObjectId == 2491 ? "unbound Rune Stone essence" : String.valueOf(this.oreName) + ".")));
         if (MiningManager.getPlayer(this.manager).getQuestState(0) != 1) {
             if (MiningManager.getPlayer(this.manager).getQuestState(0) == 30 && this.oreName.contains("tin")) {

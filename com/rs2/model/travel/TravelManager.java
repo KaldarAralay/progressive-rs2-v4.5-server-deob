@@ -19,6 +19,7 @@ import com.rs2.model.travel.ShipRoute;
 import com.rs2.model.travel.ShipTravelArrivalTask;
 import com.rs2.model.travel.TravelBootstrap;
 import com.rs2.util.GameUtil;
+import com.rs2.util.GameplayTrace;
 import java.util.ArrayList;
 
 public class TravelManager {
@@ -30,7 +31,13 @@ public class TravelManager {
             if (buttonId != destination.buttonId) {
                 continue;
             }
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("travel gnome-glider button player=" + GameplayTrace.describe(player) + " buttonId=" + buttonId + " destination=" + destination);
+            }
             if (!player.getInteractionTarget().isNpc()) {
+                if (GameplayTrace.enabled()) {
+                    GameplayTrace.log("travel gnome-glider blocked non-npc-target player=" + GameplayTrace.describe(player) + " buttonId=" + buttonId);
+                }
                 return false;
             }
             Npc gliderNpc = (Npc)player.getInteractionTarget();
@@ -39,6 +46,9 @@ public class TravelManager {
                 int targetRouteIndex = destination.routeIndex;
                 int currentRouteIndex = getCurrentGnomeGliderRouteIndex(gliderNpc);
                 int routeConfig = getGnomeGliderRouteConfig(currentRouteIndex, targetRouteIndex);
+                if (GameplayTrace.enabled()) {
+                    GameplayTrace.log("travel gnome-glider route player=" + GameplayTrace.describe(player) + " npc=" + GameplayTrace.describe(gliderNpc) + " currentRoute=" + currentRouteIndex + " targetRoute=" + targetRouteIndex + " routeConfig=" + routeConfig + " destination=" + destination);
+                }
                 if (routeConfig <= 0) {
                     player.packetSender.sendGameMessage("You can't fly there from here.");
                 } else if (routeConfig == 20) {
@@ -50,6 +60,9 @@ public class TravelManager {
                     player.setActionLocked(true);
                     CycleEventHandler.getInstance().schedule(player, new GnomeGliderTravelTask(player, destination), 3);
                     CycleEventHandler.getInstance().schedule(player, new GnomeGliderLandingTask(player), 4);
+                    if (GameplayTrace.enabled()) {
+                        GameplayTrace.log("travel gnome-glider scheduled player=" + GameplayTrace.describe(player) + " destination=" + destination + " routeConfig=" + routeConfig);
+                    }
                 }
             }
             return true;
@@ -117,6 +130,9 @@ public class TravelManager {
     }
 
     public static boolean handleShipRoute(Player object, ShipRoute shipRoute) {
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("travel ship request player=" + GameplayTrace.describe((Player)object) + " route=" + shipRoute + " fare=" + shipRoute.fareCoins + " destination=" + shipRoute.destinationPosition);
+        }
         int n = shipRoute.fareCoins;
         if (shipRoute == ShipRoute.RELLEKKA_TO_WATERBIRTH && ((Player)object).getQuestState(40) == 1) {
             n = 0;
@@ -124,6 +140,9 @@ public class TravelManager {
         if (n > 0) {
             ItemStack itemStack = new ItemStack(995, n);
             if (!((Player)object).getInventoryManager().containsItemStack(itemStack)) {
+                if (GameplayTrace.enabled()) {
+                    GameplayTrace.log("travel ship blocked no-fare player=" + GameplayTrace.describe((Player)object) + " route=" + shipRoute + " fare=" + n);
+                }
                 if (!((Player)object).botEnabled) {
                     ((Player)object).getDialogueManager().showPlayerOneLineDialogue("Sorry, I don't have enough coins for that.", 599);
                 } else {
@@ -135,6 +154,9 @@ public class TravelManager {
             ((Player)object).getInventoryManager().removeItem(itemStack);
         }
         if (shipRoute == ShipRoute.PORT_SARIM_TO_ENTRANA && ((Player)object).hasRestrictedCombatEquipment()) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("travel ship blocked restricted-equipment player=" + GameplayTrace.describe((Player)object) + " route=" + shipRoute);
+            }
             DialogueManager.continueDialogue((Player)object, 657, 4, 0);
             return false;
         }
@@ -156,13 +178,22 @@ public class TravelManager {
         ((Player)object2).packetSender.sendMinimapState(2);
         TickTask arrivalTask = new ShipTravelArrivalTask(shipRoute.arrivalDelayTicks, shipRoute, (Player)object);
         World.getTaskScheduler().schedule(arrivalTask);
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("travel ship scheduled player=" + GameplayTrace.describe((Player)object) + " route=" + shipRoute + " destination=" + shipRoute.destinationPosition + " arrivalDelay=" + shipRoute.arrivalDelayTicks);
+        }
         return true;
     }
 
     public static boolean handleHajedyCartRoute(Player player, HajedyCartRoute hajedyCartRoute) {
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("travel hajedy-cart request player=" + GameplayTrace.describe(player) + " route=" + hajedyCartRoute + " fare=" + hajedyCartRoute.fareCoins + " destination=" + hajedyCartRoute.destination);
+        }
         if (hajedyCartRoute.fareCoins > 0) {
             ItemStack itemStack = new ItemStack(995, hajedyCartRoute.fareCoins);
             if (!player.getInventoryManager().containsItemStack(itemStack)) {
+                if (GameplayTrace.enabled()) {
+                    GameplayTrace.log("travel hajedy-cart blocked no-fare player=" + GameplayTrace.describe(player) + " route=" + hajedyCartRoute + " fare=" + hajedyCartRoute.fareCoins);
+                }
                 player.getDialogueManager().showPlayerOneLineDialogue("Sorry, I don't have enough coins for that.", 599);
                 player.getDialogueManager().finishDialogue();
                 return false;
@@ -170,6 +201,9 @@ public class TravelManager {
             player.getInventoryManager().removeItem(itemStack);
         }
         player.scheduleDelayedMove(hajedyCartRoute.destination.copy());
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("travel hajedy-cart scheduled player=" + GameplayTrace.describe(player) + " route=" + hajedyCartRoute + " destination=" + hajedyCartRoute.destination);
+        }
         return true;
     }
 }

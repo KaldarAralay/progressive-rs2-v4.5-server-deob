@@ -8,6 +8,7 @@ import com.rs2.cache.InterfaceDefinition;
 import com.rs2.model.player.Player;
 import com.rs2.model.quest.QuestDefinition;
 import com.rs2.model.quest.QuestHook;
+import com.rs2.util.GameplayTrace;
 import java.awt.Color;
 
 public abstract class QuestScript
@@ -31,6 +32,9 @@ extends QuestHook {
     }
 
     public final void markQuestComplete(Player player) {
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("quest complete player=" + GameplayTrace.describe(player) + " questId=" + this.getQuestId() + " questName=" + QuestDefinition.forId(this.getQuestId()).getName());
+        }
         player.deferLevelUpInterfaces = true;
         boolean bl = player.isMember();
         Player player2 = player;
@@ -53,18 +57,12 @@ extends QuestHook {
     }
 
     public final void showQuestCompleteInterface(Player player) {
-        Object object = player;
-        ((Player)object).packetSender.sendInterfacePosition(InterfaceDefinition.interfaceCount <= 12140 ? 6161 : 12145, 0, InterfaceDefinition.interfaceCount <= 12140 ? -40 : 0);
-        object = player;
-        object = this;
-        ((Player)object).packetSender.sendInterfaceText("You have completed " + QuestDefinition.forId(((QuestHook)object).getQuestId()).getName() + "!", InterfaceDefinition.interfaceCount <= 12140 ? 6160 : 12144);
-        object = player;
-        ((Player)object).packetSender.sendMusicJingle(238, 320);
-        object = player;
-        ((Player)object).packetSender.sendInterfaceText("" + player.getQuestPoints(), InterfaceDefinition.interfaceCount <= 12140 ? 1696 : 12147);
+        player.packetSender.sendInterfacePosition(InterfaceDefinition.interfaceCount <= 12140 ? 6161 : 12145, 0, InterfaceDefinition.interfaceCount <= 12140 ? -40 : 0);
+        player.packetSender.sendInterfaceText("You have completed " + QuestDefinition.forId(this.getQuestId()).getName() + "!", InterfaceDefinition.interfaceCount <= 12140 ? 6160 : 12144);
+        player.packetSender.sendMusicJingle(238, 320);
+        player.packetSender.sendInterfaceText("" + player.getQuestPoints(), InterfaceDefinition.interfaceCount <= 12140 ? 1696 : 12147);
         if (InterfaceDefinition.interfaceCount <= 12140) {
-            object = player;
-            ((Player)object).packetSender.sendInterfaceText("" + this.questPointReward, 6164);
+            player.packetSender.sendInterfaceText("" + this.questPointReward, 6164);
         }
     }
 
@@ -72,6 +70,9 @@ extends QuestHook {
     }
 
     public final void startQuest(Player player) {
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("quest start player=" + GameplayTrace.describe(player) + " questId=" + this.getQuestId() + " questName=" + QuestDefinition.forId(this.getQuestId()).getName());
+        }
         Player player2 = player;
         Object object = player2;
         object = this;

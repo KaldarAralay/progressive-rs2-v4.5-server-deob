@@ -13,6 +13,7 @@ import com.rs2.model.skill.magic.ScriptedTeleportTask;
 import com.rs2.model.skill.magic.Spellbook;
 import com.rs2.model.skill.magic.StandardTeleportTask;
 import com.rs2.model.task.CycleEventHandler;
+import com.rs2.util.GameplayTrace;
 
 public final class TeleportManager {
     private Player player;
@@ -100,6 +101,9 @@ public final class TeleportManager {
             Player player = this.player;
             player.packetSender.sendGameMessage("You can't teleport out of here!");
             return;
+        }
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("magic teleport scheduled player=" + GameplayTrace.describe(this.player) + " destination=" + n + "," + n2 + "," + n3 + " ancient=" + bl);
         }
         this.player.setActionLocked(true);
         this.player.getAttributes().put("canTakeDamage", Boolean.FALSE);

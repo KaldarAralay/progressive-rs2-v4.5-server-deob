@@ -136,6 +136,7 @@ public final class EquipmentManager {
                     Object object;
                     block62: {
                         boolean bl;
+                        String requirementBlockReason = null;
                         block60: {
                             itemStack = this.player.getInventoryManager().getContainer().getItemAt(n);
                             if (itemStack == null) {
@@ -159,9 +160,11 @@ public final class EquipmentManager {
                             object = this;
                             if (new ItemStack(n2).getDefinition().isMembersOnly() && !((EquipmentManager)object).player.isMember()) {
                                 ((EquipmentManager)object).player.packetSender.sendGameMessage("You need a members account to access members content.");
+                                requirementBlockReason = "members-account";
                                 bl = false;
                             } else if (new ItemStack(n2).getDefinition().isMembersOnly() && ServerSettings.freeToPlayWorld) {
                                 ((EquipmentManager)object).player.packetSender.sendGameMessage("You need to be in members world to access members content.");
+                                requirementBlockReason = "members-world";
                                 bl = false;
                             } else {
                                 char c;
@@ -182,6 +185,7 @@ public final class EquipmentManager {
                                         if (c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U') {
                                             string2 = "an";
                                         }
+                                        requirementBlockReason = "skill:" + SkillManager.SKILL_NAMES[n4] + ":required=" + n5 + ":base=" + n6;
                                         object = ((EquipmentManager)object).player;
                                         ((Player)object).packetSender.sendGameMessage("You need " + string2 + " " + SkillManager.SKILL_NAMES[n4] + " level of " + n5 + " to " + string);
                                         bl = false;
@@ -191,6 +195,7 @@ public final class EquipmentManager {
                                 }
                                 n4 = ((EquipmentManager)object).player.getQuestPoints();
                                 if (n4 < (n6 = new ItemStack(n2).getDefinition().getRequiredQuestPoints())) {
+                                    requirementBlockReason = "quest-points:required=" + n6 + ":current=" + n4;
                                     object = ((EquipmentManager)object).player;
                                     ((Player)object).packetSender.sendGameMessage("You need " + n6 + " quest points to " + string);
                                     bl = false;
@@ -202,6 +207,7 @@ public final class EquipmentManager {
                                         if (n6 != 0 && c == '\u0000') {
                                             Object object2 = QuestDefinition.forId(n5);
                                             object2 = ((QuestDefinition)object2).getName();
+                                            requirementBlockReason = "quest:" + n5 + ":" + (String)object2;
                                             object = ((EquipmentManager)object).player;
                                             ((Player)object).packetSender.sendGameMessage("You need to complete " + (String)object2 + " to " + string);
                                             bl = false;
@@ -215,7 +221,7 @@ public final class EquipmentManager {
                         }
                         if (!bl) {
                             if (GameplayTrace.enabled()) {
-                                GameplayTrace.log("equipment equip blocked-requirements player=" + GameplayTrace.describe(this.player) + " inventorySlot=" + n + " itemId=" + itemStack.getId() + " item=" + itemStack.getDefinition().getName());
+                                GameplayTrace.log("equipment equip blocked-requirements player=" + GameplayTrace.describe(this.player) + " inventorySlot=" + n + " itemId=" + itemStack.getId() + " item=" + itemStack.getDefinition().getName() + " reason=" + requirementBlockReason);
                             }
                             return;
                         }
@@ -328,6 +334,9 @@ public final class EquipmentManager {
                 if (this.container.getItemAt(3) != null && this.container.getItemAt(5) != null && this.player.getInventoryManager().getContainer().getFirstFreeSlot() == -1) {
                     Player player = this.player;
                     player.packetSender.sendGameMessage("Not enough space in your inventory.");
+                    if (GameplayTrace.enabled()) {
+                        GameplayTrace.log("equipment equip blocked-twohand-full-inventory player=" + GameplayTrace.describe(this.player) + " inventorySlot=" + n + " itemId=" + itemStack.getId() + " item=" + itemStack.getDefinition().getName());
+                    }
                     return;
                 }
                 this.player.getInventoryManager().removeItemFromSlot(itemStack, n);
@@ -402,11 +411,20 @@ public final class EquipmentManager {
         Object object;
         ItemStack itemStack = this.container.getItemAt(n);
         if (itemStack == null) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("equipment unequip missing-item player=" + GameplayTrace.describe(this.player) + " equipmentSlot=" + n);
+            }
             return;
+        }
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("equipment unequip request player=" + GameplayTrace.describe(this.player) + " equipmentSlot=" + n + " itemId=" + itemStack.getId() + " item=" + itemStack.getDefinition().getName() + " inventoryFree=" + this.player.getInventoryManager().getContainer().getFreeSlots());
         }
         if (this.player.getInventoryManager().getContainer().getFirstFreeSlot() == -1) {
             Player player = this.player;
             player.packetSender.sendGameMessage("Not enough space in your inventory.");
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("equipment unequip blocked-full-inventory player=" + GameplayTrace.describe(this.player) + " equipmentSlot=" + n + " itemId=" + itemStack.getId() + " item=" + itemStack.getDefinition().getName());
+            }
             return;
         }
         if (itemStack.getId() == 6583 || itemStack.getId() == 7927) {
@@ -425,6 +443,9 @@ public final class EquipmentManager {
         }
         object = this.player.getEquipmentManager();
         if (!((EquipmentManager)object).container.containsItem(itemStack.getId())) {
+            if (GameplayTrace.enabled()) {
+                GameplayTrace.log("equipment unequip missing-container-item player=" + GameplayTrace.describe(this.player) + " equipmentSlot=" + n + " itemId=" + itemStack.getId() + " item=" + itemStack.getDefinition().getName());
+            }
             return;
         }
         this.player.nextActionSequence();
@@ -449,6 +470,9 @@ public final class EquipmentManager {
         ((Player)object).packetSender.sendSoundEffect(this.equipSoundIds[GameUtil.randomInt(this.equipSoundIds.length)], 1, 0);
         GameplayHelper.refreshRubberChickenPlayerOption(this.player);
         this.player.setAppearanceUpdateRequired(true);
+        if (GameplayTrace.enabled()) {
+            GameplayTrace.log("equipment unequip success player=" + GameplayTrace.describe(this.player) + " equipmentSlot=" + n + " itemId=" + itemStack.getId() + " item=" + itemStack.getDefinition().getName() + " inventoryFree=" + this.player.getInventoryManager().getContainer().getFreeSlots() + " statRefresh=true");
+        }
     }
 
     public final void refreshCarriedValue() {
